@@ -6,10 +6,79 @@
   <meta name="description" content="CyberDudeBivash Intelligence Blog — AI-powered cybersecurity threat intelligence, zero-day reports, CVE analysis, and enterprise SOC advisories from SENTINEL APEX.">
   <meta name="keywords" content="cybersecurity blog, threat intelligence, CVE analysis, zero-day, SOC advisory, AI security, SENTINEL APEX, CyberDudeBivash">
   <meta name="author" content="CyberDudeBivash — SENTINEL APEX">
+
+  <!-- Open Graph -->
   <meta property="og:title" content="CyberDudeBivash Intelligence Blog — SENTINEL APEX Threat Reports">
-  <meta property="og:description" content="Real-time AI-powered cybersecurity threat intelligence. Zero-days, CVE analysis, ransomware tracking, and enterprise security advisories.">
+  <meta property="og:description" content="Real-time AI-powered cybersecurity threat intelligence. Zero-days, CVE analysis, ransomware tracking, and enterprise security advisories. 6 intelligence reports published this week.">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://blog.cyberdudebivash.in/">
+  <meta property="og:image" content="https://blog.cyberdudebivash.in/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="CyberDudeBivash SENTINEL APEX">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@cyberdudebivash">
+  <meta name="twitter:creator" content="@cyberdudebivash">
+  <meta name="twitter:title" content="CyberDudeBivash Intelligence Blog — SENTINEL APEX Threat Reports">
+  <meta name="twitter:description" content="Real-time AI-powered cybersecurity threat intelligence. Zero-days, CVE analysis, ransomware tracking, and enterprise security advisories.">
+  <meta name="twitter:image" content="https://blog.cyberdudebivash.in/og-image.png">
+
   <title>CyberDudeBivash Intelligence Blog | SENTINEL APEX Threat Reports</title>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://blog.cyberdudebivash.in/#website",
+        "url": "https://blog.cyberdudebivash.in/",
+        "name": "CyberDudeBivash Intelligence Blog",
+        "description": "AI-powered cybersecurity threat intelligence, zero-day reports, CVE analysis, and enterprise SOC advisories from SENTINEL APEX.",
+        "publisher": {
+          "@id": "https://blog.cyberdudebivash.in/#organization"
+        },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://blog.cyberdudebivash.in/?s={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "Blog",
+        "@id": "https://blog.cyberdudebivash.in/#blog",
+        "url": "https://blog.cyberdudebivash.in/",
+        "name": "CyberDudeBivash SENTINEL APEX — Cybersecurity Threat Intelligence",
+        "description": "Enterprise-grade cybersecurity threat intelligence: zero-day analysis, CVE breakdowns, ransomware tracking, and AI security research.",
+        "inLanguage": "en-US",
+        "publisher": {
+          "@id": "https://blog.cyberdudebivash.in/#organization"
+        }
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://blog.cyberdudebivash.in/#organization",
+        "name": "CyberDudeBivash SENTINEL APEX",
+        "url": "https://cyberdudebivash.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://blog.cyberdudebivash.in/og-image.png"
+        },
+        "sameAs": [
+          "https://cyberdudebivash.com",
+          "https://cyberdudebivash.in",
+          "https://intel.cyberdudebivash.com"
+        ]
+      }
+    ]
+  }
+  </script>
 
   <style>
     :root {
@@ -46,7 +115,7 @@
     }
     .ticker-inner {
       display: inline-block;
-      animation: ticker-scroll 40s linear infinite;
+      animation: ticker-scroll 55s linear infinite;
     }
     .ticker-inner:hover { animation-play-state: paused; }
     @keyframes ticker-scroll {
@@ -213,6 +282,56 @@
     .stat-num { font-size: 22px; font-weight: 900; color: var(--apex-cyan); display: block; }
     .stat-lbl { font-size: 11px; color: var(--apex-muted); text-transform: uppercase; letter-spacing: 1px; }
 
+    /* NEWSLETTER BAR */
+    .newsletter-bar {
+      background: #001a00;
+      border-bottom: 1px solid #00ff88;
+      padding: 14px 40px;
+    }
+    .newsletter-form {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .nl-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--apex-green);
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    .nl-input {
+      background: #002200;
+      border: 1px solid #00aa55;
+      color: var(--apex-text);
+      font-size: 13px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      outline: none;
+      width: 260px;
+      transition: border-color .2s;
+    }
+    .nl-input::placeholder { color: #4d7a5e; }
+    .nl-input:focus { border-color: var(--apex-green); }
+    .nl-btn {
+      background: var(--apex-green);
+      color: #000;
+      border: none;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 8px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: opacity .2s;
+    }
+    .nl-btn:hover { opacity: 0.85; }
+
     /* MAIN LAYOUT */
     .main {
       max-width: 1200px;
@@ -227,6 +346,8 @@
       .header-inner { padding: 16px 20px; }
       .hero { padding: 50px 20px; }
       .stats-bar { padding: 14px 20px; }
+      .newsletter-bar { padding: 14px 20px; }
+      .nl-input { width: 100%; }
     }
 
     /* SECTION LABEL */
@@ -286,6 +407,8 @@
     .badge-cisa { background: #003366; color: #60aaff; border: 1px solid #3399ff; }
     .badge-new { background: var(--apex-green); color: #000; }
     .badge-breaking { background: var(--apex-orange); color: #000; }
+    .badge-browser { background: #001433; color: #60c0ff; border: 1px solid #3388ff; }
+    .badge-patch { background: #002200; color: var(--apex-green); border: 1px solid var(--apex-green); }
 
     .post-date { color: var(--apex-muted); font-size: 12px; margin-left: auto; }
 
@@ -319,6 +442,7 @@
     }
     .post-cvss.orange { background: #1a0800; border-color: var(--apex-orange); color: var(--apex-orange); }
     .post-cvss.purple { background: #0d0020; border-color: var(--apex-purple); color: var(--apex-purple); }
+    .post-cvss.blue { background: #001433; border-color: #3388ff; color: #60c0ff; }
     .post-read-time { color: var(--apex-muted); font-size: 12px; }
     .post-cve { font-family: 'Courier New', monospace; color: var(--apex-muted); font-size: 12px; }
     .post-read-more {
@@ -348,6 +472,25 @@
     }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
     .blink { animation: blink 1s infinite; }
+
+    /* AD SLOT */
+    .ad-slot {
+      background: var(--apex-surface);
+      border: 1px dashed #2a3545;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 24px;
+      color: var(--apex-muted);
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      min-height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ad-slot span { opacity: 0.45; }
 
     /* SIDEBAR */
     .sidebar-widget {
@@ -414,6 +557,7 @@
     .cvss-pill { display: inline-block; padding: 1px 7px; border-radius: 4px; font-size: 10px; font-weight: 700; margin-left: 6px; }
     .cvss-crit { background: #2d0000; color: #ff8080; }
     .cvss-high { background: #2d1200; color: #ffa060; }
+    .cvss-med { background: #1a1200; color: #ffe060; }
 
     /* CTA */
     .cta-widget {
@@ -441,6 +585,43 @@
     }
     .cta-w-btn:hover { opacity: 0.85; }
     .cta-w-btn.sec { background: transparent; color: var(--apex-cyan); border: 1px solid var(--apex-cyan); }
+
+    /* PRICING TEASER WIDGET */
+    .pricing-teaser {
+      background: linear-gradient(160deg, #000d33 0%, #001a00 100%);
+      border: 1px solid var(--apex-cyan);
+      border-radius: 12px;
+      padding: 22px;
+      margin-bottom: 24px;
+    }
+    .pricing-teaser .widget-title {
+      color: var(--apex-cyan);
+      border-color: rgba(0,255,224,0.2);
+    }
+    .pricing-tier-row {
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .pricing-tier-row:last-of-type { border-bottom: none; margin-bottom: 14px; }
+    .pt-name { font-size: 12px; font-weight: 700; color: var(--apex-cyan); text-transform: uppercase; letter-spacing: 1px; }
+    .pt-price { font-size: 18px; font-weight: 900; color: #fff; }
+    .pt-price span { font-size: 11px; color: var(--apex-muted); font-weight: 400; }
+    .pt-desc { font-size: 12px; color: var(--apex-muted); margin-top: 2px; line-height: 1.5; }
+    .pricing-teaser-cta {
+      display: block;
+      background: var(--apex-cyan);
+      color: #000;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 12px;
+      padding: 10px 16px;
+      border-radius: 6px;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: opacity .2s;
+    }
+    .pricing-teaser-cta:hover { opacity: 0.85; }
 
     /* FOOTER */
     footer {
@@ -474,6 +655,9 @@
 <!-- LIVE TICKER -->
 <div class="ticker-wrap">
   <div class="ticker-inner">
+    <span class="ticker-item"><span class="dot-red">●</span> <span class="ticker-label">CRITICAL:</span> CVE-2026-33824 Windows IKE Service Double-Free — Unauthenticated RCE CVSS 9.8 PATCH NOW</span>
+    <span class="ticker-item"><span class="dot-red">●</span> <span class="ticker-label">ZERO-DAY:</span> CVE-2026-5281 Chrome Dawn WebGPU UAF — All Chromium Browsers at Risk — CISA Deadline April 15</span>
+    <span class="ticker-item"><span class="dot-red">●</span> <span class="ticker-label">CISA KEV:</span> CVE-2026-32201 SharePoint Zero-Day — Federal Patch Deadline April 28, 2026</span>
     <span class="ticker-item"><span class="dot-red">●</span> <span class="ticker-label">CRITICAL:</span> CVE-2026-33825 Microsoft Defender Zero-Days — BlueHammer/RedSun ACTIVELY EXPLOITED</span>
     <span class="ticker-item"><span class="dot-red">●</span> <span class="ticker-label">CISA KEV:</span> CVE-2026-35616 Fortinet FortiClient EMS CVSS 9.8 — Emergency Patch Required</span>
     <span class="ticker-item"><span class="dot-orange">●</span> <span class="ticker-label">AI ALERT:</span> 73% of Enterprise AI Deployments Vulnerable to Prompt Injection — OWASP LLM #1</span>
@@ -496,6 +680,8 @@
       <a href="https://intel.cyberdudebivash.com">Intel Platform</a>
       <a href="https://cyberdudebivash.in">AI Hub</a>
       <a href="https://cyberdudebivash.com">Home</a>
+      <a href="/pricing.html">Pricing</a>
+      <a href="https://tools.cyberdudebivash.com">Tools</a>
       <a href="mailto:bivash@cyberdudebivash.com" class="nav-cta">Enterprise Access</a>
     </nav>
   </div>
@@ -510,7 +696,7 @@
     <span class="red">Delivered in Real Time</span>
   </h1>
   <p class="hero-desc">
-    SENTINEL APEX monitors global threat feeds 24/7 — delivering zero-day analysis, CVE breakdowns, ransomware tracking, and AI security research that SOC teams can act on immediately.
+    SENTINEL APEX monitors global threat feeds 24/7 — delivering zero-day analysis, CVE breakdowns, ransomware tracking, and AI security research that SOC teams can act on immediately. <strong style="color:var(--apex-green);">6 intelligence reports published this week.</strong>
   </p>
   <div class="hero-actions">
     <a href="#reports" class="btn-primary">Latest Threat Reports</a>
@@ -526,22 +712,33 @@
       <span class="stat-lbl">CVEs This Patch Tuesday</span>
     </div>
     <div class="stat-item">
-      <span class="stat-num">3</span>
-      <span class="stat-lbl">Active Zero-Days (Unpatched)</span>
+      <span class="stat-num">6</span>
+      <span class="stat-lbl">Active Zero-Days</span>
     </div>
     <div class="stat-item">
       <span class="stat-num">9.8</span>
-      <span class="stat-lbl">Highest CVSS Score Active</span>
+      <span class="stat-lbl">Highest CVSS Score</span>
     </div>
     <div class="stat-item">
-      <span class="stat-num">73%</span>
-      <span class="stat-lbl">Enterprise AI Deployments Vulnerable</span>
+      <span class="stat-num">7</span>
+      <span class="stat-lbl">Reports Published</span>
     </div>
     <div class="stat-item">
       <span class="stat-num">24/7</span>
       <span class="stat-lbl">SENTINEL APEX Monitoring</span>
     </div>
   </div>
+</div>
+
+<!-- NEWSLETTER BAR -->
+<div class="newsletter-bar">
+  <form action="https://formsubmit.co/bivash@cyberdudebivash.com" method="POST" class="newsletter-form">
+    <input type="hidden" name="_subject" value="New Blog Newsletter Subscriber">
+    <input type="hidden" name="_captcha" value="false">
+    <span class="nl-label">⚡ Get real-time threat alerts:</span>
+    <input type="email" name="email" placeholder="your@enterprise.com" required class="nl-input">
+    <button type="submit" class="nl-btn">Subscribe Free</button>
+  </form>
 </div>
 
 <!-- MAIN -->
@@ -629,6 +826,88 @@
       </div>
     </a>
 
+    <!-- AdSense: ca-pub-XXXXXXXXX -->
+    <div class="ad-slot">
+      <span>Advertisement — Sponsored Security Intelligence Content</span>
+    </div>
+
+    <div class="section-label" style="margin-top:8px;">
+      <span class="section-label-text">New This Week — April 2026</span>
+      <div class="section-label-line"></div>
+    </div>
+
+    <!-- POST 4 — CVE-2026-33824 Windows IKE -->
+    <a href="posts/cve-2026-33824-windows-ike-service-rce-critical.html" class="post-card">
+      <div class="post-card-header">
+        <span class="post-badge badge-crit">Critical</span>
+        <span class="post-badge badge-breaking">CVSS 9.8</span>
+        <span class="post-badge badge-patch">Patch Now</span>
+        <span class="post-date">14 Apr 2026 | CVE-2026-33824</span>
+      </div>
+      <div class="post-card-body">
+        <div class="post-title">
+          CVE-2026-33824: Windows IKE Service Double-Free — Unauthenticated RCE at SYSTEM Level Across ALL Windows Versions
+        </div>
+        <p class="post-excerpt">
+          Critical double-free memory corruption (CWE-415) in Windows IKE Service Extensions. Unauthenticated network-based RCE via UDP 500/4500 — affects every Windows 10/11 and Server variant. All internet-exposed VPN gateways at immediate risk. Microsoft patches released April 14, 2026.
+        </p>
+        <div class="post-meta">
+          <span class="post-cvss">CVSS 9.8 — CRITICAL</span>
+          <span class="post-cve">CVE-2026-33824</span>
+          <span class="post-read-time">⏱ 11 min read</span>
+          <span class="post-read-more">Read Report →</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- POST 5 — CVE-2026-32201 SharePoint + Patch Tuesday -->
+    <a href="posts/cve-2026-32201-sharepoint-zero-day-patch-tuesday-april-2026.html" class="post-card">
+      <div class="post-card-header">
+        <span class="post-badge badge-crit">Critical</span>
+        <span class="post-badge badge-cisa">CISA KEV</span>
+        <span class="post-badge badge-zd">Zero-Day</span>
+        <span class="post-date">14 Apr 2026 | CVE-2026-32201</span>
+      </div>
+      <div class="post-card-body">
+        <div class="post-title">
+          April 2026 Patch Tuesday: CVE-2026-32201 SharePoint Zero-Day + 163 CVEs — Full SENTINEL APEX Analysis
+        </div>
+        <p class="post-excerpt">
+          Microsoft's April 2026 Patch Tuesday delivers patches for 163 CVEs including 2 actively exploited zero-days. SharePoint Server spoofing vulnerability (CVE-2026-32201) added to CISA KEV with April 28 federal deadline. Full breakdown of all 8 Critical CVEs inside.
+        </p>
+        <div class="post-meta">
+          <span class="post-cvss orange">CVSS 6.5 + 8 CRITICAL CVEs</span>
+          <span class="post-cve">CVE-2026-32201</span>
+          <span class="post-read-time">⏱ 16 min read</span>
+          <span class="post-read-more">Read Report →</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- POST 6 — CVE-2026-5281 Chrome Zero-Day -->
+    <a href="posts/cve-2026-5281-chrome-zero-day-dawn-webgpu-use-after-free.html" class="post-card">
+      <div class="post-card-header">
+        <span class="post-badge badge-crit">Critical</span>
+        <span class="post-badge badge-cisa">CISA KEV</span>
+        <span class="post-badge badge-browser">Browser</span>
+        <span class="post-date">10 Apr 2026 | CVE-2026-5281</span>
+      </div>
+      <div class="post-card-body">
+        <div class="post-title">
+          CVE-2026-5281: Chrome Zero-Day (UAF in Dawn WebGPU) — All Chromium Browsers at Risk, CISA Orders Patch by April 15
+        </div>
+        <p class="post-excerpt">
+          Use-after-free vulnerability in Chrome's Dawn WebGPU implementation enables arbitrary code execution from compromised renderer. Affects Chrome &lt; 146.0.7680.177/178. Edge, Brave, Opera also vulnerable until vendor patches. CISA federal deadline: April 15, 2026.
+        </p>
+        <div class="post-meta">
+          <span class="post-cvss blue">CVSS HIGH — BROWSER CRITICAL</span>
+          <span class="post-cve">CVE-2026-5281</span>
+          <span class="post-read-time">⏱ 10 min read</span>
+          <span class="post-read-more">Read Report →</span>
+        </div>
+      </div>
+    </a>
+
     <div class="section-label" style="margin-top:16px;">
       <span class="section-label-text">Threat Landscape — April 2026</span>
       <div class="section-label-line"></div>
@@ -642,7 +921,7 @@
         <span class="post-date">22 Apr 2026</span>
       </div>
       <div class="post-card-body">
-        <div class="post-title">April 2026 Ransomware Round-Up: Healthcare, Education & Crypto Exchanges Under Attack</div>
+        <div class="post-title">April 2026 Ransomware Round-Up: Healthcare, Education &amp; Crypto Exchanges Under Attack</div>
         <p class="post-excerpt">
           Active groups tracked this month: <strong style="color:#ff8080;">Qilin</strong> (most active, weaponizing Defender zero-day chain), <strong style="color:#ffa060;">Anubis</strong> (healthcare — Signature Healthcare Brockton Hospital, ER on diversion), <strong style="color:#ffa060;">Interlock</strong> (Center for Hearing and Communication), <strong style="color:#ffa060;">ShinyHunters</strong> (Rockstar Games breach). State-sponsored actors also hit Grinex crypto exchange ($13M loss). Spring Lake Park Schools shut down April 13.
         </p>
@@ -690,13 +969,21 @@
         </div>
       </a>
 
-      <div class="quick-link" style="cursor:default;">
+      <a href="posts/cve-2026-5281-chrome-zero-day-dawn-webgpu-use-after-free.html" class="quick-link">
+        <div class="ql-dot dot-r"></div>
+        <div>
+          <div class="ql-text">Chrome Dawn WebGPU — Use-After-Free RCE</div>
+          <span class="ql-cve">CVE-2026-5281 | CVSS HIGH | CISA KEV</span>
+        </div>
+      </a>
+
+      <a href="posts/cve-2026-32201-sharepoint-zero-day-patch-tuesday-april-2026.html" class="quick-link">
         <div class="ql-dot dot-o"></div>
         <div>
           <div class="ql-text">Microsoft SharePoint — Spoofing Zero-Day</div>
-          <span class="ql-cve">CVE-2026-32201 | CVSS 6.5 | Patched Apr 14</span>
+          <span class="ql-cve">CVE-2026-32201 | CVSS 6.5 | CISA KEV | Patched Apr 14</span>
         </div>
-      </div>
+      </a>
     </div>
 
     <!-- APRIL CVE FEED -->
@@ -716,18 +1003,47 @@
         <div class="cve-desc-sm">Windows Defender — TOCTOU LPE (BlueHammer)</div>
       </div>
       <div class="cve-feed-item">
+        <div><span class="cve-id-sm orange">CVE-2026-5281</span><span class="cvss-pill cvss-high">HIGH</span></div>
+        <div class="cve-desc-sm">Chrome Dawn WebGPU — UAF Zero-Day (CISA KEV)</div>
+      </div>
+      <div class="cve-feed-item">
+        <div><span class="cve-id-sm orange">CVE-2026-32201</span><span class="cvss-pill cvss-med">6.5 MED</span></div>
+        <div class="cve-desc-sm">SharePoint Server — Spoofing (CISA KEV, Exploited)</div>
+      </div>
+      <div class="cve-feed-item">
         <div><span class="cve-id-sm orange">CVE-2026-33826</span><span class="cvss-pill cvss-high">8.5 HIGH</span></div>
         <div class="cve-desc-sm">Windows Defender — Quarantine DLL Injection</div>
       </div>
-      <div class="cve-feed-item">
-        <div><span class="cve-id-sm orange">CVE-2026-32201</span><span class="cvss-pill cvss-high">6.5 HIGH</span></div>
-        <div class="cve-desc-sm">SharePoint Server — Spoofing (Exploited)</div>
+    </div>
+
+    <!-- PRICING TEASER -->
+    <div class="pricing-teaser">
+      <div class="widget-title">SENTINEL APEX PLANS</div>
+
+      <div class="pricing-tier-row">
+        <div class="pt-name">Free</div>
+        <div class="pt-price">$0 <span>/ forever</span></div>
+        <div class="pt-desc">Latest public reports &amp; basic CVE feed</div>
       </div>
+
+      <div class="pricing-tier-row">
+        <div class="pt-name" style="color:var(--apex-orange);">Pro</div>
+        <div class="pt-price" style="color:var(--apex-orange);">$49 <span>/ month</span></div>
+        <div class="pt-desc">48hr pre-disclosure + IOC feeds + SIEM rules</div>
+      </div>
+
+      <div class="pricing-tier-row">
+        <div class="pt-name" style="color:var(--apex-purple);">Enterprise</div>
+        <div class="pt-price" style="color:var(--apex-purple);">Custom</div>
+        <div class="pt-desc">API + custom advisories + dedicated analyst</div>
+      </div>
+
+      <a href="/pricing.html" class="pricing-teaser-cta">View All Plans →</a>
     </div>
 
     <!-- ENTERPRISE CTA -->
     <div class="cta-widget">
-      <h3>🛰 SENTINEL APEX</h3>
+      <h3>SENTINEL APEX</h3>
       <p>Get enterprise threat feeds, pre-disclosure intelligence, custom IOC ingestion, and dedicated SOC advisory services.</p>
       <a href="mailto:bivash@cyberdudebivash.com?subject=Enterprise%20Threat%20Intelligence" class="cta-w-btn">Enterprise Subscription</a>
       <a href="https://intel.cyberdudebivash.com" class="cta-w-btn sec">API Access</a>
@@ -741,15 +1057,19 @@
         <div class="ql-dot" style="background:var(--apex-cyan);"></div>
         <div class="ql-text">SENTINEL APEX Intel Platform</div>
       </a>
+      <a href="https://tools.cyberdudebivash.com" class="quick-link">
+        <div class="ql-dot" style="background:var(--apex-green);"></div>
+        <div class="ql-text">Security Tools Suite</div>
+      </a>
       <a href="https://cyberdudebivash.in" class="quick-link">
         <div class="ql-dot" style="background:var(--apex-purple);"></div>
         <div class="ql-text">AI Security Hub</div>
       </a>
       <a href="https://cyberdudebivash.com" class="quick-link">
-        <div class="ql-dot" style="background:var(--apex-green);"></div>
+        <div class="ql-dot" style="background:var(--apex-orange);"></div>
         <div class="ql-text">CyberDudeBivash Official</div>
       </a>
-      <a href="https://github.com/cyberdudebivash/cyberdudebivash-blog" class="quick-link" style="cursor:pointer;">
+      <a href="https://github.com/cyberdudebivash/cyberdudebivash-blog" class="quick-link">
         <div class="ql-dot" style="background:#6b7280;"></div>
         <div class="ql-text">GitHub Repository</div>
       </a>
@@ -771,10 +1091,14 @@
         <a href="posts/cve-2026-33825-microsoft-defender-zero-day-bluehammer-redsun.html">Defender Zero-Days</a>
         <a href="posts/cve-2026-35616-fortinet-forticlient-ems-zero-day.html">Fortinet CVE-2026-35616</a>
         <a href="posts/ai-llm-prompt-injection-enterprise-attack-surface-2026.html">AI/LLM Prompt Injection</a>
+        <a href="posts/cve-2026-33824-windows-ike-service-rce-critical.html">Windows IKE RCE</a>
+        <a href="posts/cve-2026-5281-chrome-zero-day-dawn-webgpu-use-after-free.html">Chrome Zero-Day</a>
       </div>
       <div class="footer-col">
         <h4>Platform</h4>
         <a href="https://intel.cyberdudebivash.com">Sentinel APEX</a>
+        <a href="https://tools.cyberdudebivash.com">Tools</a>
+        <a href="/pricing.html">Pricing</a>
         <a href="https://cyberdudebivash.in">AI Security Hub</a>
         <a href="https://cyberdudebivash.com">Official Site</a>
         <a href="https://github.com/cyberdudebivash/cyberdudebivash-blog">GitHub</a>
@@ -784,6 +1108,7 @@
         <a href="mailto:bivash@cyberdudebivash.com">bivash@cyberdudebivash.com</a>
         <a href="mailto:bivash@cyberdudebivash.com?subject=Enterprise%20Subscription">Enterprise Access</a>
         <a href="mailto:bivash@cyberdudebivash.com?subject=API%20Access%20Request">API Access</a>
+        <a href="mailto:bivash@cyberdudebivash.com?subject=Newsletter%20Subscription">Newsletter</a>
       </div>
     </div>
     <div class="footer-bottom">
