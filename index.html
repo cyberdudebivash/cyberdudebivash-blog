@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CyberDudeBivash Intelligence Blog — AI-powered cybersecurity threat intelligence, zero-day reports, CVE analysis, and enterprise SOC advisories from SENTINEL APEX.">
+  <meta name="keywords" content="cybersecurity blog, threat intelligence, CVE analysis, zero-day, SOC advisory, AI security, SENTINEL APEX, CyberDudeBivash">
+  <meta name="author" content="CyberDudeBivash — SENTINEL APEX">
+  <meta property="og:title" content="CyberDudeBivash Intelligence Blog — SENTINEL APEX Threat Reports">
+  <meta property="og:description" content="Real-time AI-powered cybersecurity threat intelligence. Zero-days, CVE analysis, ransomware tracking, and enterprise security advisories.">
+  <meta property="og:type" content="website">
+  <title>CyberDudeBivash Intelligence Blog | SENTINEL APEX Threat Reports</title>
+
+  <style>
+    :root {
+      --apex-cyan: #00ffe0;
+      --apex-red: #ff3b3b;
+      --apex-orange: #ff8c00;
+      --apex-yellow: #ffe000;
+      --apex-green: #00ff88;
+      --apex-purple: #a855f7;
+      --apex-bg: #07090f;
+      --apex-surface: #0d1117;
+      --apex-card: #111827;
+      --apex-border: #1f2937;
+      --apex-text: #e2e8f0;
+      --apex-muted: #6b7280;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--apex-bg);
+      color: var(--apex-text);
+      line-height: 1.7;
+    }
+
+    /* TICKER */
+    .ticker-wrap {
+      background: #0d0010;
+      border-bottom: 1px solid #2d1050;
+      padding: 8px 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .ticker-inner {
+      display: inline-block;
+      animation: ticker-scroll 40s linear infinite;
+    }
+    .ticker-inner:hover { animation-play-state: paused; }
+    @keyframes ticker-scroll {
+      0% { transform: translateX(100vw); }
+      100% { transform: translateX(-100%); }
+    }
+    .ticker-item {
+      display: inline-block;
+      padding: 0 40px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--apex-muted);
+    }
+    .ticker-item .dot-red { color: var(--apex-red); margin-right: 6px; }
+    .ticker-item .dot-orange { color: var(--apex-orange); margin-right: 6px; }
+    .ticker-item .dot-purple { color: var(--apex-purple); margin-right: 6px; }
+    .ticker-label { color: var(--apex-cyan); font-weight: 800; }
+
+    /* HEADER */
+    header {
+      background: var(--apex-surface);
+      border-bottom: 1px solid var(--apex-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .logo-wrap { display: flex; align-items: center; gap: 14px; }
+    .logo-badge {
+      background: var(--apex-cyan);
+      color: #000;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .logo {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--apex-cyan);
+      letter-spacing: 2px;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+    .logo span { color: #fff; }
+    nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+    nav a {
+      color: var(--apex-muted);
+      text-decoration: none;
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all .2s;
+    }
+    nav a:hover { color: var(--apex-cyan); background: #001a1a; }
+    .nav-cta {
+      background: var(--apex-cyan) !important;
+      color: #000 !important;
+      font-weight: 700 !important;
+    }
+    .nav-cta:hover { opacity: 0.85; background: var(--apex-cyan) !important; }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, #050010 0%, #000d1a 40%, #050010 100%);
+      border-bottom: 1px solid var(--apex-border);
+      padding: 70px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 50%, rgba(0,255,224,0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-label {
+      display: inline-block;
+      background: #001a1a;
+      border: 1px solid var(--apex-cyan);
+      color: var(--apex-cyan);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: clamp(32px, 6vw, 64px);
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .hero h1 .cyan { color: var(--apex-cyan); }
+    .hero h1 .red { color: var(--apex-red); }
+    .hero-desc {
+      font-size: 18px;
+      color: #6b7280;
+      max-width: 700px;
+      margin: 0 auto 36px;
+    }
+    .hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--apex-cyan);
+      color: #000;
+      font-weight: 800;
+      font-size: 14px;
+      padding: 14px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: opacity .2s;
+    }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-secondary {
+      background: transparent;
+      color: var(--apex-cyan);
+      font-weight: 700;
+      font-size: 14px;
+      padding: 14px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      border: 1px solid var(--apex-cyan);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: background .2s;
+    }
+    .btn-secondary:hover { background: #001a1a; }
+
+    /* LIVE STATS BAR */
+    .stats-bar {
+      background: var(--apex-surface);
+      border-bottom: 1px solid var(--apex-border);
+      padding: 14px 40px;
+    }
+    .stats-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      gap: 40px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .stat-item { text-align: center; }
+    .stat-num { font-size: 22px; font-weight: 900; color: var(--apex-cyan); display: block; }
+    .stat-lbl { font-size: 11px; color: var(--apex-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+    /* MAIN LAYOUT */
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 50px 40px 80px;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 40px;
+    }
+    @media (max-width: 960px) {
+      .main { grid-template-columns: 1fr; padding: 30px 20px 60px; }
+      .header-inner { padding: 16px 20px; }
+      .hero { padding: 50px 20px; }
+      .stats-bar { padding: 14px 20px; }
+    }
+
+    /* SECTION LABEL */
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .section-label-text {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--apex-cyan);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .section-label-line {
+      flex: 1;
+      height: 1px;
+      background: var(--apex-border);
+    }
+
+    /* POST CARDS */
+    .post-card {
+      background: var(--apex-card);
+      border: 1px solid var(--apex-border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 24px;
+      transition: border-color .2s, transform .2s;
+      text-decoration: none;
+      display: block;
+      color: inherit;
+    }
+    .post-card:hover { border-color: var(--apex-cyan); transform: translateY(-2px); }
+    .post-card.featured { border-color: var(--apex-red); border-width: 2px; }
+    .post-card.featured:hover { border-color: #ff8080; }
+
+    .post-card-header {
+      padding: 24px 28px 0;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .post-badge {
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+    .badge-crit { background: var(--apex-red); color: #fff; }
+    .badge-zd { background: #7c0000; color: #ff8080; border: 1px solid #ff3b3b; }
+    .badge-ai { background: #1a0030; color: var(--apex-purple); border: 1px solid var(--apex-purple); }
+    .badge-cisa { background: #003366; color: #60aaff; border: 1px solid #3399ff; }
+    .badge-new { background: var(--apex-green); color: #000; }
+    .badge-breaking { background: var(--apex-orange); color: #000; }
+
+    .post-date { color: var(--apex-muted); font-size: 12px; margin-left: auto; }
+
+    .post-card-body { padding: 16px 28px 24px; }
+    .post-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+    .post-card:hover .post-title { color: var(--apex-cyan); }
+    .post-card.featured .post-title { color: #fff; }
+    .post-card.featured:hover .post-title { color: #ff8080; }
+    .post-excerpt { font-size: 14px; color: #6b7280; margin-bottom: 16px; line-height: 1.6; }
+
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .post-cvss {
+      background: #1a0000;
+      border: 1px solid var(--apex-red);
+      color: var(--apex-red);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 4px;
+    }
+    .post-cvss.orange { background: #1a0800; border-color: var(--apex-orange); color: var(--apex-orange); }
+    .post-cvss.purple { background: #0d0020; border-color: var(--apex-purple); color: var(--apex-purple); }
+    .post-read-time { color: var(--apex-muted); font-size: 12px; }
+    .post-cve { font-family: 'Courier New', monospace; color: var(--apex-muted); font-size: 12px; }
+    .post-read-more {
+      margin-left: auto;
+      color: var(--apex-cyan);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* FEATURED BANNER */
+    .featured-banner {
+      background: #0d0000;
+      border-left: 4px solid var(--apex-red);
+      border-radius: 0 8px 8px 0;
+      padding: 6px 16px;
+      margin-bottom: 24px;
+      font-size: 12px;
+      color: var(--apex-red);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .blink { animation: blink 1s infinite; }
+
+    /* SIDEBAR */
+    .sidebar-widget {
+      background: var(--apex-card);
+      border: 1px solid var(--apex-border);
+      border-radius: 12px;
+      padding: 22px;
+      margin-bottom: 24px;
+    }
+    .widget-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--apex-cyan);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--apex-border);
+    }
+
+    /* THREAT LEVEL */
+    .threat-level-display {
+      text-align: center;
+      padding: 16px;
+      background: #0d0000;
+      border: 1px solid var(--apex-red);
+      border-radius: 10px;
+      margin-bottom: 16px;
+    }
+    .tl-label { font-size: 11px; color: var(--apex-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+    .tl-value { font-size: 36px; font-weight: 900; color: var(--apex-red); line-height: 1; }
+    .tl-name { font-size: 14px; color: #ff8080; margin-top: 4px; font-weight: 700; }
+    .tl-desc { font-size: 12px; color: var(--apex-muted); margin-top: 6px; }
+
+    /* QUICK LINKS */
+    .quick-link {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid #111827;
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .quick-link:last-child { border-bottom: none; }
+    .ql-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+    .dot-r { background: var(--apex-red); }
+    .dot-o { background: var(--apex-orange); }
+    .dot-p { background: var(--apex-purple); }
+    .ql-text { font-size: 13px; color: #94a3b8; line-height: 1.4; }
+    .quick-link:hover .ql-text { color: var(--apex-cyan); }
+    .ql-cve { font-family: 'Courier New', monospace; font-size: 11px; color: var(--apex-muted); display: block; margin-top: 2px; }
+
+    /* CVE FEED */
+    .cve-feed-item {
+      padding: 10px 0;
+      border-bottom: 1px solid #111827;
+    }
+    .cve-feed-item:last-child { border-bottom: none; }
+    .cve-id-sm { font-family: 'Courier New', monospace; font-size: 12px; font-weight: 700; }
+    .cve-id-sm.red { color: var(--apex-red); }
+    .cve-id-sm.orange { color: var(--apex-orange); }
+    .cve-desc-sm { font-size: 12px; color: #6b7280; margin-top: 2px; }
+    .cvss-pill { display: inline-block; padding: 1px 7px; border-radius: 4px; font-size: 10px; font-weight: 700; margin-left: 6px; }
+    .cvss-crit { background: #2d0000; color: #ff8080; }
+    .cvss-high { background: #2d1200; color: #ffa060; }
+
+    /* CTA */
+    .cta-widget {
+      background: linear-gradient(135deg, #001233, #002020);
+      border: 1px solid var(--apex-cyan);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+    }
+    .cta-widget h3 { color: var(--apex-cyan); font-size: 15px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; }
+    .cta-widget p { font-size: 13px; color: #6b7280; margin-bottom: 16px; }
+    .cta-w-btn {
+      display: block;
+      background: var(--apex-cyan);
+      color: #000;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 11px 20px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      transition: opacity .2s;
+    }
+    .cta-w-btn:hover { opacity: 0.85; }
+    .cta-w-btn.sec { background: transparent; color: var(--apex-cyan); border: 1px solid var(--apex-cyan); }
+
+    /* FOOTER */
+    footer {
+      background: var(--apex-surface);
+      border-top: 1px solid var(--apex-border);
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 40px 30px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 768px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 500px) { .footer-grid { grid-template-columns: 1fr; } }
+    .footer-brand .logo { font-size: 16px; }
+    .footer-brand p { font-size: 13px; color: var(--apex-muted); margin-top: 10px; line-height: 1.6; }
+    .footer-col h4 { font-size: 12px; font-weight: 700; color: var(--apex-cyan); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 14px; }
+    .footer-col a { display: block; color: var(--apex-muted); text-decoration: none; font-size: 13px; margin-bottom: 8px; transition: color .2s; }
+    .footer-col a:hover { color: var(--apex-cyan); }
+    .footer-bottom { border-top: 1px solid var(--apex-border); padding-top: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; font-size: 12px; color: var(--apex-muted); }
+    .footer-bottom a { color: var(--apex-cyan); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<!-- LIVE TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-inner">
+    <span class="ticker-item"><span class="dot-red">●</span> <span class="ticker-label">CRITICAL:</span> CVE-2026-33825 Microsoft Defender Zero-Days — BlueHammer/RedSun ACTIVELY EXPLOITED</span>
+    <span class="ticker-item"><span class="dot-red">●</span> <span class="ticker-label">CISA KEV:</span> CVE-2026-35616 Fortinet FortiClient EMS CVSS 9.8 — Emergency Patch Required</span>
+    <span class="ticker-item"><span class="dot-orange">●</span> <span class="ticker-label">AI ALERT:</span> 73% of Enterprise AI Deployments Vulnerable to Prompt Injection — OWASP LLM #1</span>
+    <span class="ticker-item"><span class="dot-orange">●</span> <span class="ticker-label">RANSOMWARE:</span> Qilin Group Actively Deploying Post Defender Zero-Day Exploitation</span>
+    <span class="ticker-item"><span class="dot-red">●</span> <span class="ticker-label">BREACH:</span> Booking.com Customer Data Compromised — Reservation Details Exposed</span>
+    <span class="ticker-item"><span class="dot-orange">●</span> <span class="ticker-label">PATCH TUESDAY:</span> Microsoft April 2026 — 163 CVEs Including CVE-2026-32201 SharePoint Zero-Day</span>
+    <span class="ticker-item"><span class="dot-red">●</span> <span class="ticker-label">HEALTHCARE:</span> Anubis Ransomware Hits Hospital — Emergency Room on Diversion</span>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="logo-wrap">
+      <div class="logo-badge">SENTINEL APEX</div>
+      <a href="/" class="logo">CYBERDUDE<span>BIVASH</span></a>
+    </div>
+    <nav>
+      <a href="#reports">Reports</a>
+      <a href="https://intel.cyberdudebivash.com">Intel Platform</a>
+      <a href="https://cyberdudebivash.in">AI Hub</a>
+      <a href="https://cyberdudebivash.com">Home</a>
+      <a href="mailto:bivash@cyberdudebivash.com" class="nav-cta">Enterprise Access</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">⚡ AI-Powered Threat Intelligence Platform</div>
+  <h1>
+    <span class="cyan">Enterprise-Grade</span><br>
+    Cybersecurity Intelligence<br>
+    <span class="red">Delivered in Real Time</span>
+  </h1>
+  <p class="hero-desc">
+    SENTINEL APEX monitors global threat feeds 24/7 — delivering zero-day analysis, CVE breakdowns, ransomware tracking, and AI security research that SOC teams can act on immediately.
+  </p>
+  <div class="hero-actions">
+    <a href="#reports" class="btn-primary">Latest Threat Reports</a>
+    <a href="https://intel.cyberdudebivash.com" class="btn-secondary">Access Intel Platform</a>
+  </div>
+</div>
+
+<!-- LIVE STATS -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <span class="stat-num">163</span>
+      <span class="stat-lbl">CVEs This Patch Tuesday</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">3</span>
+      <span class="stat-lbl">Active Zero-Days (Unpatched)</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">9.8</span>
+      <span class="stat-lbl">Highest CVSS Score Active</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">73%</span>
+      <span class="stat-lbl">Enterprise AI Deployments Vulnerable</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">24/7</span>
+      <span class="stat-lbl">SENTINEL APEX Monitoring</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="reports">
+  <main>
+
+    <!-- BREAKING -->
+    <div class="featured-banner">
+      <span class="blink">●</span> BREAKING INTELLIGENCE — APRIL 22, 2026 — UPDATED LIVE
+    </div>
+
+    <div class="section-label">
+      <span class="section-label-text">Featured Reports</span>
+      <div class="section-label-line"></div>
+    </div>
+
+    <!-- POST 1 — FEATURED -->
+    <a href="posts/cve-2026-33825-microsoft-defender-zero-day-bluehammer-redsun.html" class="post-card featured">
+      <div class="post-card-header">
+        <span class="post-badge badge-crit">Critical</span>
+        <span class="post-badge badge-zd">Zero-Day</span>
+        <span class="post-badge badge-new">● Live Exploitation</span>
+        <span class="post-date">22 Apr 2026 | CVE-2026-33825</span>
+      </div>
+      <div class="post-card-body">
+        <div class="post-title">
+          CRITICAL: Three Microsoft Defender Zero-Days Actively Exploited — CVE-2026-33825 (BlueHammer / RedSun / UnDefend)
+        </div>
+        <p class="post-excerpt">
+          All three proof-of-concept exploits weaponized in the wild since April 10, 2026. A TOCTOU race condition in Windows Defender's threat remediation engine enables local privilege escalation to SYSTEM. Two of three variants remain UNPATCHED. Full kill chain, MITRE ATT&CK mapping, IOCs, YARA rules, and SIEM queries inside.
+        </p>
+        <div class="post-meta">
+          <span class="post-cvss">CVSS 8.8 — CRITICAL</span>
+          <span class="post-cve">CVE-2026-33825 / 33826 / 33827</span>
+          <span class="post-read-time">⏱ 15 min read</span>
+          <span class="post-read-more">Read Report →</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- POST 2 -->
+    <a href="posts/cve-2026-35616-fortinet-forticlient-ems-zero-day.html" class="post-card">
+      <div class="post-card-header">
+        <span class="post-badge badge-crit">Critical</span>
+        <span class="post-badge badge-cisa">CISA KEV</span>
+        <span class="post-badge badge-breaking">CVSS 9.8</span>
+        <span class="post-date">22 Apr 2026 | CVE-2026-35616</span>
+      </div>
+      <div class="post-card-body">
+        <div class="post-title">
+          Fortinet FortiClient EMS Zero-Day (CVE-2026-35616, CVSS 9.8) — Pre-Auth API Bypass Actively Exploited, CISA Mandates Emergency Patch
+        </div>
+        <p class="post-excerpt">
+          Unauthenticated remote attackers can execute arbitrary commands with elevated privileges on FortiClient EMS servers (versions 7.4.5–7.4.6). Exploited as a zero-day since March 31, 2026. CISA added to KEV catalog April 6. Full patch (7.4.7) still pending. Internet-exposed EMS instances at critical risk.
+        </p>
+        <div class="post-meta">
+          <span class="post-cvss orange">CVSS 9.8 — CRITICAL</span>
+          <span class="post-cve">CVE-2026-35616</span>
+          <span class="post-read-time">⏱ 12 min read</span>
+          <span class="post-read-more">Read Report →</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- POST 3 -->
+    <a href="posts/ai-llm-prompt-injection-enterprise-attack-surface-2026.html" class="post-card">
+      <div class="post-card-header">
+        <span class="post-badge badge-ai">AI Security</span>
+        <span class="post-badge" style="background:#1a2d00;color:#88ff60;border:1px solid #44aa00;">OWASP LLM #1</span>
+        <span class="post-badge badge-crit">Enterprise Critical</span>
+        <span class="post-date">22 Apr 2026</span>
+      </div>
+      <div class="post-card-body">
+        <div class="post-title">
+          AI Security Crisis 2026: Prompt Injection Remains OWASP #1 — Autonomous AI Agents Dramatically Expand Enterprise Attack Surface
+        </div>
+        <p class="post-excerpt">
+          73% of production enterprise AI deployments vulnerable. 67% of successful attacks go undetected for 72+ hours. The rise of agentic AI with tool access transforms prompt injection from a content moderation problem into a full-stack data breach vector. Real-world government breach: 150GB exfiltrated. Full technical breakdown and enterprise defensive playbook inside.
+        </p>
+        <div class="post-meta">
+          <span class="post-cvss purple">OWASP LLM01:2025</span>
+          <span class="post-read-time">⏱ 14 min read</span>
+          <span class="post-read-more">Read Report →</span>
+        </div>
+      </div>
+    </a>
+
+    <div class="section-label" style="margin-top:16px;">
+      <span class="section-label-text">Threat Landscape — April 2026</span>
+      <div class="section-label-line"></div>
+    </div>
+
+    <!-- RANSOMWARE SUMMARY CARD -->
+    <div class="post-card" style="cursor:default;">
+      <div class="post-card-header">
+        <span class="post-badge badge-breaking">Ransomware Tracking</span>
+        <span class="post-badge badge-crit">April 2026</span>
+        <span class="post-date">22 Apr 2026</span>
+      </div>
+      <div class="post-card-body">
+        <div class="post-title">April 2026 Ransomware Round-Up: Healthcare, Education & Crypto Exchanges Under Attack</div>
+        <p class="post-excerpt">
+          Active groups tracked this month: <strong style="color:#ff8080;">Qilin</strong> (most active, weaponizing Defender zero-day chain), <strong style="color:#ffa060;">Anubis</strong> (healthcare — Signature Healthcare Brockton Hospital, ER on diversion), <strong style="color:#ffa060;">Interlock</strong> (Center for Hearing and Communication), <strong style="color:#ffa060;">ShinyHunters</strong> (Rockstar Games breach). State-sponsored actors also hit Grinex crypto exchange ($13M loss). Spring Lake Park Schools shut down April 13.
+        </p>
+        <div class="post-meta">
+          <span class="post-cvss orange">5 Major Incidents</span>
+          <span class="post-read-time">SENTINEL APEX Tracking Active</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside>
+
+    <!-- GLOBAL THREAT LEVEL -->
+    <div class="sidebar-widget">
+      <div class="widget-title">Global Threat Level</div>
+      <div class="threat-level-display">
+        <div class="tl-label">SENTINEL APEX Assessment</div>
+        <div class="tl-value">HIGH</div>
+        <div class="tl-name">ELEVATED RISK</div>
+        <div class="tl-desc">Multiple zero-days actively exploited. Unpatched vulnerabilities in widely-deployed products. State-sponsored actors active.</div>
+      </div>
+      <p style="font-size:12px;color:var(--apex-muted);text-align:center;">Updated: 22 April 2026, 00:00 UTC</p>
+    </div>
+
+    <!-- ACTIVE ZERO-DAYS FEED -->
+    <div class="sidebar-widget">
+      <div class="widget-title">⚡ Active Zero-Days</div>
+
+      <a href="posts/cve-2026-33825-microsoft-defender-zero-day-bluehammer-redsun.html" class="quick-link">
+        <div class="ql-dot dot-r"></div>
+        <div>
+          <div class="ql-text">Microsoft Defender — TOCTOU Race (BlueHammer/RedSun)</div>
+          <span class="ql-cve">CVE-2026-33825/26/27 | CVSS 8.8 | 2 UNPATCHED</span>
+        </div>
+      </a>
+
+      <a href="posts/cve-2026-35616-fortinet-forticlient-ems-zero-day.html" class="quick-link">
+        <div class="ql-dot dot-r"></div>
+        <div>
+          <div class="ql-text">Fortinet FortiClient EMS — Pre-Auth API Bypass</div>
+          <span class="ql-cve">CVE-2026-35616 | CVSS 9.8 | CISA KEV</span>
+        </div>
+      </a>
+
+      <div class="quick-link" style="cursor:default;">
+        <div class="ql-dot dot-o"></div>
+        <div>
+          <div class="ql-text">Microsoft SharePoint — Spoofing Zero-Day</div>
+          <span class="ql-cve">CVE-2026-32201 | CVSS 6.5 | Patched Apr 14</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- APRIL CVE FEED -->
+    <div class="sidebar-widget">
+      <div class="widget-title">April 2026 Critical CVEs</div>
+
+      <div class="cve-feed-item">
+        <div><span class="cve-id-sm red">CVE-2026-35616</span><span class="cvss-pill cvss-crit">9.8 CRIT</span></div>
+        <div class="cve-desc-sm">Fortinet FortiClient EMS — Pre-Auth RCE</div>
+      </div>
+      <div class="cve-feed-item">
+        <div><span class="cve-id-sm red">CVE-2026-33824</span><span class="cvss-pill cvss-crit">9.8 CRIT</span></div>
+        <div class="cve-desc-sm">Windows IKE Service — Unauthenticated RCE</div>
+      </div>
+      <div class="cve-feed-item">
+        <div><span class="cve-id-sm red">CVE-2026-33825</span><span class="cvss-pill cvss-high">8.8 HIGH</span></div>
+        <div class="cve-desc-sm">Windows Defender — TOCTOU LPE (BlueHammer)</div>
+      </div>
+      <div class="cve-feed-item">
+        <div><span class="cve-id-sm orange">CVE-2026-33826</span><span class="cvss-pill cvss-high">8.5 HIGH</span></div>
+        <div class="cve-desc-sm">Windows Defender — Quarantine DLL Injection</div>
+      </div>
+      <div class="cve-feed-item">
+        <div><span class="cve-id-sm orange">CVE-2026-32201</span><span class="cvss-pill cvss-high">6.5 HIGH</span></div>
+        <div class="cve-desc-sm">SharePoint Server — Spoofing (Exploited)</div>
+      </div>
+    </div>
+
+    <!-- ENTERPRISE CTA -->
+    <div class="cta-widget">
+      <h3>🛰 SENTINEL APEX</h3>
+      <p>Get enterprise threat feeds, pre-disclosure intelligence, custom IOC ingestion, and dedicated SOC advisory services.</p>
+      <a href="mailto:bivash@cyberdudebivash.com?subject=Enterprise%20Threat%20Intelligence" class="cta-w-btn">Enterprise Subscription</a>
+      <a href="https://intel.cyberdudebivash.com" class="cta-w-btn sec">API Access</a>
+      <p style="font-size:11px;color:var(--apex-muted);margin-top:8px;">bivash@cyberdudebivash.com</p>
+    </div>
+
+    <!-- ECOSYSTEM LINKS -->
+    <div class="sidebar-widget">
+      <div class="widget-title">Ecosystem</div>
+      <a href="https://intel.cyberdudebivash.com" class="quick-link">
+        <div class="ql-dot" style="background:var(--apex-cyan);"></div>
+        <div class="ql-text">SENTINEL APEX Intel Platform</div>
+      </a>
+      <a href="https://cyberdudebivash.in" class="quick-link">
+        <div class="ql-dot" style="background:var(--apex-purple);"></div>
+        <div class="ql-text">AI Security Hub</div>
+      </a>
+      <a href="https://cyberdudebivash.com" class="quick-link">
+        <div class="ql-dot" style="background:var(--apex-green);"></div>
+        <div class="ql-text">CyberDudeBivash Official</div>
+      </a>
+      <a href="https://github.com/cyberdudebivash/cyberdudebivash-blog" class="quick-link" style="cursor:pointer;">
+        <div class="ql-dot" style="background:#6b7280;"></div>
+        <div class="ql-text">GitHub Repository</div>
+      </a>
+    </div>
+
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="logo">CYBERDUDE<span>BIVASH</span></a>
+        <p>AI-powered cybersecurity intelligence platform. Real-time threat analysis, zero-day reports, and enterprise SOC advisory — powered by SENTINEL APEX.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Intelligence</h4>
+        <a href="posts/cve-2026-33825-microsoft-defender-zero-day-bluehammer-redsun.html">Defender Zero-Days</a>
+        <a href="posts/cve-2026-35616-fortinet-forticlient-ems-zero-day.html">Fortinet CVE-2026-35616</a>
+        <a href="posts/ai-llm-prompt-injection-enterprise-attack-surface-2026.html">AI/LLM Prompt Injection</a>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a href="https://intel.cyberdudebivash.com">Sentinel APEX</a>
+        <a href="https://cyberdudebivash.in">AI Security Hub</a>
+        <a href="https://cyberdudebivash.com">Official Site</a>
+        <a href="https://github.com/cyberdudebivash/cyberdudebivash-blog">GitHub</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <a href="mailto:bivash@cyberdudebivash.com">bivash@cyberdudebivash.com</a>
+        <a href="mailto:bivash@cyberdudebivash.com?subject=Enterprise%20Subscription">Enterprise Access</a>
+        <a href="mailto:bivash@cyberdudebivash.com?subject=API%20Access%20Request">API Access</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 CyberDudeBivash | SENTINEL APEX Intelligence Platform</span>
+      <span>Threat intelligence for authorized security professionals only</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
