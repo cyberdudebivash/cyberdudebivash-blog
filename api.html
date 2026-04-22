@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SENTINEL APEX API — Threat Intelligence API | CVE Feed, IOC Data, AI Risk Scoring | CyberDudeBivash</title>
+  <meta name="description" content="CYBERDUDEBIVASH SENTINEL APEX Threat Intelligence API. Real-time CVE data, IOC feeds, malware hashes, ransomware tracking, and AI-powered risk scoring. Free tier + Pro at $49/mo + Enterprise.">
+  <meta name="keywords" content="threat intelligence API, CVE API, IOC feed API, cybersecurity API, SIEM integration, vulnerability feed, malware hash API, SOC automation API">
+  <meta name="author" content="CyberDudeBivash — SENTINEL APEX">
+  <meta property="og:title" content="SENTINEL APEX Threat Intelligence API — CVE Feed, IOC Data, AI Risk Scoring">
+  <meta property="og:description" content="Integrate real-time threat intelligence into your SIEM, SOAR, or custom tooling. Free tier + Enterprise plans.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://blog.cyberdudebivash.in/api.html">
+  <meta property="og:image" content="https://blog.cyberdudebivash.in/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@cdbsentinelapex">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.cyberdudebivash.in/api.html">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SENTINEL APEX Threat Intelligence API",
+    "applicationCategory": "SecurityApplication",
+    "operatingSystem": "Any",
+    "description": "Real-time cybersecurity threat intelligence API providing CVE data, IOC feeds, malware tracking, and AI risk scoring.",
+    "url": "https://blog.cyberdudebivash.in/api.html",
+    "offers": [
+      {"@type": "Offer", "name": "Free Tier", "price": "0", "priceCurrency": "USD", "description": "100 requests/day, public CVE data"},
+      {"@type": "Offer", "name": "SOC Pro API", "price": "49", "priceCurrency": "USD", "billingPeriod": "P1M"},
+      {"@type": "Offer", "name": "Enterprise API", "price": "0", "priceCurrency": "USD", "description": "Custom pricing"}
+    ],
+    "publisher": {"@type": "Organization", "name": "CyberDudeBivash Pvt. Ltd.", "url": "https://www.cyberdudebivash.com"}
+  }
+  </script>
+
+  <style>
+    :root {
+      --apex-bg: #07090f; --apex-surface: #0d1117; --apex-border: #1e2432;
+      --apex-cyan: #00ffe0; --apex-red: #ff4444; --apex-yellow: #ffd700;
+      --apex-green: #00ff88; --apex-purple: #a78bfa; --apex-muted: #8892a4; --apex-text: #c9d1d9;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--apex-bg); color: var(--apex-text); font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; line-height: 1.7; }
+    a { color: var(--apex-cyan); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* NAV */
+    nav { background: rgba(13,17,23,0.97); border-bottom: 1px solid var(--apex-border); padding: 0 40px; height: 56px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+    .nav-logo { font-weight: 900; font-size: 16px; letter-spacing: 1px; color: #fff; text-decoration: none; }
+    .nav-logo span { color: var(--apex-cyan); }
+    .nav-links { display: flex; gap: 24px; align-items: center; font-size: 13px; }
+    .nav-links a { color: var(--apex-muted); transition: color .2s; }
+    .nav-links a:hover { color: var(--apex-cyan); text-decoration: none; }
+    .nav-cta { background: var(--apex-cyan); color: #000 !important; padding: 6px 14px; border-radius: 4px; font-weight: 700; font-size: 12px; }
+    @media (max-width: 768px) { .nav-links { gap: 14px; font-size: 12px; } nav { padding: 0 16px; } }
+
+    /* HERO */
+    .api-hero { max-width: 1100px; margin: 0 auto; padding: 80px 24px 60px; text-align: center; }
+    .api-hero-tag { display: inline-flex; align-items: center; gap: 8px; background: rgba(0,255,224,0.08); border: 1px solid rgba(0,255,224,0.2); color: var(--apex-cyan); border-radius: 20px; padding: 6px 16px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 24px; }
+    .api-hero h1 { font-size: clamp(28px, 5vw, 52px); font-weight: 900; line-height: 1.15; color: #fff; margin-bottom: 20px; }
+    .api-hero h1 span { color: var(--apex-cyan); }
+    .api-hero p { font-size: 17px; color: var(--apex-muted); max-width: 640px; margin: 0 auto 32px; line-height: 1.7; }
+    .api-hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { background: var(--apex-cyan); color: #000; font-weight: 800; padding: 14px 28px; border-radius: 6px; font-size: 15px; text-decoration: none; transition: opacity .2s; display: inline-block; }
+    .btn-primary:hover { opacity: .85; text-decoration: none; }
+    .btn-outline { border: 1px solid rgba(0,255,224,0.4); color: var(--apex-cyan); padding: 14px 28px; border-radius: 6px; font-size: 15px; text-decoration: none; transition: all .2s; display: inline-block; }
+    .btn-outline:hover { background: rgba(0,255,224,0.08); text-decoration: none; }
+
+    /* STATS BAR */
+    .api-stats { background: var(--apex-surface); border-top: 1px solid var(--apex-border); border-bottom: 1px solid var(--apex-border); padding: 24px 40px; }
+    .api-stats-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 24px; }
+    .api-stat { text-align: center; }
+    .api-stat-num { font-size: 26px; font-weight: 900; color: var(--apex-cyan); display: block; }
+    .api-stat-lbl { font-size: 11px; color: var(--apex-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+    /* MAIN */
+    .api-wrap { max-width: 1100px; margin: 0 auto; padding: 60px 24px; }
+    .section-title { font-size: 28px; font-weight: 900; color: #fff; margin-bottom: 8px; }
+    .section-sub { font-size: 15px; color: var(--apex-muted); margin-bottom: 40px; }
+
+    /* ENDPOINTS */
+    .endpoints-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; margin-bottom: 60px; }
+    .endpoint-card { background: var(--apex-surface); border: 1px solid var(--apex-border); border-radius: 10px; padding: 24px; transition: border-color .2s; }
+    .endpoint-card:hover { border-color: rgba(0,255,224,0.3); }
+    .endpoint-card.featured { border-color: rgba(0,255,224,0.25); background: linear-gradient(135deg, rgba(0,255,224,0.04), rgba(0,40,30,0.08)); }
+    .ep-method { display: inline-block; background: rgba(0,255,136,0.12); border: 1px solid rgba(0,255,136,0.3); color: var(--apex-green); border-radius: 3px; padding: 2px 8px; font-size: 11px; font-weight: 700; font-family: monospace; margin-bottom: 10px; }
+    .ep-path { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 13px; color: var(--apex-cyan); margin-bottom: 8px; word-break: break-all; }
+    .ep-desc { font-size: 13px; color: var(--apex-muted); line-height: 1.5; margin-bottom: 12px; }
+    .ep-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .ep-tag { background: rgba(255,255,255,0.05); border-radius: 3px; padding: 2px 8px; font-size: 10px; color: #8892a4; }
+    .ep-tier { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; }
+    .ep-tier.free { color: var(--apex-green); }
+    .ep-tier.pro { color: var(--apex-yellow); }
+    .ep-tier.ent { color: var(--apex-purple); }
+
+    /* CODE DEMO */
+    .code-demo { background: #0a0e17; border: 1px solid var(--apex-border); border-radius: 10px; overflow: hidden; margin: 40px 0; }
+    .code-demo-header { background: rgba(0,255,224,0.05); border-bottom: 1px solid var(--apex-border); padding: 12px 20px; display: flex; align-items: center; gap: 12px; }
+    .code-demo-tabs { display: flex; gap: 4px; }
+    .code-tab { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); color: var(--apex-muted); border-radius: 4px; padding: 4px 12px; font-size: 11px; cursor: pointer; transition: all .2s; }
+    .code-tab.active, .code-tab:hover { background: rgba(0,255,224,0.1); border-color: rgba(0,255,224,0.25); color: var(--apex-cyan); }
+    .code-demo-body { padding: 24px; overflow-x: auto; }
+    .code-demo-body pre { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; line-height: 1.7; color: #c9d1d9; }
+    .c-key { color: #79b8ff; }
+    .c-str { color: #9ecbff; }
+    .c-num { color: #f97583; }
+    .c-kw { color: var(--apex-cyan); }
+    .c-comment { color: #6a737d; }
+    .c-func { color: #b392f0; }
+
+    /* PRICING */
+    .api-pricing { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 40px 0; }
+    @media (max-width: 860px) { .api-pricing { grid-template-columns: 1fr; } }
+    .api-plan { background: var(--apex-surface); border: 1px solid var(--apex-border); border-radius: 12px; padding: 28px; transition: all .3s; }
+    .api-plan:hover { transform: translateY(-4px); }
+    .api-plan.popular { border-color: rgba(0,255,224,0.4); background: linear-gradient(160deg, rgba(0,255,224,0.05), rgba(0,40,30,0.08)); }
+    .api-plan.enterprise { border-color: rgba(167,139,250,0.35); }
+    .plan-popular-badge { background: var(--apex-cyan); color: #000; font-size: 10px; font-weight: 800; padding: 2px 10px; border-radius: 10px; text-transform: uppercase; letter-spacing: .8px; display: inline-block; margin-bottom: 12px; }
+    .plan-tier { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--apex-muted); margin-bottom: 8px; }
+    .plan-price { font-size: 40px; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 4px; }
+    .plan-price sup { font-size: 20px; font-weight: 700; vertical-align: top; margin-top: 8px; color: var(--apex-muted); }
+    .plan-price-period { font-size: 14px; color: var(--apex-muted); font-weight: 400; }
+    .plan-desc { font-size: 13px; color: var(--apex-muted); margin: 12px 0 20px; line-height: 1.5; }
+    .plan-limits { background: rgba(0,255,224,0.04); border: 1px solid rgba(0,255,224,0.1); border-radius: 6px; padding: 12px 14px; margin-bottom: 20px; font-size: 12px; }
+    .plan-limit-row { display: flex; justify-content: space-between; padding: 4px 0; color: var(--apex-muted); }
+    .plan-limit-val { color: var(--apex-cyan); font-weight: 700; }
+    .plan-features { list-style: none; padding: 0; margin-bottom: 24px; }
+    .plan-features li { font-size: 13px; color: var(--apex-muted); padding: 6px 0; display: flex; gap: 10px; border-bottom: 1px solid rgba(30,36,50,0.5); }
+    .plan-features li:last-child { border-bottom: none; }
+    .plan-features li::before { content: '✓'; color: var(--apex-cyan); font-weight: 700; flex-shrink: 0; }
+    .plan-features li.locked::before { content: '🔒'; }
+    .plan-features li.locked { color: #4a5568; }
+    .plan-cta { display: block; text-align: center; padding: 12px; border-radius: 6px; font-weight: 700; font-size: 14px; text-decoration: none; transition: all .2s; }
+    .plan-cta.cyan { background: var(--apex-cyan); color: #000; }
+    .plan-cta.cyan:hover { opacity: .85; text-decoration: none; }
+    .plan-cta.outline { border: 1px solid rgba(0,255,224,0.3); color: var(--apex-cyan); }
+    .plan-cta.outline:hover { background: rgba(0,255,224,0.08); text-decoration: none; }
+    .plan-cta.purple { background: rgba(167,139,250,0.15); border: 1px solid rgba(167,139,250,0.4); color: var(--apex-purple); }
+    .plan-cta.purple:hover { background: rgba(167,139,250,0.25); text-decoration: none; }
+
+    /* USE CASES */
+    .use-cases { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin: 40px 0; }
+    .use-case { background: var(--apex-surface); border: 1px solid var(--apex-border); border-radius: 8px; padding: 20px; }
+    .use-case-icon { font-size: 24px; margin-bottom: 10px; }
+    .use-case h3 { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .use-case p { font-size: 12px; color: var(--apex-muted); line-height: 1.6; }
+
+    /* FOOTER */
+    footer { background: var(--apex-surface); border-top: 1px solid var(--apex-border); padding: 40px; margin-top: 60px; text-align: center; }
+    .footer-mini { max-width: 700px; margin: 0 auto; }
+    .footer-mini p { font-size: 13px; color: var(--apex-muted); margin-bottom: 12px; }
+    .footer-mini-links { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; font-size: 12px; }
+    .footer-mini-links a { color: var(--apex-muted); transition: color .2s; }
+    .footer-mini-links a:hover { color: var(--apex-cyan); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">CYBERDUDE<span>BIVASH</span></a>
+  <div class="nav-links">
+    <a href="/">Blog</a>
+    <a href="intelligence.html">Intelligence Hub</a>
+    <a href="products.html">Products</a>
+    <a href="pricing.html" class="nav-cta">SOC Pro $49/mo</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="api-hero">
+  <div class="api-hero-tag">⚡ SENTINEL APEX API v2.0 — Now Live</div>
+  <h1>The <span>Threat Intelligence API</span> built for SOC teams</h1>
+  <p>Real-time CVE data, IOC feeds, malware hashes, ransomware tracking, and AI-powered risk scoring. Integrate in minutes. Trusted by security teams worldwide.</p>
+  <div class="api-hero-btns">
+    <a href="https://intel.cyberdudebivash.com/api/preview/" target="_blank" class="btn-primary">Try Free API Now →</a>
+    <a href="mailto:bivash@cyberdudebivash.com?subject=API%20Access%20Request" class="btn-outline">Enterprise Access</a>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="api-stats">
+  <div class="api-stats-inner">
+    <div class="api-stat"><span class="api-stat-num">1,230+</span><span class="api-stat-lbl">CVEs Tracked</span></div>
+    <div class="api-stat"><span class="api-stat-num">99.7%</span><span class="api-stat-lbl">API Uptime</span></div>
+    <div class="api-stat"><span class="api-stat-num">&lt;120ms</span><span class="api-stat-lbl">Avg Response Time</span></div>
+    <div class="api-stat"><span class="api-stat-num">50K+</span><span class="api-stat-lbl">IOCs Indexed</span></div>
+    <div class="api-stat"><span class="api-stat-num">24/7</span><span class="api-stat-lbl">Live Feed Updates</span></div>
+    <div class="api-stat"><span class="api-stat-num">REST</span><span class="api-stat-lbl">JSON + Webhook</span></div>
+  </div>
+</div>
+
+<div class="api-wrap">
+
+  <!-- ENDPOINTS -->
+  <div style="margin-bottom:12px;">
+    <div class="section-title">API Endpoints</div>
+    <div class="section-sub">Production-ready endpoints for every use case. Base URL: <code style="background:rgba(0,255,224,0.08);padding:2px 8px;border-radius:3px;font-size:13px;color:var(--apex-cyan);">https://intel.cyberdudebivash.com/api/</code></div>
+  </div>
+
+  <div class="endpoints-grid">
+    <div class="endpoint-card featured">
+      <div class="ep-method">GET</div>
+      <div class="ep-path">/api/intel/cve/latest</div>
+      <div class="ep-desc">Latest CVEs with CVSS scores, severity ratings, affected products, CISA KEV status, and exploitability metadata.</div>
+      <div class="ep-tags">
+        <span class="ep-tag">CVSS Score</span><span class="ep-tag">KEV Status</span><span class="ep-tag">NVD Data</span>
+        <span class="ep-tier free">✓ Free Tier</span>
+      </div>
+    </div>
+    <div class="endpoint-card featured">
+      <div class="ep-method">GET</div>
+      <div class="ep-path">/api/intel/cve/{CVE-ID}</div>
+      <div class="ep-desc">Deep dive on a specific CVE: full description, CVSS vector, patch status, PoC availability, active exploitation indicators.</div>
+      <div class="ep-tags">
+        <span class="ep-tag">Full Analysis</span><span class="ep-tag">PoC Status</span>
+        <span class="ep-tier free">✓ Free Tier</span>
+      </div>
+    </div>
+    <div class="endpoint-card">
+      <div class="ep-method">GET</div>
+      <div class="ep-path">/api/intel/ioc/feed</div>
+      <div class="ep-desc">Full IOC feed: malicious IPs, domains, file hashes (MD5/SHA256), URLs, email headers, and registry keys. Updated hourly.</div>
+      <div class="ep-tags">
+        <span class="ep-tag">IPs</span><span class="ep-tag">Domains</span><span class="ep-tag">Hashes</span>
+        <span class="ep-tier pro">⚡ Pro+</span>
+      </div>
+    </div>
+    <div class="endpoint-card">
+      <div class="ep-method">GET</div>
+      <div class="ep-path">/api/intel/ransomware/tracker</div>
+      <div class="ep-desc">Live ransomware group tracker: active campaigns, victim counts, TTPs, ransom demands, and negotiation intelligence.</div>
+      <div class="ep-tags">
+        <span class="ep-tag">Groups</span><span class="ep-tag">Victims</span><span class="ep-tag">TTPs</span>
+        <span class="ep-tier pro">⚡ Pro+</span>
+      </div>
+    </div>
+    <div class="endpoint-card">
+      <div class="ep-method">GET</div>
+      <div class="ep-path">/api/intel/apt/campaigns</div>
+      <div class="ep-desc">Nation-state APT campaign intelligence: Volt Typhoon, APT28/29, Lazarus Group. Current targets, TTPs, indicators.</div>
+      <div class="ep-tags">
+        <span class="ep-tag">APT Groups</span><span class="ep-tag">Campaigns</span>
+        <span class="ep-tier pro">⚡ Pro+</span>
+      </div>
+    </div>
+    <div class="endpoint-card">
+      <div class="ep-method">POST</div>
+      <div class="ep-path">/api/intel/risk/score</div>
+      <div class="ep-desc">AI-powered risk scoring: submit an IP, domain, or file hash for real-time threat score (0-100) with classification reasoning.</div>
+      <div class="ep-tags">
+        <span class="ep-tag">AI Scoring</span><span class="ep-tag">0-100 Score</span>
+        <span class="ep-tier pro">⚡ Pro+</span>
+      </div>
+    </div>
+    <div class="endpoint-card">
+      <div class="ep-method">GET</div>
+      <div class="ep-path">/api/intel/yara/rules</div>
+      <div class="ep-desc">Downloadable YARA rule bundles for latest malware families. Tagged by threat actor, malware family, and confidence level.</div>
+      <div class="ep-tags">
+        <span class="ep-tag">YARA</span><span class="ep-tag">Malware Families</span>
+        <span class="ep-tier ent">🔐 Enterprise</span>
+      </div>
+    </div>
+    <div class="endpoint-card">
+      <div class="ep-method">GET</div>
+      <div class="ep-path">/api/intel/siem/queries</div>
+      <div class="ep-desc">Pre-built detection queries for Splunk SPL, Microsoft Sentinel KQL, Elastic EQL, and QRadar AQL. Ready to deploy.</div>
+      <div class="ep-tags">
+        <span class="ep-tag">Splunk</span><span class="ep-tag">Sentinel</span><span class="ep-tag">Elastic</span>
+        <span class="ep-tier ent">🔐 Enterprise</span>
+      </div>
+    </div>
+    <div class="endpoint-card">
+      <div class="ep-method">POST</div>
+      <div class="ep-path">/api/intel/webhook/alerts</div>
+      <div class="ep-desc">Push-based real-time alerts to your webhook URL for new KEV additions, CVSS 9+ CVEs, and active exploitation signals.</div>
+      <div class="ep-tags">
+        <span class="ep-tag">Webhooks</span><span class="ep-tag">Real-time</span>
+        <span class="ep-tier ent">🔐 Enterprise</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CODE DEMO -->
+  <div class="section-title" style="margin-bottom:8px;">Live Code Examples</div>
+  <div class="section-sub">Integrate in any language. Authentication via API key header.</div>
+
+  <div class="code-demo">
+    <div class="code-demo-header">
+      <div class="code-demo-tabs">
+        <div class="code-tab active">Python</div>
+        <div class="code-tab">cURL</div>
+        <div class="code-tab">JavaScript</div>
+      </div>
+      <span style="margin-left:auto;font-size:11px;color:var(--apex-muted);">GET /api/intel/cve/latest?limit=5&min_cvss=9.0</span>
+    </div>
+    <div class="code-demo-body">
+<pre><span class="c-comment"># SENTINEL APEX API — Python Example</span>
+<span class="c-comment"># pip install requests</span>
+
+<span class="c-kw">import</span> requests
+
+API_KEY = <span class="c-str">"sa_YOUR_API_KEY_HERE"</span>
+BASE_URL = <span class="c-str">"https://intel.cyberdudebivash.com/api/intel"</span>
+
+<span class="c-comment"># Fetch latest critical CVEs (CVSS >= 9.0)</span>
+<span class="c-func">response</span> = requests.<span class="c-func">get</span>(
+    <span class="c-str">f"{BASE_URL}/cve/latest"</span>,
+    headers={<span class="c-str">"X-API-Key"</span>: API_KEY},
+    params={<span class="c-str">"limit"</span>: <span class="c-num">5</span>, <span class="c-str">"min_cvss"</span>: <span class="c-num">9.0</span>, <span class="c-str">"kev_only"</span>: <span class="c-str">"true"</span>}
+)
+
+data = response.<span class="c-func">json</span>()
+
+<span class="c-kw">for</span> cve <span class="c-kw">in</span> data[<span class="c-str">"vulnerabilities"</span>]:
+    <span class="c-func">print</span>(<span class="c-str">f"[{cve['severity']}] {cve['id']} — CVSS {cve['cvss_score']}"</span>)
+    <span class="c-func">print</span>(<span class="c-str">f"  {cve['description'][:80]}..."</span>)
+    <span class="c-func">print</span>(<span class="c-str">f"  KEV: {cve['cisa_kev']} | Exploited: {cve['actively_exploited']}"</span>)
+    <span class="c-func">print</span>()
+
+<span class="c-comment"># OUTPUT:</span>
+<span class="c-comment"># [CRITICAL] CVE-2026-28401 — CVSS 10.0</span>
+<span class="c-comment">#   Ivanti Connect Secure pre-auth RCE via SAML signature bypass...</span>
+<span class="c-comment">#   KEV: True | Exploited: True</span>
+<span class="c-comment">#</span>
+<span class="c-comment"># [CRITICAL] CVE-2026-35616 — CVSS 9.8</span>
+<span class="c-comment">#   Fortinet FortiClient EMS pre-auth RCE via heap overflow...</span>
+<span class="c-comment">#   KEV: True | Exploited: True</span></pre>
+    </div>
+  </div>
+
+  <!-- API PRICING -->
+  <div class="section-title" style="margin:60px 0 8px;">API Pricing Plans</div>
+  <div class="section-sub">Start free. Scale to enterprise. No vendor lock-in.</div>
+
+  <div class="api-pricing">
+    <!-- Free -->
+    <div class="api-plan">
+      <div class="plan-tier">Free Tier</div>
+      <div class="plan-price">$<sup style="font-size:18px;color:#fff;">0</sup></div>
+      <div class="plan-price-period">forever free</div>
+      <p class="plan-desc">For security researchers and individual analysts getting started with threat intel.</p>
+      <div class="plan-limits">
+        <div class="plan-limit-row"><span>Daily Requests</span><span class="plan-limit-val">100 / day</span></div>
+        <div class="plan-limit-row"><span>Rate Limit</span><span class="plan-limit-val">10 req/min</span></div>
+        <div class="plan-limit-row"><span>Data Freshness</span><span class="plan-limit-val">12h delay</span></div>
+      </div>
+      <ul class="plan-features">
+        <li>Latest CVEs (public, 12h delay)</li>
+        <li>CVSS scores + severity</li>
+        <li>CISA KEV status</li>
+        <li>JSON REST API</li>
+        <li class="locked">IOC feed (Pro)</li>
+        <li class="locked">AI risk scoring (Pro)</li>
+        <li class="locked">Ransomware tracker (Pro)</li>
+        <li class="locked">YARA rules (Enterprise)</li>
+      </ul>
+      <a href="https://intel.cyberdudebivash.com/api/preview/" target="_blank" class="plan-cta outline">Get Free API Key →</a>
+    </div>
+
+    <!-- Pro -->
+    <div class="api-plan popular">
+      <div class="plan-popular-badge">Most Popular</div>
+      <div class="plan-tier" style="color:var(--apex-yellow);">SOC Professional</div>
+      <div class="plan-price"><sup>$</sup>49</div>
+      <div class="plan-price-period">/ month — or $470/yr (save 20%)</div>
+      <p class="plan-desc">For SOC analysts, threat hunters, and security teams who need real-time intelligence.</p>
+      <div class="plan-limits">
+        <div class="plan-limit-row"><span>Daily Requests</span><span class="plan-limit-val">10,000 / day</span></div>
+        <div class="plan-limit-row"><span>Rate Limit</span><span class="plan-limit-val">100 req/min</span></div>
+        <div class="plan-limit-row"><span>Data Freshness</span><span class="plan-limit-val">Real-time</span></div>
+      </div>
+      <ul class="plan-features">
+        <li>Everything in Free</li>
+        <li>Real-time CVE feed (0-delay)</li>
+        <li>Full IOC feed (IPs/domains/hashes)</li>
+        <li>AI risk scoring (POST /risk/score)</li>
+        <li>Ransomware group tracker</li>
+        <li>APT campaign intelligence</li>
+        <li>48H pre-disclosure CVE reports</li>
+        <li class="locked">YARA rules API (Enterprise)</li>
+        <li class="locked">SIEM query bundles (Enterprise)</li>
+      </ul>
+      <a href="mailto:bivash@cyberdudebivash.com?subject=SOC%20Pro%20API%20Access" class="plan-cta cyan">Get SOC Pro API →</a>
+    </div>
+
+    <!-- Enterprise -->
+    <div class="api-plan enterprise">
+      <div class="plan-tier" style="color:var(--apex-purple);">Enterprise</div>
+      <div class="plan-price" style="font-size:28px;margin-top:10px;">Custom</div>
+      <div class="plan-price-period">pricing — volume discounts available</div>
+      <p class="plan-desc">For MSSPs, enterprise SOC teams, and organizations that need full-stack threat intelligence infrastructure.</p>
+      <div class="plan-limits">
+        <div class="plan-limit-row"><span>Daily Requests</span><span class="plan-limit-val">Unlimited</span></div>
+        <div class="plan-limit-row"><span>Rate Limit</span><span class="plan-limit-val">Dedicated</span></div>
+        <div class="plan-limit-row"><span>SLA</span><span class="plan-limit-val">99.9% + support</span></div>
+      </div>
+      <ul class="plan-features">
+        <li>Everything in SOC Pro</li>
+        <li>YARA rules API (all malware families)</li>
+        <li>SIEM query bundles (Splunk/Sentinel/Elastic)</li>
+        <li>Webhook-based real-time alerts</li>
+        <li>White-label intelligence feeds</li>
+        <li>Dedicated threat analyst support</li>
+        <li>Custom IOC tagging + reporting</li>
+        <li>MSSP multi-tenant access</li>
+        <li>On-premise data export (STIX/TAXII)</li>
+      </ul>
+      <a href="mailto:bivash@cyberdudebivash.com?subject=Enterprise%20API%20Inquiry" class="plan-cta purple">Contact for Enterprise →</a>
+    </div>
+  </div>
+
+  <!-- USE CASES -->
+  <div class="section-title" style="margin-bottom:8px;">Built for every security workflow</div>
+  <div class="section-sub">Integrates with your existing security stack in under 30 minutes.</div>
+
+  <div class="use-cases">
+    <div class="use-case">
+      <div class="use-case-icon">📊</div>
+      <h3>SIEM Enrichment</h3>
+      <p>Enrich Splunk, Sentinel, or Elastic alerts with CVE context, IOC matches, and threat actor attribution automatically.</p>
+    </div>
+    <div class="use-case">
+      <div class="use-case-icon">🤖</div>
+      <h3>SOAR Automation</h3>
+      <p>Trigger automated playbooks when new CISA KEV entries match your asset inventory. Zero manual triage.</p>
+    </div>
+    <div class="use-case">
+      <div class="use-case-icon">🎯</div>
+      <h3>Threat Hunting</h3>
+      <p>Query IOC feeds and APT TTPs to proactively hunt for threats in your environment before alerts fire.</p>
+    </div>
+    <div class="use-case">
+      <div class="use-case-icon">🛡️</div>
+      <h3>Vulnerability Prioritization</h3>
+      <p>Correlate your asset inventory with our CVE feed to prioritize patches by real exploitation likelihood — not just CVSS score.</p>
+    </div>
+    <div class="use-case">
+      <div class="use-case-icon">📋</div>
+      <h3>Executive Reporting</h3>
+      <p>Auto-generate weekly threat briefings with AI risk scores, trend analysis, and sector-specific threat summaries.</p>
+    </div>
+    <div class="use-case">
+      <div class="use-case-icon">🏢</div>
+      <h3>MSSP Multi-Tenant</h3>
+      <p>Manage threat intelligence feeds for multiple client environments with our Enterprise multi-tenant API architecture.</p>
+    </div>
+  </div>
+
+  <!-- FINAL CTA -->
+  <div style="background:linear-gradient(135deg,rgba(0,255,224,.06),rgba(0,60,50,.08));border:1px solid rgba(0,255,224,.2);border-radius:12px;padding:40px;margin:60px 0;text-align:center;">
+    <div style="font-size:32px;margin-bottom:12px;">⚡</div>
+    <h2 style="font-size:26px;font-weight:900;color:#fff;margin-bottom:12px;">Start integrating threat intelligence today</h2>
+    <p style="color:var(--apex-muted);font-size:15px;max-width:500px;margin:0 auto 24px;">Free tier requires no credit card. SOC Pro includes full API access + blog subscriptions. Enterprise gets dedicated support.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="https://intel.cyberdudebivash.com/api/preview/" target="_blank" class="btn-primary">Try Free API →</a>
+      <a href="mailto:bivash@cyberdudebivash.com?subject=API%20Access%20Request" class="btn-outline">Get Pro Access →</a>
+    </div>
+    <p style="font-size:12px;color:var(--apex-muted);margin-top:16px;">Questions? Email <a href="mailto:bivash@cyberdudebivash.com" style="color:var(--apex-cyan);">bivash@cyberdudebivash.com</a> or DM <a href="https://x.com/cdbsentinelapex" target="_blank" style="color:var(--apex-cyan);">@cdbsentinelapex</a></p>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-mini">
+    <a href="/" style="font-weight:900;font-size:16px;color:#fff;letter-spacing:1px;">CYBERDUDE<span style="color:var(--apex-cyan)">BIVASH</span></a>
+    <p style="margin-top:12px;">&copy; 2026 CyberDudeBivash Pvt. Ltd. &mdash; Global AI-Powered Cybersecurity Intelligence Platform</p>
+    <div class="footer-mini-links">
+      <a href="/">Blog</a>
+      <a href="intelligence.html">Intelligence Hub</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="products.html">Products</a>
+      <a href="archive.html">Archive</a>
+      <a href="https://intel.cyberdudebivash.com" target="_blank">Sentinel APEX</a>
+      <a href="https://www.cyberdudebivash.com" target="_blank">Official Portal</a>
+      <a href="mailto:bivash@cyberdudebivash.com">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script src="/monetization.js" defer></script>
+</body>
+</html>
