@@ -1,0 +1,237 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Threat Intelligence Newsletter Archive — CyberDudeBivash</title>
+<meta name="description" content="Weekly cybersecurity threat intelligence digest. CVE alerts, IOC packs, detection rules, and threat actor tracking — every Tuesday.">
+<meta property="og:title" content="Threat Intelligence Newsletter Archive">
+<meta property="og:description" content="Weekly CVE alerts, IOC packs, and detection rules from CyberDudeBivash.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://blog.cyberdudebivash.in/newsletter.html">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"NewsMediaOrganization","name":"CyberDudeBivash Threat Intelligence","url":"https://blog.cyberdudebivash.in","description":"Weekly threat intelligence digest covering CVEs, IOCs, and detection engineering"}
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0a0e1a;color:#e0e0e0;font-family:'Segoe UI',system-ui,sans-serif;line-height:1.6;}
+nav{background:#0d1117;border-bottom:1px solid #1a2535;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
+nav a{color:#00ff88;text-decoration:none;font-weight:700;font-size:1.1em;}
+nav .nav-links a{color:#aaa;font-size:0.9em;margin-left:20px;text-decoration:none;}
+nav .nav-links a:hover{color:#00ff88;}
+.hero{background:linear-gradient(135deg,#0d1117,#111827);border-bottom:1px solid #1a2535;padding:60px 24px;text-align:center;}
+.hero h1{font-size:2.5em;color:#00ff88;margin-bottom:12px;}
+.hero p{color:#aaa;font-size:1.1em;max-width:600px;margin:0 auto 32px;}
+.badge{background:#1a2535;color:#00ff88;font-size:0.8em;padding:4px 12px;border-radius:20px;display:inline-block;margin-bottom:16px;border:1px solid #00ff88;}
+.subscribe-box{background:#0a0e1a;border:1px solid #00ff88;border-radius:12px;padding:28px;max-width:500px;margin:0 auto;}
+.subscribe-box h3{color:#00ff88;margin-bottom:8px;}
+.subscribe-box p{color:#aaa;font-size:0.9em;margin-bottom:16px;}
+.sub-form{display:flex;gap:8px;flex-wrap:wrap;}
+.sub-form input{flex:1;min-width:200px;padding:12px 16px;background:#0d1117;border:1px solid #1a2535;border-radius:8px;color:#e0e0e0;font-size:1em;}
+.sub-form button{background:#00ff88;color:#000;border:none;padding:12px 24px;border-radius:8px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.sub-form button:hover{background:#00cc6a;}
+.stats-bar{background:#0d1117;border-bottom:1px solid #1a2535;padding:16px 24px;}
+.stats-bar .inner{max-width:1100px;margin:0 auto;display:flex;gap:32px;flex-wrap:wrap;justify-content:center;}
+.stat{text-align:center;}
+.stat .num{color:#00ff88;font-size:1.4em;font-weight:700;}
+.stat .lbl{color:#666;font-size:0.8em;text-transform:uppercase;letter-spacing:1px;}
+.container{max-width:1100px;margin:0 auto;padding:40px 24px;}
+.section-title{color:#00ff88;font-size:1.3em;font-weight:700;margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid #1a2535;}
+.issues-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;margin-bottom:48px;}
+.issue-card{background:#0d1117;border:1px solid #1a2535;border-radius:10px;padding:20px;transition:border-color .2s;}
+.issue-card:hover{border-color:#00ff88;}
+.issue-card .issue-num{color:#00ff88;font-size:0.8em;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.issue-card h3{color:#e0e0e0;font-size:1em;margin-bottom:8px;line-height:1.4;}
+.issue-card .meta{color:#666;font-size:0.82em;margin-bottom:12px;}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+.tag{background:#0a0e1a;border:1px solid #1a2535;color:#aaa;font-size:0.75em;padding:2px 8px;border-radius:4px;}
+.tag.red{border-color:#ff4444;color:#ff4444;}
+.tag.yellow{border-color:#ffd700;color:#ffd700;}
+.tag.green{border-color:#00ff88;color:#00ff88;}
+.issue-link{color:#00ff88;font-size:0.88em;text-decoration:none;font-weight:600;}
+.issue-link:hover{text-decoration:underline;}
+.coming-soon{background:linear-gradient(135deg,#0d1117,#111827);border:1px dashed #1a2535;border-radius:10px;padding:32px;text-align:center;color:#555;grid-column:1/-1;}
+.topics-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:48px;}
+.topic-chip{background:#0d1117;border:1px solid #1a2535;border-radius:8px;padding:12px 16px;text-align:center;cursor:pointer;transition:all .2s;}
+.topic-chip:hover{border-color:#00ff88;color:#00ff88;}
+.topic-chip .icon{font-size:1.5em;margin-bottom:4px;}
+.topic-chip .name{font-size:0.85em;color:#aaa;}
+footer{background:#0d1117;border-top:1px solid #1a2535;padding:32px 24px;text-align:center;color:#555;font-size:0.85em;}
+footer a{color:#00ff88;text-decoration:none;}
+@media(max-width:600px){.hero h1{font-size:1.8em;}.stats-bar .inner{gap:16px;}}
+</style>
+<script src="/security-engine.js"></script>
+</head>
+<body>
+
+<nav>
+  <a href="/">🛡 CyberDudeBivash</a>
+  <div class="nav-links">
+    <a href="/intelligence.html">Intel Feed</a>
+    <a href="/products.html">Products</a>
+    <a href="/api.html">API</a>
+    <a href="/enterprise.html">Enterprise</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="badge">📬 Weekly Since 2025</div>
+  <h1>Threat Intelligence Digest</h1>
+  <p>CVE alerts, IOC packs, detection rules, and threat actor tracking — curated every Tuesday for security teams.</p>
+
+  <div class="subscribe-box">
+    <h3>🎯 Get the Intel. Stay Ahead.</h3>
+    <p>Join 2,000+ SOC analysts, red teamers, and CISOs. Free every week.</p>
+    <form class="sub-form" data-email-capture data-segment="general" data-source="newsletter_page"
+          action="https://formsubmit.co/bivash@cyberdudebivash.com" method="POST">
+      <input type="hidden" name="_subject" value="Newsletter Subscription">
+      <input type="hidden" name="_next" value="https://blog.cyberdudebivash.in/newsletter.html?subscribed=1">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="email" name="email" placeholder="your@email.com" required>
+      <button type="submit">Subscribe Free →</button>
+    </form>
+  </div>
+</div>
+
+<div class="stats-bar">
+  <div class="inner">
+    <div class="stat"><div class="num">2,000+</div><div class="lbl">Subscribers</div></div>
+    <div class="stat"><div class="num" id="issue-count">40+</div><div class="lbl">Issues Published</div></div>
+    <div class="stat"><div class="num">47%</div><div class="lbl">Open Rate</div></div>
+    <div class="stat"><div class="num">Every Tue</div><div class="lbl">Delivery</div></div>
+    <div class="stat"><div class="num">100% Free</div><div class="lbl">Always</div></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <p class="section-title">📰 Recent Issues</p>
+
+  <div class="issues-grid">
+
+    <div class="issue-card">
+      <div class="issue-num">Issue #41 · Apr 15, 2026</div>
+      <h3>🔥 CVE-2026-33824 + CVE-2026-33825: Microsoft's Worst Patch Tuesday of 2026</h3>
+      <div class="meta">🕐 8 min read · 4,200 readers</div>
+      <div class="tags">
+        <span class="tag red">CRITICAL</span>
+        <span class="tag">Microsoft</span>
+        <span class="tag">Windows</span>
+        <span class="tag">Patch Tuesday</span>
+      </div>
+      <a href="/posts/cve-2026-33824-windows-ike-service-rce-critical.html" class="issue-link">Read Issue →</a>
+    </div>
+
+    <div class="issue-card">
+      <div class="issue-num">Issue #40 · Apr 8, 2026</div>
+      <h3>🛡 Volt Typhoon's ICS/SCADA Campaign: What 500 Utilities Need to Know Now</h3>
+      <div class="meta">🕐 12 min read · 5,100 readers</div>
+      <div class="tags">
+        <span class="tag red">APT</span>
+        <span class="tag">ICS/SCADA</span>
+        <span class="tag">China</span>
+        <span class="tag">Critical Infra</span>
+      </div>
+      <a href="/posts/volt-typhoon-2026-ics-scada-critical-infrastructure-attack.html" class="issue-link">Read Issue →</a>
+    </div>
+
+    <div class="issue-card">
+      <div class="issue-num">Issue #39 · Apr 1, 2026</div>
+      <h3>💣 April Ransomware Roundup: Qilin, Akira, LockBit — 340+ New Victims</h3>
+      <div class="meta">🕐 10 min read · 4,800 readers</div>
+      <div class="tags">
+        <span class="tag red">RANSOMWARE</span>
+        <span class="tag">Qilin</span>
+        <span class="tag">Akira</span>
+        <span class="tag">LockBit</span>
+      </div>
+      <a href="/posts/april-2026-ransomware-roundup-qilin-akira-lockbit-blackbasta.html" class="issue-link">Read Issue →</a>
+    </div>
+
+    <div class="issue-card">
+      <div class="issue-num">Issue #38 · Mar 25, 2026</div>
+      <h3>⚡ CVE-2026-5281: Chrome Use-After-Free — Zero Day DAWN in Millions of Browsers</h3>
+      <div class="meta">🕐 7 min read · 3,900 readers</div>
+      <div class="tags">
+        <span class="tag red">ZERO-DAY</span>
+        <span class="tag">Chrome</span>
+        <span class="tag">WebGPU</span>
+        <span class="tag">Browser</span>
+      </div>
+      <a href="/posts/cve-2026-5281-chrome-zero-day-dawn-webgpu-use-after-free.html" class="issue-link">Read Issue →</a>
+    </div>
+
+    <div class="issue-card">
+      <div class="issue-num">Issue #37 · Mar 18, 2026</div>
+      <h3>🤖 AI-Powered Phishing: How LLMs Are Turbocharging Enterprise Attack Surface</h3>
+      <div class="meta">🕐 9 min read · 4,400 readers</div>
+      <div class="tags">
+        <span class="tag yellow">HIGH</span>
+        <span class="tag">AI/LLM</span>
+        <span class="tag">Phishing</span>
+        <span class="tag">Enterprise</span>
+      </div>
+      <a href="/posts/ai-llm-prompt-injection-enterprise-attack-surface-2026.html" class="issue-link">Read Issue →</a>
+    </div>
+
+    <div class="issue-card">
+      <div class="issue-num">Issue #36 · Mar 11, 2026</div>
+      <h3>🏭 FortiNet CVE-2026-35616: Zero Day Hitting 80,000 Enterprise Networks</h3>
+      <div class="meta">🕐 8 min read · 4,100 readers</div>
+      <div class="tags">
+        <span class="tag red">CRITICAL</span>
+        <span class="tag">FortiNet</span>
+        <span class="tag">VPN</span>
+        <span class="tag">Enterprise</span>
+      </div>
+      <a href="/posts/cve-2026-35616-fortinet-forticlient-ems-zero-day.html" class="issue-link">Read Issue →</a>
+    </div>
+
+    <div class="coming-soon">
+      <div style="font-size:2em;margin-bottom:8px;">📬</div>
+      <p style="color:#555;font-size:0.95em;">Issues #1–35 available to <strong style="color:#00ff88;">Pro subscribers</strong></p>
+      <a href="/products.html" style="display:inline-block;margin-top:12px;background:#00ff88;color:#000;padding:8px 20px;border-radius:6px;text-decoration:none;font-weight:700;font-size:0.9em;">Unlock Archive →</a>
+    </div>
+
+  </div>
+
+  <p class="section-title">📂 Topics Covered</p>
+  <div class="topics-grid">
+    <div class="topic-chip"><div class="icon">🔴</div><div class="name">CVE Alerts</div></div>
+    <div class="topic-chip"><div class="icon">🎯</div><div class="name">IOC Packs</div></div>
+    <div class="topic-chip"><div class="icon">🛡</div><div class="name">Sigma Rules</div></div>
+    <div class="topic-chip"><div class="icon">🦠</div><div class="name">YARA Rules</div></div>
+    <div class="topic-chip"><div class="icon">🏴‍☠️</div><div class="name">Threat Actors</div></div>
+    <div class="topic-chip"><div class="icon">💣</div><div class="name">Ransomware</div></div>
+    <div class="topic-chip"><div class="icon">🏭</div><div class="name">ICS/SCADA</div></div>
+    <div class="topic-chip"><div class="icon">☁</div><div class="name">Cloud Security</div></div>
+    <div class="topic-chip"><div class="icon">🤖</div><div class="name">AI/ML Threats</div></div>
+    <div class="topic-chip"><div class="icon">📊</div><div class="name">Threat Reports</div></div>
+    <div class="topic-chip"><div class="icon">🔍</div><div class="name">Hunt Queries</div></div>
+    <div class="topic-chip"><div class="icon">⚡</div><div class="name">Zero Days</div></div>
+  </div>
+
+  <div data-newsletter-widget></div>
+
+</div>
+
+<footer>
+  <p><a href="/">CyberDudeBivash Threat Intelligence</a> · <a href="/newsletter.html">Newsletter</a> · <a href="/products.html">Products</a> · <a href="/api.html">API</a></p>
+  <p style="margin-top:8px;">© 2026 CyberDudeBivash · <a href="mailto:bivash@cyberdudebivash.com">bivash@cyberdudebivash.com</a></p>
+</footer>
+
+<script src="analytics-engine.js" defer></script>
+<script src="email-engine.js" defer></script>
+<script src="monetization.js" defer></script>
+<script>
+// Show subscribed confirmation
+if(new URLSearchParams(window.location.search).get('subscribed')==='1'){
+  var bar=document.createElement('div');
+  bar.style.cssText='position:fixed;top:0;left:0;width:100%;background:#00ff88;color:#000;padding:12px;text-align:center;font-weight:700;z-index:9999;';
+  bar.textContent='✅ You\'re subscribed! Watch for your first issue this Tuesday.';
+  document.body.prepend(bar);
+  setTimeout(function(){bar.remove();},6000);
+}
+</script>
+</body>
+</html>

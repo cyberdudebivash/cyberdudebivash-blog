@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Order Confirmed — CyberDudeBivash Threat Intelligence</title>
+<meta name="description" content="Your purchase is confirmed. Access your threat intelligence products.">
+<link rel="canonical" href="https://blog.cyberdudebivash.in/order-confirmation.html">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0a0e1a;color:#e0e0e0;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.confirm-card{background:#0d1117;border:1px solid #00ff88;border-radius:16px;padding:48px 40px;max-width:600px;width:100%;text-align:center;box-shadow:0 0 60px rgba(0,255,136,0.1);}
+.checkmark{width:80px;height:80px;background:linear-gradient(135deg,#00ff88,#00cc6a);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:2.5em;animation:pop 0.5s ease;}
+@keyframes pop{0%{transform:scale(0);}60%{transform:scale(1.15);}100%{transform:scale(1);}}
+h1{color:#00ff88;font-size:2em;margin-bottom:8px;}
+.subtitle{color:#aaa;margin-bottom:32px;font-size:1.05em;}
+.order-details{background:#0a0e1a;border:1px solid #1a2535;border-radius:10px;padding:20px;margin-bottom:28px;text-align:left;}
+.order-details h3{color:#00ff88;margin-bottom:12px;font-size:0.9em;text-transform:uppercase;letter-spacing:1px;}
+.detail-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a2535;font-size:0.95em;}
+.detail-row:last-child{border-bottom:none;}
+.detail-row .label{color:#888;}
+.detail-row .value{color:#e0e0e0;font-weight:600;}
+.steps{text-align:left;margin-bottom:32px;}
+.steps h3{color:#00ff88;margin-bottom:16px;font-size:0.9em;text-transform:uppercase;letter-spacing:1px;}
+.step{display:flex;align-items:flex-start;gap:14px;padding:12px 0;border-bottom:1px solid #1a2535;}
+.step:last-child{border-bottom:none;}
+.step-num{width:28px;height:28px;background:#00ff88;color:#000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85em;flex-shrink:0;}
+.step-text strong{color:#e0e0e0;display:block;margin-bottom:2px;}
+.step-text span{color:#888;font-size:0.88em;}
+.actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;}
+.btn{padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;font-size:0.95em;cursor:pointer;border:none;display:inline-block;}
+.btn-primary{background:#00ff88;color:#000;}
+.btn-secondary{background:transparent;color:#00ff88;border:1px solid #00ff88;}
+.support-note{color:#666;font-size:0.85em;line-height:1.6;}
+.support-note a{color:#00ff88;}
+.confetti{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+canvas{position:absolute;top:0;left:0;}
+.confirm-card{position:relative;z-index:1;}
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas" class="confetti"></canvas>
+
+<div class="confirm-card">
+  <div class="checkmark">✓</div>
+  <h1>Order Confirmed!</h1>
+  <p class="subtitle" id="confirm-subtitle">Your threat intelligence is ready. Check your email for download links.</p>
+
+  <div class="order-details">
+    <h3>📦 Order Details</h3>
+    <div class="detail-row"><span class="label">Product</span><span class="value" id="order-product">—</span></div>
+    <div class="detail-row"><span class="label">Order ID</span><span class="value" id="order-id">—</span></div>
+    <div class="detail-row"><span class="label">Amount</span><span class="value" id="order-amount">—</span></div>
+    <div class="detail-row"><span class="label">Status</span><span class="value" style="color:#00ff88;">✓ Paid</span></div>
+  </div>
+
+  <div class="steps">
+    <h3>🚀 What Happens Next</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text">
+        <strong>Check Your Email</strong>
+        <span>Download link sent to your email within 5 minutes (check spam if not received)</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text">
+        <strong>Download Your Intelligence Pack</strong>
+        <span>ZIP file contains all rules, IOCs, and documentation</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-text">
+        <strong>Join the Intel Community</strong>
+        <span>Get weekly updates and threat alerts in your inbox</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-text">
+        <strong>Explore the API (Optional)</strong>
+        <span>Automate your threat intel workflow with our REST API</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <a href="/intelligence.html" class="btn btn-primary">🛰 Browse More Intel</a>
+    <a href="/products.html" class="btn btn-secondary">📦 View All Products</a>
+    <a href="/api.html" class="btn btn-secondary">⚡ Explore API</a>
+  </div>
+
+  <p class="support-note">
+    Questions? Email <a href="mailto:bivash@cyberdudebivash.com">bivash@cyberdudebivash.com</a><br>
+    or visit <a href="/enterprise.html">Enterprise Support →</a>
+  </p>
+</div>
+
+<script>
+// ── Confetti animation
+(function(){
+  var canvas = document.getElementById('confetti-canvas');
+  var ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  var particles = [];
+  var colors = ['#00ff88','#00cc6a','#ffffff','#4ade80','#86efac'];
+  for(var i=0;i<120;i++){
+    particles.push({
+      x: Math.random()*canvas.width,
+      y: Math.random()*canvas.height - canvas.height,
+      w: Math.random()*10+4,
+      h: Math.random()*6+3,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      vx: Math.random()*2-1,
+      vy: Math.random()*3+2,
+      rot: Math.random()*360,
+      vrot: Math.random()*3-1.5
+    });
+  }
+  var frame=0;
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(function(p){
+      ctx.save();
+      ctx.translate(p.x,p.y);
+      ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillStyle=p.color;
+      ctx.globalAlpha=0.85;
+      ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      ctx.restore();
+      p.x+=p.vx; p.y+=p.vy; p.rot+=p.vrot;
+      if(p.y>canvas.height){ p.y=-20; p.x=Math.random()*canvas.width; }
+    });
+    frame++;
+    if(frame<200) requestAnimationFrame(draw);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  draw();
+})();
+
+// ── Populate order details from URL params + localStorage
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var sessionId = params.get('session_id') || ('order_' + Date.now());
+  var productId  = params.get('product') || localStorage.getItem('cdb_last_product') || 'unknown';
+
+  // Product catalog (mirror of payment-engine.js)
+  var catalog = {
+    'ioc-megapack':         { name: 'IOC Megapack 2026',               price: 49  },
+    'sigma-ruleset':        { name: 'Sigma Detection Ruleset',         price: 79  },
+    'yara-bundle':          { name: 'YARA Rule Bundle',                price: 69  },
+    'threat-report-q2':     { name: 'Q2 2026 Threat Landscape Report', price: 99  },
+    'cve-intel-pack':       { name: 'CVE Intelligence Pack',           price: 129 },
+    'stix-feed':            { name: 'STIX 2.1 Threat Feed',            price: 149 },
+    'soc-starter':          { name: 'SOC Starter Bundle',              price: 149 },
+    'enterprise-detection': { name: 'Enterprise Detection Bundle',     price: 249 },
+    'complete-arsenal':     { name: 'Complete Arsenal',                price: 499 },
+    'api-starter':          { name: 'API Starter Plan',                price: 49  },
+    'api-pro':              { name: 'API Pro Plan',                    price: 199 },
+    'api-enterprise':       { name: 'API Enterprise Plan',             price: 499 }
+  };
+
+  var product = catalog[productId] || { name: 'Threat Intelligence Product', price: null };
+
+  document.getElementById('order-product').textContent = product.name;
+  document.getElementById('order-id').textContent = sessionId.length > 30 ? sessionId.substr(0,20)+'...' : sessionId;
+  document.getElementById('order-amount').textContent = product.price ? '$' + product.price + ' USD' : '—';
+
+  if(product.name !== 'Threat Intelligence Product'){
+    document.getElementById('confirm-subtitle').textContent =
+      'Your ' + product.name + ' is ready. Check your email for download links.';
+  }
+})();
+</script>
+
+<script src="analytics-engine.js" defer></script>
+</body>
+</html>

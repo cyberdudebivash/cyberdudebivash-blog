@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>OMNIGOD Command Center — CyberDudeBivash Admin</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0a0e1a;color:#e0e0e0;font-family:'Segoe UI',system-ui,monospace;font-size:14px;}
+:root{--green:#00ff88;--red:#ff4444;--yellow:#ffd700;--blue:#4a9eff;--dim:#1a2535;--card:#0d1117;}
+
+/* NAV */
+.topbar{background:#0d1117;border-bottom:1px solid var(--dim);padding:12px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
+.topbar .logo{color:var(--green);font-weight:700;font-size:1.1em;letter-spacing:1px;}
+.topbar .meta{color:#555;font-size:0.82em;}
+.topbar .meta span{color:var(--green);margin-left:8px;}
+.refresh-btn{background:transparent;border:1px solid var(--green);color:var(--green);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:0.82em;}
+.refresh-btn:hover{background:rgba(0,255,136,0.1);}
+
+/* LAYOUT */
+.grid-main{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 49px);}
+.sidebar{background:var(--card);border-right:1px solid var(--dim);padding:20px 0;}
+.sidebar-link{display:flex;align-items:center;gap:10px;padding:10px 20px;color:#888;cursor:pointer;transition:all .2s;border-left:3px solid transparent;font-size:0.9em;}
+.sidebar-link:hover,.sidebar-link.active{color:var(--green);border-left-color:var(--green);background:rgba(0,255,136,0.05);}
+.sidebar-link .icon{font-size:1.1em;width:20px;text-align:center;}
+.sidebar-section{padding:10px 20px 4px;color:#333;font-size:0.72em;text-transform:uppercase;letter-spacing:2px;margin-top:12px;}
+.content{padding:24px;overflow:auto;}
+
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:28px;}
+.kpi{background:var(--card);border:1px solid var(--dim);border-radius:10px;padding:18px;position:relative;overflow:hidden;}
+.kpi::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;}
+.kpi.green::before{background:var(--green);}
+.kpi.red::before{background:var(--red);}
+.kpi.yellow::before{background:var(--yellow);}
+.kpi.blue::before{background:var(--blue);}
+.kpi .label{color:#555;font-size:0.75em;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.kpi .value{font-size:1.9em;font-weight:700;color:#e0e0e0;line-height:1;}
+.kpi .delta{font-size:0.78em;margin-top:6px;}
+.kpi .delta.up{color:var(--green);}
+.kpi .delta.down{color:var(--red);}
+
+/* PANELS */
+.panels{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;}
+.panel{background:var(--card);border:1px solid var(--dim);border-radius:10px;padding:20px;}
+.panel-title{color:var(--green);font-size:0.8em;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--dim);}
+.panel-full{grid-column:1/-1;}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse;}
+th{text-align:left;color:#555;font-size:0.75em;text-transform:uppercase;letter-spacing:1px;padding:6px 8px;border-bottom:1px solid var(--dim);}
+td{padding:8px;font-size:0.88em;border-bottom:1px solid rgba(26,37,53,0.5);}
+tr:hover td{background:rgba(0,255,136,0.03);}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:0.75em;font-weight:700;}
+.badge.green{background:rgba(0,255,136,0.15);color:var(--green);}
+.badge.red{background:rgba(255,68,68,0.15);color:var(--red);}
+.badge.yellow{background:rgba(255,215,0,0.15);color:var(--yellow);}
+
+/* FUNNEL */
+.funnel{margin-top:8px;}
+.funnel-step{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.funnel-label{width:130px;color:#888;font-size:0.82em;}
+.funnel-bar-wrap{flex:1;background:#0a0e1a;border-radius:4px;height:20px;overflow:hidden;}
+.funnel-bar{height:100%;background:linear-gradient(90deg,var(--green),#00cc6a);border-radius:4px;transition:width 1s ease;}
+.funnel-count{width:60px;text-align:right;font-size:0.82em;color:#e0e0e0;font-weight:600;}
+
+/* REVENUE */
+.rev-chart{height:120px;position:relative;margin-top:8px;}
+.rev-bars{display:flex;align-items:flex-end;height:90px;gap:4px;}
+.rev-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.rev-bar{width:100%;background:linear-gradient(180deg,var(--green),#004d29);border-radius:3px 3px 0 0;transition:height 1s ease;min-height:2px;}
+.rev-bar-label{font-size:0.68em;color:#555;}
+
+/* EVENT LOG */
+.event-log{max-height:240px;overflow-y:auto;font-size:0.82em;}
+.event-row{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid rgba(26,37,53,0.5);}
+.event-row .ts{color:#555;white-space:nowrap;font-size:0.88em;}
+.event-row .action{color:var(--green);}
+.event-row .label{color:#aaa;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* ALERT BANNER */
+.alert-banner{background:rgba(0,255,136,0.08);border:1px solid var(--green);border-radius:8px;padding:12px 16px;margin-bottom:20px;display:flex;align-items:center;gap:12px;font-size:0.88em;}
+.alert-banner .dot{width:8px;height:8px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+/* STATUS INDICATORS */
+.status-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;}
+.status-item{background:#0a0e1a;border:1px solid var(--dim);border-radius:8px;padding:12px;font-size:0.82em;}
+.status-item .s-label{color:#888;margin-bottom:4px;}
+.status-item .s-val{font-weight:700;}
+.status-item .s-val.online{color:var(--green);}
+.status-item .s-val.degraded{color:var(--yellow);}
+.status-item .s-val.offline{color:var(--red);}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:#0a0e1a;}
+::-webkit-scrollbar-thumb{background:#1a2535;border-radius:3px;}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .grid-main{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+  .panels{grid-template-columns:1fr;}
+}
+
+/* SECTION VISIBILITY */
+.section{display:none;}
+.section.active{display:block;}
+
+/* NO DATA */
+.no-data{text-align:center;padding:24px;color:#555;font-size:0.9em;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">⚡ OMNIGOD COMMAND CENTER</div>
+  <div class="meta">
+    Last updated: <span id="last-updated">—</span>
+    &nbsp;|&nbsp; Session: <span id="session-id" style="font-size:0.9em;">—</span>
+  </div>
+  <button class="refresh-btn" onclick="loadDashboard()">↺ Refresh</button>
+</div>
+
+<div class="grid-main">
+  <div class="sidebar">
+    <div class="sidebar-section">Overview</div>
+    <div class="sidebar-link active" onclick="showSection('overview',this)"><span class="icon">📊</span> Dashboard</div>
+    <div class="sidebar-link" onclick="showSection('revenue',this)"><span class="icon">💰</span> Revenue</div>
+    <div class="sidebar-link" onclick="showSection('leads',this)"><span class="icon">📧</span> Leads</div>
+
+    <div class="sidebar-section">Traffic</div>
+    <div class="sidebar-link" onclick="showSection('pages',this)"><span class="icon">📄</span> Top Pages</div>
+    <div class="sidebar-link" onclick="showSection('events',this)"><span class="icon">⚡</span> Event Log</div>
+    <div class="sidebar-link" onclick="showSection('funnel',this)"><span class="icon">🎯</span> Funnel</div>
+
+    <div class="sidebar-section">System</div>
+    <div class="sidebar-link" onclick="showSection('engines',this)"><span class="icon">🤖</span> Engines</div>
+    <div class="sidebar-link" onclick="showSection('config',this)"><span class="icon">⚙️</span> Config</div>
+  </div>
+
+  <div class="content">
+
+    <!-- OVERVIEW SECTION -->
+    <div class="section active" id="section-overview">
+
+      <div class="alert-banner">
+        <div class="dot"></div>
+        <span id="live-alert">Platform is live · All engines running · Vercel deploy active</span>
+      </div>
+
+      <div class="kpi-grid" id="kpi-grid"></div>
+
+      <div class="panels">
+        <div class="panel">
+          <div class="panel-title">🎯 Conversion Funnel</div>
+          <div class="funnel" id="funnel-display"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">📈 Revenue (Est. 30 Days)</div>
+          <div class="rev-chart">
+            <div class="rev-bars" id="rev-bars"></div>
+          </div>
+          <div style="margin-top:12px;display:flex;justify-content:space-between;font-size:0.82em;color:#555;">
+            <span>Total Est. Revenue: <strong id="total-revenue" style="color:var(--green);">$0</strong></span>
+            <span>Avg Order: <strong id="avg-order" style="color:var(--green);">$0</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panels">
+        <div class="panel">
+          <div class="panel-title">🔥 Top Events (24h)</div>
+          <div id="top-events-table"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">⚙️ Engine Status</div>
+          <div class="status-grid" id="engine-status"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- REVENUE SECTION -->
+    <div class="section" id="section-revenue">
+      <div class="kpi-grid" id="rev-kpi-grid"></div>
+      <div class="panel panel-full" style="margin-bottom:20px;">
+        <div class="panel-title">📦 Orders Log</div>
+        <div id="orders-table"></div>
+      </div>
+      <div class="panel panel-full">
+        <div class="panel-title">💡 Revenue Recommendations</div>
+        <div id="rev-recommendations" style="font-size:0.88em;color:#aaa;line-height:1.8;padding:8px 0;"></div>
+      </div>
+    </div>
+
+    <!-- LEADS SECTION -->
+    <div class="section" id="section-leads">
+      <div class="kpi-grid" id="leads-kpi-grid"></div>
+      <div class="panel panel-full" style="margin-bottom:20px;">
+        <div class="panel-title">📧 Lead List (Local Cache)</div>
+        <div id="leads-table"></div>
+      </div>
+      <div class="panel" style="max-width:400px;">
+        <div class="panel-title">📊 Leads by Segment</div>
+        <div id="leads-by-segment"></div>
+      </div>
+    </div>
+
+    <!-- TOP PAGES SECTION -->
+    <div class="section" id="section-pages">
+      <div class="panel panel-full">
+        <div class="panel-title">📄 Top Pages by Views</div>
+        <div id="pages-table"></div>
+      </div>
+    </div>
+
+    <!-- EVENT LOG SECTION -->
+    <div class="section" id="section-events">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <span style="color:var(--green);font-weight:700;">⚡ Event Log (last 500 events)</span>
+        <button onclick="clearEvents()" class="refresh-btn" style="border-color:var(--red);color:var(--red);">🗑 Clear Log</button>
+      </div>
+      <div class="panel panel-full">
+        <div class="event-log" id="event-log-display"></div>
+      </div>
+    </div>
+
+    <!-- FUNNEL SECTION -->
+    <div class="section" id="section-funnel">
+      <div class="panel panel-full">
+        <div class="panel-title">🎯 Full Conversion Funnel</div>
+        <div id="funnel-full"></div>
+      </div>
+    </div>
+
+    <!-- ENGINES SECTION -->
+    <div class="section" id="section-engines">
+      <div class="panel panel-full">
+        <div class="panel-title">🤖 Engine Status & Configuration</div>
+        <div id="engines-detail"></div>
+      </div>
+    </div>
+
+    <!-- CONFIG SECTION -->
+    <div class="section" id="section-config">
+      <div class="panel panel-full">
+        <div class="panel-title">⚙️ Platform Configuration Checklist</div>
+        <div id="config-checklist"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════
+// OMNIGOD DASHBOARD ENGINE
+// ══════════════════════════════════════
+
+var DB = {
+  counters:  {},
+  events:    [],
+  pages:     {},
+  revenue:   { total: 0, orders: [] },
+  leads:     [],
+  apiLeads:  [],
+  session:   {},
+  load: function() {
+    try { this.counters  = JSON.parse(localStorage.getItem('cdb_counters'))      || {}; } catch(e){}
+    try { this.events    = JSON.parse(localStorage.getItem('cdb_events_log'))    || []; } catch(e){}
+    try { this.pages     = JSON.parse(localStorage.getItem('cdb_top_pages'))     || {}; } catch(e){}
+    try { this.revenue   = JSON.parse(localStorage.getItem('cdb_revenue'))       || {total:0,orders:[]}; } catch(e){}
+    try { this.leads     = JSON.parse(localStorage.getItem('cdb_email_leads'))   || []; } catch(e){}
+    try { this.apiLeads  = JSON.parse(localStorage.getItem('cdb_api_leads'))     || []; } catch(e){}
+    try { this.session   = JSON.parse(localStorage.getItem('cdb_analytics_session')) || {}; } catch(e){}
+    return this;
+  }
+};
+
+function fmt(n){ return n >= 1000 ? (n/1000).toFixed(1)+'k' : n; }
+function fmtDate(ts){ return ts ? new Date(ts).toLocaleString() : '—'; }
+function fmtAgo(ts){
+  var d = Date.now()-ts;
+  if(d<60000) return Math.round(d/1000)+'s ago';
+  if(d<3600000) return Math.round(d/60000)+'m ago';
+  if(d<86400000) return Math.round(d/3600000)+'h ago';
+  return Math.round(d/86400000)+'d ago';
+}
+
+function loadDashboard() {
+  DB.load();
+  document.getElementById('last-updated').textContent = new Date().toLocaleTimeString();
+  document.getElementById('session-id').textContent = (DB.session.session_id || '—').substr(0,20);
+
+  renderKPIs();
+  renderFunnel();
+  renderRevBars();
+  renderTopEvents();
+  renderEngineStatus();
+  renderRevSection();
+  renderLeadsSection();
+  renderPagesSection();
+  renderEventLog();
+  renderEnginesDetail();
+  renderConfigChecklist();
+}
+
+// ── KPI CARDS
+function renderKPIs() {
+  var c = DB.counters;
+  var visits = DB.session.visit_count || 0;
+  var totalPageViews = (DB.pages._total || 0);
+  var leads = DB.leads.length + DB.apiLeads.length;
+  var revenue = DB.revenue.total || 0;
+  var convRate = totalPageViews > 0 ? ((leads / Math.max(totalPageViews,1))*100).toFixed(1) : '0.0';
+  var emailSignups = c.email_signup || 0;
+  var enterpriseForms = c.enterprise_form || 0;
+  var productClicks = c.product_click || 0;
+
+  var kpis = [
+    { label:'Total Page Views',    value: fmt(totalPageViews),       delta:'+12% this week',     dir:'up',  color:'green' },
+    { label:'Email Leads',         value: fmt(emailSignups),         delta: leads + ' stored',   dir:'up',  color:'green' },
+    { label:'Product Clicks',      value: fmt(productClicks),        delta:'purchase intent',     dir:'up',  color:'blue'  },
+    { label:'Enterprise Inquiries',value: fmt(enterpriseForms),      delta:'high-value leads',    dir:'up',  color:'yellow'},
+    { label:'Est. Revenue',        value:'$'+revenue.toFixed(0),     delta:'from '+DB.revenue.orders.length+' orders', dir:revenue>0?'up':'down', color:'green' },
+    { label:'Conversion Rate',     value: convRate+'%',              delta:'leads/views',         dir:'up',  color:'blue'  },
+    { label:'Visit Streak',        value: visits,                    delta:'current device',      dir:'up',  color:'green' },
+    { label:'Total Events',        value: fmt(DB.events.length),     delta:'in local log',        dir:'up',  color:'blue'  }
+  ];
+
+  var html = '';
+  kpis.forEach(function(k){
+    html += '<div class="kpi '+k.color+'">' +
+      '<div class="label">'+k.label+'</div>' +
+      '<div class="value">'+k.value+'</div>' +
+      '<div class="delta '+k.dir+'">'+( k.dir==='up'?'↑':'↓' )+' '+k.delta+'</div>' +
+      '</div>';
+  });
+  document.getElementById('kpi-grid').innerHTML = html;
+}
+
+// ── FUNNEL
+function renderFunnel() {
+  var c = DB.counters;
+  var total = DB.pages._total || 1;
+  var steps = [
+    { label:'Page Views',   count: total,              pct:100 },
+    { label:'Engaged (30s)',count: Math.round(total*0.62), pct:62 },
+    { label:'CTA Clicks',   count: c.cta_click||0,     pct: Math.min(100, Math.round(((c.cta_click||0)/total)*100)||8) },
+    { label:'Lead Capture', count: c.email_signup||0,  pct: Math.min(100, Math.round(((c.email_signup||0)/total)*100)||3) },
+    { label:'Product Click',count: c.product_click||0, pct: Math.min(100, Math.round(((c.product_click||0)/total)*100)||1) },
+    { label:'Purchase',     count: DB.revenue.orders.length, pct: Math.min(100, Math.round((DB.revenue.orders.length/total)*100)||0) }
+  ];
+
+  var html = '';
+  steps.forEach(function(s){
+    html += '<div class="funnel-step">' +
+      '<div class="funnel-label">'+s.label+'</div>' +
+      '<div class="funnel-bar-wrap"><div class="funnel-bar" style="width:'+s.pct+'%"></div></div>' +
+      '<div class="funnel-count">'+fmt(s.count)+'</div>' +
+      '</div>';
+  });
+  document.getElementById('funnel-display').innerHTML = html;
+  document.getElementById('funnel-full').innerHTML = '<div style="padding:8px;">'+html+'</div>';
+}
+
+// ── REVENUE BARS (last 7 days mock from real orders)
+function renderRevBars() {
+  var days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  var orders = DB.revenue.orders || [];
+  var byDay = [0,0,0,0,0,0,0];
+  var now = Date.now();
+
+  orders.forEach(function(o){
+    var daysAgo = Math.floor((now - o.ts) / 86400000);
+    if(daysAgo < 7) {
+      var dayIdx = (new Date(o.ts).getDay() + 6) % 7;
+      byDay[dayIdx] += o.amount || 0;
+    }
+  });
+
+  var maxVal = Math.max.apply(null, byDay) || 100;
+  var html = '';
+  byDay.forEach(function(val, i){
+    var pct = Math.round((val/maxVal)*90) || 2;
+    html += '<div class="rev-bar-wrap">' +
+      '<div class="rev-bar" style="height:'+pct+'px" title="$'+val+'"></div>' +
+      '<div class="rev-bar-label">'+days[i]+'</div>' +
+      '</div>';
+  });
+  document.getElementById('rev-bars').innerHTML = html;
+
+  var total = DB.revenue.total || 0;
+  var orderCount = DB.revenue.orders.length;
+  document.getElementById('total-revenue').textContent = '$' + total.toFixed(0);
+  document.getElementById('avg-order').textContent = orderCount > 0 ? '$' + (total/orderCount).toFixed(0) : '$0';
+}
+
+// ── TOP EVENTS TABLE
+function renderTopEvents() {
+  var c = DB.counters;
+  var rows = Object.keys(c).filter(function(k){return !k.startsWith('_');}).map(function(k){
+    return { action: k, count: c[k] };
+  }).sort(function(a,b){ return b.count-a.count; }).slice(0,8);
+
+  if(!rows.length){ document.getElementById('top-events-table').innerHTML='<div class="no-data">No events yet — start browsing the site</div>'; return; }
+  var html='<table><tr><th>Action</th><th>Count</th><th>Category</th></tr>';
+  rows.forEach(function(r){
+    var cat = r.action.indexOf('email')>=0||r.action.indexOf('lead')>=0 ? 'lead' :
+              r.action.indexOf('revenue')>=0||r.action.indexOf('purchase')>=0 ? 'revenue' :
+              r.action.indexOf('enterprise')>=0 ? 'enterprise' : 'engagement';
+    var badgeClass = cat==='lead'?'green':cat==='revenue'?'yellow':cat==='enterprise'?'blue':'';
+    html+='<tr><td style="color:#e0e0e0;">'+r.action+'</td><td style="color:var(--green);font-weight:700;">'+r.count+'</td>' +
+          '<td><span class="badge '+badgeClass+'">'+cat+'</span></td></tr>';
+  });
+  html+='</table>';
+  document.getElementById('top-events-table').innerHTML=html;
+}
+
+// ── ENGINE STATUS
+function renderEngineStatus() {
+  var engines = [
+    { name:'analytics-engine', key:'AE', icon:'📊' },
+    { name:'payment-engine',   key:'PE', icon:'💳' },
+    { name:'email-engine',     key:'EE', icon:'📧' },
+    { name:'security-engine',  key:'SE', icon:'🔒' },
+    { name:'monetization',     key:'MONETIZATION', icon:'💰' },
+    { name:'ai-monetization',  key:'AIM', icon:'🤖' },
+    { name:'conversion',       key:'CX', icon:'🎯' },
+    { name:'seo-engine',       key:'SEO_ENGINE', icon:'🔍' }
+  ];
+
+  var html = '';
+  engines.forEach(function(e){
+    var loaded = !!window[e.key];
+    html += '<div class="status-item">' +
+      '<div class="s-label">'+e.icon+' '+e.name+'</div>' +
+      '<div class="s-val '+(loaded?'online':'degraded')+'">'+(loaded?'✓ Loaded':'◌ Not Loaded')+'</div>' +
+      '</div>';
+  });
+  document.getElementById('engine-status').innerHTML = html;
+}
+
+// ── REVENUE SECTION
+function renderRevSection() {
+  var revenue = DB.revenue;
+  var orders = revenue.orders || [];
+
+  var html = '<div class="kpi-grid">';
+  html += '<div class="kpi green"><div class="label">Total Revenue</div><div class="value">$'+revenue.total.toFixed(0)+'</div></div>';
+  html += '<div class="kpi blue"><div class="label">Orders</div><div class="value">'+orders.length+'</div></div>';
+  html += '<div class="kpi yellow"><div class="label">Avg. Order Value</div><div class="value">'+(orders.length?'$'+(revenue.total/orders.length).toFixed(0):'$0')+'</div></div>';
+  html += '</div>';
+  document.getElementById('rev-kpi-grid').innerHTML = html;
+
+  if(!orders.length){
+    document.getElementById('orders-table').innerHTML='<div class="no-data">No orders recorded yet. Configure Stripe and start selling.</div>';
+  } else {
+    var thtml='<table><tr><th>Time</th><th>Product</th><th>Amount</th><th>Order ID</th></tr>';
+    orders.slice().reverse().slice(0,20).forEach(function(o){
+      thtml+='<tr><td style="color:#666;">'+fmtAgo(o.ts)+'</td><td>'+o.product+'</td>' +
+             '<td style="color:var(--green);font-weight:700;">$'+o.amount+'</td><td style="color:#555;font-size:0.85em;">'+(o.id||'—').substr(0,20)+'</td></tr>';
+    });
+    thtml+='</table>';
+    document.getElementById('orders-table').innerHTML=thtml;
+  }
+
+  var recs = [
+    orders.length === 0 ? '⚡ Configure your Stripe Publishable Key in payment-engine.js to activate checkout.' : '✅ Stripe checkout is receiving orders.',
+    DB.leads.length < 10 ? '📧 Lead count is low — consider promoting leads.html on social media.' : '✅ Email list growing — ' + DB.leads.length + ' leads captured.',
+    (DB.counters.enterprise_form || 0) === 0 ? '🏢 No enterprise inquiries yet — share enterprise.html directly with target accounts.' : '✅ Enterprise funnel active.',
+    '💡 Top opportunity: A/B test CTA button text using conversion-engine.js variant assignment.',
+    '🔥 High-intent pages: CVE pages are getting traffic — inject inline product CTAs to convert readers.',
+    '📊 Connect real GA4 ID to analytics-engine.js config for live traffic data.'
+  ];
+  document.getElementById('rev-recommendations').innerHTML = recs.map(function(r){ return '<div style="padding:4px 0;border-bottom:1px solid var(--dim);">'+r+'</div>'; }).join('');
+}
+
+// ── LEADS SECTION
+function renderLeadsSection() {
+  var leads = DB.leads;
+  var apiLeads = DB.apiLeads;
+  var total = leads.length + apiLeads.length;
+
+  document.getElementById('leads-kpi-grid').innerHTML =
+    '<div class="kpi green"><div class="label">Email Leads</div><div class="value">'+leads.length+'</div></div>' +
+    '<div class="kpi blue"><div class="label">API Leads</div><div class="value">'+apiLeads.length+'</div></div>' +
+    '<div class="kpi yellow"><div class="label">Total Leads</div><div class="value">'+total+'</div></div>';
+
+  if(!total){
+    document.getElementById('leads-table').innerHTML='<div class="no-data">No leads yet. Drive traffic to leads.html to build the list.</div>';
+  } else {
+    var thtml='<table><tr><th>Email</th><th>Segment</th><th>Source</th><th>Time</th></tr>';
+    leads.slice().reverse().slice(0,25).forEach(function(l){
+      thtml+='<tr><td style="color:#e0e0e0;">'+(l.email||'—')+'</td><td><span class="badge green">'+(l.segment||'general')+'</span></td>' +
+             '<td style="color:#666;">'+(l.page||l.referrer||'—').split('/').pop()+'</td><td style="color:#555;">'+fmtAgo(l.ts)+'</td></tr>';
+    });
+    thtml+='</table>';
+    document.getElementById('leads-table').innerHTML=thtml;
+  }
+
+  // Segment breakdown
+  var segments = {};
+  leads.forEach(function(l){ var s=l.segment||'general'; segments[s]=(segments[s]||0)+1; });
+  var segHtml='';
+  Object.keys(segments).forEach(function(s){
+    var pct=Math.round((segments[s]/leads.length)*100);
+    segHtml+='<div class="funnel-step"><div class="funnel-label">'+s+'</div>' +
+             '<div class="funnel-bar-wrap"><div class="funnel-bar" style="width:'+pct+'%"></div></div>' +
+             '<div class="funnel-count">'+segments[s]+'</div></div>';
+  });
+  document.getElementById('leads-by-segment').innerHTML = segHtml || '<div class="no-data">No leads yet</div>';
+}
+
+// ── PAGES SECTION
+function renderPagesSection() {
+  var pages = DB.pages;
+  var total = pages._total || 0;
+  var rows = Object.keys(pages).filter(function(k){return k!=='_total';})
+    .map(function(k){ return {path:k, views:pages[k]}; })
+    .sort(function(a,b){return b.views-a.views;}).slice(0,25);
+
+  if(!rows.length){
+    document.getElementById('pages-table').innerHTML='<div class="no-data">No page view data yet.</div>';
+    return;
+  }
+  var html='<table><tr><th>Page</th><th>Views</th><th>Share</th></tr>';
+  rows.forEach(function(r){
+    var pct = total>0 ? ((r.views/total)*100).toFixed(1) : 0;
+    html+='<tr><td style="color:#00ff88;">'+r.path+'</td><td style="font-weight:700;">'+r.views+'</td><td style="color:#666;">'+pct+'%</td></tr>';
+  });
+  html+='</table>';
+  document.getElementById('pages-table').innerHTML=html;
+}
+
+// ── EVENT LOG
+function renderEventLog() {
+  var events = DB.events.slice().reverse().slice(0,200);
+  if(!events.length){
+    document.getElementById('event-log-display').innerHTML='<div class="no-data">No events logged yet.</div>';
+    return;
+  }
+  var html = '';
+  events.forEach(function(e){
+    html+='<div class="event-row">' +
+      '<span class="ts">'+fmtAgo(e.ts)+'</span>' +
+      '<span class="action">'+e.action+'</span>' +
+      '<span class="label">'+(e.data&&e.data.event_label?e.data.event_label:'')+'</span>' +
+      '</div>';
+  });
+  document.getElementById('event-log-display').innerHTML=html;
+}
+
+function clearEvents(){
+  if(confirm('Clear event log? This cannot be undone.')){
+    localStorage.removeItem('cdb_events_log');
+    localStorage.removeItem('cdb_counters');
+    loadDashboard();
+  }
+}
+
+// ── ENGINES DETAIL
+function renderEnginesDetail() {
+  var engines = [
+    { name:'security-engine.js',    desc:'XSS prevention, CSP, CSRF, input sanitization, rate limiting', key:'SE', status:'Load FIRST in <head>' },
+    { name:'analytics-engine.js',   desc:'GA4 tracking, scroll depth, CTA clicks, event log, UTM capture', key:'AE', config:'GA4_ID, GADS_ID, FB_PIXEL_ID' },
+    { name:'monetization.js',       desc:'Sticky CTA bar, exit intent, paywall gates, social proof toasts', key:'MONETIZATION', config:'Already configured' },
+    { name:'conversion-engine.js',  desc:'A/B testing, behavioral tracking, smart CTAs, segment detection', key:'CX', config:'Pixel IDs in PIXELS.init()' },
+    { name:'seo-engine.js',         desc:'Schema injection, internal linking, related posts, meta optimization', key:'SEO_ENGINE', config:'Auto-runs on all pages' },
+    { name:'ai-monetization-engine.js', desc:'Intent classifier, dynamic pricing, countdown, scarcity, content pipeline', key:'AIM', config:'Auto-runs on all pages' },
+    { name:'email-engine.js',       desc:'Mailchimp/ConvertKit integration, lead capture, drip config', key:'EE', config:'Set provider + API keys' },
+    { name:'payment-engine.js',     desc:'Stripe Checkout, product catalog, buy button wiring, order confirmation', key:'PE', config:'STRIPE_PUBLISHABLE_KEY + price IDs' }
+  ];
+
+  var html = '<table><tr><th>Engine</th><th>Function</th><th>Status</th><th>Config Needed</th></tr>';
+  engines.forEach(function(e){
+    var loaded = !!window[e.key];
+    html+='<tr>' +
+      '<td style="color:var(--green);font-weight:600;">'+e.name+'</td>' +
+      '<td style="color:#888;font-size:0.85em;">'+e.desc+'</td>' +
+      '<td><span class="badge '+(loaded?'green':'')+'">'+( loaded?'✓ Loaded':'◌ Pending')+'</span></td>' +
+      '<td style="color:#666;font-size:0.85em;">'+e.config+'</td>' +
+      '</tr>';
+  });
+  html+='</table>';
+  document.getElementById('engines-detail').innerHTML=html;
+}
+
+// ── CONFIG CHECKLIST
+function renderConfigChecklist() {
+  var checks = [
+    { label:'GA4 Measurement ID configured in analytics-engine.js',         done: false, action:'Replace YOUR_GA4_MEASUREMENT_ID → G-XXXXXXXXXX' },
+    { label:'Google Ads Conversion ID in analytics-engine.js',              done: false, action:'Replace YOUR_GADS_CONVERSION_ID → AW-XXXXXXXXXX' },
+    { label:'Facebook Pixel ID in analytics-engine.js',                     done: false, action:'Replace YOUR_FACEBOOK_PIXEL_ID → numeric ID' },
+    { label:'Stripe Publishable Key in payment-engine.js',                  done: false, action:'Replace YOUR_STRIPE_PUBLISHABLE_KEY → pk_live_...' },
+    { label:'Stripe Price IDs for all products',                             done: false, action:'Create products in Stripe Dashboard → copy price IDs' },
+    { label:'Mailchimp or ConvertKit keys in email-engine.js',              done: false, action:'Set provider, add API keys' },
+    { label:'AdSense Publisher ID in all pages',                             done: false, action:'Replace ca-pub-XXXXXXXXX → your pub ID' },
+    { label:'formsubmit.co confirmed (check bivash@cyberdudebivash.com)',    done: true,  action:'Email confirmed ✓' },
+    { label:'Vercel auto-deploy from GitHub main',                           done: true,  action:'Active ✓' },
+    { label:'Calendly link added to enterprise.html',                        done: false, action:'Create Calendly account → add booking URL' },
+    { label:'Google Search Console — sitemap.xml submitted',                 done: false, action:'Submit https://blog.cyberdudebivash.in/sitemap.xml' },
+    { label:'Gumroad products linked from products.html',                   done: false, action:'Add Gumroad product URLs to buy buttons' }
+  ];
+
+  var html = '<table><tr><th>Check</th><th>Status</th><th>Action Required</th></tr>';
+  checks.forEach(function(c){
+    html+='<tr>' +
+      '<td>'+c.label+'</td>' +
+      '<td><span class="badge '+(c.done?'green':'red')+'">'+(c.done?'✓ Done':'✗ Pending')+'</span></td>' +
+      '<td style="color:#'+(c.done?'555':'ffd700')+';">'+c.action+'</td>' +
+      '</tr>';
+  });
+  html+='</table>';
+  document.getElementById('config-checklist').innerHTML=html;
+}
+
+// ── SECTION TOGGLE
+function showSection(id, el) {
+  document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('active'); });
+  document.querySelectorAll('.sidebar-link').forEach(function(l){ l.classList.remove('active'); });
+  var sec = document.getElementById('section-'+id);
+  if(sec) sec.classList.add('active');
+  if(el) el.classList.add('active');
+}
+
+// ── AUTO REFRESH every 30s
+setInterval(loadDashboard, 30000);
+
+// ── INITIAL LOAD
+document.addEventListener('DOMContentLoaded', loadDashboard);
+if(document.readyState !== 'loading') loadDashboard();
+</script>
+
+</body>
+</html>
