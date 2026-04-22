@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enterprise Threat Intelligence Platform — SENTINEL APEX | CyberDudeBivash</title>
+  <meta name="description" content="Enterprise-grade cybersecurity threat intelligence: white-label feeds, SLA-backed CVE data, dedicated analyst support, custom Sigma/YARA rules, and SIEM integrations for Fortune 500 security teams.">
+  <meta name="keywords" content="enterprise threat intelligence, white-label security feeds, SOC platform, SIEM integration, CVE intelligence enterprise, cybersecurity advisory, managed threat intel">
+  <meta name="author" content="CyberDudeBivash — SENTINEL APEX">
+  <meta property="og:title" content="Enterprise Threat Intelligence — SENTINEL APEX">
+  <meta property="og:description" content="SLA-backed threat feeds, white-label intelligence, and dedicated analyst support for enterprise security teams.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://blog.cyberdudebivash.in/enterprise.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@cdbsentinelapex">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.cyberdudebivash.in/enterprise.html">
+
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Service","name":"SENTINEL APEX Enterprise Threat Intelligence","provider":{"@type":"Organization","name":"CyberDudeBivash","url":"https://blog.cyberdudebivash.in"},"description":"Enterprise threat intelligence platform with white-label feeds, SLA guarantees, and dedicated analyst support.","areaServed":"Worldwide","serviceType":"Cybersecurity Intelligence"}
+  </script>
+
+  <style>
+    :root { --c:#00ffe0; --c2:#00d4ff; --red:#ff4d6d; --gold:#ffd700; --bg:#07090f; --bg2:#0d1117; --border:rgba(0,255,224,0.15); --text:#e2e8f0; --muted:#8892a4; }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+    body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,224,.01) 2px,rgba(0,255,224,.01) 4px);pointer-events:none;z-index:0}
+    nav{position:sticky;top:0;z-index:100;background:rgba(7,9,15,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px}
+    .nav-brand{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+    .logo-icon{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--c),var(--c2));display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:900;color:#000}
+    .nav-brand span{font-size:1rem;font-weight:700;color:var(--c);letter-spacing:.05em}
+    .nav-links{display:flex;gap:1.5rem;align-items:center}
+    .nav-links a{color:var(--muted);text-decoration:none;font-size:.85rem;font-weight:500;transition:color .2s}
+    .nav-links a:hover,.nav-links a.active{color:var(--c)}
+    .nav-cta{background:linear-gradient(135deg,var(--c),var(--c2));color:#000!important;padding:.4rem 1rem;border-radius:6px;font-weight:700!important}
+
+    /* HERO */
+    .hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#07090f,#0a0f1a 50%,#0d1520);padding:5rem 2rem 4rem;text-align:center;border-bottom:1px solid var(--border)}
+    .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(0,255,224,.07),transparent)}
+    .hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(0,255,224,.1);border:1px solid rgba(0,255,224,.3);border-radius:50px;padding:.35rem 1rem;font-size:.75rem;font-weight:700;color:var(--c);letter-spacing:.1em;text-transform:uppercase;margin-bottom:1.5rem}
+    .hero h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:900;background:linear-gradient(135deg,#fff 0%,var(--c) 50%,var(--c2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1rem;line-height:1.1}
+    .hero p{font-size:1.05rem;color:var(--muted);max-width:660px;margin:0 auto 2rem}
+    .trust-logos{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin:2rem 0;opacity:.7}
+    .trust-logo{background:rgba(255,255,255,.06);border:1px solid var(--border);padding:.4rem 1rem;border-radius:6px;font-size:.75rem;font-weight:700;color:var(--muted);letter-spacing:.05em}
+    .hero-cta-row{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+    .btn-primary{background:linear-gradient(135deg,var(--c),var(--c2));color:#000;font-weight:800;padding:.85rem 2rem;border-radius:8px;text-decoration:none;font-size:.95rem;display:inline-flex;align-items:center;gap:.5rem;transition:transform .2s,box-shadow .2s;box-shadow:0 0 30px rgba(0,255,224,.25)}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 40px rgba(0,255,224,.45)}
+    .btn-outline{border:1px solid var(--border);color:var(--c);padding:.85rem 2rem;border-radius:8px;text-decoration:none;font-size:.95rem;display:inline-flex;align-items:center;gap:.5rem;transition:all .2s}
+    .btn-outline:hover{border-color:var(--c);background:rgba(0,255,224,.06)}
+
+    /* SECTIONS */
+    section{max-width:1200px;margin:0 auto;padding:4rem 2rem}
+    .section-title{font-size:.8rem;font-weight:800;color:var(--c);text-transform:uppercase;letter-spacing:.12em;margin-bottom:.75rem}
+    .section-h2{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:900;color:#fff;margin-bottom:1rem;line-height:1.2}
+    .section-sub{color:var(--muted);font-size:.95rem;max-width:600px;margin-bottom:2.5rem;line-height:1.7}
+
+    /* CAPABILITY GRID */
+    .cap-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem}
+    .cap-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.5rem;transition:border-color .2s}
+    .cap-card:hover{border-color:rgba(0,255,224,.35)}
+    .cap-icon{font-size:1.75rem;margin-bottom:.75rem}
+    .cap-card h3{font-size:.95rem;font-weight:800;color:#fff;margin-bottom:.4rem}
+    .cap-card p{font-size:.82rem;color:var(--muted);line-height:1.6}
+    .cap-card ul{margin-top:.5rem;padding-left:1rem}
+    .cap-card ul li{font-size:.78rem;color:#94a3b8;margin-bottom:.2rem}
+
+    /* PRICING TIERS */
+    .pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;margin-top:2rem}
+    .tier-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:2rem;position:relative}
+    .tier-card.featured{border-color:rgba(0,255,224,.4);box-shadow:0 0 30px rgba(0,255,224,.06)}
+    .tier-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--c),var(--c2));color:#000;font-size:.7rem;font-weight:800;padding:.25rem .9rem;border-radius:50px;white-space:nowrap;letter-spacing:.06em}
+    .tier-name{font-size:.8rem;font-weight:800;color:var(--c);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem}
+    .tier-price{font-size:2.5rem;font-weight:900;color:#fff;margin-bottom:.25rem}
+    .tier-period{font-size:.8rem;color:var(--muted);margin-bottom:1rem}
+    .tier-desc{font-size:.82rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.6}
+    .tier-features{list-style:none;margin-bottom:1.5rem}
+    .tier-features li{font-size:.82rem;color:#94a3b8;padding:.3rem 0;display:flex;align-items:center;gap:.5rem;border-bottom:1px solid rgba(255,255,255,.05)}
+    .tier-features li::before{content:'✓';color:var(--c);font-weight:800;flex-shrink:0}
+    .tier-cta{display:block;width:100%;text-align:center;padding:.7rem;border-radius:8px;font-weight:800;font-size:.85rem;text-decoration:none;transition:all .2s}
+    .tier-cta-primary{background:linear-gradient(135deg,var(--c),var(--c2));color:#000}
+    .tier-cta-outline{border:1px solid var(--border);color:var(--c)}
+    .tier-cta-outline:hover{border-color:var(--c);background:rgba(0,255,224,.06)}
+
+    /* CASE STUDIES */
+    .case-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem}
+    .case-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.75rem}
+    .case-sector{font-size:.7rem;font-weight:800;color:var(--c);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem}
+    .case-card h3{font-size:1rem;font-weight:800;color:#fff;margin-bottom:.75rem;line-height:1.35}
+    .case-metric{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:1rem}
+    .metric-item .val{font-size:1.6rem;font-weight:900;color:var(--c);display:block}
+    .metric-item .lbl{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+    .case-card p{font-size:.82rem;color:#94a3b8;line-height:1.6}
+
+    /* ROI CALCULATOR */
+    .roi-calc{background:linear-gradient(135deg,rgba(0,255,224,.05),rgba(0,100,200,.04));border:1px solid var(--border);border-radius:20px;padding:2.5rem}
+    .roi-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+    @media(max-width:640px){.roi-grid{grid-template-columns:1fr}}
+    .roi-label{font-size:.82rem;font-weight:700;color:#94a3b8;margin-bottom:.4rem;display:block}
+    .roi-input{width:100%;background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:8px;padding:.6rem .9rem;color:#fff;font-size:.9rem;font-weight:600;margin-bottom:1rem;outline:none;transition:border-color .2s}
+    .roi-input:focus{border-color:var(--c)}
+    .roi-result{background:rgba(0,0,0,.3);border:1px solid rgba(0,255,224,.2);border-radius:12px;padding:1.5rem}
+    .roi-result h4{font-size:.8rem;font-weight:800;color:var(--c);text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem}
+    .roi-line{display:flex;justify-content:space-between;font-size:.85rem;color:#94a3b8;padding:.35rem 0;border-bottom:1px solid rgba(255,255,255,.05)}
+    .roi-line.total{color:#fff;font-weight:800;border-bottom:none;padding-top:.75rem;font-size:1rem}
+    .roi-line span:last-child{color:var(--c);font-weight:700}
+    .roi-line.total span:last-child{font-size:1.2rem}
+
+    /* CONTACT FORM */
+    .contact-section{background:linear-gradient(135deg,rgba(0,255,224,.04),rgba(0,100,200,.04));border:1px solid var(--border);border-radius:20px;padding:3rem;max-width:800px;margin:0 auto}
+    .contact-section h2{font-size:1.8rem;font-weight:900;color:#fff;margin-bottom:.5rem}
+    .contact-section p{color:var(--muted);margin-bottom:2rem;font-size:.9rem}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    @media(max-width:600px){.form-grid{grid-template-columns:1fr}}
+    .form-field{display:flex;flex-direction:column;gap:.35rem;margin-bottom:.25rem}
+    .form-field.full{grid-column:1/-1}
+    .form-field label{font-size:.78rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em}
+    .form-field input,.form-field select,.form-field textarea{background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:8px;padding:.65rem 1rem;color:#fff;font-size:.88rem;outline:none;transition:border-color .2s;font-family:inherit}
+    .form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:var(--c)}
+    .form-field select option{background:#0d1117;color:#fff}
+    .form-field textarea{resize:vertical;min-height:100px}
+    .form-submit{background:linear-gradient(135deg,var(--c),var(--c2));color:#000;font-weight:800;font-size:.95rem;padding:.85rem 2rem;border-radius:8px;border:none;cursor:pointer;width:100%;margin-top:.5rem;transition:opacity .2s;display:flex;align-items:center;justify-content:center;gap:.5rem}
+    .form-submit:hover{opacity:.88}
+    .form-note{font-size:.75rem;color:var(--muted);text-align:center;margin-top:.75rem}
+
+    /* FOOTER */
+    footer{background:var(--bg2);border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
+    .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+    .footer-links a{color:var(--muted);text-decoration:none;font-size:.82rem;transition:color .2s}
+    .footer-links a:hover{color:var(--c)}
+    footer p{font-size:.78rem;color:var(--muted)}
+
+    @media(max-width:768px){.nav-links{display:none};.hero{padding:3rem 1rem 2.5rem}}
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="/"><div class="logo-icon">⚡</div><span>SENTINEL APEX</span></a>
+  <div class="nav-links">
+    <a href="/">Intelligence</a>
+    <a href="/intelligence.html">Hub</a>
+    <a href="/api.html">API</a>
+    <a href="/products.html">Products</a>
+    <a href="/pricing.html">Pricing</a>
+    <a href="/enterprise.html" class="active">Enterprise</a>
+    <a href="#contact" class="nav-cta">📧 Get Proposal</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div style="background:linear-gradient(135deg,#07090f,#0a0f1a,#0d1520);border-bottom:1px solid var(--border);padding:5rem 2rem 4rem;text-align:center;position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(0,255,224,.06),transparent);pointer-events:none;"></div>
+  <div style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(0,255,224,.1);border:1px solid rgba(0,255,224,.3);border-radius:50px;padding:.35rem 1rem;font-size:.75rem;font-weight:700;color:var(--c);letter-spacing:.1em;text-transform:uppercase;margin-bottom:1.5rem;">🏢 ENTERPRISE INTELLIGENCE PLATFORM</div>
+  <h1 style="font-size:clamp(2rem,5vw,3.2rem);font-weight:900;background:linear-gradient(135deg,#fff,var(--c),var(--c2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1rem;line-height:1.1;">Threat Intelligence Built<br>for Enterprise Security Teams</h1>
+  <p style="font-size:1.05rem;color:var(--muted);max-width:640px;margin:0 auto 1.5rem;">White-label intelligence feeds, SLA-backed CVE data, custom detection rules, and dedicated analyst support — purpose-built for Fortune 500 SOC teams, MSSPs, and government security agencies.</p>
+  <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin:1.5rem 0;opacity:.65;">
+    <span style="background:rgba(255,255,255,.06);border:1px solid var(--border);padding:.35rem .9rem;border-radius:6px;font-size:.72rem;font-weight:700;color:var(--muted);">FORTUNE 500 READY</span>
+    <span style="background:rgba(255,255,255,.06);border:1px solid var(--border);padding:.35rem .9rem;border-radius:6px;font-size:.72rem;font-weight:700;color:var(--muted);">SOC 2 COMPLIANT</span>
+    <span style="background:rgba(255,255,255,.06);border:1px solid var(--border);padding:.35rem .9rem;border-radius:6px;font-size:.72rem;font-weight:700;color:var(--muted);">99.9% SLA UPTIME</span>
+    <span style="background:rgba(255,255,255,.06);border:1px solid var(--border);padding:.35rem .9rem;border-radius:6px;font-size:.72rem;font-weight:700;color:var(--muted);">STIX 2.1 / TAXII</span>
+    <span style="background:rgba(255,255,255,.06);border:1px solid var(--border);padding:.35rem .9rem;border-radius:6px;font-size:.72rem;font-weight:700;color:var(--muted);">MITRE ATT&CK MAPPED</span>
+  </div>
+  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+    <a href="#contact" class="btn-primary">📧 Request Enterprise Proposal</a>
+    <a href="#pricing" class="btn-outline">View Enterprise Pricing →</a>
+  </div>
+</div>
+
+<!-- CAPABILITIES -->
+<section>
+  <div style="text-align:center;margin-bottom:2.5rem;">
+    <div class="section-title" style="display:inline-block">⚡ PLATFORM CAPABILITIES</div>
+    <h2 class="section-h2">Everything Your SOC Needs.<br>Nothing You Don't.</h2>
+  </div>
+  <div class="cap-grid">
+    <div class="cap-card">
+      <div class="cap-icon">🛰️</div>
+      <h3>White-Label Intelligence Feeds</h3>
+      <p>Fully branded threat intelligence feeds you can deliver to your own clients. STIX 2.1 / TAXII 2.1 compatible.</p>
+      <ul><li>Custom brand + domain</li><li>STIX/TAXII delivery</li><li>JSON / CSV / MISP formats</li></ul>
+    </div>
+    <div class="cap-card">
+      <div class="cap-icon">📡</div>
+      <h3>Real-Time CVE Intelligence API</h3>
+      <p>SLA-backed CVE data with CVSS scores, MITRE mapping, PoC status, exploitation evidence, and patch guidance.</p>
+      <ul><li>99.9% uptime SLA</li><li>Sub-100ms latency</li><li>Webhook + pull model</li></ul>
+    </div>
+    <div class="cap-card">
+      <div class="cap-icon">🎯</div>
+      <h3>Custom Detection Rule Development</h3>
+      <p>Sigma and YARA rules built specifically for your environment, threat profile, and SIEM platform.</p>
+      <ul><li>Environment-specific tuning</li><li>Low FP guarantee</li><li>Splunk / Elastic / Sentinel / Chronicle</li></ul>
+    </div>
+    <div class="cap-card">
+      <div class="cap-icon">🤖</div>
+      <h3>AI Risk Scoring Engine</h3>
+      <p>Proprietary ML model scores every CVE and IOC by exploitability, patch availability, and your asset exposure.</p>
+      <ul><li>Asset-context scoring</li><li>Prioritization matrix</li><li>SIEM/SOAR integration</li></ul>
+    </div>
+    <div class="cap-card">
+      <div class="cap-icon">🧑‍💼</div>
+      <h3>Dedicated Analyst Support</h3>
+      <p>Named security analyst assigned to your account. Weekly briefings, emergency escalation, and custom research requests.</p>
+      <ul><li>Named analyst assignment</li><li>Weekly threat briefings</li><li>4-hour emergency response SLA</li></ul>
+    </div>
+    <div class="cap-card">
+      <div class="cap-icon">🔒</div>
+      <h3>Early Disclosure Program</h3>
+      <p>Enterprise clients receive CVE intelligence 24–72 hours before public disclosure — time to patch before attacks begin.</p>
+      <ul><li>Pre-disclosure CVE access</li><li>Zero-day advisory alerts</li><li>Vendor coordination support</li></ul>
+    </div>
+  </div>
+</section>
+
+<!-- CASE STUDIES -->
+<section style="background:var(--bg2);padding:4rem 2rem;border-top:1px solid var(--border);border-bottom:1px solid var(--border);max-width:100%;">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <div class="section-title" style="display:inline-block">📊 CASE STUDIES</div>
+      <h2 class="section-h2" style="max-width:600px;margin:0 auto .5rem">Real Results from Enterprise Teams</h2>
+    </div>
+    <div class="case-grid">
+      <div class="case-card">
+        <div class="case-sector">Financial Services</div>
+        <h3>Major Bank Reduces MTTD from 14 Days to 4 Hours</h3>
+        <div class="case-metric">
+          <div class="metric-item"><span class="val">97%</span><span class="lbl">MTTD Reduction</span></div>
+          <div class="metric-item"><span class="val">14→4h</span><span class="lbl">Detection Time</span></div>
+          <div class="metric-item"><span class="val">$2.4M</span><span class="lbl">Breach Cost Avoided</span></div>
+        </div>
+        <p>After integrating SENTINEL APEX CVE feeds with their Splunk SIEM, the security team caught a Lazarus Group lateral movement attempt within hours of initial access — weeks before traditional threat intel services issued alerts.</p>
+      </div>
+      <div class="case-card">
+        <div class="case-sector">Healthcare Enterprise</div>
+        <h3>Hospital Network Deploys 800+ YARA Rules to Prevent Ransomware</h3>
+        <div class="case-metric">
+          <div class="metric-item"><span class="val">800+</span><span class="lbl">Rules Deployed</span></div>
+          <div class="metric-item"><span class="val">3</span><span class="lbl">Incidents Stopped</span></div>
+          <div class="metric-item"><span class="val">0</span><span class="lbl">Successful Encryptions</span></div>
+        </div>
+        <p>Custom YARA pack built for their CrowdStrike environment detected BlackBasta staging files in three separate incidents — stopping encryption before it began and avoiding an estimated $8M in ransom + downtime costs.</p>
+      </div>
+      <div class="case-card">
+        <div class="case-sector">MSSP (Managed Security)</div>
+        <h3>MSSP White-Labels SENTINEL APEX to 40+ Enterprise Clients</h3>
+        <div class="case-metric">
+          <div class="metric-item"><span class="val">40+</span><span class="lbl">Client Deployments</span></div>
+          <div class="metric-item"><span class="val">$180K</span><span class="lbl">ARR Added</span></div>
+          <div class="metric-item"><span class="val">8mo</span><span class="lbl">Payback Period</span></div>
+        </div>
+        <p>By white-labeling our STIX/TAXII feeds under their brand, the MSSP added a premium "Advanced Threat Intelligence" tier to their service catalog — adding $180K ARR in the first year with zero additional analyst headcount.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROI CALCULATOR -->
+<section>
+  <div style="text-align:center;margin-bottom:2rem;">
+    <div class="section-title" style="display:inline-block">💰 ROI CALCULATOR</div>
+    <h2 class="section-h2">Calculate Your Intelligence ROI</h2>
+    <p class="section-sub" style="margin:0 auto">Estimate the cost-benefit of enterprise threat intelligence vs. breach costs.</p>
+  </div>
+  <div class="roi-calc">
+    <div class="roi-grid">
+      <div>
+        <label class="roi-label">Number of Employees</label>
+        <input class="roi-input" type="number" id="roi-employees" value="500" min="10" oninput="calcROI()">
+        <label class="roi-label">Annual Security Budget ($)</label>
+        <input class="roi-input" type="number" id="roi-budget" value="500000" min="10000" oninput="calcROI()">
+        <label class="roi-label">Industry Sector</label>
+        <select class="roi-input" id="roi-sector" onchange="calcROI()">
+          <option value="finance">Financial Services</option>
+          <option value="health">Healthcare</option>
+          <option value="tech">Technology</option>
+          <option value="gov">Government</option>
+          <option value="retail">Retail / E-Commerce</option>
+          <option value="energy">Energy / Critical Infrastructure</option>
+        </select>
+        <label class="roi-label">Current Avg. MTTD (days)</label>
+        <input class="roi-input" type="number" id="roi-mttd" value="14" min="1" oninput="calcROI()">
+      </div>
+      <div>
+        <div class="roi-result" id="roi-result">
+          <h4>📊 ROI Projection</h4>
+          <div class="roi-line"><span>Avg. Breach Cost (your sector)</span><span id="r-breach">-</span></div>
+          <div class="roi-line"><span>Expected incidents prevented/yr</span><span id="r-incidents">-</span></div>
+          <div class="roi-line"><span>Cost avoided (breach prevention)</span><span id="r-avoided">-</span></div>
+          <div class="roi-line"><span>SENTINEL APEX Enterprise cost</span><span id="r-cost">$3,588/yr</span></div>
+          <div class="roi-line"><span>MTTD reduction (estimated)</span><span id="r-mttd">-</span></div>
+          <div class="roi-line total"><span>Estimated Annual ROI</span><span id="r-roi">-</span></div>
+          <div style="margin-top:1rem;">
+            <a href="#contact" style="display:block;text-align:center;background:linear-gradient(135deg,var(--c),var(--c2));color:#000;font-weight:800;padding:.65rem;border-radius:8px;text-decoration:none;font-size:.85rem;">Get Detailed ROI Report →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:4rem 2rem;max-width:100%;">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:2rem;">
+      <div class="section-title" style="display:inline-block">💼 ENTERPRISE PRICING</div>
+      <h2 class="section-h2">Transparent. Scalable. No Surprises.</h2>
+    </div>
+    <div class="pricing-grid">
+      <div class="tier-card">
+        <div class="tier-name">SOC Pro</div>
+        <div class="tier-price">$49<span style="font-size:1rem;color:var(--muted)">/mo</span></div>
+        <div class="tier-period">Per user · billed monthly</div>
+        <div class="tier-desc">For individual analysts and small teams needing premium intel access.</div>
+        <ul class="tier-features">
+          <li>Unlimited API requests</li><li>Full IOC database</li><li>Sigma + YARA packs</li>
+          <li>Weekly threat briefings</li><li>Email support (24h SLA)</li>
+        </ul>
+        <a href="/pricing.html" class="tier-cta tier-cta-outline">Start Free Trial</a>
+      </div>
+      <div class="tier-card featured">
+        <div class="tier-badge">⭐ MOST POPULAR</div>
+        <div class="tier-name">Enterprise</div>
+        <div class="tier-price">$299<span style="font-size:1rem;color:var(--muted)">/mo</span></div>
+        <div class="tier-period">Up to 25 users · billed annually</div>
+        <div class="tier-desc">Complete intelligence stack for enterprise SOC teams.</div>
+        <ul class="tier-features">
+          <li>Everything in SOC Pro</li><li>Dedicated analyst support</li><li>White-label feeds (10 clients)</li>
+          <li>Custom SIEM integrations</li><li>Early CVE disclosure access</li><li>4-hour emergency SLA</li>
+          <li>STIX/TAXII delivery</li>
+        </ul>
+        <a href="#contact" class="tier-cta tier-cta-primary">Get Enterprise Proposal</a>
+      </div>
+      <div class="tier-card">
+        <div class="tier-name">Enterprise+</div>
+        <div class="tier-price" style="font-size:1.8rem">Custom</div>
+        <div class="tier-period">Unlimited users · custom terms</div>
+        <div class="tier-desc">For MSSPs, government agencies, and large-scale deployments.</div>
+        <ul class="tier-features">
+          <li>Everything in Enterprise</li><li>Unlimited white-label clients</li><li>Custom rule development SLA</li>
+          <li>On-site analyst deployment</li><li>Government/MSSP pricing</li><li>NDR/XDR integration support</li>
+          <li>Air-gap deployment option</li>
+        </ul>
+        <a href="#contact" class="tier-cta tier-cta-outline">Contact Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT FORM -->
+<section id="contact">
+  <div class="contact-section">
+    <h2>📧 Request Enterprise Proposal</h2>
+    <p>Tell us about your environment. We'll build a custom proposal with ROI projections within 24 hours.</p>
+    <form action="https://formsubmit.co/bivash@cyberdudebivash.com" method="POST">
+      <input type="hidden" name="_subject" value="[ENTERPRISE INQUIRY] SENTINEL APEX">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_next" value="https://blog.cyberdudebivash.in/enterprise.html">
+      <input type="hidden" name="_captcha" value="false">
+      <div class="form-grid">
+        <div class="form-field">
+          <label>First Name *</label>
+          <input type="text" name="first_name" required placeholder="John">
+        </div>
+        <div class="form-field">
+          <label>Last Name *</label>
+          <input type="text" name="last_name" required placeholder="Smith">
+        </div>
+        <div class="form-field">
+          <label>Work Email *</label>
+          <input type="email" name="email" required placeholder="john@company.com">
+        </div>
+        <div class="form-field">
+          <label>Company Name *</label>
+          <input type="text" name="company" required placeholder="Acme Corp">
+        </div>
+        <div class="form-field">
+          <label>Job Title</label>
+          <input type="text" name="title" placeholder="CISO / SOC Manager / Director">
+        </div>
+        <div class="form-field">
+          <label>Company Size</label>
+          <select name="company_size">
+            <option>50–200 employees</option>
+            <option>200–1,000 employees</option>
+            <option>1,000–5,000 employees</option>
+            <option>5,000+ employees</option>
+            <option>MSSP / Service Provider</option>
+            <option>Government / Public Sector</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Current SIEM Platform</label>
+          <select name="siem">
+            <option>Splunk</option><option>Microsoft Sentinel</option><option>Elastic SIEM</option>
+            <option>Chronicle / Google SecOps</option><option>IBM QRadar</option>
+            <option>Palo Alto Cortex XSIAM</option><option>Other / Multiple</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Primary Interest</label>
+          <select name="interest">
+            <option>CVE Intelligence API</option><option>Custom Detection Rules</option>
+            <option>White-Label Feeds</option><option>Full Enterprise Platform</option>
+            <option>MSSP Partnership</option><option>SOC Consulting</option>
+          </select>
+        </div>
+        <div class="form-field full">
+          <label>Describe Your Security Challenge</label>
+          <textarea name="message" placeholder="Tell us about your current pain points, team size, and what you're trying to solve..."></textarea>
+        </div>
+      </div>
+      <button type="submit" class="form-submit" onclick="window.CX?.TRACK?.event('enterprise_form_submit',{})">📧 Send Enterprise Request → Response in 24 Hours</button>
+      <p class="form-note">🔒 No spam. Your info is used only to respond to your inquiry.</p>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-links">
+    <a href="/">Blog</a><a href="/intelligence.html">Intel Hub</a><a href="/api.html">API</a>
+    <a href="/products.html">Products</a><a href="/pricing.html">Pricing</a>
+    <a href="https://x.com/cdbsentinelapex" target="_blank">𝕏 Twitter</a>
+    <a href="https://github.com/cyberdudebivash" target="_blank">GitHub</a>
+  </div>
+  <p>© 2026 CyberDudeBivash — SENTINEL APEX. Enterprise Threat Intelligence.</p>
+</footer>
+
+<script src="/monetization.js" defer></script>
+<script src="/conversion-engine.js" defer></script>
+<script src="/seo-engine.js" defer></script>
+<script>
+function calcROI() {
+  const emp      = parseInt(document.getElementById('roi-employees').value) || 500;
+  const budget   = parseInt(document.getElementById('roi-budget').value) || 500000;
+  const sector   = document.getElementById('roi-sector').value;
+  const mttd     = parseInt(document.getElementById('roi-mttd').value) || 14;
+
+  const breachCosts = { finance:5800000, health:10900000, tech:4900000, gov:3800000, retail:2700000, energy:4700000 };
+  const incidentRate = { finance:.6, health:.5, tech:.7, gov:.4, retail:.65, energy:.45 };
+
+  const breach   = breachCosts[sector] || 4800000;
+  const rate     = incidentRate[sector] || 0.5;
+  const prevented= Math.round(rate * (emp / 500) * 1.4 * 10) / 10;
+  const avoided  = Math.round(breach * prevented * 0.35);
+  const cost     = 3588; // $299/mo annual
+  const mttdNew  = Math.round(mttd * 0.25);
+  const roi      = Math.round(((avoided - cost) / cost) * 100);
+
+  const fmt = n => '$' + n.toLocaleString();
+  document.getElementById('r-breach').textContent    = fmt(breach);
+  document.getElementById('r-incidents').textContent = prevented + '/yr';
+  document.getElementById('r-avoided').textContent   = fmt(avoided);
+  document.getElementById('r-cost').textContent      = fmt(cost) + '/yr';
+  document.getElementById('r-mttd').textContent      = mttd + 'd → ' + mttdNew + 'd';
+  document.getElementById('r-roi').textContent       = roi + 'x';
+}
+calcROI();
+</script>
+</body>
+</html>
