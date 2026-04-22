@@ -16,10 +16,6 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:site_name" content="CyberDudeBivash CYBERDUDEBIVASH SENTINEL APEX">
-  <meta property="og:title" content="CyberDudeBivash Sentinel APEX Official Blog">
-  <meta property="og:description" content="Real-time cyber threat intelligence, CVEs, zero-days, malware tracking, and AI security insights.">
-  <meta property="og:url" content="https://blog.cyberdudebivash.in/">
-  <meta property="og:type" content="website">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
@@ -30,34 +26,6 @@
   <meta name="twitter:image" content="https://blog.cyberdudebivash.in/og-image.png">
 
   <title>CyberDudeBivash Intelligence Blog | CYBERDUDEBIVASH SENTINEL APEX Threat Reports</title>
-  <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>CyberDudeBivash | Global Cybersecurity & AI Platform</title>
-    
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Corporation",
-      "name": "CYBERDUDEBIVASH PRIVATE LIMITED",
-      "url": "https://cyberdudebivash.com",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "CYBERDUDEBIVASH PRIVATE LIMITED, 29, Korai -Sukinda-Ramchandrapur Rd, Ragadi",
-        "addressLocality": "Jajpur Road",
-        "addressRegion": "Odisha",
-        "postalCode": "755019",
-        "addressCountry": "IN"
-      },
-      "sameAs": [
-        "https://www.cyberdudebivash.in",
-        "https://www.linkedin.com/company/cyberdudebivash"
-      ]
-    }
-    </script>
-    </head>
-<body>
 
   <!-- Schema.org JSON-LD -->
   <script type="application/ld+json">
@@ -897,7 +865,6 @@
   <!-- <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE"> -->
 
   <link rel="canonical" href="https://blog.cyberdudebivash.in/">
-  <link rel="alternate" type="application/rss+xml" title="CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence" href="https://blog.cyberdudebivash.in/rss.xml">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 <script src="/security-engine.js"></script>
 <link rel="stylesheet" href="/apex-v12.css">
@@ -2088,14 +2055,68 @@ async function updateKEVCounts() {
     document.getElementById('kevTotal').textContent = '1,230+';
     document.getElementById('cisaToday').textContent = '3';
     document.getElementById('kevCount').textContent = '1,230+';
+  }
+}
+updateKEVCounts();
+</script>
 
-<!-- ═══ REVENUE ENGINE SUITE ═══════════════════════════════════════════ -->
-<script src="/security-engine.js" defer></script>
 <script src="/monetization.js" defer></script>
 <script src="/conversion-engine.js" defer></script>
 <script src="/seo-engine.js" defer></script>
 <script src="/ai-monetization-engine.js" defer></script>
 <script src="/analytics-engine.js" defer></script>
-<script src="/auto-intel-engine.js" defer></script>
-</body>
+<script src="/email-engine.js" defer></script>
+<script src="/payment-engine.js" defer></script>
+<script src="/auto-intel-engine.js"></script>
+
+<script id="apex-v12-live">
+// CYBERDUDEBIVASH SENTINEL APEX v12 — Live Date + CISA KEV Updater
+(function(){
+  'use strict';
+  var dtEl = document.getElementById('lcab-dt');
+  var digestDate = document.getElementById('digest-date');
+  var now = new Date();
+  var opts = {month:'short',day:'numeric',year:'numeric'};
+  var dateStr = now.toLocaleDateString('en-US',opts);
+  if(dtEl) dtEl.textContent = dateStr + ' — Live';
+  if(digestDate) digestDate.textContent = now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+
+  // Fetch CISA KEV and populate live alert bar
+  async function updateLiveThreats(){
+    var container = document.getElementById('lcab-threats-container');
+    if(!container) return;
+    var CISA = 'https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json';
+    var proxies = [
+      CISA,
+      'https://api.allorigins.win/raw?url=' + encodeURIComponent(CISA),
+      'https://corsproxy.io/?' + encodeURIComponent(CISA)
+    ];
+    var data = null;
+    for(var i=0;i<proxies.length;i++){
+      try{
+        var r = await fetch(proxies[i],{signal:AbortSignal.timeout(8000)});
+        if(r.ok){ var d=await r.json(); if(d.vulnerabilities&&d.vulnerabilities.length>100){data=d;break;} }
+      }catch(e){}
+    }
+    if(!data) return;
+    var cut = new Date(); cut.setDate(cut.getDate()-14);
+    var recent = data.vulnerabilities.filter(function(v){return new Date(v.dateAdded)>=cut;})
+      .sort(function(a,b){return new Date(b.dateAdded)-new Date(a.dateAdded)}).slice(0,5);
+    if(!recent.length) return;
+    container.innerHTML = recent.map(function(v){
+      var isRsm = (v.shortDescription||'').toLowerCase().indexOf('ransom')>=0;
+      var badge = isRsm ? '<span class="lcab-tbadge rsm">RANSOMWARE</span>' : '<span class="lcab-tbadge kev">CISA KEV</span>';
+      var name = (v.vulnerabilityName||v.cveID||'Critical CVE').substring(0,45);
+      return '<a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" class="lcab-threat">'+badge+'<span class="lcab-ttext">'+v.cveID+' &mdash; '+name+'</span><span class="lcab-tcvss">EXPLOITED</span></a>';
+    }).join('');
+    var kevEl = document.getElementById('kevTotal');
+    var kevCEl = document.getElementById('kevCount');
+    var cisaEl = document.getElementById('cisaToday');
+    if(kevEl) kevEl.textContent = data.vulnerabilities.length.toLocaleString();
+    if(kevCEl) kevCEl.textContent = data.vulnerabilities.length.toLocaleString()+'+';
+    if(cisaEl){ var tod=new Date().toISOString().split('T')[0]; cisaEl.textContent=data.vulnerabilities.filter(function(v){return v.dateAdded===tod;}).length||'0'; }
+  }
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(updateLiveThreats,2000);setInterval(updateLiveThreats,30*60*1000);});
+})();
+</script></body>
 </html>
