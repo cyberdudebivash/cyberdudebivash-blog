@@ -1,0 +1,87 @@
+name: 🛰 SENTINEL APEX — Auto RSS Generator
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'posts/**'
+      - 'generate-rss.js'
+  schedule:
+    # Regenerate every 6 hours to keep feed fresh
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+    # Allow manual trigger from GitHub Actions UI
+
+permissions:
+  contents: write
+
+jobs:
+  generate-rss:
+    name: Generate RSS Feed
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 🛰 Generate RSS feed
+        run: node generate-rss.js
+
+      - name: ✅ Validate RSS XML
+        run: |
+          if [ ! -f "rss.xml" ]; then
+            echo "❌ ERROR: rss.xml was not generated!"
+            exit 1
+          fi
+          # Check RSS file is not empty
+          size=$(wc -c < rss.xml)
+          if [ "$size" -lt 500 ]; then
+            echo "❌ ERROR: rss.xml is too small (${size} bytes). Something went wrong."
+            exit 1
+          fi
+          # Check for required RSS elements
+          if ! grep -q '<rss version="2.0"' rss.xml; then
+            echo "❌ ERROR: rss.xml missing <rss version=\"2.0\"> declaration"
+            exit 1
+          fi
+          if ! grep -q '<item>' rss.xml; then
+            echo "❌ ERROR: rss.xml has no <item> elements"
+            exit 1
+          fi
+          item_count=$(grep -c '<item>' rss.xml)
+          echo "✅ rss.xml validated: ${size} bytes, ${item_count} items"
+          echo "📡 Feed: https://blog.cyberdudebivash.in/rss.xml"
+
+      - name: 🔍 Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet rss.xml 2>/dev/null; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ rss.xml unchanged — no commit needed"
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "📝 rss.xml has changes — will commit"
+          fi
+
+      - name: 📦 Commit updated rss.xml
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "bivash@cyberdudebivash.com"
+          git config --local user.name "SENTINEL APEX Bot"
+          git add rss.xml
+          git commit -m "🛰 [SENTINEL APEX] Auto-update rss.xml — $(date -u '+%Y-%m-%d %H:%M UTC')"
+
+      - name: 🚀 Push to main
+        if: steps.check_changes.outputs.changed == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
