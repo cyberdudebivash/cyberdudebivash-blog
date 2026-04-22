@@ -1,4 +1,4 @@
-/**
+﻿/**
  * CYBERDUDEBIVASH SENTINEL APEX — Universal Monetization Engine v1.0
  * Injects: Sticky CTA Bar, Exit Intent Popup, Scroll CTAs, Social Proof Toasts,
  *          Urgency Triggers, Lead Capture, Paywall Gates, Affiliate Triggers
@@ -302,7 +302,7 @@
       { icon: '🛡️', title: 'Get Full IOC Pack + YARA Rules', sub: 'SOC Pro members receive complete IOC bundles, YARA signatures, and SIEM queries for every report published.', btn: 'Unlock with SOC Pro →', url: CFG.pricingUrl },
       { icon: '⚡', title: 'Get Real-Time CVE Alerts via API', sub: 'Integrate our threat intelligence directly into your SIEM. CVE scores, exploitability data, and IOCs via REST API.', btn: 'Explore API Access →', url: CFG.apiUrl },
       { icon: '📦', title: 'Download Detection Rule Pack', sub: 'Pre-built Sigma rules, Splunk SPL, KQL, and Elastic queries ready to deploy. Available in the Products Store.', btn: 'Browse Products →', url: CFG.productsUrl },
-      { icon: '🎯', title: '48H Pre-Disclosure Intelligence', sub: 'Get critical CVE reports before NVD publication. 3,800+ security pros trust SENTINEL APEX for early warning.', btn: 'Subscribe SOC Pro →', url: CFG.pricingUrl },
+      { icon: '🎯', title: '48H Pre-Disclosure Intelligence', sub: 'Get critical CVE reports before NVD publication. 3,800+ security pros trust CYBERDUDEBIVASH SENTINEL APEX for early warning.', btn: 'Subscribe SOC Pro →', url: CFG.pricingUrl },
     ];
 
     const articleBody = $('article') || $('.article-wrap') || $('main') || $('body');

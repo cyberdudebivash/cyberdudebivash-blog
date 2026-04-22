@@ -1,6 +1,6 @@
-/**
+﻿/**
  * ╔══════════════════════════════════════════════════════════════════╗
- * ║   SENTINEL APEX — AI MONETIZATION ENGINE v3.0                   ║
+ * ║   CYBERDUDEBIVASH SENTINEL APEX — AI MONETIZATION ENGINE v3.0                   ║
  * ║   Maximum Revenue Extraction System                              ║
  * ╠══════════════════════════════════════════════════════════════════╣
  * ║  1. INTENT CLASSIFIER      → Buyer/Researcher/Enterprise/Dev     ║
@@ -495,7 +495,7 @@
       { signals: ['apt','volt typhoon','lazarus','nation-state','ics','scada','critical infrastructure'],
         product: { icon:'🏢', title:'Enterprise Threat Intelligence Advisory', sub:'Dedicated analyst + early APT disclosure. Custom proposal for your team.', cta:'Get Enterprise Advisory →', url:'/enterprise.html', price:'Custom' } },
       { signals: ['api','integration','siem','soar','automation','webhook','feed'],
-        product: { icon:'🔌', title:'SENTINEL APEX Threat Intelligence API', sub:'Integrate CVE + IOC data into your stack. Free tier available.', cta:'Start Free API Trial →', url:'/api.html', price:'Free' } },
+        product: { icon:'🔌', title:'CYBERDUDEBIVASH SENTINEL APEX Threat Intelligence API', sub:'Integrate CVE + IOC data into your stack. Free tier available.', cta:'Start Free API Trial →', url:'/api.html', price:'Free' } },
       { signals: ['sigma','yara','detection','rule','splunk','elastic','sentinel','chronicle'],
         product: { icon:'🎯', title:'Sigma Megapack 2026 — 1,200+ Rules', sub:'Production-ready detection rules mapped to MITRE ATT&CK v15.', cta:'Get Sigma Megapack →', url:'/products.html', price:'$149' } },
       { signals: ['ai','llm','prompt injection','generative','gpt','chatgpt','copilot'],
@@ -543,7 +543,7 @@
           <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem">
             <span style="font-size:1.8rem">${product.icon}</span>
             <div>
-              <div style="font-size:.65rem;font-weight:800;color:${CFG.CYAN};text-transform:uppercase;letter-spacing:.1em">⚡ SENTINEL APEX INTELLIGENCE</div>
+              <div style="font-size:.65rem;font-weight:800;color:${CFG.CYAN};text-transform:uppercase;letter-spacing:.1em">⚡ CYBERDUDEBIVASH SENTINEL APEX INTELLIGENCE</div>
               <strong style="font-size:.95rem;color:#fff;font-weight:900">${product.title}</strong>
             </div>
           </div>
@@ -752,7 +752,7 @@
     const p       = INTENT.profile;
     const events  = ls.get('cx_events') || [];
     const price   = DYNPRICE.compute(49);
-    console.groupCollapsed('%c[SENTINEL APEX] AI Monetization Engine — Revenue Dashboard', 'color:#00ffe0;font-weight:bold;font-size:12px');
+    console.groupCollapsed('%c[CYBERDUDEBIVASH SENTINEL APEX] AI Monetization Engine — Revenue Dashboard', 'color:#00ffe0;font-weight:bold;font-size:12px');
     console.log('Intent Profile:', p);
     console.log('Dynamic Pricing:', price);
     console.log('Scarcity — Downloads Left:', SCARCITY.getDownloadsLeft());

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * CYBERDUDEBIVASH SENTINEL APEX — SEO Engine v1.0
  * ════════════════════════════════════════════════
  * Systems:
@@ -17,7 +17,7 @@
      CONFIG
   ═══════════════════════════════════════════════════════════════ */
   const SITE = 'https://blog.cyberdudebivash.in';
-  const BRAND = 'CyberDudeBivash — SENTINEL APEX';
+  const BRAND = 'CyberDudeBivash — CYBERDUDEBIVASH SENTINEL APEX';
 
   // Internal link map: keyword → { url, title, track }
   const LINK_MAP = [
@@ -35,7 +35,7 @@
     { kw: /\bIOC pack\b/gi,      url: '/products.html', title: 'IOC Intelligence Pack' },
     { kw: /\bplaybook\b/gi,      url: '/products.html', title: 'SOC Playbook', anchor: 'playbook' },
     { kw: /\bSIEM rules?\b/gi,   url: '/products.html', title: 'SIEM Detection Rules Pack', anchor: 'SIEM rules' },
-    { kw: /\bthreat intel(?:ligence)? API\b/gi, url: '/api.html', title: 'SENTINEL APEX Threat Intel API' },
+    { kw: /\bthreat intel(?:ligence)? API\b/gi, url: '/api.html', title: 'CYBERDUDEBIVASH SENTINEL APEX Threat Intel API' },
     { kw: /\benterprise (?:SOC|security|intel)\b/gi, url: '/enterprise.html', title: 'Enterprise Threat Intelligence' },
     // Threat actors → related posts
     { kw: /\bVolt Typhoon\b/gi,   url: '/posts/volt-typhoon-2026-ics-scada-critical-infrastructure-attack.html', title: 'Volt Typhoon 2026 ICS/SCADA Attack' },
@@ -48,7 +48,7 @@
   // FAQ data by page type
   const FAQ_DATA = {
     default: [
-      { q: 'What is SENTINEL APEX?', a: 'SENTINEL APEX is an elite cybersecurity threat intelligence platform providing real-time CVE analysis, IOC feeds, detection rules, and AI-powered risk scoring.' },
+      { q: 'What is CYBERDUDEBIVASH SENTINEL APEX?', a: 'CYBERDUDEBIVASH SENTINEL APEX is an elite cybersecurity threat intelligence platform providing real-time CVE analysis, IOC feeds, detection rules, and AI-powered risk scoring.' },
       { q: 'How do I access the Threat Intelligence API?', a: 'Visit the API page at blog.cyberdudebivash.in/api.html to sign up for a free tier or Pro plan. The API provides CVE data, IOC feeds, and AI risk scoring.' },
       { q: 'What detection rules do you sell?', a: 'We offer Sigma rule megapacks (1,200+ rules), YARA ransomware packs (600+ rules), and CVE-specific detection bundles — all mapped to MITRE ATT&CK v15.' },
       { q: 'Is there a free tier?', a: 'Yes — the free tier includes 100 API requests/day, public CVE data, and access to our blog intelligence reports.' }
@@ -189,7 +189,7 @@
       schemas.push({
         '@context': 'https://schema.org',
         '@type': 'ItemList',
-        name: 'SENTINEL APEX Cybersecurity Products',
+        name: 'CYBERDUDEBIVASH SENTINEL APEX Cybersecurity Products',
         description: 'Premium Sigma rules, YARA packs, threat reports, and SOC toolkits.',
         url: canonical,
         numberOfItems: 9
@@ -201,7 +201,7 @@
       schemas.push({
         '@context': 'https://schema.org',
         '@type': 'SoftwareApplication',
-        name: 'SENTINEL APEX Threat Intelligence API',
+        name: 'CYBERDUDEBIVASH SENTINEL APEX Threat Intelligence API',
         applicationCategory: 'SecurityApplication',
         operatingSystem: 'Any',
         offers: [
