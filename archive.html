@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CyberDudeBivash SENTINEL APEX — Intelligence Archive. Threat intel reports, CVE analyses, and cyber incident reports older than 7 days, organized by date.">
+  <meta name="robots" content="index, follow">
+  <title>Intelligence Archive | CyberDudeBivash SENTINEL APEX</title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "SENTINEL APEX Intelligence Archive",
+    "description": "Archived cybersecurity threat intelligence reports organized by date",
+    "url": "https://blog.cyberdudebivash.in/archive.html",
+    "publisher": {
+      "@type": "Organization",
+      "name": "CyberDudeBivash",
+      "url": "https://cyberdudebivash.com"
+    }
+  }
+  </script>
+  <style>
+    :root {
+      --apex-cyan: #00ffe0; --apex-red: #ff3b3b; --apex-orange: #ff8c00;
+      --apex-yellow: #ffe000; --apex-green: #00ff88; --apex-purple: #a855f7;
+      --apex-bg: #07090f; --apex-surface: #0d1117; --apex-card: #111827;
+      --apex-border: #1f2937; --apex-text: #e2e8f0; --apex-muted: #6b7280;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--apex-bg); color: var(--apex-text); line-height: 1.7; }
+
+    /* CANVAS */
+    #matrixCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.025; pointer-events: none; }
+
+    /* TICKER */
+    .ticker-wrap { background: #0d0010; border-bottom: 1px solid #2d1050; padding: 8px 0; overflow: hidden; white-space: nowrap; }
+    .ticker-inner { display: inline-block; animation: ticker-scroll 50s linear infinite; }
+    .ticker-inner:hover { animation-play-state: paused; }
+    @keyframes ticker-scroll { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
+    .ticker-item { display: inline-block; padding: 0 40px; font-size: 12px; font-weight: 600; color: var(--apex-muted); }
+    .ticker-label { color: var(--apex-cyan); font-weight: 800; }
+    .dot-red { color: var(--apex-red); margin-right: 6px; }
+    .dot-orange { color: var(--apex-orange); margin-right: 6px; }
+
+    /* HEADER */
+    header { background: var(--apex-surface); border-bottom: 1px solid var(--apex-border); position: sticky; top: 0; z-index: 100; }
+    .header-inner { max-width: 1200px; margin: 0 auto; padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .logo-wrap { display: flex; align-items: center; gap: 14px; }
+    .logo-badge { background: var(--apex-cyan); color: #000; font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 4px; letter-spacing: 2px; text-transform: uppercase; }
+    .logo { font-size: 20px; font-weight: 900; color: var(--apex-cyan); letter-spacing: 2px; text-decoration: none; text-transform: uppercase; }
+    .logo span { color: #fff; }
+    nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+    nav a { color: var(--apex-muted); text-decoration: none; font-size: 13px; padding: 6px 14px; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px; transition: all .2s; }
+    nav a:hover { color: var(--apex-cyan); background: #001a1a; }
+    nav a.active { color: var(--apex-cyan); }
+    .nav-cta { background: var(--apex-cyan) !important; color: #000 !important; font-weight: 700 !important; }
+
+    /* HERO */
+    .page-hero { background: linear-gradient(135deg, #050010 0%, #000d1a 50%, #050010 100%); border-bottom: 1px solid var(--apex-border); padding: 50px 40px 40px; text-align: center; }
+    .page-hero-label { display: inline-block; background: #001a1a; border: 1px solid var(--apex-cyan); color: var(--apex-cyan); font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; padding: 6px 16px; border-radius: 20px; margin-bottom: 20px; }
+    .page-hero h1 { font-size: clamp(28px, 5vw, 48px); font-weight: 900; color: #fff; margin-bottom: 12px; }
+    .page-hero h1 span { color: var(--apex-cyan); }
+    .page-hero p { font-size: 16px; color: var(--apex-muted); max-width: 600px; margin: 0 auto 24px; }
+    .breadcrumb { display: flex; gap: 8px; justify-content: center; align-items: center; font-size: 13px; color: var(--apex-muted); }
+    .breadcrumb a { color: var(--apex-cyan); text-decoration: none; }
+    .breadcrumb-sep { color: var(--apex-border); }
+
+    /* MAIN */
+    .main-wrap { max-width: 1200px; margin: 0 auto; padding: 40px 40px 80px; display: grid; grid-template-columns: 1fr 320px; gap: 40px; }
+    @media (max-width: 900px) { .main-wrap { grid-template-columns: 1fr; padding: 24px 20px 60px; } }
+
+    /* CONTROLS */
+    .archive-controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 28px; }
+    .search-input { flex: 1; min-width: 200px; background: var(--apex-card); border: 1px solid var(--apex-border); border-radius: 8px; padding: 10px 16px; color: var(--apex-text); font-size: 14px; outline: none; transition: border-color .2s; }
+    .search-input:focus { border-color: var(--apex-cyan); }
+    .filter-select { background: var(--apex-card); border: 1px solid var(--apex-border); border-radius: 8px; padding: 10px 14px; color: var(--apex-text); font-size: 13px; cursor: pointer; }
+    .filter-select:focus { outline: none; border-color: var(--apex-cyan); }
+    .clear-cache-btn { background: transparent; border: 1px solid var(--apex-red); color: var(--apex-red); padding: 10px 16px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; transition: all .2s; }
+    .clear-cache-btn:hover { background: #1a0000; }
+
+    /* STATS ROW */
+    .archive-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
+    @media (max-width: 700px) { .archive-stats { grid-template-columns: repeat(2, 1fr); } }
+    .stat-card { background: var(--apex-card); border: 1px solid var(--apex-border); border-radius: 10px; padding: 16px; text-align: center; }
+    .stat-card .num { font-size: 28px; font-weight: 900; color: var(--apex-cyan); display: block; }
+    .stat-card .lbl { font-size: 11px; color: var(--apex-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+    /* DATE GROUP */
+    .date-group { margin-bottom: 24px; }
+    .date-group-header { display: flex; align-items: center; justify-content: space-between; background: var(--apex-surface); border: 1px solid var(--apex-border); border-radius: 10px 10px 0 0; padding: 14px 20px; cursor: pointer; user-select: none; transition: background .2s; }
+    .date-group-header:hover { background: #111827; }
+    .dg-date { font-size: 14px; font-weight: 800; color: var(--apex-cyan); letter-spacing: 1px; }
+    .dg-meta { display: flex; gap: 12px; align-items: center; }
+    .dg-count { font-size: 12px; color: var(--apex-muted); }
+    .dg-chevron { color: var(--apex-muted); transition: transform .3s; font-size: 16px; }
+    .date-group.expanded .dg-chevron { transform: rotate(180deg); }
+    .date-group-body { display: none; border: 1px solid var(--apex-border); border-top: none; border-radius: 0 0 10px 10px; overflow: hidden; }
+    .date-group.expanded .date-group-body { display: block; }
+
+    /* ARCHIVED INTEL CARD */
+    .archive-card { background: var(--apex-card); border-left: 3px solid var(--apex-border); padding: 16px 20px; border-bottom: 1px solid #0d1117; transition: background .2s; }
+    .archive-card:last-child { border-bottom: none; }
+    .archive-card:hover { background: #131f2e; }
+    .ac-header { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+    .ac-badge { padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+    .ac-title { font-size: 15px; font-weight: 700; color: var(--apex-text); text-decoration: none; line-height: 1.4; display: block; margin-bottom: 6px; transition: color .2s; }
+    .ac-title:hover { color: var(--apex-cyan); }
+    .ac-meta { display: flex; gap: 16px; align-items: center; font-size: 12px; color: var(--apex-muted); flex-wrap: wrap; }
+    .ac-time { font-family: 'Courier New', monospace; }
+    .ac-source { color: var(--apex-cyan); }
+
+    /* STATIC ARCHIVED POSTS */
+    .static-archive-section { margin-top: 32px; }
+    .section-heading { font-size: 13px; font-weight: 700; color: var(--apex-cyan); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--apex-border); }
+    .static-archive-card { background: var(--apex-card); border: 1px solid var(--apex-border); border-radius: 10px; padding: 18px 22px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; text-decoration: none; color: inherit; transition: border-color .2s, transform .2s; }
+    .static-archive-card:hover { border-color: var(--apex-cyan); transform: translateX(4px); }
+    .sac-info { flex: 1; }
+    .sac-title { font-size: 15px; font-weight: 700; color: var(--apex-text); margin-bottom: 6px; line-height: 1.4; }
+    .static-archive-card:hover .sac-title { color: var(--apex-cyan); }
+    .sac-meta { display: flex; gap: 12px; font-size: 12px; color: var(--apex-muted); flex-wrap: wrap; }
+    .sac-cvss { font-weight: 700; }
+    .sac-arrow { color: var(--apex-cyan); font-size: 18px; flex-shrink: 0; margin-top: 4px; }
+
+    /* EMPTY STATE */
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--apex-muted); }
+    .empty-state .ei { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
+    .empty-state h3 { font-size: 18px; color: var(--apex-text); margin-bottom: 8px; }
+    .empty-state p { font-size: 14px; max-width: 400px; margin: 0 auto; }
+
+    /* SIDEBAR */
+    .sidebar-widget { background: var(--apex-card); border: 1px solid var(--apex-border); border-radius: 12px; padding: 22px; margin-bottom: 20px; }
+    .widget-title { font-size: 11px; font-weight: 700; color: var(--apex-cyan); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--apex-border); }
+    .quick-link { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid #111827; text-decoration: none; transition: color .2s; }
+    .quick-link:last-child { border-bottom: none; }
+    .ql-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+    .ql-text { font-size: 13px; color: #94a3b8; line-height: 1.4; }
+    .quick-link:hover .ql-text { color: var(--apex-cyan); }
+    .cta-widget { background: linear-gradient(135deg, #001233, #002020); border: 1px solid var(--apex-cyan); border-radius: 12px; padding: 22px; text-align: center; }
+    .cta-widget h3 { color: var(--apex-cyan); font-size: 14px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; }
+    .cta-widget p { font-size: 13px; color: var(--apex-muted); margin-bottom: 14px; }
+    .cta-w-btn { display: block; background: var(--apex-cyan); color: #000; text-decoration: none; font-weight: 800; font-size: 12px; padding: 11px 18px; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; transition: opacity .2s; }
+    .cta-w-btn:hover { opacity: .85; }
+    .cta-w-btn.sec { background: transparent; color: var(--apex-cyan); border: 1px solid var(--apex-cyan); }
+
+    /* FOOTER */
+    footer { background: var(--apex-surface); border-top: 1px solid var(--apex-border); }
+    .footer-inner { max-width: 1200px; margin: 0 auto; padding: 40px 40px 30px; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 32px; }
+    @media (max-width: 768px) { .footer-grid { grid-template-columns: 1fr 1fr; } .header-inner { padding: 16px 20px; } }
+    @media (max-width: 500px) { .footer-grid { grid-template-columns: 1fr; } }
+    .footer-brand p { font-size: 13px; color: var(--apex-muted); margin-top: 10px; line-height: 1.6; }
+    .footer-col h4 { font-size: 12px; font-weight: 700; color: var(--apex-cyan); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 14px; }
+    .footer-col a { display: block; color: var(--apex-muted); text-decoration: none; font-size: 13px; margin-bottom: 8px; transition: color .2s; }
+    .footer-col a:hover { color: var(--apex-cyan); }
+    .footer-bottom { border-top: 1px solid var(--apex-border); padding-top: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; font-size: 12px; color: var(--apex-muted); }
+    .footer-bottom a { color: var(--apex-cyan); text-decoration: none; }
+
+    /* CATEGORY BADGE COLORS */
+    .badge-crit { background: #7c0000; color: #ff8080; border: 1px solid var(--apex-red); }
+    .badge-high { background: #2d1200; color: #ffaa60; border: 1px solid var(--apex-orange); }
+    .badge-zd { background: #003344; color: #60d4ff; border: 1px solid #00bcd4; }
+    .badge-mal { background: #1a0030; color: #c080ff; border: 1px solid var(--apex-purple); }
+    .badge-news { background: #001a0d; color: #60ff99; border: 1px solid var(--apex-green); }
+    .badge-gen { background: #111827; color: var(--apex-muted); border: 1px solid var(--apex-border); }
+
+    /* PAGINATION */
+    .pagination { display: flex; gap: 8px; justify-content: center; margin-top: 24px; }
+    .pg-btn { background: var(--apex-card); border: 1px solid var(--apex-border); color: var(--apex-muted); padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; transition: all .2s; }
+    .pg-btn:hover, .pg-btn.active { border-color: var(--apex-cyan); color: var(--apex-cyan); background: #001a1a; }
+  </style>
+</head>
+<body>
+<canvas id="matrixCanvas"></canvas>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-inner">
+    <span class="ticker-item"><span class="dot-red">●</span> <span class="ticker-label">ARCHIVE:</span> Historical threat intelligence — 7+ days old reports organized by date</span>
+    <span class="ticker-item"><span class="dot-red">●</span> <span class="ticker-label">CISA KEV:</span> CVE-2026-35616 Fortinet FortiClient EMS CVSS 9.8 — Archived</span>
+    <span class="ticker-item"><span class="dot-orange">●</span> <span class="ticker-label">ARCHIVED:</span> AI/LLM Prompt Injection Enterprise Attack Surface 2026</span>
+    <span class="ticker-item"><span class="dot-red">●</span> <span class="ticker-label">INTEL:</span> Access live updates at the Intelligence Hub</span>
+    <span class="ticker-item"><span class="dot-orange">●</span> <span class="ticker-label">SENTINEL APEX:</span> Auto-archives reports after 7 days for historical reference</span>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="logo-wrap">
+      <div class="logo-badge">SENTINEL APEX</div>
+      <a href="/" class="logo">CYBERDUDE<span>BIVASH</span></a>
+    </div>
+    <nav>
+      <a href="/">Blog</a>
+      <a href="intelligence.html">Intelligence Hub</a>
+      <a href="https://intel.cyberdudebivash.com" target="_blank">Intel Platform</a>
+      <a href="https://cyberdudebivash.in" target="_blank">AI Hub</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="archive.html" class="active">Archive</a>
+      <a href="mailto:bivash@cyberdudebivash.com?subject=Enterprise%20Access" class="nav-cta">Enterprise Access</a>
+    </nav>
+  </div>
+</header>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-label">📁 Intelligence Archive</div>
+  <h1>SENTINEL APEX <span>Historical Archive</span></h1>
+  <p>Complete archive of all published threat intelligence reports, CVE analyses, malware campaigns, and cyber incident reports — organized chronologically.</p>
+  <div class="breadcrumb">
+    <a href="/">Home</a>
+    <span class="breadcrumb-sep">›</span>
+    <a href="intelligence.html">Intelligence Hub</a>
+    <span class="breadcrumb-sep">›</span>
+    <span>Archive</span>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main-wrap">
+  <main>
+
+    <!-- STATS -->
+    <div class="archive-stats" id="archiveStats">
+      <div class="stat-card">
+        <span class="num" id="totalArchived">—</span>
+        <span class="lbl">Total Archived Items</span>
+      </div>
+      <div class="stat-card">
+        <span class="num" id="totalDates">—</span>
+        <span class="lbl">Date Groups</span>
+      </div>
+      <div class="stat-card">
+        <span class="num" id="totalCategories">13</span>
+        <span class="lbl">Intel Categories</span>
+      </div>
+      <div class="stat-card">
+        <span class="num">7+</span>
+        <span class="lbl">Days to Archive</span>
+      </div>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="archive-controls">
+      <input type="search" id="archiveSearch" class="search-input" placeholder="🔍 Search archived intel (CVE ID, threat actor, product...)">
+      <select id="categoryFilter" class="filter-select">
+        <option value="all">All Categories</option>
+        <option value="vuln">Vulnerabilities</option>
+        <option value="cve">CVEs</option>
+        <option value="zerod">Zero-Days</option>
+        <option value="malware">Malware</option>
+        <option value="incident">Incidents</option>
+        <option value="news">News</option>
+      </select>
+      <button class="clear-cache-btn" onclick="clearArchiveCache()">🗑 Clear Archive Cache</button>
+    </div>
+
+    <!-- DYNAMIC ARCHIVE (from localStorage) -->
+    <div id="dynamicArchive">
+      <!-- Populated by JavaScript from intelligence.html localStorage cache -->
+    </div>
+
+    <!-- STATIC PUBLISHED POSTS ARCHIVE -->
+    <div class="static-archive-section">
+      <div class="section-heading">📄 Published Reports Archive — April 2026</div>
+
+      <a href="posts/cve-2026-33825-microsoft-defender-zero-day-bluehammer-redsun.html" class="static-archive-card">
+        <div class="sac-info">
+          <div class="ac-header">
+            <span class="ac-badge badge-crit">CRITICAL</span>
+            <span class="ac-badge badge-zd">Zero-Day</span>
+            <span class="ac-badge badge-gen">22 Apr 2026</span>
+          </div>
+          <div class="sac-title">CRITICAL: Three Microsoft Defender Zero-Days CVE-2026-33825/26/27 — BlueHammer/RedSun/UnDefend Actively Exploited</div>
+          <div class="sac-meta">
+            <span class="sac-cvss" style="color:var(--apex-red)">CVSS 8.8</span>
+            <span>CVE-2026-33825 / 33826 / 33827</span>
+            <span>Windows Defender</span>
+            <span>MITRE: T1068, T1059</span>
+          </div>
+        </div>
+        <div class="sac-arrow">→</div>
+      </a>
+
+      <a href="posts/cve-2026-35616-fortinet-forticlient-ems-zero-day.html" class="static-archive-card">
+        <div class="sac-info">
+          <div class="ac-header">
+            <span class="ac-badge badge-crit">CRITICAL</span>
+            <span class="ac-badge" style="background:#003366;color:#60aaff;border:1px solid #3399ff">CISA KEV</span>
+            <span class="ac-badge badge-gen">22 Apr 2026</span>
+          </div>
+          <div class="sac-title">Fortinet FortiClient EMS Zero-Day CVE-2026-35616 (CVSS 9.8) — Pre-Auth API Bypass, CISA Mandates Emergency Patch</div>
+          <div class="sac-meta">
+            <span class="sac-cvss" style="color:var(--apex-orange)">CVSS 9.8</span>
+            <span>CVE-2026-35616</span>
+            <span>Fortinet FortiClient EMS</span>
+            <span>CISA KEV Listed</span>
+          </div>
+        </div>
+        <div class="sac-arrow">→</div>
+      </a>
+
+      <a href="posts/ai-llm-prompt-injection-enterprise-attack-surface-2026.html" class="static-archive-card">
+        <div class="sac-info">
+          <div class="ac-header">
+            <span class="ac-badge badge-mal">AI Security</span>
+            <span class="ac-badge" style="background:#1a2d00;color:#88ff60;border:1px solid #44aa00">OWASP LLM #1</span>
+            <span class="ac-badge badge-gen">22 Apr 2026</span>
+          </div>
+          <div class="sac-title">AI Security Crisis 2026: Prompt Injection Remains OWASP #1 — Autonomous AI Agents Expand Enterprise Attack Surface</div>
+          <div class="sac-meta">
+            <span class="sac-cvss" style="color:var(--apex-purple)">OWASP LLM01:2025</span>
+            <span>AI/LLM Security</span>
+            <span>Enterprise Risk</span>
+          </div>
+        </div>
+        <div class="sac-arrow">→</div>
+      </a>
+
+      <a href="posts/cve-2026-33824-windows-ike-service-rce-critical.html" class="static-archive-card">
+        <div class="sac-info">
+          <div class="ac-header">
+            <span class="ac-badge badge-crit">CRITICAL</span>
+            <span class="ac-badge" style="background:#003366;color:#60aaff;border:1px solid #3399ff">CISA KEV</span>
+            <span class="ac-badge badge-gen">22 Apr 2026</span>
+          </div>
+          <div class="sac-title">CVE-2026-33824: Windows IKE Service Double-Free — Unauthenticated RCE at SYSTEM Level Across ALL Windows Versions</div>
+          <div class="sac-meta">
+            <span class="sac-cvss" style="color:var(--apex-red)">CVSS 9.8</span>
+            <span>CVE-2026-33824</span>
+            <span>Windows IKE Service</span>
+            <span>All Windows Versions</span>
+          </div>
+        </div>
+        <div class="sac-arrow">→</div>
+      </a>
+
+      <a href="posts/cve-2026-32201-sharepoint-zero-day-patch-tuesday-april-2026.html" class="static-archive-card">
+        <div class="sac-info">
+          <div class="ac-header">
+            <span class="ac-badge badge-crit">CRITICAL</span>
+            <span class="ac-badge" style="background:#003366;color:#60aaff;border:1px solid #3399ff">CISA KEV</span>
+            <span class="ac-badge badge-gen">22 Apr 2026</span>
+          </div>
+          <div class="sac-title">April 2026 Patch Tuesday: CVE-2026-32201 SharePoint Zero-Day + 163 CVEs — Full SENTINEL APEX Analysis</div>
+          <div class="sac-meta">
+            <span class="sac-cvss" style="color:var(--apex-orange)">CVSS 6.5 + 8 CRITICAL CVEs</span>
+            <span>CVE-2026-32201</span>
+            <span>Microsoft SharePoint</span>
+            <span>163 CVEs Patched</span>
+          </div>
+        </div>
+        <div class="sac-arrow">→</div>
+      </a>
+
+      <a href="posts/cve-2026-5281-chrome-zero-day-dawn-webgpu-use-after-free.html" class="static-archive-card">
+        <div class="sac-info">
+          <div class="ac-header">
+            <span class="ac-badge badge-crit">CRITICAL</span>
+            <span class="ac-badge" style="background:#003366;color:#60aaff;border:1px solid #3399ff">CISA KEV</span>
+            <span class="ac-badge badge-gen">22 Apr 2026</span>
+          </div>
+          <div class="sac-title">CVE-2026-5281: Chrome Zero-Day Use-After-Free in Dawn WebGPU — All Chromium Browsers at Risk, CISA Orders Patch by April 15</div>
+          <div class="sac-meta">
+            <span class="sac-cvss" style="color:var(--apex-orange)">HIGH — Use-After-Free</span>
+            <span>CVE-2026-5281</span>
+            <span>Chrome / Chromium</span>
+            <span>Dawn WebGPU</span>
+          </div>
+        </div>
+        <div class="sac-arrow">→</div>
+      </a>
+    </div>
+
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside>
+    <div class="sidebar-widget">
+      <div class="widget-title">🔍 Archive Search Tips</div>
+      <p style="font-size:13px;color:var(--apex-muted);margin-bottom:12px;">Search by:</p>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:12px;color:#94a3b8;">
+        <span>• CVE ID (e.g. CVE-2026-33824)</span>
+        <span>• Threat actor name</span>
+        <span>• Affected product</span>
+        <span>• Attack technique (RCE, LPE, etc.)</span>
+        <span>• Malware family name</span>
+        <span>• MITRE ATT&amp;CK technique</span>
+      </div>
+    </div>
+
+    <div class="sidebar-widget">
+      <div class="widget-title">📂 Intelligence Categories</div>
+      <a href="intelligence.html#live-breaking" class="quick-link">
+        <div class="ql-dot" style="background:#ff0040"></div>
+        <div class="ql-text">⚡ Live Breaking Updates</div>
+      </a>
+      <a href="intelligence.html#zerod-today" class="quick-link">
+        <div class="ql-dot" style="background:#00bcd4"></div>
+        <div class="ql-text">💀 Zero-Days Today</div>
+      </a>
+      <a href="intelligence.html#malware" class="quick-link">
+        <div class="ql-dot" style="background:#8e44ad"></div>
+        <div class="ql-text">🦠 Malware Campaigns</div>
+      </a>
+      <a href="intelligence.html#today-cves" class="quick-link">
+        <div class="ql-dot" style="background:#ff8c00"></div>
+        <div class="ql-text">🟠 Today's CVEs</div>
+      </a>
+      <a href="intelligence.html#news-today" class="quick-link">
+        <div class="ql-dot" style="background:#27ae60"></div>
+        <div class="ql-text">📰 Cyber News Today</div>
+      </a>
+      <a href="intelligence.html#tips-2026" class="quick-link">
+        <div class="ql-dot" style="background:#7f8c8d"></div>
+        <div class="ql-text">🛡️ Security Tips 2026</div>
+      </a>
+    </div>
+
+    <div class="cta-widget">
+      <h3>🛰 SENTINEL APEX</h3>
+      <p>Get 48-hour pre-disclosure alerts before threats become public. Enterprise threat feeds, custom IOC ingestion, dedicated SOC advisory.</p>
+      <a href="mailto:bivash@cyberdudebivash.com?subject=Enterprise%20Threat%20Intelligence" class="cta-w-btn">Enterprise Subscription</a>
+      <a href="pricing.html" class="cta-w-btn sec">View Pricing Plans</a>
+    </div>
+
+    <div class="sidebar-widget">
+      <div class="widget-title">Ecosystem</div>
+      <a href="https://intel.cyberdudebivash.com" class="quick-link" target="_blank">
+        <div class="ql-dot" style="background:var(--apex-cyan)"></div>
+        <div class="ql-text">SENTINEL APEX Intel Platform</div>
+      </a>
+      <a href="https://cyberdudebivash.in" class="quick-link" target="_blank">
+        <div class="ql-dot" style="background:var(--apex-purple)"></div>
+        <div class="ql-text">AI Security Hub</div>
+      </a>
+      <a href="https://tools.cyberdudebivash.com" class="quick-link" target="_blank">
+        <div class="ql-dot" style="background:var(--apex-orange)"></div>
+        <div class="ql-text">CyberDudeBivash Tools</div>
+      </a>
+      <a href="https://cyberdudebivash.com" class="quick-link" target="_blank">
+        <div class="ql-dot" style="background:var(--apex-green)"></div>
+        <div class="ql-text">Official Portal</div>
+      </a>
+    </div>
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="logo">CYBERDUDE<span>BIVASH</span></a>
+        <p>AI-powered cybersecurity intelligence platform. Historical archive of all published threat reports — zero-days, CVEs, ransomware campaigns, and enterprise advisories from SENTINEL APEX.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Intelligence</h4>
+        <a href="/">Latest Reports</a>
+        <a href="intelligence.html">Intelligence Hub</a>
+        <a href="archive.html">Report Archive</a>
+        <a href="pricing.html">Pricing Plans</a>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a href="https://intel.cyberdudebivash.com" target="_blank">Sentinel APEX</a>
+        <a href="https://cyberdudebivash.in" target="_blank">AI Security Hub</a>
+        <a href="https://tools.cyberdudebivash.com" target="_blank">Tools</a>
+        <a href="https://cyberdudebivash.com" target="_blank">Official Site</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <a href="mailto:bivash@cyberdudebivash.com">bivash@cyberdudebivash.com</a>
+        <a href="mailto:bivash@cyberdudebivash.com?subject=Enterprise%20Subscription">Enterprise Access</a>
+        <a href="mailto:bivash@cyberdudebivash.com?subject=API%20Access%20Request">API Access</a>
+        <a href="https://github.com/cyberdudebivash/cyberdudebivash-blog" target="_blank">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 CyberDudeBivash | SENTINEL APEX Intelligence Platform</span>
+      <span>Threat intelligence for authorized security professionals only</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// =================== MATRIX RAIN ===================
+function initMatrixRain() {
+  const canvas = document.getElementById('matrixCanvas');
+  const ctx = canvas.getContext('2d');
+  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+  const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノCVEZERODAY';
+  const fontSize = 14;
+  let columns = Math.floor(canvas.width / fontSize);
+  let drops = Array(columns).fill(1);
+  function draw() {
+    ctx.fillStyle = 'rgba(7,9,15,0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'rgba(0,255,224,0.35)';
+    ctx.font = fontSize + 'px monospace';
+    drops.forEach((y, i) => {
+      const ch = chars[Math.floor(Math.random() * chars.length)];
+      ctx.fillText(ch, i * fontSize, y * fontSize);
+      if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    });
+    columns = Math.floor(canvas.width / fontSize);
+    while (drops.length < columns) drops.push(1);
+  }
+  setInterval(draw, 50);
+}
+initMatrixRain();
+
+// =================== ARCHIVE LOGIC ===================
+const CACHE_PREFIX = 'cdb_sentinel_';
+const ARCHIVE_PREFIX = 'cdb_archive_';
+
+function loadDynamicArchive() {
+  const container = document.getElementById('dynamicArchive');
+  const allArchiveData = {};
+  let totalItems = 0;
+
+  // Scan all localStorage keys for archive entries
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith(ARCHIVE_PREFIX)) {
+      try {
+        const data = JSON.parse(localStorage.getItem(key));
+        if (data && Array.isArray(data.items)) {
+          const datePart = key.replace(ARCHIVE_PREFIX, '').split('_')[1] || 'Unknown Date';
+          if (!allArchiveData[datePart]) allArchiveData[datePart] = [];
+          allArchiveData[datePart].push(...data.items);
+          totalItems += data.items.length;
+        }
+      } catch(e) {}
+    }
+  }
+
+  const sortedDates = Object.keys(allArchiveData).sort((a, b) => b.localeCompare(a));
+  document.getElementById('totalArchived').textContent = totalItems;
+  document.getElementById('totalDates').textContent = sortedDates.length;
+
+  if (sortedDates.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="ei">📭</div>
+        <h3>No Dynamic Archive Items Yet</h3>
+        <p>Items from the Intelligence Hub are automatically archived after 7 days. Visit the <a href="intelligence.html" style="color:var(--apex-cyan)">Intelligence Hub</a> to start building your archive.</p>
+      </div>`;
+    return;
+  }
+
+  const headingEl = document.createElement('div');
+  headingEl.className = 'section-heading';
+  headingEl.textContent = '🗄️ Dynamic Archive — Intelligence Hub Items (7+ Days Old)';
+  container.appendChild(headingEl);
+
+  sortedDates.forEach(date => {
+    const items = allArchiveData[date];
+    const group = document.createElement('div');
+    group.className = 'date-group expanded';
+    group.innerHTML = `
+      <div class="date-group-header" onclick="this.parentElement.classList.toggle('expanded')">
+        <span class="dg-date">📅 ${date}</span>
+        <div class="dg-meta">
+          <span class="dg-count">${items.length} item${items.length !== 1 ? 's' : ''}</span>
+          <span class="dg-chevron">▼</span>
+        </div>
+      </div>
+      <div class="date-group-body">
+        ${items.map(item => `
+          <div class="archive-card" style="border-left-color: ${getSeverityColor(item.cvss)}">
+            <div class="ac-header">
+              <span class="ac-badge ${getCategoryBadge(item.category)}">${item.category || 'INTEL'}</span>
+              ${item.cvss ? `<span class="ac-badge ${getCVSSBadge(item.cvss)}">CVSS ${item.cvss}</span>` : ''}
+            </div>
+            <a href="${item.link || '#'}" class="ac-title" target="_blank">${escapeHTML(item.title || 'Untitled')}</a>
+            <div class="ac-meta">
+              <span class="ac-source">${item.source || 'SENTINEL APEX'}</span>
+              <span class="ac-time">${item.pubDate || date}</span>
+              ${item.cveId ? `<span style="font-family:monospace">${item.cveId}</span>` : ''}
+            </div>
+          </div>
+        `).join('')}
+      </div>`;
+    container.appendChild(group);
+  });
+}
+
+function getSeverityColor(cvss) {
+  if (!cvss) return '#1f2937';
+  const score = parseFloat(cvss);
+  if (score >= 9) return '#ff0040';
+  if (score >= 7) return '#ff8c00';
+  if (score >= 4) return '#ffe000';
+  return '#00ff88';
+}
+
+function getCategoryBadge(cat) {
+  if (!cat) return 'badge-gen';
+  cat = cat.toLowerCase();
+  if (cat.includes('crit') || cat.includes('vuln')) return 'badge-crit';
+  if (cat.includes('zero') || cat.includes('0-day')) return 'badge-zd';
+  if (cat.includes('mal') || cat.includes('ransom')) return 'badge-mal';
+  if (cat.includes('news')) return 'badge-news';
+  return 'badge-gen';
+}
+
+function getCVSSBadge(cvss) {
+  const score = parseFloat(cvss);
+  if (score >= 9) return 'badge-crit';
+  if (score >= 7) return 'badge-high';
+  return 'badge-gen';
+}
+
+function escapeHTML(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function clearArchiveCache() {
+  if (!confirm('Clear all dynamic archive data from browser cache? This cannot be undone.')) return;
+  const keysToRemove = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && (key.startsWith(CACHE_PREFIX) || key.startsWith(ARCHIVE_PREFIX))) {
+      keysToRemove.push(key);
+    }
+  }
+  keysToRemove.forEach(k => localStorage.removeItem(k));
+  location.reload();
+}
+
+// Search/filter functionality
+document.getElementById('archiveSearch').addEventListener('input', function() {
+  const q = this.value.toLowerCase();
+  document.querySelectorAll('.archive-card, .static-archive-card').forEach(card => {
+    const text = card.textContent.toLowerCase();
+    card.style.display = q === '' || text.includes(q) ? '' : 'none';
+  });
+});
+
+document.getElementById('categoryFilter').addEventListener('change', function() {
+  const cat = this.value;
+  if (cat === 'all') {
+    document.querySelectorAll('.archive-card, .static-archive-card').forEach(c => c.style.display = '');
+    return;
+  }
+  document.querySelectorAll('.archive-card, .static-archive-card').forEach(card => {
+    const text = card.textContent.toLowerCase();
+    const matches = {
+      vuln: ['vulnerability','vuln','cve'], cve: ['cve-','cve '],
+      zerod: ['zero-day','zeroday','0-day'], malware: ['malware','ransomware','trojan','botnet'],
+      incident: ['incident','breach','attack'], news: ['news','update','advisory']
+    };
+    const keywords = matches[cat] || [];
+    card.style.display = keywords.some(kw => text.includes(kw)) ? '' : 'none';
+  });
+});
+
+// Load on DOMContentLoaded
+document.addEventListener('DOMContentLoaded', loadDynamicArchive);
+</script>
+</body>
+</html>

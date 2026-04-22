@@ -1,0 +1,2428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="SENTINEL APEX Intelligence Hub — Real-time cyber threat intelligence across 13 intelligence streams. Live CVEs, vulnerabilities, zero-days, malware campaigns, and breaking cybersecurity news.">
+<meta name="keywords" content="cyber intelligence, CVE, vulnerabilities, zero-day, malware, threat intelligence, CISA KEV, NVD, cybersecurity news 2026">
+<meta name="author" content="CYBERDUDEBIVASH SENTINEL APEX">
+<meta property="og:title" content="SENTINEL APEX Intelligence Hub | CYBERDUDEBIVASH">
+<meta property="og:description" content="Real-time threat intelligence across 13 intelligence streams — updated continuously">
+<meta property="og:url" content="https://blog.cyberdudebivash.in/intelligence.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://blog.cyberdudebivash.in/intelligence.html">
+<title>SENTINEL APEX Intelligence Hub | CYBERDUDEBIVASH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "SENTINEL APEX Intelligence Hub",
+  "description": "Real-time cyber threat intelligence platform with 13 intelligence streams covering vulnerabilities, CVEs, zero-days, malware campaigns, and breaking cybersecurity news.",
+  "url": "https://blog.cyberdudebivash.in/intelligence.html",
+  "publisher": {
+    "@type": "Organization",
+    "name": "CYBERDUDEBIVASH",
+    "url": "https://blog.cyberdudebivash.in"
+  },
+  "about": {
+    "@type": "Thing",
+    "name": "Cybersecurity Intelligence",
+    "description": "Real-time threat intelligence including CISA KEV, NVD CVE data, and aggregated security news feeds"
+  },
+  "mainEntity": {
+    "@type": "DataFeed",
+    "name": "SENTINEL APEX Live Intelligence Feed",
+    "description": "Aggregated cybersecurity intelligence from CISA KEV, NVD API, and top security RSS feeds",
+    "dataFeedElement": ["CVE data", "Zero-day vulnerabilities", "Malware campaigns", "Cyber incidents", "Security news"]
+  }
+}
+</script>
+<style>
+:root {
+  --apex-cyan: #00ffe0;
+  --apex-red: #ff3b3b;
+  --apex-orange: #ff8c00;
+  --apex-yellow: #ffe000;
+  --apex-green: #00ff88;
+  --apex-purple: #a855f7;
+  --apex-bg: #07090f;
+  --apex-surface: #0d1117;
+  --apex-card: #111827;
+  --apex-border: #1f2937;
+  --apex-text: #e2e8f0;
+  --apex-muted: #6b7280;
+  --apex-font: 'Inter', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--apex-font);
+  background: var(--apex-bg);
+  color: var(--apex-text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ==================== MATRIX RAIN ==================== */
+#matrix-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.03;
+}
+
+/* ==================== TICKER ==================== */
+.ticker-bar {
+  position: relative;
+  z-index: 100;
+  background: linear-gradient(90deg, #ff0040, #ff8c00, #ff0040);
+  padding: 8px 0;
+  overflow: hidden;
+  border-bottom: 1px solid #ff004050;
+}
+.ticker-content {
+  display: flex;
+  animation: ticker-scroll 40s linear infinite;
+  white-space: nowrap;
+}
+.ticker-content:hover { animation-play-state: paused; }
+.ticker-item {
+  padding: 0 40px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: white;
+}
+.ticker-item::before { content: '⚡ '; }
+@keyframes ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ==================== STICKY HEADER ==================== */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(7, 9, 15, 0.97);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--apex-border);
+  padding: 0 24px;
+}
+.header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  gap: 16px;
+}
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.logo-text {
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--apex-cyan), var(--apex-green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.sentinel-badge {
+  background: linear-gradient(135deg, #ff0040, #ff8c00);
+  color: white;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  justify-content: center;
+}
+.nav-link {
+  color: var(--apex-muted);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+.nav-link:hover, .nav-link.active {
+  color: var(--apex-cyan);
+  background: rgba(0, 255, 224, 0.08);
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+.live-clock-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--apex-surface);
+  border: 1px solid var(--apex-border);
+  border-radius: 8px;
+  padding: 6px 12px;
+}
+.live-dot {
+  width: 8px; height: 8px;
+  background: #ff3b3b;
+  border-radius: 50%;
+  animation: live-pulse 1s ease-in-out infinite;
+}
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px #ff3b3b; }
+  50% { opacity: 0.4; box-shadow: none; }
+}
+.live-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #ff3b3b;
+  letter-spacing: 1px;
+}
+#live-clock {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--apex-cyan);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 1px;
+}
+.enterprise-btn {
+  background: linear-gradient(135deg, #ff0040, #ff8c00);
+  color: white;
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.enterprise-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(255, 0, 64, 0.4);
+}
+
+/* ==================== HERO BAR ==================== */
+.hero-bar {
+  position: relative;
+  z-index: 10;
+  background: linear-gradient(135deg, rgba(13,17,23,0.98), rgba(0,255,224,0.04));
+  border-bottom: 1px solid var(--apex-border);
+  padding: 28px 24px;
+}
+.hero-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.hero-title {
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  background: linear-gradient(135deg, var(--apex-cyan), var(--apex-green), var(--apex-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-subtitle {
+  font-size: 13px;
+  color: var(--apex-muted);
+  margin-top: 4px;
+  letter-spacing: 0.3px;
+}
+.hero-stats {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.hero-stat {
+  background: var(--apex-surface);
+  border: 1px solid var(--apex-border);
+  border-radius: 10px;
+  padding: 12px 20px;
+  text-align: center;
+  min-width: 120px;
+}
+.hero-stat-num {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--apex-cyan);
+}
+.hero-stat-label {
+  font-size: 10px;
+  color: var(--apex-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+
+/* ==================== TAB NAV ==================== */
+.tab-section {
+  position: relative;
+  z-index: 10;
+  background: var(--apex-surface);
+  border-bottom: 2px solid var(--apex-border);
+}
+.tab-nav-wrap {
+  max-width: 1400px;
+  margin: 0 auto;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--apex-border) transparent;
+}
+.tab-nav-wrap::-webkit-scrollbar { height: 4px; }
+.tab-nav-wrap::-webkit-scrollbar-track { background: transparent; }
+.tab-nav-wrap::-webkit-scrollbar-thumb { background: var(--apex-border); border-radius: 2px; }
+.tab-nav {
+  display: flex;
+  padding: 16px 24px 0;
+  gap: 4px;
+  min-width: max-content;
+}
+.tab-btn {
+  position: relative;
+  padding: 12px 20px;
+  border: 1px solid transparent;
+  border-bottom: 3px solid transparent;
+  border-radius: 10px 10px 0 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  background: var(--apex-card);
+  color: var(--apex-muted);
+  font-family: var(--apex-font);
+  outline: none;
+  min-width: 140px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-direction: column;
+}
+.tab-btn-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.tab-btn.active {
+  border-color: var(--tab-color);
+  border-bottom-color: var(--tab-color);
+  color: var(--tab-color);
+  background: color-mix(in srgb, var(--tab-color) 10%, var(--apex-card));
+  box-shadow: 0 0 20px color-mix(in srgb, var(--tab-color) 25%, transparent), inset 0 1px 0 color-mix(in srgb, var(--tab-color) 30%, transparent);
+}
+.tab-btn:hover:not(.active) {
+  transform: translateY(-2px);
+  color: var(--tab-color);
+  border-color: color-mix(in srgb, var(--tab-color) 40%, transparent);
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--tab-color) 15%, transparent);
+}
+.tab-icon { font-size: 16px; }
+.tab-label { font-size: 10px; letter-spacing: 0.8px; }
+.tab-count-badge {
+  position: absolute;
+  top: 6px; right: 6px;
+  background: var(--tab-color);
+  color: #000;
+  font-size: 9px;
+  font-weight: 900;
+  padding: 1px 5px;
+  border-radius: 10px;
+  min-width: 18px;
+  text-align: center;
+  line-height: 14px;
+}
+/* LIVE BREAKING special tab */
+.tab-btn[data-tab="live-breaking"] {
+  animation: breaking-bg 2s ease-in-out infinite;
+}
+@keyframes breaking-bg {
+  0%, 100% { background: color-mix(in srgb, #ff0040 12%, var(--apex-card)); }
+  50% { background: color-mix(in srgb, #ff0040 6%, var(--apex-card)); }
+}
+.live-badge {
+  animation: live-badge-pulse 1s infinite;
+  background: #ff0040;
+  color: white;
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+}
+@keyframes live-badge-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ==================== MAIN LAYOUT ==================== */
+.main-wrapper {
+  position: relative;
+  z-index: 10;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+  align-items: start;
+}
+.content-main { min-width: 0; }
+.content-sidebar { position: sticky; top: 88px; }
+
+/* ==================== TAB TOOLBAR ==================== */
+.tab-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  background: var(--apex-surface);
+  border: 1px solid var(--apex-border);
+  border-radius: 10px;
+  flex-wrap: wrap;
+}
+.tab-toolbar-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--apex-text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tab-toolbar-meta {
+  font-size: 11px;
+  color: var(--apex-muted);
+}
+.toolbar-actions { display: flex; gap: 8px; align-items: center; }
+.refresh-btn {
+  background: rgba(0, 255, 224, 0.1);
+  border: 1px solid rgba(0, 255, 224, 0.3);
+  color: var(--apex-cyan);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
+  font-family: var(--apex-font);
+}
+.refresh-btn:hover { background: rgba(0, 255, 224, 0.18); }
+.refresh-btn.spinning .refresh-icon { animation: spin 0.8s linear infinite; display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ==================== INTEL CARDS ==================== */
+.cards-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.intel-card {
+  background: var(--apex-card);
+  border: 1px solid var(--apex-border);
+  border-left: 4px solid var(--card-accent, var(--apex-border));
+  border-radius: 10px;
+  padding: 16px;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.intel-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--card-accent, transparent), transparent);
+  opacity: 0.5;
+}
+.intel-card:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--card-accent, var(--apex-border)) 60%, var(--apex-border));
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.intel-card.severity-critical { --card-accent: #ff0040; background: #0d0005; }
+.intel-card.severity-high { --card-accent: #ff8c00; background: #0d0800; }
+.intel-card.severity-medium { --card-accent: #ffe000; background: #0d0d00; }
+.intel-card.severity-low { --card-accent: #00ff88; background: #000d05; }
+.intel-card.severity-info { --card-accent: #00ffe0; background: #00080d; }
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.card-badges { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.source-badge, .severity-badge, .category-badge {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+.source-badge { background: rgba(0,255,224,0.15); color: var(--apex-cyan); border: 1px solid rgba(0,255,224,0.3); }
+.severity-badge.critical { background: rgba(255,0,64,0.2); color: #ff0040; border: 1px solid rgba(255,0,64,0.4); }
+.severity-badge.high { background: rgba(255,140,0,0.2); color: #ff8c00; border: 1px solid rgba(255,140,0,0.4); }
+.severity-badge.medium { background: rgba(255,224,0,0.15); color: #ffe000; border: 1px solid rgba(255,224,0,0.3); }
+.severity-badge.low { background: rgba(0,255,136,0.12); color: #00ff88; border: 1px solid rgba(0,255,136,0.3); }
+.category-badge { background: rgba(168,85,247,0.15); color: #a855f7; border: 1px solid rgba(168,85,247,0.3); }
+.cisa-badge { background: rgba(255,59,59,0.2); color: #ff3b3b; border: 1px solid rgba(255,59,59,0.4); font-size: 9px; font-weight: 800; letter-spacing: 1px; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; }
+
+.card-time { font-size: 10px; color: var(--apex-muted); white-space: nowrap; flex-shrink: 0; }
+
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+.card-title a {
+  color: var(--apex-text);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.card-title a:hover { color: var(--apex-cyan); }
+
+.card-excerpt {
+  font-size: 12px;
+  color: var(--apex-muted);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.card-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 10px;
+  padding: 10px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 6px;
+  border: 1px solid var(--apex-border);
+}
+.card-meta-item { font-size: 10px; }
+.card-meta-label { color: var(--apex-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.card-meta-value { color: var(--apex-text); font-weight: 600; margin-top: 1px; }
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-cve {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--apex-yellow);
+  font-variant-numeric: tabular-nums;
+}
+.card-cvss {
+  font-size: 12px;
+  font-weight: 900;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.card-cvss.critical { background: rgba(255,0,64,0.3); color: #ff0040; }
+.card-cvss.high { background: rgba(255,140,0,0.3); color: #ff8c00; }
+.card-cvss.medium { background: rgba(255,224,0,0.2); color: #ffe000; }
+.card-cvss.low { background: rgba(0,255,136,0.15); color: #00ff88; }
+.card-read-more {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--apex-cyan);
+  text-decoration: none;
+  letter-spacing: 0.3px;
+  transition: all 0.2s;
+  padding: 4px 10px;
+  border: 1px solid rgba(0,255,224,0.3);
+  border-radius: 5px;
+}
+.card-read-more:hover { background: rgba(0,255,224,0.1); }
+
+/* ==================== SKELETON LOADING ==================== */
+.skeleton-card {
+  background: var(--apex-card);
+  border: 1px solid var(--apex-border);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.skeleton-line {
+  height: 12px;
+  background: linear-gradient(90deg, var(--apex-surface) 25%, var(--apex-border) 50%, var(--apex-surface) 75%);
+  background-size: 400% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+.skeleton-line.w-80 { width: 80%; }
+.skeleton-line.w-60 { width: 60%; }
+.skeleton-line.w-40 { width: 40%; }
+.skeleton-line.h-20 { height: 20px; }
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ==================== ERROR STATE ==================== */
+.error-card {
+  background: rgba(255,0,64,0.05);
+  border: 1px solid rgba(255,0,64,0.3);
+  border-radius: 10px;
+  padding: 24px;
+  text-align: center;
+}
+.error-icon { font-size: 32px; margin-bottom: 12px; }
+.error-title { font-size: 14px; font-weight: 700; color: #ff3b3b; margin-bottom: 8px; }
+.error-msg { font-size: 12px; color: var(--apex-muted); margin-bottom: 16px; }
+.retry-btn {
+  background: rgba(255,0,64,0.15);
+  border: 1px solid rgba(255,0,64,0.4);
+  color: #ff3b3b;
+  padding: 8px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--apex-font);
+  transition: all 0.2s;
+}
+.retry-btn:hover { background: rgba(255,0,64,0.25); }
+
+/* ==================== PREMIUM TEASER ==================== */
+.premium-teaser {
+  background: linear-gradient(135deg, rgba(168,85,247,0.1), rgba(255,140,0,0.05));
+  border: 1px solid rgba(168,85,247,0.4);
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.premium-teaser::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #a855f7, #ff8c00, #a855f7);
+}
+.premium-lock { font-size: 24px; margin-bottom: 8px; }
+.premium-title { font-size: 14px; font-weight: 800; color: #a855f7; margin-bottom: 6px; }
+.premium-desc { font-size: 12px; color: var(--apex-muted); margin-bottom: 14px; line-height: 1.5; }
+.premium-cta {
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  color: white;
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 8px 20px;
+  border-radius: 6px;
+  display: inline-block;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+.premium-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(168,85,247,0.4); }
+
+/* ==================== SIDEBAR ==================== */
+.sidebar-widget {
+  background: var(--apex-card);
+  border: 1px solid var(--apex-border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.widget-title {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--apex-cyan);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--apex-border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Threat Level Widget */
+.threat-level-display {
+  text-align: center;
+  padding: 16px;
+  background: var(--apex-surface);
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+.threat-level-badge {
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 6px;
+}
+.threat-level-badge.elevated { color: #ff8c00; text-shadow: 0 0 20px rgba(255,140,0,0.5); }
+.threat-level-badge.high { color: #ff3b3b; text-shadow: 0 0 20px rgba(255,59,59,0.5); }
+.threat-level-badge.severe { color: #ff0040; text-shadow: 0 0 20px rgba(255,0,64,0.5); }
+.threat-sub { font-size: 10px; color: var(--apex-muted); text-transform: uppercase; letter-spacing: 1px; }
+.threat-bar {
+  height: 8px;
+  background: var(--apex-surface);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.threat-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ffe000, #ff8c00, #ff0040);
+  border-radius: 4px;
+  transition: width 1s ease;
+}
+.threat-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.threat-stat-item {
+  background: var(--apex-surface);
+  border-radius: 6px;
+  padding: 8px;
+  text-align: center;
+}
+.threat-stat-num { font-size: 18px; font-weight: 900; }
+.threat-stat-lbl { font-size: 9px; color: var(--apex-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* CVE Counter */
+.cve-counter { text-align: center; padding: 8px 0; }
+.cve-counter-num {
+  font-size: 36px;
+  font-weight: 900;
+  color: var(--apex-red);
+  text-shadow: 0 0 20px rgba(255,59,59,0.4);
+  font-variant-numeric: tabular-nums;
+  display: block;
+}
+.cve-counter-label { font-size: 10px; color: var(--apex-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+/* Quick Links */
+.quick-links { list-style: none; }
+.quick-links li { border-bottom: 1px solid var(--apex-border); }
+.quick-links li:last-child { border-bottom: none; }
+.quick-links a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 4px;
+  color: var(--apex-muted);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+.quick-links a:hover { color: var(--apex-cyan); padding-left: 8px; }
+.quick-links a .ql-icon { font-size: 14px; }
+
+/* Enterprise CTA Sidebar */
+.enterprise-sidebar {
+  background: linear-gradient(135deg, rgba(255,0,64,0.1), rgba(255,140,0,0.05));
+  border: 1px solid rgba(255,0,64,0.3);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.enterprise-sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #ff0040, #ff8c00);
+}
+.enterprise-sidebar-title { font-size: 15px; font-weight: 900; color: var(--apex-red); margin-bottom: 8px; }
+.enterprise-sidebar-desc { font-size: 12px; color: var(--apex-muted); margin-bottom: 16px; line-height: 1.5; }
+.enterprise-sidebar-features { text-align: left; list-style: none; margin-bottom: 16px; }
+.enterprise-sidebar-features li { font-size: 11px; color: var(--apex-text); padding: 4px 0; }
+.enterprise-sidebar-features li::before { content: '✓ '; color: var(--apex-green); font-weight: 700; }
+.enterprise-sidebar-btn {
+  display: block;
+  background: linear-gradient(135deg, #ff0040, #ff8c00);
+  color: white;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+.enterprise-sidebar-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(255,0,64,0.4); }
+
+/* Newsletter */
+.newsletter-form { display: flex; flex-direction: column; gap: 10px; }
+.newsletter-input {
+  background: var(--apex-surface);
+  border: 1px solid var(--apex-border);
+  color: var(--apex-text);
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: var(--apex-font);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.newsletter-input:focus { border-color: var(--apex-cyan); }
+.newsletter-btn {
+  background: linear-gradient(135deg, var(--apex-cyan), var(--apex-green));
+  color: #000;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: var(--apex-font);
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
+}
+.newsletter-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,255,224,0.3); }
+
+/* ==================== ARCHIVE SECTION ==================== */
+.archive-section {
+  position: relative;
+  z-index: 10;
+  max-width: 1400px;
+  margin: 24px auto;
+  padding: 0 24px 24px;
+}
+.archive-header {
+  background: var(--apex-surface);
+  border: 1px solid var(--apex-border);
+  border-radius: 10px 10px 0 0;
+  padding: 16px 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+  transition: background 0.2s;
+}
+.archive-header:hover { background: rgba(255,255,255,0.03); }
+.archive-header-title { font-size: 13px; font-weight: 700; color: var(--apex-muted); display: flex; align-items: center; gap: 8px; }
+.archive-toggle { font-size: 12px; color: var(--apex-muted); transition: transform 0.3s; }
+.archive-toggle.open { transform: rotate(180deg); }
+.archive-body {
+  background: var(--apex-card);
+  border: 1px solid var(--apex-border);
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  padding: 20px;
+  display: none;
+}
+.archive-body.open { display: block; }
+.archive-date-group { margin-bottom: 20px; }
+.archive-date-title { font-size: 11px; font-weight: 700; color: var(--apex-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--apex-border); }
+.archive-empty { text-align: center; color: var(--apex-muted); font-size: 12px; padding: 20px; }
+
+/* ==================== SECURITY TIPS ==================== */
+.tips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+.tip-card {
+  background: var(--apex-card);
+  border: 1px solid var(--apex-border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.tip-card:hover { transform: translateY(-2px); border-color: rgba(0,255,224,0.3); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+.tip-card-front, .tip-card-back {
+  padding: 20px;
+}
+.tip-card-back { display: none; border-top: 1px solid var(--apex-border); background: var(--apex-surface); }
+.tip-card.expanded .tip-card-back { display: block; }
+.tip-num { font-size: 10px; font-weight: 800; color: var(--apex-cyan); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+.tip-title { font-size: 14px; font-weight: 700; color: var(--apex-text); margin-bottom: 8px; line-height: 1.4; }
+.tip-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.tip-tag { font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+.tip-tag.difficulty-high { background: rgba(255,0,64,0.15); color: #ff0040; }
+.tip-tag.difficulty-medium { background: rgba(255,224,0,0.12); color: #ffe000; }
+.tip-tag.difficulty-low { background: rgba(0,255,136,0.12); color: #00ff88; }
+.tip-tag.cat { background: rgba(168,85,247,0.15); color: #a855f7; }
+.tip-body { font-size: 12px; color: var(--apex-muted); line-height: 1.7; }
+.tip-expand-hint { font-size: 10px; color: var(--apex-cyan); margin-top: 8px; }
+
+/* ==================== FOOTER ==================== */
+.site-footer {
+  position: relative;
+  z-index: 10;
+  background: var(--apex-surface);
+  border-top: 1px solid var(--apex-border);
+  padding: 40px 24px 24px;
+  margin-top: 40px;
+}
+.footer-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+.footer-brand-name {
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  background: linear-gradient(135deg, var(--apex-cyan), var(--apex-green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+.footer-brand-desc { font-size: 12px; color: var(--apex-muted); line-height: 1.6; margin-bottom: 16px; }
+.footer-col-title { font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--apex-cyan); margin-bottom: 14px; }
+.footer-links { list-style: none; }
+.footer-links li { margin-bottom: 8px; }
+.footer-links a { color: var(--apex-muted); text-decoration: none; font-size: 12px; transition: color 0.2s; }
+.footer-links a:hover { color: var(--apex-cyan); }
+.footer-bottom {
+  padding-top: 20px;
+  border-top: 1px solid var(--apex-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.footer-bottom-text { font-size: 11px; color: var(--apex-muted); }
+.footer-bottom-links { display: flex; gap: 20px; }
+.footer-bottom-links a { font-size: 11px; color: var(--apex-muted); text-decoration: none; }
+.footer-bottom-links a:hover { color: var(--apex-cyan); }
+
+/* ==================== UTILITY ==================== */
+.hidden { display: none !important; }
+.text-center { text-align: center; }
+.mt-16 { margin-top: 16px; }
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 1024px) {
+  .main-wrapper { grid-template-columns: 1fr; }
+  .content-sidebar { position: static; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .header-nav { display: none; }
+  .hero-title { font-size: 20px; }
+  .hero-stats { gap: 10px; }
+  .hero-stat { min-width: 90px; padding: 8px 12px; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .tips-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- MATRIX RAIN CANVAS -->
+<canvas id="matrix-canvas"></canvas>
+
+<!-- LIVE TICKER -->
+<div class="ticker-bar" aria-label="Live news ticker">
+  <div class="ticker-content" id="ticker-content">
+    <span class="ticker-item">CRITICAL: CISA KEV Updated with New Actively Exploited Vulnerabilities</span>
+    <span class="ticker-item">BREAKING: Zero-Day Vulnerability Discovered in Popular Enterprise Software</span>
+    <span class="ticker-item">ALERT: Nation-State APT Group Targeting Critical Infrastructure</span>
+    <span class="ticker-item">WARNING: Ransomware Campaign Spreading Across Healthcare Sector</span>
+    <span class="ticker-item">PATCH NOW: High-CVSS Vulnerability in Widely-Used Network Device</span>
+    <span class="ticker-item">INTELLIGENCE: New Malware Variant Evading EDR Detection</span>
+    <span class="ticker-item">UPDATE: NIST NVD Publishing Accelerated CVE Analysis for Q2 2026</span>
+    <span class="ticker-item">THREAT: Supply Chain Attack Targeting Open-Source Repositories</span>
+    <span class="ticker-item">ADVISORY: Government Issues Emergency Directive for Federal Agencies</span>
+    <span class="ticker-item">REPORT: 2026 Threat Landscape Shows 300% Rise in AI-Augmented Attacks</span>
+    <!-- duplicate for seamless loop -->
+    <span class="ticker-item">CRITICAL: CISA KEV Updated with New Actively Exploited Vulnerabilities</span>
+    <span class="ticker-item">BREAKING: Zero-Day Vulnerability Discovered in Popular Enterprise Software</span>
+    <span class="ticker-item">ALERT: Nation-State APT Group Targeting Critical Infrastructure</span>
+    <span class="ticker-item">WARNING: Ransomware Campaign Spreading Across Healthcare Sector</span>
+    <span class="ticker-item">PATCH NOW: High-CVSS Vulnerability in Widely-Used Network Device</span>
+    <span class="ticker-item">INTELLIGENCE: New Malware Variant Evading EDR Detection</span>
+    <span class="ticker-item">UPDATE: NIST NVD Publishing Accelerated CVE Analysis for Q2 2026</span>
+    <span class="ticker-item">THREAT: Supply Chain Attack Targeting Open-Source Repositories</span>
+    <span class="ticker-item">ADVISORY: Government Issues Emergency Directive for Federal Agencies</span>
+    <span class="ticker-item">REPORT: 2026 Threat Landscape Shows 300% Rise in AI-Augmented Attacks</span>
+  </div>
+</div>
+
+<!-- STICKY HEADER -->
+<header class="site-header" role="banner">
+  <div class="header-inner">
+    <a href="/" class="header-logo" aria-label="CYBERDUDEBIVASH Home">
+      <span class="logo-text">CYBERDUDEBIVASH</span>
+      <span class="sentinel-badge">SENTINEL APEX</span>
+    </a>
+    <nav class="header-nav" aria-label="Main navigation">
+      <a href="/" class="nav-link">Blog</a>
+      <a href="/intelligence.html" class="nav-link active">Intel Platform</a>
+      <a href="/#ai-hub" class="nav-link">AI Hub</a>
+      <a href="/#tools" class="nav-link">Tools</a>
+      <a href="/pricing.html" class="nav-link">Pricing</a>
+    </nav>
+    <div class="header-right">
+      <div class="live-clock-wrap" aria-live="polite" aria-label="Live UTC clock">
+        <div class="live-dot"></div>
+        <span class="live-label">LIVE</span>
+        <span id="live-clock">00:00:00 UTC</span>
+      </div>
+      <a href="/pricing.html" class="enterprise-btn">Enterprise Access</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO BAR -->
+<section class="hero-bar" aria-labelledby="hero-title">
+  <div class="hero-inner">
+    <div>
+      <h1 class="hero-title" id="hero-title">SENTINEL APEX Intelligence Hub</h1>
+      <p class="hero-subtitle">Real-time threat intelligence across 13 intelligence streams — updated continuously</p>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num" id="stat-kev-total">—</div>
+        <div class="hero-stat-label">CISA KEV Total</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num" id="stat-kev-new">—</div>
+        <div class="hero-stat-label">Added This Week</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num" id="stat-feeds-items">—</div>
+        <div class="hero-stat-label">Live Feed Items</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num" id="stat-last-updated">—</div>
+        <div class="hero-stat-label">Last Refresh</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13-TAB NAVIGATION -->
+<section class="tab-section" role="navigation" aria-label="Intelligence category tabs">
+  <div class="tab-nav-wrap">
+    <div class="tab-nav" role="tablist" id="tab-nav">
+      <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="panel-live-breaking"
+        data-tab="live-breaking" style="--tab-color: #ff0040">
+        <div class="tab-btn-row">
+          <span class="tab-icon">⚡</span>
+          <span class="live-badge">● LIVE</span>
+        </div>
+        <span class="tab-label">Live Breaking</span>
+        <span class="tab-count-badge" id="badge-live-breaking">0</span>
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-today-vulns"
+        data-tab="today-vulns" style="--tab-color: #ff3b3b">
+        <div class="tab-btn-row">
+          <span class="tab-icon">🔴</span>
+        </div>
+        <span class="tab-label">Today's Vulns</span>
+        <span class="tab-count-badge" id="badge-today-vulns">0</span>
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-today-cves"
+        data-tab="today-cves" style="--tab-color: #ff8c00">
+        <div class="tab-btn-row">
+          <span class="tab-icon">🟠</span>
+        </div>
+        <span class="tab-label">Today's CVEs</span>
+        <span class="tab-count-badge" id="badge-today-cves">0</span>
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-week-vulns"
+        data-tab="week-vulns" style="--tab-color: #c0392b">
+        <div class="tab-btn-row">
+          <span class="tab-icon">📊</span>
+        </div>
+        <span class="tab-label">Week Vulns</span>
+        <span class="tab-count-badge" id="badge-week-vulns">0</span>
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-week-cves"
+        data-tab="week-cves" style="--tab-color: #e67e22">
+        <div class="tab-btn-row">
+          <span class="tab-icon">📋</span>
+        </div>
+        <span class="tab-label">Week CVEs</span>
+        <span class="tab-count-badge" id="badge-week-cves">0</span>
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-today-incidents"
+        data-tab="today-incidents" style="--tab-color: #f39c12">
+        <div class="tab-btn-row">
+          <span class="tab-icon">⚠️</span>
+        </div>
+        <span class="tab-label">Today Incidents</span>
+        <span class="tab-count-badge" id="badge-today-incidents">0</span>
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-week-incidents"
+        data-tab="week-incidents" style="--tab-color: #d4ac0d">
+        <div class="tab-btn-row">
+          <span class="tab-icon">📡</span>
+        </div>
+        <span class="tab-label">Week Incidents</span>
+        <span class="tab-count-badge" id="badge-week-incidents">0</span>
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-malware"
+        data-tab="malware" style="--tab-color: #8e44ad">
+        <div class="tab-btn-row">
+          <span class="tab-icon">🦠</span>
+        </div>
+        <span class="tab-label">Malware & Campaigns</span>
+        <span class="tab-count-badge" id="badge-malware">0</span>
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-zerod-today"
+        data-tab="zerod-today" style="--tab-color: #00bcd4">
+        <div class="tab-btn-row">
+          <span class="tab-icon">💀</span>
+        </div>
+        <span class="tab-label">Zero-Days Today</span>
+        <span class="tab-count-badge" id="badge-zerod-today">0</span>
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-zerod-week"
+        data-tab="zerod-week" style="--tab-color: #0097a7">
+        <div class="tab-btn-row">
+          <span class="tab-icon">🎯</span>
+        </div>
+        <span class="tab-label">Zero-Days Week</span>
+        <span class="tab-count-badge" id="badge-zerod-week">0</span>
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-news-today"
+        data-tab="news-today" style="--tab-color: #27ae60">
+        <div class="tab-btn-row">
+          <span class="tab-icon">📰</span>
+        </div>
+        <span class="tab-label">Today's News</span>
+        <span class="tab-count-badge" id="badge-news-today">0</span>
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-news-week"
+        data-tab="news-week" style="--tab-color: #1e8449">
+        <div class="tab-btn-row">
+          <span class="tab-icon">🌐</span>
+        </div>
+        <span class="tab-label">Week News</span>
+        <span class="tab-count-badge" id="badge-news-week">0</span>
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-tips-2026"
+        data-tab="tips-2026" style="--tab-color: #7f8c8d">
+        <div class="tab-btn-row">
+          <span class="tab-icon">🛡️</span>
+        </div>
+        <span class="tab-label">Security Tips 2026</span>
+        <span class="tab-count-badge" id="badge-tips-2026">20</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN CONTENT WRAPPER -->
+<div class="main-wrapper">
+  <!-- CONTENT MAIN -->
+  <main class="content-main" id="content-main">
+    <!-- Tab Toolbar -->
+    <div class="tab-toolbar">
+      <div>
+        <div class="tab-toolbar-title">
+          <span id="toolbar-icon">⚡</span>
+          <span id="toolbar-title">LIVE BREAKING UPDATES</span>
+        </div>
+        <div class="tab-toolbar-meta" id="toolbar-meta">Loading intelligence data...</div>
+      </div>
+      <div class="toolbar-actions">
+        <button class="refresh-btn" id="refresh-btn" onclick="manualRefresh()" aria-label="Refresh data">
+          <span class="refresh-icon">↻</span> REFRESH
+        </button>
+      </div>
+    </div>
+
+    <!-- Tab Panels -->
+    <div id="tab-panels">
+      <div id="panel-live-breaking" role="tabpanel" aria-labelledby="tab-live-breaking">
+        <div class="cards-grid" id="cards-live-breaking"></div>
+      </div>
+      <div id="panel-today-vulns" role="tabpanel" aria-labelledby="tab-today-vulns" class="hidden">
+        <div class="cards-grid" id="cards-today-vulns"></div>
+      </div>
+      <div id="panel-today-cves" role="tabpanel" aria-labelledby="tab-today-cves" class="hidden">
+        <div class="cards-grid" id="cards-today-cves"></div>
+      </div>
+      <div id="panel-week-vulns" role="tabpanel" aria-labelledby="tab-week-vulns" class="hidden">
+        <div class="cards-grid" id="cards-week-vulns"></div>
+      </div>
+      <div id="panel-week-cves" role="tabpanel" aria-labelledby="tab-week-cves" class="hidden">
+        <div class="cards-grid" id="cards-week-cves"></div>
+      </div>
+      <div id="panel-today-incidents" role="tabpanel" aria-labelledby="tab-today-incidents" class="hidden">
+        <div class="cards-grid" id="cards-today-incidents"></div>
+      </div>
+      <div id="panel-week-incidents" role="tabpanel" aria-labelledby="tab-week-incidents" class="hidden">
+        <div class="cards-grid" id="cards-week-incidents"></div>
+      </div>
+      <div id="panel-malware" role="tabpanel" aria-labelledby="tab-malware" class="hidden">
+        <div class="cards-grid" id="cards-malware"></div>
+      </div>
+      <div id="panel-zerod-today" role="tabpanel" aria-labelledby="tab-zerod-today" class="hidden">
+        <div class="cards-grid" id="cards-zerod-today"></div>
+      </div>
+      <div id="panel-zerod-week" role="tabpanel" aria-labelledby="tab-zerod-week" class="hidden">
+        <div class="cards-grid" id="cards-zerod-week"></div>
+      </div>
+      <div id="panel-news-today" role="tabpanel" aria-labelledby="tab-news-today" class="hidden">
+        <div class="cards-grid" id="cards-news-today"></div>
+      </div>
+      <div id="panel-news-week" role="tabpanel" aria-labelledby="tab-news-week" class="hidden">
+        <div class="cards-grid" id="cards-news-week"></div>
+      </div>
+      <div id="panel-tips-2026" role="tabpanel" aria-labelledby="tab-tips-2026" class="hidden">
+        <div class="tips-grid" id="tips-grid"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="content-sidebar" aria-label="Intelligence sidebar">
+    <!-- Global Threat Level -->
+    <div class="sidebar-widget">
+      <div class="widget-title">🌍 Global Threat Level</div>
+      <div class="threat-level-display">
+        <span class="threat-level-badge elevated" id="threat-level-badge">ELEVATED</span>
+        <span class="threat-sub" id="threat-sub">Advisory Level 3 of 5</span>
+      </div>
+      <div class="threat-bar">
+        <div class="threat-fill" id="threat-fill" style="width: 65%"></div>
+      </div>
+      <div class="threat-stats">
+        <div class="threat-stat-item">
+          <div class="threat-stat-num" style="color:#ff3b3b" id="sidebar-kev-total">—</div>
+          <div class="threat-stat-lbl">KEV Total</div>
+        </div>
+        <div class="threat-stat-item">
+          <div class="threat-stat-num" style="color:#ff8c00" id="sidebar-kev-week">—</div>
+          <div class="threat-stat-lbl">This Week</div>
+        </div>
+        <div class="threat-stat-item">
+          <div class="threat-stat-num" style="color:#ffe000" id="sidebar-nvd-today">—</div>
+          <div class="threat-stat-lbl">NVD Today</div>
+        </div>
+        <div class="threat-stat-item">
+          <div class="threat-stat-num" style="color:#00ff88" id="sidebar-feeds">—</div>
+          <div class="threat-stat-lbl">Feed Items</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CVE Counter -->
+    <div class="sidebar-widget">
+      <div class="widget-title">🔢 CISA KEV Counter</div>
+      <div class="cve-counter">
+        <span class="cve-counter-num" id="cve-counter-num">—</span>
+        <div class="cve-counter-label">Known Exploited Vulnerabilities</div>
+      </div>
+      <div style="margin-top:12px; font-size:11px; color:var(--apex-muted); text-align:center">
+        Source: CISA Known Exploited Vulnerabilities Catalog
+      </div>
+    </div>
+
+    <!-- Enterprise CTA -->
+    <div class="enterprise-sidebar">
+      <div class="enterprise-sidebar-title">🚀 SENTINEL APEX ENTERPRISE</div>
+      <div class="enterprise-sidebar-desc">
+        Get 48-hour pre-disclosure alerts, custom threat feeds, and dedicated analyst support.
+      </div>
+      <ul class="enterprise-sidebar-features">
+        <li>48hr pre-disclosure CVE alerts</li>
+        <li>Custom threat intelligence API</li>
+        <li>Dedicated security analyst</li>
+        <li>Real-time Slack/Teams integration</li>
+        <li>Executive threat briefings</li>
+        <li>MITRE ATT&CK mapping</li>
+      </ul>
+      <a href="/pricing.html" class="enterprise-sidebar-btn">Get Enterprise Access</a>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="sidebar-widget">
+      <div class="widget-title">🔗 Quick Links</div>
+      <ul class="quick-links">
+        <li><a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener"><span class="ql-icon">🏛️</span> CISA KEV Catalog</a></li>
+        <li><a href="https://nvd.nist.gov/vuln/search" target="_blank" rel="noopener"><span class="ql-icon">🔍</span> NVD Vulnerability Database</a></li>
+        <li><a href="https://attack.mitre.org" target="_blank" rel="noopener"><span class="ql-icon">⚔️</span> MITRE ATT&CK Framework</a></li>
+        <li><a href="https://www.cisa.gov/news-events/alerts" target="_blank" rel="noopener"><span class="ql-icon">📢</span> CISA Security Alerts</a></li>
+        <li><a href="https://www.ncsc.gov.uk/section/keep-up-to-date/threat-reports" target="_blank" rel="noopener"><span class="ql-icon">🇬🇧</span> NCSC Threat Reports</a></li>
+        <li><a href="https://thehackernews.com" target="_blank" rel="noopener"><span class="ql-icon">📰</span> The Hacker News</a></li>
+        <li><a href="/pricing.html"><span class="ql-icon">💎</span> Premium Access</a></li>
+        <li><a href="/"><span class="ql-icon">🏠</span> Blog Home</a></li>
+      </ul>
+    </div>
+
+    <!-- Newsletter -->
+    <div class="sidebar-widget">
+      <div class="widget-title">📧 Intel Newsletter</div>
+      <div style="font-size:12px;color:var(--apex-muted);margin-bottom:14px;line-height:1.5">
+        Get weekly threat intelligence summaries delivered to your inbox every Monday.
+      </div>
+      <form class="newsletter-form" onsubmit="handleNewsletterSubmit(event)">
+        <input type="email" class="newsletter-input" placeholder="your@email.com" required aria-label="Email address">
+        <button type="submit" class="newsletter-btn">Subscribe to Intel Feed</button>
+      </form>
+    </div>
+  </aside>
+</div>
+
+<!-- ARCHIVE SECTION -->
+<div class="archive-section">
+  <div class="archive-header" onclick="toggleArchive()" id="archive-header">
+    <div class="archive-header-title">
+      <span>📁</span>
+      <span>Intelligence Archive — Items Older Than 7 Days</span>
+      <span id="archive-count" style="font-size:11px;color:var(--apex-cyan)"></span>
+    </div>
+    <span class="archive-toggle" id="archive-toggle">▼</span>
+  </div>
+  <div class="archive-body" id="archive-body">
+    <div id="archive-content">
+      <div class="archive-empty">Loading archive data...</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand-name">CYBERDUDEBIVASH</div>
+        <div class="footer-brand-desc">
+          SENTINEL APEX — The god-level cybersecurity intelligence platform. Real-time threat feeds,
+          vulnerability tracking, and expert analysis for security professionals and enterprises.
+        </div>
+        <div style="font-size:11px;color:var(--apex-muted)">
+          ● Data sourced from CISA KEV, NIST NVD, and top security RSS feeds<br>
+          ● Updated every 15 minutes automatically
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Platform</div>
+        <ul class="footer-links">
+          <li><a href="/">Blog Home</a></li>
+          <li><a href="/intelligence.html">Intel Hub</a></li>
+          <li><a href="/pricing.html">Pricing</a></li>
+          <li><a href="/#ai-hub">AI Hub</a></li>
+          <li><a href="/#tools">Security Tools</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Intelligence</div>
+        <ul class="footer-links">
+          <li><a href="/intelligence.html#live-breaking">Live Breaking</a></li>
+          <li><a href="/intelligence.html#today-vulns">Today's Vulns</a></li>
+          <li><a href="/intelligence.html#zerod-today">Zero-Days</a></li>
+          <li><a href="/intelligence.html#malware">Malware Tracker</a></li>
+          <li><a href="/intelligence.html#tips-2026">Security Tips 2026</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Resources</div>
+        <ul class="footer-links">
+          <li><a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener">CISA KEV</a></li>
+          <li><a href="https://nvd.nist.gov" target="_blank" rel="noopener">NIST NVD</a></li>
+          <li><a href="https://attack.mitre.org" target="_blank" rel="noopener">MITRE ATT&CK</a></li>
+          <li><a href="/pricing.html">Enterprise Access</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-bottom-text">
+        © 2026 CYBERDUDEBIVASH SENTINEL APEX. All rights reserved. | blog.cyberdudebivash.in
+      </div>
+      <div class="footer-bottom-links">
+        <a href="/">Home</a>
+        <a href="/intelligence.html">Intel Hub</a>
+        <a href="/pricing.html">Pricing</a>
+        <a href="/sitemap.xml">Sitemap</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ==================== JAVASCRIPT ENGINE ==================== -->
+<script>
+'use strict';
+
+// ==================== CONFIGURATION ====================
+const CONFIG = {
+  CISA_KEV: 'https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json',
+  NVD_API: 'https://services.nvd.nist.gov/rest/json/cves/2.0',
+  RSS_PROXY: 'https://api.rss2json.com/v1/api.json?rss_url=',
+  RSS_FEEDS: {
+    hackernews: 'https://feeds.feedburner.com/TheHackersNews',
+    bleepingcomputer: 'https://www.bleepingcomputer.com/feed/',
+    securityweek: 'https://feeds.feedburner.com/securityweek',
+    krebs: 'https://krebsonsecurity.com/feed/',
+    darkreading: 'https://www.darkreading.com/rss.xml'
+  },
+  CACHE_PREFIX: 'cdb_sentinel_',
+  ARCHIVE_PREFIX: 'cdb_archive_',
+  CACHE_TTL: 30 * 60 * 1000,       // 30 minutes
+  REFRESH_INTERVAL: 15 * 60 * 1000, // 15 minutes
+  ARCHIVE_DAYS: 7,
+  NVD_MIN_CVSS: 6.0,
+  RSS_COUNT: 30
+};
+
+// Tab metadata
+const TABS = [
+  { id: 'live-breaking', label: 'LIVE BREAKING UPDATES', icon: '⚡', color: '#ff0040' },
+  { id: 'today-vulns',   label: "TODAY'S TOP VULNERABILITIES", icon: '🔴', color: '#ff3b3b' },
+  { id: 'today-cves',    label: "TODAY'S TOP CVEs", icon: '🟠', color: '#ff8c00' },
+  { id: 'week-vulns',    label: 'TOP VULNS THIS WEEK', icon: '📊', color: '#c0392b' },
+  { id: 'week-cves',     label: 'TOP CVEs THIS WEEK', icon: '📋', color: '#e67e22' },
+  { id: 'today-incidents', label: "TODAY'S CYBER INCIDENTS", icon: '⚠️', color: '#f39c12' },
+  { id: 'week-incidents',  label: "THIS WEEK'S INCIDENTS", icon: '📡', color: '#d4ac0d' },
+  { id: 'malware',       label: 'MALWARE & CAMPAIGNS', icon: '🦠', color: '#8e44ad' },
+  { id: 'zerod-today',   label: 'ZERO-DAYS TODAY', icon: '💀', color: '#00bcd4' },
+  { id: 'zerod-week',    label: 'ZERO-DAYS THIS WEEK', icon: '🎯', color: '#0097a7' },
+  { id: 'news-today',    label: "TODAY'S CYBER & TECH NEWS", icon: '📰', color: '#27ae60' },
+  { id: 'news-week',     label: 'THIS WEEK\'S CYBER & TECH NEWS', icon: '🌐', color: '#1e8449' },
+  { id: 'tips-2026',     label: 'SECURITY TIPS 2026', icon: '🛡️', color: '#7f8c8d' }
+];
+
+// State
+const state = {
+  activeTab: 'live-breaking',
+  loadedTabs: new Set(),
+  loadingTabs: new Set(),
+  kevData: null,
+  rssData: {},
+  nvdData: { today: [], week: [] },
+  lastRefresh: null,
+  tabCounts: {}
+};
+
+// ==================== DATE UTILITIES ====================
+function getToday() {
+  const d = new Date();
+  return d.toISOString().split('T')[0]; // YYYY-MM-DD
+}
+
+function getNDaysAgo(n) {
+  const d = new Date();
+  d.setDate(d.getDate() - n);
+  return d.toISOString().split('T')[0];
+}
+
+function isTodayStr(dateStr) {
+  if (!dateStr) return false;
+  return dateStr.substring(0, 10) === getToday();
+}
+
+function isWithinDays(dateStr, days) {
+  if (!dateStr) return false;
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - days);
+  const d = new Date(dateStr);
+  return d >= cutoff;
+}
+
+function isOlderThanDays(dateStr, days) {
+  if (!dateStr) return false;
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - days);
+  const d = new Date(dateStr);
+  return d < cutoff;
+}
+
+function relativeTime(dateStr) {
+  if (!dateStr) return 'Unknown time';
+  const now = Date.now();
+  const then = new Date(dateStr).getTime();
+  const diff = now - then;
+  if (isNaN(diff)) return dateStr;
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'Just now';
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.floor(hrs / 24);
+  if (days < 30) return `${days}d ago`;
+  return new Date(dateStr).toLocaleDateString();
+}
+
+function fmtDate(dateStr) {
+  if (!dateStr) return '';
+  try {
+    return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  } catch { return dateStr; }
+}
+
+// ==================== CLOCK ====================
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getUTCHours()).padStart(2, '0');
+  const m = String(now.getUTCMinutes()).padStart(2, '0');
+  const s = String(now.getUTCSeconds()).padStart(2, '0');
+  const el = document.getElementById('live-clock');
+  if (el) el.textContent = `${h}:${m}:${s} UTC`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ==================== MATRIX RAIN ====================
+(function initMatrix() {
+  const canvas = document.getElementById('matrix-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let cols, drops;
+  const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホ01アBCD10EF10GH1234567890';
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    cols = Math.floor(canvas.width / 14);
+    drops = new Array(cols).fill(1);
+  }
+
+  function draw() {
+    ctx.fillStyle = 'rgba(7, 9, 15, 0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#00ffe0';
+    ctx.font = '12px monospace';
+    for (let i = 0; i < drops.length; i++) {
+      const char = chars[Math.floor(Math.random() * chars.length)];
+      ctx.fillText(char, i * 14, drops[i] * 14);
+      if (drops[i] * 14 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    }
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+  setInterval(draw, 50);
+})();
+
+// ==================== CACHE ====================
+function saveToCache(tabId, items) {
+  try {
+    localStorage.setItem(CONFIG.CACHE_PREFIX + tabId, JSON.stringify({
+      timestamp: Date.now(),
+      items: items
+    }));
+  } catch(e) { /* localStorage might be full */ }
+}
+
+function getFromCache(tabId) {
+  try {
+    const raw = localStorage.getItem(CONFIG.CACHE_PREFIX + tabId);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    if (Date.now() - data.timestamp > CONFIG.CACHE_TTL) return null;
+    return data.items;
+  } catch { return null; }
+}
+
+function archiveOldItems(tabId, items) {
+  if (!Array.isArray(items)) return;
+  const old = items.filter(it => isOlderThanDays(it.date || it.pubDate || it.dateAdded, CONFIG.ARCHIVE_DAYS));
+  if (!old.length) return;
+  old.forEach(item => {
+    const dt = (item.date || item.pubDate || item.dateAdded || '').substring(0, 10);
+    const key = CONFIG.ARCHIVE_PREFIX + tabId + '_' + dt;
+    try {
+      const existing = JSON.parse(localStorage.getItem(key) || '[]');
+      const merged = [...existing, item].slice(-200);
+      localStorage.setItem(key, JSON.stringify(merged));
+    } catch(e) {}
+  });
+}
+
+function loadArchive() {
+  const groups = {};
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (!key.startsWith(CONFIG.ARCHIVE_PREFIX)) continue;
+      const parts = key.split('_');
+      const dateKey = parts[parts.length - 1];
+      if (!groups[dateKey]) groups[dateKey] = [];
+      try {
+        const items = JSON.parse(localStorage.getItem(key) || '[]');
+        groups[dateKey].push(...items);
+      } catch {}
+    }
+  } catch {}
+  return groups;
+}
+
+function renderArchive() {
+  const container = document.getElementById('archive-content');
+  const groups = loadArchive();
+  const dates = Object.keys(groups).sort().reverse();
+  const countEl = document.getElementById('archive-count');
+
+  if (!dates.length) {
+    container.innerHTML = '<div class="archive-empty">No archived items yet. Items older than 7 days will appear here automatically.</div>';
+    if (countEl) countEl.textContent = '';
+    return;
+  }
+
+  let total = 0;
+  let html = '';
+  dates.forEach(date => {
+    const items = groups[date];
+    total += items.length;
+    html += `<div class="archive-date-group">
+      <div class="archive-date-title">📅 ${date} — ${items.length} item(s)</div>
+      <div class="cards-grid">`;
+    items.slice(0, 10).forEach(item => {
+      html += renderCard(item, 'Archive');
+    });
+    html += `</div></div>`;
+  });
+
+  container.innerHTML = html;
+  if (countEl) countEl.textContent = `(${total} archived items)`;
+}
+
+// ==================== FETCH RSS ====================
+async function fetchRSS(feedName, url) {
+  const proxyUrl = CONFIG.RSS_PROXY + encodeURIComponent(url) + '&count=' + CONFIG.RSS_COUNT;
+  const resp = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
+  if (!resp.ok) throw new Error(`RSS fetch failed: ${resp.status}`);
+  const data = await resp.json();
+  if (!data.items) throw new Error('No items in RSS response');
+  return data.items.map(item => ({
+    ...item,
+    sourceName: feedName,
+    date: item.pubDate,
+    type: 'rss'
+  }));
+}
+
+async function fetchAllRSS() {
+  const results = await Promise.allSettled(
+    Object.entries(CONFIG.RSS_FEEDS).map(([name, url]) => fetchRSS(name, url))
+  );
+  const all = [];
+  results.forEach(r => {
+    if (r.status === 'fulfilled') all.push(...r.value);
+  });
+  return all.sort((a, b) => new Date(b.date) - new Date(a.date));
+}
+
+// ==================== KEYWORD CATEGORIZE ====================
+const MALWARE_KEYWORDS = ['ransomware','malware','trojan','botnet','campaign','infostealer','wiper','backdoor','rootkit','spyware','keylogger','cryptominer','stealer'];
+const ZERODAY_KEYWORDS = ['zero-day','zero day','0-day','zeroday','unpatched','unpatched exploit','in the wild'];
+const INCIDENT_KEYWORDS = ['breach','attack','hacked','compromised','data leak','stolen','phishing','incident','intrusion','espionage'];
+
+function hasKeyword(text, keywords) {
+  if (!text) return false;
+  const lower = text.toLowerCase();
+  return keywords.some(kw => lower.includes(kw));
+}
+
+function categorizeRSSItems(allItems) {
+  const today = getToday();
+  const sevenDaysAgo = getNDaysAgo(7);
+
+  const cats = {
+    'live-breaking': [],
+    'today-incidents': [],
+    'week-incidents': [],
+    'malware': [],
+    'zerod-today': [],
+    'zerod-week': [],
+    'news-today': [],
+    'news-week': []
+  };
+
+  // live-breaking: most recent 30 from all feeds
+  cats['live-breaking'] = allItems.slice(0, 30);
+
+  allItems.forEach(item => {
+    const text = (item.title || '') + ' ' + (item.description || '');
+    const dt = item.date || '';
+    const isToday = dt.substring(0, 10) === today;
+    const isWeek = isWithinDays(dt, 7);
+
+    if (hasKeyword(text, MALWARE_KEYWORDS)) {
+      cats['malware'].push(item);
+    }
+    if (hasKeyword(text, ZERODAY_KEYWORDS)) {
+      if (isToday) cats['zerod-today'].push(item);
+      if (isWeek) cats['zerod-week'].push(item);
+    }
+    if (hasKeyword(text, INCIDENT_KEYWORDS)) {
+      if (isToday) cats['today-incidents'].push(item);
+      if (isWeek) cats['week-incidents'].push(item);
+    }
+    if (isToday) cats['news-today'].push(item);
+    if (isWeek) cats['news-week'].push(item);
+  });
+
+  return cats;
+}
+
+// ==================== FETCH NVD ====================
+async function fetchNVD(startDate, endDate, minCVSS = CONFIG.NVD_MIN_CVSS) {
+  const fmt = d => d.toISOString().replace(/\.\d{3}Z$/, '.000Z').replace('Z','');
+  const url = `${CONFIG.NVD_API}?pubStartDate=${fmt(startDate)}&pubEndDate=${fmt(endDate)}&resultsPerPage=100`;
+
+  const resp = await fetch(url, {
+    headers: { 'Accept': 'application/json' },
+    signal: AbortSignal.timeout(15000)
+  });
+  if (!resp.ok) throw new Error(`NVD fetch failed: ${resp.status}`);
+  const data = await resp.json();
+
+  const vulns = (data.vulnerabilities || []).map(v => {
+    const cve = v.cve;
+    const metrics = cve.metrics;
+    let score = null, vector = null, severity = 'UNKNOWN';
+
+    const m31 = metrics?.cvssMetricV31?.[0];
+    const m30 = metrics?.cvssMetricV30?.[0];
+    const m2 = metrics?.cvssMetricV2?.[0];
+    const m = m31 || m30 || m2;
+    if (m) {
+      score = m.cvssData?.baseScore;
+      vector = m.cvssData?.vectorString;
+      severity = m.cvssData?.baseSeverity || (score >= 9 ? 'CRITICAL' : score >= 7 ? 'HIGH' : score >= 4 ? 'MEDIUM' : 'LOW');
+    }
+
+    const cwes = cve.weaknesses?.flatMap(w => w.description?.map(d => d.value) || []) || [];
+    const desc = cve.descriptions?.find(d => d.lang === 'en')?.value || '';
+
+    return {
+      id: cve.id,
+      title: cve.id + (desc ? ': ' + desc.substring(0, 80) : ''),
+      description: desc,
+      score,
+      vector,
+      severity: severity?.toUpperCase(),
+      cwes,
+      published: cve.published,
+      date: cve.published,
+      link: `https://nvd.nist.gov/vuln/detail/${cve.id}`,
+      sourceName: 'NVD',
+      type: 'nvd'
+    };
+  }).filter(v => v.score === null || v.score >= minCVSS)
+    .sort((a, b) => (b.score || 0) - (a.score || 0));
+
+  return vulns;
+}
+
+async function fetchNVDData() {
+  const now = new Date();
+  const todayStart = new Date(now); todayStart.setHours(0,0,0,0);
+  const todayEnd = new Date(now); todayEnd.setHours(23,59,59,999);
+  const weekStart = new Date(now); weekStart.setDate(weekStart.getDate() - 7);
+
+  try {
+    const [todayVulns, weekVulns] = await Promise.allSettled([
+      fetchNVD(todayStart, todayEnd, 6.0),
+      fetchNVD(weekStart, now, 7.0)
+    ]);
+    state.nvdData.today = todayVulns.status === 'fulfilled' ? todayVulns.value : [];
+    state.nvdData.week = weekVulns.status === 'fulfilled' ? weekVulns.value : [];
+  } catch(e) {
+    console.warn('NVD fetch error:', e);
+  }
+}
+
+// ==================== FETCH CISA KEV ====================
+async function fetchCISAKEV() {
+  const resp = await fetch(CONFIG.CISA_KEV, { signal: AbortSignal.timeout(15000) });
+  if (!resp.ok) throw new Error(`KEV fetch failed: ${resp.status}`);
+  const data = await resp.json();
+  return data.vulnerabilities || [];
+}
+
+// ==================== SEVERITY HELPERS ====================
+function scoreSeverity(score) {
+  if (score === null || score === undefined) return 'info';
+  if (score >= 9) return 'critical';
+  if (score >= 7) return 'high';
+  if (score >= 4) return 'medium';
+  return 'low';
+}
+
+function severityFromStr(str) {
+  if (!str) return 'info';
+  const s = str.toUpperCase();
+  if (s === 'CRITICAL') return 'critical';
+  if (s === 'HIGH') return 'high';
+  if (s === 'MEDIUM') return 'medium';
+  if (s === 'LOW') return 'low';
+  return 'info';
+}
+
+function cvssColor(score) {
+  if (!score && score !== 0) return '';
+  if (score >= 9) return 'critical';
+  if (score >= 7) return 'high';
+  if (score >= 4) return 'medium';
+  return 'low';
+}
+
+function strip(html) {
+  if (!html) return '';
+  return html.replace(/<[^>]*>/g, '').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").trim();
+}
+
+function truncate(str, len = 200) {
+  if (!str) return '';
+  const s = strip(str);
+  return s.length > len ? s.substring(0, len) + '...' : s;
+}
+
+// ==================== CARD RENDERING ====================
+function renderCard(item, defaultSource = '') {
+  const source = item.sourceName || defaultSource || 'INTEL';
+  const severity = item.severity ? severityFromStr(item.severity) : (item.score !== undefined ? scoreSeverity(item.score) : 'info');
+  const title = item.title || item.vulnerabilityName || item.cveID || 'Untitled';
+  const desc = truncate(item.description || item.shortDescription || item.summary || item.content || '');
+  const link = item.link || item.url || '#';
+  const date = item.date || item.pubDate || item.dateAdded || '';
+  const timeAgo = relativeTime(date);
+  const cveId = item.id || item.cveID || '';
+
+  let badges = `<span class="source-badge">${source.toUpperCase()}</span>`;
+  if (item.score !== undefined && item.score !== null) {
+    badges += `<span class="severity-badge ${cvssColor(item.score)}">CVSS ${item.score}</span>`;
+  }
+  if (item.severity && item.severity !== 'UNKNOWN') {
+    badges += `<span class="severity-badge ${severityFromStr(item.severity)}">${item.severity}</span>`;
+  }
+  if (item.type === 'kev' || item.cisaRequired) {
+    badges += `<span class="cisa-badge">CISA KEV</span>`;
+  }
+
+  let metaHtml = '';
+  if (item.type === 'nvd' || item.type === 'kev') {
+    metaHtml = `<div class="card-meta">`;
+    if (item.published || item.dateAdded) metaHtml += `<div class="card-meta-item"><div class="card-meta-label">Published</div><div class="card-meta-value">${fmtDate(item.published || item.dateAdded)}</div></div>`;
+    if (item.vector) metaHtml += `<div class="card-meta-item"><div class="card-meta-label">CVSS Vector</div><div class="card-meta-value" style="font-size:9px;word-break:break-all">${item.vector}</div></div>`;
+    if (item.cwes && item.cwes.length) metaHtml += `<div class="card-meta-item"><div class="card-meta-label">CWE</div><div class="card-meta-value">${item.cwes[0]}</div></div>`;
+    if (item.product) metaHtml += `<div class="card-meta-item"><div class="card-meta-label">Product</div><div class="card-meta-value">${item.vendorProject || ''} ${item.product}</div></div>`;
+    if (item.requiredAction) metaHtml += `<div class="card-meta-item" style="grid-column:1/-1"><div class="card-meta-label">Required Action</div><div class="card-meta-value">${truncate(item.requiredAction, 120)}</div></div>`;
+    if (item.dueDate) metaHtml += `<div class="card-meta-item"><div class="card-meta-label">Due Date</div><div class="card-meta-value" style="color:#ff8c00">${item.dueDate}</div></div>`;
+    metaHtml += `</div>`;
+  }
+
+  return `
+    <div class="intel-card severity-${severity}">
+      <div class="card-header">
+        <div class="card-badges">${badges}</div>
+        <span class="card-time">${timeAgo}</span>
+      </div>
+      <h3 class="card-title">
+        <a href="${link}" target="_blank" rel="noopener noreferrer">${title.substring(0, 160)}</a>
+      </h3>
+      ${desc ? `<p class="card-excerpt">${desc}</p>` : ''}
+      ${metaHtml}
+      <div class="card-footer">
+        <span class="card-cve">${cveId || ''}</span>
+        ${item.score !== undefined && item.score !== null ? `<span class="card-cvss ${cvssColor(item.score)}">CVSS ${item.score}</span>` : ''}
+        <a href="${link}" class="card-read-more" target="_blank" rel="noopener noreferrer">Read Full Report →</a>
+      </div>
+    </div>
+  `;
+}
+
+function renderPremiumTeaser() {
+  return `
+    <div class="premium-teaser">
+      <div class="premium-lock">🔒</div>
+      <div class="premium-title">SENTINEL APEX PREMIUM</div>
+      <div class="premium-desc">
+        Premium subscribers get 48-hour pre-disclosure alerts, custom threat feeds,
+        MITRE ATT&CK mapping, and executive briefings before public disclosure.
+      </div>
+      <a href="/pricing.html" class="premium-cta">Unlock Premium Access →</a>
+    </div>
+  `;
+}
+
+function renderSkeleton(count = 5) {
+  let html = '';
+  for (let i = 0; i < count; i++) {
+    html += `
+      <div class="skeleton-card">
+        <div class="skeleton-line w-40"></div>
+        <div class="skeleton-line h-20 w-80" style="margin:12px 0 8px"></div>
+        <div class="skeleton-line"></div>
+        <div class="skeleton-line w-60"></div>
+        <div class="skeleton-line w-40" style="margin-top:12px"></div>
+      </div>`;
+  }
+  return html;
+}
+
+function renderError(msg, tabId) {
+  return `
+    <div class="error-card">
+      <div class="error-icon">⚠️</div>
+      <div class="error-title">Intelligence Feed Unavailable</div>
+      <div class="error-msg">${msg || 'Unable to load data from this source. This may be due to API rate limits or network issues.'}</div>
+      <button class="retry-btn" onclick="retryTab('${tabId}')">↻ Retry</button>
+    </div>`;
+}
+
+function renderCards(items, tabId, source = '') {
+  if (!items || !items.length) {
+    return `<div class="error-card">
+      <div class="error-icon">📭</div>
+      <div class="error-title">No Items Found</div>
+      <div class="error-msg">No intelligence data found for this time period. Check back soon or try refreshing.</div>
+    </div>`;
+  }
+  let html = '';
+  items.forEach((item, idx) => {
+    if (idx > 0 && idx % 10 === 0) html += renderPremiumTeaser();
+    html += renderCard(item, source);
+  });
+  return html;
+}
+
+// ==================== KEV CARDS ====================
+function renderKEVCards(kevItems) {
+  if (!kevItems || !kevItems.length) return renderCards([], 'kev');
+  return renderCards(kevItems.map(v => ({
+    ...v,
+    id: v.cveID,
+    title: `${v.cveID}: ${v.vulnerabilityName}`,
+    description: v.shortDescription || '',
+    link: `https://nvd.nist.gov/vuln/detail/${v.cveID}`,
+    date: v.dateAdded,
+    sourceName: 'CISA KEV',
+    type: 'kev',
+    severity: 'CRITICAL',
+    cisaRequired: true
+  })));
+}
+
+// ==================== UPDATE BADGE ====================
+function updateBadge(tabId, count) {
+  const el = document.getElementById('badge-' + tabId);
+  if (el) el.textContent = count > 99 ? '99+' : count;
+  state.tabCounts[tabId] = count;
+}
+
+// ==================== RENDER TAB ====================
+function renderTab(tabId, items, isError = false, errMsg = '') {
+  const container = document.getElementById('cards-' + tabId);
+  if (!container) return;
+
+  if (isError) {
+    container.innerHTML = renderError(errMsg, tabId);
+    return;
+  }
+
+  archiveOldItems(tabId, items);
+  updateBadge(tabId, items.length);
+  saveToCache(tabId, items.slice(0, 100)); // cache up to 100 items
+
+  if (tabId === 'tips-2026') return; // handled separately
+
+  container.innerHTML = renderCards(items, tabId);
+  updateToolbar(tabId, items.length);
+}
+
+// ==================== TOOLBAR UPDATE ====================
+function updateToolbar(tabId, count) {
+  const tab = TABS.find(t => t.id === tabId);
+  if (!tab) return;
+  const titleEl = document.getElementById('toolbar-title');
+  const iconEl = document.getElementById('toolbar-icon');
+  const metaEl = document.getElementById('toolbar-meta');
+  if (titleEl) titleEl.textContent = tab.label;
+  if (iconEl) iconEl.textContent = tab.icon;
+  if (metaEl) metaEl.textContent = `${count} item(s) — Last updated: ${state.lastRefresh ? relativeTime(state.lastRefresh) : 'just now'}`;
+}
+
+// ==================== LOAD TAB DATA ====================
+async function loadTabData(tabId) {
+  if (state.loadingTabs.has(tabId)) return;
+
+  // Check cache first
+  const cached = getFromCache(tabId);
+  if (cached && state.loadedTabs.has(tabId)) {
+    renderTab(tabId, cached);
+    return;
+  }
+
+  state.loadingTabs.add(tabId);
+
+  // Show skeleton
+  const container = document.getElementById('cards-' + tabId);
+  if (container && tabId !== 'tips-2026') {
+    container.innerHTML = renderSkeleton();
+  }
+
+  try {
+    // Ensure global data is fetched
+    if (!state.kevData) {
+      state.kevData = await fetchCISAKEV().catch(() => []);
+      updateKEVStats(state.kevData);
+    }
+    if (!state.rssAllItems) {
+      const rssItems = await fetchAllRSS().catch(() => []);
+      state.rssAllItems = rssItems;
+      state.rssCategories = categorizeRSSItems(rssItems);
+      document.getElementById('stat-feeds-items').textContent = rssItems.length;
+      document.getElementById('sidebar-feeds').textContent = rssItems.length;
+    }
+
+    const today = getToday();
+
+    switch (tabId) {
+      case 'live-breaking':
+        renderTab(tabId, state.rssCategories['live-breaking'] || []);
+        break;
+      case 'today-vulns': {
+        if (!state.nvdData.today.length) await fetchNVDData();
+        renderTab(tabId, state.nvdData.today.filter(v => v.score >= 7.0));
+        document.getElementById('sidebar-nvd-today').textContent = state.nvdData.today.length;
+        break;
+      }
+      case 'today-cves': {
+        if (!state.nvdData.today.length) await fetchNVDData();
+        renderTab(tabId, state.nvdData.today);
+        break;
+      }
+      case 'week-vulns': {
+        if (!state.nvdData.week.length) await fetchNVDData();
+        renderTab(tabId, state.nvdData.week.filter(v => v.score >= 8.0));
+        break;
+      }
+      case 'week-cves': {
+        if (!state.nvdData.week.length) await fetchNVDData();
+        renderTab(tabId, state.nvdData.week);
+        break;
+      }
+      case 'today-incidents':
+        renderTab(tabId, state.rssCategories['today-incidents'] || []);
+        break;
+      case 'week-incidents':
+        renderTab(tabId, state.rssCategories['week-incidents'] || []);
+        break;
+      case 'malware':
+        renderTab(tabId, state.rssCategories['malware'] || []);
+        break;
+      case 'zerod-today': {
+        const kevToday = state.kevData.filter(v => v.dateAdded === today);
+        const rssZDToday = state.rssCategories['zerod-today'] || [];
+        const combined = [...kevToday.map(v => ({ ...v, type: 'kev', severity: 'CRITICAL', cisaRequired: true, id: v.cveID, title: `${v.cveID}: ${v.vulnerabilityName}`, description: v.shortDescription, link: `https://nvd.nist.gov/vuln/detail/${v.cveID}`, date: v.dateAdded, sourceName: 'CISA KEV' })), ...rssZDToday];
+        renderTab(tabId, combined);
+        break;
+      }
+      case 'zerod-week': {
+        const kevWeek = state.kevData.filter(v => isWithinDays(v.dateAdded, 7));
+        const rssZDWeek = state.rssCategories['zerod-week'] || [];
+        const combined = [...kevWeek.map(v => ({ ...v, type: 'kev', severity: 'CRITICAL', cisaRequired: true, id: v.cveID, title: `${v.cveID}: ${v.vulnerabilityName}`, description: v.shortDescription, link: `https://nvd.nist.gov/vuln/detail/${v.cveID}`, date: v.dateAdded, sourceName: 'CISA KEV' })), ...rssZDWeek];
+        renderTab(tabId, combined);
+        break;
+      }
+      case 'news-today':
+        renderTab(tabId, state.rssCategories['news-today'] || []);
+        break;
+      case 'news-week':
+        renderTab(tabId, state.rssCategories['news-week'] || []);
+        break;
+      case 'tips-2026':
+        renderTips();
+        updateBadge('tips-2026', 20);
+        break;
+    }
+
+    state.loadedTabs.add(tabId);
+    state.lastRefresh = new Date().toISOString();
+    document.getElementById('stat-last-updated').textContent = 'Just now';
+
+  } catch(e) {
+    console.error(`Error loading tab ${tabId}:`, e);
+    renderTab(tabId, [], true, e.message);
+  } finally {
+    state.loadingTabs.delete(tabId);
+  }
+}
+
+function updateKEVStats(kev) {
+  if (!kev || !kev.length) return;
+  const total = kev.length;
+  const week = kev.filter(v => isWithinDays(v.dateAdded, 7)).length;
+
+  document.getElementById('stat-kev-total').textContent = total.toLocaleString();
+  document.getElementById('stat-kev-new').textContent = '+' + week;
+  document.getElementById('sidebar-kev-total').textContent = total.toLocaleString();
+  document.getElementById('sidebar-kev-week').textContent = '+' + week;
+  document.getElementById('cve-counter-num').textContent = total.toLocaleString();
+
+  // Compute threat level from week additions
+  let level = 'ELEVATED', pct = 60, lvlNum = 3;
+  if (week >= 20) { level = 'SEVERE'; pct = 90; lvlNum = 5; }
+  else if (week >= 10) { level = 'HIGH'; pct = 75; lvlNum = 4; }
+  else if (week >= 5) { level = 'ELEVATED'; pct = 60; lvlNum = 3; }
+  else { level = 'GUARDED'; pct = 35; lvlNum = 2; }
+
+  const badge = document.getElementById('threat-level-badge');
+  const sub = document.getElementById('threat-sub');
+  const fill = document.getElementById('threat-fill');
+  if (badge) { badge.textContent = level; badge.className = 'threat-level-badge ' + level.toLowerCase(); }
+  if (sub) sub.textContent = `Advisory Level ${lvlNum} of 5`;
+  if (fill) fill.style.width = pct + '%';
+}
+
+// ==================== RETRY ====================
+function retryTab(tabId) {
+  state.loadedTabs.delete(tabId);
+  state.kevData = null;
+  state.rssAllItems = null;
+  state.rssCategories = null;
+  loadTabData(tabId);
+}
+
+// ==================== MANUAL REFRESH ====================
+function manualRefresh() {
+  const btn = document.getElementById('refresh-btn');
+  if (btn) btn.classList.add('spinning');
+  state.loadedTabs.clear();
+  state.kevData = null;
+  state.rssAllItems = null;
+  state.rssCategories = null;
+  state.nvdData = { today: [], week: [] };
+  loadTabData(state.activeTab).finally(() => {
+    if (btn) btn.classList.remove('spinning');
+  });
+}
+
+// ==================== AUTO REFRESH ====================
+setInterval(() => {
+  state.loadedTabs.clear();
+  state.kevData = null;
+  state.rssAllItems = null;
+  state.rssCategories = null;
+  state.nvdData = { today: [], week: [] };
+  loadTabData(state.activeTab);
+}, CONFIG.REFRESH_INTERVAL);
+
+// ==================== TAB SWITCHING ====================
+function switchTab(tabId) {
+  if (state.activeTab === tabId) return;
+
+  // Deactivate old
+  const oldBtn = document.querySelector(`[data-tab="${state.activeTab}"]`);
+  const oldPanel = document.getElementById('panel-' + state.activeTab);
+  if (oldBtn) { oldBtn.classList.remove('active'); oldBtn.setAttribute('aria-selected', 'false'); }
+  if (oldPanel) oldPanel.classList.add('hidden');
+
+  // Activate new
+  const newBtn = document.querySelector(`[data-tab="${tabId}"]`);
+  const newPanel = document.getElementById('panel-' + tabId);
+  if (newBtn) { newBtn.classList.add('active'); newBtn.setAttribute('aria-selected', 'true'); }
+  if (newPanel) newPanel.classList.remove('hidden');
+
+  state.activeTab = tabId;
+
+  // Update toolbar immediately
+  const tab = TABS.find(t => t.id === tabId);
+  if (tab) {
+    const titleEl = document.getElementById('toolbar-title');
+    const iconEl = document.getElementById('toolbar-icon');
+    if (titleEl) titleEl.textContent = tab.label;
+    if (iconEl) iconEl.textContent = tab.icon;
+  }
+
+  if (!state.loadedTabs.has(tabId)) {
+    loadTabData(tabId);
+  } else {
+    updateToolbar(tabId, state.tabCounts[tabId] || 0);
+  }
+
+  // Update URL hash without scrolling
+  history.replaceState(null, '', '#' + tabId);
+}
+
+// Tab click events
+document.getElementById('tab-nav').addEventListener('click', e => {
+  const btn = e.target.closest('.tab-btn');
+  if (btn) switchTab(btn.dataset.tab);
+});
+
+// Keyboard navigation
+document.getElementById('tab-nav').addEventListener('keydown', e => {
+  const tabs = [...document.querySelectorAll('.tab-btn')];
+  const current = tabs.findIndex(t => t.dataset.tab === state.activeTab);
+  let next = current;
+  if (e.key === 'ArrowRight') next = (current + 1) % tabs.length;
+  else if (e.key === 'ArrowLeft') next = (current - 1 + tabs.length) % tabs.length;
+  else return;
+  e.preventDefault();
+  tabs[next].focus();
+  switchTab(tabs[next].dataset.tab);
+});
+
+// ==================== ARCHIVE TOGGLE ====================
+function toggleArchive() {
+  const body = document.getElementById('archive-body');
+  const toggle = document.getElementById('archive-toggle');
+  const isOpen = body.classList.toggle('open');
+  toggle.classList.toggle('open', isOpen);
+  if (isOpen) renderArchive();
+}
+
+// ==================== NEWSLETTER ====================
+function handleNewsletterSubmit(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('.newsletter-btn');
+  btn.textContent = '✓ Subscribed! Welcome to SENTINEL APEX Intel.';
+  btn.style.background = 'var(--apex-green)';
+  btn.disabled = true;
+}
+
+// ==================== SECURITY TIPS 2026 ====================
+const SECURITY_TIPS = [
+  {
+    num: '01',
+    title: 'Implement AI-Aware Security Controls',
+    tags: ['AI Security', 'High'],
+    body: 'With AI systems becoming attack vectors themselves, establish policies for AI model validation, output sanitization, and prompt injection defense. Audit all AI integrations for data exfiltration risks. Implement LLM firewalls and output monitoring.'
+  },
+  {
+    num: '02',
+    title: 'Adopt Zero-Trust Architecture Enterprise-Wide',
+    tags: ['Zero Trust', 'High'],
+    body: 'Never trust, always verify. Implement microsegmentation, identity-based access with continuous verification, device health checks at every authentication, and least-privilege access across all systems. Replace VPNs with ZTNA solutions.'
+  },
+  {
+    num: '03',
+    title: 'Enforce Phishing-Resistant MFA Everywhere',
+    tags: ['Authentication', 'High'],
+    body: 'Replace SMS and TOTP MFA with FIDO2/WebAuthn hardware keys or passkeys. Phishing-resistant MFA is now mandatory for federal systems — adopt it across all critical applications. Eliminate knowledge-based authentication.'
+  },
+  {
+    num: '04',
+    title: 'Automate Patch Management with SLAs',
+    tags: ['Patch Management', 'Medium'],
+    body: 'Define and enforce patch SLAs: Critical (CVSS 9+) within 24 hours, High (7-8.9) within 7 days, Medium within 30 days. Use automated patch orchestration tools. Subscribe to CISA KEV and treat all KEV entries as emergency patches.'
+  },
+  {
+    num: '05',
+    title: 'Harden Your Software Supply Chain',
+    tags: ['Supply Chain', 'High'],
+    body: 'Implement SBOM (Software Bill of Materials) for all software. Enforce code signing, use dependency scanning in CI/CD pipelines, pin dependencies to verified hashes, and audit open-source libraries before inclusion. Monitor for typosquatting attacks.'
+  },
+  {
+    num: '06',
+    title: 'Deploy Extended Detection and Response (XDR)',
+    tags: ['Detection', 'High'],
+    body: 'Unify endpoint, network, email, and cloud telemetry into a single XDR platform. Reduce MTTD (Mean Time to Detect) below 1 hour. Implement UEBA to catch insider threats and credential abuse patterns that bypass traditional controls.'
+  },
+  {
+    num: '07',
+    title: 'Conduct Continuous Penetration Testing',
+    tags: ['Testing', 'Medium'],
+    body: 'Move from annual pen tests to continuous automated security validation (BAS - Breach and Attack Simulation). Combine with red team exercises quarterly. Use DAST tools in CI/CD and treat security findings like critical bugs with assigned owners.'
+  },
+  {
+    num: '08',
+    title: 'Secure AI/ML Training Data and Pipelines',
+    tags: ['AI Security', 'High'],
+    body: 'Protect training data from poisoning attacks by implementing data provenance tracking. Validate model integrity with checksums. Be aware of model inversion and membership inference attacks exposing training data. Sandbox AI inference environments.'
+  },
+  {
+    num: '09',
+    title: 'Implement Ransomware-Resilient Backup Strategy',
+    tags: ['Resilience', 'Medium'],
+    body: 'Follow the 3-2-1-1-0 rule: 3 copies, 2 media types, 1 offsite, 1 offline/immutable, 0 errors verified. Test restores monthly. Keep backup systems on isolated networks. Implement air-gapped backups for critical systems. Plan for double-extortion scenarios.'
+  },
+  {
+    num: '10',
+    title: 'Enforce Secrets Management and Rotation',
+    tags: ['Secrets', 'Medium'],
+    body: 'Eliminate hardcoded credentials immediately. Use dedicated secrets management solutions (HashiCorp Vault, AWS Secrets Manager). Rotate all secrets automatically every 30-90 days. Scan all code repositories for leaked credentials using pre-commit hooks.'
+  },
+  {
+    num: '11',
+    title: 'Cloud Security Posture Management (CSPM)',
+    tags: ['Cloud Security', 'High'],
+    body: 'Continuously monitor cloud configurations against CIS Benchmarks and compliance frameworks. Detect and auto-remediate misconfigurations: public S3 buckets, overpermissioned IAM, unencrypted storage. Implement cloud infrastructure entitlement management (CIEM).'
+  },
+  {
+    num: '12',
+    title: 'Prepare for Post-Quantum Cryptography Migration',
+    tags: ['Cryptography', 'Medium'],
+    body: 'NIST finalized PQC standards in 2024. Begin crypto-agility assessment: inventory all cryptographic usage, prioritize migration of long-lived secrets and PKI infrastructure. Hybrid approaches (classical + PQC) recommended during transition period through 2030.'
+  },
+  {
+    num: '13',
+    title: 'Implement API Security Gateway',
+    tags: ['API Security', 'High'],
+    body: 'APIs are now the primary attack vector. Deploy API gateway with rate limiting, authentication enforcement, schema validation, and anomaly detection. Maintain API inventory (shadow API discovery). Implement OWASP API Top 10 controls. Monitor for API abuse patterns.'
+  },
+  {
+    num: '14',
+    title: 'Security Awareness Training with Simulations',
+    tags: ['Human Risk', 'Medium'],
+    body: 'Monthly phishing simulations with immediate remedial training. Focus 2026 training on: AI-generated deepfake attacks, voice phishing (vishing), QR code phishing, and business email compromise. Reward reporting behavior. Measure and track click rates.'
+  },
+  {
+    num: '15',
+    title: 'Establish Cyber Threat Intelligence Program',
+    tags: ['Threat Intel', 'High'],
+    body: 'Subscribe to sector-specific ISACs and government threat feeds. Operationalize threat intelligence through SIEM/SOAR integration. Track TTPs from relevant threat actors using MITRE ATT&CK. Participate in information sharing communities (ISAOs). Use CTI to drive proactive defense.'
+  },
+  {
+    num: '16',
+    title: 'Harden Identity with PAM and JIT Access',
+    tags: ['Identity', 'High'],
+    body: 'Implement Privileged Access Management (PAM) for all administrative accounts. Enforce Just-In-Time (JIT) privilege elevation with approval workflows. Record all privileged sessions. Eliminate standing admin accounts. Enforce MFA for all privileged access.'
+  },
+  {
+    num: '17',
+    title: 'OT/ICS Security for Critical Infrastructure',
+    tags: ['ICS/OT', 'High'],
+    body: 'Network segment OT from IT with DMZ architecture. Apply ISA/IEC 62443 standards. Patch OT systems through vendor-coordinated processes. Implement OT-aware monitoring solutions. Conduct OT-specific tabletop exercises. Never expose OT interfaces to the internet.'
+  },
+  {
+    num: '18',
+    title: 'Adopt Secure-by-Design Development Principles',
+    tags: ['DevSecOps', 'Medium'],
+    body: 'Integrate security into every phase of SDLC. Implement SAST, DAST, SCA, and IaC security scanning in CI/CD. Use threat modeling for new features. Enforce security architecture reviews for major changes. Define and enforce security acceptance criteria.'
+  },
+  {
+    num: '19',
+    title: 'Incident Response Plan with Regular Drills',
+    tags: ['Incident Response', 'Medium'],
+    body: 'Maintain and regularly update IRP aligned with NIST SP 800-61. Conduct tabletop exercises quarterly covering ransomware, data breach, and supply chain scenarios. Pre-negotiate with forensic firms and breach coaches. Establish out-of-band communication channels.'
+  },
+  {
+    num: '20',
+    title: 'Data Classification and Loss Prevention',
+    tags: ['Data Security', 'Medium'],
+    body: 'Classify all data by sensitivity (Public, Internal, Confidential, Restricted). Implement DLP tools at endpoints, email, and cloud egress. Encrypt data at rest and in transit with modern standards (AES-256, TLS 1.3+). Monitor for unusual data access and exfiltration patterns.'
+  }
+];
+
+function renderTips() {
+  const container = document.getElementById('tips-grid');
+  if (!container) return;
+
+  const diffClass = tag => {
+    if (tag === 'High') return 'difficulty-high';
+    if (tag === 'Medium') return 'difficulty-medium';
+    return 'difficulty-low';
+  };
+
+  container.innerHTML = SECURITY_TIPS.map(tip => `
+    <div class="tip-card" onclick="this.classList.toggle('expanded')" role="button" tabindex="0"
+         onkeypress="if(event.key==='Enter')this.click()"
+         aria-expanded="false">
+      <div class="tip-card-front">
+        <div class="tip-num">TIP ${tip.num} / 20</div>
+        <div class="tip-title">${tip.title}</div>
+        <div class="tip-tags">
+          ${tip.tags.map((t,i) => i === tip.tags.length - 1
+            ? `<span class="tip-tag ${diffClass(t)}">${t} Difficulty</span>`
+            : `<span class="tip-tag cat">${t}</span>`
+          ).join('')}
+        </div>
+        <div class="tip-expand-hint">▼ Click to expand</div>
+      </div>
+      <div class="tip-card-back">
+        <div class="tip-body">${tip.body}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ==================== INITIAL LOAD ====================
+document.addEventListener('DOMContentLoaded', () => {
+  // Check URL hash for deep linking
+  const hash = window.location.hash.substring(1);
+  const validTab = TABS.find(t => t.id === hash);
+  if (validTab && hash !== 'live-breaking') {
+    switchTab(hash);
+  } else {
+    loadTabData('live-breaking');
+  }
+
+  // Prefetch KEV and RSS in background after first tab loads
+  setTimeout(() => {
+    if (!state.kevData) {
+      fetchCISAKEV().then(kev => {
+        state.kevData = kev;
+        updateKEVStats(kev);
+      }).catch(() => {});
+    }
+  }, 2000);
+
+  // Update last-refreshed counter periodically
+  setInterval(() => {
+    if (state.lastRefresh) {
+      const el = document.getElementById('toolbar-meta');
+      if (el) {
+        const cnt = state.tabCounts[state.activeTab] || 0;
+        el.textContent = `${cnt} item(s) — Last updated: ${relativeTime(state.lastRefresh)}`;
+      }
+    }
+  }, 30000);
+});
+</script>
+</body>
+</html>
