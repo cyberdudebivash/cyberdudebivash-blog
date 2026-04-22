@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Living off the Land (LOLBins) Attacks — Intelligence, IOCs & Detection Rules | SENTINEL APEX</title>
+  <meta name="description" content="LOTL technique intelligence: LOLBin abuse, fileless malware, and detection strategies for defense teams. SENTINEL APEX provides real-time intelligence, IOC feeds, and detection rules.">
+  <meta name="keywords" content="living off the land, cybersecurity 2026, threat intelligence, IOC, detection rules, SIEM, Volt Typhoon, APT28, Lazarus Group">
+  <meta property="og:title" content="Living off the Land (LOLBins) Attacks — SENTINEL APEX">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://blog.cyberdudebivash.in/attack/living-off-the-land.html">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blog.cyberdudebivash.in/attack/living-off-the-land.html">
+  <style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#07090f;color:#e2e8f0;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,224,.01) 2px,rgba(0,255,224,.01) 4px);pointer-events:none;z-index:0}
+a{color:#00ffe0;transition:opacity .2s}
+a:hover{opacity:.8}
+.container{max-width:900px;margin:0 auto;padding:2rem}
+.badge{display:inline-flex;align-items:center;gap:.4rem;padding:.2rem .65rem;border-radius:50px;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.badge-critical{background:rgba(255,77,109,.15);border:1px solid rgba(255,77,109,.3);color:#ff4d6d}
+.badge-high{background:rgba(255,140,66,.15);border:1px solid rgba(255,140,66,.3);color:#ff8c42}
+.badge-medium{background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.2);color:#ffd700}
+.badge-exploited{background:rgba(255,77,109,.2);border:1px solid rgba(255,77,109,.4);color:#ff4d6d}
+.card{background:#0d1117;border:1px solid rgba(0,255,224,.15);border-radius:14px;padding:1.5rem;margin-bottom:1rem}
+.cta-box{background:linear-gradient(135deg,rgba(0,255,224,.05),rgba(0,100,200,.04));border:1px solid rgba(0,255,224,.2);border-radius:14px;padding:1.5rem;margin:2rem 0;text-align:center}
+.btn{display:inline-flex;align-items:center;gap:.4rem;background:linear-gradient(135deg,#00ffe0,#00d4ff);color:#000;font-weight:800;padding:.65rem 1.4rem;border-radius:8px;text-decoration:none;font-size:.85rem;transition:opacity .2s;margin:.25rem}
+.btn:hover{opacity:.85}
+.btn-outline{background:none;border:1px solid rgba(0,255,224,.3);color:#00ffe0}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.75rem;margin:1.5rem 0}
+.stat-box{background:rgba(0,0,0,.3);border:1px solid rgba(0,255,224,.12);border-radius:10px;padding:1rem;text-align:center}
+.stat-val{font-size:1.6rem;font-weight:900;color:#00ffe0;display:block}
+.stat-lbl{font-size:.7rem;color:#64748b;text-transform:uppercase;letter-spacing:.06em}
+</style>
+</head>
+<body>
+<nav style="position:sticky;top:0;z-index:100;background:rgba(7,9,15,.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,255,224,.15);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;font-family:'Segoe UI',system-ui,sans-serif;">
+  <a href="/" style="display:flex;align-items:center;gap:.75rem;text-decoration:none">
+    <div style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#00ffe0,#00d4ff);display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:900;color:#000">⚡</div>
+    <span style="font-size:1rem;font-weight:700;color:#00ffe0">SENTINEL APEX</span>
+  </a>
+  <div style="display:flex;gap:1.5rem;align-items:center">
+    <a href="/" style="color:#8892a4;text-decoration:none;font-size:.85rem">Intelligence</a>
+    <a href="/api.html" style="color:#8892a4;text-decoration:none;font-size:.85rem">API</a>
+    <a href="/products.html" style="color:#8892a4;text-decoration:none;font-size:.85rem">Products</a>
+    <a href="/pricing.html" style="background:linear-gradient(135deg,#00ffe0,#00d4ff);color:#000;font-weight:700;padding:.4rem 1rem;border-radius:6px;text-decoration:none;font-size:.8rem">Get Access</a>
+  </div>
+</nav>
+<div class="container">
+  <div style="font-size:.75rem;color:#64748b;margin-bottom:1.5rem;padding:.5rem 0;border-bottom:1px solid rgba(0,255,224,.08)">
+    <a href="/">Home</a> › <a href="/archive.html">Attack Intelligence</a> › Living off the Land (LOLBins) Attacks
+  </div>
+  <h1 style="font-size:clamp(1.6rem,4vw,2.2rem);font-weight:900;margin-bottom:.75rem">Living off the Land (LOLBins) Attacks</h1>
+  <p style="font-size:1rem;color:#94a3b8;max-width:700px;line-height:1.7;margin-bottom:2rem">LOTL technique intelligence: LOLBin abuse, fileless malware, and detection strategies for defense teams.</p>
+  <div class="card">
+    <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:.75rem">🔓 Active CVEs</h2>
+    <p style="font-size:.85rem;color:#94a3b8">No specific CVEs tracked for this category.</p>
+  </div>
+  <div class="card">
+    <h2 style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:.75rem">🎭 Associated Threat Actors</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:.5rem">
+      <a href="/threat/volttyphoon.html" style="background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.2);color:#ff4d6d;font-size:.78rem;font-weight:700;padding:.25rem .7rem;border-radius:50px;text-decoration:none">Volt Typhoon</a><a href="/threat/apt28.html" style="background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.2);color:#ff4d6d;font-size:.78rem;font-weight:700;padding:.25rem .7rem;border-radius:50px;text-decoration:none">APT28</a><a href="/threat/lazarusgroup.html" style="background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.2);color:#ff4d6d;font-size:.78rem;font-weight:700;padding:.25rem .7rem;border-radius:50px;text-decoration:none">Lazarus Group</a>
+    </div>
+  </div>
+  <div class="cta-box">
+    <h3 style="font-size:1.1rem;font-weight:900;color:#fff;margin-bottom:.4rem">⚡ Get Full Living off the Land (LOLBins) Attacks Intelligence Pack</h3>
+    <p style="font-size:.83rem;color:#94a3b8;margin-bottom:1rem">Comprehensive IOC database, detection rules, playbooks, and analyst briefings for your SOC team.</p>
+    <a href="/products.html" class="btn">🛡️ Browse Intelligence Products →</a>
+    <a href="/leads.html" class="btn btn-outline">📧 Free Intel Pack →</a>
+  </div>
+  <div class="card">
+    <h3 style="font-size:.9rem;font-weight:800;color:#fff;margin-bottom:.75rem">🔗 Related Intelligence</h3>
+    <ul style="list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.4rem">
+      <li><a href="/" style="font-size:.82rem">📊 Live Intelligence Feed</a></li>
+      <li><a href="/api.html" style="font-size:.82rem">🔌 Threat Intel API</a></li>
+      <li><a href="/archive.html" style="font-size:.82rem">📁 All Reports</a></li>
+      <li><a href="/enterprise.html" style="font-size:.82rem">🏢 Enterprise Advisory</a></li>
+    </ul>
+  </div>
+</div>
+<footer style="background:#0d1117;border-top:1px solid rgba(0,255,224,.15);padding:2rem;text-align:center;font-family:'Segoe UI',system-ui,sans-serif;">
+  <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem">
+    <a href="/" style="color:#8892a4;text-decoration:none;font-size:.82rem">Blog</a>
+    <a href="/intelligence.html" style="color:#8892a4;text-decoration:none;font-size:.82rem">Intel Hub</a>
+    <a href="/api.html" style="color:#8892a4;text-decoration:none;font-size:.82rem">API</a>
+    <a href="/products.html" style="color:#8892a4;text-decoration:none;font-size:.82rem">Products</a>
+    <a href="/enterprise.html" style="color:#8892a4;text-decoration:none;font-size:.82rem">Enterprise</a>
+    <a href="/leads.html" style="color:#8892a4;text-decoration:none;font-size:.82rem">Free Intel Pack</a>
+  </div>
+  <p style="font-size:.78rem;color:#8892a4">© 2026 CyberDudeBivash — SENTINEL APEX. All rights reserved.</p>
+</footer>
+<script src="/monetization.js" defer></script>
+<script src="/conversion-engine.js" defer></script>
+<script src="/seo-engine.js" defer></script>
+<script src="/ai-monetization-engine.js" defer></script>
+</body>
+</html>
