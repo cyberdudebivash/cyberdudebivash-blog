@@ -30,36 +30,6 @@
   <meta name="twitter:image" content="https://blog.cyberdudebivash.in/og-image.png">
 
   <title>CyberDudeBivash Intelligence Blog | CYBERDUDEBIVASH SENTINEL APEX Threat Reports</title>
-  <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>CyberDudeBivash | Global Cybersecurity & AI Platform</title>
-    
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Corporation",
-      "name": "CYBERDUDEBIVASH PRIVATE LIMITED",
-      "url": "https://cyberdudebivash.com",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "CYBERDUDEBIVASH PRIVATE LIMITED, 29, Korai -Sukinda-Ramchandrapur Rd, Ragadi",
-        "addressLocality": "Jajpur Road",
-        "addressRegion": "Odisha",
-        "postalCode": "755019",
-        "addressCountry": "IN"
-      },
-      "sameAs": [
-        "https://www.cyberdudebivash.in",
-        "https://www.linkedin.com/company/cyberdudebivash"
-      ]
-    }
-    </script>
-    <!-- MOBILE-FIRST DESIGN SYSTEM -->
-    <link rel="stylesheet" href="/mobile-first.css">
-    </head>
-<body>
 
   <!-- Schema.org JSON-LD -->
   <script type="application/ld+json">
@@ -1002,6 +972,27 @@
   <link rel="canonical" href="https://blog.cyberdudebivash.in/">
   <link rel="alternate" type="application/rss+xml" title="CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence" href="https://blog.cyberdudebivash.in/rss.xml">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <!-- Corporation Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Corporation",
+    "name": "CYBERDUDEBIVASH PRIVATE LIMITED",
+    "url": "https://cyberdudebivash.com",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "CYBERDUDEBIVASH PRIVATE LIMITED, 29, Korai -Sukinda-Ramchandrapur Rd, Ragadi",
+      "addressLocality": "Jajpur Road",
+      "addressRegion": "Odisha",
+      "postalCode": "755019",
+      "addressCountry": "IN"
+    },
+    "sameAs": [
+      "https://www.cyberdudebivash.in",
+      "https://www.linkedin.com/company/cyberdudebivash"
+    ]
+  }
+  </script>
 <script src="/security-engine.js"></script>
 <link rel="stylesheet" href="/apex-v12.css">
 <link rel="stylesheet" href="/apex-v13.css">
@@ -1015,24 +1006,30 @@
   width: 100%;
 }
 
-/* ── HEADER STACKING ───────────────────────────────────── */
-header { z-index: 200 !important; }
-.intel-hub-bar { z-index: 190 !important; top: 64px !important; }
+/* ── HEADER STACKING — desktop only; mobile-first.css overrides on mobile ── */
+@media (min-width: 768px) {
+  header { z-index: 200 !important; }
+  .intel-hub-bar { z-index: 190 !important; top: 64px !important; }
+}
 
-/* ── NOTIFICATION Z-INDEX FIX ──────────────────────────── */
-#cx-scroll-bar    { z-index: 30000 !important; }
-#aim-toast-container { z-index: 20000 !important; bottom: 24px !important; left: 24px !important; }
-#cx-smart-overlay { z-index: 19000 !important; }
-#cx-return-banner { top: 130px !important; z-index: 18000 !important; }
+/* ── NOTIFICATION Z-INDEX FIX — desktop only ─────────────── */
+@media (min-width: 768px) {
+  #cx-scroll-bar    { z-index: 30000 !important; }
+  #aim-toast-container { z-index: 20000 !important; bottom: 24px !important; left: 24px !important; }
+  #cx-smart-overlay { z-index: 19000 !important; }
+  #cx-return-banner { top: 130px !important; z-index: 18000 !important; }
+}
 
 /* ── TOAST VISIBILITY ──────────────────────────────────── */
 .aim-toast { border: 1px solid rgba(0,255,224,0.4) !important; box-shadow: 0 8px 32px rgba(0,0,0,.8), 0 0 20px rgba(0,255,224,0.1) !important; }
 .aim-toast .at-action { color: #f1f5f9 !important; font-size: 13px !important; font-weight: 800 !important; }
 .aim-toast .at-who   { color: #94a3b8 !important; font-size: 12px !important; }
 
-/* ── RETURN BANNER TEXT ────────────────────────────────── */
-#cx-return-banner span   { color: #f1f5f9 !important; font-size: 14px !important; }
-#cx-return-banner strong { color: #ffd700 !important; font-size: 15px !important; font-weight: 900 !important; }
+/* ── RETURN BANNER TEXT — desktop only ────────────────── */
+@media (min-width: 768px) {
+  #cx-return-banner span   { color: #f1f5f9 !important; font-size: 14px !important; }
+  #cx-return-banner strong { color: #ffd700 !important; font-size: 15px !important; font-weight: 900 !important; }
+}
 
 /* ── FORM FIELDS ───────────────────────────────────────── */
 input[type="email"], input[type="text"], textarea, select {
@@ -1098,6 +1095,8 @@ input:focus, textarea:focus {
 .digest-link { font-size: 11px; color: #00ffe0; font-weight: 700; text-decoration: none; flex-shrink: 0; }
 .digest-link:hover { text-decoration: underline; }
 </style>
+<!-- MOBILE-FIRST DESIGN SYSTEM — Loads LAST to correctly override all other CSS on mobile -->
+<link rel="stylesheet" href="/mobile-first.css">
 </head>
 <body>
 
