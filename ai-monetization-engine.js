@@ -182,6 +182,210 @@
   };
 
   /* ══════════════════════════════════════════════════════════════
+     § 1.5. ENGAGEMENT TRACKER — LOW / MEDIUM / HIGH
+     Measures real session behaviour:
+       LOW    → <30s session  AND 1 page visited
+       MEDIUM → ≥30s  OR scroll >50%
+       HIGH   → ≥60s  AND visited ≥2 pages in session
+  ══════════════════════════════════════════════════════════════ */
+  const ENGAGEMENT = {
+    sessionStart: Date.now(),
+    _scroll:      0,
+    _level:       null,
+    _callbacks:   [],
+
+    // ── Track scroll ───────────────────────────────────────────
+    trackScroll() {
+      const onScroll = () => {
+        const doc  = document.documentElement;
+        const pct  = Math.round((doc.scrollTop / (doc.scrollHeight - doc.clientHeight || 1)) * 100);
+        if (pct > this._scroll) {
+          this._scroll = pct;
+          ls.set('aim_scroll_pct', pct);
+        }
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+    },
+
+    // ── Page-view counter (session-scoped via sessionStorage) ──
+    getPageCount() {
+      try {
+        let count = parseInt(sessionStorage.getItem('aim_session_pages') || '0', 10);
+        // First call increments for current page
+        if (!sessionStorage.getItem('aim_page_counted_' + page)) {
+          count += 1;
+          sessionStorage.setItem('aim_session_pages', String(count));
+          sessionStorage.setItem('aim_page_counted_' + page, '1');
+        }
+        return count;
+      } catch (e) { return 1; }
+    },
+
+    getTimeOnPage() { return Date.now() - this.sessionStart; },
+
+    getMaxScroll() {
+      return Math.max(this._scroll, ls.get('aim_scroll_pct') || 0);
+    },
+
+    // ── Engagement level computation ───────────────────────────
+    getLevel() {
+      const time   = this.getTimeOnPage(); // ms
+      const pages  = this.getPageCount();
+      const scroll = this.getMaxScroll();
+
+      // HIGH: 60s+ AND 2+ pages in session
+      if (time >= 60000 && pages >= 2) return 'high';
+      // MEDIUM: 30s+ OR scroll > 50%
+      if (time >= 30000 || scroll >= 50) return 'medium';
+      // LOW: under 30s, 1 page
+      return 'low';
+    },
+
+    // ── Register upgrade callback (called by external engines) ─
+    onUpgrade(cb) { this._callbacks.push(cb); },
+
+    // ── Polling loop — re-evaluates every 10s ─────────────────
+    startPolling() {
+      const check = () => {
+        const newLevel = this.getLevel();
+        if (newLevel !== this._level) {
+          const prev = this._level;
+          this._level = newLevel;
+          // Write to shared CX4 key for revenue-cta-block coordination
+          try { localStorage.setItem('cx4_intent_level', newLevel); } catch (e) {}
+          // Fire upgrade callbacks
+          if (prev !== null) {
+            this._callbacks.forEach(cb => { try { cb(newLevel, prev); } catch (e) {} });
+            // Forward to CX4 if loaded
+            if (window.CX4 && window.CX4.INTENT && window.CX4.INTENT.upgrade) {
+              window.CX4.INTENT.upgrade(newLevel);
+            }
+          }
+        }
+      };
+      this._level = this.getLevel(); // initial
+      try { localStorage.setItem('cx4_intent_level', this._level); } catch (e) {}
+      setInterval(check, 10000);
+    },
+
+    init() {
+      this.trackScroll();
+      this.getPageCount(); // register this page
+      this.startPolling();
+    }
+  };
+
+  /* ══════════════════════════════════════════════════════════════
+     § 1.6. ENGAGEMENT TRIGGERS — Intent-level CTA dispatcher
+     Maps engagement level + user type → correct conversion offer
+  ══════════════════════════════════════════════════════════════ */
+  const ENGAGEMENT_TRIGGERS = {
+    _fired: {},
+
+    dispatch(level, userType) {
+      if (this._fired[level]) return; // once per level per session
+      this._fired[level] = true;
+
+      if (level === 'low')    this.lowTrigger();
+      if (level === 'medium') this.mediumTrigger(userType);
+      if (level === 'high')   this.highTrigger(userType);
+    },
+
+    // LOW → soft newsletter CTA (no interruption)
+    lowTrigger() {
+      if (document.getElementById('aim-low-intent-bar')) return;
+      if (!page.includes('/posts/') && !page.includes('/intel')) return;
+      const bar = document.createElement('div');
+      bar.id = 'aim-low-intent-bar';
+      bar.style.cssText = `background:rgba(0,255,224,.05);border-top:1px solid rgba(0,255,224,.12);padding:.6rem 1.5rem;display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap;font-family:'Segoe UI',system-ui,sans-serif;`;
+      bar.innerHTML = `
+        <span style="font-size:.82rem;color:#94a3b8">📧 <strong style="color:#fff">Get weekly threat intel</strong> — IOC bundles + CVE summaries, free.</span>
+        <a href="/leads.html" style="background:rgba(0,255,224,.1);border:1px solid rgba(0,255,224,.3);color:${CFG.CYAN};font-size:.78rem;font-weight:700;padding:.35rem .85rem;border-radius:6px;text-decoration:none;white-space:nowrap">Subscribe Free →</a>
+        <button onclick="this.parentNode.remove()" style="background:none;border:none;color:#475569;cursor:pointer;font-size:.8rem">✕</button>`;
+      const footer = document.querySelector('footer') || document.body;
+      footer.insertAdjacentElement('beforebegin', bar);
+      if (window.trackEvent) window.trackEvent('engagement_low_trigger', { page });
+    },
+
+    // MEDIUM → inline product card (context-matched, below-fold insertion)
+    mediumTrigger(userType) {
+      if (document.getElementById('aim-medium-intent-card')) return;
+      if (!page.includes('/posts/')) return;
+
+      const product = window.AIM?.CONTENT_PIPELINE?.detect?.();
+      if (!product) return;
+
+      const paras = [...document.querySelectorAll('article p, .post-content p, main p')]
+        .filter(p => !p.closest('.aim-product-inject, .aim-medium-intent-card, nav, footer'));
+      if (paras.length < 5) return;
+
+      const target = paras[Math.floor(paras.length * 0.65)];
+      if (!target) return;
+
+      const card = document.createElement('div');
+      card.id = 'aim-medium-intent-card';
+      card.innerHTML = `
+        <div style="background:rgba(0,255,224,.04);border:1px solid rgba(0,255,224,.2);border-radius:12px;padding:1.1rem 1.25rem;margin:1.5rem 0;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;font-family:'Segoe UI',system-ui,sans-serif;">
+          <span style="font-size:1.4rem;flex-shrink:0">${product.icon}</span>
+          <div style="flex:1;min-width:160px">
+            <span style="font-size:.65rem;font-weight:800;color:${CFG.CYAN};text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:.2rem">RECOMMENDED FOR YOU</span>
+            <strong style="display:block;font-size:.88rem;color:#fff;margin-bottom:.2rem">${product.title}</strong>
+            <span style="font-size:.77rem;color:#94a3b8">${product.sub}</span>
+          </div>
+          <a href="${product.url}" style="background:linear-gradient(135deg,${CFG.CYAN},#00d4ff);color:#000;font-weight:800;font-size:.78rem;padding:.45rem .95rem;border-radius:7px;text-decoration:none;white-space:nowrap;flex-shrink:0" onclick="if(window.trackEvent)window.trackEvent('engagement_medium_cta_click',{intent:'medium'})">${product.cta}</a>
+        </div>`;
+      target.insertAdjacentElement('afterend', card.firstElementChild);
+      if (window.trackEvent) window.trackEvent('engagement_medium_trigger', { page, userType });
+    },
+
+    // HIGH → subscription / enterprise modal-free CTA (prominent strip)
+    highTrigger(userType) {
+      if (document.getElementById('aim-high-intent-strip')) return;
+
+      const isEnterprise = userType === 'enterprise';
+      const strip = document.createElement('div');
+      strip.id = 'aim-high-intent-strip';
+      strip.style.cssText = `position:fixed;bottom:0;left:0;right:0;z-index:9996;background:linear-gradient(90deg,rgba(0,255,224,.1),rgba(0,100,200,.08));border-top:1px solid rgba(0,255,224,.25);padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap;font-family:'Segoe UI',system-ui,sans-serif;transform:translateY(100%);transition:transform .35s ease;`;
+
+      if (isEnterprise) {
+        strip.innerHTML = `
+          <span style="font-size:.82rem;color:#e2e8f0;font-weight:500">🏢 Your browsing suggests enterprise requirements.</span>
+          <strong style="font-size:.85rem;color:#fff">Get a custom threat intelligence proposal for your team.</strong>
+          <a href="${CFG.enterpriseUrl}" onclick="if(window.trackEvent)window.trackEvent('engagement_high_enterprise_click',{})" style="background:linear-gradient(135deg,#ffd700,#ff8c00);color:#000;font-weight:800;font-size:.78rem;padding:.45rem .95rem;border-radius:7px;text-decoration:none;white-space:nowrap">Get Enterprise Proposal →</a>
+          <button onclick="document.getElementById('aim-high-intent-strip').remove()" style="background:none;border:none;color:#475569;cursor:pointer;font-size:.85rem">✕</button>`;
+      } else {
+        const { final, discount, code } = DYNPRICE.compute(49);
+        strip.innerHTML = `
+          <span style="font-size:.82rem;color:#e2e8f0;font-weight:500">⚡ You're clearly invested in threat intelligence.</span>
+          <strong style="font-size:.85rem;color:${CFG.CYAN}">SOC Pro — $${final}/mo</strong>${discount > 0 ? `<span style="font-size:.72rem;color:#22c55e;font-weight:700">${Math.round(discount*100)}% off · ${code}</span>` : ''}
+          <a href="${CFG.pricingUrl}" onclick="if(window.trackEvent)window.trackEvent('engagement_high_soc_click',{discount:${discount}})" style="background:linear-gradient(135deg,${CFG.CYAN},#00d4ff);color:#000;font-weight:800;font-size:.78rem;padding:.45rem .95rem;border-radius:7px;text-decoration:none;white-space:nowrap">Start 7-Day Free Trial →</a>
+          <button onclick="document.getElementById('aim-high-intent-strip').remove()" style="background:none;border:none;color:#475569;cursor:pointer;font-size:.85rem">✕</button>`;
+      }
+      document.body.appendChild(strip);
+      requestAnimationFrame(() => requestAnimationFrame(() => { strip.style.transform = 'translateY(0)'; }));
+      if (window.trackEvent) window.trackEvent('engagement_high_trigger', { page, userType });
+    },
+
+    // ── Wire upgrade listener ────────────────────────────────────
+    init() {
+      const self = this;
+      const profile = window.AIM?.INTENT?.profile;
+      const userType = profile?.intent || 'researcher';
+
+      // Fire for current level immediately
+      const currentLevel = ENGAGEMENT.getLevel();
+      if (currentLevel !== 'low') {
+        setTimeout(() => self.dispatch(currentLevel, userType), 3000);
+      }
+
+      // Listen for future upgrades
+      ENGAGEMENT.onUpgrade((newLevel) => {
+        self.dispatch(newLevel, userType);
+      });
+    }
+  };
+
+  /* ══════════════════════════════════════════════════════════════
      § 2. DYNAMIC PRICING ENGINE
   ══════════════════════════════════════════════════════════════ */
   const DYNPRICE = {
@@ -776,6 +980,9 @@
      § BOOT
   ══════════════════════════════════════════════════════════════ */
   function boot() {
+    // 0. Engagement tracker (runs first — establishes session context)
+    ENGAGEMENT.init();
+
     // 1. Classify intent
     INTENT.classify();
 
@@ -805,10 +1012,13 @@
 
     // 10. Revenue dashboard
     setTimeout(printRevenueDashboard, 2000);
+
+    // 11. Engagement trigger dispatcher (wires after intent classification)
+    setTimeout(() => ENGAGEMENT_TRIGGERS.init(), 1500);
   }
 
   // Public API
-  window.AIM = { INTENT, DYNPRICE, COUNTDOWN, SCARCITY, SOCIAL_PROOF, CONTENT_PIPELINE, BUNDLE_ENGINE, SUB_UPGRADE };
+  window.AIM = { INTENT, ENGAGEMENT, ENGAGEMENT_TRIGGERS, DYNPRICE, COUNTDOWN, SCARCITY, SOCIAL_PROOF, CONTENT_PIPELINE, BUNDLE_ENGINE, SUB_UPGRADE };
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);

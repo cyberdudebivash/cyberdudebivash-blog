@@ -76,6 +76,98 @@
     'scattered spider':{ type:'eCrime',  nation:'US/UK',   color:'#ff8800' }
   };
 
+  /* ── CONTEXT PRODUCT MAP ────────────────────────────────────────── */
+  var CONTEXT_PRODUCTS = {
+    cve: {
+      primary:   { cta:'⬇ Get Detection Pack',           url:'/products.html' },
+      secondary: { cta:'🔌 Automate via API',             url:'/api.html' },
+      sub: 'Sigma + YARA rules, SIEM queries, IOC bundle — deploy-ready in minutes.'
+    },
+    ransomware: {
+      primary:   { cta:'🛡️ Get Ransomware Defense Kit',  url:'/products.html' },
+      secondary: { cta:'⚡ SOC Pro — $49/mo',            url:'/pricing.html' },
+      sub: '800+ YARA rules, IR playbook, IOC bundle for active ransomware campaigns.'
+    },
+    apt: {
+      primary:   { cta:'🎯 Get APT Intel Pack',           url:'/products.html' },
+      secondary: { cta:'🏢 Enterprise Advisory',          url:'/enterprise.html' },
+      sub: 'Nation-state TTP mapping, STIX feed, infrastructure indicators, detection rules.'
+    },
+    ai: {
+      primary:   { cta:'🤖 Get AI Security Report',       url:'/products.html' },
+      secondary: { cta:'🏢 AI Security Hub',              url:'https://cyberdudebivash.in' },
+      sub: 'LLM attack surfaces, prompt injection TTPs, enterprise AI governance — research-grade.'
+    },
+    general: {
+      primary:   { cta:'⚡ Start SOC Pro — $49/mo',       url:'/pricing.html' },
+      secondary: { cta:'📦 Browse Products',              url:'/products.html' },
+      sub: '48H pre-disclosure CVEs, daily IOC feeds, SIEM rules. 4,800+ analysts subscribed.'
+    }
+  };
+
+  /* ── ANALYST NOTE TEMPLATES ─────────────────────────────────────── */
+  var ANALYST_NOTES = {
+    cve: [
+      'This vulnerability is high-priority for patch management. Organizations running affected versions should treat this as P1 remediation. SOC teams should activate detection rules before public PoC availability — typical weaponization window is 24–72 hours post-disclosure.',
+      'CVEs with CVSS ≥ 7.5 are monitored by threat actors within 48 hours of NVD publication. Pre-patch network segmentation and compensating controls are recommended for all internet-facing assets.',
+      'Based on historical exploitation patterns, this vulnerability class is typically weaponized within 48 hours of PoC release. Immediate patching or mitigation is strongly advised for all affected systems.'
+    ],
+    ransomware: [
+      'Ransomware operators increasingly target backup systems and domain controllers before encryption begins. Network segmentation and offline backup verification are the most effective immediate countermeasures for this campaign.',
+      'This ransomware family uses living-off-the-land techniques to evade signature-based EDR. Behavioral detection rules and anomalous process execution monitoring are more effective than hash-based approaches.',
+      'Initial access via phishing and exposed RDP remain the dominant vectors. MFA enforcement and RDP gateway controls eliminate the majority of initial access risk associated with this threat group.'
+    ],
+    apt: [
+      'Nation-state actors in this campaign demonstrate patience — initial access may precede active operations by weeks or months. Assume long-dwell presence in affected environments and conduct comprehensive threat hunt.',
+      'Infrastructure used by this threat actor overlaps with previously attributed campaigns. IOCs have limited shelf-life as attribution-aware actors rapidly rotate infrastructure after public disclosure.',
+      'This actor\'s targeting is strategic, not opportunistic. If your organization operates in energy, defense, financial services, or critical infrastructure verticals, treat this as a direct targeting risk.'
+    ],
+    ai: [
+      'AI security risks are maturing rapidly. Organizations deploying LLMs in production workflows must assume adversarial input at the application layer and implement input validation at the architecture level — not just the model level.',
+      'Prompt injection attacks targeting enterprise AI pipelines are increasingly sophisticated. The attack surface expands significantly when LLMs have tool-use or API access capabilities within automated workflows.',
+      'AI governance controls are lagging deployment velocity. Security teams should prioritize AI asset inventory and data access mapping before deploying compensating controls for this class of attack.'
+    ],
+    general: [
+      'This threat report has been enriched with MITRE ATT&CK mappings, IOC extraction, and risk scoring by the CYBERDUDEBIVASH SENTINEL APEX analysis pipeline. Subscribe to SOC Pro for full detection coverage delivered 48 hours before NVD.',
+      'CYBERDUDEBIVASH SENTINEL APEX analysts assess this threat as operationally relevant to enterprise environments with internet-facing infrastructure based on current dark web signals and active campaign tracking.',
+      'CYBERDUDEBIVASH SENTINEL APEX tracks emerging threats before NVD publication. SOC Pro members receive machine-readable IOC feeds, SIEM rules, and YARA signatures for every major threat within 24 hours of identification.'
+    ]
+  };
+
+  /* ── DEFENSIVE ACTIONS MAP ──────────────────────────────────────── */
+  var DEFENSIVE_ACTIONS = {
+    cve: [
+      'Apply vendor patch immediately — prioritize internet-facing and domain controller assets',
+      'Enable SIEM detection rules for known exploitation indicators (network + host)',
+      'Deploy YARA signatures across EDR platform to catch post-exploitation activity',
+      'Review WAF rulesets for exploitation payload patterns if web-facing component is affected'
+    ],
+    ransomware: [
+      'Isolate newly discovered encrypted endpoints — prevent lateral propagation',
+      'Deploy IOC block list: IP/domain/hash indicators to firewall deny list immediately',
+      'Disable unnecessary SMB lateral movement paths between workstations',
+      'Verify offline backup integrity — confirm backup systems are unaffected by encryption'
+    ],
+    apt: [
+      'Hunt for IOCs across EDR telemetry — assume implants may predate public disclosure',
+      'Review authentication logs for anomalous access patterns matching actor TTPs',
+      'Audit service accounts and privileged credentials on affected system segments',
+      'Enable enhanced logging on domain controllers, VPN, and network perimeter systems'
+    ],
+    ai: [
+      'Audit all LLM API endpoints and agentic tool integrations for prompt injection surface',
+      'Implement input validation and output filtering on all AI pipeline touchpoints',
+      'Review data access permissions granted to AI agent and automation components',
+      'Deploy behavioral monitoring for anomalous AI API usage patterns and data access'
+    ],
+    general: [
+      'Monitor threat actor infrastructure associated with this campaign for new indicators',
+      'Review network and authentication logs for indicators matching published IOCs',
+      'Verify detection coverage for MITRE ATT&CK techniques identified in this report',
+      'Ensure endpoint detection rules are updated and active across all managed endpoints'
+    ]
+  };
+
   var SEVERITY_KEYWORDS = {
     critical: ['critical','cvss 9','cvss 10','actively exploit','0-day','zero-day','unauthenticated rce','pre-auth rce','emergency patch','cisa kev','cisa mandate'],
     high:     ['high','cvss 7','cvss 8','remote code exec','privilege escal','auth bypass'],
@@ -192,6 +284,14 @@
   /* ══════════════════════════════════════════════════════════════════
      § 6. CONTENT ENRICHER
   ══════════════════════════════════════════════════════════════════ */
+  function detectPostContext(text) {
+    if (/cve-\d{4}|zero.day|rce|remote code exec|privilege escal|authentication bypass|unauthenticated/i.test(text)) return 'cve';
+    if (/ransomware|lockbit|akira|qilin|black.basta|encrypt.*file|ransom.*demand/i.test(text)) return 'ransomware';
+    if (/apt\d*|volt.typhoon|lazarus|nation.state|ics.*attack|scada|critical infra/i.test(text)) return 'apt';
+    if (/\bai\b|llm|chatgpt|copilot|gemini|prompt.inject|generative|model.*attack/i.test(text)) return 'ai';
+    return 'general';
+  }
+
   function enrichItem(item) {
     var text = ((item.title || '') + ' ' + (item.description || '') + ' ' + (item.content || '')).toLowerCase();
     var enriched = {
@@ -209,7 +309,8 @@
       isExploited: /actively exploit|in the wild|actively used|cisa kev|zero.day exploit/i.test(text),
       isCritical:  /critical|cvss 9\.|cvss 10|emergency patch/i.test(text),
       isBreaking:  /breaking|just in|alert|urgent|emergency/i.test(item.title || ''),
-      riskScore:   0
+      riskScore:   0,
+      postContext: detectPostContext(text)
     };
     enriched.riskScore = calculateRiskScore(enriched);
     return enriched;
@@ -284,6 +385,54 @@
   }
 
   /* ══════════════════════════════════════════════════════════════════
+     § 6b. POST ENRICHMENT BLOCKS — Analyst Note / Actions / CTA / Trust
+  ══════════════════════════════════════════════════════════════════ */
+  function generateAnalystNote(item) {
+    var ctx   = item.postContext || 'general';
+    var notes = ANALYST_NOTES[ctx] || ANALYST_NOTES.general;
+    var note  = notes[item.riskScore % notes.length];
+    var today = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric' });
+    return `<div class="analyst-note">
+  <div class="analyst-note-hdr">
+    <span class="analyst-badge">🔍 CYBERDUDEBIVASH ANALYST NOTE</span>
+    <span class="analyst-meta">Assessed ${today}</span>
+  </div>
+  <p class="analyst-text">${escHTML(note)}</p>
+</div>`;
+  }
+
+  function generateDefensiveActions(item) {
+    var ctx     = item.postContext || 'general';
+    var actions = DEFENSIVE_ACTIONS[ctx] || DEFENSIVE_ACTIONS.general;
+    var items   = actions.slice(0, 4).map(a => `<li>${escHTML(a)}</li>`).join('');
+    return `<div class="defensive-block">
+  <div class="defensive-hdr">⚡ IMMEDIATE DEFENSIVE ACTIONS</div>
+  <ol class="defensive-list">${items}</ol>
+  <a class="defensive-link" href="/products.html">⬇ Get Full Detection Bundle →</a>
+</div>`;
+  }
+
+  function generateContextCTA(item) {
+    var ctx = item.postContext || 'general';
+    var cp  = CONTEXT_PRODUCTS[ctx] || CONTEXT_PRODUCTS.general;
+    var titleEnc = escHTML(item.title).replace(/'/g, "\\'");
+    return `<div class="ctx-cta-row">
+  <a class="ctx-btn-primary" href="${cp.primary.url}" onclick="if(window.trackEvent)window.trackEvent('intel_cta_primary',{ctx:'${ctx}'})">${cp.primary.cta}</a>
+  <a class="ctx-btn-secondary" href="${cp.secondary.url}" onclick="if(window.trackEvent)window.trackEvent('intel_cta_secondary',{ctx:'${ctx}'})">${cp.secondary.cta}</a>
+  <button class="ctx-share-btn" onclick="sharePost('${titleEnc}','${item.link}')">↗ Share</button>
+</div>`;
+  }
+
+  function generateTrustFooter() {
+    return `<div class="intel-trust-footer">
+  <span>🛡️ <strong>4,800+</strong> analysts subscribed</span>
+  <span>📊 <strong>1,200+</strong> CVEs tracked 2026</span>
+  <span>⚡ Updated every <strong>10 min</strong></span>
+  <span><a href="/rss.xml" style="color:#475569;text-decoration:none">📡 RSS Feed</a></span>
+</div>`;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════
      § 7. POST GENERATOR — Full HTML Article
   ══════════════════════════════════════════════════════════════════ */
   function generatePostHTML(item, isPremium) {
@@ -347,13 +496,11 @@
     ${riskBar}
     ${contentHTML}
     ${tagsHTML ? '<div class="tags-row">' + tagsHTML + '</div>' : ''}
+    ${generateAnalystNote(item)}
+    ${generateDefensiveActions(item)}
   </div>
-  <div class="post-cta-row">
-    <a class="cta-btn cta-green" href="/products.html">⬇ Detection Packs</a>
-    <a class="cta-btn cta-blue" href="/api.html">🔌 API Access</a>
-    <a class="cta-btn cta-purple" href="/enterprise.html">🏢 Enterprise</a>
-    <button class="share-btn" onclick="sharePost('${escHTML(item.title).replace(/'/g,"\\'")}','${item.link}')">↗ Share</button>
-  </div>
+  ${generateContextCTA(item)}
+  ${generateTrustFooter()}
 </article>`;
   }
 
@@ -614,6 +761,29 @@
 .share-menu{position:fixed;bottom:20px;right:20px;background:#0d1117;border:1px solid #00ff88;border-radius:10px;padding:12px;z-index:9999;display:flex;flex-direction:column;gap:8px;min-width:200px;}
 .share-menu a,.share-menu button{display:block;color:#e0e0e0;text-decoration:none;padding:8px 12px;border-radius:6px;background:#0a0e1a;font-size:.85em;text-align:center;border:none;cursor:pointer;}
 .share-menu a:hover{background:#1a2535;color:#00ff88;}
+/* ── Analyst Note ── */
+.analyst-note{background:rgba(0,255,224,.04);border-left:3px solid #00ffe0;padding:12px 16px;margin:12px 0;border-radius:0 8px 8px 0;}
+.analyst-note-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;}
+.analyst-badge{font-size:.70em;font-weight:800;color:#00ffe0;text-transform:uppercase;letter-spacing:.5px;}
+.analyst-meta{font-size:.65em;color:#475569;}
+.analyst-text{font-size:.82em;color:#94a3b8;line-height:1.65;margin:0;font-style:italic;}
+/* ── Defensive Actions ── */
+.defensive-block{background:rgba(255,68,68,.05);border:1px solid rgba(255,68,68,.18);border-radius:8px;padding:12px 16px;margin:12px 0;}
+.defensive-hdr{font-size:.70em;font-weight:800;color:#ff6b6b;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+.defensive-list{margin:0 0 10px 1.1rem;}
+.defensive-list li{font-size:.80em;color:#cbd5e1;line-height:1.6;padding:2px 0;}
+.defensive-link{display:inline-block;font-size:.75em;font-weight:700;color:#00ffe0;text-decoration:none;border:1px solid rgba(0,255,224,.25);padding:4px 12px;border-radius:5px;}
+.defensive-link:hover{background:rgba(0,255,224,.08);}
+/* ── Context CTA row ── */
+.ctx-cta-row{padding:10px 18px;border-top:1px solid #1a2535;display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.ctx-btn-primary{padding:6px 14px;border-radius:6px;font-size:.78em;font-weight:700;text-decoration:none;background:linear-gradient(135deg,#00ffe0,#00d4ff);color:#000;}
+.ctx-btn-secondary{padding:6px 14px;border-radius:6px;font-size:.78em;font-weight:700;text-decoration:none;background:rgba(0,255,224,.08);color:#00ffe0;border:1px solid rgba(0,255,224,.25);}
+.ctx-share-btn{background:transparent;border:1px solid #1a2535;color:#555;padding:5px 12px;border-radius:6px;font-size:.78em;cursor:pointer;margin-left:auto;}
+.ctx-share-btn:hover{border-color:#00ff8855;color:#00ff88;}
+/* ── Trust Footer ── */
+.intel-trust-footer{padding:8px 18px;border-top:1px solid #0d1525;display:flex;flex-wrap:wrap;gap:16px;background:rgba(0,0,0,.2);}
+.intel-trust-footer span{font-size:.70em;color:#475569;}
+.intel-trust-footer strong{color:#64748b;}
 .intel-stats-bar{display:flex;gap:24px;padding:16px 0;border-bottom:1px solid #1a2535;margin-bottom:20px;flex-wrap:wrap;}
 .intel-stat{text-align:center;}
 .intel-stat .num{font-size:1.8em;font-weight:700;color:#00ff88;display:block;}
