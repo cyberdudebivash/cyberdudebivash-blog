@@ -1,0 +1,822 @@
+/**
+ * CYBERDUDEBIVASH SENTINEL APEX — Mobile-First Design System v1.0
+ * ═══════════════════════════════════════════════════════════════════
+ * Strategy: Mobile base → tablet → desktop (min-width progression)
+ * Principles: Single-column, no overflow, clear hierarchy, 1 sticky CTA
+ * Load order: after apex-v13.css — overrides where needed
+ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   § 0. GLOBAL RESETS & BASE
+═══════════════════════════════════════════════════════════════════ */
+:root {
+  --apex-cyan:   #00ffe0;
+  --apex-red:    #ff3b3b;
+  --apex-green:  #00ff88;
+  --apex-bg:     #07090f;
+  --apex-surface:#0d1117;
+  --apex-border: #1f2937;
+  --apex-text:   #e2e8f0;
+  --apex-muted:  #6b7280;
+  /* spacing scale */
+  --sp-xs:  8px;
+  --sp-sm:  12px;
+  --sp-md:  16px;
+  --sp-lg:  24px;
+  --sp-xl:  40px;
+  /* touch targets */
+  --tap-min: 44px;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-size: 16px;
+  line-height: 1.75;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Prevent layout shift from scrollbar */
+html { scrollbar-gutter: stable; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   § 1. TYPOGRAPHY SCALE
+═══════════════════════════════════════════════════════════════════ */
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.2;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+p, li, span {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Fluid type for hero headline */
+.hero h1 {
+  font-size: clamp(26px, 7vw, 60px);
+  line-height: 1.15;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   § 2. TOUCH TARGETS — all interactive elements min 44px
+═══════════════════════════════════════════════════════════════════ */
+a,
+button,
+[role="button"],
+input[type="submit"],
+input[type="button"],
+.nav-cta,
+.btn-primary,
+.btn-secondary,
+.hub-tab,
+.cta-btn,
+.rcb-card-btn,
+.ctx-btn-primary,
+.ctx-btn-secondary,
+.nl-btn,
+.rcb-nl-btn {
+  min-height: var(--tap-min);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Override display:block CTAs that break flex */
+.rcb-card-btn,
+.ctx-btn-primary,
+.ctx-btn-secondary,
+a.btn-primary,
+a.btn-secondary,
+a.cta-btn,
+a.rcb-nl-btn {
+  display: inline-flex !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   § 3. REDUCED MOTION SUPPORT
+═══════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   § 4. MOBILE BASE (≤ 767px) — PRIMARY EXPERIENCE
+═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+
+  /* ── 4.1 Global spacing reset ───────────────────────────────── */
+  .main {
+    padding: var(--sp-md) var(--sp-md) 80px !important;
+    grid-template-columns: 1fr !important;
+    gap: var(--sp-lg) !important;
+  }
+
+  .featured-intel-section,
+  .stats-bar,
+  .newsletter-bar {
+    padding-left:  var(--sp-md) !important;
+    padding-right: var(--sp-md) !important;
+  }
+
+  /* ── 4.2 Header — compact, no overflow ─────────────────────── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 200 !important;
+  }
+
+  .header-inner {
+    padding: 10px var(--sp-md) !important;
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .logo-badge {
+    display: none !important; /* hide long badge on mobile */
+  }
+
+  .logo {
+    font-size: 16px !important;
+    letter-spacing: 1px !important;
+  }
+
+  /* Nav: horizontally scrollable, no wrap, no overflow */
+  nav {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    gap: 2px !important;
+    max-width: calc(100vw - 140px);
+    padding-bottom: 2px;
+  }
+
+  nav::-webkit-scrollbar { display: none !important; }
+
+  nav a {
+    font-size: 11px !important;
+    padding: 6px 10px !important;
+    white-space: nowrap !important;
+    letter-spacing: 0 !important;
+    min-height: 36px !important;
+  }
+
+  /* Hide lower-priority nav links on mobile */
+  nav a:nth-child(n+5):not(.nav-cta) {
+    display: none !important;
+  }
+
+  /* Keep nav CTA always visible */
+  .nav-cta {
+    font-size: 11px !important;
+    padding: 6px 10px !important;
+    white-space: nowrap !important;
+    flex-shrink: 0;
+  }
+
+  /* ── 4.3 Ticker — compact single-line ──────────────────────── */
+  .ticker-wrap {
+    padding: 6px 0 !important;
+  }
+
+  .ticker-item {
+    font-size: 11px !important;
+    padding: 0 24px !important;
+    font-weight: 600 !important;
+  }
+
+  .ticker-label {
+    font-size: 11px !important;
+  }
+
+  /* ── 4.4 Section nav bar — scrollable, no pipe separators ──── */
+  .section-nav-bar-outer {
+    overflow-x: auto !important;
+    scrollbar-width: none !important;
+  }
+
+  .section-nav-bar-outer::-webkit-scrollbar { display: none !important; }
+
+  .section-nav-bar {
+    flex-wrap: nowrap !important;
+    padding: 6px var(--sp-md) !important;
+    gap: 6px !important;
+  }
+
+  /* Hide pipe separators */
+  .section-nav-bar span[style*="color:#374151"] {
+    display: none !important;
+  }
+
+  /* ── 4.5 Intel hub bar — NOT sticky on mobile (avoid double sticky) */
+  .intel-hub-bar {
+    position: static !important;
+    top: auto !important;
+  }
+
+  .hub-bar-inner {
+    padding: 0 var(--sp-md) !important;
+    gap: 6px !important;
+  }
+
+  .hub-label {
+    font-size: 10px !important;
+  }
+
+  .hub-tab {
+    font-size: 9px !important;
+    padding: 5px 10px !important;
+    min-height: 32px !important;
+  }
+
+  /* ── 4.6 Live critical alert bar — 2-column on mobile ──────── */
+  #live-critical-alert-bar {
+    padding: 8px var(--sp-md) !important;
+  }
+
+  .lcab-inner {
+    flex-direction: column !important;
+    gap: 8px !important;
+    align-items: flex-start !important;
+  }
+
+  .lcab-threats {
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap !important;
+    scrollbar-width: none;
+  }
+
+  .lcab-threats::-webkit-scrollbar { display: none; }
+
+  .lcab-threat {
+    flex-shrink: 0 !important;
+    min-height: 36px !important;
+  }
+
+  .lcab-ttext {
+    font-size: 11px !important;
+    max-width: 160px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .lcab-divider { display: none !important; }
+
+  .lcab-time { font-size: 10px !important; align-self: flex-end; }
+
+  /* ── 4.7 HERO — simplified, single CTA focus ────────────────── */
+  .hero {
+    padding: 40px var(--sp-md) 36px !important;
+  }
+
+  /* Hide decorative/secondary hero elements on mobile */
+  .hero-terminal { display: none !important; }
+  .hero-label { font-size: 10px !important; letter-spacing: 1.5px !important; padding: 5px 12px !important; }
+
+  .hero-desc {
+    font-size: 15px !important;
+    line-height: 1.65 !important;
+    margin-bottom: 24px !important;
+  }
+
+  /* Hero CTAs: stack vertically, full-width */
+  .hero-actions {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+    max-width: 320px !important;
+    margin: 0 auto !important;
+  }
+
+  .hero-actions .btn-primary,
+  .hero-actions .btn-secondary {
+    width: 100% !important;
+    text-align: center !important;
+    justify-content: center !important;
+    padding: 14px 20px !important;
+    font-size: 14px !important;
+  }
+
+  /* Hide secondary hero CTA on mobile — single conversion path */
+  .hero-actions .btn-secondary {
+    display: none !important;
+  }
+
+  /* Live stats row — compact */
+  .hero-live-stats {
+    gap: 12px !important;
+    font-size: 11px !important;
+    margin-top: 16px !important;
+    justify-content: center !important;
+  }
+
+  .hls-item { gap: 5px !important; }
+
+  /* Daily digest in hero — hide on mobile */
+  #apex-daily-digest {
+    display: none !important;
+  }
+
+  /* ── 4.8 Stats bar — horizontal scroll carousel ─────────────── */
+  .stats-bar {
+    padding: 10px var(--sp-md) !important;
+  }
+
+  .stats-inner {
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    gap: var(--sp-lg) !important;
+    scrollbar-width: none !important;
+    padding-bottom: 4px;
+  }
+
+  .stats-inner::-webkit-scrollbar { display: none !important; }
+
+  .stat-num { font-size: 18px !important; }
+  .stat-lbl { font-size: 10px !important; }
+  .stat-item { flex-shrink: 0; }
+
+  /* ── 4.9 Newsletter bar — vertical stack ────────────────────── */
+  .newsletter-bar {
+    padding: var(--sp-md) !important;
+  }
+
+  .newsletter-form {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+  }
+
+  .nl-label { text-align: center; }
+  .nl-input  { width: 100% !important; font-size: 16px !important; /* prevent iOS zoom */ }
+  .nl-btn    { width: 100% !important; }
+
+  /* ── 4.10 Featured intel grid — 2 columns on mobile ────────── */
+  .fi-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    margin-bottom: var(--sp-lg) !important;
+  }
+
+  .fi-card {
+    padding: 12px !important;
+  }
+
+  .fi-icon  { font-size: 20px !important; }
+  .fi-name  { font-size: 9px !important; }
+  .fi-desc  { font-size: 10px !important; }
+
+  /* ── 4.11 Sidebar — pushed below main content ───────────────── */
+  .sidebar {
+    order: 2 !important;
+  }
+
+  /* ── 4.12 Post cards / intel feed — full width ──────────────── */
+  .intel-post {
+    border-radius: 8px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .post-header { padding: 12px 14px 8px !important; }
+  .post-body-wrap { padding: 10px 14px 12px !important; }
+  .post-title { font-size: 1rem !important; }
+  .post-meta-row { gap: 4px !important; }
+
+  /* ── 4.13 Context CTA row — stack on mobile ─────────────────── */
+  .ctx-cta-row,
+  .post-cta-row {
+    flex-wrap: wrap !important;
+    padding: 10px 14px !important;
+    gap: 6px !important;
+  }
+
+  .ctx-btn-primary,
+  .ctx-btn-secondary,
+  .cta-btn {
+    flex: 1 1 calc(50% - 3px) !important;
+    font-size: .75rem !important;
+    padding: 8px 6px !important;
+    text-align: center !important;
+    justify-content: center !important;
+  }
+
+  .ctx-share-btn,
+  .share-btn {
+    margin-left: 0 !important;
+    flex: 0 1 auto !important;
+  }
+
+  /* ── 4.14 Revenue CTA block — single column ─────────────────── */
+  .rcb-section {
+    padding: var(--sp-lg) var(--sp-md) !important;
+  }
+
+  .rcb-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .rcb-card {
+    padding: 1rem !important;
+  }
+
+  .rcb-newsletter {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .rcb-nl-form {
+    flex-direction: column !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .rcb-nl-input {
+    font-size: 16px !important; /* prevent iOS zoom */
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .rcb-nl-btn {
+    width: 100% !important;
+  }
+
+  /* ── 4.15 Trust footer — wrap tightly ───────────────────────── */
+  .intel-trust-footer,
+  .rcb-trust {
+    gap: 10px !important;
+    flex-wrap: wrap !important;
+  }
+
+  /* ── 4.16 Analyst note / defensive block ────────────────────── */
+  .analyst-note,
+  .defensive-block {
+    margin: 10px 0 !important;
+  }
+
+  .defensive-list {
+    padding-left: 1rem !important;
+  }
+
+  /* ── 4.17 Pricing section ───────────────────────────────────── */
+  .pricing-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--sp-md) !important;
+  }
+
+  .pricing-section {
+    padding: 0 var(--sp-md) !important;
+  }
+
+  /* ── 4.18 Compare table — horizontal scroll ─────────────────── */
+  .compare-section {
+    padding: var(--sp-xl) var(--sp-md) !important;
+    overflow-x: auto !important;
+  }
+
+  .compare-table {
+    min-width: 560px !important;
+  }
+
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   § 5. EXTRA SMALL MOBILE (≤ 399px)
+═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 399px) {
+  .hero h1 { font-size: 24px !important; }
+  .hero-desc { font-size: 14px !important; }
+  .fi-grid { grid-template-columns: 1fr !important; }
+
+  nav a:nth-child(n+3):not(.nav-cta) { display: none !important; }
+
+  .rcb-badge { font-size: .65rem !important; padding: .25rem .75rem !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   § 6. TABLET (768px – 1023px)
+═══════════════════════════════════════════════════════════════════ */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .main {
+    grid-template-columns: 1fr !important;
+    padding: var(--sp-xl) var(--sp-lg) 80px !important;
+  }
+
+  .header-inner {
+    padding: 14px var(--sp-xl) !important;
+  }
+
+  .hero { padding: 56px var(--sp-xl) !important; }
+
+  nav a { font-size: 12px !important; padding: 6px 10px !important; }
+
+  .fi-grid { grid-template-columns: repeat(3, 1fr) !important; }
+
+  .rcb-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   § 7. DESKTOP (1024px+) — enhancement layer
+═══════════════════════════════════════════════════════════════════ */
+@media (min-width: 1024px) {
+  .main {
+    grid-template-columns: 1fr 340px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   § 8. Z-INDEX CONSOLIDATION
+   Clear stacking context — NO more competing fixed layers
+═══════════════════════════════════════════════════════════════════ */
+
+/* Header is the ONLY sticky top element */
+header {
+  z-index: 1000 !important;
+}
+
+/* Section nav and intel hub bar — below header, NOT sticky on mobile */
+.intel-hub-bar {
+  z-index: 990 !important;
+}
+
+/* ONE sticky bottom CTA — all others subordinate */
+#aim-high-intent-strip {
+  z-index: 500 !important;
+}
+
+/* Toast notifications — low-level, non-blocking */
+#aim-toast-container {
+  z-index: 400 !important;
+  bottom: 80px !important; /* above any bottom sticky */
+  left: var(--sp-md) !important;
+  max-width: min(300px, calc(100vw - 32px)) !important;
+}
+
+/* Return banner — below header sticky */
+#cx-return-banner {
+  top: 0 !important;
+  z-index: 600 !important;
+}
+
+/* Paywall overlay */
+#cx-smart-overlay,
+.cx4-paywall-overlay {
+  z-index: 800 !important;
+}
+
+/* Exit intent */
+.cx4-exit-overlay {
+  z-index: 900 !important;
+}
+
+/* Scroll progress bar — topmost non-modal element */
+#cx-scroll-bar {
+  z-index: 950 !important;
+  height: 2px !important;
+}
+
+/* Bundle prompt — hide on mobile, show only on desktop */
+#aim-bundle-prompt {
+  display: none !important;
+}
+
+@media (min-width: 1024px) {
+  #aim-bundle-prompt {
+    display: block !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   § 9. CTA STACKING PREVENTION
+   One sticky bottom CTA at a time
+═══════════════════════════════════════════════════════════════════ */
+
+/* When high-intent strip is visible, hide upgrade strip (no double bottom bar) */
+#aim-high-intent-strip ~ #aim-upgrade-strip,
+#aim-upgrade-strip + #aim-high-intent-strip {
+  display: none !important;
+}
+
+/* Low-intent newsletter bar — don't show if high-intent strip is showing */
+body.has-sticky-cta #aim-low-intent-bar {
+  display: none !important;
+}
+
+/* Max inline CTAs: hide 3rd+ AIM inject */
+.aim-product-inject:nth-of-type(n+3) {
+  display: none !important;
+}
+
+/* On mobile: hide bottom CTA bar from monetization.js if high-intent strip present */
+@media (max-width: 767px) {
+  body.has-sticky-cta .apex-sticky-bar,
+  body.has-sticky-cta #cx-sticky-bar {
+    display: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   § 10. VISUAL AUTHORITY UPGRADE
+   Reduce neon overload, improve contrast, consistent palette
+═══════════════════════════════════════════════════════════════════ */
+
+/* Body copy: softer, more readable */
+.post-body,
+.rcb-sub,
+.analyst-text {
+  color: #b0bec5 !important;
+  line-height: 1.75 !important;
+}
+
+/* Section labels: consistent sizing */
+.section-label,
+.fi-title,
+.hub-label {
+  font-size: 11px !important;
+  letter-spacing: 1.5px !important;
+}
+
+/* Reduce excessive glow animations on mobile */
+@media (max-width: 767px) {
+  .live-tab,
+  @keyframes livePulse {
+    0%, 100% { box-shadow: none !important; }
+  }
+
+  /* Dim matrix canvas on mobile — performance */
+  #matrixCanvas { display: none !important; }
+
+  /* No hover transforms on mobile (they look jarring on tap) */
+  .fi-card:hover,
+  .rcb-card:hover,
+  .intel-post:hover {
+    transform: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   § 11. CLICKABLE CARDS — entire card tappable
+═══════════════════════════════════════════════════════════════════ */
+.fi-card,
+.rcb-card,
+.intel-post,
+.lcab-threat {
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(0,255,224,0.1);
+}
+
+/* Ensure anchor cards cover full area */
+.fi-card[href] {
+  display: block !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   § 12. SCROLL FATIGUE REDUCTION
+   Limit height of collapsed sections, add expand affordance
+═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  /* Truncate long post bodies with graceful fade */
+  .post-body.truncated {
+    max-height: 120px;
+    overflow: hidden;
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  }
+
+  /* Intel section: show fewer items initially */
+  .intel-feed .intel-post:nth-child(n+4) {
+    display: none;
+  }
+
+  .intel-feed.expanded .intel-post {
+    display: block !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   § 13. MOBILE BOTTOM NAV SAFE AREA (iPhone notch/home bar)
+═══════════════════════════════════════════════════════════════════ */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  #aim-high-intent-strip,
+  #aim-upgrade-strip,
+  #aim-low-intent-bar {
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   § 14. FORM USABILITY — prevent iOS auto-zoom
+═══════════════════════════════════════════════════════════════════ */
+input,
+input[type="email"],
+input[type="text"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+input[type="number"],
+input[type="password"],
+textarea,
+select {
+  font-size: 16px !important; /* iOS zooms on < 16px — covers all input types */
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   § 15. CONTENT HIERARCHY — enforce visual weight
+═══════════════════════════════════════════════════════════════════ */
+
+/* Section spacing */
+.rcb-section,
+.defensive-block,
+.analyst-note {
+  margin-top: var(--sp-lg) !important;
+}
+
+/* Clear breathing room between post sections */
+.post-body-wrap > * + * {
+  margin-top: var(--sp-sm);
+}
+
+/* CTA section always gets extra top space */
+.ctx-cta-row {
+  margin-top: 0 !important;
+  border-top: 1px solid rgba(255,255,255,0.06) !important;
+}
+
+/* Trust footer subtle */
+.intel-trust-footer {
+  background: rgba(0,0,0,0.15) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   § 16. ACCESSIBILITY
+═══════════════════════════════════════════════════════════════════ */
+:focus-visible {
+  outline: 2px solid var(--apex-cyan) !important;
+  outline-offset: 2px !important;
+}
+
+/* Skip-to-content link */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  background: var(--apex-cyan);
+  color: #000;
+  padding: 8px 16px;
+  z-index: 9999;
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 0 0 8px 0;
+  transition: top 0.1s;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   § 17. PRINT STYLES — hide revenue UI
+═══════════════════════════════════════════════════════════════════ */
+@media print {
+  #aim-toast-container,
+  #aim-high-intent-strip,
+  #aim-upgrade-strip,
+  #aim-bundle-prompt,
+  .rcb-section,
+  .ticker-wrap,
+  .intel-hub-bar,
+  header nav,
+  .hero-actions {
+    display: none !important;
+  }
+
+  .main {
+    grid-template-columns: 1fr !important;
+  }
+}
