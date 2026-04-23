@@ -1411,3 +1411,621 @@ input:focus-visible {
   background: rgba(0,180,216,.3) !important;
   color: #fff !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   § 21. SCROLL-SHRINK HEADER & BRAND LOGO
+═══════════════════════════════════════════════════════════════════ */
+
+/* Brand logo in header */
+.hdr-logo-img {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #00ffe0;
+  box-shadow: 0 0 10px rgba(0,255,224,.25);
+  flex-shrink: 0;
+  transition: width .25s, height .25s, opacity .25s;
+}
+
+header.hdr-compact .hdr-logo-img {
+  width: 28px !important;
+  height: 28px !important;
+}
+
+header.hdr-compact {
+  box-shadow: 0 2px 24px rgba(0,0,0,.6) !important;
+}
+
+header.hdr-compact .header-inner {
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+}
+
+header.hdr-compact .logo-badge {
+  display: none !important;
+}
+
+header.hdr-compact .logo {
+  font-size: 16px !important;
+}
+
+header.hdr-compact nav a:not(.nav-cta) {
+  font-size: 11px !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   § 22. HERO LABEL ANIMATED TAGLINE
+═══════════════════════════════════════════════════════════════════ */
+
+.hero-label {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+}
+
+.hero-label-rotate {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  height: 1.2em;
+  position: relative;
+}
+
+.hero-label-rotate span {
+  display: block;
+  position: absolute;
+  left: 0; right: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity .45s ease, transform .45s ease;
+}
+
+.hero-label-rotate span.active {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   § 23. MOBILE COMPLETE FIX (≤ 767px)
+═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+
+  /* Header compact on mobile always */
+  .hdr-logo-img {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .logo-badge {
+    display: none !important;
+  }
+
+  .logo {
+    font-size: 18px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Hero label — shorter text on mobile */
+  .hero-label {
+    font-size: 9px !important;
+    padding: 5px 12px !important;
+    letter-spacing: 1px !important;
+  }
+
+  .hero-label-static {
+    font-size: 9px !important;
+    white-space: nowrap !important;
+  }
+
+  .hero-label-rotate span {
+    font-size: 9px !important;
+  }
+
+  /* Hero section padding */
+  .hero {
+    padding: 24px 16px 32px !important;
+  }
+
+  .hero h1 {
+    font-size: clamp(26px, 8vw, 38px) !important;
+    line-height: 1.15 !important;
+    margin-bottom: 14px !important;
+  }
+
+  .hero-desc {
+    font-size: 13px !important;
+    line-height: 1.6 !important;
+    margin-bottom: 20px !important;
+  }
+
+  /* Live intel widget on mobile */
+  #live-intel-feed {
+    margin: 16px 0 !important;
+  }
+
+  .lfw-wrap {
+    border-radius: 8px !important;
+  }
+
+  .lfw-hdr {
+    padding: 12px 14px 10px !important;
+  }
+
+  .lfw-card {
+    padding: 14px !important;
+  }
+
+  .lfw-cve {
+    font-size: 13px !important;
+  }
+
+  .lfw-desc {
+    display: none !important; /* hide desc on mobile to save space */
+  }
+
+  /* Section label */
+  #lfw-label {
+    margin: 20px 0 8px !important;
+  }
+
+  /* Hero actions CTA */
+  .hero-actions {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  #hero-primary-cta {
+    text-align: center !important;
+    justify-content: center !important;
+  }
+
+  /* Trust strip on mobile */
+  .hero-trust-strip {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 6px !important;
+  }
+
+  .hero-trust-sep {
+    display: none !important;
+  }
+
+  /* Featured intel section */
+  .featured-intel-section {
+    padding: 0 16px !important;
+  }
+
+  /* Post cards — full width */
+  .post-card {
+    margin: 0 0 12px !important;
+  }
+
+  /* Today's critical threats digest */
+  #apex-daily-digest {
+    padding: 12px 14px !important;
+  }
+
+  .digest-row {
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+    padding: 8px 0 !important;
+  }
+
+  .digest-text {
+    font-size: 11px !important;
+    width: 100% !important;
+  }
+
+  /* Sidebar on mobile — full width below main */
+  .sidebar {
+    width: 100% !important;
+    order: 2 !important;
+  }
+
+  /* Ecosystem grid */
+  .ips-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Global trust bar */
+
+  #global-trust-bar {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 8px 12px !important;
+    padding: 10px 16px !important;
+    font-size: 11px !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   § 2.5  GLOBAL BANNER ORCHESTRATION — OUTSIDE ALL MEDIA QUERIES
+   Ensures single-top-banner policy on EVERY viewport (desktop, tablet, mobile)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Header is always king */
+header, .site-header, nav.main-nav {
+  z-index: 10000 !important;
+  position: sticky !important;
+  top: 0 !important;
+}
+
+/* apex-sticky banner — just below header */
+#apex-sticky {
+  z-index: 9950 !important;
+  top: var(--header-height, 56px) !important;
+  max-height: 52px !important;
+  overflow: hidden !important;
+}
+
+/* cx4 return banner — below apex if coexisting (orchestrator suppresses it) */
+#cx4-return-banner {
+  z-index: 9940 !important;
+  top: var(--cx4-banner-top, 56px) !important;
+}
+
+/* If apex-sticky is live, cx4 is always hidden (enforced by JS + CSS) */
+body.has-apex-sticky #cx4-return-banner {
+  display: none !important;
+}
+
+/* Bottom bar never competes with top banners */
+#apex-bottom-bar,
+#aim-high-intent-strip {
+  z-index: 9900 !important;
+  bottom: 0 !important;
+  top: auto !important;
+}
+
+/* Body padding — never programmatically pushed down by banner JS */
+body {
+  padding-top: var(--body-banner-offset, 0px) !important;
+}
+
+/* Banner height CSS variables — set by banner-orchestrator.js */
+:root {
+  --header-height: 56px;
+  --active-banner-height: 0px;
+  --cx4-banner-top: 56px;
+  --body-banner-offset: 0px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   § 20  GOD-LEVEL UI/UX ENHANCEMENTS
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Smooth scrolling & scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0a1628;
+}
+::-webkit-scrollbar-thumb {
+  background: #00ffe0;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00ccb8;
+}
+
+/* Focus visible — keyboard accessibility */
+*:focus-visible {
+  outline: 2px solid #00ffe0 !important;
+  outline-offset: 2px !important;
+}
+
+/* Post card hover elevation */
+.post-card, .intel-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+.post-card:hover, .intel-card:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 8px 32px rgba(0, 255, 224, 0.15) !important;
+}
+
+/* Selection highlight */
+::selection {
+  background: rgba(0, 255, 224, 0.25) !important;
+  color: #fff !important;
+}
+
+/* Smooth link transitions */
+a {
+  transition: color 0.15s ease, opacity 0.15s ease !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   § 21  SCROLL-SHRINK HEADER (compact state on scroll)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+header .header-inner,
+.site-header .header-inner {
+  transition: padding 0.3s ease, height 0.3s ease !important;
+}
+
+header.hdr-compact,
+header.hdr-compact .header-inner {
+  padding: 6px 40px !important;
+  height: auto !important;
+  min-height: 44px !important;
+}
+
+header.hdr-compact .logo-badge {
+  display: none !important;
+}
+
+header.hdr-compact .logo,
+header.hdr-compact .site-title {
+  font-size: 17px !important;
+}
+
+header.hdr-compact .hdr-logo-img {
+  width: 28px !important;
+  height: 28px !important;
+}
+
+header.hdr-compact .nav-cta,
+header.hdr-compact .header-cta {
+  padding: 5px 14px !important;
+  font-size: 12px !important;
+}
+
+/* Logo image sizing (default) */
+.hdr-logo-img {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: contain;
+  transition: width 0.3s ease, height 0.3s ease;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   § 22  HERO LABEL ANIMATED TAGLINE
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.hero-label-rotate {
+  display: inline-block;
+  vertical-align: middle;
+  overflow: hidden;
+  height: 1.4em;
+  position: relative;
+  min-width: 180px;
+}
+
+.hero-label-rotate span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  white-space: nowrap;
+  font-weight: 700;
+  color: #00ffe0;
+  letter-spacing: 0.02em;
+}
+
+.hero-label-rotate span.active {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+.hero-label-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background: #00ff66;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+  animation: pulseDot 1.4s ease-in-out infinite;
+  box-shadow: 0 0 8px #00ff66, 0 0 16px rgba(0,255,102,0.4);
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.75); }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   § 23  MOBILE COMPLETE FIX (≤ 767px)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 767px) {
+  /* Header compact on mobile always */
+  header .header-inner,
+  .site-header .header-inner {
+    padding: 10px 16px !important;
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+  }
+
+  .hdr-logo-img {
+    width: 30px !important;
+    height: 30px !important;
+  }
+
+  /* Hero section */
+  .hero, .hero-section {
+    padding: 20px 16px 24px !important;
+    min-height: auto !important;
+    text-align: center !important;
+  }
+
+  .hero h1, .hero-title {
+    font-size: 22px !important;
+    line-height: 1.3 !important;
+  }
+
+  .hero p, .hero-desc {
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+  }
+
+  .hero-cta-group {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+
+  .hero-cta-group a, .hero-cta-group button {
+    width: 100% !important;
+    max-width: 320px !important;
+    text-align: center !important;
+    padding: 14px 20px !important;
+    font-size: 15px !important;
+  }
+
+  /* Label rotation on mobile */
+  .hero-label-rotate {
+    min-width: 140px !important;
+    max-width: 200px !important;
+    font-size: 11px !important;
+  }
+
+  /* Post cards */
+  .post-card, .intel-card {
+    margin: 0 0 16px 0 !important;
+    padding: 16px !important;
+  }
+
+  .posts-grid, .intel-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  /* Live intel widget */
+  #live-intel-widget, .live-intel-widget {
+    margin: 0 -16px !important;
+    border-radius: 0 !important;
+    padding: 16px !important;
+  }
+
+  .intel-item {
+    flex-direction: column !important;
+    gap: 6px !important;
+  }
+
+  .intel-score {
+    align-self: flex-start !important;
+  }
+
+  /* Trust bar */
+  .trust-bar, #global-trust-bar {
+    flex-direction: column !important;
+    gap: 8px !important;
+    padding: 12px 16px !important;
+    font-size: 11px !important;
+  }
+
+  /* Digest */
+  #apex-daily-digest {
+    padding: 12px 14px !important;
+  }
+
+  .digest-row {
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+    padding: 8px 0 !important;
+  }
+
+  /* Nav on mobile */
+  .main-nav, nav.site-nav {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .nav-links {
+    gap: 6px !important;
+    font-size: 12px !important;
+  }
+
+  /* Banners on mobile */
+  #apex-sticky {
+    font-size: 12px !important;
+    padding: 8px 12px !important;
+    max-height: 48px !important;
+  }
+
+  #apex-bottom-bar {
+    font-size: 12px !important;
+    padding: 10px 16px !important;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   § 24  TABLET FIX (768px – 1023px)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  header .header-inner,
+  .site-header .header-inner {
+    padding: 12px 24px !important;
+  }
+
+  .hdr-logo-img {
+    width: 34px !important;
+    height: 34px !important;
+  }
+
+  .hero h1, .hero-title {
+    font-size: 28px !important;
+  }
+
+  .posts-grid, .intel-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 20px !important;
+  }
+
+  .hero-cta-group {
+    flex-wrap: wrap !important;
+    gap: 12px !important;
+  }
+
+  /* Banners on tablet */
+  #apex-sticky {
+    font-size: 13px !important;
+    padding: 10px 20px !important;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   § 25  HEADER SCROLL READABILITY
+   ═══════════════════════════════════════════════════════════════════════ */
+
+header, .site-header {
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  background-color: rgba(10, 22, 40, 0.97) !important;
+  border-bottom: 1px solid rgba(0, 255, 224, 0.12) !important;
+  transition: all 0.3s ease !important;
+}
+
+header.hdr-compact {
+  background-color: rgba(10, 22, 40, 0.99) !important;
+  border-bottom: 1px solid rgba(0, 255, 224, 0.2) !important;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4) !important;
+}
+

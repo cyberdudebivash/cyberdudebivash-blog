@@ -151,14 +151,35 @@
     .ticker-item .dot-purple { color: var(--apex-purple); margin-right: 6px; }
     .ticker-label { color: #ff4d6d; font-weight: 900; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
 
-    /* HEADER */
+    /* HEADER — scroll-shrink */
     header {
       background: var(--apex-surface);
       border-bottom: 1px solid var(--apex-border);
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 10000;
+      transition: padding .25s ease, box-shadow .25s ease;
     }
+    header.hdr-compact {
+      padding-top: 0;
+      padding-bottom: 0;
+      box-shadow: 0 2px 20px rgba(0,0,0,.5);
+    }
+    header.hdr-compact .header-inner { padding: 8px 40px; }
+    header.hdr-compact .logo-badge   { display: none; }
+    header.hdr-compact .logo         { font-size: 17px !important; }
+    header.hdr-compact nav a          { font-size: 12px !important; }
+    /* Brand logo circle in header */
+    .hdr-logo-img {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--apex-cyan);
+      box-shadow: 0 0 10px rgba(0,255,224,.25);
+      flex-shrink: 0;
+      transition: width .25s, height .25s;
+    }
+    header.hdr-compact .hdr-logo-img { width: 30px; height: 30px; }
     .header-inner {
       max-width: 1200px;
       margin: 0 auto;
@@ -234,17 +255,53 @@
     }
     .cursor { animation: blink 0.7s infinite; }
     .hero-label {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
       background: #001a1a;
       border: 1px solid var(--apex-cyan);
       color: var(--apex-cyan);
       font-size: 11px;
       font-weight: 700;
-      letter-spacing: 3px;
+      letter-spacing: 2px;
       text-transform: uppercase;
-      padding: 6px 16px;
-      border-radius: 20px;
+      padding: 7px 18px;
+      border-radius: 24px;
       margin-bottom: 24px;
+      max-width: 100%;
+      overflow: hidden;
+    }
+    .hero-label-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--apex-green);
+      box-shadow: 0 0 8px var(--apex-green);
+      animation: blink 1.2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    .hero-label-static { white-space: nowrap; flex-shrink: 0; }
+    .hero-label-sep { color: rgba(0,255,224,.3); flex-shrink: 0; }
+    /* Animated rotating taglines */
+    .hero-label-rotate {
+      overflow: hidden;
+      height: 1.2em;
+      position: relative;
+      flex: 1;
+      min-width: 0;
+    }
+    .hero-label-rotate span {
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      position: absolute;
+      left: 0; right: 0;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity .45s ease, transform .45s ease;
+    }
+    .hero-label-rotate span.active {
+      opacity: 1;
+      transform: translateY(0);
     }
     .hero h1 {
       font-size: clamp(32px, 6vw, 64px);
@@ -1120,9 +1177,10 @@ input:focus, textarea:focus {
 </div>
 
 <!-- HEADER -->
-<header>
+<header id="main-header">
   <div class="header-inner">
     <div class="logo-wrap">
+      <img src="/brand-logo.svg" alt="CyberDudeBivash" class="hdr-logo-img" onerror="this.style.display='none'">
       <div class="logo-badge">CYBERDUDEBIVASH SENTINEL APEX</div>
       <a href="/" class="logo">CYBERDUDE<span>BIVASH</span></a>
     </div>
@@ -1194,7 +1252,20 @@ input:focus, textarea:focus {
   <div class="hero-terminal">
     <span class="hero-terminal-text" id="heroTerminal"></span><span class="cursor">&#9608;</span>
   </div>
-  <div class="hero-label">&#9889; AI-Powered Threat Intelligence Platform &mdash; CYBERDUDEBIVASH SENTINEL APEX v12</div>
+  <div class="hero-label" id="hero-label-bar">
+    <span class="hero-label-dot"></span>
+    <span class="hero-label-static">⚡ SENTINEL APEX v12</span>
+    <span class="hero-label-sep">—</span>
+    <div class="hero-label-rotate" id="hero-label-rotate">
+      <span class="active">AI-Powered Threat Intelligence Platform</span>
+      <span>Zero-Day Alerts Before Public Disclosure</span>
+      <span>1,200+ CISA KEV Entries Monitored 24/7</span>
+      <span>Nation-State APT Tracking in Real Time</span>
+      <span>SOC-Ready Sigma &amp; YARA Rules Included</span>
+      <span>Ransomware Group Activity — Live Updates</span>
+      <span>CVE Breakdowns Written for Security Teams</span>
+    </div>
+  </div>
   <h1>
     <span class="cyan">World's #1</span> AI-Powered<br>
     Cybersecurity Intelligence<br>
@@ -2271,6 +2342,48 @@ function typeTerminal() {
 typeTerminal();
 
 // =============================================
+// 2B. HERO LABEL ROTATING TAGLINES
+// =============================================
+(function() {
+  var el = document.getElementById('hero-label-rotate');
+  if (!el) return;
+  var spans = el.querySelectorAll('span');
+  if (!spans.length) return;
+  var idx = 0;
+  function rotate() {
+    spans[idx].classList.remove('active');
+    idx = (idx + 1) % spans.length;
+    spans[idx].classList.add('active');
+  }
+  setInterval(rotate, 3000);
+})();
+
+// =============================================
+// 2C. SCROLL-SHRINK HEADER
+// =============================================
+(function() {
+  var header = document.getElementById('main-header');
+  if (!header) return;
+  var lastY = 0;
+  var ticking = false;
+  function onScroll() {
+    lastY = window.scrollY || window.pageYOffset;
+    if (!ticking) {
+      requestAnimationFrame(function() {
+        if (lastY > 60) {
+          header.classList.add('hdr-compact');
+        } else {
+          header.classList.remove('hdr-compact');
+        }
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+})();
+
+// =============================================
 // 3. CISA KEV LIVE COUNT FETCH (multi-proxy CORS chain)
 // =============================================
 async function updateKEVCounts() {
@@ -2279,45 +2392,50 @@ async function updateKEVCounts() {
 
   // Try direct first
   try {
-    const res = await fetch(CISA_URL, { signal: AbortSignal.timeout(8000) });
-    if (res.ok) { const d = await res.json(); if (d.vulnerabilities?.length > 100) data = d; }
+    const res = await fetch(CISA_URL, { signal: AbortSignal.timeout ? AbortSignal.timeout(8000) : undefined });
+    if (res.ok) data = await res.json();
   } catch(e) {}
 
-  // Strategy 2: allorigins proxy
+  // Try proxy fallback
   if (!data) {
     try {
-      const res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(CISA_URL)}`, { signal: AbortSignal.timeout(12000) });
-      if (res.ok) { const d = JSON.parse(await res.text()); if (d.vulnerabilities?.length > 100) data = d; }
+      const r2 = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(CISA_URL), { signal: AbortSignal.timeout ? AbortSignal.timeout(10000) : undefined });
+      if (r2.ok) data = await r2.json();
     } catch(e) {}
   }
 
-  // Strategy 3: corsproxy.io
-  if (!data) {
-    try {
-      const res = await fetch(`https://corsproxy.io/?${encodeURIComponent(CISA_URL)}`, { signal: AbortSignal.timeout(12000) });
-      if (res.ok) { const d = await res.json(); if (d.vulnerabilities?.length > 100) data = d; }
-    } catch(e) {}
+  if (data && data.vulnerabilities) {
+    const total = data.vulnerabilities.length;
+    const recent = data.vulnerabilities.filter(v => {
+      const d = new Date(v.dateAdded);
+      return (Date.now() - d) < 86400000;
+    }).length;
+    const kevEl = document.getElementById('kevCount');
+    if (kevEl) kevEl.textContent = total.toLocaleString() + '+';
+    const todayEl = document.getElementById('kevTodayCount');
+    if (todayEl) todayEl.textContent = recent;
+    const totalEl = document.getElementById('kevTotalCount');
+    if (totalEl) totalEl.textContent = total.toLocaleString() + '+';
   }
+}
 
-  if (data) {
-    const today = new Date().toISOString().split('T')[0];
-    const todayItems = data.vulnerabilities.filter(v => v.dateAdded === today);
-    document.getElementById('kevTotal').textContent = data.vulnerabilities.length.toLocaleString();
-    document.getElementById('cisaToday').textContent = todayItems.length || '0';
-    document.getElementById('kevCount').textContent = data.vulnerabilities.length.toLocaleString() + '+';
-  } else {
-    document.getElementById('kevTotal').textContent = '1,230+';
-    document.getElementById('cisaToday').textContent = '3';
-    document.getElementById('kevCount').textContent = '1,230+';
+updateKEVCounts();
+setInterval(updateKEVCounts, 15 * 60 * 1000);
 
-<!-- ═══ REVENUE ENGINE SUITE ═══════════════════════════════════════════ -->
+// =============================================
+// 4. DIGEST DATE
+// =============================================
+const digestDateEl = document.getElementById('digest-date');
+if (digestDateEl) {
+  digestDateEl.textContent = new Date().toLocaleDateString('en-US', {
+    weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'
+  });
+}
+</script>
+
 <script src="/security-engine.js" defer></script>
-<script src="/monetization.js" defer></script>
-<script src="/conversion-engine.js" defer></script>
-<script src="/seo-engine.js" defer></script>
 <script src="/ai-monetization-engine.js" defer></script>
-<script src="/analytics-engine.js" defer></script>
-<script src="/auto-intel-engine.js" defer></script>
+<script src="/conversion-engine.js" defer></script>
 <script src="/banner-orchestrator.js"></script>
 <script src="/revenue-cta-block.js" defer></script>
 <script src="/ux-controller.js" defer></script>
