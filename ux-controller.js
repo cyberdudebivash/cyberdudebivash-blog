@@ -498,7 +498,13 @@
       'cx4-overlay',        // conversion-engine.js — "Claim Offer" slide-in
       'cx4-exit-overlay',   // conversion-engine.js — exit intent overlay
       'cx4-scroll-bar',     // conversion-engine.js — progress bar
-      'aim-bundle-prompt'   // ai-monetization-engine.js — bundle popup
+      'aim-bundle-prompt',  // ai-monetization-engine.js — bundle popup
+      'aim-upgrade-strip',  // ai-monetization-engine.js — "You've visited X times" top strip
+      'aim-intent-banner',  // ai-monetization-engine.js — intent-driven inline banner
+      'aim-toast-container',// ai-monetization-engine.js — social proof toasts
+      'cx-return-banner',   // legacy cx- return visitor banner (pre-cx4)
+      'cx-smart-overlay',   // legacy cx- smart overlay
+      'cx-scroll-bar'       // legacy cx- scroll progress bar
     ],
 
     hideEl: function (id) {

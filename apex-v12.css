@@ -10,9 +10,11 @@
   width: 100%;
 }
 
-/* ── HEADER Z-INDEX ───────────────────────────────────── */
-header { z-index: 200 !important; }
-.intel-hub-bar { z-index: 190 !important; top: 64px !important; }
+/* ── HEADER Z-INDEX — desktop only; mobile-first.css overrides on mobile ── */
+@media (min-width: 768px) {
+  header { z-index: 200 !important; }
+  .intel-hub-bar { z-index: 190 !important; top: 64px !important; }
+}
 
 /* ── TICKER HIGH VISIBILITY ───────────────────────────── */
 .ticker-wrap {
@@ -22,24 +24,28 @@ header { z-index: 200 !important; }
 .ticker-item  { color: #e2e8f0 !important; font-size: 13px !important; font-weight: 700 !important; }
 .ticker-label { color: #ff4d6d !important; font-weight: 900 !important; text-transform: uppercase !important; letter-spacing: 1px !important; }
 
-/* ── NOTIFICATION Z-INDEX ─────────────────────────────── */
-#cx-scroll-bar       { z-index: 30000 !important; }
-#aim-toast-container { z-index: 20000 !important; bottom: 24px !important; left: 24px !important; }
-#cx-smart-overlay    { z-index: 19000 !important; }
-#cx-return-banner    { top: 130px !important; z-index: 18000 !important; }
+/* ── NOTIFICATION Z-INDEX — desktop only ─────────────── */
+@media (min-width: 768px) {
+  #cx-scroll-bar       { z-index: 30000 !important; }
+  #aim-toast-container { z-index: 20000 !important; bottom: 24px !important; left: 24px !important; }
+  #cx-smart-overlay    { z-index: 19000 !important; }
+  #cx-return-banner    { top: 130px !important; z-index: 18000 !important; }
+}
 
 /* ── TOAST VISIBILITY ─────────────────────────────────── */
 .aim-toast { border: 1px solid rgba(0,255,224,0.4) !important; box-shadow: 0 8px 32px rgba(0,0,0,.8) !important; }
 .aim-toast .at-action { color: #f1f5f9 !important; font-size: 13px !important; font-weight: 800 !important; }
 .aim-toast .at-who   { color: #94a3b8 !important; }
 
-/* ── RETURN BANNER ────────────────────────────────────── */
-#cx-return-banner {
-  background: linear-gradient(135deg,rgba(255,215,0,0.12),rgba(0,255,224,0.08)) !important;
-  border-bottom: 2px solid rgba(255,215,0,0.3) !important;
+/* ── RETURN BANNER — desktop only ────────────────────── */
+@media (min-width: 768px) {
+  #cx-return-banner {
+    background: linear-gradient(135deg,rgba(255,215,0,0.12),rgba(0,255,224,0.08)) !important;
+    border-bottom: 2px solid rgba(255,215,0,0.3) !important;
+  }
+  #cx-return-banner span   { color: #f1f5f9 !important; font-size: 14px !important; }
+  #cx-return-banner strong { color: #ffd700 !important; font-size: 15px !important; font-weight: 900 !important; }
 }
-#cx-return-banner span   { color: #f1f5f9 !important; font-size: 14px !important; }
-#cx-return-banner strong { color: #ffd700 !important; font-size: 15px !important; font-weight: 900 !important; }
 
 /* ── FORM FIELDS ──────────────────────────────────────── */
 input[type="email"], input[type="text"], textarea, select {

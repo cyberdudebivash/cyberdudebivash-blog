@@ -660,6 +660,7 @@
     },
 
     injectContainer() {
+      if (window.innerWidth <= 767) return; // mobile: social proof toasts suppressed by mobile-first.css
       if (document.getElementById('aim-toast-container')) return;
       injectStyle('aim-toast-css', `
         #aim-toast-container {
@@ -920,6 +921,7 @@
     },
 
     injectUpgradeStrip() {
+      if (window.innerWidth <= 767) return; // mobile: suppressed to avoid header overlap
       if (document.getElementById('aim-upgrade-strip')) return;
       const p = INTENT.profile;
       const { final, discount, code } = DYNPRICE.compute(49);
@@ -976,7 +978,8 @@
         }
       });
 
-      // Inject intent banner at top of main content
+      // Inject intent banner at top of main content — desktop only
+      if (window.innerWidth <= 767) return;
       const main = $('main, article, .post-content, .hero + section, .hero + div');
       if (main && !document.getElementById('aim-intent-banner')) {
         const banner = document.createElement('div');

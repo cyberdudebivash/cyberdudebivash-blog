@@ -174,6 +174,25 @@ a.rcb-nl-btn {
   /* ai-monetization-engine.js — bundle prompt popup */
   #aim-bundle-prompt        { display: none !important; }
 
+  /* ai-monetization-engine.js — "You've visited X times" fixed top strip (top:64px z-index:9997) */
+  #aim-upgrade-strip        { display: none !important; }
+
+  /* ai-monetization-engine.js — intent-driven inline banner injected before main content */
+  #aim-intent-banner        { display: none !important; }
+
+  /* ai-monetization-engine.js — social proof toasts bottom-left */
+  #aim-toast-container      { display: none !important; }
+
+  /* Legacy cx- return banner (pre-cx4 engine) — overlaps header at top:130px */
+  #cx-return-banner         { display: none !important; }
+
+  /* Legacy cx- scroll progress bar and smart overlay */
+  #cx-scroll-bar            { display: none !important; }
+  #cx-smart-overlay         { display: none !important; }
+
+  /* Paywall overlay — suppressed on mobile (reading gated content defeats mobile UX) */
+  #cx4-paywall-overlay      { display: none !important; }
+
   /* Remove body padding injected by apex-sticky JS */
   body                      { padding-top: 0 !important; }
 
@@ -181,19 +200,25 @@ a.rcb-nl-btn {
   header {
     position: sticky !important;
     top: 0 !important;
-    z-index: 9999 !important;  /* higher than any injected element */
+    z-index: 9999 !important;  /* must beat all injected banners (aim-upgrade-strip: 9997) */
     background: var(--apex-bg) !important;
     border-bottom: 1px solid rgba(0,255,224,.1) !important;
+    width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
   }
 
   .header-inner {
-    padding: 12px var(--sp-md) !important;
+    padding: 10px var(--sp-md) !important;
     gap: 8px !important;
     flex-wrap: nowrap !important;
     align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
-  /* ── Logo: hide badge, show brand name as single clean line ── */
+  /* ── Logo: hide badge, show brand name as a single clean horizontal line ── */
   .logo-badge {
     display: none !important;
   }
@@ -201,38 +226,49 @@ a.rcb-nl-btn {
   .logo-wrap {
     flex-shrink: 0 !important;
     min-width: 0 !important;
-    max-width: 180px !important;
+    max-width: none !important;   /* no max-width constraint — let it be its natural size */
+    display: flex !important;
+    align-items: center !important;
   }
 
   .logo {
-    font-size: 15px !important;
-    letter-spacing: 0.5px !important;
-    white-space: nowrap !important;
-    overflow: visible !important;
-    display: inline-block !important;
+    font-size: 16px !important;
+    letter-spacing: 1px !important;
+    white-space: nowrap !important;     /* CRITICAL: prevents letter wrapping */
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    display: inline-flex !important;
+    align-items: center !important;
     color: var(--apex-cyan) !important;
     text-decoration: none !important;
+    line-height: 1 !important;
+    font-weight: 900 !important;
   }
 
-  /* Ensure BIVASH span is always same line, visible */
+  /* BIVASH span — always inline, never block, never on its own line */
   .logo span {
     color: #fff !important;
     display: inline !important;
+    white-space: nowrap !important;
   }
 
-  /* Nav: show only 2 key links + hamburger on mobile */
+  /* Nav: show only 2 key links on mobile, rest hidden */
   nav {
     flex-wrap: nowrap !important;
     overflow: hidden !important;
     gap: 2px !important;
     flex-shrink: 1 !important;
     min-width: 0 !important;
-    /* constrain nav so logo has room */
-    max-width: calc(100vw - 200px) !important;
+    align-items: center !important;
   }
 
   /* Show only first 2 nav links on mobile, rest via hamburger */
   nav a:nth-child(n+3):not(.nav-cta):not(#mobile-nav-toggle) {
+    display: none !important;
+  }
+
+  /* Hide all nav links except the CTA on very small screens */
+  nav a:not(.nav-cta) {
     display: none !important;
   }
 
@@ -252,6 +288,7 @@ a.rcb-nl-btn {
 
   /* Keep nav CTA always visible */
   .nav-cta {
+    display: inline-flex !important;
     font-size: 11px !important;
     padding: 6px 10px !important;
     white-space: nowrap !important;
