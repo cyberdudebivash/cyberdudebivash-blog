@@ -1,0 +1,214 @@
+# ═══════════════════════════════════════════════════════════════
+# CYBERDUDEBIVASH — SENTINEL APEX LIVE INTEL AUTO-PUBLISHER
+# ═══════════════════════════════════════════════════════════════
+# Runs every 30 minutes (24/7)
+# Fetches CRITICAL CVEs from NVD + CISA KEV
+# Generates branded post HTML files
+# Commits new posts + updated index.html + rss.xml
+# Vercel detects the push and auto-deploys
+#
+# © 2025 CYBERDUDEBIVASH. All rights reserved.
+# ═══════════════════════════════════════════════════════════════
+
+name: 🛰 Sentinel APEX — Live Intel Auto-Publisher
+
+on:
+  schedule:
+    # Every 30 minutes, 24/7
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+    inputs:
+      force_fetch:
+        description: 'Force fetch even if recently run'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+      debug:
+        description: 'Enable debug output'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+jobs:
+  fetch-and-publish:
+    name: 🔍 Fetch Live Intel & Publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    # Prevent concurrent runs
+    concurrency:
+      group: sentinel-intel-publisher
+      cancel-in-progress: false
+
+    steps:
+      # ─── 1. CHECKOUT ───────────────────────────────────────
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # ─── 2. SETUP NODE ─────────────────────────────────────
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # ─── 3. VERIFY SCRIPT ──────────────────────────────────
+      - name: 🔎 Verify fetch-live-intel.js exists
+        run: |
+          if [ ! -f "fetch-live-intel.js" ]; then
+            echo "❌ ERROR: fetch-live-intel.js not found in repo root"
+            exit 1
+          fi
+          echo "✅ fetch-live-intel.js found"
+          echo "File size: $(wc -c < fetch-live-intel.js) bytes"
+
+      # ─── 4. ENSURE STATE FILE ──────────────────────────────
+      - name: 🗄 Ensure intel-state.json exists
+        run: |
+          if [ ! -f "intel-state.json" ]; then
+            echo '{"published":[],"lastRun":null,"totalPublished":0}' > intel-state.json
+            echo "✅ Created fresh intel-state.json"
+          else
+            echo "✅ intel-state.json exists"
+            echo "State preview: $(cat intel-state.json | head -c 200)"
+          fi
+
+      # ─── 5. ENSURE POSTS DIR ───────────────────────────────
+      - name: 📂 Ensure posts/ directory exists
+        run: |
+          mkdir -p posts
+          echo "✅ posts/ directory ready"
+          echo "Existing posts: $(ls posts/*.html 2>/dev/null | wc -l)"
+
+      # ─── 6. RUN INTEL FETCHER ──────────────────────────────
+      - name: 🛰 Run Sentinel APEX Intel Fetcher
+        id: run_fetcher
+        env:
+          FORCE_FETCH: ${{ github.event.inputs.force_fetch || 'false' }}
+          DEBUG: ${{ github.event.inputs.debug || 'false' }}
+          # NVD polite user-agent (required by NVD API terms)
+          NVD_USER_AGENT: 'CYBERDUDEBIVASH-SentinelAPEX/2.0 (cyberdudebivash.com; bivash@cyberdudebivash.com)'
+        run: |
+          echo "🚀 Starting Sentinel APEX Intel Fetcher..."
+          echo "Force fetch: $FORCE_FETCH"
+          echo "Debug mode: $DEBUG"
+          echo "Timestamp: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo ""
+
+          # Run with a 5-minute timeout
+          timeout 300 node fetch-live-intel.js
+          EXIT_CODE=$?
+
+          if [ $EXIT_CODE -eq 0 ]; then
+            echo "✅ Fetcher completed successfully"
+          elif [ $EXIT_CODE -eq 124 ]; then
+            echo "⚠️ Fetcher timed out after 5 minutes"
+            exit 1
+          else
+            echo "❌ Fetcher exited with code $EXIT_CODE"
+            exit $EXIT_CODE
+          fi
+
+      # ─── 7. CHECK FOR CHANGES ──────────────────────────────
+      - name: 🔍 Check for new content
+        id: check_changes
+        run: |
+          git status --short
+          CHANGED=$(git status --short | wc -l)
+          echo "changed_count=$CHANGED" >> $GITHUB_OUTPUT
+
+          if [ "$CHANGED" -gt "0" ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "📊 $CHANGED files changed:"
+            git status --short
+            echo ""
+            echo "New posts created:"
+            git status --short | grep "posts/" || echo "(none in this run)"
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ No new intel in this cycle — all current threats already published"
+          fi
+
+      # ─── 8. COMMIT & PUSH ──────────────────────────────────
+      - name: 📤 Commit and push new intel
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          # Configure git identity
+          git config user.name "Sentinel APEX Bot"
+          git config user.email "sentinel@cyberdudebivash.com"
+
+          # Stage all changes
+          git add -A
+
+          # Count new posts for commit message
+          NEW_POSTS=$(git diff --staged --name-only | grep "^posts/" | wc -l | tr -d ' ')
+          TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M UTC')
+
+          # Commit with detailed message
+          git commit -m "🛰 Sentinel APEX: +${NEW_POSTS} live intel report(s) [${TIMESTAMP}]
+
+Auto-published by Sentinel APEX Intelligence Platform
+Source: NVD CVE API + CISA Known Exploited Vulnerabilities
+Platform: cyberdudebivash.com
+© CYBERDUDEBIVASH — All rights reserved
+
+[skip ci]"
+
+          echo "✅ Committed ${NEW_POSTS} new intel report(s)"
+
+          # Push with retry logic
+          for i in 1 2 3; do
+            git push && echo "✅ Push successful" && break
+            echo "⚠️ Push attempt $i failed, retrying in 5s..."
+            sleep 5
+          done
+
+      # ─── 9. SKIP NOTICE ────────────────────────────────────
+      - name: ℹ️ No new intel this cycle
+        if: steps.check_changes.outputs.has_changes == 'false'
+        run: |
+          echo "═══════════════════════════════════════"
+          echo "  No new critical threats in this cycle"
+          echo "  All current CVEs already published"
+          echo "  Next check: 30 minutes"
+          echo "═══════════════════════════════════════"
+
+      # ─── 10. SUMMARY ───────────────────────────────────────
+      - name: 📋 Run summary
+        if: always()
+        run: |
+          echo "══════════════════════════════════════════════"
+          echo "  SENTINEL APEX — RUN SUMMARY"
+          echo "══════════════════════════════════════════════"
+          echo "  Run time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo "  Repository: ${{ github.repository }}"
+          echo "  Triggered by: ${{ github.event_name }}"
+          if [ -f "intel-state.json" ]; then
+            TOTAL=$(node -e "try{var s=require('./intel-state.json');console.log(s.totalPublished||0)}catch(e){console.log('?')}")
+            echo "  Total published (all time): $TOTAL"
+          fi
+          echo "══════════════════════════════════════════════"
+
+  # ─── NOTIFY ON FAILURE ──────────────────────────────────
+  notify-failure:
+    name: 🚨 Notify on failure
+    runs-on: ubuntu-latest
+    needs: fetch-and-publish
+    if: failure()
+    steps:
+      - name: Log failure
+        run: |
+          echo "❌ Sentinel APEX Intel Fetcher FAILED"
+          echo "Repo: ${{ github.repository }}"
+          echo "Run: ${{ github.run_id }}"
+          echo "Time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo ""
+          echo "Check the Actions log: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
