@@ -801,7 +801,123 @@ select {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   § 17. PRINT STYLES — hide revenue UI
+   § 17. TRUST DOMINATION — Phase 4
+   Persistent social-proof bar, always visible
+═══════════════════════════════════════════════════════════════════ */
+
+/* Global trust bar — sits between stats-bar and intel-hub-bar */
+#global-trust-bar {
+  background: rgba(0,255,136,.04);
+  border-bottom: 1px solid rgba(0,255,136,.1);
+  padding: 8px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: #64748b;
+}
+.gtb-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.gtb-item strong { color: #e2e8f0; }
+.gtb-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--apex-green);
+  display: inline-block; box-shadow: 0 0 5px rgba(0,255,136,.4);
+  animation: uxc-blink 1.5s ease-in-out infinite;
+}
+
+@media (max-width: 767px) {
+  #global-trust-bar { gap: 12px 20px; padding: 7px 16px; font-size: 11px; }
+  .gtb-item:nth-child(4) { display: none; } /* hide 4th item on very small screens */
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   § 18. VISUAL CALMING — Phase 6
+   Reduce neon overload, red flash density, alert stacking.
+   Keep authority without overwhelm.
+═══════════════════════════════════════════════════════════════════ */
+
+/* Calm down livePulse animation — remove infinite blinking from hero CTA */
+@keyframes livePulse { 0%,100% { opacity: 1; } 50% { opacity: 0.85; } }
+
+/* Reduce blink frequency — everything blinks at most twice per 3s */
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+.blink { animation: blink 2s ease-in-out infinite !important; }
+
+/* Tone down red density — make critical badges solid not pulsing */
+.badge-crit, .dbadge-zd, .dbadge-rsm {
+  animation: none !important;
+  box-shadow: none !important;
+}
+
+/* Reduce neon glow on borders globally */
+.post-card,
+.fi-card,
+.ips-card,
+.sidebar-widget {
+  box-shadow: none !important;
+}
+.post-card:hover,
+.fi-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,.4) !important;
+}
+
+/* Calm the ticker — reduce density */
+.ticker-wrap {
+  opacity: 0.75;
+}
+
+/* Reduce matrix canvas opacity */
+#matrixCanvas, #matrix-canvas {
+  opacity: 0.06 !important;
+}
+
+/* Remove multiple simultaneous flashing elements — keep only live indicator */
+.hls-dot.blink,
+.hero-trust-dot.blink {
+  animation: uxc-blink 1.5s ease-in-out infinite !important;
+}
+
+/* Improved text contrast — lift muted text slightly */
+.post-excerpt,
+.hero-desc,
+.fi-desc {
+  color: #94a3b8 !important;
+  line-height: 1.65 !important;
+}
+
+/* Calmer section labels */
+.section-label-text {
+  font-size: 10px !important;
+  letter-spacing: 2px !important;
+  color: #475569 !important;
+}
+
+/* Alert stacking prevention — limit visible toast count */
+#aim-toast-container .aim-toast:nth-child(n+3) {
+  display: none !important;
+}
+
+/* Remove double-border effect on nested elements */
+.cbd-ecosystem-ad,
+.cbd-carousel-slide {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Calm authority: consistent quiet hover states */
+a:hover,
+button:hover {
+  outline: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   § 19. PRINT STYLES — hide revenue UI
 ═══════════════════════════════════════════════════════════════════ */
 @media print {
   #aim-toast-container,

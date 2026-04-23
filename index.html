@@ -331,6 +331,37 @@
     .hls-item { display: flex; align-items: center; gap: 8px; }
     .hls-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
 
+    /* ── HERO TRUST STRIP ── */
+    .hero-trust-strip {
+      display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+      gap: 10px 16px; margin-top: 16px; font-size: 13px; color: #94a3b8;
+    }
+    .hero-trust-item { display: flex; align-items: center; gap: 6px; }
+    .hero-trust-item strong { color: var(--apex-cyan); }
+    .hero-trust-icon { font-size: 15px; }
+    .hero-trust-sep { color: #334155; font-size: 8px; }
+    .hero-trust-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--apex-green);
+      display: inline-block; box-shadow: 0 0 6px rgba(0,255,136,.5);
+    }
+    /* ── INTENT CTA — calmer primary button ── */
+    .hero-intent-cta {
+      background: linear-gradient(135deg, #00c9a7, #0090c9) !important;
+      color: #000 !important; font-size: 16px !important; font-weight: 800 !important;
+      padding: 14px 36px !important; border-radius: 8px !important;
+      animation: none !important; box-shadow: 0 4px 20px rgba(0,201,167,.25) !important;
+      transition: box-shadow .2s, transform .15s !important; min-height: 52px;
+    }
+    .hero-intent-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,201,167,.35) !important; }
+    .hero-intent-cta.intent-high {
+      background: linear-gradient(135deg, #00ffe0, #00b4d8) !important;
+      box-shadow: 0 4px 24px rgba(0,255,224,.3) !important;
+    }
+    .hero-intent-cta.intent-medium {
+      background: linear-gradient(135deg, #00ff88, #00c9a7) !important;
+      box-shadow: 0 4px 24px rgba(0,255,136,.25) !important;
+    }
+
     /* LIVE STATS BAR */
     .stats-bar {
       background: var(--apex-surface);
@@ -850,6 +881,76 @@
     }
     .pricing-teaser-cta:hover { opacity: 0.85; }
 
+    /* ── PRODUCT INTELLIGENCE SECTIONS ── */
+    .intel-product-section {
+      margin: 32px 0; padding: 0;
+    }
+    .ips-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px; gap: 12px;
+    }
+    .ips-title {
+      font-size: 11px; font-weight: 900; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--apex-cyan);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .ips-view-all {
+      font-size: 11px; color: var(--apex-muted); text-decoration: none;
+      border: 1px solid rgba(255,255,255,.08); border-radius: 4px;
+      padding: 3px 10px; transition: color .2s, border-color .2s; white-space: nowrap;
+    }
+    .ips-view-all:hover { color: var(--apex-cyan); border-color: rgba(0,255,224,.3); }
+    .ips-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    }
+    @media (max-width: 768px) { .ips-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 500px) { .ips-grid { grid-template-columns: 1fr; } }
+    .ips-card {
+      background: rgba(255,255,255,.025); border: 1px solid rgba(255,255,255,.06);
+      border-radius: 10px; padding: 14px; text-decoration: none;
+      transition: all .2s; display: block; position: relative;
+    }
+    .ips-card:hover { border-color: rgba(0,255,224,.25); background: rgba(0,255,224,.04); transform: translateY(-2px); }
+    .ips-card-rank { font-size: 10px; font-weight: 900; color: var(--apex-muted); letter-spacing: 1px; margin-bottom: 6px; }
+    .ips-card-title { font-size: 13px; font-weight: 700; color: #e2e8f0; line-height: 1.4; margin-bottom: 6px; }
+    .ips-card-meta { font-size: 11px; color: var(--apex-muted); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .ips-card-cvss { color: #ff6b6b; font-weight: 700; }
+    .ips-card-hot { color: var(--apex-green); font-weight: 700; }
+    .ips-card-badge {
+      position: absolute; top: 10px; right: 10px; font-size: 9px; font-weight: 900;
+      padding: 2px 7px; border-radius: 4px; text-transform: uppercase; letter-spacing: .5px;
+    }
+    .ips-badge-live { background: rgba(255,0,64,.15); color: #ff4d6d; border: 1px solid rgba(255,0,64,.3); }
+    .ips-badge-trending { background: rgba(255,140,0,.12); color: #ff8c00; border: 1px solid rgba(255,140,0,.3); }
+    .ips-badge-new { background: rgba(0,255,136,.1); color: var(--apex-green); border: 1px solid rgba(0,255,136,.25); }
+
+    /* ── FEED COLLAPSE ── */
+    #feed-extended { transition: opacity .3s ease; }
+    .feed-show-more-btn {
+      display: block; width: 100%; margin: 16px 0;
+      background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.08);
+      color: #94a3b8; font-size: 12px; font-weight: 700; letter-spacing: 1px;
+      padding: 12px; border-radius: 8px; cursor: pointer; text-align: center;
+      text-transform: uppercase; transition: all .2s;
+    }
+    .feed-show-more-btn:hover { background: rgba(0,255,224,.05); border-color: rgba(0,255,224,.2); color: var(--apex-cyan); }
+
+    /* ── JOURNEY SCROLL SOFT CTA ── */
+    .journey-soft-cta {
+      background: rgba(0,255,136,.04); border: 1px solid rgba(0,255,136,.15);
+      border-radius: 10px; padding: 16px 20px; margin: 20px 0;
+      display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    }
+    .journey-soft-cta-text { flex: 1; font-size: 13px; color: #cbd5e1; min-width: 200px; }
+    .journey-soft-cta-text strong { color: #fff; }
+    .journey-soft-cta-btn {
+      background: rgba(0,255,136,.1); border: 1px solid rgba(0,255,136,.3);
+      color: var(--apex-green); font-size: 12px; font-weight: 700; padding: 8px 18px;
+      border-radius: 6px; text-decoration: none; white-space: nowrap;
+      transition: all .2s; min-height: 38px; display: inline-flex; align-items: center;
+    }
+    .journey-soft-cta-btn:hover { background: rgba(0,255,136,.2); }
+
     /* FOOTER */
     footer {
       background: var(--apex-surface);
@@ -1106,10 +1207,23 @@ input:focus, textarea:focus {
     ransomware tracking, and AI security research that SOC teams can act on immediately.
     <strong style="color:var(--apex-green)">11 intelligence reports published — 5 new this week.</strong>
   </p>
+  <!-- PHASE 1: SINGLE INTENT CTA — dynamically updated by ux-controller.js -->
   <div class="hero-actions">
-    <a href="intelligence.html#live-breaking" class="btn-primary" style="background:#ff0040;color:#fff;animation:livePulse 2s infinite">&#9889; LIVE Intelligence Hub</a>
-    <a href="#reports" class="btn-secondary">Latest Reports</a>
-    <a href="https://intel.cyberdudebivash.com" class="btn-secondary">API Access</a>
+    <a href="/leads.html" id="hero-primary-cta" class="btn-primary hero-intent-cta" data-intent-low-href="/leads.html" data-intent-med-href="/products.html" data-intent-high-href="/pricing.html">
+      <span id="hero-cta-text">&#128233; Get Free Threat Alerts</span>
+    </a>
+  </div>
+  <!-- SOCIAL PROOF + URGENCY STRIP -->
+  <div class="hero-trust-strip">
+    <span class="hero-trust-item">
+      <span class="hero-trust-icon">&#128100;</span> Trusted by <strong>4,800+</strong> security professionals
+    </span>
+    <span class="hero-trust-sep">&#9679;</span>
+    <span class="hero-trust-item">
+      <span class="hero-trust-dot blink"></span> Updated every <strong>10 minutes</strong>
+    </span>
+    <span class="hero-trust-sep">&#9679;</span>
+    <span class="hero-trust-item">&#127481;&#127713; Used by SOC teams globally</span>
   </div>
   <!-- Live threat counters -->
     <!-- TODAY'S CRITICAL THREAT DIGEST — CYBERDUDEBIVASH SENTINEL APEX v12 -->
@@ -1180,6 +1294,14 @@ input:focus, textarea:focus {
       <span class="stat-lbl">CYBERDUDEBIVASH SENTINEL APEX Monitoring</span>
     </div>
   </div>
+</div>
+
+<!-- GLOBAL TRUST BAR — Phase 4: persistent authority signals -->
+<div id="global-trust-bar">
+  <span class="gtb-item">&#128100; Trusted by <strong>4,800+</strong> security professionals</span>
+  <span class="gtb-item">&#128202; <strong>1,200+</strong> CVEs tracked to date</span>
+  <span class="gtb-item"><span class="gtb-dot"></span>&nbsp;Updated <strong>every 10 min</strong></span>
+  <span class="gtb-item">&#127758; Used by SOC teams <strong>globally</strong></span>
 </div>
 
 <!-- INTELLIGENCE HUB NAV -->
@@ -1343,6 +1465,80 @@ input:focus, textarea:focus {
       </div>
     </a>
 
+    <!-- ═══ TRENDING THREATS — PHASE 7 PRODUCTIZATION ═══ -->
+    <div class="intel-product-section" id="trending-threats">
+      <div class="ips-header">
+        <span class="ips-title">&#128293; Trending Threats</span>
+        <a href="intelligence.html#live-breaking" class="ips-view-all">View Live Feed &rarr;</a>
+      </div>
+      <div class="ips-grid">
+        <a href="posts/cve-2026-28401-ivanti-connect-secure-zero-day-supply-chain.html" class="ips-card" onclick="if(window.trackEvent)window.trackEvent('trending_card_click',{cve:'CVE-2026-28401'})">
+          <span class="ips-card-badge ips-badge-live">&#9679; Live</span>
+          <div class="ips-card-rank">#1 TRENDING</div>
+          <div class="ips-card-title">Ivanti Connect Secure — Supply Chain RCE</div>
+          <div class="ips-card-meta">
+            <span class="ips-card-cvss">CVSS 10.0</span>
+            <span>3 Nation-State APTs</span>
+          </div>
+        </a>
+        <a href="posts/cve-2026-35616-fortinet-forticlient-ems-zero-day.html" class="ips-card" onclick="if(window.trackEvent)window.trackEvent('trending_card_click',{cve:'CVE-2026-35616'})">
+          <span class="ips-card-badge ips-badge-live">&#9679; KEV</span>
+          <div class="ips-card-rank">#2 TRENDING</div>
+          <div class="ips-card-title">Fortinet FortiClient EMS — Pre-Auth RCE</div>
+          <div class="ips-card-meta">
+            <span class="ips-card-cvss">CVSS 9.8</span>
+            <span>Emergency Patch</span>
+          </div>
+        </a>
+        <a href="posts/cve-2026-33824-windows-ike-service-rce-critical.html" class="ips-card" onclick="if(window.trackEvent)window.trackEvent('trending_card_click',{cve:'CVE-2026-33824'})">
+          <span class="ips-card-badge ips-badge-trending">Patch Now</span>
+          <div class="ips-card-rank">#3 TRENDING</div>
+          <div class="ips-card-title">Windows IKE Service — Unauthenticated RCE</div>
+          <div class="ips-card-meta">
+            <span class="ips-card-cvss">CVSS 9.8</span>
+            <span>All Windows Versions</span>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- ═══ MOST EXPLOITED CVEs — PHASE 7 ═══ -->
+    <div class="intel-product-section" id="most-exploited">
+      <div class="ips-header">
+        <span class="ips-title">&#128682; Most Exploited CVEs This Week</span>
+        <a href="intelligence.html#zerod-today" class="ips-view-all">All Zero-Days &rarr;</a>
+      </div>
+      <div class="ips-grid">
+        <a href="posts/cve-2026-33825-microsoft-defender-zero-day-bluehammer-redsun.html" class="ips-card" onclick="if(window.trackEvent)window.trackEvent('exploited_card_click',{cve:'CVE-2026-33825'})">
+          <span class="ips-card-badge ips-badge-live">2 Unpatched</span>
+          <div class="ips-card-rank">ACTIVE EXPLOITATION</div>
+          <div class="ips-card-title">MS Defender Zero-Day — BlueHammer / RedSun</div>
+          <div class="ips-card-meta">
+            <span class="ips-card-cvss">CVSS 8.8</span>
+            <span class="ips-card-hot">PoC in Wild</span>
+          </div>
+        </a>
+        <a href="posts/cve-2026-5281-chrome-zero-day-dawn-webgpu-use-after-free.html" class="ips-card" onclick="if(window.trackEvent)window.trackEvent('exploited_card_click',{cve:'CVE-2026-5281'})">
+          <span class="ips-card-badge ips-badge-live">&#9679; Active</span>
+          <div class="ips-card-rank">ACTIVE EXPLOITATION</div>
+          <div class="ips-card-title">Chrome Zero-Day — WebGPU Use-After-Free</div>
+          <div class="ips-card-meta">
+            <span class="ips-card-cvss">CVSS 9.1</span>
+            <span>3B Users at Risk</span>
+          </div>
+        </a>
+        <a href="posts/april-2026-ransomware-roundup-qilin-akira-lockbit-blackbasta.html" class="ips-card" onclick="if(window.trackEvent)window.trackEvent('exploited_card_click',{group:'ransomware'})">
+          <span class="ips-card-badge ips-badge-trending">67 Victims</span>
+          <div class="ips-card-rank">RANSOMWARE WAVE</div>
+          <div class="ips-card-title">Qilin + LockBit 4.0 — April Campaign</div>
+          <div class="ips-card-meta">
+            <span class="ips-card-cvss">$4.2B Demanded</span>
+            <span class="ips-card-hot">Hospital Takedowns</span>
+          </div>
+        </a>
+      </div>
+    </div>
+
     <!-- AdSense: ca-pub-XXXXXXXXX -->
     <!-- CYBERDUDEBIVASH ECOSYSTEM AD — HIGH CONVERSION ZONE -->
 <div id="cbd-ad-carousel" class="cbd-ad-carousel">
@@ -1494,6 +1690,23 @@ input:focus, textarea:focus {
       </div>
     </a>
 
+    <!-- ═══ JOURNEY SOFT CTA @ 30% SCROLL — shown by JOURNEY engine ═══ -->
+    <div id="journey-soft-cta" class="journey-soft-cta" style="display:none" aria-hidden="true">
+      <div class="journey-soft-cta-text">
+        &#128196; <strong>Get the full detection pack</strong> for every CVE above — Sigma rules, YARA, IOC bundles, SIEM queries. Deploy in minutes.
+      </div>
+      <a href="/products.html" class="journey-soft-cta-btn" onclick="if(window.trackEvent)window.trackEvent('journey_soft_cta_click',{scroll_pct:30})">
+        Browse Detection Packs &rarr;
+      </a>
+      <button onclick="this.parentElement.style.display='none';if(window.trackEvent)window.trackEvent('journey_soft_cta_dismissed',{})" style="background:none;border:none;color:#475569;cursor:pointer;font-size:14px;padding:4px">&#10005;</button>
+    </div>
+
+    <!-- ═══ EXTENDED FEED (collapsed by default on mobile) ═══ -->
+    <button id="feed-show-more" class="feed-show-more-btn" onclick="document.getElementById('feed-extended').style.display='block';this.style.display='none';if(window.trackEvent)window.trackEvent('feed_expanded',{})">
+      &#9660; Show 6 More Reports
+    </button>
+    <div id="feed-extended" style="display:none">
+
     <!-- POST 6 — CVE-2026-5281 Chrome Zero-Day -->
     <a href="posts/cve-2026-5281-chrome-zero-day-dawn-webgpu-use-after-free.html" class="post-card">
       <div class="post-card-header">
@@ -1615,6 +1828,8 @@ input:focus, textarea:focus {
         </div>
       </div>
     </a>
+
+    </div><!-- /#feed-extended -->
 
   </main>
 

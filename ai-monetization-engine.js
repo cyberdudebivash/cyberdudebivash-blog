@@ -291,28 +291,61 @@
       if (level === 'high')   this.highTrigger(userType);
     },
 
-    // LOW → soft newsletter CTA (no interruption)
+    // ─────────────────────────────────────────────────────────────
+    // PHASE 5 — REVENUE TIMING ENGINE
+    //   LOW    → delay ALL CTAs until 30 seconds on-page
+    //   MEDIUM → trigger at 50% scroll (not on timer)
+    //   HIGH   → trigger at 2nd page visit OR 60s on-page
+    //   RULE   → no immediate CTA injection on page load
+    // ─────────────────────────────────────────────────────────────
+
+    // LOW → soft newsletter bar, fires only after 30s on page
     lowTrigger() {
       if (document.getElementById('aim-low-intent-bar')) return;
       if (!page.includes('/posts/') && !page.includes('/intel')) return;
-      const bar = document.createElement('div');
-      bar.id = 'aim-low-intent-bar';
-      bar.style.cssText = `background:rgba(0,255,224,.05);border-top:1px solid rgba(0,255,224,.12);padding:.6rem 1.5rem;display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap;font-family:'Segoe UI',system-ui,sans-serif;`;
-      bar.innerHTML = `
-        <span style="font-size:.82rem;color:#94a3b8">📧 <strong style="color:#fff">Get weekly threat intel</strong> — IOC bundles + CVE summaries, free.</span>
-        <a href="/leads.html" style="background:rgba(0,255,224,.1);border:1px solid rgba(0,255,224,.3);color:${CFG.CYAN};font-size:.78rem;font-weight:700;padding:.35rem .85rem;border-radius:6px;text-decoration:none;white-space:nowrap">Subscribe Free →</a>
-        <button onclick="this.parentNode.remove()" style="background:none;border:none;color:#475569;cursor:pointer;font-size:.8rem">✕</button>`;
-      const footer = document.querySelector('footer') || document.body;
-      footer.insertAdjacentElement('beforebegin', bar);
-      if (window.trackEvent) window.trackEvent('engagement_low_trigger', { page });
+      // PHASE 5: 30-second delay gate for LOW intent
+      const elapsed = Date.now() - (ENGAGEMENT.sessionStart || Date.now());
+      const remaining = Math.max(0, 30000 - elapsed);
+      setTimeout(() => {
+        if (document.getElementById('aim-low-intent-bar')) return;
+        const bar = document.createElement('div');
+        bar.id = 'aim-low-intent-bar';
+        bar.style.cssText = `background:rgba(0,255,224,.04);border-top:1px solid rgba(0,255,224,.1);padding:.65rem 1.5rem;display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap;font-family:'Segoe UI',system-ui,sans-serif;`;
+        bar.innerHTML = `
+          <span style="font-size:.82rem;color:#94a3b8">\uD83D\uDCE7 <strong style="color:#e2e8f0">Get weekly threat intel</strong> — IOC bundles + CVE summaries, free.</span>
+          <a href="/leads.html" onclick="if(window.trackEvent)window.trackEvent('engagement_low_cta_click',{})" style="background:rgba(0,255,224,.08);border:1px solid rgba(0,255,224,.25);color:${CFG.CYAN};font-size:.78rem;font-weight:700;padding:.35rem .85rem;border-radius:6px;text-decoration:none;white-space:nowrap">Subscribe Free \u2192</a>
+          <button onclick="this.parentNode.remove();if(window.trackEvent)window.trackEvent('engagement_low_dismissed',{})" style="background:none;border:none;color:#475569;cursor:pointer;font-size:.85rem">\u2715</button>`;
+        const footer = document.querySelector('footer') || document.body;
+        footer.insertAdjacentElement('beforebegin', bar);
+        if (window.trackEvent) window.trackEvent('engagement_low_trigger', { page, delay_ms: remaining });
+      }, remaining);
     },
 
-    // MEDIUM → inline product card (context-matched, below-fold insertion)
+    // MEDIUM → product card fires at 50% SCROLL (not on timer)
     mediumTrigger(userType) {
       if (document.getElementById('aim-medium-intent-card')) return;
       if (!page.includes('/posts/')) return;
 
-      const product = window.AIM?.CONTENT_PIPELINE?.detect?.();
+      // PHASE 5: wait for 50% scroll before injecting — scroll-gated
+      const self = this;
+      const SCROLL_THRESHOLD = 50;
+      let fired = false;
+
+      const onScroll = () => {
+        if (fired) return;
+        const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+        if (scrolled < SCROLL_THRESHOLD) return;
+        fired = true;
+        window.removeEventListener('scroll', onScroll, { passive: true });
+        self._injectMediumCard(userType);
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+    },
+
+    _injectMediumCard(userType) {
+      if (document.getElementById('aim-medium-intent-card')) return;
+      const product = window.AIM && window.AIM.CONTENT_PIPELINE && window.AIM.CONTENT_PIPELINE.detect
+        ? window.AIM.CONTENT_PIPELINE.detect() : null;
       if (!product) return;
 
       const paras = [...document.querySelectorAll('article p, .post-content p, main p')]
@@ -325,7 +358,7 @@
       const card = document.createElement('div');
       card.id = 'aim-medium-intent-card';
       card.innerHTML = `
-        <div style="background:rgba(0,255,224,.04);border:1px solid rgba(0,255,224,.2);border-radius:12px;padding:1.1rem 1.25rem;margin:1.5rem 0;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;font-family:'Segoe UI',system-ui,sans-serif;">
+        <div style="background:rgba(0,255,224,.04);border:1px solid rgba(0,255,224,.18);border-radius:12px;padding:1.1rem 1.25rem;margin:1.5rem 0;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;font-family:'Segoe UI',system-ui,sans-serif;">
           <span style="font-size:1.4rem;flex-shrink:0">${product.icon}</span>
           <div style="flex:1;min-width:160px">
             <span style="font-size:.65rem;font-weight:800;color:${CFG.CYAN};text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:.2rem">RECOMMENDED FOR YOU</span>
@@ -335,50 +368,64 @@
           <a href="${product.url}" style="background:linear-gradient(135deg,${CFG.CYAN},#00d4ff);color:#000;font-weight:800;font-size:.78rem;padding:.45rem .95rem;border-radius:7px;text-decoration:none;white-space:nowrap;flex-shrink:0" onclick="if(window.trackEvent)window.trackEvent('engagement_medium_cta_click',{intent:'medium'})">${product.cta}</a>
         </div>`;
       target.insertAdjacentElement('afterend', card.firstElementChild);
-      if (window.trackEvent) window.trackEvent('engagement_medium_trigger', { page, userType });
+      if (window.trackEvent) window.trackEvent('engagement_medium_trigger', { page, userType, trigger: 'scroll_50' });
     },
 
-    // HIGH → subscription / enterprise modal-free CTA (prominent strip)
+    // HIGH → fires at 2nd page visit OR after 60s on-page (whichever first)
     highTrigger(userType) {
       if (document.getElementById('aim-high-intent-strip')) return;
 
-      const isEnterprise = userType === 'enterprise';
-      const strip = document.createElement('div');
-      strip.id = 'aim-high-intent-strip';
-      strip.style.cssText = `position:fixed;bottom:0;left:0;right:0;z-index:9996;background:linear-gradient(90deg,rgba(0,255,224,.1),rgba(0,100,200,.08));border-top:1px solid rgba(0,255,224,.25);padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap;font-family:'Segoe UI',system-ui,sans-serif;transform:translateY(100%);transition:transform .35s ease;`;
+      // PHASE 5: gate on 2nd-page OR 60s timer
+      const pages = ENGAGEMENT.getPageCount ? ENGAGEMENT.getPageCount() : 1;
+      const elapsed = Date.now() - (ENGAGEMENT.sessionStart || Date.now());
+      const isSecondPage = pages >= 2;
+      const delay = isSecondPage ? 2000 : Math.max(0, 60000 - elapsed);
 
-      if (isEnterprise) {
-        strip.innerHTML = `
-          <span style="font-size:.82rem;color:#e2e8f0;font-weight:500">🏢 Your browsing suggests enterprise requirements.</span>
-          <strong style="font-size:.85rem;color:#fff">Get a custom threat intelligence proposal for your team.</strong>
-          <a href="${CFG.enterpriseUrl}" onclick="if(window.trackEvent)window.trackEvent('engagement_high_enterprise_click',{})" style="background:linear-gradient(135deg,#ffd700,#ff8c00);color:#000;font-weight:800;font-size:.78rem;padding:.45rem .95rem;border-radius:7px;text-decoration:none;white-space:nowrap">Get Enterprise Proposal →</a>
-          <button onclick="document.getElementById('aim-high-intent-strip').remove()" style="background:none;border:none;color:#475569;cursor:pointer;font-size:.85rem">✕</button>`;
-      } else {
-        const { final, discount, code } = DYNPRICE.compute(49);
-        strip.innerHTML = `
-          <span style="font-size:.82rem;color:#e2e8f0;font-weight:500">⚡ You're clearly invested in threat intelligence.</span>
-          <strong style="font-size:.85rem;color:${CFG.CYAN}">SOC Pro — $${final}/mo</strong>${discount > 0 ? `<span style="font-size:.72rem;color:#22c55e;font-weight:700">${Math.round(discount*100)}% off · ${code}</span>` : ''}
-          <a href="${CFG.pricingUrl}" onclick="if(window.trackEvent)window.trackEvent('engagement_high_soc_click',{discount:${discount}})" style="background:linear-gradient(135deg,${CFG.CYAN},#00d4ff);color:#000;font-weight:800;font-size:.78rem;padding:.45rem .95rem;border-radius:7px;text-decoration:none;white-space:nowrap">Start 7-Day Free Trial →</a>
-          <button onclick="document.getElementById('aim-high-intent-strip').remove()" style="background:none;border:none;color:#475569;cursor:pointer;font-size:.85rem">✕</button>`;
-      }
-      document.body.appendChild(strip);
-      requestAnimationFrame(() => requestAnimationFrame(() => { strip.style.transform = 'translateY(0)'; }));
-      if (window.trackEvent) window.trackEvent('engagement_high_trigger', { page, userType });
+      setTimeout(() => {
+        if (document.getElementById('aim-high-intent-strip')) return;
+        const isEnterprise = userType === 'enterprise';
+        const strip = document.createElement('div');
+        strip.id = 'aim-high-intent-strip';
+        strip.style.cssText = `position:fixed;bottom:0;left:0;right:0;z-index:500;background:linear-gradient(90deg,rgba(7,9,15,.97),rgba(0,20,40,.97));border-top:1px solid rgba(0,255,224,.2);padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap;font-family:'Segoe UI',system-ui,sans-serif;transform:translateY(100%);transition:transform .35s ease;`;
+
+        if (isEnterprise) {
+          strip.innerHTML = `
+            <span style="font-size:.82rem;color:#e2e8f0;font-weight:500">\uD83C\uDFE2 Your browsing suggests enterprise requirements.</span>
+            <strong style="font-size:.85rem;color:#fff">Get a custom threat intelligence proposal for your team.</strong>
+            <a href="${CFG.enterpriseUrl}" onclick="if(window.trackEvent)window.trackEvent('engagement_high_enterprise_click',{})" style="background:linear-gradient(135deg,#ffd700,#ff8c00);color:#000;font-weight:800;font-size:.78rem;padding:.45rem .95rem;border-radius:7px;text-decoration:none;white-space:nowrap">Get Enterprise Proposal \u2192</a>
+            <button onclick="document.getElementById('aim-high-intent-strip').remove();if(window.trackEvent)window.trackEvent('engagement_high_dismissed',{})" style="background:none;border:none;color:#475569;cursor:pointer;font-size:.85rem">\u2715</button>`;
+        } else {
+          const { final, discount, code } = DYNPRICE.compute(49);
+          strip.innerHTML = `
+            <span style="font-size:.82rem;color:#94a3b8;font-weight:500">\u26A1 You're clearly invested in threat intelligence.</span>
+            <strong style="font-size:.85rem;color:${CFG.CYAN}">SOC Pro \u2014 $${final}/mo</strong>${discount > 0 ? `<span style="font-size:.72rem;color:#22c55e;font-weight:700"> ${Math.round(discount*100)}% off \u00B7 ${code}</span>` : ''}
+            <a href="${CFG.pricingUrl}" onclick="if(window.trackEvent)window.trackEvent('engagement_high_soc_click',{discount:${discount}})" style="background:linear-gradient(135deg,${CFG.CYAN},#00d4ff);color:#000;font-weight:800;font-size:.78rem;padding:.45rem .95rem;border-radius:7px;text-decoration:none;white-space:nowrap">Start 7-Day Free Trial \u2192</a>
+            <button onclick="document.getElementById('aim-high-intent-strip').remove();if(window.trackEvent)window.trackEvent('engagement_high_dismissed',{})" style="background:none;border:none;color:#475569;cursor:pointer;font-size:.85rem">\u2715</button>`;
+        }
+        document.body.appendChild(strip);
+        requestAnimationFrame(() => requestAnimationFrame(() => { strip.style.transform = 'translateY(0)'; }));
+        if (window.trackEvent) window.trackEvent('engagement_high_trigger', { page, userType, trigger: isSecondPage ? 'page_2' : 'timer_60s' });
+      }, delay);
     },
 
     // ── Wire upgrade listener ────────────────────────────────────
     init() {
       const self = this;
-      const profile = window.AIM?.INTENT?.profile;
-      const userType = profile?.intent || 'researcher';
+      const profile = window.AIM && window.AIM.INTENT ? window.AIM.INTENT.profile : null;
+      const userType = (profile && profile.intent) || 'researcher';
 
-      // Fire for current level immediately
+      // PHASE 5: Never fire immediately on page load.
+      // LOW fires after 30s timer (handled inside lowTrigger).
+      // MEDIUM fires on scroll 50% (handled inside mediumTrigger).
+      // HIGH fires on 2nd page or 60s (handled inside highTrigger).
+      // On init, only arm the triggers — never dispatch synchronously.
       const currentLevel = ENGAGEMENT.getLevel();
       if (currentLevel !== 'low') {
-        setTimeout(() => self.dispatch(currentLevel, userType), 3000);
+        // Arm scroll-gated / timer-gated triggers after 1.5s boot delay
+        setTimeout(() => self.dispatch(currentLevel, userType), 1500);
       }
 
-      // Listen for future upgrades
+      // Listen for future intent upgrades from scroll/time polling
       ENGAGEMENT.onUpgrade((newLevel) => {
         self.dispatch(newLevel, userType);
       });
@@ -998,14 +1045,15 @@
     // 5. Social proof toasts
     SOCIAL_PROOF.init();
 
-    // 6. Content → Money pipeline (post pages)
-    setTimeout(() => CONTENT_PIPELINE.injectIntoPost(), 800);
+    // 6. Content → Money pipeline (post pages) — PHASE 5: delayed, scroll-gated via ENGAGEMENT_TRIGGERS
+    // Direct injection only on high-intent; otherwise handled by mediumTrigger scroll gate
+    setTimeout(() => CONTENT_PIPELINE.injectIntoPost(), 2500);
 
-    // 7. Bundle cross-sell
-    BUNDLE_ENGINE.injectBundlePrompt();
+    // 7. Bundle cross-sell — PHASE 5: delayed to avoid immediate injection
+    setTimeout(() => BUNDLE_ENGINE.injectBundlePrompt(), 3500);
 
-    // 8. Subscription upgrade
-    SUB_UPGRADE.init();
+    // 8. Subscription upgrade — PHASE 5: delay to prevent load-time CTA collision
+    setTimeout(() => SUB_UPGRADE.init(), 4000);
 
     // 9. Intent-driven hero override
     setTimeout(() => HERO_OVERRIDE.apply(), 600);

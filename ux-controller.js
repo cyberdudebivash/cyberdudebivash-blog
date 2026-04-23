@@ -379,43 +379,59 @@
      § 8. INTENT-BASED SINGLE CTA PATH
      Replace generic hero secondary CTA with intent-matched copy
   ────────────────────────────────────────────────────────────── */
-  function applyIntentCTA() {
-    // Read intent from CX4 or AIM
-    var level = 'low';
-    try {
-      level = localStorage.getItem('cx4_intent_level') || 'low';
-    } catch (e) {}
-
-    var primBtn = document.querySelector('.hero-actions .btn-primary');
-    if (!primBtn) return;
-
-    var CTAs = {
-      high: {
-        text: '⚡ Start SOC Pro Free Trial →',
-        href: '/pricing.html',
-        style: 'background:linear-gradient(135deg,#00ffe0,#00d4ff);color:#000;'
-      },
-      medium: {
-        text: '📦 Get Detection Packs →',
-        href: '/products.html',
-        style: 'background:linear-gradient(135deg,#00ffe0,#00d4ff);color:#000;'
-      },
-      low: {
-        text: '📧 Get Free Threat Intel',
-        href: '/leads.html',
-        style: ''  // keep existing style
-      }
-    };
-
-    var cta = CTAs[level] || CTAs.low;
-    if (cta.style) primBtn.style.cssText += cta.style;
-
-    // Only update text/href for non-low intent (avoid changing first-visit experience)
-    if (level !== 'low') {
-      primBtn.textContent = cta.text;
-      primBtn.href = cta.href;
-      if (window.trackEvent) window.trackEvent('intent_hero_cta_updated', { level: level });
+  /* ── INTENT CTA MAP ── */
+  var HERO_INTENT_MAP = {
+    low: {
+      text:    '\uD83D\uDCE7 Get Free Threat Alerts',
+      href:    '/leads.html',
+      cls:     '',
+      urgency: 'Join 4,800+ security professionals — free forever'
+    },
+    medium: {
+      text:    '\uD83D\uDCE6 Explore Detection Packs',
+      href:    '/products.html',
+      cls:     'intent-medium',
+      urgency: 'Sigma + YARA rules — deploy to SIEM in minutes'
+    },
+    high: {
+      text:    '\u26A1 Start SOC Pro Free Trial \u2192',
+      href:    '/pricing.html',
+      cls:     'intent-high',
+      urgency: '\uD83D\uDD25 23 spots left at $49/mo — normally $129'
     }
+  };
+
+  function applyIntentCTA() {
+    var level = 'low';
+    try { level = localStorage.getItem('cx4_intent_level') || 'low'; } catch (e) {}
+    if (level !== 'low' && level !== 'medium' && level !== 'high') level = 'low';
+
+    var btn  = document.getElementById('hero-primary-cta');
+    var txt  = document.getElementById('hero-cta-text');
+    if (!btn) return;
+
+    var map = HERO_INTENT_MAP[level];
+
+    // Update CTA
+    btn.href = map.href;
+    if (txt) txt.textContent = map.text;
+
+    // Swap intent class
+    btn.classList.remove('intent-low', 'intent-medium', 'intent-high');
+    if (map.cls) btn.classList.add(map.cls);
+
+    // Update urgency/social proof micro-copy
+    var urgencyEl = document.querySelector('.hero-trust-strip .hero-trust-urgency');
+    if (!urgencyEl) {
+      urgencyEl = document.createElement('span');
+      urgencyEl.className = 'hero-trust-item hero-trust-urgency';
+      urgencyEl.style.cssText = 'color:#00ff88;font-weight:700;font-size:12px;';
+      var strip = document.querySelector('.hero-trust-strip');
+      if (strip) strip.appendChild(urgencyEl);
+    }
+    urgencyEl.textContent = map.urgency;
+
+    if (window.trackEvent) window.trackEvent('hero_intent_cta_applied', { level: level });
   }
 
   /* ──────────────────────────────────────────────────────────────
@@ -462,22 +478,203 @@
      § 12. RESIZE HANDLER — re-evaluate on orientation change
   ────────────────────────────────────────────────────────────── */
   function onResize() {
-    // Re-evaluate sticky enforcement on resize
     STICKY_MGR.enforce();
   }
+
+  /* ──────────────────────────────────────────────────────────────
+     § 13. JOURNEY ENGINE — Phase 2: scroll-based content reveal
+     0–30%  : Education only (no CTAs shown)
+     30–60% : Soft CTA revealed (journey-soft-cta)
+     60–85% : Strong inline CTA / product highlight
+     85%+   : Conversion block visible
+  ────────────────────────────────────────────────────────────── */
+  var JOURNEY = {
+    _milestones: { 30: false, 60: false, 85: false },
+    _lastPct: 0,
+
+    getScrollPct: function () {
+      var h = document.documentElement.scrollHeight - window.innerHeight;
+      return h > 0 ? Math.round((window.scrollY / h) * 100) : 0;
+    },
+
+    onScroll: function () {
+      var pct = this.getScrollPct();
+      if (pct <= this._lastPct) return;
+      this._lastPct = pct;
+
+      // 30% — reveal soft CTA
+      if (!this._milestones[30] && pct >= 30) {
+        this._milestones[30] = true;
+        this._revealSoftCTA();
+        if (window.trackEvent) window.trackEvent('journey_30pct', { pct: pct });
+      }
+
+      // 60% — strong CTA (re-apply intent CTA in case intent upgraded)
+      if (!this._milestones[60] && pct >= 60) {
+        this._milestones[60] = true;
+        applyIntentCTA();
+        if (window.trackEvent) window.trackEvent('journey_60pct', { pct: pct });
+      }
+
+      // 85% — conversion block: show "Recommended for You" section if hidden
+      if (!this._milestones[85] && pct >= 85) {
+        this._milestones[85] = true;
+        this._revealConversionBlock();
+        if (window.trackEvent) window.trackEvent('journey_85pct', { pct: pct });
+      }
+    },
+
+    _revealSoftCTA: function () {
+      var el = document.getElementById('journey-soft-cta');
+      if (!el) return;
+      el.style.display = 'flex';
+      el.removeAttribute('aria-hidden');
+      // Fade in
+      el.style.opacity = '0';
+      el.style.transition = 'opacity .4s ease';
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { el.style.opacity = '1'; });
+      });
+    },
+
+    _revealConversionBlock: function () {
+      // Expand the feed-extended section if not already visible
+      var feedBtn = document.getElementById('feed-show-more');
+      if (feedBtn && feedBtn.style.display !== 'none') {
+        // Don't auto-expand — just track, user can expand themselves
+      }
+      // Re-show the productization sections if they were hidden
+      var trending = document.getElementById('trending-threats');
+      var exploited = document.getElementById('most-exploited');
+      if (trending) trending.style.opacity = '1';
+      if (exploited) exploited.style.opacity = '1';
+      if (window.trackEvent) window.trackEvent('journey_conversion_block_shown', {});
+    },
+
+    install: function () {
+      var self = this;
+      var ticking = false;
+      window.addEventListener('scroll', function () {
+        if (!ticking) {
+          requestAnimationFrame(function () {
+            self.onScroll();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, { passive: true });
+    }
+  };
+
+  /* ──────────────────────────────────────────────────────────────
+     § 14. MICRO-CONVERSION TRACKER — Phase 8
+     Tracks: scroll depth, time on page, CTA clicks, card clicks
+  ────────────────────────────────────────────────────────────── */
+  var MICRO_TRACKER = {
+    _sessionStart: Date.now(),
+    _maxScroll: 0,
+    _ctaClicks: 0,
+    _cardClicks: 0,
+
+    // Scroll depth tracking (10% buckets)
+    installScrollDepth: function () {
+      var self = this;
+      var reported = {};
+      var buckets = [10, 25, 50, 75, 90, 100];
+      window.addEventListener('scroll', function () {
+        var h = document.documentElement.scrollHeight - window.innerHeight;
+        if (h <= 0) return;
+        var pct = Math.round((window.scrollY / h) * 100);
+        if (pct > self._maxScroll) self._maxScroll = pct;
+        buckets.forEach(function (b) {
+          if (!reported[b] && pct >= b) {
+            reported[b] = true;
+            if (window.trackEvent) window.trackEvent('scroll_depth', { pct: b });
+          }
+        });
+      }, { passive: true });
+    },
+
+    // Time on page — report at key intervals
+    installTimeTracking: function () {
+      var self = this;
+      var reported = {};
+      var intervals = [15, 30, 60, 120];
+      setInterval(function () {
+        var secs = Math.round((Date.now() - self._sessionStart) / 1000);
+        intervals.forEach(function (t) {
+          if (!reported[t] && secs >= t) {
+            reported[t] = true;
+            if (window.trackEvent) window.trackEvent('time_on_page', { seconds: t });
+          }
+        });
+      }, 5000);
+    },
+
+    // CTA click tracking — delegate on all buttons and primary links
+    installCTATracking: function () {
+      var self = this;
+      document.addEventListener('click', function (e) {
+        var el = e.target.closest('a[href], button');
+        if (!el) return;
+
+        var href  = el.getAttribute('href') || '';
+        var text  = (el.textContent || '').trim().slice(0, 60);
+        var isCTA = el.classList.contains('btn-primary') ||
+                    el.classList.contains('btn-secondary') ||
+                    el.classList.contains('cta-btn') ||
+                    el.classList.contains('rcb-card-btn') ||
+                    el.classList.contains('hero-intent-cta') ||
+                    el.classList.contains('journey-soft-cta-btn') ||
+                    /pricing|products|leads|trial|subscribe/i.test(href);
+
+        if (isCTA) {
+          self._ctaClicks++;
+          if (window.trackEvent) window.trackEvent('cta_click', {
+            text:  text,
+            href:  href,
+            scroll: self._maxScroll,
+            time_s: Math.round((Date.now() - self._sessionStart) / 1000)
+          });
+        }
+
+        // Card click tracking
+        if (el.classList.contains('post-card') || el.classList.contains('ips-card')) {
+          self._cardClicks++;
+          if (window.trackEvent) window.trackEvent('card_click', { href: href, text: text });
+        }
+      }, true); // capture phase for reliability
+    },
+
+    install: function () {
+      this.installScrollDepth();
+      this.installTimeTracking();
+      this.installCTATracking();
+    }
+  };
+
+  /* ──────────────────────────────────────────────────────────────
+     § 15. RESIZE HANDLER
+  ────────────────────────────────────────────────────────────── */
 
   /* ──────────────────────────────────────────────────────────────
      § BOOT
   ────────────────────────────────────────────────────────────── */
   ready(function () {
-    // Immediate
+    // Immediate — structure + popup safety
     POPUP_GATE.install();
     STICKY_MGR.install();
     injectSkipLink();
     installSmoothScroll();
     updateLCABTimestamp();
 
-    // After engines inject content
+    // Phase 8: micro-conversion tracking — start immediately
+    MICRO_TRACKER.install();
+
+    // Phase 2: journey engine — scroll-based content reveal
+    JOURNEY.install();
+
+    // Navigation + CTA controls
     CTA_LIMITER.install();
     MOBILE_NAV.install();
 
@@ -493,6 +690,8 @@
       CTA_LIMITER.enforce();
       STICKY_MGR.enforce();
       enhanceCards();
+      // Re-apply intent CTA in case AIM engine has upgraded level by now
+      applyIntentCTA();
     }, 3500);
 
     // Resize
@@ -500,12 +699,15 @@
     window.addEventListener('orientationchange', onResize, { passive: true });
   });
 
-  // Expose public API for debugging
+  // Expose public API for debugging + inter-engine communication
   window.UXC = {
-    POPUP_GATE:  POPUP_GATE,
-    STICKY_MGR:  STICKY_MGR,
-    CTA_LIMITER: CTA_LIMITER,
-    isMobile:    isMobile
+    POPUP_GATE:    POPUP_GATE,
+    STICKY_MGR:    STICKY_MGR,
+    CTA_LIMITER:   CTA_LIMITER,
+    JOURNEY:       JOURNEY,
+    MICRO_TRACKER: MICRO_TRACKER,
+    isMobile:      isMobile,
+    applyIntentCTA: applyIntentCTA  // callable by AIM on intent upgrade
   };
 
 }());
