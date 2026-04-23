@@ -140,41 +140,107 @@ a.rcb-nl-btn {
     padding-right: var(--sp-md) !important;
   }
 
-  /* ── 4.2 Header — compact, no overflow ─────────────────────── */
+  /* ── 4.2 MOBILE OVERLAY SUPPRESSION (CRITICAL) ─────────────────
+     These injected banners all fire at once and collide on mobile.
+     On mobile we use ONLY: hero CTA + journey soft CTA + aim-high-intent-strip.
+     Everything else is suppressed to prevent text collision.
+  ────────────────────────────────────────────────────────────── */
+
+  /* monetization.js — fixed sticky promo bar at top:0 z-index:99999 */
+  #apex-sticky              { display: none !important; }
+
+  /* monetization.js — exit overlay popup */
+  #apex-exit-overlay        { display: none !important; }
+
+  /* monetization.js — bottom bar (conflicts with aim-high-intent-strip) */
+  #apex-bottom-bar          { display: none !important; }
+
+  /* monetization.js — toast popup bottom-left */
+  #apex-toast               { display: none !important; }
+
+  /* conversion-engine.js — "Welcome back! Visit #8x — claim VIP90" */
+  /* fires at top:56px, overlaps the header nav completely */
+  #cx4-return-banner        { display: none !important; }
+
+  /* conversion-engine.js — "Start 7-Day Free Trial / Claim Offer" slide-in */
+  #cx4-overlay              { display: none !important; }
+
+  /* conversion-engine.js — exit intent fullscreen overlay */
+  #cx4-exit-overlay         { display: none !important; }
+
+  /* conversion-engine.js — progress scroll bar at top */
+  #cx4-scroll-bar           { display: none !important; }
+
+  /* ai-monetization-engine.js — bundle prompt popup */
+  #aim-bundle-prompt        { display: none !important; }
+
+  /* Remove body padding injected by apex-sticky JS */
+  body                      { padding-top: 0 !important; }
+
+  /* ── 4.3 Header — authoritative, no overlap ─────────────────── */
   header {
-    position: sticky;
-    top: 0;
-    z-index: 200 !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 9999 !important;  /* higher than any injected element */
+    background: var(--apex-bg) !important;
+    border-bottom: 1px solid rgba(0,255,224,.1) !important;
   }
 
   .header-inner {
-    padding: 10px var(--sp-md) !important;
+    padding: 12px var(--sp-md) !important;
     gap: 8px !important;
     flex-wrap: nowrap !important;
+    align-items: center !important;
   }
 
+  /* ── Logo: hide badge, show brand name as single clean line ── */
   .logo-badge {
-    display: none !important; /* hide long badge on mobile */
+    display: none !important;
+  }
+
+  .logo-wrap {
+    flex-shrink: 0 !important;
+    min-width: 0 !important;
+    max-width: 180px !important;
   }
 
   .logo {
-    font-size: 16px !important;
-    letter-spacing: 1px !important;
+    font-size: 15px !important;
+    letter-spacing: 0.5px !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    display: inline-block !important;
+    color: var(--apex-cyan) !important;
+    text-decoration: none !important;
   }
 
-  /* Nav: horizontally scrollable, no wrap, no overflow */
+  /* Ensure BIVASH span is always same line, visible */
+  .logo span {
+    color: #fff !important;
+    display: inline !important;
+  }
+
+  /* Nav: show only 2 key links + hamburger on mobile */
   nav {
     flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
+    overflow: hidden !important;
     gap: 2px !important;
-    max-width: calc(100vw - 140px);
-    padding-bottom: 2px;
+    flex-shrink: 1 !important;
+    min-width: 0 !important;
+    /* constrain nav so logo has room */
+    max-width: calc(100vw - 200px) !important;
   }
 
-  nav::-webkit-scrollbar { display: none !important; }
+  /* Show only first 2 nav links on mobile, rest via hamburger */
+  nav a:nth-child(n+3):not(.nav-cta):not(#mobile-nav-toggle) {
+    display: none !important;
+  }
+
+  /* Mobile-nav-toggle (hamburger) always visible */
+  #mobile-nav-toggle {
+    display: flex !important;
+    flex-shrink: 0 !important;
+  }
 
   nav a {
     font-size: 11px !important;
@@ -184,17 +250,43 @@ a.rcb-nl-btn {
     min-height: 36px !important;
   }
 
-  /* Hide lower-priority nav links on mobile */
-  nav a:nth-child(n+5):not(.nav-cta) {
-    display: none !important;
-  }
-
   /* Keep nav CTA always visible */
   .nav-cta {
     font-size: 11px !important;
     padding: 6px 10px !important;
     white-space: nowrap !important;
     flex-shrink: 0;
+  }
+
+  /* ── Section nav bar: hide on mobile (reduces header clutter) ── */
+  .section-nav-bar-outer {
+    display: none !important;
+  }
+
+  /* ── LCAB (Live Threats bar): compact single scroll row ─────── */
+  #live-critical-alert-bar {
+    padding: 7px var(--sp-md) !important;
+  }
+  .lcab-inner {
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+  }
+  .lcab-time {
+    display: none !important; /* remove "Updated: HH:MM" on mobile */
+  }
+  .lcab-threats {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    gap: 8px !important;
+    scrollbar-width: none !important;
+  }
+  .lcab-threats::-webkit-scrollbar { display: none !important; }
+  .lcab-ttext {
+    max-width: 160px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
   }
 
   /* ── 4.3 Ticker — compact single-line ──────────────────────── */

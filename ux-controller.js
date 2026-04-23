@@ -482,7 +482,79 @@
   }
 
   /* ──────────────────────────────────────────────────────────────
-     § 13. JOURNEY ENGINE — Phase 2: scroll-based content reveal
+     § 13. MOBILE CLEANUP — kill all competing fixed-position banners
+     on mobile before they collide with the header and hero.
+     CSS handles initial hide; this JS handles dynamically-injected
+     elements that arrive after DOMContentLoaded.
+  ────────────────────────────────────────────────────────────── */
+  var MOBILE_CLEANUP = {
+    // All IDs that must be suppressed on mobile
+    SUPPRESS_IDS: [
+      'apex-sticky',        // monetization.js — top fixed promo bar
+      'apex-exit-overlay',  // monetization.js — exit popup
+      'apex-bottom-bar',    // monetization.js — bottom bar
+      'apex-toast',         // monetization.js — toast popup
+      'cx4-return-banner',  // conversion-engine.js — "Welcome back" overlap
+      'cx4-overlay',        // conversion-engine.js — "Claim Offer" slide-in
+      'cx4-exit-overlay',   // conversion-engine.js — exit intent overlay
+      'cx4-scroll-bar',     // conversion-engine.js — progress bar
+      'aim-bundle-prompt'   // ai-monetization-engine.js — bundle popup
+    ],
+
+    hideEl: function (id) {
+      var el = document.getElementById(id);
+      if (el) {
+        el.style.setProperty('display', 'none', 'important');
+        el.setAttribute('aria-hidden', 'true');
+      }
+    },
+
+    // Also fix body padding-top injected by apex-sticky
+    fixBodyPadding: function () {
+      if (document.body.style.paddingTop) {
+        document.body.style.setProperty('padding-top', '0', 'important');
+      }
+    },
+
+    install: function () {
+      if (!isMobile()) return; // desktop: let everything run
+      var self = this;
+
+      // 1. Hide immediately (catches pre-loaded elements)
+      self.SUPPRESS_IDS.forEach(function (id) { self.hideEl(id); });
+      self.fixBodyPadding();
+
+      // 2. MutationObserver: catch elements injected after load
+      var obs = new MutationObserver(function (mutations) {
+        var changed = false;
+        mutations.forEach(function (m) {
+          m.addedNodes.forEach(function (node) {
+            if (node.nodeType === 1) { // Element node
+              var id = node.id;
+              if (id && self.SUPPRESS_IDS.indexOf(id) !== -1) {
+                self.hideEl(id);
+                changed = true;
+              }
+            }
+          });
+        });
+        if (changed) self.fixBodyPadding();
+      });
+      obs.observe(document.body, { childList: true });
+
+      // 3. Timed sweeps to catch late injections from deferred scripts
+      var sweepTimes = [500, 1000, 1500, 2500, 4000];
+      sweepTimes.forEach(function (t) {
+        setTimeout(function () {
+          self.SUPPRESS_IDS.forEach(function (id) { self.hideEl(id); });
+          self.fixBodyPadding();
+        }, t);
+      });
+    }
+  };
+
+  /* ──────────────────────────────────────────────────────────────
+     § 14. JOURNEY ENGINE — Phase 2: scroll-based content reveal
      0–30%  : Education only (no CTAs shown)
      30–60% : Soft CTA revealed (journey-soft-cta)
      60–85% : Strong inline CTA / product highlight
@@ -661,6 +733,10 @@
      § BOOT
   ────────────────────────────────────────────────────────────── */
   ready(function () {
+    // Step 0: MOBILE CLEANUP — must run before everything else
+    // Kills competing fixed banners that collide with header on mobile
+    MOBILE_CLEANUP.install();
+
     // Immediate — structure + popup safety
     POPUP_GATE.install();
     STICKY_MGR.install();
@@ -701,12 +777,13 @@
 
   // Expose public API for debugging + inter-engine communication
   window.UXC = {
-    POPUP_GATE:    POPUP_GATE,
-    STICKY_MGR:    STICKY_MGR,
-    CTA_LIMITER:   CTA_LIMITER,
-    JOURNEY:       JOURNEY,
-    MICRO_TRACKER: MICRO_TRACKER,
-    isMobile:      isMobile,
+    POPUP_GATE:     POPUP_GATE,
+    STICKY_MGR:     STICKY_MGR,
+    CTA_LIMITER:    CTA_LIMITER,
+    JOURNEY:        JOURNEY,
+    MICRO_TRACKER:  MICRO_TRACKER,
+    MOBILE_CLEANUP: MOBILE_CLEANUP,
+    isMobile:       isMobile,
     applyIntentCTA: applyIntentCTA  // callable by AIM on intent upgrade
   };
 
