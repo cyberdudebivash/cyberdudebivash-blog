@@ -1025,6 +1025,41 @@ async function main() {
     updateRSS(rssItems);
   }
 
+  // ── Generate live-intel.json for client-side widget ──────────
+  // Always regenerate with the latest N items (published + recent)
+  // This file is consumed by live-feed-widget.js on every page load.
+  try {
+    const liveItems = allItems.slice(0, 20).map(item => ({
+      id:        item.id,
+      desc:      item.desc || '',
+      score:     item.cvssScore || null,
+      published: item.published || item.dateAdded || new Date().toISOString(),
+      vendors:   item.vendors || [],
+      product:   item.product || '',
+      source:    item.source || 'SENTINEL',
+      exploited: !!item.exploited,
+      dueDate:   item.dueDate || null,
+      refs:      (item.refs || []).slice(0, 2),
+      threatType:  item.threatType  || null,
+      threatLabel: item.threatLabel || null,
+      threatColor: item.threatColor || null
+    }));
+
+    const liveJson = {
+      generatedAt:    new Date().toISOString(),
+      totalPublished: state.totalPublished,
+      source:         'CYBERDUDEBIVASH SENTINEL APEX',
+      platform:       'cyberdudebivash.com',
+      items:          liveItems
+    };
+
+    const liveJsonPath = path.join(__dirname, 'live-intel.json');
+    fs.writeFileSync(liveJsonPath, JSON.stringify(liveJson, null, 2), 'utf8');
+    log(`✅ live-intel.json updated: ${liveItems.length} items`);
+  } catch (e) {
+    err(`Failed to write live-intel.json: ${e.message}`);
+  }
+
   // Save state
   saveState(state);
 

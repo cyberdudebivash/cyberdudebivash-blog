@@ -108,6 +108,102 @@ a.rcb-nl-btn {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   § 2.5  GLOBAL BANNER ORCHESTRATION — ALL VIEWPORTS
+   Prevents the 3-banner stack that buries the nav on every screen size.
+   Rule: only ONE promotional banner is visible at a time.
+   Header/nav is always authoritative above all injected elements.
+═══════════════════════════════════════════════════════════════════ */
+
+/* ── Header always on top regardless of injected banners ───────── */
+header,
+.site-header,
+nav.main-nav {
+  z-index: 10000 !important;
+  position: sticky !important;
+  top: 0 !important;
+}
+
+/* ── APEX Sticky bar — single announcement slot ────────────────── */
+/* Sits just below the header (header ~56px). One at a time. */
+#apex-sticky {
+  z-index: 9950 !important;
+  top: 0 !important;
+  max-height: 52px;
+  overflow: hidden;
+}
+
+/* ── CX4 return banner — below apex-sticky if both exist ─────── */
+/* We push it to var(--banner-top, 56px) — JS will set this */
+#cx4-return-banner {
+  z-index: 9940 !important;
+  top: var(--cx4-banner-top, 56px) !important;
+}
+
+/* ── Second-tier promo strip (aim medium / high) ─────────────── */
+#aim-medium-card,
+#aim-high-intent-strip,
+[id^="aim-"] [style*="position:fixed"][style*="top"] {
+  z-index: 9930 !important;
+}
+
+/* ── Bottom-anchored strips — never overlap header ──────────── */
+#apex-bottom-bar,
+#aim-high-intent-strip {
+  z-index: 9920 !important;
+  bottom: 0 !important;
+  top: auto !important;
+}
+
+/* ── Bundle/toast prompts — corner, never covering header ───── */
+#aim-bundle-prompt,
+#apex-toast {
+  z-index: 9910 !important;
+  bottom: 80px !important;
+  top: auto !important;
+}
+
+/* ── Exit overlays — fullscreen, highest possible ──────────── */
+#cx4-exit-overlay,
+#apex-exit-overlay {
+  z-index: 99998 !important;
+}
+
+/* ── Body padding guard — never let JS padding push content ── */
+/* banner-orchestrator.js sets --banner-offset accurately       */
+body {
+  padding-top: var(--body-banner-offset, 0px) !important;
+}
+
+/* ── BANNER VISIBILITY CLASSES set by banner-orchestrator.js ─ */
+/* When .bo-hidden, the element is off-screen but not display:none
+   so JS transitions still work */
+.bo-hidden {
+  visibility: hidden !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+}
+
+/* ── DESKTOP: suppress the duplicative CX4 visit-count banner
+   when the apex-sticky is already visible (they say same thing) ─ */
+body.has-apex-sticky #cx4-return-banner {
+  display: none !important;
+}
+
+/* ── Ensure scrollbar indicator never overlaps header ────────── */
+#cx4-scroll-bar {
+  z-index: 10001 !important;
+  top: 0 !important;
+  height: 3px !important;
+}
+
+/* ── Visual calming: slow/reduce animation aggression ────────── */
+#apex-sticky *,
+#cx4-return-banner *,
+#aim-high-intent-strip * {
+  animation-duration: 2s !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    § 3. REDUCED MOTION SUPPORT
 ═══════════════════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
@@ -1064,4 +1160,254 @@ button:hover {
   .main {
     grid-template-columns: 1fr !important;
   }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   § 20. GOD-LEVEL UI/UX ENHANCEMENTS
+   Complete visual polish pass — clarity, hierarchy, breathing room.
+   Applied after all other rules so they take precedence cleanly.
+═══════════════════════════════════════════════════════════════════ */
+
+/* ── 20.1 TICKER — proper single-row layout, no text collision ── */
+.ticker-wrap {
+  position: relative !important;
+  z-index: 180 !important;
+  opacity: 1 !important;
+  background: rgba(7,9,15,.98) !important;
+  border-bottom: 1px solid rgba(255,43,85,.15) !important;
+}
+
+.ticker-content {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+}
+
+/* ── 20.2 HERO SECTION — maximum clarity ─────────────────────── */
+.hero {
+  padding-top: clamp(40px, 6vw, 80px) !important;
+  padding-bottom: clamp(40px, 6vw, 80px) !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Hero headline — always readable, never clipped */
+.hero h1,
+.hero-title {
+  font-size: clamp(28px, 5.5vw, 62px) !important;
+  line-height: 1.12 !important;
+  letter-spacing: -0.02em !important;
+  margin-bottom: 16px !important;
+  color: #ffffff !important;
+  text-shadow: 0 2px 20px rgba(0,0,0,.6) !important;
+}
+
+/* Hero description */
+.hero-desc,
+.hero p {
+  font-size: clamp(14px, 2vw, 17px) !important;
+  line-height: 1.65 !important;
+  color: #94a3b8 !important;
+  max-width: 680px !important;
+  margin-bottom: 28px !important;
+}
+
+/* Hero CTA area — clean button row */
+.hero-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
+  margin-bottom: 24px !important;
+}
+
+/* Primary CTA — solid, confident */
+#hero-primary-cta,
+.hero-actions .btn-primary {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  padding: 14px 28px !important;
+  border-radius: 8px !important;
+  white-space: nowrap !important;
+  letter-spacing: 0.02em !important;
+  animation: none !important;
+  box-shadow: 0 4px 20px rgba(0,180,216,.25) !important;
+  transition: transform .15s, box-shadow .15s !important;
+}
+#hero-primary-cta:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 28px rgba(0,180,216,.35) !important;
+}
+
+/* Trust strip — horizontal, no wrapping, clean spacing */
+.hero-trust-strip {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
+  font-size: 12px !important;
+  color: #64748b !important;
+  margin-top: 16px !important;
+}
+
+.hero-trust-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  white-space: nowrap !important;
+}
+
+.hero-trust-sep { color: #1f2937 !important; }
+
+/* ── 20.3 GLOBAL TRUST BAR — always visible ──────────────────── */
+#global-trust-bar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: clamp(12px, 3vw, 32px) !important;
+  padding: 10px 20px !important;
+  background: rgba(0,180,216,.04) !important;
+  border-top: 1px solid rgba(0,180,216,.1) !important;
+  border-bottom: 1px solid rgba(0,180,216,.1) !important;
+  flex-wrap: wrap !important;
+}
+
+.gtr-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-size: 12px !important;
+  color: #64748b !important;
+  white-space: nowrap !important;
+}
+
+.gtr-item strong { color: #e2e8f0 !important; }
+
+/* ── 20.4 SECTION LABELS — clean, authoritative ──────────────── */
+.section-label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin: 32px 0 16px !important;
+  padding: 0 !important;
+}
+
+.section-label-text {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 2.5px !important;
+  text-transform: uppercase !important;
+  color: #475569 !important;
+  white-space: nowrap !important;
+}
+
+.section-label-line {
+  flex: 1 !important;
+  height: 1px !important;
+  background: linear-gradient(90deg, #1f2937, transparent) !important;
+}
+
+/* ── 20.5 POST CARDS — clear visual hierarchy ────────────────── */
+.post-card {
+  transition: transform .15s ease, background .15s ease !important;
+  border-radius: 10px !important;
+}
+.post-card:hover {
+  transform: translateY(-2px) !important;
+}
+
+.post-card-title {
+  font-size: clamp(16px, 2.2vw, 20px) !important;
+  line-height: 1.3 !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+}
+
+.post-excerpt {
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+  -webkit-line-clamp: 3 !important;
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+}
+
+/* ── 20.6 SIDEBAR — tighter, cleaner ─────────────────────────── */
+.sidebar-widget {
+  border-radius: 10px !important;
+  overflow: hidden !important;
+}
+
+/* ── 20.7 STATS / KPI NUMBERS — prominent but calm ───────────── */
+.stats-number,
+.kpi-number,
+.stat-number {
+  font-size: clamp(28px, 4vw, 48px) !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.03em !important;
+  line-height: 1 !important;
+}
+
+/* ── 20.8 NAVIGATION — always readable ───────────────────────── */
+header nav a,
+.nav-link {
+  font-size: 13px !important;
+  letter-spacing: 0.3px !important;
+  white-space: nowrap !important;
+}
+
+/* ── 20.9 SCROLLBAR — subtle dark ────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #07090f; }
+::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+/* ── 20.10 FOCUS STYLES — accessibility ─────────────────────── */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid #00b4d8 !important;
+  outline-offset: 2px !important;
+}
+
+/* ── 20.11 LIVE INTEL WIDGET INTEGRATION ─────────────────────── */
+#live-intel-feed {
+  width: 100% !important;
+  margin: 24px 0 !important;
+}
+
+/* Section label above live feed */
+#lfw-section-label {
+  padding: 0 !important;
+  margin: 28px 0 10px !important;
+}
+
+/* ── 20.12 MOBILE: suppress cx4-return-banner on ALL views ────── */
+/* The apex-sticky bar covers the same messaging. One is enough. */
+@media (max-width: 1023px) {
+  #cx4-return-banner {
+    display: none !important;
+  }
+}
+
+/* ── 20.13 RESPONSIVE MAIN GRID — proper content width ─────── */
+@media (min-width: 1024px) {
+  .main {
+    max-width: 1280px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+/* ── 20.14 ANIMATION PERFORMANCE — GPU-only animations ─────── */
+.ticker-content,
+.lfw-dot,
+.hero-trust-dot,
+.blink {
+  will-change: opacity, transform !important;
+}
+
+/* ── 20.15 SELECTION COLOR ───────────────────────────────────── */
+::selection {
+  background: rgba(0,180,216,.3) !important;
+  color: #fff !important;
 }
