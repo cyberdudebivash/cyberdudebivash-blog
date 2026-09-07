@@ -24,7 +24,11 @@ _NEGATED_SUFFIX = (
 
 
 def _pattern(term: str) -> re.Pattern[str]:
-    return re.compile(term + _NEGATED_SUFFIX, re.I)
+    # Group the complete term expression before attaching the negative
+    # lookahead. Without this non-capturing group, regex alternation precedence
+    # would apply the guard only to the final alternative (e.g. "indicator
+    # pack") while bare "IOC" bypassed it.
+    return re.compile(r"(?:" + term + r")" + _NEGATED_SUFFIX, re.I)
 
 
 def install_claim_semantics_v19_1() -> None:
