@@ -17,6 +17,8 @@ from .cti_dossier_v9 import install_cti_dossier_v9
 from .cti_dossier_v10 import install_cti_dossier_v10
 from .cti_evidence_convergence import install_cti_evidence_convergence
 from .cti_evidence_convergence_v7 import install_cti_evidence_convergence_v7
+from .cti_integrity_revenue_v19_1 import install_cti_integrity_revenue_v19_1
+from .cti_integrity_revenue_v19_1_claim_semantics import install_claim_semantics_v19_1
 from .generation_evidence_admission import install_generation_evidence_admission
 from .premium_capacity_allocator_v13 import install_capacity_aware_allocator_v13
 from .premium_capacity_recovery import install_premium_capacity_recovery
@@ -126,6 +128,18 @@ def main() -> int:
     # page hop. It also adds aggregate checkout-link telemetry only. Canonical
     # prices remain server-owned in api/_lib/payment-utils.js and all payment
     # verification remains server-owned in api/v1/billing.
+    #
+    # v19.1 installs strictly outside v19 as the final rendered-artifact
+    # authority. Its bounded claim-semantics helper first distinguishes explicit
+    # negative disclosures ("IOCs are not established") from unsupported positive
+    # capability claims. The final layer then repairs deterministic presentation
+    # contradictions observed in a live CVE dossier (severity/OG mismatch,
+    # unsupported artifact claims, source-only certification display,
+    # corroboration and operational-depth labels, public TLP assignment,
+    # malformed related titles and assessment conversion links) and fails closed
+    # if any contradiction survives. It does not change ReportX tier computation,
+    # provider routing, prices, entitlements, payment verification, or the
+    # underlying evidence graph.
     install_source_rich_rss_v15()
     install_provider_budget_overrides()
     install_incident_recovery_overrides(_main)
@@ -155,6 +169,8 @@ def main() -> int:
     install_cti_dossier_v10(_main)
     install_astra_revenue_presentation_v18(_main)
     install_astra_cash_conversion_v19(_main)
+    install_claim_semantics_v19_1()
+    install_cti_integrity_revenue_v19_1(_main)
     return _main.main()
 
 
