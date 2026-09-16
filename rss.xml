@@ -14,7 +14,7 @@
     <copyright>Copyright 2026 CyberDudeBivash. All rights reserved.</copyright>
     <managingEditor>bivash@cyberdudebivash.com (CyberDudeBivash)</managingEditor>
     <webMaster>bivash@cyberdudebivash.com (CyberDudeBivash)</webMaster>
-    <lastBuildDate>Wed, 16 Sep 2026 11:58:57 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 16 Sep 2026 15:32:48 GMT</lastBuildDate>
     <pubDate>Wed, 16 Sep 2026 12:00:00 +0000</pubDate>
     <ttl>60</ttl>
     <category>Cybersecurity</category>
@@ -31,7 +31,142 @@
       <height>144</height>
     </image>
 
-      <item>
+        <item>
+    <title><![CDATA[djust: Multi-tenant isolation fails open on the WebSocket/SSE path, disclosing other tenants' data]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-61595-pip-djust.html</link>
+    <description><![CDATA[Score 61/100 MEDIUM — CVSS 7.7 — ### Impact
+`djust.tenants` isolation was enforced only on the HTTP path. The current tenant was stored in `threading.local()` and set exclusively by the HTTP-only `TenantMiddleware`, so on the live (WebSocket/SSE) path `get_current_tenant()` was always `None` during mount and every event handler — a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 16 Sep 2026 15:32:48 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-61595-pip-djust.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[OpenTelemetry.Resources.Host vulnerable to arbitrary code execution via local PATH hijacking on macOS]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-81192-nuget-opentelemetry-resources-host.html</link>
+    <description><![CDATA[Score 58/100 MEDIUM — CVSS 7 — ### Summary The `OpenTelemetry.Resources.Host` NuGet package is affected by an untrusted search path vulnerability on macOS. The `host.id` resource attribute detector launches the `sh` and `ioreg` executables by bare name rather than by absolute path, so both are resolved
+through the `PATH` environm. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 16 Sep 2026 15:32:48 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-81192-nuget-opentelemetry-resources-host.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[djust's observability endpoints are network-exposed: the localhost gate is an opt-in middleware the docs omit, and the views enforce only DEBUG]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-61590-pip-djust.html</link>
+    <description><![CDATA[Score 55/100 MEDIUM — CVSS 7.4 — ### Impact
+djust's observability endpoints expose live view/session state and a remote method-invocation surface (`eval_handler`). The localhost restriction was an **opt-in middleware that the documented setup omits**; the views themselves enforced only `DEBUG`. In the misconfigured-but-documented s. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 16 Sep 2026 15:32:48 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-61590-pip-djust.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[@zereight/mcp-gitlab: Unauthenticated arbitrary file read via upload_markdown enables PAT exfiltration and full account takeover]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-61560.html</link>
+    <description><![CDATA[Score 51/100 MEDIUM — CVSS 9.8 — Summary
+
+The SSE transport mode (SSE=true) exposes all MCP tools without any authentication. The upload_markdown tool reads arbitrary files from the server's local filesystem via an unsanitized file_path parameter and uploads them to a GitLab project. Combined, any unauthenticate... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 16 Sep 2026 15:32:48 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-61560.html</guid>
+    <category>Threat Intelligence</category>
+    <category>NEWS_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-12793 - JetFormBuilder <= 3.6.2 - Unauthenticated Privilege Escalation via '_jet_engine_booking_form_id' Parameter]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-12793.html</link>
+    <description><![CDATA[Score 51/100 MEDIUM — CVSS 9.8 — CVE ID : CVE-2026-12793
+
+ Published : Sept. 16, 2026, 4:17 a.m. | 36minutes ago
+
+ Description : The JetFormBuilder Dynamic Blocks Form Builder plugin for WordPress is vulnerable to Privilege Escalation in all versions up to, and including, 3.6.2. This is due to the plugin not val... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 16 Sep 2026 15:32:48 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-12793.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2025-54100 exploit]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2025-54100.html</link>
+    <description><![CDATA[Score 44/100 LOW — CVSS 7.8 — Exploit for CVE-2025-54100. CVSS 7.8.. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 16 Sep 2026 15:32:48 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2025-54100.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Exploit for Out-of-bounds Read in Openssl]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2014-0160.html</link>
+    <description><![CDATA[Score 43/100 LOW — CVSS 7.5 — Proof-of-concept exploit for CVE-2014-0160. CVSS 7.5.. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 16 Sep 2026 15:32:48 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2014-0160.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-78514: Use after free in Microsoft Office Word allows an unauthorized attacker to execute code over a network.]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-78514.html</link>
+    <description><![CDATA[Score 42/100 LOW — CVSS 8.8 — Use after free in Microsoft Office Word allows an unauthorized attacker to execute code over a network.. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 16 Sep 2026 15:32:48 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-78514.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-78518: Out-of-bounds read in Microsoft Office Excel allows an unauthorized attacker to execute code over a network.]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-78518.html</link>
+    <description><![CDATA[Score 42/100 LOW — CVSS 8.8 — Out-of-bounds read in Microsoft Office Excel allows an unauthorized attacker to execute code over a network.. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 16 Sep 2026 15:32:48 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-78518.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-78519: Use of uninitialized resource in Microsoft Office Outlook allows an unauthorized attacker to execute code over a network]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-78519.html</link>
+    <description><![CDATA[Score 42/100 LOW — CVSS 8.8 — Use of uninitialized resource in Microsoft Office Outlook allows an unauthorized attacker to execute code over a network.. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 16 Sep 2026 15:32:48 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-78519.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-78524: Out-of-bounds write in Microsoft Office allows an unauthorized attacker to execute code over a network.]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-78524.html</link>
+    <description><![CDATA[Score 42/100 LOW — CVSS 8.8 — Out-of-bounds write in Microsoft Office allows an unauthorized attacker to execute code over a network.. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 16 Sep 2026 15:32:48 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-78524.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-78521: Heap-based buffer overflow in Microsoft Office Word allows an unauthorized attacker to execute code over a network.]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-78521.html</link>
+    <description><![CDATA[Score 42/100 LOW — CVSS 8.8 — Heap-based buffer overflow in Microsoft Office Word allows an unauthorized attacker to execute code over a network.. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 16 Sep 2026 15:32:48 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-78521.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-78525: Use after free in Microsoft Office Outlook allows an unauthorized attacker to execute code over a network.]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-78525.html</link>
+    <description><![CDATA[Score 42/100 LOW — CVSS 8.8 — Use after free in Microsoft Office Outlook allows an unauthorized attacker to execute code over a network.. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 16 Sep 2026 15:32:48 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-78525.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-78517: Heap-based buffer overflow in Microsoft Office Word allows an unauthorized attacker to execute code over a network.]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-78517.html</link>
+    <description><![CDATA[Score 42/100 LOW — CVSS 8.8 — Heap-based buffer overflow in Microsoft Office Word allows an unauthorized attacker to execute code over a network.. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 16 Sep 2026 15:32:48 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-78517.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
     <title><![CDATA[Acronis Patches Exploited Vulnerability in cPanel Backup Plugin]]></title>
     <link>https://blog.cyberdudebivash.in/posts/cve-2026-87886-securityweek-threat-intelligence.html</link>
     <description><![CDATA[Score 59/100 MEDIUM — CVSS 7.8 — CVE-2026-87886 is a high-severity insecure file permissions flaw that can lead to local privilege escalation. The post Acronis Patches Exploited Vulnerability in cPanel Backup Plugin appeared first on SecurityWeek .. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>

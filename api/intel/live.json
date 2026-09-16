@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-16T11:58:57.622Z",
+  "generated": "2026-09-16T15:32:48.675Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,54 +7,97 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 4838,
+  "total_published": 4840,
   "s2n_stats": {
-    "passed": 114,
-    "suppressed": 7,
-    "avg_qs": 0.488
+    "passed": 108,
+    "suppressed": 11,
+    "avg_qs": 0.491
   },
   "items": [
     {
-      "id": "CVE-2026-87886",
-      "title": "Acronis Patches Exploited Vulnerability in cPanel Backup Plugin",
-      "description": "CVE-2026-87886 is a high-severity insecure file permissions flaw that can lead to local privilege escalation. The post Acronis Patches Exploited Vulnerability in cPanel Backup Plugin appeared first on SecurityWeek .",
-      "cvss": 7.8,
-      "final_ps": 64,
-      "quality_score": 0.518,
+      "id": "CVE-2026-61559",
+      "title": "@zereight/mcp-gitlab Vulnerable to Server-Side Request Forgery",
+      "description": "Server-Side Request Forgery via X-GitLab-API-URL Header Allows Credential Theft\n\nAffected\n\n- Repository: zereight/gitlab-mcp\n- Affected versions: All versions through commit 74a8c83\n- Patched versions: None at time of report\n\nSeverity\n\nHigh. CVSS v3.1 8.5 (AV:N/AC:L/PR:L/UI:N/S:C... [Full analysis a",
+      "cvss": 9.6,
+      "final_ps": 60,
+      "quality_score": 0.493,
       "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "securityweek",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-15",
+      "last_seen": "2026-09-15",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-61559"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-2h44-8472-frjj"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-58704",
+      "title": "Google Patches Pixel Modem Zero-Day Exploited in Targeted Attacks",
+      "description": "Google has patched a high-severity zero-day in the Pixel cellular modem after finding evidence that the vulnerability was exploited in limited, targeted attacks. Google has released its September 2026 Pixel security update, addressing a large set of vulnerabilities, including a h... [Full analysis a",
+      "cvss": 8,
+      "final_ps": 54,
+      "quality_score": 0.435,
+      "threat_level": "MEDIUM",
+      "type": "ZERO_DAY",
+      "source": "sentinel_apex",
       "sources_confirmed": 2,
       "merged_sources": [
-        "thehackernews",
+        "sentinel_apex",
         "securityweek"
       ],
       "first_seen": "2026-09-16",
       "last_seen": "2026-09-16",
-      "exploited": true,
+      "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "SecurityWeek",
-      "product": "Threat Intelligence",
+      "vendor": "",
+      "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-87886"
+        "CVE-2026-58704"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://thehackernews.com/2026/09/acronis-cpanel-backup-plugin.html",
-        "https://www.securityweek.com/acronis-patches-exploited-vulnerability-in-cpanel-backup-plugin/"
+        "https://securityaffairs.com/199193/hacking/google-patches-pixel-modem-zero-day-exploited-in-targeted-attacks.html",
+        "https://www.securityweek.com/pixel-modem-zero-day-exploited-in-targeted-attacks/"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.70 (securityweek)",
-          "data_confidence=1.00",
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
           "multi_source=2 sources",
           "recency=999d (score=0.05)",
-          "QS=0.517"
+          "QS=0.435"
         ],
         "priority": [
-          "+8 exploited_in_wild"
+          "+7 zero_day"
         ],
         "suppression": null,
         "merge": null
@@ -231,49 +274,6 @@
       }
     },
     {
-      "id": "CVE-2026-69205",
-      "title": "Http4s Ember Transfer-Encoding value parsing (TE.CL / TE.0 request smuggling)",
-      "description": "Summary\n\nEmber's HTTP/1.1 header parser matches the Transfer-Encoding header value\nwith a case-sensitive substring test (hValue.contains(\"chunked\")). RFC\n9112 7 requires transfer-coding names to be compared case-insensitively. A\nrequest carrying Transfer-Encoding: Chunked (capita... [Full analysis a",
-      "cvss": 8.7,
-      "final_ps": 49,
-      "quality_score": 0.493,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-69205"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-9998-894r-fwvr"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=0d (score=1.00)",
-          "QS=0.493"
-        ],
-        "priority": [
-          "base_ps=49 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
       "id": "EXPLOITDB-13fc423caf742505",
       "title": "[webapps] OpenCATS 0.9.7.4 - SQL Injection",
       "description": "OpenCATS 0.9.7.4 - SQL Injection",
@@ -401,49 +401,6 @@
           "+10 CVSS≥9",
           "+8 exploited_in_wild",
           "+7 zero_day"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-58704",
-      "title": "Google Patches Pixel Modem Flaw Amid Signs of Limited Targeted Exploitation",
-      "description": "Google has disclosed that a high-severity security flaw in its Pixel Cellular Modem has come under exploitation in the wild. The vulnerability, tracked as CVE-2026-58704 (CVSS score: 8.0), is a privilege escalation flaw. \"In Cellular Modem, there is a possible permission bypass due to a logic error ",
-      "cvss": 8,
-      "final_ps": 46,
-      "quality_score": 0.478,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "thehackernews",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "thehackernews"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "The Hacker News",
-      "product": "Threat Intelligence",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-58704"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://thehackernews.com/2026/09/google-patches-pixel-modem-flaw-amid.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.55 (thehackernews)",
-          "data_confidence=1.00",
-          "recency=0d (score=1.00)",
-          "QS=0.478"
-        ],
-        "priority": [
-          "base_ps=46 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -581,7 +538,7 @@
     {
       "id": "CVE-2026-69218",
       "title": "Http4s Ember HTTP/2: unbounded continuation frame accumulation",
-      "description": "When Ember receives an HTTP/2 HEADERS or PUSH_PROMISE frame without the END_HEADERS flag, it buffers the header block fragment and waits for subsequent CONTINUATION frames. These accumulate unbounded until the connection closes.\n\nImpact\n\nA remote, unauthenticated peer can exhaust... [Full analysis a",
+      "description": "When Ember receives an HTTP/2 HEADERS or PUSH_PROMISE frame without the END_HEADERS flag, it buffers the header block fragment and waits for subsequent CONTINUATION frames.  These accumulate unbounded until the connection closes.\n\nImpact\n\nA remote, unauthenticated peer can exhaus... [Full analysis a",
       "cvss": 7.5,
       "final_ps": 46,
       "quality_score": 0.493,
@@ -624,7 +581,7 @@
     {
       "id": "CVE-2026-69213",
       "title": "Http4s Ember HTTP/2 has an unbounded outbound frame queue",
-      "description": "Ember's HTTP/2 connection serializes all outgoing frames through a single unbounded queue drained by one writer fiber (writeLoop). When the write side stalls, any frames the connection keeps producing accumulate in that queue without limit. The peer can drive this cheaply because... [Full analysis a",
+      "description": "Ember's HTTP/2 connection serializes all outgoing frames through a single unbounded queue drained by one writer fiber (writeLoop).  When the write side stalls, any frames the connection keeps producing accumulate in that queue without limit.  The peer can drive this cheaply becau... [Full analysis a",
       "cvss": 7.5,
       "final_ps": 46,
       "quality_score": 0.493,
@@ -667,7 +624,7 @@
     {
       "id": "CVE-2026-69208",
       "title": "Http4s: DigestAuth nonce map grows unbounded",
-      "description": "The DigestAuth server middleware's stale-nonce cleanup uses an inverted comparison: it removes *fresh* nonces and stops at the first *stale* one. Because a new nonce is created for every unauthenticated challenge, an attacker can drive the nonce map to grow without bound until th... [Full analysis a",
+      "description": "The DigestAuth server middleware's stale-nonce cleanup uses an inverted comparison: it removes *fresh* nonces and stops at the first *stale* one.  Because a new nonce is created for every unauthenticated challenge, an attacker can drive the nonce map to grow without bound until t... [Full analysis a",
       "cvss": 7.5,
       "final_ps": 46,
       "quality_score": 0.493,
@@ -692,93 +649,6 @@
       "ioc_count": 0,
       "refs": [
         "https://github.com/advisories/GHSA-fm4g-76c9-7w69"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=0d (score=1.00)",
-          "QS=0.493"
-        ],
-        "priority": [
-          "base_ps=46 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-69203",
-      "title": "Http4s Ember HTTP/2 does not enforce SETTINGS_MAX_CONCURRENT_STREAMS",
-      "description": "An ember server with HTTP/2 enabled (.withHttp2) does not enforce SETTINGS_MAX_CONCURRENT_STREAMS on streams opened by the peer. A single unauthenticated connection can open an unbounded number of concurrent streams, each of which allocates per-stream server state that is never r... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 46,
-      "quality_score": 0.493,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-69203",
-        "CVE-2023-44487"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-9vwc-pc8p-253q"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=0d (score=1.00)",
-          "QS=0.493"
-        ],
-        "priority": [
-          "base_ps=46 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-69202",
-      "title": "Http4s Ember HTTP/2: unbounded inbound body buffering",
-      "description": "Ember's HTTP/2 stack replenishes the inbound flow-control window based on bytes\nreceived off the wire, not bytes consumed by the application. Received DATA is buffered in an unbounded per-stream channel. Flow control therefore\nprovides no backpressure: a peer can stream a large o... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 46,
-      "quality_score": 0.493,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-69202"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-6m4x-pp6q-5jmm"
       ],
       "explanation": {
         "quality": [
@@ -1828,10 +1698,10 @@
       }
     },
     {
-      "id": "CVE-2026-92184",
-      "title": "CVE-2026-92184 - ag-ui-protocol ag-ui Multimodal Content utils.py urllib.request.urlopen server-side request forgery",
-      "description": "CVE-2026-92184 - ag-ui-protocol ag-ui Multimodal Content utils.py urllib.request.urlopen server-side request forgery",
-      "cvss": 6.3,
+      "id": "CVE-2026-73169",
+      "title": "CVE-2026-73169 - Advantech EKI-1242EIMS Stored Cross-Site Scripting Vulnerability",
+      "description": "CVE-2026-73169 - Advantech EKI-1242EIMS Stored Cross-Site Scripting Vulnerability",
+      "cvss": 6.1,
       "final_ps": 40,
       "quality_score": 0.453,
       "threat_level": "LOW",
@@ -1850,11 +1720,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-92184"
+        "CVE-2026-73169"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-92184"
+        "https://cvefeed.io/vuln/detail/CVE-2026-73169"
       ],
       "explanation": {
         "quality": [
@@ -1871,53 +1741,10 @@
       }
     },
     {
-      "id": "CVE-2026-92220",
-      "title": "CVE-2026-92220 - vllm-project vLLM MoRIIO Acknowledgement moriio_connector.py MoRIIOWrapper._handle_release_message reso",
-      "description": "CVE-2026-92220 - vllm-project vLLM MoRIIO Acknowledgement moriio_connector.py MoRIIOWrapper._handle_release_message resource consumption",
-      "cvss": 5.3,
-      "final_ps": 40,
-      "quality_score": 0.453,
-      "threat_level": "LOW",
-      "type": "AI_SECURITY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-92220"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-92220"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.50",
-          "recency=0d (score=1.00)",
-          "QS=0.453"
-        ],
-        "priority": [
-          "base_ps=40 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-92217",
-      "title": "CVE-2026-92217 - a2ui-project a2ui Message Parsing message-processor.ts processMessages dynamically-determined object at",
-      "description": "CVE-2026-92217 - a2ui-project a2ui Message Parsing message-processor.ts processMessages dynamically-determined object attributes",
-      "cvss": 6.3,
+      "id": "CVE-2026-18555",
+      "title": "CVE-2026-18555 - Better Messages  Chat Rooms, Group Chat, Private Messages & AI Chat Bots plugin for WordPress <= 2.15.2",
+      "description": "CVE ID : CVE-2026-18555\n\n Published : Sept. 16, 2026, 4:28 a.m. | 26minutes ago\n\n Description : The Better Messages Chat Rooms, Group Chat, Private Messages & AI Chat Bots plugin for WordPress is vulnerable to Reflected Cross-Site Scripting via the 'icn' parameter in all versions... [Full analysis a",
+      "cvss": 6.1,
       "final_ps": 40,
       "quality_score": 0.453,
       "threat_level": "LOW",
@@ -1936,11 +1763,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-92217"
+        "CVE-2026-18555"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-92217"
+        "https://cvefeed.io/vuln/detail/CVE-2026-18555"
       ],
       "explanation": {
         "quality": [
@@ -1959,7 +1786,7 @@
     {
       "id": "CVE-2026-69201",
       "title": "Http4s: ResourceService and Webjar Service path escape via percent-encoded separators",
-      "description": "The static content handlers ResourceService and WebjarService URL decode each path segment and then reject only segments that are exactly \"\", \".\", or \"..\". A percent-encoded separator (%2F) lets an attacker smuggle a ../ segment past that filter and escape the configured base, re... [Full analysis a",
+      "description": "The static content handlers ResourceService and WebjarService URL decode each path segment and then reject only segments that are exactly \"\", \".\", or \"..\".  A percent-encoded separator (%2F) lets an attacker smuggle a ../ segment past that filter and escape the configured base, r... [Full analysis a",
       "cvss": 5.9,
       "final_ps": 40,
       "quality_score": 0.453,
@@ -1984,49 +1811,6 @@
       "ioc_count": 0,
       "refs": [
         "https://github.com/advisories/GHSA-crq5-92j2-j7wv"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.50",
-          "recency=0d (score=1.00)",
-          "QS=0.453"
-        ],
-        "priority": [
-          "base_ps=40 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-69206",
-      "title": "Http4s: DigestAuth allows replay of captured requests",
-      "description": "The DigestAuth replay defence stores lastNc + 1 rather than the nonce-count (nc) value it just accepted. When a legitimate client sends non-contiguous nc values (parallel or retried requests, as browsers do), the server's counter lags behind the highest nc seen, and a captured Au... [Full analysis a",
-      "cvss": 5.9,
-      "final_ps": 40,
-      "quality_score": 0.453,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-69206"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-9xww-74xv-gjfp"
       ],
       "explanation": {
         "quality": [
@@ -2304,9 +2088,7 @@
         ],
         "suppression": null,
         "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
+      }
     },
     {
       "id": "CVE-2019-0708",
@@ -2350,9 +2132,7 @@
         ],
         "suppression": null,
         "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
+      }
     },
     {
       "id": "CVE-2025-69212",
@@ -2396,9 +2176,7 @@
         ],
         "suppression": null,
         "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
+      }
     },
     {
       "id": "CVE-2024-36401",
@@ -2442,9 +2220,7 @@
         ],
         "suppression": null,
         "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
+      }
     },
     {
       "id": "CVE-2026-15748",
@@ -2488,9 +2264,7 @@
         ],
         "suppression": null,
         "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
+      }
     },
     {
       "id": "CVE-2026-12495",
@@ -3487,6 +3261,188 @@
       "suppression_reason": null
     },
     {
+      "id": "CVE-2026-87886",
+      "title": "Acronis Patches Exploited Vulnerability in cPanel Backup Plugin",
+      "description": "CVE-2026-87886 is a high-severity insecure file permissions flaw that can lead to local privilege escalation. The post Acronis Patches Exploited Vulnerability in cPanel Backup Plugin appeared first on SecurityWeek .",
+      "cvss": 7.8,
+      "final_ps": 29,
+      "quality_score": 0.52,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "securityweek",
+      "sources_confirmed": 2,
+      "merged_sources": [
+        "thehackernews",
+        "securityweek"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": true,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "SecurityWeek",
+      "product": "Threat Intelligence",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-87886"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://thehackernews.com/2026/09/acronis-cpanel-backup-plugin.html",
+        "https://www.securityweek.com/acronis-patches-exploited-vulnerability-in-cpanel-backup-plugin/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.70 (securityweek)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.520"
+        ],
+        "priority": [
+          "+8 exploited_in_wild"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CISA-104845cc24fb2f55",
+      "title": "CISA Adds One Known Exploited Vulnerability to Catalog",
+      "description": "CISA has added one new vulnerability to its Known Exploited Vulnerabilities (KEV) Catalog , based on evidence of active exploitation. CVE-2026-58704 Google Pixel Improper Authorization Vulnerability This type of vulnerability is a frequent attack vector for malicious cyber actors and poses significa",
+      "cvss": null,
+      "final_ps": 28,
+      "quality_score": 0.505,
+      "threat_level": "HIGH",
+      "type": "ADVISORY",
+      "source": "cisa_alerts",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "cisa_alerts"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": true,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "CISA US-CERT",
+      "product": "Multiple Products",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-58704"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.cisa.gov/news-events/alerts/2026/09/16/cisa-adds-one-known-exploited-vulnerability-catalog"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (cisa_alerts)",
+          "data_confidence=0.40",
+          "recency=0d (score=1.00)",
+          "QS=0.505"
+        ],
+        "priority": [
+          "+8 exploited_in_wild"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-61560",
+      "title": "@zereight/mcp-gitlab: Unauthenticated arbitrary file read via upload_markdown enables PAT exfiltration and full account ",
+      "description": "Summary\n\nThe SSE transport mode (SSE=true) exposes all MCP tools without any authentication. The upload_markdown tool reads arbitrary files from the server's local filesystem via an unsanitized file_path parameter and uploads them to a GitLab project. Combined, any unauthenticate... [Full analysis a",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-61560"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-cv3r-c5h8-f4g5"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-12793",
+      "title": "CVE-2026-12793 - JetFormBuilder <= 3.6.2 - Unauthenticated Privilege Escalation via '_jet_engine_booking_form_id' Parame",
+      "description": "CVE ID : CVE-2026-12793\n\n Published : Sept. 16, 2026, 4:17 a.m. | 36minutes ago\n\n Description : The JetFormBuilder Dynamic Blocks Form Builder plugin for WordPress is vulnerable to Privilege Escalation in all versions up to, and including, 3.6.2. This is due to the plugin not val... [Full analysis a",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-12793"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-12793"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
       "id": "CVE-2026-15638",
       "title": "CVE-2026-15638 - Cryptographic Padding Oracle",
       "description": "CVE-2026-15638 - Cryptographic Padding Oracle",
@@ -3938,43 +3894,47 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-61559",
-      "title": "@zereight/mcp-gitlab Vulnerable to Server-Side Request Forgery",
-      "description": "Server-Side Request Forgery via X-GitLab-API-URL Header Allows Credential Theft\n\nAffected\n\n- Repository: zereight/gitlab-mcp\n- Affected versions: All versions through commit 74a8c83\n- Patched versions: None at time of report\n\nSeverity\n\nHigh. CVSS v3.1 8.5 (AV:N/AC:L/PR:L/UI:N/S:C... [Full analysis a",
-      "cvss": 9.6,
-      "final_ps": 28,
-      "quality_score": 0.438,
+      "id": "CVE-2026-61595",
+      "title": "djust: Multi-tenant isolation fails open on the WebSocket/SSE path, disclosing other tenants' data",
+      "description": "### Impact\n`djust.tenants` isolation was enforced only on the HTTP path. The current tenant was stored in `threading.local()` and set exclusively by the HTTP-only `TenantMiddleware`, so on the live (WebSocket/SSE) path `get_current_tenant()` was always `None` during mount and every event handler — a",
+      "cvss": 7.7,
+      "final_ps": 21,
+      "quality_score": 0.523,
       "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
       "sources_confirmed": 1,
       "merged_sources": [
-        "sentinel_apex"
+        "github_advisories"
       ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "",
-      "product": "",
+      "vendor": "pip",
+      "product": "djust",
       "due_date": null,
       "cves": [
-        "CVE-2026-61559"
+        "CVE-2026-61595",
+        "CVE-2026-61595"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-2h44-8472-frjj"
+        "https://github.com/advisories/GHSA-3492-cvg7-9mr2",
+        "https://github.com/djust-org/djust/security/advisories/GHSA-3492-cvg7-9mr2",
+        "https://github.com/djust-org/djust/releases/tag/v1.0.7",
+        "https://github.com/advisories/GHSA-3492-cvg7-9mr2"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
           "recency=0d (score=1.00)",
-          "QS=0.438"
+          "QS=0.523"
         ],
         "priority": [
-          "+10 CVSS≥9"
+          "base_ps=21 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -3983,11 +3943,108 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-78225",
-      "title": "CVE-2026-78225 - Wrtsil FOS-Onboard Use of Hard-coded Cryptographic Key",
-      "description": "CVE ID : CVE-2026-78225\n\n Published : Sept. 15, 2026, 9:29 p.m. | 16minutes ago\n\n Description : A hardcoded cryptographic server key vulnerability exists in the deployer-ng Update Controller component of Wrtsil FOS-Onboard.\n\n Severity: 9.5 | CRITICAL\n\n Visit the link for more det... [Full analysis a",
-      "cvss": 9,
-      "final_ps": 28,
+      "id": "CVE-2026-81192",
+      "title": "OpenTelemetry.Resources.Host vulnerable to arbitrary code execution via local PATH hijacking on macOS",
+      "description": "### Summary The `OpenTelemetry.Resources.Host` NuGet package is affected by an untrusted search path vulnerability on macOS. The `host.id` resource attribute detector launches the `sh` and `ioreg` executables by bare name rather than by absolute path, so both are resolved\nthrough the `PATH` environm",
+      "cvss": 7,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "nuget",
+      "product": "OpenTelemetry.Resources.Host",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-81192",
+        "CVE-2026-81192"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-v8pv-4842-x354",
+        "https://github.com/open-telemetry/opentelemetry-dotnet-contrib/security/advisories/GHSA-v8pv-4842-x354",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-81192",
+        "https://github.com/open-telemetry/opentelemetry-dotnet-contrib/pull/1631"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-61590",
+      "title": "djust's observability endpoints are network-exposed: the localhost gate is an opt-in middleware the docs omit, and the v",
+      "description": "### Impact\ndjust's observability endpoints expose live view/session state and a remote method-invocation surface (`eval_handler`). The localhost restriction was an **opt-in middleware that the documented setup omits**; the views themselves enforced only `DEBUG`. In the misconfigured-but-documented s",
+      "cvss": 7.4,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 2,
+      "merged_sources": [
+        "github_advisories",
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "pip",
+      "product": "djust",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-61590"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-8g2f-g3gq-5rjv",
+        "https://github.com/djust-org/djust/security/advisories/GHSA-8g2f-g3gq-5rjv",
+        "https://github.com/djust-org/djust/releases/tag/v1.0.7"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2014-0160",
+      "title": "Exploit for Out-of-bounds Read in Openssl",
+      "description": "Proof-of-concept exploit for CVE-2014-0160. CVSS 7.5.",
+      "cvss": 7.5,
+      "final_ps": 18,
       "quality_score": 0.438,
       "threat_level": "MEDIUM",
       "type": "CVE_REPORT",
@@ -3996,8 +4053,8 @@
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -4005,11 +4062,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-78225"
+        "CVE-2014-0160"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-78225"
+        "https://sploitus.com/exploit?id=70930049-8339-5F83-938C-D071408EC731&utm_source=rss&utm_medium=rss"
       ],
       "explanation": {
         "quality": [
@@ -4019,7 +4076,7 @@
           "QS=0.438"
         ],
         "priority": [
-          "+10 CVSS≥9"
+          "base_ps=18 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4028,21 +4085,21 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-81855",
-      "title": "CVE-2026-81855 - Wrtsil FOS-Onboard Use of Hard-coded Cryptographic Key",
-      "description": "CVE ID : CVE-2026-81855\n\n Published : Sept. 15, 2026, 9:31 p.m. | 14minutes ago\n\n Description : A hardcoded cryptographic client authentication key vulnerability exists in the robot testing framework component of Wrtsil FOS-Onboard.\n\n Severity: 9.3 | CRITICAL\n\n Visit the link for... [Full analysis a",
-      "cvss": 9.1,
-      "final_ps": 28,
+      "id": "CVE-2025-54100",
+      "title": "CVE-2025-54100 exploit",
+      "description": "Exploit for CVE-2025-54100. CVSS 7.8.",
+      "cvss": 7.8,
+      "final_ps": 18,
       "quality_score": 0.438,
-      "threat_level": "MEDIUM",
+      "threat_level": "LOW",
       "type": "CVE_REPORT",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -4050,11 +4107,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-81855"
+        "CVE-2025-54100"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-81855"
+        "https://sploitus.com/exploit?id=KITPLOIT:TOOLS-GITHUB-THEMEHACKERS-CVE-2025-54100&utm_source=rss&utm_medium=rss"
       ],
       "explanation": {
         "quality": [
@@ -4064,7 +4121,7 @@
           "QS=0.438"
         ],
         "priority": [
-          "+10 CVSS≥9"
+          "base_ps=18 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4073,21 +4130,21 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-84439",
-      "title": "CVE-2026-84439: Apache ZooKeeper: Audit log injection via unsanitized output from multiple sources",
-      "description": "Posted by Andor Molnar on Sep 15 Severity: important\n\nAffected versions:\n\n- Apache ZooKeeper (org.apache.zookeeper:zookeeper) 3.9.0 through 3.9.5\n- Apache ZooKeeper (org.apache.zookeeper:zookeeper) 3.8.0 through 3.8.6\n\nDescription:\n\nWhen audit logging is enabled (zookeeper.audit.... [Full analysis a",
-      "cvss": 9.1,
-      "final_ps": 28,
+      "id": "CVE-2026-92456",
+      "title": "CVE-2026-92456 - yshop-crm through 2.1.3 Missing Authorization via CRM Customer Rule-Configuration Endpoints",
+      "description": "CVE-2026-92456 - yshop-crm through 2.1.3 Missing Authorization via CRM Customer Rule-Configuration Endpoints",
+      "cvss": 7.1,
+      "final_ps": 18,
       "quality_score": 0.438,
-      "threat_level": "MEDIUM",
+      "threat_level": "LOW",
       "type": "CVE_REPORT",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -4095,11 +4152,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-84439"
+        "CVE-2026-92456"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://seclists.org/oss-sec/2026/q3/788"
+        "https://cvefeed.io/vuln/detail/CVE-2026-92456"
       ],
       "explanation": {
         "quality": [
@@ -4109,7 +4166,7 @@
           "QS=0.438"
         ],
         "priority": [
-          "+10 CVSS≥9"
+          "base_ps=18 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4118,111 +4175,21 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-76187",
-      "title": "CVE-2026-76187: Apache Airflow Keycloak provider: Any realm client's credentials mint an Airflow session JWT",
-      "description": "Posted by Vincent Beck on Sep 15 Severity: moderate\n\nAffected versions:\n\n- Apache Airflow Keycloak provider (apache-airflow-providers-keycloak) before 0.10.0\n\nDescription:\n\nApache Airflow Keycloak provider: the unauthenticated token endpoint accepts a client-credentials grant for... [Full analysis a",
-      "cvss": 9.1,
-      "final_ps": 28,
+      "id": "CVE-2026-78514",
+      "title": "CVE-2026-78514: Use after free in Microsoft Office Word allows an unauthorized attacker to execute code over a network.",
+      "description": "Use after free in Microsoft Office Word allows an unauthorized attacker to execute code over a network.",
+      "cvss": 8.8,
+      "final_ps": 18,
       "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "SOCIAL_ENGINEERING",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-76187"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://seclists.org/oss-sec/2026/q3/791"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-76186",
-      "title": "CVE-2026-76186: Apache Airflow Keycloak provider: Keycloak token cookies not bound to Airflow session identity",
-      "description": "Posted by Vincent Beck on Sep 15 Severity: moderate\n\nAffected versions:\n\n- Apache Airflow Keycloak provider (apache-airflow-providers-keycloak) before 0.10.0\n\nDescription:\n\nApache Airflow Keycloak provider: from Airflow 3.3 the Keycloak auth manager takes a user's identity from t... [Full analysis a",
-      "cvss": 9.1,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "SOCIAL_ENGINEERING",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-76186"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://seclists.org/oss-sec/2026/q3/790"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-84501",
-      "title": "CVE-2026-84501: Apache ZooKeeper: Operational log forgery via newline injection in EnsembleAuthenticationProvider",
-      "description": "Posted by Andor Molnar on Sep 15 Severity: moderate\n\nAffected versions:\n\n- Apache ZooKeeper (org.apache.zookeeper:zookeeper) 3.9.0 through 3.9.5\n- Apache ZooKeeper (org.apache.zookeeper:zookeeper) 3.8.0 through 3.8.6\n\nDescription:\n\nAn unauthenticated attacker can inject arbitrary... [Full analysis a",
-      "cvss": 9.1,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
+      "threat_level": "LOW",
       "type": "CVE_REPORT",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
+      "first_seen": "2026-09-08",
+      "last_seen": "2026-09-08",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -4230,11 +4197,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-84501"
+        "CVE-2026-78514"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://seclists.org/oss-sec/2026/q3/789"
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-78514"
       ],
       "explanation": {
         "quality": [
@@ -4244,7 +4211,7 @@
           "QS=0.438"
         ],
         "priority": [
-          "+10 CVSS≥9"
+          "base_ps=18 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4253,21 +4220,21 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-48907",
-      "title": "Exploit for Improper Access Control in Widgetfactorylimited Jce",
-      "description": "Proof-of-concept exploit for CVE-2026-48907. CVSS 10.",
-      "cvss": 9.8,
-      "final_ps": 28,
+      "id": "CVE-2026-78518",
+      "title": "CVE-2026-78518: Out-of-bounds read in Microsoft Office Excel allows an unauthorized attacker to execute code over a netw",
+      "description": "Out-of-bounds read in Microsoft Office Excel allows an unauthorized attacker to execute code over a network.",
+      "cvss": 8.8,
+      "final_ps": 18,
       "quality_score": 0.438,
-      "threat_level": "HIGH",
+      "threat_level": "LOW",
       "type": "CVE_REPORT",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
+      "first_seen": "2026-09-08",
+      "last_seen": "2026-09-08",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -4275,11 +4242,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-48907"
+        "CVE-2026-78518"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://sploitus.com/exploit?id=D3C53CF3-C170-5845-9E21-4C0AF78DD841&utm_source=rss&utm_medium=rss"
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-78518"
       ],
       "explanation": {
         "quality": [
@@ -4289,7 +4256,7 @@
           "QS=0.438"
         ],
         "priority": [
-          "+10 CVSS≥9"
+          "base_ps=18 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4298,66 +4265,21 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-69204",
-      "title": "Http4s Ember accepts Transfer-Encoding combined with Content-Length (CL.TE request smuggling)",
-      "description": "Summary\n\nEmber's HTTP/1.1 request parser does not reject a message that carries both a\nTransfer-Encoding and a Content-Length header. RFC 9112 §6.1 requires a\nserver to treat such a message as a framing error and close the connection.\nAn intermediary that follows the RFC's CL-str... [Full analysis a",
-      "cvss": 9.5,
-      "final_ps": 28,
+      "id": "CVE-2026-78519",
+      "title": "CVE-2026-78519: Use of uninitialized resource in Microsoft Office Outlook allows an unauthorized attacker to execute cod",
+      "description": "Use of uninitialized resource in Microsoft Office Outlook allows an unauthorized attacker to execute code over a network.",
+      "cvss": 8.8,
+      "final_ps": 18,
       "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-69204"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-8h4c-x2wg-6xp8"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-53459",
-      "title": "CVE-2026-53459 - Bambuddy's authentication fails open on database errors, allowing unauthenticated access to all endpoin",
-      "description": "CVE-2026-53459 - Bambuddy's authentication fails open on database errors, allowing unauthenticated access to all endpoints",
-      "cvss": 9.1,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
+      "threat_level": "LOW",
       "type": "CVE_REPORT",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
+      "first_seen": "2026-09-08",
+      "last_seen": "2026-09-08",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -4365,11 +4287,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-53459"
+        "CVE-2026-78519"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-53459"
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-78519"
       ],
       "explanation": {
         "quality": [
@@ -4379,7 +4301,97 @@
           "QS=0.438"
         ],
         "priority": [
-          "+10 CVSS≥9"
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-78524",
+      "title": "CVE-2026-78524: Out-of-bounds write in Microsoft Office allows an unauthorized attacker to execute code over a network.",
+      "description": "Out-of-bounds write in Microsoft Office allows an unauthorized attacker to execute code over a network.",
+      "cvss": 8.8,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-08",
+      "last_seen": "2026-09-08",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-78524"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-78524"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-78521",
+      "title": "CVE-2026-78521: Heap-based buffer overflow in Microsoft Office Word allows an unauthorized attacker to execute code over",
+      "description": "Heap-based buffer overflow in Microsoft Office Word allows an unauthorized attacker to execute code over a network.",
+      "cvss": 8.8,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-08",
+      "last_seen": "2026-09-08",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-78521"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-78521"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
         ],
         "suppression": null,
         "merge": null
