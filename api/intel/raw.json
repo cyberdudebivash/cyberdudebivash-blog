@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-16T15:32:48.675Z",
+  "generated": "2026-09-16T16:32:33.682Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -8,46 +8,48 @@
   "endpoint": "/api/intel/raw.json",
   "description": "Raw unfiltered S2N feed — all items including suppressed. Enterprise tier.",
   "note": "Access requires Enterprise API key. Includes suppression_reason and full IOC data.",
-  "count": 119,
+  "count": 123,
   "items": [
     {
-      "id": "CVE-2026-61559",
-      "title": "@zereight/mcp-gitlab Vulnerable to Server-Side Request Forgery",
-      "description": "Server-Side Request Forgery via X-GitLab-API-URL Header Allows Credential Theft\n\nAffected\n\n- Repository: zereight/gitlab-mcp\n- Affected versions: All versions through commit 74a8c83\n- Patched versions: None at time of report\n\nSeverity\n\nHigh. CVSS v3.1 8.5 (AV:N/AC:L/PR:L/UI:N/S:C... [Full analysis a",
-      "cvss": 9.6,
-      "final_ps": 60,
-      "quality_score": 0.493,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
+      "id": "CVE-2026-89026",
+      "title": "Attackers Exploit Issabel Framework Flaw Enabling Unauthenticated OS Command Execution",
+      "description": "A critical security flaw in Issabel Framework, a web-based framework for the open-source unified communications PBX software, has come under active exploitation. The vulnerability in question is CVE-2026-89026 (CVSS v3.1 score: 9.8/CVSS v4.0 score: 9.3), which can allow an unauthenticated remote att",
+      "cvss": 9.8,
+      "final_ps": 89,
+      "quality_score": 0.538,
+      "threat_level": "CRITICAL",
+      "type": "SUPPLY_CHAIN",
+      "source": "thehackernews",
       "sources_confirmed": 1,
       "merged_sources": [
-        "sentinel_apex"
+        "thehackernews"
       ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": false,
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": true,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "",
-      "product": "",
+      "vendor": "The Hacker News",
+      "product": "Threat Intelligence",
       "due_date": null,
       "cves": [
-        "CVE-2026-61559"
+        "CVE-2026-89026"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-2h44-8472-frjj"
+        "https://thehackernews.com/2026/09/attackers-exploit-issabel-framework.html"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
+          "source_weight=0.55 (thehackernews)",
+          "data_confidence=1.00",
           "recency=0d (score=1.00)",
-          "QS=0.493"
+          "QS=0.537"
         ],
         "priority": [
-          "+10 CVSS≥9"
+          "+10 CVSS≥9",
+          "+8 exploited_in_wild",
+          "+3 supply_chain"
         ],
         "suppression": null,
         "merge": null
@@ -99,55 +101,6 @@
       },
       "suppressed": true,
       "suppression_reason": "Single-source item with no CVE IDs or IOCs",
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-58704",
-      "title": "Google Patches Pixel Modem Zero-Day Exploited in Targeted Attacks",
-      "description": "Google has patched a high-severity zero-day in the Pixel cellular modem after finding evidence that the vulnerability was exploited in limited, targeted attacks. Google has released its September 2026 Pixel security update, addressing a large set of vulnerabilities, including a h... [Full analysis a",
-      "cvss": 8,
-      "final_ps": 54,
-      "quality_score": 0.435,
-      "threat_level": "MEDIUM",
-      "type": "ZERO_DAY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 2,
-      "merged_sources": [
-        "sentinel_apex",
-        "securityweek"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-58704"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://securityaffairs.com/199193/hacking/google-patches-pixel-modem-zero-day-exploited-in-targeted-attacks.html",
-        "https://www.securityweek.com/pixel-modem-zero-day-exploited-in-targeted-attacks/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "multi_source=2 sources",
-          "recency=999d (score=0.05)",
-          "QS=0.435"
-        ],
-        "priority": [
-          "+7 zero_day"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
       "iocs": []
     },
     {
@@ -464,52 +417,6 @@
           "+10 CVSS≥9",
           "+8 exploited_in_wild",
           "+7 zero_day"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-61554",
-      "title": "emp3r0r has an unauthenticated HTTP Polling DoS",
-      "description": "Summary\nThe http_poll C2 transport accepts attacker-controlled HTTP polling sessions before CBOR MsgAuth authentication is completed. A remote unauthenticated attacker can create arbitrary polling sessions and send request bodies that are forwarded into the C2 dispatch path. This... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 46,
-      "quality_score": 0.493,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61554"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-4595-rvpx-4q34"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=0d (score=1.00)",
-          "QS=0.493"
-        ],
-        "priority": [
-          "base_ps=46 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -977,6 +884,236 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-78514",
+      "title": "CVE-2026-78514: Use after free in Microsoft Office Word allows an unauthorized attacker to execute code over a network.",
+      "description": "Use after free in Microsoft Office Word allows an unauthorized attacker to execute code over a network.",
+      "cvss": 8.8,
+      "final_ps": 43,
+      "quality_score": 0.433,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-08",
+      "last_seen": "2026-09-08",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-78514"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-78514"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=7d (score=0.40)",
+          "QS=0.432"
+        ],
+        "priority": [
+          "base_ps=43 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-78518",
+      "title": "CVE-2026-78518: Out-of-bounds read in Microsoft Office Excel allows an unauthorized attacker to execute code over a netw",
+      "description": "Out-of-bounds read in Microsoft Office Excel allows an unauthorized attacker to execute code over a network.",
+      "cvss": 8.8,
+      "final_ps": 43,
+      "quality_score": 0.433,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-08",
+      "last_seen": "2026-09-08",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-78518"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-78518"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=7d (score=0.40)",
+          "QS=0.432"
+        ],
+        "priority": [
+          "base_ps=43 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-78519",
+      "title": "CVE-2026-78519: Use of uninitialized resource in Microsoft Office Outlook allows an unauthorized attacker to execute cod",
+      "description": "Use of uninitialized resource in Microsoft Office Outlook allows an unauthorized attacker to execute code over a network.",
+      "cvss": 8.8,
+      "final_ps": 43,
+      "quality_score": 0.433,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-08",
+      "last_seen": "2026-09-08",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-78519"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-78519"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=7d (score=0.40)",
+          "QS=0.432"
+        ],
+        "priority": [
+          "base_ps=43 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-78524",
+      "title": "CVE-2026-78524: Out-of-bounds write in Microsoft Office allows an unauthorized attacker to execute code over a network.",
+      "description": "Out-of-bounds write in Microsoft Office allows an unauthorized attacker to execute code over a network.",
+      "cvss": 8.8,
+      "final_ps": 43,
+      "quality_score": 0.433,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-08",
+      "last_seen": "2026-09-08",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-78524"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-78524"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=7d (score=0.40)",
+          "QS=0.432"
+        ],
+        "priority": [
+          "base_ps=43 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-78521",
+      "title": "CVE-2026-78521: Heap-based buffer overflow in Microsoft Office Word allows an unauthorized attacker to execute code over",
+      "description": "Heap-based buffer overflow in Microsoft Office Word allows an unauthorized attacker to execute code over a network.",
+      "cvss": 8.8,
+      "final_ps": 43,
+      "quality_score": 0.433,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-08",
+      "last_seen": "2026-09-08",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-78521"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-78521"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=7d (score=0.40)",
+          "QS=0.432"
+        ],
+        "priority": [
+          "base_ps=43 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
       "id": "SENTINELAPEX-32c5d2e41cb0",
       "title": "Google Pixel owners urged to patch actively exploited modem flaw",
       "description": "Google Pixel owners urged to patch actively exploited modem flaw",
@@ -1282,6 +1419,50 @@
           "+12 PoC_available",
           "+8 exploited_in_wild",
           "+7 zero_day"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "iocs": []
+    },
+    {
+      "id": "THEHACKERNEWS-b2b0c88247dbf3d5",
+      "title": "Three Threat Groups Target Russian Enterprises With Backdoors, Ransomware, and Wipers",
+      "description": "Enterprises in Russia have emerged as the target of three threat activity clusters tracked as NightEagle, Hacking Cat, and Toy Ghouls, according to multiple reports from Kaspersky. The cybersecurity vendor said it has identified attacks mounted by NightEagle (aka APT-Q-95), a threat actor known to b",
+      "cvss": 0,
+      "final_ps": 41,
+      "quality_score": 0.378,
+      "threat_level": "LOW",
+      "type": "RANSOMWARE",
+      "source": "thehackernews",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "thehackernews"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": true,
+      "vendor": "The Hacker News",
+      "product": "Threat Intelligence",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://thehackernews.com/2026/09/three-threat-groups-target-russian.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.55 (thehackernews)",
+          "data_confidence=0.65",
+          "recency=0d (score=1.00)",
+          "QS=0.378"
+        ],
+        "priority": [
+          "+10 ransomware_confirmed"
         ],
         "suppression": "Single-source item with no CVE IDs or IOCs",
         "merge": null
@@ -4152,6 +4333,52 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-61559",
+      "title": "@zereight/mcp-gitlab Vulnerable to Server-Side Request Forgery",
+      "description": "",
+      "cvss": 9.6,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-15",
+      "last_seen": "2026-09-15",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-61559"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-2h44-8472-frjj"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
       "id": "CVE-2024-43102",
       "title": "ps5-12.40-jailbreak exploit",
       "description": "",
@@ -4429,6 +4656,153 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-58704",
+      "title": "Google Patches Pixel Modem Zero-Day Exploited in Targeted Attacks",
+      "description": "",
+      "cvss": 8,
+      "final_ps": 25,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "ZERO_DAY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-58704"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://securityaffairs.com/199193/hacking/google-patches-pixel-modem-zero-day-exploited-in-targeted-attacks.html",
+        "https://www.securityweek.com/pixel-modem-zero-day-exploited-in-targeted-attacks/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+7 zero_day"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-61593",
+      "title": "djust has Cross-Site Request Forgery on the Server-Sent-Events transport: a cross-origin page can drive a victim-authent",
+      "description": "",
+      "cvss": 8.1,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "pip",
+      "product": "djust",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-61593",
+        "CVE-2026-61593"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-pg97-jvmf-qfvc",
+        "https://github.com/djust-org/djust/security/advisories/GHSA-pg97-jvmf-qfvc",
+        "https://github.com/djust-org/djust/releases/tag/v1.0.7",
+        "https://github.com/advisories/GHSA-pg97-jvmf-qfvc"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-68904",
+      "title": "node-opcua: TCP Socket Leak (FIN-WAIT-2) via keepalive reconnection cycle - Resource Exhaustion",
+      "description": "",
+      "cvss": 7,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "node-opcua-transport",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-68904",
+        "CVE-2026-68904"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-r2pf-9cw4-5j65",
+        "https://github.com/node-opcua/node-opcua/security/advisories/GHSA-r2pf-9cw4-5j65",
+        "https://github.com/node-opcua/node-opcua/pull/1497",
+        "https://github.com/node-opcua/node-opcua/commit/1959cbb8946b386d2e24a1cce05b7148099d36e7"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
       "id": "CVE-2026-61595",
       "title": "djust: Multi-tenant isolation fails open on the WebSocket/SSE path, disclosing other tenants' data",
       "description": "",
@@ -4568,374 +4942,6 @@
         ],
         "priority": [
           "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2014-0160",
-      "title": "Exploit for Out-of-bounds Read in Openssl",
-      "description": "",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2014-0160"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://sploitus.com/exploit?id=70930049-8339-5F83-938C-D071408EC731&utm_source=rss&utm_medium=rss"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2025-54100",
-      "title": "CVE-2025-54100 exploit",
-      "description": "",
-      "cvss": 7.8,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2025-54100"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://sploitus.com/exploit?id=KITPLOIT:TOOLS-GITHUB-THEMEHACKERS-CVE-2025-54100&utm_source=rss&utm_medium=rss"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-92456",
-      "title": "CVE-2026-92456 - yshop-crm through 2.1.3 Missing Authorization via CRM Customer Rule-Configuration Endpoints",
-      "description": "",
-      "cvss": 7.1,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-92456"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-92456"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-78514",
-      "title": "CVE-2026-78514: Use after free in Microsoft Office Word allows an unauthorized attacker to execute code over a network.",
-      "description": "",
-      "cvss": 8.8,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-08",
-      "last_seen": "2026-09-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-78514"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-78514"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-78518",
-      "title": "CVE-2026-78518: Out-of-bounds read in Microsoft Office Excel allows an unauthorized attacker to execute code over a netw",
-      "description": "",
-      "cvss": 8.8,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-08",
-      "last_seen": "2026-09-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-78518"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-78518"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-78519",
-      "title": "CVE-2026-78519: Use of uninitialized resource in Microsoft Office Outlook allows an unauthorized attacker to execute cod",
-      "description": "",
-      "cvss": 8.8,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-08",
-      "last_seen": "2026-09-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-78519"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-78519"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-78524",
-      "title": "CVE-2026-78524: Out-of-bounds write in Microsoft Office allows an unauthorized attacker to execute code over a network.",
-      "description": "",
-      "cvss": 8.8,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-08",
-      "last_seen": "2026-09-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-78524"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-78524"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-78521",
-      "title": "CVE-2026-78521: Heap-based buffer overflow in Microsoft Office Word allows an unauthorized attacker to execute code over",
-      "description": "",
-      "cvss": 8.8,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-08",
-      "last_seen": "2026-09-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-78521"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-78521"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -5110,6 +5116,190 @@
       "ioc_count": 0,
       "refs": [
         "https://nvd.nist.gov/vuln/detail/CVE-2026-78526"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2014-0160",
+      "title": "Exploit for Out-of-bounds Read in Openssl",
+      "description": "",
+      "cvss": 7.5,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2014-0160"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://sploitus.com/exploit?id=70930049-8339-5F83-938C-D071408EC731&utm_source=rss&utm_medium=rss"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2025-54100",
+      "title": "CVE-2025-54100 exploit",
+      "description": "",
+      "cvss": 7.8,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2025-54100"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://sploitus.com/exploit?id=KITPLOIT:TOOLS-GITHUB-THEMEHACKERS-CVE-2025-54100&utm_source=rss&utm_medium=rss"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-92456",
+      "title": "CVE-2026-92456 - yshop-crm through 2.1.3 Missing Authorization via CRM Customer Rule-Configuration Endpoints",
+      "description": "",
+      "cvss": 7.1,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-92456"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-92456"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-61554",
+      "title": "emp3r0r has an unauthenticated HTTP Polling DoS",
+      "description": "",
+      "cvss": 7.5,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-15",
+      "last_seen": "2026-09-15",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-61554"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-4595-rvpx-4q34"
       ],
       "explanation": {
         "quality": [

@@ -1,15 +1,15 @@
 {
-  "generated": "2026-09-16T15:32:48.567Z",
+  "generated": "2026-09-16T16:32:33.581Z",
   "version": "1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX v4.0",
   "stats": {
-    "total_nodes": 13873,
+    "total_nodes": 13879,
     "actors": 8,
-    "cves": 5824,
-    "campaigns": 1349,
+    "cves": 5827,
+    "campaigns": 1351,
     "malware": 0,
     "iocs": 904,
-    "edges": 4034
+    "edges": 4037
   },
   "nodes": {
     "actor:lockbit": {
@@ -1803,6 +1803,11 @@
         },
         {
           "target": "SENTINELAPEX-cbcbe8fde42c",
+          "relationship": "exploits",
+          "confidence": 0.85
+        },
+        {
+          "target": "THEHACKERNEWS-b2b0c88247dbf3d5",
           "relationship": "exploits",
           "confidence": 0.85
         }
@@ -261432,6 +261437,118 @@
           "confidence": 1
         }
       ]
+    },
+    "CVE-2026-89026": {
+      "id": "CVE-2026-89026",
+      "type": "CVE",
+      "name": "Attackers Exploit Issabel Framework Flaw Enabling Unauthenticated OS Command Execution",
+      "attributes": {
+        "cvss": 9.8,
+        "threat_level": "HIGH",
+        "priority_score": 77,
+        "exploited": true,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "The Hacker News",
+        "product": "Threat Intelligence",
+        "published": "2026-09-16",
+        "type": "SUPPLY_CHAIN"
+      },
+      "connections": []
+    },
+    "CVE-2026-61593": {
+      "id": "CVE-2026-61593",
+      "type": "CVE",
+      "name": "djust has Cross-Site Request Forgery on the Server-Sent-Events transport: a cross-origin page can drive a victim-authenticated SSE session",
+      "attributes": {
+        "cvss": 8.1,
+        "threat_level": "MEDIUM",
+        "priority_score": 63,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "pip",
+        "product": "djust",
+        "published": "2026-09-16",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-68904": {
+      "id": "CVE-2026-68904",
+      "type": "CVE",
+      "name": "node-opcua: TCP Socket Leak (FIN-WAIT-2) via keepalive reconnection cycle - Resource Exhaustion",
+      "attributes": {
+        "cvss": 7,
+        "threat_level": "MEDIUM",
+        "priority_score": 58,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "node-opcua-transport",
+        "published": "2026-09-16",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "THEHACKERNEWS-b2b0c88247dbf3d5": {
+      "id": "THEHACKERNEWS-b2b0c88247dbf3d5",
+      "type": "Intel",
+      "name": "Three Threat Groups Target Russian Enterprises With Backdoors, Ransomware, and Wipers",
+      "attributes": {
+        "cvss": 0,
+        "threat_level": "LOW",
+        "priority_score": 26,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": true,
+        "vendor": "The Hacker News",
+        "product": "Threat Intelligence",
+        "published": "2026-09-16",
+        "type": "RANSOMWARE"
+      },
+      "connections": []
+    },
+    "campaign:cve-2026-89026": {
+      "id": "campaign:cve-2026-89026",
+      "type": "Campaign",
+      "name": "The Threat Exploitation Campaign",
+      "attributes": {
+        "severity": "HIGH",
+        "item_count": 1,
+        "first_seen": "2026-09-16",
+        "last_seen": "2026-09-16",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-89026 | 1 item(s) confirmed exploited in the wild"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-89026",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-61593": {
+      "id": "campaign:cve-2026-61593",
+      "type": "Campaign",
+      "name": "pip djust Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-16",
+        "last_seen": "2026-09-16",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-61593"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-61593",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
     }
   },
   "edges": [
@@ -297912,6 +298029,33 @@
       "id": "campaign:cve-2026-61595→includes→CVE-2026-61595",
       "source": "campaign:cve-2026-61595",
       "target": "CVE-2026-61595",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-16",
+      "sources": []
+    },
+    {
+      "id": "actor:russia-nexus-ransomware→exploits→THEHACKERNEWS-b2b0c88247dbf3d5",
+      "source": "actor:russia-nexus-ransomware",
+      "target": "THEHACKERNEWS-b2b0c88247dbf3d5",
+      "relationship": "exploits",
+      "confidence": 0.85,
+      "first_seen": "2026-09-16",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-89026→includes→CVE-2026-89026",
+      "source": "campaign:cve-2026-89026",
+      "target": "CVE-2026-89026",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-16",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-61593→includes→CVE-2026-61593",
+      "source": "campaign:cve-2026-61593",
+      "target": "CVE-2026-61593",
       "relationship": "includes",
       "confidence": 1,
       "first_seen": "2026-09-16",
