@@ -2,12 +2,12 @@
   "platform": "CYBERDUDEBIVASH SENTINEL APEX — AI Security Intelligence Division",
   "endpoint": "/api/intel/ai-security.json",
   "doctrine": "Sentinel-APEX/prompts/ai-security-master-prompt.md",
-  "generated": "2026-09-16T11:22:14.560Z",
+  "generated": "2026-09-16T16:42:36.575Z",
   "disclaimer": "Evidence-graded AI security intelligence. Confidence and evidence labels attached per item. Community leads are corroborated before publication.",
   "stats": {
-    "published": 19,
-    "p1": 3,
-    "leadsHeld": 5,
+    "published": 20,
+    "p1": 4,
+    "leadsHeld": 4,
     "analystReports": 0,
     "sourcesOk": 5,
     "sourcesTotal": 6,
@@ -21,19 +21,19 @@
         "error": "HTTP 429"
       },
       {
+        "name": "NVD (prompt injection)",
+        "key": "nvd_pi",
+        "tier": 1,
+        "status": "ok",
+        "items": 40,
+        "error": null
+      },
+      {
         "name": "arXiv cs.CR (LLM security)",
         "key": "arxiv_sec",
         "tier": 2,
         "status": "ok",
         "items": 30,
-        "error": null
-      },
-      {
-        "name": "GitHub Security Advisories",
-        "key": "ghsa",
-        "tier": 1,
-        "status": "ok",
-        "items": 60,
         "error": null
       },
       {
@@ -45,11 +45,11 @@
         "error": null
       },
       {
-        "name": "NVD (prompt injection)",
-        "key": "nvd_pi",
+        "name": "GitHub Security Advisories",
+        "key": "ghsa",
         "tier": 1,
         "status": "ok",
-        "items": 40,
+        "items": 60,
         "error": null
       },
       {
@@ -61,7 +61,7 @@
         "error": null
       }
     ],
-    "runtimeMs": 11745
+    "runtimeMs": 8945
   },
   "frameworks": {
     "owasp_llm_top10": {
@@ -88,8 +88,64 @@
       "AML.T0057": "LLM Data Leakage"
     }
   },
-  "count": 19,
+  "count": 20,
   "items": [
+    {
+      "id": "aaca885e82d8cbe4",
+      "title": "@zereight/mcp-gitlab: Unauthenticated arbitrary file read via `upload_markdown` enables PAT exfiltration and full account takeover",
+      "url": "https://github.com/advisories/GHSA-cv3r-c5h8-f4g5",
+      "source": "GitHub Security Advisories",
+      "tier": 1,
+      "published": "2026-09-16T13:48:28Z",
+      "cve": "CVE-2026-61560",
+      "severity": "critical",
+      "cvss": null,
+      "evidence_label": "VERIFIED_ADVISORY",
+      "categories": [
+        {
+          "id": "agent_tool",
+          "label": "Agentic / Tool / MCP Exploitation"
+        }
+      ],
+      "owasp_llm": [
+        {
+          "id": "LLM06",
+          "name": "Sensitive Information Disclosure / Excessive Agency"
+        }
+      ],
+      "mitre_atlas": [
+        {
+          "id": "AML.T0053",
+          "name": "LLM Plugin Compromise"
+        }
+      ],
+      "agent_risk": {
+        "flags": {
+          "agentic": false,
+          "mcp": true,
+          "rag": false,
+          "tool_use": false,
+          "supply_chain": false
+        },
+        "level": "elevated"
+      },
+      "enterprise_impact": {
+        "score": 75,
+        "priority": "P1"
+      },
+      "confidence": {
+        "source": "HIGH",
+        "evidence": "HIGH",
+        "overall": "HIGH",
+        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
+      },
+      "corroboration": 1,
+      "detection": {
+        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
+        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
+      },
+      "has_analyst_report": false
+    },
     {
       "id": "6f8cc923dc66e416",
       "title": "@zereight/mcp-gitlab Vulnerable to Server-Side Request Forgery",
