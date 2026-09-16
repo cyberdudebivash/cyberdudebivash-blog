@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-16T11:27:09.576Z",
+  "generated": "2026-09-16T11:58:57.622Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,13 +7,59 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 4830,
+  "total_published": 4838,
   "s2n_stats": {
-    "passed": 112,
-    "suppressed": 8,
+    "passed": 114,
+    "suppressed": 7,
     "avg_qs": 0.488
   },
   "items": [
+    {
+      "id": "CVE-2026-87886",
+      "title": "Acronis Patches Exploited Vulnerability in cPanel Backup Plugin",
+      "description": "CVE-2026-87886 is a high-severity insecure file permissions flaw that can lead to local privilege escalation. The post Acronis Patches Exploited Vulnerability in cPanel Backup Plugin appeared first on SecurityWeek .",
+      "cvss": 7.8,
+      "final_ps": 64,
+      "quality_score": 0.518,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "securityweek",
+      "sources_confirmed": 2,
+      "merged_sources": [
+        "thehackernews",
+        "securityweek"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": true,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "SecurityWeek",
+      "product": "Threat Intelligence",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-87886"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://thehackernews.com/2026/09/acronis-cpanel-backup-plugin.html",
+        "https://www.securityweek.com/acronis-patches-exploited-vulnerability-in-cpanel-backup-plugin/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.70 (securityweek)",
+          "data_confidence=1.00",
+          "multi_source=2 sources",
+          "recency=999d (score=0.05)",
+          "QS=0.517"
+        ],
+        "priority": [
+          "+8 exploited_in_wild"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
     {
       "id": "CVE-2026-50522",
       "title": "Critical SharePoint RCE CVE-2026-50522 Under Active Exploitation After Public PoC",
@@ -355,6 +401,49 @@
           "+10 CVSS≥9",
           "+8 exploited_in_wild",
           "+7 zero_day"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-58704",
+      "title": "Google Patches Pixel Modem Flaw Amid Signs of Limited Targeted Exploitation",
+      "description": "Google has disclosed that a high-severity security flaw in its Pixel Cellular Modem has come under exploitation in the wild. The vulnerability, tracked as CVE-2026-58704 (CVSS score: 8.0), is a privilege escalation flaw. \"In Cellular Modem, there is a possible permission bypass due to a logic error ",
+      "cvss": 8,
+      "final_ps": 46,
+      "quality_score": 0.478,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "thehackernews",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "thehackernews"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "The Hacker News",
+      "product": "Threat Intelligence",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-58704"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://thehackernews.com/2026/09/google-patches-pixel-modem-flaw-amid.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.55 (thehackernews)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.478"
+        ],
+        "priority": [
+          "base_ps=46 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -2215,7 +2304,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2019-0708",
@@ -2259,7 +2350,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2025-69212",
@@ -4287,96 +4380,6 @@
         ],
         "priority": [
           "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-59178",
-      "title": "ESPHome Device Builder: Renamed auth env vars silently disable dashboard authentication on upgrade",
-      "description": "Summary\n\nThe dashboard reads its authentication credentials from $ESPHOME_USERNAME and $ESPHOME_PASSWORD. Earlier versions, and the legacy esphome dashboard, read the bare $USERNAME and $PASSWORD instead. When the env vars were renamed the bare names were dropped with no fallback... [Full analysis a",
-      "cvss": 9.8,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-14",
-      "last_seen": "2026-09-14",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-59178"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-rrxg-g2pf-6hh4"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-92215",
-      "title": "CVE-2026-92215 - a2ui-project a2ui FileResolver file_resolver.py httpx.get server-side request forgery",
-      "description": "CVE-2026-92215 - a2ui-project a2ui FileResolver file_resolver.py httpx.get server-side request forgery",
-      "cvss": 7.3,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-92215"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-92215"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
         ],
         "suppression": null,
         "merge": null

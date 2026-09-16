@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-16T11:27:09.576Z",
+  "generated": "2026-09-16T11:58:57.622Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -8,51 +8,55 @@
   "endpoint": "/api/intel/raw.json",
   "description": "Raw unfiltered S2N feed — all items including suppressed. Enterprise tier.",
   "note": "Access requires Enterprise API key. Includes suppression_reason and full IOC data.",
-  "count": 120,
+  "count": 121,
   "items": [
     {
-      "id": "BLEEPINGCOMPUTER-84d02548c3fe96b7",
-      "title": "Google fixes actively exploited Android zero-day on Pixel devices",
-      "description": "Google has released the September 2026 security patches to address 110 vulnerabilities affecting its Pixel devices, including one zero-day flaw actively exploited in targeted attacks. [...]",
-      "cvss": 0,
-      "final_ps": 59,
-      "quality_score": 0.48,
+      "id": "CVE-2026-87886",
+      "title": "Acronis Patches Exploited Vulnerability in cPanel Backup Plugin",
+      "description": "CVE-2026-87886 is a high-severity insecure file permissions flaw that can lead to local privilege escalation. The post Acronis Patches Exploited Vulnerability in cPanel Backup Plugin appeared first on SecurityWeek .",
+      "cvss": 7.8,
+      "final_ps": 64,
+      "quality_score": 0.518,
       "threat_level": "MEDIUM",
-      "type": "ZERO_DAY",
-      "source": "bleepingcomputer",
-      "sources_confirmed": 1,
+      "type": "CVE_REPORT",
+      "source": "securityweek",
+      "sources_confirmed": 2,
       "merged_sources": [
-        "bleepingcomputer"
+        "thehackernews",
+        "securityweek"
       ],
       "first_seen": "2026-09-16",
       "last_seen": "2026-09-16",
       "exploited": true,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "BleepingComputer",
+      "vendor": "SecurityWeek",
       "product": "Threat Intelligence",
       "due_date": null,
-      "cves": [],
+      "cves": [
+        "CVE-2026-87886"
+      ],
       "ioc_count": 0,
       "refs": [
-        "https://www.bleepingcomputer.com/news/security/google-fixes-actively-exploited-android-zero-day-on-pixel-devices/"
+        "https://thehackernews.com/2026/09/acronis-cpanel-backup-plugin.html",
+        "https://www.securityweek.com/acronis-patches-exploited-vulnerability-in-cpanel-backup-plugin/"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.72 (bleepingcomputer)",
-          "data_confidence=0.65",
-          "recency=0d (score=1.00)",
-          "QS=0.480"
+          "source_weight=0.70 (securityweek)",
+          "data_confidence=1.00",
+          "multi_source=2 sources",
+          "recency=999d (score=0.05)",
+          "QS=0.517"
         ],
         "priority": [
-          "+8 exploited_in_wild",
-          "+7 zero_day"
+          "+8 exploited_in_wild"
         ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "suppression": null,
         "merge": null
       },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "suppressed": false,
+      "suppression_reason": null,
       "iocs": []
     },
     {
@@ -460,6 +464,52 @@
           "+10 CVSS≥9",
           "+8 exploited_in_wild",
           "+7 zero_day"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-58704",
+      "title": "Google Patches Pixel Modem Flaw Amid Signs of Limited Targeted Exploitation",
+      "description": "Google has disclosed that a high-severity security flaw in its Pixel Cellular Modem has come under exploitation in the wild. The vulnerability, tracked as CVE-2026-58704 (CVSS score: 8.0), is a privilege escalation flaw. \"In Cellular Modem, there is a possible permission bypass due to a logic error ",
+      "cvss": 8,
+      "final_ps": 46,
+      "quality_score": 0.478,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "thehackernews",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "thehackernews"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "The Hacker News",
+      "product": "Threat Intelligence",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-58704"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://thehackernews.com/2026/09/google-patches-pixel-modem-flaw-amid.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.55 (thehackernews)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.478"
+        ],
+        "priority": [
+          "base_ps=46 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -5170,52 +5220,6 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-92215",
-      "title": "CVE-2026-92215 - a2ui-project a2ui FileResolver file_resolver.py httpx.get server-side request forgery",
-      "description": "",
-      "cvss": 7.3,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-92215"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-92215"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
       "id": "CVE-2026-73446",
       "title": "CVE-2026-73446 - Security Advisory 0160",
       "description": "",
@@ -5335,6 +5339,52 @@
       "ioc_count": 0,
       "refs": [
         "https://cvefeed.io/vuln/detail/CVE-2026-92299"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-92215",
+      "title": "CVE-2026-92215 - a2ui-project a2ui FileResolver file_resolver.py httpx.get server-side request forgery",
+      "description": "",
+      "cvss": 7.3,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-92215"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-92215"
       ],
       "explanation": {
         "quality": [
