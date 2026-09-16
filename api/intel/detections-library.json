@@ -1,8 +1,58 @@
 {
-  "generated": "2026-09-15T21:26:37.858Z",
+  "generated": "2026-09-16T04:55:39.963Z",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
   "count": 200,
   "items": [
+    {
+      "slug": "cve-2026-69202-maven-org-http4s-http4s-ember-core-2-12",
+      "title": "Http4s Ember HTTP/2: unbounded inbound body buffering",
+      "url": "/posts/cve-2026-69202-maven-org-http4s-http4s-ember-core-2-12.html",
+      "generated": "2026-09-15T22:46:33.556Z",
+      "severity": "HIGH",
+      "cves": [
+        "CVE-2026-69202"
+      ],
+      "mitreAttack": [
+        {
+          "id": "T1498",
+          "name": "Network Denial of Service",
+          "tactic": "impact",
+          "confidence": "HIGH"
+        }
+      ],
+      "sigma": [],
+      "kql": [],
+      "splunk": [],
+      "osquery": [],
+      "suricata": [
+        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://github.com/http4s/http4s/security/advisories/GHSA-8f3q-3jmv-7prw).\"; http.host; content:\"github.com\"; nocase; http.uri; content:\"/http4s/http4s/security/advisories/GHSA-8f3q-3jmv-7prw).\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)"
+      ]
+    },
+    {
+      "slug": "cve-2026-61544-rust-libp2p-quic",
+      "title": "libp2p-quic: Remote panic via certificate expiry race during QUIC handshake",
+      "url": "/posts/cve-2026-61544-rust-libp2p-quic.html",
+      "generated": "2026-09-15T22:46:33.552Z",
+      "severity": "HIGH",
+      "cves": [
+        "CVE-2026-61544"
+      ],
+      "mitreAttack": [
+        {
+          "id": "T1071",
+          "name": "Application Layer Protocol",
+          "tactic": "command-and-control",
+          "confidence": "MEDIUM"
+        }
+      ],
+      "sigma": [],
+      "kql": [],
+      "splunk": [],
+      "osquery": [],
+      "suricata": [
+        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://github.com/libp2p/rust-libp2p/blob/969b707bf1177ebebd1febc285c3fd22793b95c5/transports/quic/\"; http.host; content:\"github.com\"; nocase; http.uri; content:\"/libp2p/rust-libp2p/blob/969b707bf1177ebebd1febc285c3fd22793b95c5/transports/quic/\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)"
+      ]
+    },
     {
       "slug": "cve-2026-56828-composer-shopper-framework",
       "title": "Shopper: privilege escalation via improper Livewire admin component authorization",
@@ -4193,46 +4243,6 @@
         "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/user/Lower_Bus_1791&quot;&gt;\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/user/Lower_Bus_1791&quot\\;&gt\\;\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
         "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uv8u8j/presales_engineer_cybersecurity/&quot;&gt;[l\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uv8u8j/presales_engineer_cybersecurity/&quot\\;&gt\\;[l\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
         "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uv8u8j/presales_engineer_cybersecurity/&quot;&gt;[c\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uv8u8j/presales_engineer_cybersecurity/&quot\\;&gt\\;[c\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)"
-      ]
-    },
-    {
-      "slug": "balbooa-forms-joomla-flaw-lets-hackers-hijack-sites-with-a-s",
-      "title": "Balbooa Forms Joomla Flaw Lets Hackers Hijack Sites With a Single Upload",
-      "url": "/posts/balbooa-forms-joomla-flaw-lets-hackers-hijack-sites-with-a-s.html",
-      "generated": "2026-07-13T11:36:59.404Z",
-      "severity": "MEDIUM",
-      "cves": [],
-      "mitreAttack": [],
-      "sigma": [],
-      "kql": [],
-      "splunk": [],
-      "osquery": [],
-      "suricata": [
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uv8y9p/balbooa_forms_joomla_flaw_lets_hackers_hijac\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uv8y9p/balbooa_forms_joomla_flaw_lets_hackers_hijac\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://external-preview.redd.it/qxhdC-PBkVXPAJ1Nt9CmpGwkbaMOyLCwOpEbHUM9m2E.jpeg?width=640&amp;amp;\"; http.host; content:\"external-preview.redd.it\"; nocase; http.uri; content:\"/qxhdC-PBkVXPAJ1Nt9CmpGwkbaMOyLCwOpEbHUM9m2E.jpeg?width=640&amp\\;amp\\;\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/user/Consistent_Scene_178&quot;&gt;\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/user/Consistent_Scene_178&quot\\;&gt\\;\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.secure.com/news/balbooa-forms-joomla-file-upload-flaw&quot;&gt;[link]&lt;/a&gt;&lt;/span\"; http.host; content:\"www.secure.com\"; nocase; http.uri; content:\"/news/balbooa-forms-joomla-file-upload-flaw&quot\\;&gt\\;[link]&lt\\;/a&gt\\;&lt\\;/span\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000005; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.secure.com\"; dns.query; content:\"www.secure.com\"; nocase; classtype:trojan-activity; sid:9000006; rev:1;)"
-      ]
-    },
-    {
-      "slug": "the-way-forward",
-      "title": "The way forward",
-      "url": "/posts/the-way-forward.html",
-      "generated": "2026-07-13T10:31:58.733Z",
-      "severity": "MEDIUM",
-      "cves": [],
-      "mitreAttack": [],
-      "sigma": [],
-      "kql": [],
-      "splunk": [],
-      "osquery": [],
-      "suricata": [
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/user/Arregi4&quot;&gt;\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/user/Arregi4&quot\\;&gt\\;\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uv73du/the_way_forward/&quot;&gt;[link]&lt;/a&gt;&l\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uv73du/the_way_forward/&quot\\;&gt\\;[link]&lt\\;/a&gt\\;&l\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uv73du/the_way_forward/&quot;&gt;[comments]&lt;/a&g\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uv73du/the_way_forward/&quot\\;&gt\\;[comments]&lt\\;/a&g\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
         "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)"
       ]
     }
