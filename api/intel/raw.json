@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-16T19:40:39.590Z",
+  "generated": "2026-09-16T22:45:30.006Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -8,15 +8,15 @@
   "endpoint": "/api/intel/raw.json",
   "description": "Raw unfiltered S2N feed — all items including suppressed. Enterprise tier.",
   "note": "Access requires Enterprise API key. Includes suppression_reason and full IOC data.",
-  "count": 112,
+  "count": 110,
   "items": [
     {
       "id": "SENTINELAPEX-dbd2f21f5d08",
       "title": "Google fixes actively exploited Android zero-day on Pixel devices",
-      "description": "Google fixes actively exploited Android zero-day on Pixel devices",
+      "description": "Google has released the September 2026 security patches to address 110 vulnerabilities affecting its Pixel devices, including one zero-day flaw actively exploited in targeted attacks. [...]",
       "cvss": 0,
-      "final_ps": 56,
-      "quality_score": 0.403,
+      "final_ps": 58,
+      "quality_score": 0.452,
       "threat_level": "MEDIUM",
       "type": "ZERO_DAY",
       "source": "sentinel_apex",
@@ -35,15 +35,14 @@
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://www.bleepingcomputer.com/news/security/google-fixes-actively-exploited-android-zero-day-on-pixel-devices/",
-        "https://intel.cyberdudebivash.com/reports/2026/09/intel--451789771b86754f57b66c2e.html"
+        "https://www.bleepingcomputer.com/news/security/google-fixes-actively-exploited-android-zero-day-on-pixel-devices/"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.10",
+          "data_confidence=0.35",
           "recency=0d (score=1.00)",
-          "QS=0.403"
+          "QS=0.452"
         ],
         "priority": [
           "+8 exploited_in_wild",
@@ -379,10 +378,10 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-61595",
-      "title": "djust: Multi-tenant isolation fails open on the WebSocket/SSE path, disclosing other tenants' data",
-      "description": "Impact\ndjust.tenants isolation was enforced only on the HTTP path. The current tenant was stored in threading.local() and set exclusively by the HTTP-only TenantMiddleware, so on the live (WebSocket/SSE) path get_current_tenant() was always None during mount and every event handl... [Full analysis a",
-      "cvss": 7.7,
+      "id": "CVE-2026-61598",
+      "title": "djust: Client mass-assignment of arbitrary view attributes via the default dj-model update_model handler",
+      "description": "Impact\ndjust.mixins.model_binding.ModelBindingMixin provides a default update_model event handler and is part of the LiveView base MRO, so every LiveView exposes it. It setattrs a view attribute whose name is client-supplied (field), gated only by: reject _-prefixed names; reject... [Full analysis a",
+      "cvss": 7.5,
       "final_ps": 46,
       "quality_score": 0.493,
       "threat_level": "MEDIUM",
@@ -401,11 +400,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-61595"
+        "CVE-2026-61598"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-3492-cvg7-9mr2"
+        "https://github.com/advisories/GHSA-cc7c-9jff-58wj"
       ],
       "explanation": {
         "quality": [
@@ -425,104 +424,12 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-88975",
-      "title": "Http4s: Ember HTTP/2 buffers a frame's declared payload before checking SETTINGS_MAX_FRAME_SIZE",
-      "description": "Summary\nAn unauthenticated peer can make Ember's HTTP/2 read loop hold 16 MiB of a single frame in memory on a connection where Ember advertised a 16 KiB limit. The declared length is readable from the frame's first 9 bytes, but it is not compared against SETTINGS_MAX_FRAME_SIZE ... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 46,
-      "quality_score": 0.493,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-88975"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-gq9p-f254-h286"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=0d (score=1.00)",
-          "QS=0.493"
-        ],
-        "priority": [
-          "base_ps=46 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-61544",
-      "title": "libp2p-quic: Remote panic via certificate expiry race during QUIC handshake",
-      "description": "Summary\n\nlibp2p-quic can panic on an inbound QUIC handshake if a malicious peer presents a valid, short lived libp2p TLS certificate and delays the final TLS 1.3 handshake fragment until the certificate expires.\n\nThis is remotely reachable by a network peer and can crash applicat... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 46,
-      "quality_score": 0.493,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61544"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-5hq8-qhww-jm7q"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=0d (score=1.00)",
-          "QS=0.493"
-        ],
-        "priority": [
-          "base_ps=46 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-61590",
-      "title": "djust's observability endpoints are network-exposed: the localhost gate is an opt-in middleware the docs omit, and the v",
-      "description": "Impact\ndjust's observability endpoints expose live view/session state and a remote method-invocation surface (eval_handler). The localhost restriction was an opt-in middleware that the documented setup omits; the views themselves enforced only DEBUG. In the misconfigured-but-docu... [Full analysis a",
-      "cvss": 7.4,
+      "id": "SENTINELAPEX-759234fb9333",
+      "title": "Critical ScreenConnect flaw now actively exploited in attacks",
+      "description": "Attackers now exploit a critical-severity ConnectWise ScreenConnect vulnerability in the wild, according to the U.S. Cybersecurity and Infrastructure Security Agency (CISA). [...]",
+      "cvss": 0,
       "final_ps": 45,
-      "quality_score": 0.493,
+      "quality_score": 0.452,
       "threat_level": "MEDIUM",
       "type": "NEWS_REPORT",
       "source": "sentinel_apex",
@@ -532,34 +439,32 @@
       ],
       "first_seen": "2026-09-16",
       "last_seen": "2026-09-16",
-      "exploited": false,
+      "exploited": true,
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "",
       "product": "",
       "due_date": null,
-      "cves": [
-        "CVE-2026-61590"
-      ],
+      "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-8g2f-g3gq-5rjv"
+        "https://www.bleepingcomputer.com/news/security/cisa-warns-of-hackers-exploiting-critical-screenconnect-flaw/"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
+          "data_confidence=0.35",
           "recency=0d (score=1.00)",
-          "QS=0.493"
+          "QS=0.452"
         ],
         "priority": [
-          "base_ps=45 (no boosts)"
+          "+8 exploited_in_wild"
         ],
-        "suppression": null,
+        "suppression": "Single-source item with no CVE IDs or IOCs",
         "merge": null
       },
-      "suppressed": false,
-      "suppression_reason": null,
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
       "iocs": []
     },
     {
@@ -659,12 +564,12 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-81192",
-      "title": "OpenTelemetry.Resources.Host vulnerable to arbitrary code execution via local PATH hijacking on macOS",
-      "description": "Summary\n\nThe OpenTelemetry.Resources.Host NuGet package is affected by an untrusted search path vulnerability on macOS. The host.id resource attribute detector launches the sh and ioreg executables by bare name rather than by absolute path, so both are resolved\nthrough the PATH e... [Full analysis a",
-      "cvss": 7,
+      "id": "CVE-2026-88975",
+      "title": "Http4s: Ember HTTP/2 buffers a frame's declared payload before checking SETTINGS_MAX_FRAME_SIZE",
+      "description": "Summary\nAn unauthenticated peer can make Ember's HTTP/2 read loop hold 16 MiB of a single frame in memory on a connection where Ember advertised a 16 KiB limit. The declared length is readable from the frame's first 9 bytes, but it is not compared against SETTINGS_MAX_FRAME_SIZE ... [Full analysis a",
+      "cvss": 7.5,
       "final_ps": 44,
-      "quality_score": 0.493,
+      "quality_score": 0.478,
       "threat_level": "LOW",
       "type": "NEWS_REPORT",
       "source": "sentinel_apex",
@@ -672,8 +577,8 @@
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
+      "first_seen": "2026-09-15",
+      "last_seen": "2026-09-15",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -681,18 +586,18 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-81192"
+        "CVE-2026-88975"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-v8pv-4842-x354"
+        "https://github.com/advisories/GHSA-gq9p-f254-h286"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
           "data_confidence=0.70",
-          "recency=0d (score=1.00)",
-          "QS=0.493"
+          "recency=1d (score=0.85)",
+          "QS=0.478"
         ],
         "priority": [
           "base_ps=44 (no boosts)"
@@ -705,12 +610,12 @@
       "iocs": []
     },
     {
-      "id": "SENTINELAPEX-7543acd1c15a",
-      "title": "CISA Warns of Critical ScreenConnect Vulnerability Actively Exploited in Attacks",
-      "description": "CISA Warns of Critical ScreenConnect Vulnerability Actively Exploited in Attacks",
-      "cvss": 0,
-      "final_ps": 43,
-      "quality_score": 0.403,
+      "id": "CVE-2026-61544",
+      "title": "libp2p-quic: Remote panic via certificate expiry race during QUIC handshake",
+      "description": "Summary\n\nlibp2p-quic can panic on an inbound QUIC handshake if a malicious peer presents a valid, short lived libp2p TLS certificate and delays the final TLS 1.3 handshake fragment until the certificate expires.\n\nThis is remotely reachable by a network peer and can crash applicat... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 44,
+      "quality_score": 0.478,
       "threat_level": "LOW",
       "type": "NEWS_REPORT",
       "source": "sentinel_apex",
@@ -718,79 +623,36 @@
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": true,
+      "first_seen": "2026-09-15",
+      "last_seen": "2026-09-15",
+      "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "",
       "product": "",
       "due_date": null,
-      "cves": [],
+      "cves": [
+        "CVE-2026-61544"
+      ],
       "ioc_count": 0,
       "refs": [
-        "https://cybersecuritynews.com/screenconnect-vulnerability-exploited/"
+        "https://github.com/advisories/GHSA-5hq8-qhww-jm7q"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.10",
-          "recency=0d (score=1.00)",
-          "QS=0.403"
+          "data_confidence=0.70",
+          "recency=1d (score=0.85)",
+          "QS=0.478"
         ],
         "priority": [
-          "+8 exploited_in_wild"
+          "base_ps=44 (no boosts)"
         ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "suppression": null,
         "merge": null
       },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
-      "iocs": []
-    },
-    {
-      "id": "SENTINELAPEX-759234fb9333",
-      "title": "Critical ScreenConnect flaw now actively exploited in attacks",
-      "description": "Critical ScreenConnect flaw now actively exploited in attacks",
-      "cvss": 0,
-      "final_ps": 43,
-      "quality_score": 0.403,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.bleepingcomputer.com/news/security/cisa-warns-of-hackers-exploiting-critical-screenconnect-flaw/",
-        "https://intel.cyberdudebivash.com/reports/2026/09/intel--ed3293416a2d36df1e0ad71f.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.10",
-          "recency=0d (score=1.00)",
-          "QS=0.403"
-        ],
-        "priority": [
-          "+8 exploited_in_wild"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "suppressed": false,
+      "suppression_reason": null,
       "iocs": []
     },
     {
@@ -1011,50 +873,6 @@
           "+12 PoC_available",
           "+8 exploited_in_wild",
           "+7 zero_day"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
-      "iocs": []
-    },
-    {
-      "id": "SENTINELAPEX-5c8a8a1afe58",
-      "title": "The true cost of a ransomware attack, with and without BCDR",
-      "description": "The ransom itself can be only a fraction of the total cost of a ransomware attack, with downtime, recovery, remediation, and legal obligations adding millions to the bill. Datto explains how a mature BCDR strategy can reduce downtime and provide a faster, more predictable path to... [Full analysis a",
-      "cvss": 0,
-      "final_ps": 41,
-      "quality_score": 0.392,
-      "threat_level": "LOW",
-      "type": "RANSOMWARE",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": true,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.bleepingcomputer.com/news/security/the-true-cost-of-a-ransomware-attack-with-and-without-bcdr/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.35",
-          "recency=0d (score=1.00)",
-          "QS=0.392"
-        ],
-        "priority": [
-          "+10 ransomware_confirmed"
         ],
         "suppression": "Single-source item with no CVE IDs or IOCs",
         "merge": null
@@ -1880,52 +1698,6 @@
         "priority": [
           "+10 CVSS≥9",
           "+8 exploited_in_wild"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-69201",
-      "title": "Http4s: ResourceService and Webjar Service path escape via percent-encoded separators",
-      "description": "The static content handlers ResourceService and WebjarService URL decode each path segment and then reject only segments that are exactly \"\", \".\", or \"..\".  A percent-encoded separator (%2F) lets an attacker smuggle a ../ segment past that filter and escape the configured base, r... [Full analysis a",
-      "cvss": 5.9,
-      "final_ps": 40,
-      "quality_score": 0.453,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-69201"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-crq5-92j2-j7wv"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.50",
-          "recency=0d (score=1.00)",
-          "QS=0.453"
-        ],
-        "priority": [
-          "base_ps=40 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -3041,6 +2813,143 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-92605",
+      "title": "CVE-2026-92605 - IRIS through 2.4.29 Unauthorized Comment Access via Object ID",
+      "description": "CVE-2026-92605 - IRIS through 2.4.29 Unauthorized Comment Access via Object ID",
+      "cvss": 6.5,
+      "final_ps": 39,
+      "quality_score": 0.403,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-92605"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-92605"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.25",
+          "recency=0d (score=1.00)",
+          "QS=0.403"
+        ],
+        "priority": [
+          "base_ps=39 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "SENTINELAPEX-5c8a8a1afe58",
+      "title": "The true cost of a ransomware attack, with and without BCDR",
+      "description": "The true cost of a ransomware attack, with and without BCDR",
+      "cvss": 0,
+      "final_ps": 39,
+      "quality_score": 0.343,
+      "threat_level": "LOW",
+      "type": "RANSOMWARE",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": true,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.bleepingcomputer.com/news/security/the-true-cost-of-a-ransomware-attack-with-and-without-bcdr/",
+        "https://intel.cyberdudebivash.com/reports/2026/09/intel--e44e077ce84bdda7d2705b7f.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.10",
+          "recency=0d (score=1.00)",
+          "QS=0.343"
+        ],
+        "priority": [
+          "+10 ransomware_confirmed"
+        ],
+        "suppression": "Quality score below minimum threshold (QS < 0.35)",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Quality score below minimum threshold (QS < 0.35)",
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-88593",
+      "title": "CVE-2026-88593 - kkFileView Reflected Cross-Site Scripting",
+      "description": "CVE-2026-88593 - kkFileView Reflected Cross-Site Scripting",
+      "cvss": 6.1,
+      "final_ps": 38,
+      "quality_score": 0.403,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-88593"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-88593"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.25",
+          "recency=0d (score=1.00)",
+          "QS=0.403"
+        ],
+        "priority": [
+          "base_ps=38 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
       "id": "CVE-2026-89026",
       "title": "Attackers Exploit Issabel Framework Flaw Enabling Unauthenticated OS Command Execution",
       "description": "",
@@ -3549,6 +3458,52 @@
         ],
         "priority": [
           "+8 exploited_in_wild"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-92717",
+      "title": "CVE-2026-92717 - Covenant through 0.6 Missing Authentication on the CovenantHub SignalR Hub",
+      "description": "",
+      "cvss": 9.1,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-92717"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-92717"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
         ],
         "suppression": null,
         "merge": null
@@ -4388,6 +4343,306 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-63671",
+      "title": "@nuxtjs/mdc's URL sanitizer misses SVG xlink:href and data:text/html, allowing XSS from untrusted markdown at the defaul",
+      "description": "",
+      "cvss": 8.1,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "@nuxtjs/mdc",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-63671",
+        "CVE-2026-63671"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-mxm6-v9r6-r94c",
+        "https://github.com/nuxt-content/mdc/security/advisories/GHSA-mxm6-v9r6-r94c",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-63671",
+        "https://github.com/nuxt-content/mdc/pull/491"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-63127",
+      "title": "RMCP: Missing Resource Field Validation in OAuth Protected Resource Metadata Discovery",
+      "description": "",
+      "cvss": 8.2,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "rust",
+      "product": "rmcp",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-63127",
+        "CVE-2026-63127"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-33f5-2c5q-wgwj",
+        "https://github.com/modelcontextprotocol/rust-sdk/security/advisories/GHSA-33f5-2c5q-wgwj",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-63127",
+        "https://github.com/modelcontextprotocol/rust-sdk/pull/937"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-61591",
+      "title": "djust: Unsigned client state snapshot is restored as trusted view state (privilege escalation / state injection)",
+      "description": "",
+      "cvss": 8.1,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "pip",
+      "product": "djust",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-61591",
+        "CVE-2026-61591"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-c67v-vqrp-m5wj",
+        "https://github.com/djust-org/djust/security/advisories/GHSA-c67v-vqrp-m5wj",
+        "https://github.com/djust-org/djust/releases/tag/v1.0.7",
+        "https://github.com/advisories/GHSA-c67v-vqrp-m5wj"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-63128",
+      "title": "RMCP: Unauthenticated permanent session-table leak in rmcp Streamable HTTP server transport leads to remote denial-of-se",
+      "description": "",
+      "cvss": 7.5,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "rust",
+      "product": "rmcp",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-63128",
+        "CVE-2026-63128"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-9pj6-vhgr-3mwh",
+        "https://github.com/modelcontextprotocol/rust-sdk/security/advisories/GHSA-9pj6-vhgr-3mwh",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-63128",
+        "https://github.com/modelcontextprotocol/rust-sdk/pull/934"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-61592",
+      "title": "djust: SSE sessions are not bound to the authenticated user; the client-chosen session_id is the sole authorization capa",
+      "description": "",
+      "cvss": 7.4,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "pip",
+      "product": "djust",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-61592",
+        "CVE-2026-61592"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-f795-p5jw-j6g2",
+        "https://github.com/djust-org/djust/security/advisories/GHSA-f795-p5jw-j6g2",
+        "https://github.com/djust-org/djust/releases/tag/v1.0.7",
+        "https://github.com/advisories/GHSA-f795-p5jw-j6g2"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-61596",
+      "title": "djust has broken object-level access control (IDOR)",
+      "description": "",
+      "cvss": 7.1,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "pip",
+      "product": "djust",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-61596",
+        "CVE-2026-61596"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-c7c5-5j6r-q957",
+        "https://github.com/djust-org/djust/security/advisories/GHSA-c7c5-5j6r-q957",
+        "https://github.com/djust-org/djust/releases/tag/v1.0.7",
+        "https://github.com/advisories/GHSA-c7c5-5j6r-q957"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
       "id": "CVE-2026-61593",
       "title": "djust has Cross-Site Request Forgery on the Server-Sent-Events transport: a cross-origin page can drive a victim-authent",
       "description": "",
@@ -4488,6 +4743,236 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-92604",
+      "title": "CVE-2026-92604 - Scirius through 3.8.0 Arbitrary File Write via PCAP Upload",
+      "description": "",
+      "cvss": 8.1,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-92604"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-92604"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-61554",
+      "title": "emp3r0r has an unauthenticated HTTP Polling DoS",
+      "description": "",
+      "cvss": 7.5,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-15",
+      "last_seen": "2026-09-15",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-61554"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-4595-rvpx-4q34"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-61595",
+      "title": "djust: Multi-tenant isolation fails open on the WebSocket/SSE path, disclosing other tenants' data",
+      "description": "",
+      "cvss": 7.7,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-61595"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-3492-cvg7-9mr2"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-61590",
+      "title": "djust's observability endpoints are network-exposed: the localhost gate is an opt-in middleware the docs omit, and the v",
+      "description": "",
+      "cvss": 7.4,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-61590"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-8g2f-g3gq-5rjv"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-81192",
+      "title": "OpenTelemetry.Resources.Host vulnerable to arbitrary code execution via local PATH hijacking on macOS",
+      "description": "",
+      "cvss": 7,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-81192"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-v8pv-4842-x354"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
       "id": "CVE-2026-86359",
       "title": "CVE-2026-86359 - Dell Repository Manager Incorrect Default Permissions Vulnerability",
       "description": "",
@@ -4571,558 +5056,6 @@
         ],
         "priority": [
           "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-85731",
-      "title": "CVE-2026-85731 - oras-go: Arbitrary file write outside file.Store root via symlink-chain bypass in tar extraction (pushD",
-      "description": "",
-      "cvss": 7.8,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-85731"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-85731"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-61598",
-      "title": "djust: Client mass-assignment of arbitrary view attributes via the default dj-model update_model handler",
-      "description": "",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61598"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-cc7c-9jff-58wj"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-61554",
-      "title": "emp3r0r has an unauthenticated HTTP Polling DoS",
-      "description": "",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61554"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-4595-rvpx-4q34"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-92718",
-      "title": "CVE-2026-92718 Nuclei from 3.7.0 before 3.11.1 Template Signature Bypass via Modification-Time-Only Cache",
-      "description": "",
-      "cvss": 7.3,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-92718"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://vulners.com/cvelist/CVELIST:CVE-2026-92718?utm_source=rss&utm_medium=rss&utm_campaign=rss"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-92719",
-      "title": "CVE-2026-92719 Quickwit through 0.9.0 SSRF via SQS queue_url Parameter",
-      "description": "",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-92719"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://vulners.com/cvelist/CVELIST:CVE-2026-92719?utm_source=rss&utm_medium=rss&utm_campaign=rss"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-92625",
-      "title": "CVE-2026-92625 - Control iD iDSecure Unauthenticated Denial of Service",
-      "description": "",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-92625"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-92625"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-92626",
-      "title": "CVE-2026-92626 - Control iD iDSecure Unauthenticated Denial of Service",
-      "description": "",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-92626"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-92626"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-92401",
-      "title": "CVE-2026-92401 - ChangeWeDer crm improper authentication",
-      "description": "",
-      "cvss": 7.3,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-92401"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-92401"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-92615",
-      "title": "CVE-2026-92615 - Flightctl: flightctl: package-global go-git https transport mutated per-repo -- cross-tenant tls-config",
-      "description": "",
-      "cvss": 6.6,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-92615"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-92615"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-86358",
-      "title": "CVE-2026-86358 - Dell Update Package Framework Stack-based Buffer Overflow Vulnerability",
-      "description": "",
-      "cvss": 6.5,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-86358"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-86358"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-92418",
-      "title": "CVE-2026-92418 ChangeWeDer crm Save Endpoint customer.serve.js cross site scripting",
-      "description": "",
-      "cvss": 6.1,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-92418"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://vulners.com/cvelist/CVELIST:CVE-2026-92418?utm_source=rss&utm_medium=rss&utm_campaign=rss"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-85732",
-      "title": "CVE-2026-85732 - oras-go: Blind SSRF via unvalidated Link header URL in pagination allows internal network probing",
-      "description": "",
-      "cvss": 6.1,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-85732"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-85732"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
         ],
         "suppression": null,
         "merge": null

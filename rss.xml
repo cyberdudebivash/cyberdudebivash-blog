@@ -14,7 +14,7 @@
     <copyright>Copyright 2026 CyberDudeBivash. All rights reserved.</copyright>
     <managingEditor>bivash@cyberdudebivash.com (CyberDudeBivash)</managingEditor>
     <webMaster>bivash@cyberdudebivash.com (CyberDudeBivash)</webMaster>
-    <lastBuildDate>Wed, 16 Sep 2026 12:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 16 Sep 2026 22:45:30 GMT</lastBuildDate>
     <pubDate>Wed, 16 Sep 2026 12:00:00 +0000</pubDate>
     <ttl>60</ttl>
     <category>Cybersecurity</category>
@@ -31,6 +31,110 @@
       <height>144</height>
     </image>
 
+    <item>
+    <title><![CDATA[@nuxtjs/mdc's URL sanitizer misses SVG xlink:href and data:text/html, allowing XSS from untrusted markdown at the default configuration]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-63671-npm-nuxtjs-mdc.html</link>
+    <description><![CDATA[Score 63/100 MEDIUM — CVSS 8.1 — ## Summary `@nuxtjs/mdc` renders untrusted markdown (including raw HTML) to a Vue component tree. Across two prior advisories it added a URL/attribute sanitizer to block dangerous links in that HTML: `validateProps` / `validateProp` and an `unsafeLinkPrefix` deny-list (`dist/runtime/parser/utils/pro. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 16 Sep 2026 22:45:30 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-63671-npm-nuxtjs-mdc.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[RMCP: Missing Resource Field Validation in OAuth Protected Resource Metadata Discovery]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-63127-rust-rmcp.html</link>
+    <description><![CDATA[Score 63/100 MEDIUM — CVSS 8.2 — ### Summary
+The `rmcp` library does not validate the `resource` parameter in OAuth Protected Resource metadata (RFC 9728), allowing a malicious MCP server to redirect OAuth flows to a legitimate authorization server and steal the resulting access tokens. ### Details
+RFC 9728 specifies two MUST requi. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 16 Sep 2026 22:45:30 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-63127-rust-rmcp.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[djust: Unsigned client state snapshot is restored as trusted view state (privilege escalation / state injection)]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-61591-pip-djust.html</link>
+    <description><![CDATA[Score 63/100 MEDIUM — CVSS 8.1 — ### Impact
+For views that opt into state snapshots, the snapshot `state_json` embedded in the client page was restored on reconnect as **trusted** view state with no integrity check. A client could edit the unsigned `state_json` in their page and return it in the reconnect mount frame to **inject ar. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 16 Sep 2026 22:45:30 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-61591-pip-djust.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[RMCP: Unauthenticated permanent session-table leak in rmcp Streamable HTTP server transport leads to remote denial-of-service]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-63128-rust-rmcp.html</link>
+    <description><![CDATA[Score 61/100 MEDIUM — CVSS 7.5 — ### Summary An unauthenticated remote attacker can leak one entry per HTTP request out of the in-memory session table of `LocalSessionManager` by sending a well-formed JSON-RPC `POST` that is *not* an `InitializeRequest`. The Streamable HTTP server's `handle_post` allocates the session **before** it. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 16 Sep 2026 22:45:30 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-63128-rust-rmcp.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[djust: SSE sessions are not bound to the authenticated user; the client-chosen session_id is the sole authorization capability (session hijack)]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-61592-pip-djust.html</link>
+    <description><![CDATA[Score 60/100 MEDIUM — CVSS 7.4 — ### Impact
+SSE sessions were keyed solely by a **client-chosen** `session_id` with no binding to the authenticated user — a control the WebSocket transport has but that was dropped on SSE. An attacker who learns (or a victim who leaks) a `session_id` could connect to the message endpoint and dispatc. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 16 Sep 2026 22:45:30 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-61592-pip-djust.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[djust has broken object-level access control (IDOR)]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-61596-pip-djust.html</link>
+    <description><![CDATA[Score 59/100 MEDIUM — CVSS 7.1 — ### Impact
+djust's per-object authorization (`get_object` + `has_object_permission`, ADR-017) was enforced on the WebSocket **mount** and **event** paths but **not** on three other render entry points: (a) the initial **HTTP GET** render, (b) **SPA `url_change`** navigation, and (c) `{% live_render . Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 16 Sep 2026 22:45:30 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-61596-pip-djust.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-92717 - Covenant through 0.6 Missing Authentication on the CovenantHub SignalR Hub]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-92717.html</link>
+    <description><![CDATA[Score 49/100 MEDIUM — CVSS 9.1 — CVE-2026-92717 - Covenant through 0.6 Missing Authentication on the CovenantHub SignalR Hub. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 16 Sep 2026 22:45:30 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-92717.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-92604 - Scirius through 3.8.0 Arbitrary File Write via PCAP Upload]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-92604.html</link>
+    <description><![CDATA[Score 45/100 MEDIUM — CVSS 8.1 — CVE-2026-92604 - Scirius through 3.8.0 Arbitrary File Write via PCAP Upload. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 16 Sep 2026 22:45:30 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-92604.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-92605 - IRIS through 2.4.29 Unauthorized Comment Access via Object ID]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-92605.html</link>
+    <description><![CDATA[Score 38/100 LOW — CVSS 6.5 — CVE-2026-92605 - IRIS through 2.4.29 Unauthorized Comment Access via Object ID. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 16 Sep 2026 22:45:30 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-92605.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-88593 - kkFileView Reflected Cross-Site Scripting]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-88593.html</link>
+    <description><![CDATA[Score 37/100 LOW — CVSS 6.1 — CVE-2026-88593 - kkFileView Reflected Cross-Site Scripting. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 16 Sep 2026 22:45:30 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-88593.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[The true cost of a ransomware attack, with and without BCDR]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/the-true-cost-of-a-ransomware-attack-with-and-without-bcdr.html</link>
+    <description><![CDATA[Score 26/100 LOW — CVSS 0 — The true cost of a ransomware attack, with and without BCDR. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 16 Sep 2026 22:45:30 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/the-true-cost-of-a-ransomware-attack-with-and-without-bcdr.html</guid>
+    <category>Threat Intelligence</category>
+    <category>RANSOMWARE</category>
+  </item>
   <item>
     <title>CISA Warns of Cisco Secure Email Gateway 0-Day Vulnerability Actively Exploited in Attacks</title>
     <link>https://blog.cyberdudebivash.in/posts/cisa-warns-of-cisco-secure-email-gateway-0-day-vulnerability.html</link>
