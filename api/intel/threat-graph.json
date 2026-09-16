@@ -1,15 +1,15 @@
 {
-  "generated": "2026-09-16T05:58:54.035Z",
+  "generated": "2026-09-16T06:31:40.884Z",
   "version": "1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX v4.0",
   "stats": {
-    "total_nodes": 13834,
+    "total_nodes": 13836,
     "actors": 8,
-    "cves": 5798,
-    "campaigns": 1346,
+    "cves": 5799,
+    "campaigns": 1347,
     "malware": 0,
     "iocs": 904,
-    "edges": 4031
+    "edges": 4032
   },
   "nodes": {
     "actor:lockbit": {
@@ -260724,6 +260724,44 @@
           "confidence": 1
         }
       ]
+    },
+    "CVE-2026-5430": {
+      "id": "CVE-2026-5430",
+      "type": "CVE",
+      "name": "Active Exploitation Attempts Target WSO2 API Manager JWT Bypass With Forged Admin Tokens",
+      "attributes": {
+        "cvss": 9.8,
+        "threat_level": "HIGH",
+        "priority_score": 71,
+        "exploited": true,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "The Hacker News",
+        "product": "Threat Intelligence",
+        "published": "2026-09-16",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "campaign:cve-2026-5430": {
+      "id": "campaign:cve-2026-5430",
+      "type": "Campaign",
+      "name": "The Threat Exploitation Campaign",
+      "attributes": {
+        "severity": "HIGH",
+        "item_count": 1,
+        "first_seen": "2026-09-16",
+        "last_seen": "2026-09-16",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-5430 | 1 item(s) confirmed exploited in the wild"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-5430",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
     }
   },
   "edges": [
@@ -297177,6 +297215,15 @@
       "id": "campaign:cve-2026-76461→includes→CVE-2026-76461",
       "source": "campaign:cve-2026-76461",
       "target": "CVE-2026-76461",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-16",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-5430→includes→CVE-2026-5430",
+      "source": "campaign:cve-2026-5430",
+      "target": "CVE-2026-5430",
       "relationship": "includes",
       "confidence": 1,
       "first_seen": "2026-09-16",
