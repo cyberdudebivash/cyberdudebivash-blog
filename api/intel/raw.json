@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-16T16:32:33.682Z",
+  "generated": "2026-09-16T19:40:39.590Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -8,63 +8,15 @@
   "endpoint": "/api/intel/raw.json",
   "description": "Raw unfiltered S2N feed — all items including suppressed. Enterprise tier.",
   "note": "Access requires Enterprise API key. Includes suppression_reason and full IOC data.",
-  "count": 123,
+  "count": 112,
   "items": [
-    {
-      "id": "CVE-2026-89026",
-      "title": "Attackers Exploit Issabel Framework Flaw Enabling Unauthenticated OS Command Execution",
-      "description": "A critical security flaw in Issabel Framework, a web-based framework for the open-source unified communications PBX software, has come under active exploitation. The vulnerability in question is CVE-2026-89026 (CVSS v3.1 score: 9.8/CVSS v4.0 score: 9.3), which can allow an unauthenticated remote att",
-      "cvss": 9.8,
-      "final_ps": 89,
-      "quality_score": 0.538,
-      "threat_level": "CRITICAL",
-      "type": "SUPPLY_CHAIN",
-      "source": "thehackernews",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "thehackernews"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "The Hacker News",
-      "product": "Threat Intelligence",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-89026"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://thehackernews.com/2026/09/attackers-exploit-issabel-framework.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.55 (thehackernews)",
-          "data_confidence=1.00",
-          "recency=0d (score=1.00)",
-          "QS=0.537"
-        ],
-        "priority": [
-          "+10 CVSS≥9",
-          "+8 exploited_in_wild",
-          "+3 supply_chain"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
     {
       "id": "SENTINELAPEX-dbd2f21f5d08",
       "title": "Google fixes actively exploited Android zero-day on Pixel devices",
-      "description": "Google has released the September 2026 security patches to address 110 vulnerabilities affecting its Pixel devices, including one zero-day flaw actively exploited in targeted attacks. [...]",
+      "description": "Google fixes actively exploited Android zero-day on Pixel devices",
       "cvss": 0,
-      "final_ps": 58,
-      "quality_score": 0.452,
+      "final_ps": 56,
+      "quality_score": 0.403,
       "threat_level": "MEDIUM",
       "type": "ZERO_DAY",
       "source": "sentinel_apex",
@@ -83,14 +35,15 @@
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://www.bleepingcomputer.com/news/security/google-fixes-actively-exploited-android-zero-day-on-pixel-devices/"
+        "https://www.bleepingcomputer.com/news/security/google-fixes-actively-exploited-android-zero-day-on-pixel-devices/",
+        "https://intel.cyberdudebivash.com/reports/2026/09/intel--451789771b86754f57b66c2e.html"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.35",
+          "data_confidence=0.10",
           "recency=0d (score=1.00)",
-          "QS=0.452"
+          "QS=0.403"
         ],
         "priority": [
           "+8 exploited_in_wild",
@@ -426,6 +379,52 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-61595",
+      "title": "djust: Multi-tenant isolation fails open on the WebSocket/SSE path, disclosing other tenants' data",
+      "description": "Impact\ndjust.tenants isolation was enforced only on the HTTP path. The current tenant was stored in threading.local() and set exclusively by the HTTP-only TenantMiddleware, so on the live (WebSocket/SSE) path get_current_tenant() was always None during mount and every event handl... [Full analysis a",
+      "cvss": 7.7,
+      "final_ps": 46,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-61595"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-3492-cvg7-9mr2"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=46 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
       "id": "CVE-2026-88975",
       "title": "Http4s: Ember HTTP/2 buffers a frame's declared payload before checking SETTINGS_MAX_FRAME_SIZE",
       "description": "Summary\nAn unauthenticated peer can make Ember's HTTP/2 read loop hold 16 MiB of a single frame in memory on a connection where Ember advertised a 16 KiB limit. The declared length is readable from the frame's first 9 bytes, but it is not compared against SETTINGS_MAX_FRAME_SIZE ... [Full analysis a",
@@ -518,150 +517,12 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-69218",
-      "title": "Http4s Ember HTTP/2: unbounded continuation frame accumulation",
-      "description": "When Ember receives an HTTP/2 HEADERS or PUSH_PROMISE frame without the END_HEADERS flag, it buffers the header block fragment and waits for subsequent CONTINUATION frames.  These accumulate unbounded until the connection closes.\n\nImpact\n\nA remote, unauthenticated peer can exhaus... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 46,
-      "quality_score": 0.493,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-69218"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-cp4q-fqw9-4hf6"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=0d (score=1.00)",
-          "QS=0.493"
-        ],
-        "priority": [
-          "base_ps=46 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-69213",
-      "title": "Http4s Ember HTTP/2 has an unbounded outbound frame queue",
-      "description": "Ember's HTTP/2 connection serializes all outgoing frames through a single unbounded queue drained by one writer fiber (writeLoop).  When the write side stalls, any frames the connection keeps producing accumulate in that queue without limit.  The peer can drive this cheaply becau... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 46,
-      "quality_score": 0.493,
-      "threat_level": "MEDIUM",
-      "type": "SOCIAL_ENGINEERING",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-69213"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-8f3q-3jmv-7prw"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=0d (score=1.00)",
-          "QS=0.493"
-        ],
-        "priority": [
-          "base_ps=46 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-69208",
-      "title": "Http4s: DigestAuth nonce map grows unbounded",
-      "description": "The DigestAuth server middleware's stale-nonce cleanup uses an inverted comparison: it removes *fresh* nonces and stops at the first *stale* one.  Because a new nonce is created for every unauthenticated challenge, an attacker can drive the nonce map to grow without bound until t... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 46,
-      "quality_score": 0.493,
-      "threat_level": "MEDIUM",
-      "type": "SOCIAL_ENGINEERING",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-69208"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-fm4g-76c9-7w69"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=0d (score=1.00)",
-          "QS=0.493"
-        ],
-        "priority": [
-          "base_ps=46 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "SENTINELAPEX-759234fb9333",
-      "title": "Critical ScreenConnect flaw now actively exploited in attacks",
-      "description": "Attackers now exploit a critical-severity ConnectWise ScreenConnect vulnerability in the wild, according to the U.S. Cybersecurity and Infrastructure Security Agency (CISA). [...]",
-      "cvss": 0,
+      "id": "CVE-2026-61590",
+      "title": "djust's observability endpoints are network-exposed: the localhost gate is an opt-in middleware the docs omit, and the v",
+      "description": "Impact\ndjust's observability endpoints expose live view/session state and a remote method-invocation surface (eval_handler). The localhost restriction was an opt-in middleware that the documented setup omits; the views themselves enforced only DEBUG. In the misconfigured-but-docu... [Full analysis a",
+      "cvss": 7.4,
       "final_ps": 45,
-      "quality_score": 0.452,
+      "quality_score": 0.493,
       "threat_level": "MEDIUM",
       "type": "NEWS_REPORT",
       "source": "sentinel_apex",
@@ -671,120 +532,34 @@
       ],
       "first_seen": "2026-09-16",
       "last_seen": "2026-09-16",
-      "exploited": true,
+      "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "",
       "product": "",
       "due_date": null,
-      "cves": [],
+      "cves": [
+        "CVE-2026-61590"
+      ],
       "ioc_count": 0,
       "refs": [
-        "https://www.bleepingcomputer.com/news/security/cisa-warns-of-hackers-exploiting-critical-screenconnect-flaw/"
+        "https://github.com/advisories/GHSA-8g2f-g3gq-5rjv"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.35",
+          "data_confidence=0.70",
           "recency=0d (score=1.00)",
-          "QS=0.452"
+          "QS=0.493"
         ],
         "priority": [
-          "+8 exploited_in_wild"
+          "base_ps=45 (no boosts)"
         ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "suppression": null,
         "merge": null
       },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
-      "iocs": []
-    },
-    {
-      "id": "SENTINELAPEX-a79048bc3ce3",
-      "title": "Acronis warns of actively exploited flaw in its cPanel backup plugin",
-      "description": "Acronis disclosed a high-severity Linux local privilege escalation vulnerability in its backup plugin for cPanel, WebHost Manager (WHM), and Plesk that may be exploited in the wild. [...]",
-      "cvss": 0,
-      "final_ps": 45,
-      "quality_score": 0.452,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.bleepingcomputer.com/news/security/acronis-warns-of-actively-exploited-flaw-in-its-cpanel-backup-plugin/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.35",
-          "recency=0d (score=1.00)",
-          "QS=0.452"
-        ],
-        "priority": [
-          "+8 exploited_in_wild"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
-      "iocs": []
-    },
-    {
-      "id": "SENTINELAPEX-2ce3666622be",
-      "title": "Active Exploitation Attempts Target WSO2 API Manager JWT Bypass With Forged Admin Tokens",
-      "description": "Active Exploitation Attempts Target WSO2 API Manager JWT Bypass With Forged Admin Tokens",
-      "cvss": 0,
-      "final_ps": 45,
-      "quality_score": 0.452,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://intel.cyberdudebivash.com/reports/2026/09/intel--143e09f42f4ba000.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.35",
-          "recency=0d (score=1.00)",
-          "QS=0.452"
-        ],
-        "priority": [
-          "+8 exploited_in_wild"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "suppressed": false,
+      "suppression_reason": null,
       "iocs": []
     },
     {
@@ -884,21 +659,21 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-78514",
-      "title": "CVE-2026-78514: Use after free in Microsoft Office Word allows an unauthorized attacker to execute code over a network.",
-      "description": "Use after free in Microsoft Office Word allows an unauthorized attacker to execute code over a network.",
-      "cvss": 8.8,
-      "final_ps": 43,
-      "quality_score": 0.433,
+      "id": "CVE-2026-81192",
+      "title": "OpenTelemetry.Resources.Host vulnerable to arbitrary code execution via local PATH hijacking on macOS",
+      "description": "Summary\n\nThe OpenTelemetry.Resources.Host NuGet package is affected by an untrusted search path vulnerability on macOS. The host.id resource attribute detector launches the sh and ioreg executables by bare name rather than by absolute path, so both are resolved\nthrough the PATH e... [Full analysis a",
+      "cvss": 7,
+      "final_ps": 44,
+      "quality_score": 0.493,
       "threat_level": "LOW",
-      "type": "CVE_REPORT",
+      "type": "NEWS_REPORT",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-09-08",
-      "last_seen": "2026-09-08",
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -906,21 +681,21 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-78514"
+        "CVE-2026-81192"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-78514"
+        "https://github.com/advisories/GHSA-v8pv-4842-x354"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
           "data_confidence=0.70",
-          "recency=7d (score=0.40)",
-          "QS=0.432"
+          "recency=0d (score=1.00)",
+          "QS=0.493"
         ],
         "priority": [
-          "base_ps=43 (no boosts)"
+          "base_ps=44 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -930,193 +705,9 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-78518",
-      "title": "CVE-2026-78518: Out-of-bounds read in Microsoft Office Excel allows an unauthorized attacker to execute code over a netw",
-      "description": "Out-of-bounds read in Microsoft Office Excel allows an unauthorized attacker to execute code over a network.",
-      "cvss": 8.8,
-      "final_ps": 43,
-      "quality_score": 0.433,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-08",
-      "last_seen": "2026-09-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-78518"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-78518"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=7d (score=0.40)",
-          "QS=0.432"
-        ],
-        "priority": [
-          "base_ps=43 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-78519",
-      "title": "CVE-2026-78519: Use of uninitialized resource in Microsoft Office Outlook allows an unauthorized attacker to execute cod",
-      "description": "Use of uninitialized resource in Microsoft Office Outlook allows an unauthorized attacker to execute code over a network.",
-      "cvss": 8.8,
-      "final_ps": 43,
-      "quality_score": 0.433,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-08",
-      "last_seen": "2026-09-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-78519"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-78519"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=7d (score=0.40)",
-          "QS=0.432"
-        ],
-        "priority": [
-          "base_ps=43 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-78524",
-      "title": "CVE-2026-78524: Out-of-bounds write in Microsoft Office allows an unauthorized attacker to execute code over a network.",
-      "description": "Out-of-bounds write in Microsoft Office allows an unauthorized attacker to execute code over a network.",
-      "cvss": 8.8,
-      "final_ps": 43,
-      "quality_score": 0.433,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-08",
-      "last_seen": "2026-09-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-78524"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-78524"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=7d (score=0.40)",
-          "QS=0.432"
-        ],
-        "priority": [
-          "base_ps=43 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-78521",
-      "title": "CVE-2026-78521: Heap-based buffer overflow in Microsoft Office Word allows an unauthorized attacker to execute code over",
-      "description": "Heap-based buffer overflow in Microsoft Office Word allows an unauthorized attacker to execute code over a network.",
-      "cvss": 8.8,
-      "final_ps": 43,
-      "quality_score": 0.433,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-08",
-      "last_seen": "2026-09-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-78521"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-78521"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=7d (score=0.40)",
-          "QS=0.432"
-        ],
-        "priority": [
-          "base_ps=43 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "SENTINELAPEX-32c5d2e41cb0",
-      "title": "Google Pixel owners urged to patch actively exploited modem flaw",
-      "description": "Google Pixel owners urged to patch actively exploited modem flaw",
+      "id": "SENTINELAPEX-7543acd1c15a",
+      "title": "CISA Warns of Critical ScreenConnect Vulnerability Actively Exploited in Attacks",
+      "description": "CISA Warns of Critical ScreenConnect Vulnerability Actively Exploited in Attacks",
       "cvss": 0,
       "final_ps": 43,
       "quality_score": 0.403,
@@ -1138,7 +729,7 @@
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://www.malwarebytes.com/blog/mobile/2026/09/google-pixel-owners-urged-to-patch-actively-exploited-modem-flaw"
+        "https://cybersecuritynews.com/screenconnect-vulnerability-exploited/"
       ],
       "explanation": {
         "quality": [
@@ -1158,9 +749,9 @@
       "iocs": []
     },
     {
-      "id": "SENTINELAPEX-8a741cca61a4",
-      "title": "Critical Issabel PBX Command Execution Vulnerability Exploited in the Wild",
-      "description": "Critical Issabel PBX Command Execution Vulnerability Exploited in the Wild",
+      "id": "SENTINELAPEX-759234fb9333",
+      "title": "Critical ScreenConnect flaw now actively exploited in attacks",
+      "description": "Critical ScreenConnect flaw now actively exploited in attacks",
       "cvss": 0,
       "final_ps": 43,
       "quality_score": 0.403,
@@ -1182,7 +773,8 @@
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://cybersecuritynews.com/issabel-pbx-command-execution-vulnerability/"
+        "https://www.bleepingcomputer.com/news/security/cisa-warns-of-hackers-exploiting-critical-screenconnect-flaw/",
+        "https://intel.cyberdudebivash.com/reports/2026/09/intel--ed3293416a2d36df1e0ad71f.html"
       ],
       "explanation": {
         "quality": [
@@ -1202,41 +794,41 @@
       "iocs": []
     },
     {
-      "id": "BLEEPINGCOMPUTER-1bd864f7481456c0",
-      "title": "The true cost of a ransomware attack, with and without BCDR",
-      "description": "The ransom itself can be only a fraction of the total cost of a ransomware attack, with downtime, recovery, remediation, and legal obligations adding millions to the bill. Datto explains how a mature BCDR strategy can reduce downtime and provide a faster, more predictable path to recovery. [...]",
+      "id": "SENTINELAPEX-a79048bc3ce3",
+      "title": "Acronis warns of actively exploited flaw in its cPanel backup plugin",
+      "description": "Acronis disclosed a high-severity Linux local privilege escalation vulnerability in its backup plugin for cPanel, WebHost Manager (WHM), and Plesk that may be exploited in the wild. [...]",
       "cvss": 0,
-      "final_ps": 42,
-      "quality_score": 0.42,
+      "final_ps": 43,
+      "quality_score": 0.438,
       "threat_level": "LOW",
-      "type": "RANSOMWARE",
-      "source": "bleepingcomputer",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
-        "bleepingcomputer"
+        "sentinel_apex"
       ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
+      "first_seen": "2026-09-15",
+      "last_seen": "2026-09-15",
+      "exploited": true,
       "cisa_kev": false,
-      "ransomware": true,
-      "vendor": "BleepingComputer",
-      "product": "Threat Intelligence",
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://www.bleepingcomputer.com/news/security/the-true-cost-of-a-ransomware-attack-with-and-without-bcdr/"
+        "https://www.bleepingcomputer.com/news/security/acronis-warns-of-actively-exploited-flaw-in-its-cpanel-backup-plugin/"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.72 (bleepingcomputer)",
-          "data_confidence=0.65",
-          "recency=0d (score=1.00)",
-          "QS=0.420"
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.35",
+          "recency=1d (score=0.85)",
+          "QS=0.438"
         ],
         "priority": [
-          "+10 ransomware_confirmed"
+          "+8 exploited_in_wild"
         ],
         "suppression": "Single-source item with no CVE IDs or IOCs",
         "merge": null
@@ -1428,38 +1020,38 @@
       "iocs": []
     },
     {
-      "id": "THEHACKERNEWS-b2b0c88247dbf3d5",
-      "title": "Three Threat Groups Target Russian Enterprises With Backdoors, Ransomware, and Wipers",
-      "description": "Enterprises in Russia have emerged as the target of three threat activity clusters tracked as NightEagle, Hacking Cat, and Toy Ghouls, according to multiple reports from Kaspersky. The cybersecurity vendor said it has identified attacks mounted by NightEagle (aka APT-Q-95), a threat actor known to b",
+      "id": "SENTINELAPEX-5c8a8a1afe58",
+      "title": "The true cost of a ransomware attack, with and without BCDR",
+      "description": "The ransom itself can be only a fraction of the total cost of a ransomware attack, with downtime, recovery, remediation, and legal obligations adding millions to the bill. Datto explains how a mature BCDR strategy can reduce downtime and provide a faster, more predictable path to... [Full analysis a",
       "cvss": 0,
       "final_ps": 41,
-      "quality_score": 0.378,
+      "quality_score": 0.392,
       "threat_level": "LOW",
       "type": "RANSOMWARE",
-      "source": "thehackernews",
+      "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
-        "thehackernews"
+        "sentinel_apex"
       ],
       "first_seen": "2026-09-16",
       "last_seen": "2026-09-16",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": true,
-      "vendor": "The Hacker News",
-      "product": "Threat Intelligence",
+      "vendor": "",
+      "product": "",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://thehackernews.com/2026/09/three-threat-groups-target-russian.html"
+        "https://www.bleepingcomputer.com/news/security/the-true-cost-of-a-ransomware-attack-with-and-without-bcdr/"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.55 (thehackernews)",
-          "data_confidence=0.65",
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.35",
           "recency=0d (score=1.00)",
-          "QS=0.378"
+          "QS=0.392"
         ],
         "priority": [
           "+10 ransomware_confirmed"
@@ -2288,98 +1880,6 @@
         "priority": [
           "+10 CVSS≥9",
           "+8 exploited_in_wild"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-73169",
-      "title": "CVE-2026-73169 - Advantech EKI-1242EIMS Stored Cross-Site Scripting Vulnerability",
-      "description": "CVE-2026-73169 - Advantech EKI-1242EIMS Stored Cross-Site Scripting Vulnerability",
-      "cvss": 6.1,
-      "final_ps": 40,
-      "quality_score": 0.453,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-73169"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-73169"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.50",
-          "recency=0d (score=1.00)",
-          "QS=0.453"
-        ],
-        "priority": [
-          "base_ps=40 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-18555",
-      "title": "CVE-2026-18555 - Better Messages  Chat Rooms, Group Chat, Private Messages & AI Chat Bots plugin for WordPress <= 2.15.2",
-      "description": "CVE ID : CVE-2026-18555\n\n Published : Sept. 16, 2026, 4:28 a.m. | 26minutes ago\n\n Description : The Better Messages Chat Rooms, Group Chat, Private Messages & AI Chat Bots plugin for WordPress is vulnerable to Reflected Cross-Site Scripting via the 'icn' parameter in all versions... [Full analysis a",
-      "cvss": 6.1,
-      "final_ps": 40,
-      "quality_score": 0.453,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-18555"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-18555"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.50",
-          "recency=0d (score=1.00)",
-          "QS=0.453"
-        ],
-        "priority": [
-          "base_ps=40 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -3541,6 +3041,53 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-89026",
+      "title": "Attackers Exploit Issabel Framework Flaw Enabling Unauthenticated OS Command Execution",
+      "description": "",
+      "cvss": 9.8,
+      "final_ps": 37,
+      "quality_score": 0.483,
+      "threat_level": "LOW",
+      "type": "SUPPLY_CHAIN",
+      "source": "thehackernews",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "thehackernews"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": true,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "The Hacker News",
+      "product": "Threat Intelligence",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-89026"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://thehackernews.com/2026/09/attackers-exploit-issabel-framework.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.55 (thehackernews)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.483"
+        ],
+        "priority": [
+          "+10 CVSS≥9",
+          "+8 exploited_in_wild"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
       "id": "CVE-2026-5430",
       "title": "Active Exploitation Attempts Target WSO2 API Manager JWT Bypass With Forged Admin Tokens",
       "description": "",
@@ -4002,6 +3549,144 @@
         ],
         "priority": [
           "+8 exploited_in_wild"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-57173",
+      "title": "CVE-2026-57173 - vLLM: Unauthenticated audio decompression-bomb DoS in /v1/chat/completions",
+      "description": "",
+      "cvss": 9.1,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-57173"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-57173"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2025-59953",
+      "title": "LMdeploy has Remote Code Execution by Pickle Deserialization via zmq_rpc.call_and_response() in InterLM/lmdeploy",
+      "description": "",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2025-59953"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-5h8j-6crg-7rmw"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-92720",
+      "title": "CVE-2026-92720 Kubero through 3.1.1 Unauthenticated Notifications API Access",
+      "description": "",
+      "cvss": 9.1,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-92720"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://vulners.com/cvelist/CVELIST:CVE-2026-92720?utm_source=rss&utm_medium=rss&utm_campaign=rss"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
         ],
         "suppression": null,
         "merge": null
@@ -4803,342 +4488,10 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-61595",
-      "title": "djust: Multi-tenant isolation fails open on the WebSocket/SSE path, disclosing other tenants' data",
+      "id": "CVE-2026-86359",
+      "title": "CVE-2026-86359 - Dell Repository Manager Incorrect Default Permissions Vulnerability",
       "description": "",
-      "cvss": 7.7,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "pip",
-      "product": "djust",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61595",
-        "CVE-2026-61595"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-3492-cvg7-9mr2",
-        "https://github.com/djust-org/djust/security/advisories/GHSA-3492-cvg7-9mr2",
-        "https://github.com/djust-org/djust/releases/tag/v1.0.7",
-        "https://github.com/advisories/GHSA-3492-cvg7-9mr2"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-81192",
-      "title": "OpenTelemetry.Resources.Host vulnerable to arbitrary code execution via local PATH hijacking on macOS",
-      "description": "",
-      "cvss": 7,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "nuget",
-      "product": "OpenTelemetry.Resources.Host",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-81192",
-        "CVE-2026-81192"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-v8pv-4842-x354",
-        "https://github.com/open-telemetry/opentelemetry-dotnet-contrib/security/advisories/GHSA-v8pv-4842-x354",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-81192",
-        "https://github.com/open-telemetry/opentelemetry-dotnet-contrib/pull/1631"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-61590",
-      "title": "djust's observability endpoints are network-exposed: the localhost gate is an opt-in middleware the docs omit, and the v",
-      "description": "",
-      "cvss": 7.4,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "pip",
-      "product": "djust",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61590"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-8g2f-g3gq-5rjv",
-        "https://github.com/djust-org/djust/security/advisories/GHSA-8g2f-g3gq-5rjv",
-        "https://github.com/djust-org/djust/releases/tag/v1.0.7"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-78525",
-      "title": "CVE-2026-78525: Use after free in Microsoft Office Outlook allows an unauthorized attacker to execute code over a networ",
-      "description": "",
-      "cvss": 8.8,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-08",
-      "last_seen": "2026-09-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-78525"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-78525"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-78517",
-      "title": "CVE-2026-78517: Heap-based buffer overflow in Microsoft Office Word allows an unauthorized attacker to execute code over",
-      "description": "",
-      "cvss": 8.8,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-08",
-      "last_seen": "2026-09-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-78517"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-78517"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-78512",
-      "title": "CVE-2026-78512: Numeric truncation error in Microsoft Office Word allows an unauthorized attacker to execute code over a",
-      "description": "",
-      "cvss": 8.8,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-08",
-      "last_seen": "2026-09-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-78512"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-78512"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-78526",
-      "title": "CVE-2026-78526: Heap-based buffer overflow in Microsoft Office Word allows an unauthorized attacker to execute code over",
-      "description": "",
-      "cvss": 8.8,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-08",
-      "last_seen": "2026-09-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-78526"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-78526"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2014-0160",
-      "title": "Exploit for Out-of-bounds Read in Openssl",
-      "description": "",
-      "cvss": 7.5,
+      "cvss": 8.5,
       "final_ps": 18,
       "quality_score": 0.438,
       "threat_level": "LOW",
@@ -5157,11 +4510,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2014-0160"
+        "CVE-2026-86359"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://sploitus.com/exploit?id=70930049-8339-5F83-938C-D071408EC731&utm_source=rss&utm_medium=rss"
+        "https://cvefeed.io/vuln/detail/CVE-2026-86359"
       ],
       "explanation": {
         "quality": [
@@ -5181,8 +4534,54 @@
       "iocs": []
     },
     {
-      "id": "CVE-2025-54100",
-      "title": "CVE-2025-54100 exploit",
+      "id": "CVE-2026-47094",
+      "title": "CVE-2026-47094 SIMAC MyPHR 1.1 IDOR Account Takeover via /api/employes/put/{id}",
+      "description": "",
+      "cvss": 8.8,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-47094"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://vulners.com/cve/CVE-2026-47094?utm_source=rss&utm_medium=rss&utm_campaign=rss"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-85731",
+      "title": "CVE-2026-85731 - oras-go: Arbitrary file write outside file.Store root via symlink-chain bypass in tar extraction (pushD",
       "description": "",
       "cvss": 7.8,
       "final_ps": 18,
@@ -5203,11 +4602,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2025-54100"
+        "CVE-2026-85731"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://sploitus.com/exploit?id=KITPLOIT:TOOLS-GITHUB-THEMEHACKERS-CVE-2025-54100&utm_source=rss&utm_medium=rss"
+        "https://cvefeed.io/vuln/detail/CVE-2026-85731"
       ],
       "explanation": {
         "quality": [
@@ -5227,14 +4626,14 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-92456",
-      "title": "CVE-2026-92456 - yshop-crm through 2.1.3 Missing Authorization via CRM Customer Rule-Configuration Endpoints",
+      "id": "CVE-2026-61598",
+      "title": "djust: Client mass-assignment of arbitrary view attributes via the default dj-model update_model handler",
       "description": "",
-      "cvss": 7.1,
+      "cvss": 7.5,
       "final_ps": 18,
       "quality_score": 0.438,
       "threat_level": "LOW",
-      "type": "CVE_REPORT",
+      "type": "NEWS_REPORT",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
@@ -5249,11 +4648,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-92456"
+        "CVE-2026-61598"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-92456"
+        "https://github.com/advisories/GHSA-cc7c-9jff-58wj"
       ],
       "explanation": {
         "quality": [
@@ -5319,21 +4718,21 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-69215",
-      "title": "Http4s: CookieJar middleware matches by substring, leaking cookies cross-origin",
+      "id": "CVE-2026-92718",
+      "title": "CVE-2026-92718 Nuclei from 3.7.0 before 3.11.1 Template Signature Bypass via Modification-Time-Only Cache",
       "description": "",
-      "cvss": 6.8,
-      "final_ps": 16,
-      "quality_score": 0.398,
+      "cvss": 7.3,
+      "final_ps": 18,
+      "quality_score": 0.438,
       "threat_level": "LOW",
-      "type": "NEWS_REPORT",
+      "type": "CVE_REPORT",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -5341,11 +4740,241 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-69215"
+        "CVE-2026-92718"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-grh8-3p95-f9rr"
+        "https://vulners.com/cvelist/CVELIST:CVE-2026-92718?utm_source=rss&utm_medium=rss&utm_campaign=rss"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-92719",
+      "title": "CVE-2026-92719 Quickwit through 0.9.0 SSRF via SQS queue_url Parameter",
+      "description": "",
+      "cvss": 7.5,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-92719"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://vulners.com/cvelist/CVELIST:CVE-2026-92719?utm_source=rss&utm_medium=rss&utm_campaign=rss"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-92625",
+      "title": "CVE-2026-92625 - Control iD iDSecure Unauthenticated Denial of Service",
+      "description": "",
+      "cvss": 7.5,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-92625"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-92625"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-92626",
+      "title": "CVE-2026-92626 - Control iD iDSecure Unauthenticated Denial of Service",
+      "description": "",
+      "cvss": 7.5,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-92626"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-92626"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-92401",
+      "title": "CVE-2026-92401 - ChangeWeDer crm improper authentication",
+      "description": "",
+      "cvss": 7.3,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-92401"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-92401"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-92615",
+      "title": "CVE-2026-92615 - Flightctl: flightctl: package-global go-git https transport mutated per-repo -- cross-tenant tls-config",
+      "description": "",
+      "cvss": 6.6,
+      "final_ps": 16,
+      "quality_score": 0.398,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-92615"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-92615"
       ],
       "explanation": {
         "quality": [
@@ -5365,54 +4994,8 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-69214",
-      "title": "Http4s: CookieJar middleware accepts arbitrary Set-Cookie domain",
-      "description": "",
-      "cvss": 6.8,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-69214"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-wv64-j4fq-5f9x"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-92457",
-      "title": "CVE-2026-92457 - yshop-crm through 2.1.3 Missing Authorization via CrmInvoiceController issueInvoice",
+      "id": "CVE-2026-86358",
+      "title": "CVE-2026-86358 - Dell Update Package Framework Stack-based Buffer Overflow Vulnerability",
       "description": "",
       "cvss": 6.5,
       "final_ps": 16,
@@ -5433,11 +5016,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-92457"
+        "CVE-2026-86358"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-92457"
+        "https://cvefeed.io/vuln/detail/CVE-2026-86358"
       ],
       "explanation": {
         "quality": [
@@ -5457,10 +5040,10 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-92459",
-      "title": "CVE-2026-92459 - yshop-crm through 2.1.3 Missing Authorization via CRM Lead-Claim Endpoint",
+      "id": "CVE-2026-92418",
+      "title": "CVE-2026-92418 ChangeWeDer crm Save Endpoint customer.serve.js cross site scripting",
       "description": "",
-      "cvss": 6.5,
+      "cvss": 6.1,
       "final_ps": 16,
       "quality_score": 0.398,
       "threat_level": "LOW",
@@ -5479,11 +5062,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-92459"
+        "CVE-2026-92418"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-92459"
+        "https://vulners.com/cvelist/CVELIST:CVE-2026-92418?utm_source=rss&utm_medium=rss&utm_campaign=rss"
       ],
       "explanation": {
         "quality": [
@@ -5503,10 +5086,10 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-92460",
-      "title": "CVE-2026-92460 - yshop-crm through 2.1.3 Missing Authorization via CRM Operation-Log Listing",
+      "id": "CVE-2026-85732",
+      "title": "CVE-2026-85732 - oras-go: Blind SSRF via unvalidated Link header URL in pagination allows internal network probing",
       "description": "",
-      "cvss": 6.5,
+      "cvss": 6.1,
       "final_ps": 16,
       "quality_score": 0.398,
       "threat_level": "LOW",
@@ -5525,103 +5108,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-92460"
+        "CVE-2026-85732"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-92460"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-92462",
-      "title": "CVE-2026-92462 - yshop-crm through 2.1.3 Missing Authorization via CrmFlowController deleteFlowStep",
-      "description": "",
-      "cvss": 6.5,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-92462"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-92462"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-92463",
-      "title": "CVE-2026-92463 - yshop-crm through 2.1.3 Missing Authorization via Disabled Annotation on System User Listing",
-      "description": "",
-      "cvss": 6.5,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-92463"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-92463"
+        "https://cvefeed.io/vuln/detail/CVE-2026-85732"
       ],
       "explanation": {
         "quality": [
