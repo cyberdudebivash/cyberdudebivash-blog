@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-17T10:25:27.439Z",
+  "generated": "2026-09-17T12:00:17.497Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,10 +7,10 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 4910,
+  "total_published": 4918,
   "s2n_stats": {
     "passed": 100,
-    "suppressed": 8,
+    "suppressed": 9,
     "avg_qs": 0.493
   },
   "items": [
@@ -3892,6 +3892,51 @@
       "suppression_reason": null
     },
     {
+      "id": "CVE-2026-61592",
+      "title": "djust: SSE sessions are not bound to the authenticated user; the client-chosen session_id is the sole authorization capa",
+      "description": "Impact\nSSE sessions were keyed solely by a client-chosen session_id with no binding to the authenticated user a control the WebSocket transport has but that was dropped on SSE. An attacker who learns (or a victim who leaks) a session_id could connect to the message endpoint and d... [Full analysis a",
+      "cvss": 7.4,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-61592"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-f795-p5jw-j6g2"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
       "id": "CVE-2026-61596",
       "title": "djust has broken object-level access control (IDOR)",
       "description": "Impact\ndjust's per-object authorization (get_object + has_object_permission, ADR-017) was enforced on the WebSocket mount and event paths but not on three other render entry points: (a) the initial HTTP GET render, (b) SPA url_change navigation, and (c) {% live_render %} embedded... [Full analysis a",
@@ -4326,51 +4371,6 @@
       "ioc_count": 0,
       "refs": [
         "https://github.com/advisories/GHSA-7prp-2623-8g45"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-87976",
-      "title": "CVE-2026-87976: Apache NiFi Registry: Improper Limitation of Pathname in Persisted Extension Bundles",
-      "description": "Posted by David Handermann on Sep 16 Severity: High\n\nAffected versions:\n\n- Apache NiFi Registry (org.apache.nifi.registry:nifi-registry-framework) 0.4.0 through 2.11.0\n\nDescription:\n\nApache NiFi Registry 0.4.0 through 2.11.0 are subject to path manipulation when storing extension... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-87976"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://seclists.org/oss-sec/2026/q3/808"
       ],
       "explanation": {
         "quality": [

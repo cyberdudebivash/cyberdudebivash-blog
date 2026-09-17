@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-17T10:25:27.439Z",
+  "generated": "2026-09-17T12:00:17.497Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -8,7 +8,7 @@
   "endpoint": "/api/intel/raw.json",
   "description": "Raw unfiltered S2N feed — all items including suppressed. Enterprise tier.",
   "note": "Access requires Enterprise API key. Includes suppression_reason and full IOC data.",
-  "count": 108,
+  "count": 109,
   "items": [
     {
       "id": "SENTINELAPEX-dbd2f21f5d08",
@@ -43,6 +43,51 @@
           "data_confidence=0.35",
           "recency=1d (score=0.85)",
           "QS=0.438"
+        ],
+        "priority": [
+          "+8 exploited_in_wild",
+          "+7 zero_day"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "iocs": []
+    },
+    {
+      "id": "REDDIT_CYBER-745248e4c3eb925c",
+      "title": "Active Exploitation Triggers Emergency Patch for Cisco ISE Zero-Day",
+      "description": "submitted by /u/sunychoudhary [link] [comments]",
+      "cvss": 0,
+      "final_ps": 54,
+      "quality_score": 0.355,
+      "threat_level": "MEDIUM",
+      "type": "ZERO_DAY",
+      "source": "reddit_cyber",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "reddit_cyber"
+      ],
+      "first_seen": "2026-09-17",
+      "last_seen": "2026-09-17",
+      "exploited": true,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "reddit_cyber",
+      "product": "Threat Intelligence",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.reddit.com/r/cybersecurity/comments/1wirrcp/active_exploitation_triggers_emergency_patch_for/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.42 (reddit_cyber)",
+          "data_confidence=0.40",
+          "recency=0d (score=1.00)",
+          "QS=0.355"
         ],
         "priority": [
           "+8 exploited_in_wild",
@@ -4204,10 +4249,10 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-61596",
-      "title": "djust has broken object-level access control (IDOR)",
+      "id": "CVE-2026-61592",
+      "title": "djust: SSE sessions are not bound to the authenticated user; the client-chosen session_id is the sole authorization capa",
       "description": "",
-      "cvss": 7.1,
+      "cvss": 7.4,
       "final_ps": 18,
       "quality_score": 0.438,
       "threat_level": "LOW",
@@ -4226,12 +4271,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-61596"
+        "CVE-2026-61592"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-61596",
-        "https://github.com/advisories/GHSA-c7c5-5j6r-q957"
+        "https://github.com/advisories/GHSA-f795-p5jw-j6g2"
       ],
       "explanation": {
         "quality": [
@@ -4324,6 +4368,53 @@
       "ioc_count": 0,
       "refs": [
         "https://cvefeed.io/vuln/detail/CVE-2026-81546"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-61596",
+      "title": "djust has broken object-level access control (IDOR)",
+      "description": "",
+      "cvss": 7.1,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-16",
+      "last_seen": "2026-09-16",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-61596"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-61596",
+        "https://github.com/advisories/GHSA-c7c5-5j6r-q957"
       ],
       "explanation": {
         "quality": [
@@ -4785,52 +4876,6 @@
       "ioc_count": 0,
       "refs": [
         "https://seclists.org/oss-sec/2026/q3/808"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-61592",
-      "title": "djust: SSE sessions are not bound to the authenticated user; the client-chosen session_id is the sole authorization capa",
-      "description": "",
-      "cvss": 7.4,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61592"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-f795-p5jw-j6g2"
       ],
       "explanation": {
         "quality": [
