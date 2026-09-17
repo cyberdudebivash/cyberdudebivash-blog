@@ -1,15 +1,15 @@
 {
-  "generated": "2026-09-17T16:48:37.472Z",
+  "generated": "2026-09-17T20:05:08.980Z",
   "version": "1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX v4.0",
   "stats": {
-    "total_nodes": 13973,
+    "total_nodes": 13991,
     "actors": 8,
-    "cves": 5900,
-    "campaigns": 1363,
+    "cves": 5908,
+    "campaigns": 1372,
     "malware": 0,
-    "iocs": 905,
-    "edges": 4051
+    "iocs": 906,
+    "edges": 4062
   },
   "nodes": {
     "actor:lockbit": {
@@ -7307,7 +7307,7 @@
       "attributes": {
         "ioc_type": "ipv4",
         "confidence": 0.88,
-        "first_seen": "2026-09-02"
+        "first_seen": "2026-09-17"
       },
       "connections": []
     },
@@ -261648,17 +261648,17 @@
     "CVE-2026-85731": {
       "id": "CVE-2026-85731",
       "type": "CVE",
-      "name": "CVE-2026-85731 - oras-go: Arbitrary file write outside file.Store root via symlink-chain bypass in tar extraction (pushDir)",
+      "name": "oras-go: Arbitrary file write outside file.Store root via symlink-chain bypass in tar extraction (pushDir)",
       "attributes": {
-        "cvss": 7.8,
-        "threat_level": "LOW",
-        "priority_score": 44,
+        "cvss": 8.8,
+        "threat_level": "HIGH",
+        "priority_score": 66,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
-        "vendor": "",
-        "product": "",
-        "published": "2026-09-16",
+        "vendor": "go",
+        "product": "oras.land/oras-go/v2",
+        "published": "2026-09-17",
         "type": "CVE_REPORT"
       },
       "connections": []
@@ -263265,6 +263265,353 @@
       "connections": [
         {
           "target": "CVE-2026-76825",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "CVE-2026-73247": {
+      "id": "CVE-2026-73247",
+      "type": "CVE",
+      "name": "Kestra: SSRF via Pebble http() function allows unauthenticated access to internal services & cloud metadata",
+      "attributes": {
+        "cvss": 8.6,
+        "threat_level": "HIGH",
+        "priority_score": 66,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "maven",
+        "product": "io.kestra:core",
+        "published": "2026-09-17",
+        "type": "CVE_REPORT"
+      },
+      "connections": [
+        {
+          "target": "ioc:ipv4:169.254.169.254",
+          "relationship": "linked_to",
+          "confidence": 0.88
+        }
+      ]
+    },
+    "CVE-2026-86039": {
+      "id": "CVE-2026-86039",
+      "type": "CVE",
+      "name": "libp2p: PeerStore accepts attacker-signed PeerRecords for a victim peer ID and stores certified attacker addresses",
+      "attributes": {
+        "cvss": 8.2,
+        "threat_level": "MEDIUM",
+        "priority_score": 63,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "@libp2p/peer-store",
+        "published": "2026-09-17",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-69088": {
+      "id": "CVE-2026-69088",
+      "type": "CVE",
+      "name": "Grav: Incomplete callable validation in blueprint dynamic fields allows arbitrary static method invocation and file disclosure",
+      "attributes": {
+        "cvss": 8.1,
+        "threat_level": "MEDIUM",
+        "priority_score": 63,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "composer",
+        "product": "getgrav/grav",
+        "published": "2026-09-17",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-85756": {
+      "id": "CVE-2026-85756",
+      "type": "CVE",
+      "name": "SSH.NET: ScpClient allows server-side RCE via default SCP path handling",
+      "attributes": {
+        "cvss": 7.5,
+        "threat_level": "MEDIUM",
+        "priority_score": 62,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "nuget",
+        "product": "SSH.NET",
+        "published": "2026-09-17",
+        "type": "CVE_REPORT"
+      },
+      "connections": [
+        {
+          "target": "ioc:domain:ssh.net",
+          "relationship": "linked_to",
+          "confidence": 0.75
+        }
+      ]
+    },
+    "ioc:domain:ssh.net": {
+      "id": "ioc:domain:ssh.net",
+      "type": "IOC",
+      "name": "ssh.net",
+      "attributes": {
+        "ioc_type": "domain",
+        "confidence": 0.75,
+        "first_seen": "2026-09-17"
+      },
+      "connections": []
+    },
+    "CVE-2026-68537": {
+      "id": "CVE-2026-68537",
+      "type": "CVE",
+      "name": "Fulgur: Non-painting replaced elements amplify to thousands of blank PDF pages (denial of service)",
+      "attributes": {
+        "cvss": 7.5,
+        "threat_level": "MEDIUM",
+        "priority_score": 61,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "rust",
+        "product": "fulgur",
+        "published": "2026-09-17",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-68523": {
+      "id": "CVE-2026-68523",
+      "type": "CVE",
+      "name": "Fulgur: Unbounded page slicing from attacker-controlled CSS height causes denial of service",
+      "attributes": {
+        "cvss": 7.5,
+        "threat_level": "MEDIUM",
+        "priority_score": 61,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "rust",
+        "product": "fulgur",
+        "published": "2026-09-17",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-86038": {
+      "id": "CVE-2026-86038",
+      "type": "CVE",
+      "name": "libp2p: Gossipsub StrictSign accepts attacker-signed messages as a victim RSA peer ID",
+      "attributes": {
+        "cvss": 7.5,
+        "threat_level": "MEDIUM",
+        "priority_score": 61,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "@libp2p/gossipsub",
+        "published": "2026-09-17",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-85721": {
+      "id": "CVE-2026-85721",
+      "type": "CVE",
+      "name": "AsyncHttpClient's unbounded HTTP/1.1 response decompression enables a decompression-bomb denial of service",
+      "attributes": {
+        "cvss": 7.5,
+        "threat_level": "MEDIUM",
+        "priority_score": 61,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "maven",
+        "product": "org.asynchttpclient:async-http-client",
+        "published": "2026-09-17",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "campaign:cve-2026-85731": {
+      "id": "campaign:cve-2026-85731",
+      "type": "Campaign",
+      "name": "go oras.land/oras-go/v2 Exploitation Campaign",
+      "attributes": {
+        "severity": "HIGH",
+        "item_count": 1,
+        "first_seen": "2026-09-17",
+        "last_seen": "2026-09-17",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-85731"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-85731",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-73247": {
+      "id": "campaign:cve-2026-73247",
+      "type": "Campaign",
+      "name": "maven io.kestra:core Exploitation Campaign",
+      "attributes": {
+        "severity": "HIGH",
+        "item_count": 1,
+        "first_seen": "2026-09-17",
+        "last_seen": "2026-09-17",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-73247 | 1 shared IOC(s) across items"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-73247",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-86039": {
+      "id": "campaign:cve-2026-86039",
+      "type": "Campaign",
+      "name": "npm @libp2p/peer-store Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-17",
+        "last_seen": "2026-09-17",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-86039"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-86039",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-69088": {
+      "id": "campaign:cve-2026-69088",
+      "type": "Campaign",
+      "name": "composer getgrav/grav Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-17",
+        "last_seen": "2026-09-17",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-69088"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-69088",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-85756": {
+      "id": "campaign:cve-2026-85756",
+      "type": "Campaign",
+      "name": "nuget SSH.NET Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-17",
+        "last_seen": "2026-09-17",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-85756 | 1 shared IOC(s) across items"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-85756",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-68537": {
+      "id": "campaign:cve-2026-68537",
+      "type": "Campaign",
+      "name": "rust fulgur Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-17",
+        "last_seen": "2026-09-17",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-68537"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-68537",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-68523": {
+      "id": "campaign:cve-2026-68523",
+      "type": "Campaign",
+      "name": "rust fulgur Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-17",
+        "last_seen": "2026-09-17",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-68523"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-68523",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-86038": {
+      "id": "campaign:cve-2026-86038",
+      "type": "Campaign",
+      "name": "npm @libp2p/gossipsub Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-17",
+        "last_seen": "2026-09-17",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-86038"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-86038",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-85721": {
+      "id": "campaign:cve-2026-85721",
+      "type": "Campaign",
+      "name": "maven org.asynchttpclient:async-http-client Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-17",
+        "last_seen": "2026-09-17",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-85721"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-85721",
           "relationship": "includes",
           "confidence": 1
         }
@@ -299902,6 +300249,105 @@
       "id": "campaign:cve-2026-76825→includes→CVE-2026-76825",
       "source": "campaign:cve-2026-76825",
       "target": "CVE-2026-76825",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-17",
+      "sources": []
+    },
+    {
+      "id": "CVE-2026-73247→linked_to→ioc:ipv4:169.254.169.254",
+      "source": "CVE-2026-73247",
+      "target": "ioc:ipv4:169.254.169.254",
+      "relationship": "linked_to",
+      "confidence": 0.88,
+      "first_seen": "2026-09-17",
+      "sources": []
+    },
+    {
+      "id": "CVE-2026-85756→linked_to→ioc:domain:ssh.net",
+      "source": "CVE-2026-85756",
+      "target": "ioc:domain:ssh.net",
+      "relationship": "linked_to",
+      "confidence": 0.75,
+      "first_seen": "2026-09-17",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-85731→includes→CVE-2026-85731",
+      "source": "campaign:cve-2026-85731",
+      "target": "CVE-2026-85731",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-17",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-73247→includes→CVE-2026-73247",
+      "source": "campaign:cve-2026-73247",
+      "target": "CVE-2026-73247",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-17",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-86039→includes→CVE-2026-86039",
+      "source": "campaign:cve-2026-86039",
+      "target": "CVE-2026-86039",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-17",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-69088→includes→CVE-2026-69088",
+      "source": "campaign:cve-2026-69088",
+      "target": "CVE-2026-69088",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-17",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-85756→includes→CVE-2026-85756",
+      "source": "campaign:cve-2026-85756",
+      "target": "CVE-2026-85756",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-17",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-68537→includes→CVE-2026-68537",
+      "source": "campaign:cve-2026-68537",
+      "target": "CVE-2026-68537",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-17",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-68523→includes→CVE-2026-68523",
+      "source": "campaign:cve-2026-68523",
+      "target": "CVE-2026-68523",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-17",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-86038→includes→CVE-2026-86038",
+      "source": "campaign:cve-2026-86038",
+      "target": "CVE-2026-86038",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-17",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-85721→includes→CVE-2026-85721",
+      "source": "campaign:cve-2026-85721",
+      "target": "CVE-2026-85721",
       "relationship": "includes",
       "confidence": 1,
       "first_seen": "2026-09-17",
