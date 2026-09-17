@@ -1,8 +1,46 @@
 {
-  "generated": "2026-09-17T17:05:42.225Z",
+  "generated": "2026-09-17T21:27:32.852Z",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
   "count": 200,
   "items": [
+    {
+      "slug": "cve-2026-85756-nuget-ssh-net",
+      "title": "SSH.NET: ScpClient allows server-side RCE via default SCP path handling",
+      "url": "/posts/cve-2026-85756-nuget-ssh-net.html",
+      "generated": "2026-09-17T20:05:09.357Z",
+      "severity": "HIGH",
+      "cves": [
+        "CVE-2026-85756",
+        "CVE-2026-85756"
+      ],
+      "mitreAttack": [],
+      "sigma": [],
+      "kql": [],
+      "splunk": [],
+      "osquery": [],
+      "suricata": [
+        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain ssh.net\"; dns.query; content:\"ssh.net\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)"
+      ]
+    },
+    {
+      "slug": "cve-2026-73247-maven-io-kestra-core",
+      "title": "Kestra: SSRF via Pebble http() function allows unauthenticated access to internal services & cloud metadata",
+      "url": "/posts/cve-2026-73247-maven-io-kestra-core.html",
+      "generated": "2026-09-17T20:05:09.344Z",
+      "severity": "HIGH",
+      "cves": [
+        "CVE-2026-73247",
+        "CVE-2026-73247"
+      ],
+      "mitreAttack": [],
+      "sigma": [],
+      "kql": [],
+      "splunk": [],
+      "osquery": [],
+      "suricata": [
+        "alert ip $HOME_NET any -> 169.254.169.254 any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious IP 169.254.169.254\"; classtype:trojan-activity; sid:9000001; rev:1;)"
+      ]
+    },
     {
       "slug": "cve-2026-82410-go-github-com-pocketbase-pocketbase",
       "title": "Pocketbase: Unhandled panic in worker goroutines",
@@ -4197,55 +4235,6 @@
         "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uvczrr/july_14th_nightmare_eclipse/&quot;&gt;[link]\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uvczrr/july_14th_nightmare_eclipse/&quot\\;&gt\\;[link]\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
         "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uvczrr/july_14th_nightmare_eclipse/&quot;&gt;[comme\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uvczrr/july_14th_nightmare_eclipse/&quot\\;&gt\\;[comme\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
         "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)"
-      ]
-    },
-    {
-      "slug": "can-recon-workflow-get-any-easier-and-smarter-than-this",
-      "title": "Can recon workflow get any easier and smarter than this ?",
-      "url": "/posts/can-recon-workflow-get-any-easier-and-smarter-than-this.html",
-      "generated": "2026-07-13T14:32:01.657Z",
-      "severity": "MEDIUM",
-      "cves": [],
-      "mitreAttack": [],
-      "sigma": [],
-      "kql": [],
-      "splunk": [],
-      "osquery": [],
-      "suricata": [
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://pypi.org/project/netbear/&quot;&gt;https://pypi.org/project/netbear/&lt;/a&gt;&lt;/p&gt;\"; http.host; content:\"pypi.org\"; nocase; http.uri; content:\"/project/netbear/&quot\\;&gt\\;https\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/user/david_adventures001&quot;&gt;\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/user/david_adventures001&quot\\;&gt\\;\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uvcagv/can_recon_workflow_get_any_easier_and_smarte\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uvcagv/can_recon_workflow_get_any_easier_and_smarte\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain pypi.org\"; dns.query; content:\"pypi.org\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000005; rev:1;)"
-      ]
-    },
-    {
-      "slug": "how-the-tls-handshake-works-and-why-half-of-it-is-gone",
-      "title": "How the TLS handshake works, and why half of it is gone",
-      "url": "/posts/how-the-tls-handshake-works-and-why-half-of-it-is-gone.html",
-      "generated": "2026-07-13T13:32:59.086Z",
-      "severity": "MEDIUM",
-      "cves": [],
-      "mitreAttack": [
-        {
-          "id": "T1071",
-          "name": "Application Layer Protocol",
-          "tactic": "command-and-control",
-          "confidence": "MEDIUM"
-        }
-      ],
-      "sigma": [],
-      "kql": [],
-      "splunk": [],
-      "osquery": [],
-      "suricata": [
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uvbh3w/how_the_tls_handshake_works_and_why_half_of_\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uvbh3w/how_the_tls_handshake_works_and_why_half_of_\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://external-preview.redd.it/u6yirn36XurUN65J4QwrF5_NF7qKyqmKhQcUQthMNeQ.png?width=640&amp;amp;c\"; http.host; content:\"external-preview.redd.it\"; nocase; http.uri; content:\"/u6yirn36XurUN65J4QwrF5_NF7qKyqmKhQcUQthMNeQ.png?width=640&amp\\;amp\\;c\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.certkit.io/blog/tls-handshake-explained&quot;&gt;https://www.certkit.io/blog/tls-handsha\"; http.host; content:\"www.certkit.io\"; nocase; http.uri; content:\"/blog/tls-handshake-explained&quot\\;&gt\\;https\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/user/certkit&quot;&gt;\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/user/certkit&quot\\;&gt\\;\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.certkit.io/blog/tls-handshake-explained&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\"; http.host; content:\"www.certkit.io\"; nocase; http.uri; content:\"/blog/tls-handshake-explained&quot\\;&gt\\;[link]&lt\\;/a&gt\\;&lt\\;/span&gt\\;\"; nocase; classtype:trojan-activity; sid:9000005; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000006; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.certkit.io\"; dns.query; content:\"www.certkit.io\"; nocase; classtype:trojan-activity; sid:9000007; rev:1;)"
       ]
     }
   ]
