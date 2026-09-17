@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-17T01:11:39.886Z",
+  "generated": "2026-09-17T05:21:25.098Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -8,53 +8,8 @@
   "endpoint": "/api/intel/raw.json",
   "description": "Raw unfiltered S2N feed — all items including suppressed. Enterprise tier.",
   "note": "Access requires Enterprise API key. Includes suppression_reason and full IOC data.",
-  "count": 108,
+  "count": 130,
   "items": [
-    {
-      "id": "SENTINELAPEX-dbd2f21f5d08",
-      "title": "Google fixes actively exploited Android zero-day on Pixel devices",
-      "description": "Google has released the September 2026 security patches to address 110 vulnerabilities affecting its Pixel devices, including one zero-day flaw actively exploited in targeted attacks. [...]",
-      "cvss": 0,
-      "final_ps": 58,
-      "quality_score": 0.452,
-      "threat_level": "MEDIUM",
-      "type": "ZERO_DAY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.bleepingcomputer.com/news/security/google-fixes-actively-exploited-android-zero-day-on-pixel-devices/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.35",
-          "recency=0d (score=1.00)",
-          "QS=0.452"
-        ],
-        "priority": [
-          "+8 exploited_in_wild",
-          "+7 zero_day"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
-      "iocs": []
-    },
     {
       "id": "CVE-2026-50522",
       "title": "Critical SharePoint RCE CVE-2026-50522 Under Active Exploitation After Public PoC",
@@ -189,6 +144,52 @@
       },
       "suppressed": false,
       "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2024-53677",
+      "title": "CVE-2024-53677 exploit",
+      "description": "Exploit for CVE-2024-53677. CVSS 9.8.",
+      "cvss": 9.8,
+      "final_ps": 50,
+      "quality_score": 0.348,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-26",
+      "last_seen": "2026-08-26",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2024-53677"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://sploitus.com/exploit?id=KITPLOIT:TOOLS-GITHUB-YANGYANGLO-CVE-2024-53677&utm_source=rss&utm_medium=rss"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=22d (score=0.05)",
+          "QS=0.348"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": "Quality score below minimum threshold (QS < 0.35)",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Quality score below minimum threshold (QS < 0.35)",
       "iocs": []
     },
     {
@@ -378,50 +379,6 @@
       "iocs": []
     },
     {
-      "id": "SENTINELAPEX-759234fb9333",
-      "title": "Critical ScreenConnect flaw now actively exploited in attacks",
-      "description": "Attackers now exploit a critical-severity ConnectWise ScreenConnect vulnerability in the wild, according to the U.S. Cybersecurity and Infrastructure Security Agency (CISA). [...]",
-      "cvss": 0,
-      "final_ps": 45,
-      "quality_score": 0.452,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.bleepingcomputer.com/news/security/cisa-warns-of-hackers-exploiting-critical-screenconnect-flaw/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.35",
-          "recency=0d (score=1.00)",
-          "QS=0.452"
-        ],
-        "priority": [
-          "+8 exploited_in_wild"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
-      "iocs": []
-    },
-    {
       "id": "CVE-2026-86218",
       "title": "N-able patches critical N-central zero-day exploited in the wild (CVE-2026-86218)",
       "description": "",
@@ -515,96 +472,6 @@
       },
       "suppressed": false,
       "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-61544",
-      "title": "libp2p-quic: Remote panic via certificate expiry race during QUIC handshake",
-      "description": "Summary\n\nlibp2p-quic can panic on an inbound QUIC handshake if a malicious peer presents a valid, short lived libp2p TLS certificate and delays the final TLS 1.3 handshake fragment until the certificate expires.\n\nThis is remotely reachable by a network peer and can crash applicat... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 44,
-      "quality_score": 0.478,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61544"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-5hq8-qhww-jm7q"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=1d (score=0.85)",
-          "QS=0.478"
-        ],
-        "priority": [
-          "base_ps=44 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "SENTINELAPEX-a79048bc3ce3",
-      "title": "Acronis warns of actively exploited flaw in its cPanel backup plugin",
-      "description": "Acronis disclosed a high-severity Linux local privilege escalation vulnerability in its backup plugin for cPanel, WebHost Manager (WHM), and Plesk that may be exploited in the wild. [...]",
-      "cvss": 0,
-      "final_ps": 43,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.bleepingcomputer.com/news/security/acronis-warns-of-actively-exploited-flaw-in-its-cpanel-backup-plugin/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.35",
-          "recency=1d (score=0.85)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+8 exploited_in_wild"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
       "iocs": []
     },
     {
@@ -1615,47 +1482,49 @@
       "iocs": []
     },
     {
-      "id": "SENTINELAPEX-be978d7270da",
-      "title": "CISA: Critical VMware RCE flaw now exploited by ransomware gangs",
-      "description": "The U.S. Cybersecurity and Infrastructure Security Agency (CISA) warned security teams that ransomware gangs have now joined ongoing attacks exploiting a critical VMware vCenter vulnerability patched in July. [...]",
-      "cvss": 0,
+      "id": "CVE-2026-16865",
+      "title": "CVE-2026-16865: IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a remote attacker to execute arbitrary code du",
+      "description": "IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a remote attacker to execute arbitrary code due to command injection.",
+      "cvss": 8.8,
       "final_ps": 40,
-      "quality_score": 0.378,
+      "quality_score": 0.397,
       "threat_level": "LOW",
-      "type": "RANSOMWARE",
+      "type": "AI_SECURITY",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
       "exploited": false,
       "cisa_kev": false,
-      "ransomware": true,
+      "ransomware": false,
       "vendor": "",
       "product": "",
       "due_date": null,
-      "cves": [],
+      "cves": [
+        "CVE-2026-16865"
+      ],
       "ioc_count": 0,
       "refs": [
-        "https://www.bleepingcomputer.com/news/security/cisa-critical-vmware-vcenter-rce-flaw-now-exploited-by-ransomware-gangs/"
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-16865"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.35",
-          "recency=1d (score=0.85)",
-          "QS=0.378"
+          "data_confidence=0.70",
+          "recency=28d (score=0.05)",
+          "QS=0.397"
         ],
         "priority": [
-          "+10 ransomware_confirmed"
+          "base_ps=40 (no boosts)"
         ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "suppression": null,
         "merge": null
       },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "suppressed": false,
+      "suppression_reason": null,
       "iocs": []
     },
     {
@@ -2721,21 +2590,21 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-92605",
-      "title": "CVE-2026-92605 - IRIS through 2.4.29 Unauthorized Comment Access via Object ID",
-      "description": "CVE-2026-92605 - IRIS through 2.4.29 Unauthorized Comment Access via Object ID",
-      "cvss": 6.5,
+      "id": "CVE-2026-55604",
+      "title": "@arikusi/deepseek-mcp-server has an Authorization Bypass Through User-Controlled Key",
+      "description": "Cross-Session Data Exposure via Caller-Controlled session_id\n\nProject / Repository: arikusi/deepseek-mcp-server\nAffected version / commit tested: 1.6.0 / 04f28be2c6e99d3d4e443a6ae37cc35f0a71554a\nVulnerability type: Authorization bypass / cross-session data exposure\nAuthentication... [Full analysis a",
+      "cvss": 8.6,
       "final_ps": 39,
-      "quality_score": 0.403,
+      "quality_score": 0.397,
       "threat_level": "LOW",
-      "type": "CVE_REPORT",
+      "type": "INCIDENT",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
+      "first_seen": "2026-08-25",
+      "last_seen": "2026-08-25",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -2743,18 +2612,18 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-92605"
+        "CVE-2026-55604"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-92605"
+        "https://github.com/advisories/GHSA-fh3r-g96v-f578"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.403"
+          "data_confidence=0.70",
+          "recency=22d (score=0.05)",
+          "QS=0.397"
         ],
         "priority": [
           "base_ps=39 (no boosts)"
@@ -2767,66 +2636,21 @@
       "iocs": []
     },
     {
-      "id": "SENTINELAPEX-5c8a8a1afe58",
-      "title": "The true cost of a ransomware attack, with and without BCDR",
-      "description": "The true cost of a ransomware attack, with and without BCDR",
-      "cvss": 0,
-      "final_ps": 39,
-      "quality_score": 0.343,
-      "threat_level": "LOW",
-      "type": "RANSOMWARE",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": true,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.bleepingcomputer.com/news/security/the-true-cost-of-a-ransomware-attack-with-and-without-bcdr/",
-        "https://intel.cyberdudebivash.com/reports/2026/09/intel--e44e077ce84bdda7d2705b7f.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.10",
-          "recency=0d (score=1.00)",
-          "QS=0.343"
-        ],
-        "priority": [
-          "+10 ransomware_confirmed"
-        ],
-        "suppression": "Quality score below minimum threshold (QS < 0.35)",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Quality score below minimum threshold (QS < 0.35)",
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-88593",
-      "title": "CVE-2026-88593 - kkFileView Reflected Cross-Site Scripting",
-      "description": "CVE-2026-88593 - kkFileView Reflected Cross-Site Scripting",
-      "cvss": 6.1,
+      "id": "CVE-2026-16857",
+      "title": "CVE-2026-16857: IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a remote attacker to manipulate network traffi",
+      "description": "IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a remote attacker to manipulate network traffic and DNS configuration due to improper authentication.",
+      "cvss": 8.2,
       "final_ps": 38,
-      "quality_score": 0.403,
+      "quality_score": 0.397,
       "threat_level": "LOW",
-      "type": "CVE_REPORT",
+      "type": "AI_SECURITY",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -2834,21 +2658,804 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-88593"
+        "CVE-2026-16857"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-88593"
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-16857"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.403"
+          "data_confidence=0.70",
+          "recency=28d (score=0.05)",
+          "QS=0.397"
         ],
         "priority": [
           "base_ps=38 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-58096",
+      "title": "CVE-2026-58096 - ppp(8): missing length validation in LcpDecodeConfig()",
+      "description": "CVE ID : CVE-2026-58096\n\n Published : Aug. 26, 2026, 5:28 a.m. | 34minutes ago\n\n Description : LcpDecodeConfig() did not validate the length of received endpoint discriminator options against the minimum required by RFC 1717. Undersized options would trigger an out-of-bounds writ... [Full analysis a",
+      "cvss": 7.8,
+      "final_ps": 37,
+      "quality_score": 0.397,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-26",
+      "last_seen": "2026-08-26",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-58096",
+        "CVE-2026-58095"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-58096"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=21d (score=0.05)",
+          "QS=0.397"
+        ],
+        "priority": [
+          "base_ps=37 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-16832",
+      "title": "CVE-2026-16832: IBM Power Systems Firmware FW1120.00, FW1110.00 through FW1110.30, FW1060.00 through FW1060.80, and FW95",
+      "description": "IBM Power Systems Firmware FW1120.00, FW1110.00 through FW1110.30, FW1060.00 through FW1060.80, and FW950.00 through FW950.H2 is affected by a vulnerability in the FSP management network protocol. An attacker with authenticated HMC administrator access can execute arbitrary code ... [Full analysis a",
+      "cvss": 7.8,
+      "final_ps": 37,
+      "quality_score": 0.397,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-16832"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-16832"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=28d (score=0.05)",
+          "QS=0.397"
+        ],
+        "priority": [
+          "base_ps=37 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-16930",
+      "title": "CVE-2026-16930: IBM Power Systems Firmware FW1120.00, FW1110.00 through FW1110.30, and FW1060.00 through FW1060.80 is af",
+      "description": "IBM Power Systems Firmware FW1120.00, FW1110.00 through FW1110.30, and FW1060.00 through FW1060.80 is affected by a vulnerability in the interface between the BMC/FSP and the host system. An attacker with service account or root access to the BMC/FSP can execute arbitrary code on... [Full analysis a",
+      "cvss": 7.8,
+      "final_ps": 37,
+      "quality_score": 0.397,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-16930"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-16930"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=28d (score=0.05)",
+          "QS=0.397"
+        ],
+        "priority": [
+          "base_ps=37 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-17429",
+      "title": "CVE-2026-17429: IBM Power Systems Firmware FW1120.00, FW1110.00 through FW1110.30, FW1060.00 through FW1060.80, FW950.00",
+      "description": "IBM Power Systems Firmware FW1120.00, FW1110.00 through FW1110.30, FW1060.00 through FW1060.80, FW950.00 through FW950.H2, OP940.00 through OP940.a1 (Power9), and OP940.00 - OP940.81 (Power HMC) is affected by a vulnerability in the interface between the BMC/FSP and the host syst... [Full analysis a",
+      "cvss": 7.8,
+      "final_ps": 37,
+      "quality_score": 0.397,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-17429"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-17429"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=28d (score=0.05)",
+          "QS=0.397"
+        ],
+        "priority": [
+          "base_ps=37 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-70496",
+      "title": "CVE-2026-70496: A flaw was found in search-v2-operator. The operator's ClusterRole has permissions equivalent to a clust",
+      "description": "A flaw was found in search-v2-operator. The operator's ClusterRole has permissions equivalent to a cluster administrator, allowing it to impersonate other entities, write Role-Based Access Control (RBAC) configurations, approve Certificate Signing Requests (CSRs), and manage Mani... [Full analysis a",
+      "cvss": 7.8,
+      "final_ps": 37,
+      "quality_score": 0.397,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-70496"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-70496"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=28d (score=0.05)",
+          "QS=0.397"
+        ],
+        "priority": [
+          "base_ps=37 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-16874",
+      "title": "CVE-2026-16874: IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a local attacker to obtain root privileges due",
+      "description": "IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a local attacker to obtain root privileges due to improper enforcement of RBAC authentication roles.",
+      "cvss": 7.8,
+      "final_ps": 37,
+      "quality_score": 0.397,
+      "threat_level": "LOW",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-16874"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-16874"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=28d (score=0.05)",
+          "QS=0.397"
+        ],
+        "priority": [
+          "base_ps=37 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-16875",
+      "title": "CVE-2026-16875: IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a local attacker to execute arbitrary commands",
+      "description": "IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a local attacker to execute arbitrary commands due to shell metacharacter injection.",
+      "cvss": 7.8,
+      "final_ps": 37,
+      "quality_score": 0.397,
+      "threat_level": "LOW",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-16875"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-16875"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=28d (score=0.05)",
+          "QS=0.397"
+        ],
+        "priority": [
+          "base_ps=37 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-16873",
+      "title": "CVE-2026-16873: IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a local attacker to achieve local privilege es",
+      "description": "IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a local attacker to achieve local privilege escalation due to an out-of-bounds write.",
+      "cvss": 7.8,
+      "final_ps": 37,
+      "quality_score": 0.397,
+      "threat_level": "LOW",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-16873"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-16873"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=28d (score=0.05)",
+          "QS=0.397"
+        ],
+        "priority": [
+          "base_ps=37 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-16869",
+      "title": "CVE-2026-16869: IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a local attacker to execute arbitrary code due",
+      "description": "IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a local attacker to execute arbitrary code due to improperly scrubbed environment variables.",
+      "cvss": 7.8,
+      "final_ps": 37,
+      "quality_score": 0.397,
+      "threat_level": "LOW",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-16869"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-16869"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=28d (score=0.05)",
+          "QS=0.397"
+        ],
+        "priority": [
+          "base_ps=37 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-16938",
+      "title": "CVE-2026-16938: IBM Power Systems Firmware FW1120.00, FW1110.00 through FW1110.30, FW1060.00 through FW1060.80, and FW95",
+      "description": "IBM Power Systems Firmware FW1120.00, FW1110.00 through FW1110.30, FW1060.00 through FW1060.80, and FW950.00 through FW950.H2 is affected by a vulnerability in access controls over privileged system configuration operations on the FSP. An attacker with authenticated administrator... [Full analysis a",
+      "cvss": 7.8,
+      "final_ps": 37,
+      "quality_score": 0.397,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-16938"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-16938"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=28d (score=0.05)",
+          "QS=0.397"
+        ],
+        "priority": [
+          "base_ps=37 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-18681",
+      "title": "CVE-2026-18681: IBM Server Firmware FW1120.00, FW1110.00 through FW1110.30, FW1060.00 through FW1060.80, and FW950.00 th",
+      "description": "IBM Server Firmware FW1120.00, FW1110.00 through FW1110.30, FW1060.00 through FW1060.80, and FW950.00 through FW950.H2 is affected by a vulnerability in the FSP firmware update process. An attacker with authenticated administrator-level access to the FSP can, under specific condi... [Full analysis a",
+      "cvss": 7.8,
+      "final_ps": 37,
+      "quality_score": 0.397,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-18681"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-18681"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=28d (score=0.05)",
+          "QS=0.397"
+        ],
+        "priority": [
+          "base_ps=37 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-63041",
+      "title": "CVE-2026-63041: Apache APISIX: attach-consumer-label does not strip client-supplied consumer-label headers",
+      "description": "Posted by Abhishek Choudhary on Aug 25 Severity:\n\nAffected versions:\n\n- Apache APISIX 3.11.0 through 3.17.0\n\nDescription:\n\nReliance on Untrusted Inputs in a Security Decision vulnerability in Apache APISIX.\n\nThis vulnerability allows an attacker to escalate privilege or perform a... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 37,
+      "quality_score": 0.397,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-26",
+      "last_seen": "2026-08-26",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-63041"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://seclists.org/oss-sec/2026/q3/589"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=21d (score=0.05)",
+          "QS=0.397"
+        ],
+        "priority": [
+          "base_ps=37 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-19875",
+      "title": "CVE-2026-19875: IBM Langflow OSS 1.0.0 through 1.10.0 could allow a remote attacker to overwrite administrator email inf",
+      "description": "IBM Langflow OSS 1.0.0 through 1.10.0 could allow a remote attacker to overwrite administrator email information and abuse the server as an outbound relay due to missing authentication for the registration endpoint.",
+      "cvss": 7.5,
+      "final_ps": 37,
+      "quality_score": 0.397,
+      "threat_level": "LOW",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-19875"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-19875"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=28d (score=0.05)",
+          "QS=0.397"
+        ],
+        "priority": [
+          "base_ps=37 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-55629",
+      "title": "Whistle vulnerable to path traversal",
+      "description": "This bug was found by nova, which is an automated tool from group of Song Wu, intern, Zhejiang University; BoWang, independent researcher; Xingwei Lin, Zhejiang University.\n\nVulnerability detail:\n\nIn service.js, inside\n`app.get('/cgi-bin/temp/get', ...):\nvar filename = req.query.... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 37,
+      "quality_score": 0.397,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-25",
+      "last_seen": "2026-08-25",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-55629"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-3vfr-4gwf-qxfp"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=22d (score=0.05)",
+          "QS=0.397"
+        ],
+        "priority": [
+          "base_ps=37 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-55620",
+      "title": "eml_parser vulnerable to DoS via deeply nested parens in Received headers",
+      "description": "Summary\n\neml_parser strips parenthesised CFWS comments from Received: headers using a regex-based fix-point loop. The loop has quadratic time complexity in the number of nested parens. A single Received: header containing 5,000 nested parens causes ~1.3 seconds of CPU saturation ... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 37,
+      "quality_score": 0.397,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-25",
+      "last_seen": "2026-08-25",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-55620"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-g7gc-gmgp-wgqg"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=22d (score=0.05)",
+          "QS=0.397"
+        ],
+        "priority": [
+          "base_ps=37 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-53430",
+      "title": "gRPC Erlang package has unbounded gzip decompression (decompression bomb)",
+      "description": "Summary\nAn unauthenticated remote peer can crash any gRPC server built on this library by sending a small gzip-compressed frame that decompresses to gigabytes, exhausting the BEAM node's heap and triggering an OOM kill (denial of service).\n\nIntroduced in https://github.com/elixir... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 37,
+      "quality_score": 0.397,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-25",
+      "last_seen": "2026-08-25",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-53430"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-6ccx-9c9f-327w"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=22d (score=0.05)",
+          "QS=0.397"
+        ],
+        "priority": [
+          "base_ps=37 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-48854",
+      "title": "gRPC Erlang package has unbounded request body accumulation in read_full_body/3",
+      "description": "Summary\n\n'Elixir.GRPC.Server.Adapters.Cowboy.Handler':read_full_body/3 accumulates every received chunk into a single growing binary with no size cap. When the client omits the grpc-timeout header, the read timeout resolves to :infinity, allowing a slow-trickle attacker to hold t... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 37,
+      "quality_score": 0.397,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-25",
+      "last_seen": "2026-08-25",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-48854"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-q8gf-9rvj-gmgj"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=22d (score=0.05)",
+          "QS=0.397"
+        ],
+        "priority": [
+          "base_ps=37 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -2943,6 +3550,420 @@
         "priority": [
           "+10 CVSS≥9",
           "+8 exploited_in_wild"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2017-12617",
+      "title": "CVE-2017-12617 exploit",
+      "description": "Exploit for CVE-2017-12617. CVSS 8.1.",
+      "cvss": 8.1,
+      "final_ps": 36,
+      "quality_score": 0.348,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-26",
+      "last_seen": "2026-08-26",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2017-12617"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://sploitus.com/exploit?id=KITPLOIT:TOOLS-GITHUB-YZEE00-CVE-2017-12617&utm_source=rss&utm_medium=rss"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=22d (score=0.05)",
+          "QS=0.348"
+        ],
+        "priority": [
+          "base_ps=36 (no boosts)"
+        ],
+        "suppression": "Quality score below minimum threshold (QS < 0.35)",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Quality score below minimum threshold (QS < 0.35)",
+      "iocs": []
+    },
+    {
+      "id": "CVE-2017-0144",
+      "title": "Triage-CVE-2017-0144 exploit",
+      "description": "Exploit for CVE-2017-0144. CVSS 9.3.",
+      "cvss": 8.1,
+      "final_ps": 36,
+      "quality_score": 0.348,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-26",
+      "last_seen": "2026-08-26",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2017-0144"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://sploitus.com/exploit?id=KITPLOIT:TOOLS-GITHUB-PROBABLYSECURE-TRIAGE-CVE-2017-0144&utm_source=rss&utm_medium=rss"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=22d (score=0.05)",
+          "QS=0.348"
+        ],
+        "priority": [
+          "base_ps=36 (no boosts)"
+        ],
+        "suppression": "Quality score below minimum threshold (QS < 0.35)",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Quality score below minimum threshold (QS < 0.35)",
+      "iocs": []
+    },
+    {
+      "id": "CVE-2019-0232",
+      "title": "CVE-2019-0232 exploit",
+      "description": "Exploit for CVE-2019-0232. CVSS 9.3.",
+      "cvss": 8.1,
+      "final_ps": 36,
+      "quality_score": 0.348,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-26",
+      "last_seen": "2026-08-26",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2019-0232"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://sploitus.com/exploit?id=KITPLOIT:TOOLS-GITHUB-XSXTW-CVE-2019-0232&utm_source=rss&utm_medium=rss"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=22d (score=0.05)",
+          "QS=0.348"
+        ],
+        "priority": [
+          "base_ps=36 (no boosts)"
+        ],
+        "suppression": "Quality score below minimum threshold (QS < 0.35)",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Quality score below minimum threshold (QS < 0.35)",
+      "iocs": []
+    },
+    {
+      "id": "CVE-2024-1086",
+      "title": "CVE-2024-1086 exploit",
+      "description": "Exploit for CVE-2024-1086. CVSS 7.8.",
+      "cvss": 7.8,
+      "final_ps": 36,
+      "quality_score": 0.348,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-26",
+      "last_seen": "2026-08-26",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2024-1086"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://sploitus.com/exploit?id=KITPLOIT:TOOLS-GITHUB-XZX482-CVE-2024-1086&utm_source=rss&utm_medium=rss"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=22d (score=0.05)",
+          "QS=0.348"
+        ],
+        "priority": [
+          "base_ps=36 (no boosts)"
+        ],
+        "suppression": "Quality score below minimum threshold (QS < 0.35)",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Quality score below minimum threshold (QS < 0.35)",
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-16841",
+      "title": "CVE-2026-16841: IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a remote attacker to execute arbitrary code du",
+      "description": "IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a remote attacker to execute arbitrary code due to a stack buffer overflow.",
+      "cvss": 7.2,
+      "final_ps": 36,
+      "quality_score": 0.397,
+      "threat_level": "LOW",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-16841"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-16841"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=28d (score=0.05)",
+          "QS=0.397"
+        ],
+        "priority": [
+          "base_ps=36 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-16847",
+      "title": "CVE-2026-16847: IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a remote attacker to execute arbitrary code du",
+      "description": "IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a remote attacker to execute arbitrary code due to a heap buffer overflow.",
+      "cvss": 7.2,
+      "final_ps": 36,
+      "quality_score": 0.397,
+      "threat_level": "LOW",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-16847"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-16847"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=28d (score=0.05)",
+          "QS=0.397"
+        ],
+        "priority": [
+          "base_ps=36 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-16845",
+      "title": "CVE-2026-16845: IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a remote attacker to execute arbitrary code du",
+      "description": "IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a remote attacker to execute arbitrary code due to a heap buffer overflow.",
+      "cvss": 7.2,
+      "final_ps": 36,
+      "quality_score": 0.397,
+      "threat_level": "LOW",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-16845"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-16845"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=28d (score=0.05)",
+          "QS=0.397"
+        ],
+        "priority": [
+          "base_ps=36 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-45019",
+      "title": "Chainlist has SSRF via MCP SSE and streamable-http transports that allows unauthenticated internal network access",
+      "description": "Am I affected?\n\nOnly if your deployment sets features.mcp.enabled = true in .chainlit/config.toml. MCP has been disabled by default since v2.7.0, so most Chainlit deployments are not affected. No authentication is required: /mcp is reachable by any client that can open a session.... [Full analysis a",
+      "cvss": 7.2,
+      "final_ps": 36,
+      "quality_score": 0.397,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-25",
+      "last_seen": "2026-08-25",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-45019"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-hvfh-5mj3-5f3j"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=22d (score=0.05)",
+          "QS=0.397"
+        ],
+        "priority": [
+          "base_ps=36 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-55609",
+      "title": "consciousness-explorer / sublinear-time-solver MCP export_state has an arbitrary file write",
+      "description": "Impact\nAn arbitrary file write vulnerability (CWE-73, External Control of File Name or Path) exists in the consciousness-explorer component of sublinear-time-solver. The MCP export_state (and import_state) tool accepted a user-supplied filepath argument and passed it directly to ... [Full analysis a",
+      "cvss": 7.1,
+      "final_ps": 36,
+      "quality_score": 0.397,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-25",
+      "last_seen": "2026-08-25",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-55609"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-xc9g-j69q-37xw"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=22d (score=0.05)",
+          "QS=0.397"
+        ],
+        "priority": [
+          "base_ps=36 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -3366,6 +4387,882 @@
         ],
         "priority": [
           "+8 exploited_in_wild"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-60004",
+      "title": "CISA Warns of Exploited Gitea Vulnerability",
+      "description": "",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-26",
+      "last_seen": "2026-08-26",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-60004"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.securityweek.com/cisa-warns-of-exploited-gitea-vulnerability/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-76148",
+      "title": "CVE-2026-76148 - CorvusSKK Code Injection Vulnerability",
+      "description": "",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-26",
+      "last_seen": "2026-08-26",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-76148"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-76148"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-79654",
+      "title": "CVE-2026-79654 - Ketello: katello content view history api cross-organization authorization bypass",
+      "description": "",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-26",
+      "last_seen": "2026-08-26",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-79654"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-79654"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-45018",
+      "title": "Chainlit has command injection via MCP stdio transport that allows unauthenticated remote code execution",
+      "description": "",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-25",
+      "last_seen": "2026-08-25",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-45018"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-w3fx-mc44-mf6j"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-49757",
+      "title": "AshAuthentication vulnerable to OAuth2/OIDC account takeover via email-based user matching",
+      "description": "",
+      "cvss": 9.5,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-25",
+      "last_seen": "2026-08-25",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-49757"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-777c-2fxx-qr28"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-15981",
+      "title": "Two CVSS 9.8 Auth Bypasses in miniOrange SAML WordPress Plugin Were Exploited Before Any Database Even Listed the Paid E",
+      "description": "",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-25",
+      "last_seen": "2026-08-25",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-15981",
+        "CVE-2026-61979"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://securityaffairs.com/197815/security/two-cvss-9-8-auth-bypasses-in-miniorange-saml-wordpress-plugin-were-exploited-before-any-database-even-listed-the-paid-editions-as-vulnerable.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-21962",
+      "title": "U.S. CISA adds maximum-severity Oracle flaw to its Known Exploited Vulnerabilities catalog",
+      "description": "",
+      "cvss": 10,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-25",
+      "last_seen": "2026-08-25",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-21962"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://securityaffairs.com/197801/security/u-s-cisa-adds-maximum-severity-oracle-flaw-to-its-known-exploited-vulnerabilities-catalog.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-16687",
+      "title": "CVE-2026-16687: IBM Power Systems Firmware FW1120.00, FW1110.00 through FW1110.30, FW1060.00 through FW1060.80, and FW95",
+      "description": "",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-16687"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-16687"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-16862",
+      "title": "CVE-2026-16862: IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a remote attacker to execute arbitrary code du",
+      "description": "",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-16862"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-16862"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-16864",
+      "title": "CVE-2026-16864: IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a remote attacker to execute arbitrary code du",
+      "description": "",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-16864"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-16864"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-16872",
+      "title": "CVE-2026-16872: IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a remote attacker to execute arbitrary code du",
+      "description": "",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-16872"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-16872"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-16836",
+      "title": "CVE-2026-16836: IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a remote attacker to cause a denial of service",
+      "description": "",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-16836"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-16836"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-16831",
+      "title": "CVE-2026-16831: IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a remote attacker to cause a denial of service",
+      "description": "",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-16831"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-16831"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-55040",
+      "title": "Two Microsoft SharePoint Flaws Can Be Chained to Hack Servers Without a Password",
+      "description": "",
+      "cvss": 9.1,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-26",
+      "last_seen": "2026-08-26",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-55040",
+        "CVE-2026-63520"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cybersecuritynews.com/sharepoint-flaws-chained-to-hack-servers/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-16850",
+      "title": "CVE-2026-16850: IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a remote attacker to execute arbitrary code du",
+      "description": "",
+      "cvss": 9,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-16850"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-16850"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-75149",
+      "title": "CVE-2026-75149: marimo before 0.23.15 contains a code injection vulnerability in the notebook configuration handler that",
+      "description": "",
+      "cvss": 9.1,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-75149"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-75149"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-66794",
+      "title": "CVE-2026-66794: A flaw was found in the cluster-proxy-addon component of Multicluster Engine for Kubernetes. This vulner",
+      "description": "",
+      "cvss": 9.1,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CLOUD_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-66794"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-66794"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-16835",
+      "title": "CVE-2026-16835: IBM Power Systems Firmware FW1120.00, FW1110.00 through FW1110.30, FW1060.00 through FW1060.80, and FW95",
+      "description": "",
+      "cvss": 9.1,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-16835"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-16835"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-16828",
+      "title": "CVE-2026-16828: IBM Power Systems Firmware FW1120.00, FW1110.00 through FW1110.30, FW1060.00 through FW1060.80, and FW95",
+      "description": "",
+      "cvss": 9.1,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-16828"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-16828"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
         ],
         "suppression": null,
         "merge": null
@@ -3974,698 +5871,21 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-12944",
-      "title": "Exploit for CVE-2026-12944",
-      "description": "",
-      "cvss": 9.6,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-12944"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://sploitus.com/exploit?id=4711FCA7-44EF-5689-B988-E2875240858C&utm_source=rss&utm_medium=rss"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-76821",
-      "title": "CVE-2026-76821 - OpenCTI: User-Controlled ReDoS in JSON Ingestion Mapper",
-      "description": "",
-      "cvss": 9.8,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-76821"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-76821"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-91749",
-      "title": "CVE-2026-91749 - Google Chrome Workers Use-After-Free Vulnerability",
-      "description": "",
-      "cvss": 9.6,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-91749"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-91749"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-91939",
-      "title": "CVE-2026-91939 - Cotonti 1.0.0 Comments Plugin PHP Object Injection via ci Parameter",
-      "description": "",
-      "cvss": 9.8,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-91939"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-91939"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-61568",
-      "title": "@zereight/mcp-gitlab: DNS rebinding reaches local Streamable HTTP MCP transport",
-      "description": "",
-      "cvss": 9.6,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61568"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-vmp7-252j-cwp7"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-58704",
-      "title": "Google Patches Pixel Modem Zero-Day Exploited in Targeted Attacks",
-      "description": "",
-      "cvss": 8,
-      "final_ps": 25,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "ZERO_DAY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-58704"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://securityaffairs.com/199193/hacking/google-patches-pixel-modem-zero-day-exploited-in-targeted-attacks.html",
-        "https://www.securityweek.com/pixel-modem-zero-day-exploited-in-targeted-attacks/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+7 zero_day"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-63671",
-      "title": "@nuxtjs/mdc's URL sanitizer misses SVG xlink:href and data:text/html, allowing XSS from untrusted markdown at the defaul",
-      "description": "",
-      "cvss": 8.1,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "npm",
-      "product": "@nuxtjs/mdc",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-63671",
-        "CVE-2026-63671"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-mxm6-v9r6-r94c",
-        "https://github.com/nuxt-content/mdc/security/advisories/GHSA-mxm6-v9r6-r94c",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-63671",
-        "https://github.com/nuxt-content/mdc/pull/491"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-63127",
-      "title": "RMCP: Missing Resource Field Validation in OAuth Protected Resource Metadata Discovery",
-      "description": "",
-      "cvss": 8.2,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "rust",
-      "product": "rmcp",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-63127",
-        "CVE-2026-63127"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-33f5-2c5q-wgwj",
-        "https://github.com/modelcontextprotocol/rust-sdk/security/advisories/GHSA-33f5-2c5q-wgwj",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-63127",
-        "https://github.com/modelcontextprotocol/rust-sdk/pull/937"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-61591",
-      "title": "djust: Unsigned client state snapshot is restored as trusted view state (privilege escalation / state injection)",
-      "description": "",
-      "cvss": 8.1,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "pip",
-      "product": "djust",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61591",
-        "CVE-2026-61591"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-c67v-vqrp-m5wj",
-        "https://github.com/djust-org/djust/security/advisories/GHSA-c67v-vqrp-m5wj",
-        "https://github.com/djust-org/djust/releases/tag/v1.0.7",
-        "https://github.com/advisories/GHSA-c67v-vqrp-m5wj"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-63128",
-      "title": "RMCP: Unauthenticated permanent session-table leak in rmcp Streamable HTTP server transport leads to remote denial-of-se",
-      "description": "",
-      "cvss": 7.5,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "rust",
-      "product": "rmcp",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-63128",
-        "CVE-2026-63128"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-9pj6-vhgr-3mwh",
-        "https://github.com/modelcontextprotocol/rust-sdk/security/advisories/GHSA-9pj6-vhgr-3mwh",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-63128",
-        "https://github.com/modelcontextprotocol/rust-sdk/pull/934"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-61592",
-      "title": "djust: SSE sessions are not bound to the authenticated user; the client-chosen session_id is the sole authorization capa",
-      "description": "",
-      "cvss": 7.4,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "pip",
-      "product": "djust",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61592",
-        "CVE-2026-61592"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-f795-p5jw-j6g2",
-        "https://github.com/djust-org/djust/security/advisories/GHSA-f795-p5jw-j6g2",
-        "https://github.com/djust-org/djust/releases/tag/v1.0.7",
-        "https://github.com/advisories/GHSA-f795-p5jw-j6g2"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-61596",
-      "title": "djust has broken object-level access control (IDOR)",
-      "description": "",
-      "cvss": 7.1,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "pip",
-      "product": "djust",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61596",
-        "CVE-2026-61596"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-c7c5-5j6r-q957",
-        "https://github.com/djust-org/djust/security/advisories/GHSA-c7c5-5j6r-q957",
-        "https://github.com/djust-org/djust/releases/tag/v1.0.7",
-        "https://github.com/advisories/GHSA-c7c5-5j6r-q957"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-61593",
-      "title": "djust has Cross-Site Request Forgery on the Server-Sent-Events transport: a cross-origin page can drive a victim-authent",
-      "description": "",
-      "cvss": 8.1,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "pip",
-      "product": "djust",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61593",
-        "CVE-2026-61593"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-pg97-jvmf-qfvc",
-        "https://github.com/djust-org/djust/security/advisories/GHSA-pg97-jvmf-qfvc",
-        "https://github.com/djust-org/djust/releases/tag/v1.0.7",
-        "https://github.com/advisories/GHSA-pg97-jvmf-qfvc"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-68904",
-      "title": "node-opcua: TCP Socket Leak (FIN-WAIT-2) via keepalive reconnection cycle - Resource Exhaustion",
-      "description": "",
-      "cvss": 7,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "npm",
-      "product": "node-opcua-transport",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-68904",
-        "CVE-2026-68904"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-r2pf-9cw4-5j65",
-        "https://github.com/node-opcua/node-opcua/security/advisories/GHSA-r2pf-9cw4-5j65",
-        "https://github.com/node-opcua/node-opcua/pull/1497",
-        "https://github.com/node-opcua/node-opcua/commit/1959cbb8946b386d2e24a1cce05b7148099d36e7"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-61554",
-      "title": "emp3r0r has an unauthenticated HTTP Polling DoS",
+      "id": "CVE-2026-55099",
+      "title": "icalendar has Algorithmic Complexity in Equality",
       "description": "",
       "cvss": 7.5,
       "final_ps": 18,
       "quality_score": 0.438,
       "threat_level": "LOW",
-      "type": "NEWS_REPORT",
+      "type": "CRITICAL_INFRASTRUCTURE",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
+      "first_seen": "2026-08-25",
+      "last_seen": "2026-08-25",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -4673,11 +5893,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-61554"
+        "CVE-2026-55099"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-4595-rvpx-4q34"
+        "https://github.com/advisories/GHSA-cv84-9p8j-fj68"
       ],
       "explanation": {
         "quality": [
@@ -4697,56 +5917,10 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-61598",
-      "title": "djust: Client mass-assignment of arbitrary view attributes via the default dj-model update_model handler",
+      "id": "CVE-2026-61518",
+      "title": "CVE-2026-61518: ISPConfig contains an authenticated SQL injection vulnerability in the Remote API. The primary_id parame",
       "description": "",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61598"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-cc7c-9jff-58wj"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-92604",
-      "title": "CVE-2026-92604 - Scirius through 3.8.0 Arbitrary File Write via PCAP Upload",
-      "description": "",
-      "cvss": 8.1,
+      "cvss": 8.8,
       "final_ps": 18,
       "quality_score": 0.438,
       "threat_level": "LOW",
@@ -4756,8 +5930,8 @@
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
+      "first_seen": "2026-08-19",
+      "last_seen": "2026-08-19",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -4765,195 +5939,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-92604"
+        "CVE-2026-61518"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-92604"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-61595",
-      "title": "djust: Multi-tenant isolation fails open on the WebSocket/SSE path, disclosing other tenants' data",
-      "description": "",
-      "cvss": 7.7,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61595"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-3492-cvg7-9mr2"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-61590",
-      "title": "djust's observability endpoints are network-exposed: the localhost gate is an opt-in middleware the docs omit, and the v",
-      "description": "",
-      "cvss": 7.4,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61590"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-8g2f-g3gq-5rjv"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-81192",
-      "title": "OpenTelemetry.Resources.Host vulnerable to arbitrary code execution via local PATH hijacking on macOS",
-      "description": "",
-      "cvss": 7,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-16",
-      "last_seen": "2026-09-16",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-81192"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-v8pv-4842-x354"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-88975",
-      "title": "Http4s: Ember HTTP/2 buffers a frame's declared payload before checking SETTINGS_MAX_FRAME_SIZE",
-      "description": "",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-15",
-      "last_seen": "2026-09-15",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-88975"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-gq9p-f254-h286"
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-61518"
       ],
       "explanation": {
         "quality": [
