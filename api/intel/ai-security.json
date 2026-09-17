@@ -2,14 +2,14 @@
   "platform": "CYBERDUDEBIVASH SENTINEL APEX — AI Security Intelligence Division",
   "endpoint": "/api/intel/ai-security.json",
   "doctrine": "Sentinel-APEX/prompts/ai-security-master-prompt.md",
-  "generated": "2026-09-16T21:13:01.087Z",
+  "generated": "2026-09-17T00:18:18.188Z",
   "disclaimer": "Evidence-graded AI security intelligence. Confidence and evidence labels attached per item. Community leads are corroborated before publication.",
   "stats": {
     "published": 20,
-    "p1": 4,
+    "p1": 3,
     "leadsHeld": 4,
     "analystReports": 0,
-    "sourcesOk": 5,
+    "sourcesOk": 4,
     "sourcesTotal": 6,
     "sourceHealth": [
       {
@@ -21,19 +21,19 @@
         "error": "HTTP 429"
       },
       {
-        "name": "NVD (prompt injection)",
-        "key": "nvd_pi",
-        "tier": 1,
-        "status": "ok",
-        "items": 40,
-        "error": null
-      },
-      {
         "name": "arXiv cs.CR (LLM security)",
         "key": "arxiv_sec",
         "tier": 2,
         "status": "ok",
         "items": 30,
+        "error": null
+      },
+      {
+        "name": "NVD (prompt injection)",
+        "key": "nvd_pi",
+        "tier": 1,
+        "status": "ok",
+        "items": 40,
         "error": null
       },
       {
@@ -56,12 +56,12 @@
         "name": "NVD (AI/LLM keyword)",
         "key": "nvd_ai",
         "tier": 1,
-        "status": "ok",
-        "items": 40,
-        "error": null
+        "status": "degraded",
+        "items": 0,
+        "error": "This operation was aborted"
       }
     ],
-    "runtimeMs": 1334
+    "runtimeMs": 15051
   },
   "frameworks": {
     "owasp_llm_top10": {
@@ -259,14 +259,14 @@
       "has_analyst_report": false
     },
     {
-      "id": "c142db3171ffa890",
-      "title": "MySQL MCP Server: Missing Origin/Host Validation in SSE Transport Enables Unauthenticated SQL Execution (DNS Rebinding / Direct Exposure)",
-      "url": "https://github.com/advisories/GHSA-rqfv-2mw9-78g2",
+      "id": "093e1ef8ef5e276d",
+      "title": "RMCP: Unauthenticated permanent session-table leak in rmcp Streamable HTTP server transport leads to remote denial-of-service",
+      "url": "https://github.com/advisories/GHSA-9pj6-vhgr-3mwh",
       "source": "GitHub Security Advisories",
       "tier": 1,
-      "published": "2026-09-11T20:35:42Z",
-      "cve": "CVE-2026-59971",
-      "severity": "critical",
+      "published": "2026-09-16T22:13:34Z",
+      "cve": "CVE-2026-63128",
+      "severity": "high",
       "cvss": null,
       "evidence_label": "VERIFIED_ADVISORY",
       "categories": [
@@ -298,62 +298,6 @@
         "level": "elevated"
       },
       "enterprise_impact": {
-        "score": 75,
-        "priority": "P1"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
-        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "1d3fe7d48d8c54f6",
-      "title": "Shopper: privilege escalation via improper Livewire admin component authorization",
-      "url": "https://github.com/advisories/GHSA-j328-xmgp-j4q3",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-09-11T21:28:54Z",
-      "cve": "CVE-2026-56828",
-      "severity": "high",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "agent_tool",
-          "label": "Agentic / Tool / MCP Exploitation"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM06",
-          "name": "Sensitive Information Disclosure / Excessive Agency"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0053",
-          "name": "LLM Plugin Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": true,
-          "mcp": false,
-          "rag": false,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "elevated"
-      },
-      "enterprise_impact": {
         "score": 63,
         "priority": "P2"
       },
@@ -371,13 +315,13 @@
       "has_analyst_report": false
     },
     {
-      "id": "6c4ba6525fd932fd",
-      "title": "Shopper: Authorization bypass in Filament bulk actions allows browse-only staff to mass-delete attributes/tags and mass-toggle visibility of brands/categories/suppliers",
-      "url": "https://github.com/advisories/GHSA-243p-f3cv-c5wh",
+      "id": "3da60fd6cc84b829",
+      "title": "RMCP: Missing Resource Field Validation in OAuth Protected Resource Metadata Discovery",
+      "url": "https://github.com/advisories/GHSA-33f5-2c5q-wgwj",
       "source": "GitHub Security Advisories",
       "tier": 1,
-      "published": "2026-09-11T20:47:17Z",
-      "cve": "CVE-2026-56827",
+      "published": "2026-09-16T22:13:26Z",
+      "cve": "CVE-2026-63127",
       "severity": "high",
       "cvss": null,
       "evidence_label": "VERIFIED_ADVISORY",
@@ -401,8 +345,8 @@
       ],
       "agent_risk": {
         "flags": {
-          "agentic": true,
-          "mcp": false,
+          "agentic": false,
+          "mcp": true,
           "rag": false,
           "tool_use": false,
           "supply_chain": false
@@ -479,6 +423,62 @@
       "detection": {
         "detect": "Monitor LLM gateway logs for delimiter-breaking tokens, role-swap phrases (\"ignore previous\", \"you are now\"), and base64/hex blobs in user or retrieved content.",
         "hunt": "Correlate anomalous tool-invocation sequences that immediately follow untrusted content ingestion (email, web, RAG chunks)."
+      },
+      "has_analyst_report": false
+    },
+    {
+      "id": "5ebc613e924210a8",
+      "title": "vLLM: Unauthenticated audio decompression-bomb DoS in /v1/chat/completions",
+      "url": "https://github.com/advisories/GHSA-hcwq-8wjf-3gcr",
+      "source": "GitHub Security Advisories",
+      "tier": 1,
+      "published": "2026-09-16T22:12:17Z",
+      "cve": "CVE-2026-57173",
+      "severity": "medium",
+      "cvss": null,
+      "evidence_label": "VERIFIED_ADVISORY",
+      "categories": [
+        {
+          "id": "infra",
+          "label": "AI Infrastructure / Inference Server"
+        }
+      ],
+      "owasp_llm": [
+        {
+          "id": "LLM05",
+          "name": "Supply Chain Vulnerabilities"
+        }
+      ],
+      "mitre_atlas": [
+        {
+          "id": "AML.T0010",
+          "name": "ML Supply Chain Compromise"
+        }
+      ],
+      "agent_risk": {
+        "flags": {
+          "agentic": false,
+          "mcp": false,
+          "rag": false,
+          "tool_use": false,
+          "supply_chain": false
+        },
+        "level": "standard"
+      },
+      "enterprise_impact": {
+        "score": 30,
+        "priority": "P3"
+      },
+      "confidence": {
+        "source": "HIGH",
+        "evidence": "HIGH",
+        "overall": "HIGH",
+        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
+      },
+      "corroboration": 1,
+      "detection": {
+        "detect": "Expose-check inference servers (Triton/vLLM/Ollama/MLflow/Ray) for unauthenticated management endpoints.",
+        "hunt": "Shodan/asset-inventory sweep for AI infra bound to 0.0.0.0 without auth."
       },
       "has_analyst_report": false
     },
