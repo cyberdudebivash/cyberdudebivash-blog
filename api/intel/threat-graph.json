@@ -1,15 +1,15 @@
 {
-  "generated": "2026-09-17T15:18:47.733Z",
+  "generated": "2026-09-17T16:48:37.472Z",
   "version": "1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX v4.0",
   "stats": {
-    "total_nodes": 13969,
+    "total_nodes": 13973,
     "actors": 8,
-    "cves": 5898,
-    "campaigns": 1361,
+    "cves": 5900,
+    "campaigns": 1363,
     "malware": 0,
     "iocs": 905,
-    "edges": 4049
+    "edges": 4051
   },
   "nodes": {
     "actor:lockbit": {
@@ -263193,6 +263193,82 @@
           "confidence": 1
         }
       ]
+    },
+    "CVE-2026-85715": {
+      "id": "CVE-2026-85715",
+      "type": "CVE",
+      "name": "ExifReader: DoS via Crafted HEIC/AVIF iloc Box - Memory Exhaustion",
+      "attributes": {
+        "cvss": 7.5,
+        "threat_level": "HIGH",
+        "priority_score": 67,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "exifreader",
+        "published": "2026-09-17",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-76825": {
+      "id": "CVE-2026-76825",
+      "type": "CVE",
+      "name": "RestrictedPython vulnerable to sandbox escape via string.Formatter field resolution",
+      "attributes": {
+        "cvss": 8.4,
+        "threat_level": "MEDIUM",
+        "priority_score": 64,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "pip",
+        "product": "RestrictedPython",
+        "published": "2026-09-17",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "campaign:cve-2026-85715": {
+      "id": "campaign:cve-2026-85715",
+      "type": "Campaign",
+      "name": "npm exifreader Exploitation Campaign",
+      "attributes": {
+        "severity": "HIGH",
+        "item_count": 1,
+        "first_seen": "2026-09-17",
+        "last_seen": "2026-09-17",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-85715"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-85715",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-76825": {
+      "id": "campaign:cve-2026-76825",
+      "type": "Campaign",
+      "name": "pip RestrictedPython Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-17",
+        "last_seen": "2026-09-17",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-76825"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-76825",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
     }
   },
   "edges": [
@@ -299808,6 +299884,24 @@
       "id": "campaign:cve-2026-63460→includes→CVE-2026-63460",
       "source": "campaign:cve-2026-63460",
       "target": "CVE-2026-63460",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-17",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-85715→includes→CVE-2026-85715",
+      "source": "campaign:cve-2026-85715",
+      "target": "CVE-2026-85715",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-17",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-76825→includes→CVE-2026-76825",
+      "source": "campaign:cve-2026-76825",
+      "target": "CVE-2026-76825",
       "relationship": "includes",
       "confidence": 1,
       "first_seen": "2026-09-17",
