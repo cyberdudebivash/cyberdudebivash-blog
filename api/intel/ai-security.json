@@ -2,31 +2,23 @@
   "platform": "CYBERDUDEBIVASH SENTINEL APEX — AI Security Intelligence Division",
   "endpoint": "/api/intel/ai-security.json",
   "doctrine": "Sentinel-APEX/prompts/ai-security-master-prompt.md",
-  "generated": "2026-09-17T00:18:18.188Z",
+  "generated": "2026-09-17T07:32:34.411Z",
   "disclaimer": "Evidence-graded AI security intelligence. Confidence and evidence labels attached per item. Community leads are corroborated before publication.",
   "stats": {
-    "published": 20,
+    "published": 19,
     "p1": 3,
-    "leadsHeld": 4,
+    "leadsHeld": 2,
     "analystReports": 0,
-    "sourcesOk": 4,
+    "sourcesOk": 5,
     "sourcesTotal": 6,
     "sourceHealth": [
       {
-        "name": "r/netsec",
-        "key": "reddit_ns",
+        "name": "r/MachineLearning",
+        "key": "reddit_ml",
         "tier": 3,
         "status": "degraded",
         "items": 0,
         "error": "HTTP 429"
-      },
-      {
-        "name": "arXiv cs.CR (LLM security)",
-        "key": "arxiv_sec",
-        "tier": 2,
-        "status": "ok",
-        "items": 30,
-        "error": null
       },
       {
         "name": "NVD (prompt injection)",
@@ -34,6 +26,14 @@
         "tier": 1,
         "status": "ok",
         "items": 40,
+        "error": null
+      },
+      {
+        "name": "r/netsec",
+        "key": "reddit_ns",
+        "tier": 3,
+        "status": "ok",
+        "items": 25,
         "error": null
       },
       {
@@ -45,23 +45,23 @@
         "error": null
       },
       {
-        "name": "r/MachineLearning",
-        "key": "reddit_ml",
-        "tier": 3,
-        "status": "ok",
-        "items": 25,
-        "error": null
-      },
-      {
         "name": "NVD (AI/LLM keyword)",
         "key": "nvd_ai",
         "tier": 1,
-        "status": "degraded",
-        "items": 0,
-        "error": "This operation was aborted"
+        "status": "ok",
+        "items": 40,
+        "error": null
+      },
+      {
+        "name": "arXiv cs.CR (LLM security)",
+        "key": "arxiv_sec",
+        "tier": 2,
+        "status": "ok",
+        "items": 30,
+        "error": null
       }
     ],
-    "runtimeMs": 15051
+    "runtimeMs": 958
   },
   "frameworks": {
     "owasp_llm_top10": {
@@ -88,7 +88,7 @@
       "AML.T0057": "LLM Data Leakage"
     }
   },
-  "count": 20,
+  "count": 19,
   "items": [
     {
       "id": "aaca885e82d8cbe4",
@@ -775,46 +775,46 @@
       "has_analyst_report": false
     },
     {
-      "id": "790922d608b5c7e0",
-      "title": "Beyond Static Guarantees: Measuring the Static-Pass Dynamic-Fail Gap in Security-Sensitive and LLM-Generated Python Code",
-      "url": "https://arxiv.org/abs/2609.10762v1",
+      "id": "f1220878cc97504a",
+      "title": "The Illusion of Local Privacy: Confidentiality Boundary Failures in Consumer LLM Serving Systems",
+      "url": "https://arxiv.org/abs/2609.18526v1",
       "source": "arXiv cs.CR (LLM security)",
       "tier": 2,
-      "published": "2026-09-09T19:02:55Z",
+      "published": "2026-09-16T11:53:39Z",
       "cve": null,
       "severity": null,
       "cvss": null,
       "evidence_label": "PUBLISHED_RESEARCH",
       "categories": [
         {
-          "id": "agent_tool",
-          "label": "Agentic / Tool / MCP Exploitation"
+          "id": "infra",
+          "label": "AI Infrastructure / Inference Server"
         }
       ],
       "owasp_llm": [
         {
-          "id": "LLM06",
-          "name": "Sensitive Information Disclosure / Excessive Agency"
+          "id": "LLM05",
+          "name": "Supply Chain Vulnerabilities"
         }
       ],
       "mitre_atlas": [
         {
-          "id": "AML.T0053",
-          "name": "LLM Plugin Compromise"
+          "id": "AML.T0010",
+          "name": "ML Supply Chain Compromise"
         }
       ],
       "agent_risk": {
         "flags": {
-          "agentic": true,
+          "agentic": false,
           "mcp": false,
-          "rag": false,
+          "rag": true,
           "tool_use": false,
           "supply_chain": false
         },
         "level": "elevated"
       },
       "enterprise_impact": {
-        "score": 20,
+        "score": 10,
         "priority": "P3"
       },
       "confidence": {
@@ -825,8 +825,8 @@
       },
       "corroboration": 1,
       "detection": {
-        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
-        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
+        "detect": "Expose-check inference servers (Triton/vLLM/Ollama/MLflow/Ray) for unauthenticated management endpoints.",
+        "hunt": "Shodan/asset-inventory sweep for AI infra bound to 0.0.0.0 without auth."
       },
       "has_analyst_report": false
     },
@@ -1107,62 +1107,6 @@
       "detection": {
         "detect": "DLP on LLM responses for secrets/PII patterns; alert on repeated boundary-probing queries.",
         "hunt": "Look for membership-inference / extraction query cadences against model or embedding APIs."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "4956d1b92c0118cf",
-      "title": "Big Enough to Break Out: Tracking the Rising Capability of LLM Penetration-Testing Agents",
-      "url": "https://arxiv.org/abs/2609.10780v1",
-      "source": "arXiv cs.CR (LLM security)",
-      "tier": 2,
-      "published": "2026-09-09T19:28:22Z",
-      "cve": null,
-      "severity": null,
-      "cvss": null,
-      "evidence_label": "PUBLISHED_RESEARCH",
-      "categories": [
-        {
-          "id": "infra",
-          "label": "AI Infrastructure / Inference Server"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM05",
-          "name": "Supply Chain Vulnerabilities"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0010",
-          "name": "ML Supply Chain Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": false,
-          "rag": true,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "elevated"
-      },
-      "enterprise_impact": {
-        "score": 10,
-        "priority": "P3"
-      },
-      "confidence": {
-        "source": "MODERATE",
-        "evidence": "LOW",
-        "overall": "LOW",
-        "rationale": "Research source; 1 corroborating source(s)."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Expose-check inference servers (Triton/vLLM/Ollama/MLflow/Ray) for unauthenticated management endpoints.",
-        "hunt": "Shodan/asset-inventory sweep for AI infra bound to 0.0.0.0 without auth."
       },
       "has_analyst_report": false
     },
