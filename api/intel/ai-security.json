@@ -2,23 +2,31 @@
   "platform": "CYBERDUDEBIVASH SENTINEL APEX — AI Security Intelligence Division",
   "endpoint": "/api/intel/ai-security.json",
   "doctrine": "Sentinel-APEX/prompts/ai-security-master-prompt.md",
-  "generated": "2026-09-17T13:21:46.979Z",
+  "generated": "2026-09-17T18:08:03.363Z",
   "disclaimer": "Evidence-graded AI security intelligence. Confidence and evidence labels attached per item. Community leads are corroborated before publication.",
   "stats": {
-    "published": 19,
-    "p1": 3,
-    "leadsHeld": 2,
+    "published": 17,
+    "p1": 0,
+    "leadsHeld": 5,
     "analystReports": 0,
-    "sourcesOk": 4,
+    "sourcesOk": 5,
     "sourcesTotal": 6,
     "sourceHealth": [
       {
-        "name": "r/MachineLearning",
-        "key": "reddit_ml",
+        "name": "r/netsec",
+        "key": "reddit_ns",
         "tier": 3,
         "status": "degraded",
         "items": 0,
         "error": "HTTP 429"
+      },
+      {
+        "name": "NVD (prompt injection)",
+        "key": "nvd_pi",
+        "tier": 1,
+        "status": "ok",
+        "items": 40,
+        "error": null
       },
       {
         "name": "arXiv cs.CR (LLM security)",
@@ -26,14 +34,6 @@
         "tier": 2,
         "status": "ok",
         "items": 30,
-        "error": null
-      },
-      {
-        "name": "r/netsec",
-        "key": "reddit_ns",
-        "tier": 3,
-        "status": "ok",
-        "items": 25,
         "error": null
       },
       {
@@ -45,23 +45,23 @@
         "error": null
       },
       {
-        "name": "NVD (prompt injection)",
-        "key": "nvd_pi",
-        "tier": 1,
+        "name": "r/MachineLearning",
+        "key": "reddit_ml",
+        "tier": 3,
         "status": "ok",
-        "items": 40,
+        "items": 25,
         "error": null
       },
       {
         "name": "NVD (AI/LLM keyword)",
         "key": "nvd_ai",
         "tier": 1,
-        "status": "degraded",
-        "items": 0,
-        "error": "This operation was aborted"
+        "status": "ok",
+        "items": 40,
+        "error": null
       }
     ],
-    "runtimeMs": 15061
+    "runtimeMs": 1376
   },
   "frameworks": {
     "owasp_llm_top10": {
@@ -88,176 +88,8 @@
       "AML.T0057": "LLM Data Leakage"
     }
   },
-  "count": 19,
+  "count": 17,
   "items": [
-    {
-      "id": "aaca885e82d8cbe4",
-      "title": "@zereight/mcp-gitlab: Unauthenticated arbitrary file read via `upload_markdown` enables PAT exfiltration and full account takeover",
-      "url": "https://github.com/advisories/GHSA-cv3r-c5h8-f4g5",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-09-16T13:48:28Z",
-      "cve": "CVE-2026-61560",
-      "severity": "critical",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "agent_tool",
-          "label": "Agentic / Tool / MCP Exploitation"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM06",
-          "name": "Sensitive Information Disclosure / Excessive Agency"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0053",
-          "name": "LLM Plugin Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": true,
-          "rag": false,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "elevated"
-      },
-      "enterprise_impact": {
-        "score": 75,
-        "priority": "P1"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
-        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "6f8cc923dc66e416",
-      "title": "@zereight/mcp-gitlab Vulnerable to Server-Side Request Forgery",
-      "url": "https://github.com/advisories/GHSA-2h44-8472-frjj",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-09-15T20:57:28Z",
-      "cve": "CVE-2026-61559",
-      "severity": "critical",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "agent_tool",
-          "label": "Agentic / Tool / MCP Exploitation"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM06",
-          "name": "Sensitive Information Disclosure / Excessive Agency"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0053",
-          "name": "LLM Plugin Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": true,
-          "rag": false,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "elevated"
-      },
-      "enterprise_impact": {
-        "score": 75,
-        "priority": "P1"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
-        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "ca16f0f66446571b",
-      "title": "@zereight/mcp-gitlab: DNS rebinding reaches local Streamable HTTP MCP transport",
-      "url": "https://github.com/advisories/GHSA-vmp7-252j-cwp7",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-09-15T20:54:55Z",
-      "cve": "CVE-2026-61568",
-      "severity": "critical",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "agent_tool",
-          "label": "Agentic / Tool / MCP Exploitation"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM06",
-          "name": "Sensitive Information Disclosure / Excessive Agency"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0053",
-          "name": "LLM Plugin Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": true,
-          "rag": false,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "elevated"
-      },
-      "enterprise_impact": {
-        "score": 75,
-        "priority": "P1"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
-        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
-      },
-      "has_analyst_report": false
-    },
     {
       "id": "093e1ef8ef5e276d",
       "title": "RMCP: Unauthenticated permanent session-table leak in rmcp Streamable HTTP server transport leads to remote denial-of-service",
@@ -371,32 +203,32 @@
       "has_analyst_report": false
     },
     {
-      "id": "7aca1c7527a38af0",
-      "title": "@zereight/mcp-gitlab has multiple safety-control bypasses: execute_graphql read-only + allow-list bypass, unauthenticated transports, session-exhaustion DoS",
-      "url": "https://github.com/advisories/GHSA-5648-rgj9-v224",
+      "id": "2d4dda5682ad163e",
+      "title": "RMCP: Custom HTTP headers leak to cross-origin redirect targets",
+      "url": "https://github.com/advisories/GHSA-9g45-5xwm-f3wc",
       "source": "GitHub Security Advisories",
       "tier": 1,
-      "published": "2026-09-15T20:48:22Z",
-      "cve": null,
-      "severity": "high",
+      "published": "2026-09-17T14:48:12Z",
+      "cve": "CVE-2026-64684",
+      "severity": "medium",
       "cvss": null,
       "evidence_label": "VERIFIED_ADVISORY",
       "categories": [
         {
-          "id": "prompt_injection",
-          "label": "Prompt Injection"
+          "id": "agent_tool",
+          "label": "Agentic / Tool / MCP Exploitation"
         }
       ],
       "owasp_llm": [
         {
-          "id": "LLM01",
-          "name": "Prompt Injection"
+          "id": "LLM06",
+          "name": "Sensitive Information Disclosure / Excessive Agency"
         }
       ],
       "mitre_atlas": [
         {
-          "id": "AML.T0051",
-          "name": "LLM Prompt Injection"
+          "id": "AML.T0053",
+          "name": "LLM Plugin Compromise"
         }
       ],
       "agent_risk": {
@@ -410,19 +242,75 @@
         "level": "elevated"
       },
       "enterprise_impact": {
-        "score": 48,
+        "score": 50,
         "priority": "P2"
       },
       "confidence": {
         "source": "HIGH",
-        "evidence": "MODERATE",
+        "evidence": "HIGH",
         "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories)."
+        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
       },
       "corroboration": 1,
       "detection": {
-        "detect": "Monitor LLM gateway logs for delimiter-breaking tokens, role-swap phrases (\"ignore previous\", \"you are now\"), and base64/hex blobs in user or retrieved content.",
-        "hunt": "Correlate anomalous tool-invocation sequences that immediately follow untrusted content ingestion (email, web, RAG chunks)."
+        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
+        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
+      },
+      "has_analyst_report": false
+    },
+    {
+      "id": "f87878c22c9501ca",
+      "title": "vLLM: Request-selected PyNvVideoCodec GPU decode bypasses static VRAM reservation",
+      "url": "https://github.com/advisories/GHSA-8pw2-6jv3-mj5j",
+      "source": "GitHub Security Advisories",
+      "tier": 1,
+      "published": "2026-09-17T17:17:39Z",
+      "cve": "CVE-2026-69147",
+      "severity": "medium",
+      "cvss": null,
+      "evidence_label": "VERIFIED_ADVISORY",
+      "categories": [
+        {
+          "id": "infra",
+          "label": "AI Infrastructure / Inference Server"
+        }
+      ],
+      "owasp_llm": [
+        {
+          "id": "LLM05",
+          "name": "Supply Chain Vulnerabilities"
+        }
+      ],
+      "mitre_atlas": [
+        {
+          "id": "AML.T0010",
+          "name": "ML Supply Chain Compromise"
+        }
+      ],
+      "agent_risk": {
+        "flags": {
+          "agentic": false,
+          "mcp": false,
+          "rag": true,
+          "tool_use": false,
+          "supply_chain": false
+        },
+        "level": "elevated"
+      },
+      "enterprise_impact": {
+        "score": 40,
+        "priority": "P2"
+      },
+      "confidence": {
+        "source": "HIGH",
+        "evidence": "HIGH",
+        "overall": "HIGH",
+        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
+      },
+      "corroboration": 1,
+      "detection": {
+        "detect": "Expose-check inference servers (Triton/vLLM/Ollama/MLflow/Ray) for unauthenticated management endpoints.",
+        "hunt": "Shodan/asset-inventory sweep for AI infra bound to 0.0.0.0 without auth."
       },
       "has_analyst_report": false
     },
