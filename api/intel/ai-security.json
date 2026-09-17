@@ -2,12 +2,12 @@
   "platform": "CYBERDUDEBIVASH SENTINEL APEX — AI Security Intelligence Division",
   "endpoint": "/api/intel/ai-security.json",
   "doctrine": "Sentinel-APEX/prompts/ai-security-master-prompt.md",
-  "generated": "2026-09-17T18:08:03.363Z",
+  "generated": "2026-09-17T22:48:01.537Z",
   "disclaimer": "Evidence-graded AI security intelligence. Confidence and evidence labels attached per item. Community leads are corroborated before publication.",
   "stats": {
-    "published": 17,
+    "published": 13,
     "p1": 0,
-    "leadsHeld": 5,
+    "leadsHeld": 6,
     "analystReports": 0,
     "sourcesOk": 5,
     "sourcesTotal": 6,
@@ -37,6 +37,14 @@
         "error": null
       },
       {
+        "name": "NVD (AI/LLM keyword)",
+        "key": "nvd_ai",
+        "tier": 1,
+        "status": "ok",
+        "items": 40,
+        "error": null
+      },
+      {
         "name": "GitHub Security Advisories",
         "key": "ghsa",
         "tier": 1,
@@ -51,17 +59,9 @@
         "status": "ok",
         "items": 25,
         "error": null
-      },
-      {
-        "name": "NVD (AI/LLM keyword)",
-        "key": "nvd_ai",
-        "tier": 1,
-        "status": "ok",
-        "items": 40,
-        "error": null
       }
     ],
-    "runtimeMs": 1376
+    "runtimeMs": 1102
   },
   "frameworks": {
     "owasp_llm_top10": {
@@ -88,176 +88,8 @@
       "AML.T0057": "LLM Data Leakage"
     }
   },
-  "count": 17,
+  "count": 13,
   "items": [
-    {
-      "id": "093e1ef8ef5e276d",
-      "title": "RMCP: Unauthenticated permanent session-table leak in rmcp Streamable HTTP server transport leads to remote denial-of-service",
-      "url": "https://github.com/advisories/GHSA-9pj6-vhgr-3mwh",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-09-16T22:13:34Z",
-      "cve": "CVE-2026-63128",
-      "severity": "high",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "agent_tool",
-          "label": "Agentic / Tool / MCP Exploitation"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM06",
-          "name": "Sensitive Information Disclosure / Excessive Agency"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0053",
-          "name": "LLM Plugin Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": true,
-          "rag": false,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "elevated"
-      },
-      "enterprise_impact": {
-        "score": 63,
-        "priority": "P2"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
-        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "3da60fd6cc84b829",
-      "title": "RMCP: Missing Resource Field Validation in OAuth Protected Resource Metadata Discovery",
-      "url": "https://github.com/advisories/GHSA-33f5-2c5q-wgwj",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-09-16T22:13:26Z",
-      "cve": "CVE-2026-63127",
-      "severity": "high",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "agent_tool",
-          "label": "Agentic / Tool / MCP Exploitation"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM06",
-          "name": "Sensitive Information Disclosure / Excessive Agency"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0053",
-          "name": "LLM Plugin Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": true,
-          "rag": false,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "elevated"
-      },
-      "enterprise_impact": {
-        "score": 63,
-        "priority": "P2"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
-        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "2d4dda5682ad163e",
-      "title": "RMCP: Custom HTTP headers leak to cross-origin redirect targets",
-      "url": "https://github.com/advisories/GHSA-9g45-5xwm-f3wc",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-09-17T14:48:12Z",
-      "cve": "CVE-2026-64684",
-      "severity": "medium",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "agent_tool",
-          "label": "Agentic / Tool / MCP Exploitation"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM06",
-          "name": "Sensitive Information Disclosure / Excessive Agency"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0053",
-          "name": "LLM Plugin Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": true,
-          "rag": false,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "elevated"
-      },
-      "enterprise_impact": {
-        "score": 50,
-        "priority": "P2"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
-        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
-      },
-      "has_analyst_report": false
-    },
     {
       "id": "f87878c22c9501ca",
       "title": "vLLM: Request-selected PyNvVideoCodec GPU decode bypasses static VRAM reservation",
@@ -300,62 +132,6 @@
       "enterprise_impact": {
         "score": 40,
         "priority": "P2"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Expose-check inference servers (Triton/vLLM/Ollama/MLflow/Ray) for unauthenticated management endpoints.",
-        "hunt": "Shodan/asset-inventory sweep for AI infra bound to 0.0.0.0 without auth."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "5ebc613e924210a8",
-      "title": "vLLM: Unauthenticated audio decompression-bomb DoS in /v1/chat/completions",
-      "url": "https://github.com/advisories/GHSA-hcwq-8wjf-3gcr",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-09-16T22:12:17Z",
-      "cve": "CVE-2026-57173",
-      "severity": "medium",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "infra",
-          "label": "AI Infrastructure / Inference Server"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM05",
-          "name": "Supply Chain Vulnerabilities"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0010",
-          "name": "ML Supply Chain Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": false,
-          "rag": false,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "standard"
-      },
-      "enterprise_impact": {
-        "score": 30,
-        "priority": "P3"
       },
       "confidence": {
         "source": "HIGH",
