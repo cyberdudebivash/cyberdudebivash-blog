@@ -1,8 +1,57 @@
 {
-  "generated": "2026-09-17T21:27:32.852Z",
+  "generated": "2026-09-18T04:50:41.753Z",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
   "count": 200,
   "items": [
+    {
+      "slug": "cve-2026-82399-go-github-com-coredns-coredns",
+      "title": "CoreDNS: Unauthenticated memory exhaustion in custom transports",
+      "url": "/posts/cve-2026-82399-go-github-com-coredns-coredns.html",
+      "generated": "2026-09-17T22:59:56.884Z",
+      "severity": "HIGH",
+      "cves": [
+        "CVE-2026-82399",
+        "CVE-2026-82399"
+      ],
+      "mitreAttack": [],
+      "sigma": [],
+      "kql": [],
+      "splunk": [],
+      "osquery": [],
+      "suricata": [
+        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://github.com/coredns/coredns/blob/18a58b9e898ccd95c3f8ee72a37b95b3d1e3e928/plugin/pkg/doh/doh.\"; http.host; content:\"github.com\"; nocase; http.uri; content:\"/coredns/coredns/blob/18a58b9e898ccd95c3f8ee72a37b95b3d1e3e928/plugin/pkg/doh/doh.\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
+        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://github.com/coredns/coredns/blob/18a58b9e898ccd95c3f8ee72a37b95b3d1e3e928/core/dnsserver/serv\"; http.host; content:\"github.com\"; nocase; http.uri; content:\"/coredns/coredns/blob/18a58b9e898ccd95c3f8ee72a37b95b3d1e3e928/core/dnsserver/serv\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)"
+      ]
+    },
+    {
+      "slug": "cve-2026-86003-go-github-com-coredns-coredns",
+      "title": "CoreDNS DoH/DoQ/gRPC bypass UPDATE rejection enforced on UDP/TCP",
+      "url": "/posts/cve-2026-86003-go-github-com-coredns-coredns.html",
+      "generated": "2026-09-17T22:59:56.880Z",
+      "severity": "HIGH",
+      "cves": [
+        "CVE-2026-86003",
+        "CVE-2026-86003"
+      ],
+      "mitreAttack": [
+        {
+          "id": "T1071",
+          "name": "Application Layer Protocol",
+          "tactic": "command-and-control",
+          "confidence": "MEDIUM"
+        }
+      ],
+      "sigma": [],
+      "kql": [],
+      "splunk": [],
+      "osquery": [],
+      "suricata": [
+        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://datatracker.ietf.org/doc/html/rfc2136)\"; http.host; content:\"datatracker.ietf.org\"; nocase; http.uri; content:\"/doc/html/rfc2136)\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
+        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://github.com/coredns/coredns/blob/18a58b9e898ccd95c3f8ee72a37b95b3d1e3e928/plugin/pkg/doh/doh.\"; http.host; content:\"github.com\"; nocase; http.uri; content:\"/coredns/coredns/blob/18a58b9e898ccd95c3f8ee72a37b95b3d1e3e928/plugin/pkg/doh/doh.\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
+        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://github.com/coredns/coredns/\"; http.host; content:\"github.com\"; nocase; http.uri; content:\"/coredns/coredns/\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
+        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain datatracker.ietf.org\"; dns.query; content:\"datatracker.ietf.org\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)"
+      ]
+    },
     {
       "slug": "cve-2026-85756-nuget-ssh-net",
       "title": "SSH.NET: ScpClient allows server-side RCE via default SCP path handling",
@@ -4197,44 +4246,6 @@
         "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/user/Silent_Damage_1156&quot;&gt;\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/user/Silent_Damage_1156&quot\\;&gt\\;\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
         "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uvet6g/whats_your_predeployment_security_checklist_\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uvet6g/whats_your_predeployment_security_checklist_\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
         "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)"
-      ]
-    },
-    {
-      "slug": "relat-rios",
-      "title": "RELATÓRIOS",
-      "url": "/posts/relat-rios.html",
-      "generated": "2026-07-13T14:32:01.663Z",
-      "severity": "MEDIUM",
-      "cves": [],
-      "mitreAttack": [],
-      "sigma": [],
-      "kql": [],
-      "splunk": [],
-      "osquery": [],
-      "suricata": [
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/user/Previous-Ice-6840&quot;&gt;\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/user/Previous-Ice-6840&quot\\;&gt\\;\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uvcsn6/relatórios/&quot;&gt;[link]&lt;/a&gt;&lt;/sp\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uvcsn6/relatórios/&quot\\;&gt\\;[link]&lt\\;/a&gt\\;&lt\\;/sp\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uvcsn6/relatórios/&quot;&gt;[comments]&lt;/a&gt;&lt\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uvcsn6/relatórios/&quot\\;&gt\\;[comments]&lt\\;/a&gt\\;&lt\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)"
-      ]
-    },
-    {
-      "slug": "july-14th-nightmare-eclipse",
-      "title": "July 14th Nightmare Eclipse",
-      "url": "/posts/july-14th-nightmare-eclipse.html",
-      "generated": "2026-07-13T14:32:01.660Z",
-      "severity": "MEDIUM",
-      "cves": [],
-      "mitreAttack": [],
-      "sigma": [],
-      "kql": [],
-      "splunk": [],
-      "osquery": [],
-      "suricata": [
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/user/_W-O-P-R_&quot;&gt;\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/user/_W-O-P-R_&quot\\;&gt\\;\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uvczrr/july_14th_nightmare_eclipse/&quot;&gt;[link]\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uvczrr/july_14th_nightmare_eclipse/&quot\\;&gt\\;[link]\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uvczrr/july_14th_nightmare_eclipse/&quot;&gt;[comme\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uvczrr/july_14th_nightmare_eclipse/&quot\\;&gt\\;[comme\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)"
       ]
     }
   ]
