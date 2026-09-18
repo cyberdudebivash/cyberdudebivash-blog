@@ -2,11 +2,11 @@
   "platform": "CYBERDUDEBIVASH SENTINEL APEX — AI Security Intelligence Division",
   "endpoint": "/api/intel/ai-security.json",
   "doctrine": "Sentinel-APEX/prompts/ai-security-master-prompt.md",
-  "generated": "2026-09-18T16:18:03.700Z",
+  "generated": "2026-09-18T20:49:07.962Z",
   "disclaimer": "Evidence-graded AI security intelligence. Confidence and evidence labels attached per item. Community leads are corroborated before publication.",
   "stats": {
-    "published": 16,
-    "p1": 0,
+    "published": 20,
+    "p1": 1,
     "leadsHeld": 2,
     "analystReports": 0,
     "sourcesOk": 5,
@@ -23,6 +23,14 @@
       {
         "name": "NVD (prompt injection)",
         "key": "nvd_pi",
+        "tier": 1,
+        "status": "ok",
+        "items": 40,
+        "error": null
+      },
+      {
+        "name": "NVD (AI/LLM keyword)",
+        "key": "nvd_ai",
         "tier": 1,
         "status": "ok",
         "items": 40,
@@ -51,17 +59,9 @@
         "status": "ok",
         "items": 60,
         "error": null
-      },
-      {
-        "name": "NVD (AI/LLM keyword)",
-        "key": "nvd_ai",
-        "tier": 1,
-        "status": "ok",
-        "items": 40,
-        "error": null
       }
     ],
-    "runtimeMs": 3010
+    "runtimeMs": 542
   },
   "frameworks": {
     "owasp_llm_top10": {
@@ -88,17 +88,17 @@
       "AML.T0057": "LLM Data Leakage"
     }
   },
-  "count": 16,
+  "count": 20,
   "items": [
     {
-      "id": "f87878c22c9501ca",
-      "title": "vLLM: Request-selected PyNvVideoCodec GPU decode bypasses static VRAM reservation",
-      "url": "https://github.com/advisories/GHSA-8pw2-6jv3-mj5j",
+      "id": "9f2243d05a616f7a",
+      "title": "LMDeploy has Remote Code Execution by Pickle Deserialization via handle_zmq_recv in lmdeploy/lmdeploy/pytorch/disagg/conn/engine_conn.py",
+      "url": "https://github.com/advisories/GHSA-2vh9-42vm-xmv2",
       "source": "GitHub Security Advisories",
       "tier": 1,
-      "published": "2026-09-17T17:17:39Z",
-      "cve": "CVE-2026-69147",
-      "severity": "medium",
+      "published": "2026-09-18T17:03:56Z",
+      "cve": "CVE-2025-66455",
+      "severity": "critical",
       "cvss": null,
       "evidence_label": "VERIFIED_ADVISORY",
       "categories": [
@@ -130,8 +130,8 @@
         "level": "elevated"
       },
       "enterprise_impact": {
-        "score": 40,
-        "priority": "P2"
+        "score": 65,
+        "priority": "P1"
       },
       "confidence": {
         "source": "HIGH",
@@ -143,6 +143,254 @@
       "detection": {
         "detect": "Expose-check inference servers (Triton/vLLM/Ollama/MLflow/Ray) for unauthenticated management endpoints.",
         "hunt": "Shodan/asset-inventory sweep for AI infra bound to 0.0.0.0 without auth."
+      },
+      "has_analyst_report": false
+    },
+    {
+      "id": "ce7f1b7188285d05",
+      "title": "ToolHive: containerized MCP servers can reach host services via host.docker.internal, enabling lateral movement",
+      "url": "https://github.com/advisories/GHSA-qg2g-g9w3-m5h8",
+      "source": "GitHub Security Advisories",
+      "tier": 1,
+      "published": "2026-09-18T17:16:02Z",
+      "cve": "CVE-2026-58197",
+      "severity": "high",
+      "cvss": null,
+      "evidence_label": "VERIFIED_ADVISORY",
+      "categories": [
+        {
+          "id": "model_theft",
+          "label": "Model Theft / Extraction"
+        },
+        {
+          "id": "agent_tool",
+          "label": "Agentic / Tool / MCP Exploitation"
+        },
+        {
+          "id": "infra",
+          "label": "AI Infrastructure / Inference Server"
+        }
+      ],
+      "owasp_llm": [
+        {
+          "id": "LLM10",
+          "name": "Unbounded Consumption / Model Theft"
+        },
+        {
+          "id": "LLM06",
+          "name": "Sensitive Information Disclosure / Excessive Agency"
+        },
+        {
+          "id": "LLM05",
+          "name": "Supply Chain Vulnerabilities"
+        }
+      ],
+      "mitre_atlas": [
+        {
+          "id": "AML.T0044",
+          "name": "Full ML Model Access / Extraction"
+        },
+        {
+          "id": "AML.T0053",
+          "name": "LLM Plugin Compromise"
+        },
+        {
+          "id": "AML.T0010",
+          "name": "ML Supply Chain Compromise"
+        }
+      ],
+      "agent_risk": {
+        "flags": {
+          "agentic": false,
+          "mcp": true,
+          "rag": false,
+          "tool_use": false,
+          "supply_chain": false
+        },
+        "level": "elevated"
+      },
+      "enterprise_impact": {
+        "score": 63,
+        "priority": "P2"
+      },
+      "confidence": {
+        "source": "HIGH",
+        "evidence": "HIGH",
+        "overall": "HIGH",
+        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
+      },
+      "corroboration": 1,
+      "detection": {
+        "detect": "Instrument the AI application boundary (gateway, tool layer, model API) with structured logging and anomaly alerting.",
+        "hunt": "Baseline normal model/agent behavior, then hunt for deviations tied to untrusted input."
+      },
+      "has_analyst_report": false
+    },
+    {
+      "id": "d523d711e42cf6db",
+      "title": "LMDeploy vulnerable to arbitrary code execution via eval() of untrusted quant_dtype in model config loading",
+      "url": "https://github.com/advisories/GHSA-3hmm-rh5q-gwwr",
+      "source": "GitHub Security Advisories",
+      "tier": 1,
+      "published": "2026-09-18T17:04:01Z",
+      "cve": "CVE-2026-33625",
+      "severity": "high",
+      "cvss": null,
+      "evidence_label": "VERIFIED_ADVISORY",
+      "categories": [
+        {
+          "id": "supply_chain",
+          "label": "AI Supply Chain"
+        }
+      ],
+      "owasp_llm": [
+        {
+          "id": "LLM05",
+          "name": "Supply Chain Vulnerabilities"
+        }
+      ],
+      "mitre_atlas": [
+        {
+          "id": "AML.T0010",
+          "name": "ML Supply Chain Compromise"
+        }
+      ],
+      "agent_risk": {
+        "flags": {
+          "agentic": false,
+          "mcp": false,
+          "rag": false,
+          "tool_use": false,
+          "supply_chain": true
+        },
+        "level": "elevated"
+      },
+      "enterprise_impact": {
+        "score": 63,
+        "priority": "P2"
+      },
+      "confidence": {
+        "source": "HIGH",
+        "evidence": "HIGH",
+        "overall": "HIGH",
+        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
+      },
+      "corroboration": 1,
+      "detection": {
+        "detect": "Alert on model artifact downloads from non-allowlisted registries; scan pickled/`.pt` model files for arbitrary code (Fickling, ModelScan).",
+        "hunt": "Review CI/CD and notebook hosts for outbound connections initiated during model load."
+      },
+      "has_analyst_report": false
+    },
+    {
+      "id": "6f6f2593a9d7c91a",
+      "title": "Obot: Server-Side Request Forgery via remote MCP server URL",
+      "url": "https://github.com/advisories/GHSA-jgh3-fggc-mcpm",
+      "source": "GitHub Security Advisories",
+      "tier": 1,
+      "published": "2026-09-18T17:59:46Z",
+      "cve": null,
+      "severity": "high",
+      "cvss": null,
+      "evidence_label": "VERIFIED_ADVISORY",
+      "categories": [
+        {
+          "id": "agent_tool",
+          "label": "Agentic / Tool / MCP Exploitation"
+        }
+      ],
+      "owasp_llm": [
+        {
+          "id": "LLM06",
+          "name": "Sensitive Information Disclosure / Excessive Agency"
+        }
+      ],
+      "mitre_atlas": [
+        {
+          "id": "AML.T0053",
+          "name": "LLM Plugin Compromise"
+        }
+      ],
+      "agent_risk": {
+        "flags": {
+          "agentic": false,
+          "mcp": true,
+          "rag": false,
+          "tool_use": false,
+          "supply_chain": false
+        },
+        "level": "elevated"
+      },
+      "enterprise_impact": {
+        "score": 48,
+        "priority": "P2"
+      },
+      "confidence": {
+        "source": "HIGH",
+        "evidence": "MODERATE",
+        "overall": "HIGH",
+        "rationale": "Authoritative source (GitHub Security Advisories)."
+      },
+      "corroboration": 1,
+      "detection": {
+        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
+        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
+      },
+      "has_analyst_report": false
+    },
+    {
+      "id": "d6b69ceebca2cbec",
+      "title": "Obot: OAuth Dynamic Client Registration Enables API Token Theft via Audience Confusion",
+      "url": "https://github.com/advisories/GHSA-xwmw-prc4-v3cr",
+      "source": "GitHub Security Advisories",
+      "tier": 1,
+      "published": "2026-09-18T17:59:35Z",
+      "cve": null,
+      "severity": "high",
+      "cvss": null,
+      "evidence_label": "VERIFIED_ADVISORY",
+      "categories": [
+        {
+          "id": "agent_tool",
+          "label": "Agentic / Tool / MCP Exploitation"
+        }
+      ],
+      "owasp_llm": [
+        {
+          "id": "LLM06",
+          "name": "Sensitive Information Disclosure / Excessive Agency"
+        }
+      ],
+      "mitre_atlas": [
+        {
+          "id": "AML.T0053",
+          "name": "LLM Plugin Compromise"
+        }
+      ],
+      "agent_risk": {
+        "flags": {
+          "agentic": false,
+          "mcp": true,
+          "rag": false,
+          "tool_use": false,
+          "supply_chain": false
+        },
+        "level": "elevated"
+      },
+      "enterprise_impact": {
+        "score": 48,
+        "priority": "P2"
+      },
+      "confidence": {
+        "source": "HIGH",
+        "evidence": "MODERATE",
+        "overall": "HIGH",
+        "rationale": "Authoritative source (GitHub Security Advisories)."
+      },
+      "corroboration": 1,
+      "detection": {
+        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
+        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
       },
       "has_analyst_report": false
     },
