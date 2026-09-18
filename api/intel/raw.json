@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-18T16:06:13.748Z",
+  "generated": "2026-09-18T19:07:40.043Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -8,8 +8,55 @@
   "endpoint": "/api/intel/raw.json",
   "description": "Raw unfiltered S2N feed — all items including suppressed. Enterprise tier.",
   "note": "Access requires Enterprise API key. Includes suppression_reason and full IOC data.",
-  "count": 112,
+  "count": 118,
   "items": [
+    {
+      "id": "GHSA-c2a66b8a0107554d",
+      "title": "Obot: OAuth Dynamic Client Registration Enables API Token Theft via Audience Confusion",
+      "description": "## Summary In affected versions, an unauthenticated attacker could register an OAuth client with an arbitrary external redirect URI, and the authorization flow would auto-complete without a consent screen. If a logged-in victim visited a crafted authorization URL, an authorization code was delivered",
+      "cvss": 8.8,
+      "final_ps": 62,
+      "quality_score": 0.548,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "go",
+      "product": "github.com/obot-platform/obot",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-xwmw-prc4-v3cr",
+        "https://github.com/obot-platform/obot/security/advisories/GHSA-xwmw-prc4-v3cr",
+        "https://github.com/obot-platform/obot/releases/tag/v0.23.0",
+        "https://github.com/advisories/GHSA-xwmw-prc4-v3cr"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.547"
+        ],
+        "priority": [
+          "base_ps=62 (no boosts)"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "iocs": []
+    },
     {
       "id": "CVE-2026-50522",
       "title": "Critical SharePoint RCE CVE-2026-50522 Under Active Exploitation After Public PoC",
@@ -193,6 +240,98 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-28197",
+      "title": "CVE-2026-28197 - Privilege Escalation via Argument Injection in NetBackup Flex OS Shell",
+      "description": "CVE-2026-28197 - Privilege Escalation via Argument Injection in NetBackup Flex OS Shell",
+      "cvss": 8.8,
+      "final_ps": 49,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-28197"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-28197"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=49 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-28198",
+      "title": "CVE-2026-28198 - Privilege Escalation via Cryptographic Signature Verification Bypass in NetBackup Flex OS Shell",
+      "description": "CVE-2026-28198 - Privilege Escalation via Cryptographic Signature Verification Bypass in NetBackup Flex OS Shell",
+      "cvss": 8.8,
+      "final_ps": 49,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-28198"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-28198"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=49 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
       "id": "CVE-2026-72819",
       "title": "Grav CMS vulnerable to remote code execution via .zip file upload",
       "description": "Summary\n\nA logged-in user can run any command on the server. A settings field can fill itself by calling one of Grav's built-in routines, and a safety check is supposed to allow only harmless ones. The check only recognises a routine when its name is written as one piece of text;... [Full analysis a",
@@ -333,6 +472,98 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-6205",
+      "title": "CVE-2026-6205 - Synology DiskStation Manager Upload API Arbitrary File Write Vulnerability",
+      "description": "CVE-2026-6205 - Synology DiskStation Manager Upload API Arbitrary File Write Vulnerability",
+      "cvss": 8.1,
+      "final_ps": 47,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-6205"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-6205"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=47 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-85410",
+      "title": "CVE-2026-85410 - Master Addons for Elementor <= 3.2.2 - Missing Authorization to Authenticated (Contributor+) Arbitrary ",
+      "description": "CVE-2026-85410 - Master Addons for Elementor <= 3.2.2 - Missing Authorization to Authenticated (Contributor+) Arbitrary Post Modification/Deletion via 'popup_id' Parameter",
+      "cvss": 8.1,
+      "final_ps": 47,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-85410"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-85410"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=47 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
       "id": "CVE-2026-72695",
       "title": "Grav: Path Traversal in MediaUploadTrait::deleteFile() Allows Arbitrary File Deletion",
       "description": "Path Traversal in MediaUploadTrait::deleteFile() Allows Arbitrary File Deletion\n\nSummary\n\nA path traversal vulnerability in MediaUploadTrait::deleteFile() allows an authenticated user with media management permissions to delete arbitrary files on the server. The method validates ... [Full analysis a",
@@ -416,6 +647,101 @@
           "+10 CVSS≥9",
           "+8 exploited_in_wild",
           "+7 zero_day"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-80844",
+      "title": "A quartet of Linux local root vulns: DirtyAH6, PPPoEject, TUNderflow, and DiagSpill",
+      "description": "Posted by manizada on Sep 17 Hi folks,\n\nEmailing here now that the embargo agreed upon with linux-distros@ has\nexpired.\n\nFlagging four local root vulnerabilities in the Linux kernel, originally\nreported to security () kernel org and the relevant maintainers in\nmid-July:\n\n DirtyAH... [Full analysis a",
+      "cvss": 7.8,
+      "final_ps": 46,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-80844",
+        "CVE-2026-81000",
+        "CVE-2026-68121",
+        "CVE-2026-74469"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://seclists.org/oss-sec/2026/q3/822"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=46 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-87743",
+      "title": "CVE-2026-87743 - Quarkus-vertx-http: authorization bypass via path normalization discrepancy in quarkus http security",
+      "description": "CVE-2026-87743 - Quarkus-vertx-http: authorization bypass via path normalization discrepancy in quarkus http security",
+      "cvss": 7.5,
+      "final_ps": 46,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-87743"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-87743"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=46 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -659,98 +985,6 @@
       "iocs": []
     },
     {
-      "id": "CVE-2017-7199",
-      "title": "Sherlock exploit",
-      "description": "Exploit for CVE-2017-7199. CVSS 7.8.",
-      "cvss": 7.8,
-      "final_ps": 44,
-      "quality_score": 0.443,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-18",
-      "last_seen": "2026-09-18",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2017-7199"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://sploitus.com/exploit?id=KITPLOIT:TOOLS-GITHUB-RASTA-MOUSE-SHERLOCK&utm_source=rss&utm_medium=rss"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.443"
-        ],
-        "priority": [
-          "base_ps=44 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-15579",
-      "title": "CVE-2026-15579 - Ethernet Switch Web Interface Buffer Overflow Denial of Service",
-      "description": "CVE-2026-15579 - Ethernet Switch Web Interface Buffer Overflow Denial of Service",
-      "cvss": 7.5,
-      "final_ps": 44,
-      "quality_score": 0.443,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-18",
-      "last_seen": "2026-09-18",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-15579"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-15579"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.443"
-        ],
-        "priority": [
-          "base_ps=44 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
       "id": "CVE-2026-83561",
       "title": "CVE-2026-83561 - Complianz GDPR/CCPA Cookie Consent Banner <= 7.5.4 - Unauthenticated Stored Cross-Site Scripting via El",
       "description": "CVE-2026-83561 - Complianz GDPR/CCPA Cookie Consent Banner <= 7.5.4 - Unauthenticated Stored Cross-Site Scripting via Elementor Cookie Blocker Regex",
@@ -797,47 +1031,95 @@
       "iocs": []
     },
     {
-      "id": "SECURITYWEEK-70183419f721410e",
-      "title": "In Other News: Ransomware Developer Sentenced, Plugin4Shell AI Attack, Critical SAP Flaw",
-      "description": "Noteworthy stories that might have slipped under the radar: Mandiant's 2026 AI risk report, PhantomRaven malware used by bug bounty hunter, WordPress plugin bug exploited. The post In Other News: Ransomware Developer Sentenced, Plugin4Shell AI Attack, Critical SAP Flaw appeared first on SecurityWeek",
-      "cvss": 0,
-      "final_ps": 42,
-      "quality_score": 0.415,
+      "id": "CVE-2026-18405",
+      "title": "CVE-2026-18405 - Jeg Kit for Elementor <= 3.2.16 - Unauthenticated Stored Cross-Site Scripting via Comment Content",
+      "description": "CVE-2026-18405 - Jeg Kit for Elementor <= 3.2.16 - Unauthenticated Stored Cross-Site Scripting via Comment Content",
+      "cvss": 7.2,
+      "final_ps": 44,
+      "quality_score": 0.493,
       "threat_level": "LOW",
-      "type": "RANSOMWARE",
-      "source": "securityweek",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
-        "securityweek"
+        "sentinel_apex"
       ],
       "first_seen": "2026-09-18",
       "last_seen": "2026-09-18",
       "exploited": false,
       "cisa_kev": false,
-      "ransomware": true,
-      "vendor": "SecurityWeek",
-      "product": "Threat Intelligence",
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
       "due_date": null,
-      "cves": [],
+      "cves": [
+        "CVE-2026-18405"
+      ],
       "ioc_count": 0,
       "refs": [
-        "https://www.securityweek.com/in-other-news-ransomware-developer-sentenced-plugin4shell-ai-attack-critical-sap-flaw/"
+        "https://cvefeed.io/vuln/detail/CVE-2026-18405"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.70 (securityweek)",
-          "data_confidence=0.65",
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
           "recency=0d (score=1.00)",
-          "QS=0.415"
+          "QS=0.493"
         ],
         "priority": [
-          "+10 ransomware_confirmed"
+          "base_ps=44 (no boosts)"
         ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "suppression": null,
         "merge": null
       },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-87915",
+      "title": "CVE-2026-87915 - Popup Maker <= 1.24.0 - Unauthenticated Stored Cross-Site Scripting via values[Name] Parameter",
+      "description": "CVE-2026-87915 - Popup Maker <= 1.24.0 - Unauthenticated Stored Cross-Site Scripting via values[Name] Parameter",
+      "cvss": 7.2,
+      "final_ps": 44,
+      "quality_score": 0.493,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-87915"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-87915"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=44 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
       "iocs": []
     },
     {
@@ -4310,6 +4592,156 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-91127",
+      "title": "File Viewer: DOM XSS via unsafe hyperlink schemes in the legacy DOC renderer",
+      "description": "",
+      "cvss": 8.2,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "@file-viewer/doc",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-91127",
+        "CVE-2026-91127"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-3753-m2x2-q623",
+        "https://github.com/flyfish-dev/file-viewer/security/advisories/GHSA-3753-m2x2-q623",
+        "https://github.com/flyfish-dev/file-viewer/commit/ef045680f8d9830a3eee9612f7df46a734361b07",
+        "https://github.com/flyfish-dev/file-viewer/releases/tag/v2.3.1"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-85058",
+      "title": "io.moquette:moquette-broker has a Missing Authorization issue",
+      "description": "",
+      "cvss": 7.5,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "maven",
+      "product": "io.moquette:moquette-broker",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-85058",
+        "CVE-2026-85058"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-9jjc-fw8x-fmwx",
+        "https://github.com/moquette-io/moquette/security/advisories/GHSA-9jjc-fw8x-fmwx",
+        "https://github.com/moquette-io/moquette/commit/e23df019f6a11e22c7d2047d4f86d07095466c97",
+        "https://github.com/moquette-io/moquette/commit/f5a323fe782d1505c0097498cb22eb6ec6c96973"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-77301",
+      "title": "adm-zip: Uncontrolled memory allocation via the declared uncompressed size (DoS)",
+      "description": "",
+      "cvss": 7.5,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "adm-zip",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-77301",
+        "CVE-2026-77301"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-7q85-xj36-vmfc",
+        "https://github.com/cthackers/adm-zip/security/advisories/GHSA-7q85-xj36-vmfc",
+        "https://github.com/cthackers/adm-zip/commit/491600683dacb6cb9fe0718a0eeb9cb5eb49afa6",
+        "https://github.com/cthackers/adm-zip/releases/tag/v0.6.1"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
       "id": "CVE-2026-77615",
       "title": "Opencast: Stored XSS in Paella player via WebVTT/DFXP caption cue text",
       "description": "",
@@ -4350,6 +4782,103 @@
         ],
         "priority": [
           "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "GHSA-55be9fb9c8ee04b0",
+      "title": "Obot: Server-Side Request Forgery via remote MCP server URL",
+      "description": "",
+      "cvss": 7.6,
+      "final_ps": 20,
+      "quality_score": 0.493,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "go",
+      "product": "github.com/obot-platform/obot",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-jgh3-fggc-mcpm",
+        "https://github.com/obot-platform/obot/security/advisories/GHSA-jgh3-fggc-mcpm",
+        "https://github.com/obot-platform/obot/releases/tag/v0.23.0",
+        "https://github.com/advisories/GHSA-jgh3-fggc-mcpm"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=20 (no boosts)"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-81505",
+      "title": "Convoy: Cross-Tenant Source IDOR Leaks Plaintext Message Broker Credentials",
+      "description": "",
+      "cvss": 0,
+      "final_ps": 18,
+      "quality_score": 0.453,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "go",
+      "product": "github.com/frain-dev/convoy",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-81505",
+        "CVE-2026-81505"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-p5vg-v7mj-f6q4",
+        "https://github.com/frain-dev/convoy/security/advisories/GHSA-p5vg-v7mj-f6q4",
+        "https://github.com/frain-dev/convoy/pull/2755",
+        "https://github.com/frain-dev/convoy/commit/1cc67cd16fb1f8890cc83a3998d3f92dceb7fd06"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.40",
+          "recency=0d (score=1.00)",
+          "QS=0.453"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4451,10 +4980,10 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-18405",
-      "title": "CVE-2026-18405 - Jeg Kit for Elementor <= 3.2.16 - Unauthenticated Stored Cross-Site Scripting via Comment Content",
+      "id": "CVE-2026-18911",
+      "title": "CVE-2026-18911 - ManageEngine DataSecurity Plus Authentication Bypass",
       "description": "",
-      "cvss": 7.2,
+      "cvss": 7.5,
       "final_ps": 18,
       "quality_score": 0.438,
       "threat_level": "LOW",
@@ -4473,11 +5002,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-18405"
+        "CVE-2026-18911"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-18405"
+        "https://cvefeed.io/vuln/detail/CVE-2026-18911"
       ],
       "explanation": {
         "quality": [
@@ -4497,10 +5026,10 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-87915",
-      "title": "CVE-2026-87915 - Popup Maker <= 1.24.0 - Unauthenticated Stored Cross-Site Scripting via values[Name] Parameter",
+      "id": "CVE-2026-18912",
+      "title": "CVE-2026-18912 - ManageEngine DataSecurity Plus SQL Injection Vulnerability",
       "description": "",
-      "cvss": 7.2,
+      "cvss": 7.7,
       "final_ps": 18,
       "quality_score": 0.438,
       "threat_level": "LOW",
@@ -4519,11 +5048,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-87915"
+        "CVE-2026-18912"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-87915"
+        "https://cvefeed.io/vuln/detail/CVE-2026-18912"
       ],
       "explanation": {
         "quality": [
@@ -4635,40 +5164,44 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-28197",
-      "title": "CVE-2026-28197 - Privilege Escalation via Argument Injection in NetBackup Flex OS Shell",
+      "id": "CVE-2026-63445",
+      "title": "Perses's unvalidated project parameter enables filesystem path traversal",
       "description": "",
-      "cvss": 8.8,
+      "cvss": 0,
       "final_ps": 18,
-      "quality_score": 0.438,
+      "quality_score": 0.453,
       "threat_level": "LOW",
       "type": "CVE_REPORT",
-      "source": "sentinel_apex",
+      "source": "github_advisories",
       "sources_confirmed": 1,
       "merged_sources": [
-        "sentinel_apex"
+        "github_advisories"
       ],
       "first_seen": "2026-09-18",
       "last_seen": "2026-09-18",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "",
-      "product": "",
+      "vendor": "go",
+      "product": "github.com/perses/perses",
       "due_date": null,
       "cves": [
-        "CVE-2026-28197"
+        "CVE-2026-63445",
+        "CVE-2026-63445"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-28197"
+        "https://github.com/advisories/GHSA-vr5f-w35q-98jp",
+        "https://github.com/perses/perses/security/advisories/GHSA-vr5f-w35q-98jp",
+        "https://github.com/perses/perses/commit/75e5471040ccb5674ea8d25c2aa16c80ccb70b2a",
+        "https://github.com/perses/perses/releases/tag/v0.54.0-rc.0"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.40",
           "recency=0d (score=1.00)",
-          "QS=0.438"
+          "QS=0.453"
         ],
         "priority": [
           "base_ps=18 (no boosts)"
@@ -4681,152 +5214,14 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-28198",
-      "title": "CVE-2026-28198 - Privilege Escalation via Cryptographic Signature Verification Bypass in NetBackup Flex OS Shell",
-      "description": "",
-      "cvss": 8.8,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-18",
-      "last_seen": "2026-09-18",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-28198"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-28198"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-6205",
-      "title": "CVE-2026-6205 - Synology DiskStation Manager Upload API Arbitrary File Write Vulnerability",
-      "description": "",
-      "cvss": 8.1,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-18",
-      "last_seen": "2026-09-18",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-6205"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-6205"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-85410",
-      "title": "CVE-2026-85410 - Master Addons for Elementor <= 3.2.2 - Missing Authorization to Authenticated (Contributor+) Arbitrary ",
-      "description": "",
-      "cvss": 8.1,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-18",
-      "last_seen": "2026-09-18",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-85410"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-85410"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-80844",
-      "title": "A quartet of Linux local root vulns: DirtyAH6, PPPoEject, TUNderflow, and DiagSpill",
+      "id": "CVE-2017-7199",
+      "title": "Sherlock exploit",
       "description": "",
       "cvss": 7.8,
       "final_ps": 18,
       "quality_score": 0.438,
       "threat_level": "LOW",
-      "type": "NEWS_REPORT",
+      "type": "CVE_REPORT",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
@@ -4841,14 +5236,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-80844",
-        "CVE-2026-81000",
-        "CVE-2026-68121",
-        "CVE-2026-74469"
+        "CVE-2017-7199"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://seclists.org/oss-sec/2026/q3/822"
+        "https://sploitus.com/exploit?id=KITPLOIT:TOOLS-GITHUB-RASTA-MOUSE-SHERLOCK&utm_source=rss&utm_medium=rss"
       ],
       "explanation": {
         "quality": [
@@ -4868,8 +5260,8 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-87743",
-      "title": "CVE-2026-87743 - Quarkus-vertx-http: authorization bypass via path normalization discrepancy in quarkus http security",
+      "id": "CVE-2026-15579",
+      "title": "CVE-2026-15579 - Ethernet Switch Web Interface Buffer Overflow Denial of Service",
       "description": "",
       "cvss": 7.5,
       "final_ps": 18,
@@ -4890,103 +5282,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-87743"
+        "CVE-2026-15579"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-87743"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-18911",
-      "title": "CVE-2026-18911 - ManageEngine DataSecurity Plus Authentication Bypass",
-      "description": "",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-18",
-      "last_seen": "2026-09-18",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-18911"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-18911"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-18912",
-      "title": "CVE-2026-18912 - ManageEngine DataSecurity Plus SQL Injection Vulnerability",
-      "description": "",
-      "cvss": 7.7,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-18",
-      "last_seen": "2026-09-18",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-18912"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-18912"
+        "https://cvefeed.io/vuln/detail/CVE-2026-15579"
       ],
       "explanation": {
         "quality": [
