@@ -1,15 +1,15 @@
 {
-  "generated": "2026-09-19T16:19:51.359Z",
+  "generated": "2026-09-19T18:45:09.651Z",
   "version": "1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX v4.0",
   "stats": {
-    "total_nodes": 14142,
+    "total_nodes": 14143,
     "actors": 8,
     "cves": 6027,
     "campaigns": 1389,
     "malware": 0,
     "iocs": 907,
-    "edges": 4085
+    "edges": 4087
   },
   "nodes": {
     "actor:lockbit": {
@@ -1040,6 +1040,11 @@
           "target": "BLEEPINGCOMPUTER-4d61477a7ce11456",
           "relationship": "exploits",
           "confidence": 0.85
+        },
+        {
+          "target": "SENTINELAPEX-8cfaf6549696",
+          "relationship": "exploits",
+          "confidence": 0.85
         }
       ],
       "attributes": {
@@ -1726,6 +1731,11 @@
         },
         {
           "target": "BLEEPINGCOMPUTER-4d61477a7ce11456",
+          "relationship": "exploits",
+          "confidence": 0.85
+        },
+        {
+          "target": "SENTINELAPEX-8cfaf6549696",
           "relationship": "exploits",
           "confidence": 0.85
         }
@@ -262264,9 +262274,9 @@
       "type": "CVE",
       "name": "Check Point Fixes Critical CVE-2026-91843 Allowing Root Code Execution",
       "attributes": {
-        "cvss": 7.8,
-        "threat_level": "LOW",
-        "priority_score": 42,
+        "cvss": 9.8,
+        "threat_level": "MEDIUM",
+        "priority_score": 49,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
@@ -265229,8 +265239,8 @@
       "name": "File Viewer: DOM XSS via unsafe hyperlink schemes in the legacy DOC renderer",
       "attributes": {
         "cvss": 8.2,
-        "threat_level": "MEDIUM",
-        "priority_score": 45,
+        "threat_level": "LOW",
+        "priority_score": 43,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
@@ -265272,7 +265282,7 @@
       "attributes": {
         "cvss": 7.5,
         "threat_level": "LOW",
-        "priority_score": 43,
+        "priority_score": 41,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
@@ -265290,7 +265300,7 @@
       "attributes": {
         "cvss": 7.5,
         "threat_level": "LOW",
-        "priority_score": 43,
+        "priority_score": 41,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
@@ -265306,9 +265316,9 @@
       "type": "CVE",
       "name": "Convoy: Cross-Tenant Source IDOR Leaks Plaintext Message Broker Credentials",
       "attributes": {
-        "cvss": 9.8,
+        "cvss": 7.5,
         "threat_level": "MEDIUM",
-        "priority_score": 61,
+        "priority_score": 51,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
@@ -265444,7 +265454,7 @@
       "attributes": {
         "cvss": 9.1,
         "threat_level": "MEDIUM",
-        "priority_score": 49,
+        "priority_score": 47,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
@@ -265462,7 +265472,7 @@
       "attributes": {
         "cvss": 7.5,
         "threat_level": "LOW",
-        "priority_score": 43,
+        "priority_score": 41,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
@@ -265480,7 +265490,7 @@
       "attributes": {
         "cvss": 7.5,
         "threat_level": "LOW",
-        "priority_score": 43,
+        "priority_score": 41,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
@@ -265498,7 +265508,7 @@
       "attributes": {
         "cvss": 7.5,
         "threat_level": "LOW",
-        "priority_score": 43,
+        "priority_score": 41,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
@@ -265624,7 +265634,7 @@
       "attributes": {
         "cvss": 6.5,
         "threat_level": "LOW",
-        "priority_score": 38,
+        "priority_score": 36,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
@@ -265696,7 +265706,7 @@
       "attributes": {
         "cvss": 6.1,
         "threat_level": "LOW",
-        "priority_score": 37,
+        "priority_score": 35,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
@@ -266394,6 +266404,24 @@
           "confidence": 1
         }
       ]
+    },
+    "SENTINELAPEX-8cfaf6549696": {
+      "id": "SENTINELAPEX-8cfaf6549696",
+      "type": "Intel",
+      "name": "ShinyHunters hacks Clop leak site, threatens to extort ransomware gang",
+      "attributes": {
+        "cvss": 0,
+        "threat_level": "LOW",
+        "priority_score": 26,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": true,
+        "vendor": "",
+        "product": "",
+        "published": "2026-09-19",
+        "type": "RANSOMWARE"
+      },
+      "connections": []
     }
   },
   "edges": [
@@ -303335,6 +303363,24 @@
       "target": "CVE-2026-81505",
       "relationship": "includes",
       "confidence": 1,
+      "first_seen": "2026-09-19",
+      "sources": []
+    },
+    {
+      "id": "actor:shinyhunters→exploits→SENTINELAPEX-8cfaf6549696",
+      "source": "actor:shinyhunters",
+      "target": "SENTINELAPEX-8cfaf6549696",
+      "relationship": "exploits",
+      "confidence": 0.85,
+      "first_seen": "2026-09-19",
+      "sources": []
+    },
+    {
+      "id": "actor:cl0p→exploits→SENTINELAPEX-8cfaf6549696",
+      "source": "actor:cl0p",
+      "target": "SENTINELAPEX-8cfaf6549696",
+      "relationship": "exploits",
+      "confidence": 0.85,
       "first_seen": "2026-09-19",
       "sources": []
     }
