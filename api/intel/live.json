@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-19T00:00:01.566Z",
+  "generated": "2026-09-19T04:22:57.740Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,56 +7,13 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 5047,
+  "total_published": 5061,
   "s2n_stats": {
     "passed": 100,
     "suppressed": 4,
     "avg_qs": 0.493
   },
   "items": [
-    {
-      "id": "CVE-2026-81505",
-      "title": "Convoy: Cross-Tenant Source IDOR Leaks Plaintext Message Broker Credentials",
-      "description": "Summary\nfrain-dev/convoy (all versions up to and including v26.6.2, no patch\navailable) lets any authenticated caller who is authorized on at least one\nproject read ANY OTHER project's \"Source\" record by ID via\nGET /api/v1/projects/{projectID}/sources/{sourceID} -- regardless of ... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 59,
-      "quality_score": 0.493,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-18",
-      "last_seen": "2026-09-18",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-81505"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-p5vg-v7mj-f6q4"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=0d (score=1.00)",
-          "QS=0.493"
-        ],
-        "priority": [
-          "+7 zero_day"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
     {
       "id": "CVE-2026-50522",
       "title": "Critical SharePoint RCE CVE-2026-50522 Under Active Exploitation After Public PoC",
@@ -318,6 +275,49 @@
       }
     },
     {
+      "id": "CVE-2026-91127",
+      "title": "File Viewer: DOM XSS via unsafe hyperlink schemes in the legacy DOC renderer",
+      "description": "Summary\n\nBefore 2.3.1, the legacy .doc renderer emitted document hyperlink targets after HTML escaping but without a URL-scheme allowlist. A crafted .doc could therefore render a live javascript:, vbscript:, data:, or similarly unsafe link. Script could execute in the embedding o... [Full analysis a",
+      "cvss": 8.2,
+      "final_ps": 47,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-91127"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-3753-m2x2-q623"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=47 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
       "id": "CVE-2026-58644",
       "title": "CISA Adds Exploited SharePoint RCE Zero-Day CVE-2026-58644 to KEV",
       "description": "",
@@ -361,9 +361,9 @@
       }
     },
     {
-      "id": "CVE-2026-63445",
-      "title": "Perses's unvalidated project parameter enables filesystem path traversal",
-      "description": "Impact\nWhen Perses is using the file system database, on  the list endpoints, the project value is bound from the request into the resource Query struct and is never validated against directory-traversal characters (validation/Flatten only runs for Create/Update bodies, not list ... [Full analysis a",
+      "id": "CVE-2026-77301",
+      "title": "adm-zip: Uncontrolled memory allocation via the declared uncompressed size (DoS)",
+      "description": "Summary\nadm-zip allocates an entry's output buffer from the declared uncompressed size (central-directory size field) before validating it against the actual data. A tiny crafted ZIP that declares a huge uncompressed size forces a multi-gigabyte allocation from a few bytes.\n\nImpa... [Full analysis a",
       "cvss": 7.5,
       "final_ps": 46,
       "quality_score": 0.493,
@@ -383,97 +383,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-63445"
+        "CVE-2026-77301"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-vr5f-w35q-98jp"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=0d (score=1.00)",
-          "QS=0.493"
-        ],
-        "priority": [
-          "base_ps=46 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-63199",
-      "title": "Perses's missing authorization in datasource proxy allows cross-scope secret disclosure",
-      "description": "Impact\n\nThe datasource proxy authorizes the caller on the Datasource scope, then resolves and decrypts any Secret named in the request body with no Secret-scope check.\n\nDatasource and Secret are distinct, independently grantable role scopes, so an operator can grant datasource ac... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 46,
-      "quality_score": 0.493,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-18",
-      "last_seen": "2026-09-18",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-63199"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-4227-9989-jrhx"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=0d (score=1.00)",
-          "QS=0.493"
-        ],
-        "priority": [
-          "base_ps=46 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-63458",
-      "title": "Perses's project query parameter authorization bypass exposes cross-project resources",
-      "description": "Impact\n_What kind of vulnerability is it?_\n\nAn authenticated user who is only a viewer on project team-a requests GET /api/v1/projects/team-a/dashboards?project=finance-secret (or simply GET /api/v1/datasources?project=finance-secret) and receives the full list of the finance-sec... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 46,
-      "quality_score": 0.493,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-18",
-      "last_seen": "2026-09-18",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-63458"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-cjgj-2fwf-4c2w"
+        "https://github.com/advisories/GHSA-7q85-xj36-vmfc"
       ],
       "explanation": {
         "quality": [
@@ -746,6 +660,92 @@
         "priority": [
           "+10 CVSS≥9",
           "+8 exploited_in_wild"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-85272",
+      "title": "CVE-2026-85272 - Open edX Platform: Path traversal via prefix-bypass in safe_extractall Path Validation",
+      "description": "CVE-2026-85272 - Open edX Platform: Path traversal via prefix-bypass in safe_extractall Path Validation",
+      "cvss": 6.5,
+      "final_ps": 41,
+      "quality_score": 0.453,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-85272"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-85272"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.50",
+          "recency=0d (score=1.00)",
+          "QS=0.453"
+        ],
+        "priority": [
+          "base_ps=41 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-93562",
+      "title": "CVE-2026-93562 - Io.netty/netty-codec-http: netty: incomplete validation of malformed transfer-encoding allows http requ",
+      "description": "CVE-2026-93562 - Io.netty/netty-codec-http: netty: incomplete validation of malformed transfer-encoding allows http request smuggling",
+      "cvss": 6.5,
+      "final_ps": 41,
+      "quality_score": 0.453,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-93562"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-93562"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.50",
+          "recency=0d (score=1.00)",
+          "QS=0.453"
+        ],
+        "priority": [
+          "base_ps=41 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4130,6 +4130,186 @@
       "suppression_reason": null
     },
     {
+      "id": "CVE-2026-81505",
+      "title": "Convoy: Cross-Tenant Source IDOR Leaks Plaintext Message Broker Credentials",
+      "description": "Summary\nfrain-dev/convoy (all versions up to and including v26.6.2, no patch\navailable) lets any authenticated caller who is authorized on at least one\nproject read ANY OTHER project's \"Source\" record by ID via\nGET /api/v1/projects/{projectID}/sources/{sourceID} -- regardless of ... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-81505"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-p5vg-v7mj-f6q4"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-63445",
+      "title": "Perses's unvalidated project parameter enables filesystem path traversal",
+      "description": "Impact\nWhen Perses is using the file system database, on  the list endpoints, the project value is bound from the request into the resource Query struct and is never validated against directory-traversal characters (validation/Flatten only runs for Create/Update bodies, not list ... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-63445"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-vr5f-w35q-98jp"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-63199",
+      "title": "Perses's missing authorization in datasource proxy allows cross-scope secret disclosure",
+      "description": "Impact\n\nThe datasource proxy authorizes the caller on the Datasource scope, then resolves and decrypts any Secret named in the request body with no Secret-scope check.\n\nDatasource and Secret are distinct, independently grantable role scopes, so an operator can grant datasource ac... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-63199"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-4227-9989-jrhx"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-63458",
+      "title": "Perses's project query parameter authorization bypass exposes cross-project resources",
+      "description": "Impact\n_What kind of vulnerability is it?_\n\nAn authenticated user who is only a viewer on project team-a requests GET /api/v1/projects/team-a/dashboards?project=finance-secret (or simply GET /api/v1/datasources?project=finance-secret) and receives the full list of the finance-sec... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-63458"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-cjgj-2fwf-4c2w"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
       "id": "CVE-2026-88097",
       "title": "CVE-2026-88097 - Microsoft Edge (Chromium-based) Elevation of Privilege Vulnerability",
       "description": "CVE-2026-88097 - Microsoft Edge (Chromium-based) Elevation of Privilege Vulnerability",
@@ -4212,186 +4392,6 @@
         ],
         "priority": [
           "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-91127",
-      "title": "File Viewer: DOM XSS via unsafe hyperlink schemes in the legacy DOC renderer",
-      "description": "Summary\n\nBefore 2.3.1, the legacy .doc renderer emitted document hyperlink targets after HTML escaping but without a URL-scheme allowlist. A crafted .doc could therefore render a live javascript:, vbscript:, data:, or similarly unsafe link. Script could execute in the embedding o... [Full analysis a",
-      "cvss": 8.2,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-18",
-      "last_seen": "2026-09-18",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-91127"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-3753-m2x2-q623"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-77301",
-      "title": "adm-zip: Uncontrolled memory allocation via the declared uncompressed size (DoS)",
-      "description": "Summary\nadm-zip allocates an entry's output buffer from the declared uncompressed size (central-directory size field) before validating it against the actual data. A tiny crafted ZIP that declares a huge uncompressed size forces a multi-gigabyte allocation from a few bytes.\n\nImpa... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-18",
-      "last_seen": "2026-09-18",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-77301"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-7q85-xj36-vmfc"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-85272",
-      "title": "CVE-2026-85272 - Open edX Platform: Path traversal via prefix-bypass in safe_extractall Path Validation",
-      "description": "CVE-2026-85272 - Open edX Platform: Path traversal via prefix-bypass in safe_extractall Path Validation",
-      "cvss": 6.5,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-18",
-      "last_seen": "2026-09-18",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-85272"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-85272"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-93562",
-      "title": "CVE-2026-93562 - Io.netty/netty-codec-http: netty: incomplete validation of malformed transfer-encoding allows http requ",
-      "description": "CVE-2026-93562 - Io.netty/netty-codec-http: netty: incomplete validation of malformed transfer-encoding allows http request smuggling",
-      "cvss": 6.5,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-18",
-      "last_seen": "2026-09-18",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-93562"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-93562"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
         ],
         "suppression": null,
         "merge": null
