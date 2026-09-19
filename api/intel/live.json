@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-18T21:47:41.038Z",
+  "generated": "2026-09-19T00:00:01.566Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,26 +7,25 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 5036,
+  "total_published": 5047,
   "s2n_stats": {
-    "passed": 102,
-    "suppressed": 5,
-    "avg_qs": 0.491
+    "passed": 100,
+    "suppressed": 4,
+    "avg_qs": 0.493
   },
   "items": [
     {
-      "id": "CVE-2026-85058",
-      "title": "io.moquette:moquette-broker has a Missing Authorization issue",
-      "description": "## Summary Moquette MQTT Broker fails to enforce ACL write permission checks when publishing Will (Last Will and Testament) messages on behalf of disconnected clients. All normal PUBLISH paths (`receivedPublishQos0`, `receivedPublishQos1`, `receivedPublishQos2`) correctly invoke `authorizator.canWri",
+      "id": "CVE-2026-81505",
+      "title": "Convoy: Cross-Tenant Source IDOR Leaks Plaintext Message Broker Credentials",
+      "description": "Summary\nfrain-dev/convoy (all versions up to and including v26.6.2, no patch\navailable) lets any authenticated caller who is authorized on at least one\nproject read ANY OTHER project's \"Source\" record by ID via\nGET /api/v1/projects/{projectID}/sources/{sourceID} -- regardless of ... [Full analysis a",
       "cvss": 7.5,
-      "final_ps": 54,
-      "quality_score": 0.52,
+      "final_ps": 59,
+      "quality_score": 0.493,
       "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 2,
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
       "merged_sources": [
-        "github_advisories",
         "sentinel_apex"
       ],
       "first_seen": "2026-09-18",
@@ -34,29 +33,25 @@
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "maven",
-      "product": "io.moquette:moquette-broker",
+      "vendor": "",
+      "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-85058"
+        "CVE-2026-81505"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-9jjc-fw8x-fmwx",
-        "https://github.com/moquette-io/moquette/security/advisories/GHSA-9jjc-fw8x-fmwx",
-        "https://github.com/moquette-io/moquette/commit/e23df019f6a11e22c7d2047d4f86d07095466c97",
-        "https://github.com/moquette-io/moquette/commit/f5a323fe782d1505c0097498cb22eb6ec6c96973"
+        "https://github.com/advisories/GHSA-p5vg-v7mj-f6q4"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=1.00",
-          "multi_source=2 sources",
-          "recency=999d (score=0.05)",
-          "QS=0.520"
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
         ],
         "priority": [
-          "base_ps=54 (no boosts)"
+          "+7 zero_day"
         ],
         "suppression": null,
         "merge": null
@@ -323,49 +318,6 @@
       }
     },
     {
-      "id": "CVE-2026-91127",
-      "title": "File Viewer: DOM XSS via unsafe hyperlink schemes in the legacy DOC renderer",
-      "description": "Summary\n\nBefore 2.3.1, the legacy .doc renderer emitted document hyperlink targets after HTML escaping but without a URL-scheme allowlist. A crafted .doc could therefore render a live javascript:, vbscript:, data:, or similarly unsafe link. Script could execute in the embedding o... [Full analysis a",
-      "cvss": 8.2,
-      "final_ps": 47,
-      "quality_score": 0.493,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-18",
-      "last_seen": "2026-09-18",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-91127"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-3753-m2x2-q623"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=0d (score=1.00)",
-          "QS=0.493"
-        ],
-        "priority": [
-          "base_ps=47 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
       "id": "CVE-2026-58644",
       "title": "CISA Adds Exploited SharePoint RCE Zero-Day CVE-2026-58644 to KEV",
       "description": "",
@@ -409,9 +361,9 @@
       }
     },
     {
-      "id": "CVE-2026-77301",
-      "title": "adm-zip: Uncontrolled memory allocation via the declared uncompressed size (DoS)",
-      "description": "Summary\nadm-zip allocates an entry's output buffer from the declared uncompressed size (central-directory size field) before validating it against the actual data. A tiny crafted ZIP that declares a huge uncompressed size forces a multi-gigabyte allocation from a few bytes.\n\nImpa... [Full analysis a",
+      "id": "CVE-2026-63445",
+      "title": "Perses's unvalidated project parameter enables filesystem path traversal",
+      "description": "Impact\nWhen Perses is using the file system database, on  the list endpoints, the project value is bound from the request into the resource Query struct and is never validated against directory-traversal characters (validation/Flatten only runs for Create/Update bodies, not list ... [Full analysis a",
       "cvss": 7.5,
       "final_ps": 46,
       "quality_score": 0.493,
@@ -431,11 +383,97 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-77301"
+        "CVE-2026-63445"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-7q85-xj36-vmfc"
+        "https://github.com/advisories/GHSA-vr5f-w35q-98jp"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=46 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-63199",
+      "title": "Perses's missing authorization in datasource proxy allows cross-scope secret disclosure",
+      "description": "Impact\n\nThe datasource proxy authorizes the caller on the Datasource scope, then resolves and decrypts any Secret named in the request body with no Secret-scope check.\n\nDatasource and Secret are distinct, independently grantable role scopes, so an operator can grant datasource ac... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 46,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-63199"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-4227-9989-jrhx"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=46 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-63458",
+      "title": "Perses's project query parameter authorization bypass exposes cross-project resources",
+      "description": "Impact\n_What kind of vulnerability is it?_\n\nAn authenticated user who is only a viewer on project team-a requests GET /api/v1/projects/team-a/dashboards?project=finance-secret (or simply GET /api/v1/datasources?project=finance-secret) and receives the full list of the finance-sec... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 46,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-63458"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-cjgj-2fwf-4c2w"
       ],
       "explanation": {
         "quality": [
@@ -2263,7 +2301,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2026-13001",
@@ -3140,6 +3180,141 @@
       "suppression_reason": null
     },
     {
+      "id": "CVE-2026-63446",
+      "title": "CVE-2026-63446 - Suricata app-layer: passed flows can retain transactions, causing resource exhaustion",
+      "description": "CVE-2026-63446 - Suricata app-layer: passed flows can retain transactions, causing resource exhaustion",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-63446"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-63446"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-63448",
+      "title": "CVE-2026-63448 - Suricata smb: some SMB flows can cause resource exhaustion",
+      "description": "CVE-2026-63448 - Suricata smb: some SMB flows can cause resource exhaustion",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-63448"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-63448"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-93738",
+      "title": "CVE-2026-93738 - Totolink A3002MU formSchedule buffer overflow",
+      "description": "CVE-2026-93738 - Totolink A3002MU formSchedule buffer overflow",
+      "cvss": 9.9,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-93738"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-93738"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
       "id": "CVE-2026-59163",
       "title": "Mnemosyne has JWT signature verification bypass sync server that allows authentication bypass",
       "description": "Summary\n\nThe Mnemosyne sync server's authentication check decoded JWT bearer tokens but never verified their HMAC-SHA256 signatures. Any well-formed token was accepted, allowing an unauthenticated attacker to impersonate any user and read or modify their sync data.\n\nSeverity: Cri... [Full analysis a",
@@ -3815,6 +3990,55 @@
       "suppression_reason": null
     },
     {
+      "id": "CVE-2026-85058",
+      "title": "io.moquette:moquette-broker has a Missing Authorization issue",
+      "description": "## Summary Moquette MQTT Broker fails to enforce ACL write permission checks when publishing Will (Last Will and Testament) messages on behalf of disconnected clients. All normal PUBLISH paths (`receivedPublishQos0`, `receivedPublishQos1`, `receivedPublishQos2`) correctly invoke `authorizator.canWri",
+      "cvss": 7.5,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 2,
+      "merged_sources": [
+        "github_advisories",
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "maven",
+      "product": "io.moquette:moquette-broker",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-85058"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-9jjc-fw8x-fmwx",
+        "https://github.com/moquette-io/moquette/security/advisories/GHSA-9jjc-fw8x-fmwx",
+        "https://github.com/moquette-io/moquette/commit/e23df019f6a11e22c7d2047d4f86d07095466c97",
+        "https://github.com/moquette-io/moquette/commit/f5a323fe782d1505c0097498cb22eb6ec6c96973"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
       "id": "GHSA-55be9fb9c8ee04b0",
       "title": "Obot: Server-Side Request Forgery via remote MCP server URL",
       "description": "## Summary In affected versions, the URL of a remote MCP server is attacker-controlled at registration and is fetched server-side with no validation of the destination. There is no guard against loopback, link-local, RFC1918 private ranges, or the cloud metadata endpoint (`169.254.169.254`), so a us",
@@ -3906,100 +4130,10 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-81505",
-      "title": "Convoy: Cross-Tenant Source IDOR Leaks Plaintext Message Broker Credentials",
-      "description": "Summary\nfrain-dev/convoy (all versions up to and including v26.6.2, no patch\navailable) lets any authenticated caller who is authorized on at least one\nproject read ANY OTHER project's \"Source\" record by ID via\nGET /api/v1/projects/{projectID}/sources/{sourceID} -- regardless of ... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-18",
-      "last_seen": "2026-09-18",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-81505"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-p5vg-v7mj-f6q4"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-77615",
-      "title": "Opencast: Stored XSS in Paella player via WebVTT/DFXP caption cue text",
-      "description": "Summary\n\nThe Opencast Paella player renders caption cue text into innerHTML without escaping. The captions canvas clears _captionsContainer.innerHTML and then appends each active cue with _captionsContainer.innerHTML += cue, so HTML inside a WebVTT or DFXP cue becomes live DOM an... [Full analysis a",
-      "cvss": 8.7,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "SOCIAL_ENGINEERING",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-18",
-      "last_seen": "2026-09-18",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-77615"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-m6c8-jcw2-5r25"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-93761",
-      "title": "CVE-2026-93761 - Denial of service via unbounded regex matching in Mongoid's in-memory query matcher",
-      "description": "CVE-2026-93761 - Denial of service via unbounded regex matching in Mongoid's in-memory query matcher",
-      "cvss": 7.5,
+      "id": "CVE-2026-88097",
+      "title": "CVE-2026-88097 - Microsoft Edge (Chromium-based) Elevation of Privilege Vulnerability",
+      "description": "CVE-2026-88097 - Microsoft Edge (Chromium-based) Elevation of Privilege Vulnerability",
+      "cvss": 8.1,
       "final_ps": 18,
       "quality_score": 0.438,
       "threat_level": "MEDIUM",
@@ -4018,11 +4152,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-93761"
+        "CVE-2026-88097"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-93761"
+        "https://cvefeed.io/vuln/detail/CVE-2026-88097"
       ],
       "explanation": {
         "quality": [
@@ -4041,279 +4175,9 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-63199",
-      "title": "Low Security Vulnerability (CVE-2026-63199)",
-      "description": "CVE-2026-63199",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-18",
-      "last_seen": "2026-09-18",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-63199"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://vulners.com/nvd/NVD:CVE-2026-63199?utm_source=rss&utm_medium=rss&utm_campaign=rss"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-63458",
-      "title": "Low Security Vulnerability (CVE-2026-63458)",
-      "description": "CVE-2026-63458",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-18",
-      "last_seen": "2026-09-18",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-63458"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://vulners.com/nvd/NVD:CVE-2026-63458?utm_source=rss&utm_medium=rss&utm_campaign=rss"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-63445",
-      "title": "Low Security Vulnerability (CVE-2026-63445)",
-      "description": "CVE-2026-63445",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-18",
-      "last_seen": "2026-09-18",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-63445"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://vulners.com/nvd/NVD:CVE-2026-63445?utm_source=rss&utm_medium=rss&utm_campaign=rss"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-93749",
-      "title": "CVE-2026-93749 - source-map-js through 1.2.1 Event Loop Denial of Service",
-      "description": "CVE-2026-93749 - source-map-js through 1.2.1 Event Loop Denial of Service",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-18",
-      "last_seen": "2026-09-18",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-93749"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-93749"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-93752",
-      "title": "CVE-2026-93752 - CSSOM through 0.5.0 Denial of Service via length Property",
-      "description": "CVE-2026-93752 - CSSOM through 0.5.0 Denial of Service via length Property",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-18",
-      "last_seen": "2026-09-18",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-93752"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-93752"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-93753",
-      "title": "CVE-2026-93753 - deepmerge through 4.3.1 Prototype Poisoning via mergeObject",
-      "description": "CVE-2026-93753 - deepmerge through 4.3.1 Prototype Poisoning via mergeObject",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-18",
-      "last_seen": "2026-09-18",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-93753"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-93753"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-75893",
-      "title": "CVE-2026-75893 - Heap based buffer overflow at ipaccess_proxy_read_msg()",
-      "description": "CVE-2026-75893 - Heap based buffer overflow at ipaccess_proxy_read_msg()",
+      "id": "CVE-2026-63451",
+      "title": "CVE-2026-63451 - Suricata detect: frame rules without content and with transform can cause heap buffer overflow during r",
+      "description": "CVE-2026-63451 - Suricata detect: frame rules without content and with transform can cause heap buffer overflow during rule load",
       "cvss": 7.2,
       "final_ps": 18,
       "quality_score": 0.438,
@@ -4333,11 +4197,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-75893"
+        "CVE-2026-63451"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-75893"
+        "https://cvefeed.io/vuln/detail/CVE-2026-63451"
       ],
       "explanation": {
         "quality": [
@@ -4356,9 +4220,99 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-93763",
-      "title": "CVE-2026-93763 - Silent plaintext persistence via unresolved callable database name in encryption schema map",
-      "description": "CVE-2026-93763 - Silent plaintext persistence via unresolved callable database name in encryption schema map",
+      "id": "CVE-2026-91127",
+      "title": "File Viewer: DOM XSS via unsafe hyperlink schemes in the legacy DOC renderer",
+      "description": "Summary\n\nBefore 2.3.1, the legacy .doc renderer emitted document hyperlink targets after HTML escaping but without a URL-scheme allowlist. A crafted .doc could therefore render a live javascript:, vbscript:, data:, or similarly unsafe link. Script could execute in the embedding o... [Full analysis a",
+      "cvss": 8.2,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-91127"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-3753-m2x2-q623"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-77301",
+      "title": "adm-zip: Uncontrolled memory allocation via the declared uncompressed size (DoS)",
+      "description": "Summary\nadm-zip allocates an entry's output buffer from the declared uncompressed size (central-directory size field) before validating it against the actual data. A tiny crafted ZIP that declares a huge uncompressed size forces a multi-gigabyte allocation from a few bytes.\n\nImpa... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-77301"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-7q85-xj36-vmfc"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-85272",
+      "title": "CVE-2026-85272 - Open edX Platform: Path traversal via prefix-bypass in safe_extractall Path Validation",
+      "description": "CVE-2026-85272 - Open edX Platform: Path traversal via prefix-bypass in safe_extractall Path Validation",
       "cvss": 6.5,
       "final_ps": 16,
       "quality_score": 0.398,
@@ -4378,11 +4332,56 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-93763"
+        "CVE-2026-85272"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-93763"
+        "https://cvefeed.io/vuln/detail/CVE-2026-85272"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.25",
+          "recency=0d (score=1.00)",
+          "QS=0.398"
+        ],
+        "priority": [
+          "base_ps=16 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-93562",
+      "title": "CVE-2026-93562 - Io.netty/netty-codec-http: netty: incomplete validation of malformed transfer-encoding allows http requ",
+      "description": "CVE-2026-93562 - Io.netty/netty-codec-http: netty: incomplete validation of malformed transfer-encoding allows http request smuggling",
+      "cvss": 6.5,
+      "final_ps": 16,
+      "quality_score": 0.398,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-18",
+      "last_seen": "2026-09-18",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-93562"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-93562"
       ],
       "explanation": {
         "quality": [
