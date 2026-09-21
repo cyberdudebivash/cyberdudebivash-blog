@@ -44,6 +44,7 @@ from bs4 import BeautifulSoup
 from . import premium_publication as _premium
 from . import provider_quota_ledger as _quota
 from . import publication_scheduler as _scheduler
+from . import rapid_intel_lane_v19_3 as _rapid
 from .logger import setup_logger
 
 logger = setup_logger("premium_capacity_allocator_v13")
@@ -146,7 +147,17 @@ def _provider_independent_candidate(article) -> bool:
     publication gate: downstream ReportX, evidence admission, compiler-input
     floors, Dossier v8, Blogger fetch-back, and all other gates still run and
     remain authoritative.
+
+    P0-DAILY-THREAT-COVERAGE-2026-09-21: Rapid Intelligence is itself a
+    provider-independent publication path. A candidate that the rapid lane can
+    truthfully handle must therefore survive this *upstream* capacity filter;
+    otherwise ransomware/breach/curated-malware candidates are discarded
+    before v19.3 can ever route them around provider TPD exhaustion.
     """
+    rapid_eligible, _reason = _rapid.rapid_lane_eligibility(article)
+    if rapid_eligible:
+        return True
+
     words = _source_word_count(article)
     structured = _structured_evidence_count(article)
     return (
