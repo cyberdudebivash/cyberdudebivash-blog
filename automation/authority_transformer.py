@@ -2536,17 +2536,26 @@ class AuthorityTransformer:
                 extra={"title": article.title[:60], "reasons": preview_certification["reasons"]},
             )
 
-        # Build full HTML
-        html = self._assemble_html(
-            article,
-            body_content,
-            seo_data,
-            context,
-            image_url=image_url,
-            detection_status=detection_status,
-            product_tier=product_tier_verdict.tier,
-            content_source=content_source,
-        )
+        # Build full HTML. Presentation metadata is carried on the transformer
+        # instance rather than added to _assemble_html's public call signature.
+        # The production runtime installs a deep chain of presentation/integrity
+        # wrappers around _assemble_html; preserving that ABI is a release
+        # invariant and prevents visual-only changes from breaking syndication.
+        self._cdb_visual_metadata = {
+            "detection_status": detection_status,
+            "product_tier": product_tier_verdict.tier,
+            "content_source": content_source,
+        }
+        try:
+            html = self._assemble_html(
+                article,
+                body_content,
+                seo_data,
+                context,
+                image_url=image_url,
+            )
+        finally:
+            self.__dict__.pop("_cdb_visual_metadata", None)
 
         # RX-P1M fix: composer_outcome.contradictions was computed inside
         # pipeline_composer.compose_report() against ITS OWN internally-
@@ -2679,10 +2688,6 @@ class AuthorityTransformer:
     def _assemble_html(
         self, article: DiscoveredArticle, body_content: str, seo_data: dict, context: ReportContext,
         image_url: Optional[str] = None,
-        *,
-        detection_status: str = "",
-        product_tier: str = "",
-        content_source: str = "",
     ) -> str:
         """Assemble the complete Blogger-compatible HTML article."""
         safe_source_url = _html_escape.escape(article.url, quote=True)
@@ -2720,12 +2725,13 @@ class AuthorityTransformer:
         # thresholds remain untouched.
         visual_style = premium_report_style_block()
         accent, accent_soft = family_accent(context)
+        visual_metadata = getattr(self, "_cdb_visual_metadata", {}) or {}
         report_hero = build_report_hero(
             article,
             context,
-            detection_status=detection_status,
-            product_tier=product_tier,
-            content_source=content_source,
+            detection_status=str(visual_metadata.get("detection_status") or ""),
+            product_tier=str(visual_metadata.get("product_tier") or ""),
+            content_source=str(visual_metadata.get("content_source") or ""),
         )
         premium_body = wrap_premium_report(
             body_content,
