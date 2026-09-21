@@ -26,6 +26,7 @@ from automation.authority_transformer import (
 )
 from automation.config import Config
 from automation.content_discovery import DiscoveredArticle, _compute_hash
+from automation.monetization_injector import MonetizationInjector
 from automation.report_integrity import (
     CERTIFICATION_STATUS,
     REVIEW_STATUS,
@@ -1912,3 +1913,75 @@ class TestIocRenderingAndDefanging(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestRevenueConversionArchitecture(unittest.TestCase):
+    def setUp(self):
+        self.config = Config()
+        self.monetization = MonetizationInjector(self.config)
+
+    def test_strategic_intel_cta_routes_to_existing_paid_surfaces_only(self):
+        html = self.monetization.inject_strategic_intel_cta(
+            "general_intelligence",
+            ["Threat Intelligence", "Malware Research", "Campaign"],
+        )
+        self.assertIn('data-cdb-conversion="strategic-intel"', html)
+        self.assertIn(f'{self.config.sentinel_apex_url}/upgrade', html)
+        self.assertIn(f'{self.config.api_url}/docs', html)
+        self.assertIn(self.config.tools_url, html)
+        self.assertIn("Customer-specific exposure or compromise must be validated", html)
+        self.assertNotIn("stripe", html.lower())
+        self.assertNotIn("customer exposure confirmed", html.lower())
+        self.assertNotIn("customer compromise confirmed", html.lower())
+
+    def test_strategic_intel_cta_is_contextual_for_non_cve_families(self):
+        ransomware = self.monetization.inject_strategic_intel_cta(
+            "ransomware_reporting", ["Ransomware"]
+        )
+        breach = self.monetization.inject_strategic_intel_cta(
+            "breach_notice", ["Data Breach"]
+        )
+        actor = self.monetization.inject_strategic_intel_cta(
+            "threat_actor", ["APT"]
+        )
+        ai = self.monetization.inject_strategic_intel_cta(
+            "ai_security", ["AI Security"]
+        )
+        self.assertIn("OPERATIONALIZE RANSOMWARE INTELLIGENCE", ransomware)
+        self.assertIn("OPERATIONALIZE BREACH INTELLIGENCE", breach)
+        self.assertIn("OPERATIONALIZE THREAT-ACTOR INTELLIGENCE", actor)
+        self.assertIn("OPERATIONALIZE AI SECURITY INTELLIGENCE", ai)
+
+    def test_mssp_cta_has_no_unverified_customer_social_proof(self):
+        html = self.monetization.inject_mssp_cta()
+        self.assertNotIn("trusted by security teams", html.lower())
+        self.assertNotIn("financial services, healthcare, and critical infrastructure", html.lower())
+        self.assertIn("offers co-managed SOC services", html)
+
+    def test_non_cve_report_assembly_receives_one_strategic_closing_conversion(self):
+        article = _make_article(
+            url="https://example.test/malware-campaign",
+            title="Malware campaign targets enterprise identity systems",
+            summary="A public security report describes a malware campaign.",
+            source="global_rss",
+            source_publisher="Example Security Research",
+            labels=["Threat Intelligence", "Malware Research", "Campaign"],
+            full_content="Example Security Research describes a malware campaign affecting enterprise identity workflows.",
+            cve_id=None,
+            cvss_score=None,
+            cvss_vector=None,
+            cwe_ids=[],
+            affected_vendor=None,
+            affected_product=None,
+        )
+        context = build_report_context(article)
+        transformer = AuthorityTransformer(self.config)
+        html = transformer._assemble_html(
+            article,
+            "<h3>Executive Summary</h3><p>Source-backed campaign report.</p>",
+            {},
+            context,
+        )
+        self.assertEqual(html.count('data-cdb-conversion="strategic-intel"'), 1)
+        self.assertIn(f'{self.config.sentinel_apex_url}/upgrade', html)
+        self.assertNotIn("customer exposure confirmed", html.lower())
