@@ -29,6 +29,8 @@ logger = setup_logger("rss_aggregator")
 _FEED_TIMEOUT_SECONDS = 10
 _MAX_ITEMS_PER_FEED = 6
 _MAX_WORKERS = 24
+_MAX_FETCH_ATTEMPTS = 2
+_RETRYABLE_STATUS_CODES = frozenset({429, 500, 502, 503, 504})
 
 
 @dataclass(frozen=True)
@@ -164,16 +166,35 @@ class GlobalRSSAggregator:
         return articles
 
     def _fetch_feed(self, feed: _Feed) -> list[dict]:
-        """Fetch and parse a single feed; returns [] on any network/parse failure."""
-        try:
-            resp = requests.get(
-                feed.url,
-                timeout=_FEED_TIMEOUT_SECONDS,
-                headers={"User-Agent": "CYBERDUDEBIVASH-SyndicationBot/1.0"},
-            )
-            resp.raise_for_status()
-        except Exception as e:
-            logger.warning("Feed fetch failed", extra={"feed": feed.name, "error": str(e)})
+        """Fetch and parse a feed, retrying one transient network/server failure."""
+        resp = None
+        for attempt in range(1, _MAX_FETCH_ATTEMPTS + 1):
+            try:
+                resp = requests.get(
+                    feed.url,
+                    timeout=_FEED_TIMEOUT_SECONDS,
+                    headers={"User-Agent": "CYBERDUDEBIVASH-SyndicationBot/1.0"},
+                )
+                if resp.status_code not in _RETRYABLE_STATUS_CODES:
+                    resp.raise_for_status()
+                    break
+                if attempt == _MAX_FETCH_ATTEMPTS:
+                    resp.raise_for_status()
+                logger.info(
+                    "Retrying transient feed response",
+                    extra={"feed": feed.name, "status": resp.status_code, "attempt": attempt},
+                )
+            except requests.RequestException as e:
+                if attempt < _MAX_FETCH_ATTEMPTS:
+                    logger.info(
+                        "Retrying transient feed failure",
+                        extra={"feed": feed.name, "attempt": attempt, "error": str(e)},
+                    )
+                    continue
+                logger.warning("Feed fetch failed", extra={"feed": feed.name, "error": str(e)})
+                return []
+
+        if resp is None:
             return []
 
         try:
