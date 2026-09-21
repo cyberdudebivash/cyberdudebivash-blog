@@ -45,6 +45,7 @@ from . import authority_transformer as _authority
 from . import cti_dossier_v8 as _v8
 from . import cti_publication_recovery_v19_2 as _v19_2
 from . import premium_publication as _premium
+from . import rss_aggregator as _rss
 from .blogger_publisher import BloggerPublisher
 from .content_discovery import DiscoveredArticle
 from .logger import setup_logger
@@ -62,6 +63,11 @@ RAPID_MIN_SOURCE_WORDS = 24
 # source evidence. This closes the malware/campaign delivery gap during LLM
 # quota saturation without treating an anonymous RSS connector as a publisher.
 RAPID_MIN_CURATED_RSS_SOURCE_WORDS = 80
+_CURATED_RSS_PUBLISHERS = frozenset(
+    str(feed.name or "").strip().casefold()
+    for feed in _rss._GLOBAL_FEEDS
+    if str(feed.name or "").strip()
+)
 
 _AUTHORITATIVE_CONNECTORS = frozenset({
     "nvd",
@@ -158,17 +164,8 @@ def rapid_lane_eligibility(article: DiscoveredArticle) -> tuple[bool, str]:
     if source == "global_rss":
         publisher = str(article.source_publisher or "").strip()
         publisher_key = publisher.casefold()
-        ambiguous = {
-            "",
-            "unknown",
-            "global rss",
-            "global_rss",
-            "rss",
-            "feed",
-            "unknown publisher",
-        }
         if (
-            publisher_key not in ambiguous
+            publisher_key in _CURATED_RSS_PUBLISHERS
             and _source_words(article) >= RAPID_MIN_CURATED_RSS_SOURCE_WORDS
         ):
             return True, f"curated_rss:{publisher}"

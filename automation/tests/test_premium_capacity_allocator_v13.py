@@ -135,6 +135,20 @@ def test_canonical_url_does_not_bypass_source_richness_requirement():
     assert allocator._provider_independent_candidate(article) is False
 
 
+def test_direct_ransomware_source_survives_capacity_filter_for_rapid_lane():
+    article = _article(
+        41,
+        words=80,
+        source="ransomware_intel",
+        url="https://api.ransomware.live/victim/example",
+    )
+    article.title = "ExampleGroup ransomware claims Example Corp"
+    article.summary = "Source-backed ransomware victim disclosure with public leak-site evidence."
+
+    assert allocator._source_word_count(article) < allocator.MIN_RICH_EVIDENCE_WORDS
+    assert allocator._provider_independent_candidate(article) is True
+
+
 def test_capacity_saturation_with_no_rich_candidate_defers_entire_batch(monkeypatch):
     fresh = [_article(i, words=100) for i in range(5)]
     monkeypatch.setattr(allocator, "_ORIGINAL_SELECT", _fake_selection)
