@@ -216,3 +216,165 @@ def test_factory_discovery_window_is_broad_but_bounded():
     assert factory.factory_candidate_discovery_limit(5) == 200
     assert factory.factory_candidate_discovery_limit(50) == 300
     assert factory.factory_candidate_discovery_limit(1000) == 300
+
+
+def test_daily_delivery_classifier_maps_customer_report_classes():
+    cases = [
+        (
+            _article(201, title="Akira ransomware claim against Example Corp", source="ransomware_intel"),
+            "ransomware",
+        ),
+        (
+            _article(202, title="New infostealer malware campaign targets enterprise identities"),
+            "malware_campaign",
+        ),
+        (
+            _article(203, title="Backdoor malware attack compromises enterprise endpoints"),
+            "malware_attack",
+        ),
+        (
+            _article(204, title="Deep malware research on newly observed backdoor"),
+            "malware",
+        ),
+        (
+            _article(205, title="Company publishes data breach notice", source="breach_intel"),
+            "breach",
+        ),
+        (
+            _article(206, title="APT29 threat actor campaign update"),
+            "threat_analysis",
+        ),
+        (
+            _article(
+                207,
+                title="CVE-2026-55555 remote code execution vulnerability",
+                source="nvd",
+                cve_id="CVE-2026-55555",
+            ),
+            None,
+        ),
+    ]
+
+    for article, expected in cases:
+        assert factory.classify_delivery_class(article) == expected
+
+
+def test_daily_delivery_sla_prioritizes_missing_ransomware_without_disabling_cves(monkeypatch):
+    monkeypatch.setattr(factory, "_DAILY_DELIVERY_SLA_ACTIVE", True)
+    monkeypatch.setattr(
+        factory,
+        "_ACTIVE_DAILY_DELIVERED",
+        frozenset({
+            "malware",
+            "malware_campaign",
+            "malware_attack",
+            "breach",
+            "threat_analysis",
+        }),
+    )
+    monkeypatch.setattr(factory.time, "time", lambda: 0.0)
+
+    vulnerabilities = [
+        _article(
+            i,
+            title=f"CVE-2026-{20000 + i} critical vulnerability",
+            source="nvd",
+            cve_id=f"CVE-2026-{20000 + i}",
+        )
+        for i in range(10)
+    ]
+    ransomware = _article(
+        299,
+        title="ExampleGroup ransomware claims Example Corp",
+        source="ransomware_intel",
+    )
+
+    selection = factory.select_factory_publication_batch(
+        [],
+        vulnerabilities + [ransomware],
+        5,
+    )
+
+    assert len(selection.articles) == 5
+    assert ransomware in selection.articles
+    assert selection.metrics["selected_delivery_classes"]["ransomware"] == 1
+    assert "ransomware" not in selection.metrics["delivery_sla_missing_after_selection"]
+    assert selection.metrics["vulnerability_selected"] == 4
+
+
+def test_daily_delivery_sla_never_holds_empty_slots_or_fabricates_supply(monkeypatch):
+    monkeypatch.setattr(factory, "_DAILY_DELIVERY_SLA_ACTIVE", True)
+    monkeypatch.setattr(factory, "_ACTIVE_DAILY_DELIVERED", frozenset())
+    monkeypatch.setattr(factory.time, "time", lambda: 0.0)
+
+    vulnerabilities = [
+        _article(
+            i,
+            title=f"CVE-2026-{30000 + i} critical vulnerability",
+            source="nvd",
+            cve_id=f"CVE-2026-{30000 + i}",
+        )
+        for i in range(10)
+    ]
+
+    selection = factory.select_factory_publication_batch([], vulnerabilities, 5)
+
+    assert len(selection.articles) == 5
+    assert selection.metrics["vulnerability_selected"] == 5
+    assert selection.metrics["selected_delivery_classes"] == {}
+    assert set(selection.metrics["delivery_sla_missing_after_selection"]) == set(
+        factory.FACTORY_DAILY_DELIVERY_CLASSES
+    )
+
+
+def test_daily_delivery_ledger_counts_only_successful_publications_from_current_utc_day(tmp_path):
+    import json
+    from datetime import timedelta
+
+    now = factory.datetime.now(factory.timezone.utc)
+    yesterday = now - timedelta(days=1)
+    state_file = tmp_path / "published.json"
+    state_file.write_text(
+        json.dumps({
+            "posts": {
+                "ransom": {
+                    "published_at": now.isoformat(),
+                    "source_title": "Akira ransomware claim against Example Corp",
+                    "source": "ransomware_intel",
+                    "labels": ["Threat Intelligence", "Ransomware"],
+                    "report_family": "ransomware_claim",
+                    "cves": [],
+                },
+                "malware_campaign": {
+                    "published_at": now.isoformat(),
+                    "source_title": "New infostealer malware campaign targets enterprises",
+                    "source": "global_rss",
+                    "labels": ["Threat Intelligence", "Malware Research"],
+                    "report_family": "general_intelligence",
+                    "cves": [],
+                },
+                "vulnerability": {
+                    "published_at": now.isoformat(),
+                    "source_title": "CVE-2026-55555 vulnerability",
+                    "source": "nvd",
+                    "labels": ["Threat Intelligence", "Vulnerabilities"],
+                    "report_family": "cve_advisory",
+                    "cves": ["CVE-2026-55555"],
+                },
+                "old_breach": {
+                    "published_at": yesterday.isoformat(),
+                    "source_title": "Company publishes data breach notice",
+                    "source": "breach_intel",
+                    "labels": ["Threat Intelligence", "Data Breach"],
+                    "report_family": "breach_notice",
+                    "cves": [],
+                },
+            }
+        }),
+        encoding="utf-8",
+    )
+
+    assert factory._published_delivery_classes_today(str(state_file)) == {
+        "ransomware",
+        "malware_campaign",
+    }
