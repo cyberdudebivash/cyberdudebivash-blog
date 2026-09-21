@@ -287,7 +287,7 @@ def _command_deck(meta: dict[str, str]) -> str:
 <section class="cdbd-command report-hero cdbd-sev-{_html.escape(sev)} {_html.escape(family_class)}"
   data-cdb-component="report-hero" data-report-family="{_html.escape(meta['family'], quote=True)}"
   aria-label="Sentinel APEX intelligence command deck">
-  <div class="cdbd-eyebrow"><span>CYBERDUDEBIVASH® INTEL FACTORY</span><span>SENTINEL APEX™ // ENTERPRISE CTI DOSSIER</span></div>
+  <div class="cdbd-eyebrow"><span>CYBERDUDEBIVASH® INTEL FACTORY</span><span>SENTINEL APEX™ // ENTERPRISE ADVANCED CTI DOSSIER</span></div>
   <div class="cdbd-badge-row">
     <span class="family-badge">{_html.escape(meta['family_label'])}</span>
     <span class="priority-chip">{_html.escape(meta['severity'])}</span>
