@@ -57,6 +57,11 @@ RAPID_QUALITY_BAND = "RAPID_INTELLIGENCE_VERIFIED"
 RAPID_MIN_VISIBLE_WORDS = 700
 RAPID_MIN_DISTINCT_HEADINGS = 6
 RAPID_MIN_SOURCE_WORDS = 24
+# Named publishers from the hand-maintained GlobalRSSAggregator feed set can
+# use the rapid lane only when the feed itself supplies materially richer
+# source evidence. This closes the malware/campaign delivery gap during LLM
+# quota saturation without treating an anonymous RSS connector as a publisher.
+RAPID_MIN_CURATED_RSS_SOURCE_WORDS = 80
 
 _AUTHORITATIVE_CONNECTORS = frozenset({
     "nvd",
@@ -140,6 +145,34 @@ def rapid_lane_eligibility(article: DiscoveredArticle) -> tuple[bool, str]:
         return True, f"first_party_canonical:{host}"
     if host in _AUTHORITATIVE_HOSTS and (article.cve_id or source.startswith("cisa") or source == "nvd"):
         return True, f"authoritative_host:{host}"
+
+    # P0-DAILY-THREAT-COVERAGE-2026-09-21:
+    # Malware/campaign/threat-analysis reports are primarily discovered through
+    # the repository's curated global RSS publisher list. Requiring premium LLM
+    # capacity for every one of those candidates allowed provider TPD saturation
+    # to starve those paid-customer report classes while structured CVEs kept
+    # flowing. A named RSS publisher may therefore use Rapid Intelligence when
+    # the feed provides >=80 visible source words. The complete base ReportX /
+    # Dossier fail-closed chain still runs; this only bypasses the *additional*
+    # premium long-form structural/LLM dependency.
+    if source == "global_rss":
+        publisher = str(article.source_publisher or "").strip()
+        publisher_key = publisher.casefold()
+        ambiguous = {
+            "",
+            "unknown",
+            "global rss",
+            "global_rss",
+            "rss",
+            "feed",
+            "unknown publisher",
+        }
+        if (
+            publisher_key not in ambiguous
+            and _source_words(article) >= RAPID_MIN_CURATED_RSS_SOURCE_WORDS
+        ):
+            return True, f"curated_rss:{publisher}"
+
     return False, "premium_default"
 
 
