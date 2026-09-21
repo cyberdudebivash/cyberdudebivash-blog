@@ -3,6 +3,7 @@ from types import SimpleNamespace
 from automation.cti_dossier_presentation import (
     MARKER,
     ROOT_CLASS,
+    VISUAL_SYSTEM,
     decorate_cti_dossier,
 )
 
@@ -130,3 +131,110 @@ def test_existing_article_links_and_images_survive_reserialization():
     assert "https://example.test/x.png" in rendered
     assert "https://gbhackers.com/x" in rendered
     assert ">Source<" in rendered
+
+
+def test_enterprise_visual_system_exposes_requested_semantic_components():
+    html = """
+    <h3>Executive Summary</h3><p>Leadership should validate exposure before escalation.</p>
+    <h3>SOC Analyst Playbook</h3><p>Review endpoint, identity, and network telemetry tied to the cited behavior.</p>
+    <h3>Enterprise Exposure Assessment</h3><p>Confirm the cited technology exists in authoritative inventory.</p>
+    <h3>Intelligence Gaps &amp; Collection Requirements</h3><p>Independent corroboration is not yet established.</p>
+    <h3>Remediation &amp; Validation Plan</h3><p>Apply only source-supported controls and verify the post-change state.</p>
+    """
+    rendered = decorate_cti_dossier(html, _article(), _context(family="general_intelligence"))
+
+    assert VISUAL_SYSTEM in rendered
+    assert 'data-cdb-component="report-hero"' in rendered
+    assert 'data-cdb-component="metadata-grid"' in rendered
+    assert 'data-cdb-component="status-led-group"' in rendered
+    assert 'data-cdb-component="quick-snapshot-card"' in rendered
+    assert 'data-cdb-component="section-card"' in rendered
+    assert 'data-cdb-component="callout-box"' in rendered
+    assert "SITUATION SNAPSHOT" in rendered
+    assert "Leadership should validate exposure before escalation." in rendered
+    assert "Review endpoint, identity, and network telemetry" in rendered
+
+
+def test_family_visual_theme_uses_existing_structured_family_or_labels_only():
+    ransomware = decorate_cti_dossier(
+        BASE_HTML,
+        _article(labels=["Threat Intelligence", "Ransomware"], source="ransomware_intel"),
+        _context(family="ransomware_claim"),
+    )
+    malware = decorate_cti_dossier(
+        BASE_HTML,
+        _article(labels=["Malware Research", "Threat Intelligence"]),
+        _context(family="general_intelligence"),
+    )
+
+    assert "RANSOMWARE / EXTORTION CLAIM" in ransomware
+    assert "cdbd-family-ransomware-claim" in ransomware
+    assert 'data-report-family="ransomware_claim"' in ransomware
+    assert "MALWARE INTELLIGENCE" in malware
+    assert "cdbd-family-malware" in malware
+
+
+def test_status_leds_are_non_probabilistic_and_do_not_invent_corroboration():
+    rendered = decorate_cti_dossier(
+        "<h3>Executive Summary</h3><p>One source reports the development.</p>",
+        _article(),
+        _context(family="general_intelligence"),
+    )
+
+    assert "FAIL-CLOSED GATES ACTIVE" in rendered
+    assert "EVIDENCE-BOUND" in rendered
+    assert "NOT EXPLICITLY ASSERTED" in rendered
+    assert "NO SYNTHETIC VISUAL METRICS" in rendered
+    assert "INDEPENDENT CORROBORATION" not in rendered
+
+
+def test_existing_corroboration_language_can_be_surfaced_without_new_claim():
+    rendered = decorate_cti_dossier(
+        "<h3>Evidence &amp; Source Assessment</h3>"
+        "<p>Independent corroboration is present in the cited evidence.</p>",
+        _article(),
+        _context(family="general_intelligence"),
+    )
+    assert "INDEPENDENT CORROBORATION" in rendered
+
+
+def test_ioc_and_detection_blocks_receive_presentation_only_component_markers():
+    html = """
+    <h3>Indicators &amp; Observables</h3>
+    <table><tr><th>Type</th><th>Value</th></tr><tr><td>SHA-256</td><td>abc123</td></tr></table>
+    <h3>Detection Engineering Guidance</h3>
+    <pre>DeviceProcessEvents | where FileName == "example.exe"</pre>
+    """
+    rendered = decorate_cti_dossier(html, _article(), _context())
+
+    assert 'data-cdb-component="ioc-table"' in rendered
+    assert "ioc-table" in rendered
+    assert 'data-cdb-component="detection-code-block"' in rendered
+    assert "detection-code-block" in rendered
+    assert "abc123" in rendered
+    assert 'FileName == "example.exe"' in rendered
+
+
+def test_visual_upgrade_improves_accessibility_without_client_side_script():
+    rendered = decorate_cti_dossier(BASE_HTML, _article(), _context())
+
+    assert "a:focus-visible" in rendered
+    assert "@media(forced-colors:active)" in rendered
+    assert "@media(prefers-reduced-motion:reduce)" in rendered
+    assert 'aria-label="Evidence and delivery status indicators"' in rendered
+    assert 'aria-label="Executive and SOC situation snapshot"' in rendered
+    assert "<script" not in rendered.lower()
+
+
+def test_snapshot_omits_missing_sections_instead_of_fabricating_placeholders():
+    rendered = decorate_cti_dossier(
+        "<h3>Executive Summary</h3><p>Only the sourced executive statement exists.</p>",
+        _article(),
+        _context(),
+    )
+
+    assert "Only the sourced executive statement exists." in rendered
+    assert "SOC ACTION" not in rendered
+    assert "EXPOSURE DECISION" not in rendered
+    assert "INTELLIGENCE GAPS" not in rendered
+    assert "REMEDIATION &amp; VALIDATION" not in rendered
