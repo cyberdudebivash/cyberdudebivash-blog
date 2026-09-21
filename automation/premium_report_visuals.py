@@ -83,8 +83,10 @@ def premium_report_style_block() -> str:
 .cdb-report-shell{max-width:1080px;margin:0 auto}
 .cdb-report-hero{
   position:relative;overflow:hidden;margin:18px 0 22px;padding:26px;
+  border:1px solid #31506a;
   border:1px solid color-mix(in srgb,var(--cdb-accent) 48%,#244052);
-  border-radius:18px;background:
+  border-radius:18px;background:linear-gradient(145deg,#0d1a25,#08131d 72%);
+  background:
     radial-gradient(circle at 88% 12%,color-mix(in srgb,var(--cdb-accent) 19%,transparent),transparent 34%),
     linear-gradient(145deg,#0d1a25,#08131d 72%);
   box-shadow:0 18px 46px rgba(0,0,0,.28);
@@ -98,7 +100,7 @@ def premium_report_style_block() -> str:
 .cdb-report-deck{margin:0;color:#bcd0dc;font-size:.98rem;max-width:900px}
 .cdb-chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
 .cdb-chip{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid #2c4658;border-radius:999px;background:#0b1722;color:#dbeaf2;font:700 11px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.035em}
-.cdb-chip-accent{border-color:color-mix(in srgb,var(--cdb-accent) 60%,#2c4658);color:var(--cdb-accent-soft)}
+.cdb-chip-accent{border-color:#466079;border-color:color-mix(in srgb,var(--cdb-accent) 60%,#2c4658);color:var(--cdb-accent-soft)}
 .cdb-led{width:8px;height:8px;border-radius:50%;display:inline-block;background:currentColor;box-shadow:0 0 11px currentColor}
 .cdb-meta-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0 0 24px}
 .cdb-meta-card{padding:13px 14px;background:#0b1722;border:1px solid #22394a;border-radius:12px;min-width:0}
@@ -160,7 +162,11 @@ def build_report_hero(
     published = article.published_at or "Not supplied"
 
     tier = str(product_tier or "UNCLASSIFIED").replace("_", " ")
-    route = "RAPID INTELLIGENCE" if "rapid" in {str(v).lower() for v in (article.labels or [])} else str(content_source or "standard").replace("_", " ").upper()
+    route = (
+        "RAPID INTELLIGENCE"
+        if any("rapid" in str(value).lower() for value in (article.labels or []))
+        else str(content_source or "standard").replace("_", " ").upper()
+    )
 
     chips = [
         (family_badge, accent_soft, True),
