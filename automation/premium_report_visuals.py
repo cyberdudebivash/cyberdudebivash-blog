@@ -198,12 +198,17 @@ def build_report_hero(
         for k, v in snapshot_rows
     )
 
+    deck = (
+        f"Source-backed enterprise intelligence from {source_label}. "
+        "Review the evidence status, verified facts, and decision guidance before taking customer-specific action."
+    )
+
     return (
         f'<div class="cdb-report-shell" style="--cdb-accent:{accent};--cdb-accent-soft:{accent_soft}">'
         f'<header class="cdb-report-hero">'
         f'<div class="cdb-kicker">CYBERDUDEBIVASH® SENTINEL APEX · Enterprise Intelligence</div>'
         f'<div class="cdb-report-title">{_esc(article.title)}</div>'
-        f'<p class="cdb-report-deck">{_esc(article.summary)}</p>'
+        f'<p class="cdb-report-deck">{_esc(deck)}</p>'
         f'<div class="cdb-chip-row">{chip_html}</div>'
         f'</header>'
         f'<div class="cdb-meta-grid">{meta_html}</div>'
