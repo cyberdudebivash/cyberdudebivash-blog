@@ -175,15 +175,6 @@ class GlobalRSSAggregator:
                     timeout=_FEED_TIMEOUT_SECONDS,
                     headers={"User-Agent": "CYBERDUDEBIVASH-SyndicationBot/1.0"},
                 )
-                if resp.status_code not in _RETRYABLE_STATUS_CODES:
-                    resp.raise_for_status()
-                    break
-                if attempt == _MAX_FETCH_ATTEMPTS:
-                    resp.raise_for_status()
-                logger.info(
-                    "Retrying transient feed response",
-                    extra={"feed": feed.name, "status": resp.status_code, "attempt": attempt},
-                )
             except requests.RequestException as e:
                 if attempt < _MAX_FETCH_ATTEMPTS:
                     logger.info(
@@ -193,6 +184,26 @@ class GlobalRSSAggregator:
                     continue
                 logger.warning("Feed fetch failed", extra={"feed": feed.name, "error": str(e)})
                 return []
+
+            if resp.status_code in _RETRYABLE_STATUS_CODES:
+                if attempt < _MAX_FETCH_ATTEMPTS:
+                    logger.info(
+                        "Retrying transient feed response",
+                        extra={"feed": feed.name, "status": resp.status_code, "attempt": attempt},
+                    )
+                    continue
+                logger.warning(
+                    "Feed fetch failed after transient retry",
+                    extra={"feed": feed.name, "status": resp.status_code},
+                )
+                return []
+
+            try:
+                resp.raise_for_status()
+            except requests.RequestException as e:
+                logger.warning("Feed fetch failed", extra={"feed": feed.name, "error": str(e)})
+                return []
+            break
 
         if resp is None:
             return []
