@@ -231,12 +231,83 @@ class MonetizationInjector:
         # Default
         return self.inject_mid_products_cta()
 
+    def inject_strategic_intel_cta(self, report_family: str, labels: list[str] | None = None) -> str:
+        """One closing conversion path for non-CVE strategic intelligence.
+
+        This block is intentionally factual and capability-oriented: it does
+        not imply that the reader is affected, compromised, or already a
+        customer. The primary conversion destination is the existing Sentinel
+        APEX upgrade flow (Razorpay-backed for automated platform checkout);
+        standalone digital products remain on the existing Tools/Gumroad path.
+        No new backend, analytics store, or paid infrastructure is required.
+        """
+        family = str(report_family or "general_intelligence").strip().lower()
+        label_set = {str(label or "").strip().lower() for label in (labels or [])}
+
+        theme = "Strategic Threat Intelligence"
+        accent = "#22d3ee"
+        lead = (
+            "Turn this source-linked report into continuous monitoring, higher-volume API access, "
+            "IOC delivery, detection resources, and operational intelligence workflows."
+        )
+
+        if family.startswith("ransomware") or "ransomware" in label_set:
+            theme = "Operationalize Ransomware Intelligence"
+            accent = "#fb7185"
+            lead = (
+                "Move from a public ransomware report to continuous ransomware monitoring, API delivery, "
+                "IOC tracking, and evidence-bounded SOC decision support."
+            )
+        elif family == "breach_notice" or any("breach" in label for label in label_set):
+            theme = "Operationalize Breach Intelligence"
+            accent = "#38bdf8"
+            lead = (
+                "Continuously monitor breach and exposure reporting, correlate source-backed indicators, "
+                "and deliver intelligence into analyst and automation workflows."
+            )
+        elif any(token in " ".join(label_set) for token in ("malware", "campaign", "supply chain")):
+            theme = "Operationalize Campaign & Malware Intelligence"
+            accent = "#f59e0b"
+            lead = (
+                "Extend this report into continuous campaign, malware, and supply-chain monitoring with "
+                "API access, IOC feeds, and detection-oriented intelligence workflows."
+            )
+        elif family == "threat_actor" or any(token in " ".join(label_set) for token in ("apt", "threat actor", "nation-state")):
+            theme = "Operationalize Threat-Actor Intelligence"
+            accent = "#a78bfa"
+            lead = (
+                "Track actor reporting over time, correlate source-backed activity, and integrate intelligence "
+                "into hunting, SOC, and case-management workflows."
+            )
+        elif family == "ai_security" or "ai security" in label_set:
+            theme = "Operationalize AI Security Intelligence"
+            accent = "#34d399"
+            lead = (
+                "Convert public AI-security reporting into continuous monitoring, API access, and evidence-bounded "
+                "security workflows for AI and agentic systems."
+            )
+
+        return f"""
+<div class="apex-cta-block" data-cdb-conversion="strategic-intel" style="border-left-color:{accent};background:linear-gradient(135deg,#071018 0%,#0b1420 100%)">
+  <h4 style="color:{accent}">▲ {theme.upper()}</h4>
+  <p>{lead}</p>
+  <p style="font-size:12px;color:#64748b;margin:-4px 0 12px">
+    Customer-specific exposure or compromise must be validated from internal telemetry before action.
+  </p>
+  <div class="apex-cta-grid">
+    <a class="apex-btn apex-btn-upgrade" href="{self.config.sentinel_apex_url}/upgrade" target="_blank" rel="noopener">View Paid Sentinel APEX Plans →</a>
+    <a class="apex-btn apex-btn-secondary" href="{self.config.api_url}/docs" target="_blank" rel="noopener">Review API Capabilities</a>
+    <a class="apex-btn apex-btn-secondary" href="{self.config.tools_url}" target="_blank" rel="noopener">Standalone Security Tools</a>
+  </div>
+</div>
+""".strip()
+
     def inject_mssp_cta(self) -> str:
         """MSSP-specific conversion block — highest-value enterprise lead generation CTA."""
         return f"""
 <div class="apex-cta-block" style="border-left-color:#10b981;background:linear-gradient(135deg,#050d0d 0%,#0a0f1e 100%)">
   <h4 style="color:#10b981">🏢 MANAGED SECURITY SERVICES — CYBERDUDEBIVASH® MSSP</h4>
-  <p>Stop reacting to threats. Start preventing them. CYBERDUDEBIVASH® provides enterprise-grade co-managed SOC services, threat hunting retainers, AI security assessments, and white-label MSSP intelligence packages — trusted by security teams across financial services, healthcare, and critical infrastructure.</p>
+  <p>Stop reacting to threats. Start preventing them. CYBERDUDEBIVASH® offers co-managed SOC services, threat hunting retainers, AI security assessments, detection engineering, incident-response support, and white-label intelligence packages for enterprise security workflows.</p>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:6px;margin:10px 0 14px;font-size:11px">
     <div style="padding:8px 10px;background:#0a1a0a;border:1px solid #10b98133;border-radius:4px;color:#94a3b8">✓ 24/7 Co-Managed SOC</div>
     <div style="padding:8px 10px;background:#0a1a0a;border:1px solid #10b98133;border-radius:4px;color:#94a3b8">✓ Threat Hunting Retainer</div>
