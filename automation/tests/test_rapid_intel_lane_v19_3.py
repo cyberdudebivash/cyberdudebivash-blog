@@ -71,6 +71,21 @@ def test_external_global_rss_defaults_to_premium(monkeypatch):
     assert reason == "premium_default"
 
 
+def test_configured_source_rich_rss_publisher_is_rapid_eligible(monkeypatch):
+    monkeypatch.delenv("CDB_RAPID_INTEL_ENABLED", raising=False)
+    article = _article(
+        source="global_rss",
+        url="https://www.bleepingcomputer.com/news/security/example-malware-campaign/",
+        title="New malware loader campaign targets enterprise endpoints",
+        cve_id=None,
+        source_publisher="BleepingComputer",
+        full_content=" ".join(["source-backed malware campaign evidence"] * 100),
+    )
+    eligible, reason = v19_3.rapid_lane_eligibility(article)
+    assert eligible is True
+    assert reason == "curated_rss:BleepingComputer"
+
+
 def test_thin_source_cannot_use_rapid_lane(monkeypatch):
     monkeypatch.delenv("CDB_RAPID_INTEL_ENABLED", raising=False)
     article = _article(summary="tiny source", full_content="tiny source")
