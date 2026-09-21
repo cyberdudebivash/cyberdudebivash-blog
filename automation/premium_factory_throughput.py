@@ -54,6 +54,20 @@ FACTORY_RETRY_ATTEMPTS = 5
 FACTORY_KEY_JUDGEMENT_MAX = 4
 FACTORY_KEY_JUDGEMENT_TOKENS = 900
 
+# P0-DAILY-THREAT-COVERAGE-2026-09-21:
+# These are customer delivery classes, not threat-severity classes. The
+# scheduler prioritizes any class not yet successfully published in the
+# current UTC day when a real source-backed candidate exists. Missing source
+# supply remains an observable SLA miss; the factory never fabricates an event.
+FACTORY_DAILY_DELIVERY_CLASSES = (
+    "ransomware",
+    "malware",
+    "malware_campaign",
+    "malware_attack",
+    "breach",
+    "threat_analysis",
+)
+
 _FACTORY_FAMILY_ORDER = (
     "zero_day",
     "vulnerability",
@@ -80,6 +94,8 @@ _ORIGINAL_RUN_PIPELINE: Optional[Callable] = None
 _MODEL_LAST_STARTED: dict[tuple[str, str], float] = {}
 _ACTIVE_STATE_FILE = "data/published_posts.json"
 _ACTIVE_MAX_POSTS = FACTORY_WRITE_BURST
+_DAILY_DELIVERY_SLA_ACTIVE = False
+_ACTIVE_DAILY_DELIVERED: frozenset[str] = frozenset()
 _INSTALLED = False
 
 
@@ -301,7 +317,121 @@ def classify_factory_family(article: DiscoveredArticle) -> str:
     return "threat_analysis"
 
 
-def _family_balanced_select(pool: list[DiscoveredArticle], slots: int) -> list[DiscoveredArticle]:
+_MALWARE_RE = re.compile(
+    r"\b(?:malware|trojan|backdoor|infostealer|information stealer|loader|"
+    r"botnet|rootkit|wiper|remote access trojan|\brat\b)\b",
+    re.IGNORECASE,
+)
+_CAMPAIGN_RE = re.compile(
+    r"\b(?:campaign|operation|wave|cluster|distribution campaign|malspam|"
+    r"mass exploitation|targeting campaign)\b",
+    re.IGNORECASE,
+)
+_ATTACK_RE = re.compile(
+    r"\b(?:attack|attacks|attacked|infection|infected|compromise|compromised|"
+    r"intrusion|deployed|deployment|execution|payload delivered|initial access)\b",
+    re.IGNORECASE,
+)
+_BREACH_RE = re.compile(
+    r"\b(?:data breach|breach notice|records exposed|accounts exposed|"
+    r"data exposure|data leak|exfiltrat(?:e|ed|ion))\b",
+    re.IGNORECASE,
+)
+_CVE_ANY_RE = re.compile(r"\bCVE-\d{4}-\d{4,}\b", re.IGNORECASE)
+
+
+def _delivery_class_from_fields(
+    *,
+    title: object = "",
+    summary: object = "",
+    labels: object = (),
+    source: object = "",
+    report_family: object = "",
+    cves: object = (),
+) -> Optional[str]:
+    """Map real publication evidence to one paid-customer delivery class.
+
+    This classifier is deliberately conservative and single-valued so a single
+    report cannot falsely satisfy several daily SLA classes. It never creates
+    intelligence; it only describes already-discovered/published evidence.
+    """
+    if isinstance(labels, (list, tuple, set)):
+        label_text = " ".join(str(value or "") for value in labels)
+    else:
+        label_text = str(labels or "")
+    text = " ".join(
+        str(value or "")
+        for value in (title, summary, label_text, report_family)
+    ).lower()
+    source_key = str(source or "").strip().lower()
+
+    if source_key == "ransomware_intel" or re.search(r"\b(?:ransomware|extortion group|leak site victim)\b", text):
+        return "ransomware"
+    if source_key == "breach_intel" or _BREACH_RE.search(text):
+        return "breach"
+
+    malware = bool(_MALWARE_RE.search(text))
+    if malware and _CAMPAIGN_RE.search(text):
+        return "malware_campaign"
+    if malware and _ATTACK_RE.search(text):
+        return "malware_attack"
+    if malware:
+        return "malware"
+
+    has_cve = bool(cves) or bool(_CVE_ANY_RE.search(text))
+    if source_key in {"nvd", "cisa_kev"} or has_cve:
+        return None
+    if source_key == "cisa_advisory" and classify_text_as_vulnerability(text):
+        return None
+
+    # Non-vulnerability strategic intelligence (APT/campaign/incident/phishing/
+    # cloud/identity/supply-chain/AI security/general CTI) satisfies the broad
+    # threat-analysis service class.
+    return "threat_analysis"
+
+
+def classify_text_as_vulnerability(text: str) -> bool:
+    """Conservative CISA/general advisory vulnerability discriminator."""
+    return bool(re.search(
+        r"\b(?:vulnerabilit(?:y|ies)|security flaw|remote code execution|"
+        r"privilege escalation|authentication bypass|zero[ -]?day|cve-)\b",
+        str(text or ""),
+        re.IGNORECASE,
+    )) and not bool(re.search(
+        r"\b(?:malware|campaign|ransomware|data breach|breach notice|"
+        r"threat actor|apt\d*|phishing|intrusion)\b",
+        str(text or ""),
+        re.IGNORECASE,
+    ))
+
+
+def classify_delivery_class(article: DiscoveredArticle) -> Optional[str]:
+    return _delivery_class_from_fields(
+        title=article.title,
+        summary=" ".join(filter(None, [article.summary, article.full_content or ""])),
+        labels=article.labels or [],
+        source=article.source,
+        report_family="",
+        cves=[article.cve_id] if article.cve_id else [],
+    )
+
+
+def _entry_delivery_class(entry: dict) -> Optional[str]:
+    return _delivery_class_from_fields(
+        title=entry.get("source_title"),
+        summary="",
+        labels=entry.get("labels") or [],
+        source=entry.get("source"),
+        report_family=entry.get("report_family"),
+        cves=entry.get("cves") or [],
+    )
+
+
+def _family_balanced_select(
+    pool: list[DiscoveredArticle],
+    slots: int,
+    preferred_delivery_classes: tuple[str, ...] = (),
+) -> list[DiscoveredArticle]:
     if slots <= 0 or not pool:
         return []
 
@@ -312,15 +442,41 @@ def _family_balanced_select(pool: list[DiscoveredArticle], slots: int) -> list[D
         groups[family].sort(key=_scheduler._priority_key, reverse=True)
 
     selected: list[DiscoveredArticle] = []
+    selected_ids: set[int] = set()
 
-    # Critical global intelligence gets first refusal, but never monopolizes
-    # the whole batch.  CVE/vulnerability gets its own guaranteed lane when
-    # supply exists, removing the old 40% vulnerability ceiling while keeping
-    # strategic intelligence visible on every run.
+    # Reserve publication capacity for paid-customer delivery classes still
+    # missing today. One real candidate satisfies at most one class. If a class
+    # has no candidate, its slot is NOT held empty; normal factory throughput
+    # immediately receives the capacity.
+    for delivery_class in preferred_delivery_classes:
+        if len(selected) >= slots:
+            break
+        candidates = [
+            article for article in pool
+            if id(article) not in selected_ids
+            and classify_delivery_class(article) == delivery_class
+        ]
+        if not candidates:
+            continue
+        candidates.sort(key=_scheduler._priority_key, reverse=True)
+        chosen = candidates[0]
+        selected.append(chosen)
+        selected_ids.add(id(chosen))
+
+    # Remove SLA-reserved objects from family buckets before normal balancing.
+    if selected_ids:
+        for family in list(groups):
+            groups[family] = [article for article in groups[family] if id(article) not in selected_ids]
+
+    # Critical global intelligence gets first refusal after unsatisfied customer
+    # delivery classes. CVE/vulnerability keeps a guaranteed lane whenever
+    # capacity remains, so this P0 restores coverage without disabling CVE intel.
     for family in ("zero_day", "vulnerability"):
         bucket = groups.get(family) or []
         if bucket and len(selected) < slots:
-            selected.append(bucket.pop(0))
+            chosen = bucket.pop(0)
+            selected.append(chosen)
+            selected_ids.add(id(chosen))
 
     # Rotate the remaining family order by the current 15-minute UTC slot so
     # malware/breach/incident/campaign/phishing/supply-chain/AI intelligence
@@ -333,7 +489,9 @@ def _family_balanced_select(pool: list[DiscoveredArticle], slots: int) -> list[D
         for family in order:
             bucket = groups.get(family) or []
             if bucket:
-                selected.append(bucket.pop(0))
+                chosen = bucket.pop(0)
+                selected.append(chosen)
+                selected_ids.add(id(chosen))
                 progressed = True
                 if len(selected) >= slots:
                     break
@@ -362,33 +520,70 @@ def select_factory_publication_batch(
             "canonical_selected": 0,
             "selected_families": {},
             "selected_sources": {},
+            "delivery_sla_required": list(FACTORY_DAILY_DELIVERY_CLASSES),
+            "delivery_sla_delivered_before": sorted(_ACTIVE_DAILY_DELIVERED),
+            "delivery_sla_missing_before": sorted(set(FACTORY_DAILY_DELIVERY_CLASSES) - set(_ACTIVE_DAILY_DELIVERED)),
+            "selected_delivery_classes": {},
+            "delivery_sla_missing_after_selection": sorted(set(FACTORY_DAILY_DELIVERY_CLASSES) - set(_ACTIVE_DAILY_DELIVERED)),
         })
 
     fresh = _scheduler._dedupe_fresh(list(fresh_articles))
     retry = _scheduler._remove_retry_duplicates(list(retry_articles), fresh)
 
-    # Preserve the proven 3-fresh/2-retry shape.  At factory cadence the larger
+    # Preserve the proven 3-fresh/2-retry shape. At factory cadence the larger
     # retry store drains continuously without allowing old failures to suppress
     # the global fresh-intelligence lane.
     retry_cap = min(2, max_posts // 2) if fresh else max_posts
     fresh_floor = max_posts - retry_cap if fresh else 0
 
-    fresh_selected = _family_balanced_select(fresh, min(fresh_floor, len(fresh)))
-    retry_selected = _family_balanced_select(retry, min(retry_cap, len(retry)))
+    delivered_before = set(_ACTIVE_DAILY_DELIVERED) if _DAILY_DELIVERY_SLA_ACTIVE else set()
+    missing_before = [
+        family for family in FACTORY_DAILY_DELIVERY_CLASSES
+        if family not in delivered_before
+    ]
+
+    fresh_selected = _family_balanced_select(
+        fresh,
+        min(fresh_floor, len(fresh)),
+        tuple(missing_before),
+    )
+    satisfied_by_fresh = {
+        delivery for article in fresh_selected
+        if (delivery := classify_delivery_class(article))
+    }
+    still_missing = [family for family in missing_before if family not in satisfied_by_fresh]
+
+    retry_selected = _family_balanced_select(
+        retry,
+        min(retry_cap, len(retry)),
+        tuple(still_missing),
+    )
     selected = fresh_selected + retry_selected
 
     if len(selected) < max_posts:
+        satisfied = {
+            delivery for article in selected
+            if (delivery := classify_delivery_class(article))
+        }
+        still_missing = [family for family in missing_before if family not in satisfied]
         extra_fresh = _family_balanced_select(
             _scheduler._without_selected(fresh, fresh_selected),
             max_posts - len(selected),
+            tuple(still_missing),
         )
         fresh_selected.extend(extra_fresh)
         selected.extend(extra_fresh)
 
     if len(selected) < max_posts:
+        satisfied = {
+            delivery for article in selected
+            if (delivery := classify_delivery_class(article))
+        }
+        still_missing = [family for family in missing_before if family not in satisfied]
         extra_retry = _family_balanced_select(
             _scheduler._without_selected(retry, retry_selected),
             max_posts - len(selected),
+            tuple(still_missing),
         )
         retry_selected.extend(extra_retry)
         selected.extend(extra_retry)
@@ -396,6 +591,11 @@ def select_factory_publication_batch(
     selected = selected[:max_posts]
     family_counts = Counter(classify_factory_family(a) for a in selected)
     source_counts = Counter(str(a.source or "unknown") for a in selected)
+    delivery_counts = Counter(
+        delivery for article in selected
+        if (delivery := classify_delivery_class(article))
+    )
+    delivered_after_selection = delivered_before | set(delivery_counts)
     metrics = {
         "candidate_count": len(fresh) + len(retry),
         "fresh_candidates": len(fresh),
@@ -407,6 +607,13 @@ def select_factory_publication_batch(
         "canonical_selected": sum(1 for a in selected if _scheduler.is_canonical_report(a)),
         "selected_families": dict(family_counts),
         "selected_sources": dict(source_counts),
+        "delivery_sla_required": list(FACTORY_DAILY_DELIVERY_CLASSES),
+        "delivery_sla_delivered_before": sorted(delivered_before),
+        "delivery_sla_missing_before": sorted(set(FACTORY_DAILY_DELIVERY_CLASSES) - delivered_before),
+        "selected_delivery_classes": dict(delivery_counts),
+        "delivery_sla_missing_after_selection": sorted(
+            set(FACTORY_DAILY_DELIVERY_CLASSES) - delivered_after_selection
+        ),
     }
     return _scheduler.PublicationSelection(selected, metrics)
 
@@ -462,10 +669,49 @@ def _published_today_utc(state_file: str) -> int:
     return count
 
 
+def _published_delivery_classes_today(state_file: str) -> set[str]:
+    """Return customer delivery classes successfully published today (UTC)."""
+    path = Path(state_file)
+    if not path.is_file():
+        return set()
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return set()
+
+    today = datetime.now(timezone.utc).date()
+    delivered: set[str] = set()
+    for entry in data.get("posts", {}).values():
+        if not isinstance(entry, dict):
+            continue
+        raw = str(entry.get("published_at") or "")
+        if not raw:
+            continue
+        try:
+            timestamp = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+            if timestamp.tzinfo is None:
+                timestamp = timestamp.replace(tzinfo=timezone.utc)
+            if timestamp.astimezone(timezone.utc).date() != today:
+                continue
+        except Exception:
+            continue
+        delivery_class = _entry_delivery_class(entry)
+        if delivery_class:
+            delivered.add(delivery_class)
+    return delivered
+
+
+def _daily_delivery_sla_enabled() -> bool:
+    value = os.environ.get("CDB_DAILY_DELIVERY_SLA_ENABLED", "true").strip().lower()
+    return value not in {"0", "false", "off", "no"}
+
+
 def factory_write_run_report(report: dict, logs_dir: str) -> None:
     if _ORIGINAL_WRITE_RUN_REPORT is None:
         raise RuntimeError("factory throughput report writer is not installed")
     published_today = _published_today_utc(_ACTIVE_STATE_FILE)
+    delivered_today = _published_delivery_classes_today(_ACTIVE_STATE_FILE)
+    missing_today = set(FACTORY_DAILY_DELIVERY_CLASSES) - delivered_today
     report["factory_throughput"] = {
         "daily_floor": FACTORY_DAILY_FLOOR,
         "daily_goal": FACTORY_DAILY_GOAL,
@@ -475,17 +721,40 @@ def factory_write_run_report(report: dict, logs_dir: str) -> None:
         "theoretical_daily_write_capacity": FACTORY_RUNS_PER_DAY * min(FACTORY_WRITE_BURST, _ACTIVE_MAX_POSTS),
         "floor_progress_pct": round((published_today / FACTORY_DAILY_FLOOR) * 100, 2),
         "goal_progress_pct": round((published_today / FACTORY_DAILY_GOAL) * 100, 2),
+        "daily_delivery_sla": {
+            "enabled": _daily_delivery_sla_enabled(),
+            "required_classes": list(FACTORY_DAILY_DELIVERY_CLASSES),
+            "delivered_classes_utc": sorted(delivered_today),
+            "missing_classes_utc": sorted(missing_today),
+            "met": not missing_today,
+            "fabrication_allowed": False,
+            "policy": "prioritize real source-backed candidates; never manufacture an event to fill a class",
+        },
     }
     _ORIGINAL_WRITE_RUN_REPORT(report, logs_dir)
 
 
 def factory_run_pipeline(config, dry_run: bool = False) -> dict:
     global _ACTIVE_STATE_FILE, _ACTIVE_MAX_POSTS
+    global _DAILY_DELIVERY_SLA_ACTIVE, _ACTIVE_DAILY_DELIVERED
     if _ORIGINAL_RUN_PIPELINE is None:
         raise RuntimeError("factory throughput pipeline wrapper is not installed")
+
     _ACTIVE_STATE_FILE = str(config.state_file)
     _ACTIVE_MAX_POSTS = int(config.max_posts_per_run)
-    return _ORIGINAL_RUN_PIPELINE(config, dry_run=dry_run)
+    previous_active = _DAILY_DELIVERY_SLA_ACTIVE
+    previous_delivered = _ACTIVE_DAILY_DELIVERED
+    _DAILY_DELIVERY_SLA_ACTIVE = _daily_delivery_sla_enabled()
+    _ACTIVE_DAILY_DELIVERED = frozenset(
+        _published_delivery_classes_today(_ACTIVE_STATE_FILE)
+        if _DAILY_DELIVERY_SLA_ACTIVE else set()
+    )
+    try:
+        return _ORIGINAL_RUN_PIPELINE(config, dry_run=dry_run)
+    finally:
+        # Tests and nested callers must never inherit one run's daily state.
+        _DAILY_DELIVERY_SLA_ACTIVE = previous_active
+        _ACTIVE_DAILY_DELIVERED = previous_delivered
 
 
 def install_factory_throughput_overrides(main_module) -> None:
