@@ -44,7 +44,7 @@ def _esc(value: object) -> str:
 
 def _section(title: str, body: str, color: str = "#00d4ff") -> str:
     return (
-        f'<section style="margin:30px 0" data-section="{_esc(title.lower().replace(" ", "-"))}">'
+        f'<section class="cdb-section-card" style="margin:30px 0" data-section="{_esc(title.lower().replace(" ", "-"))}">'
         f'<div style="margin-bottom:12px;padding:10px 16px;background:linear-gradient(90deg,#0a1628,#050d1a);'
         f'border-left:3px solid {color};color:{color};font-family:monospace;font-size:11px;'
         f'font-weight:800;letter-spacing:2px;text-transform:uppercase">{_esc(title)}</div>'
@@ -54,14 +54,14 @@ def _section(title: str, body: str, color: str = "#00d4ff") -> str:
 
 def _panel(body: str, color: str = "#1e3a5f", background: str = "#050d1a") -> str:
     return (
-        f'<div style="background:{background};border:1px solid {color}66;border-radius:8px;'
+        f'<div class="cdb-panel" style="background:{background};border:1px solid {color}66;border-radius:8px;'
         f'padding:16px 20px;color:#cbd5e1;font-size:13px;line-height:1.75">{body}</div>'
     )
 
 
 def _bullets(items: list[str], color: str = "#00d4ff") -> str:
     return "".join(
-        f'<div style="margin:7px 0;padding:10px 14px;background:#050d1a;border-left:3px solid {color};'
+        f'<div class="cdb-bullet" style="margin:7px 0;padding:10px 14px;background:#050d1a;border-left:3px solid {color};'
         f'border-radius:0 5px 5px 0;color:#cbd5e1;font-size:13px;line-height:1.65">{item}</div>'
         for item in items
     )
@@ -708,7 +708,7 @@ def _detection_section(package: DetectionPackage) -> str:
     body = status + '<div style="margin-top:12px">' + telemetry + "</div>"
     if package.sigma_yaml:
         body += (
-            '<div style="margin-top:14px;border:1px solid #22c55e55;border-radius:8px;overflow:hidden">'
+            '<div class="detection-code-block" style="margin-top:14px;border:1px solid #22c55e55;border-radius:8px;overflow:hidden">'
             '<div style="padding:8px 14px;background:#161b22;color:#22c55e;font-family:monospace;font-size:11px">'
             'SIGMA YAML — SYNTAX VALIDATED · EXPERIMENTAL · ENVIRONMENT TUNING REQUIRED</div>'
             f'<pre style="margin:0;padding:16px;background:#07100a;color:#86efac;white-space:pre-wrap;overflow-x:auto;font-size:11px;line-height:1.55"><code>{_esc(package.sigma_yaml)}</code></pre>'

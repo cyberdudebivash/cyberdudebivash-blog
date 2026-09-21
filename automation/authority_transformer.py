@@ -33,6 +33,12 @@ from .report_integrity import (
     compute_artifact_hash,
     validate_publication,
 )
+from .premium_report_visuals import (
+    build_report_hero,
+    family_accent,
+    premium_report_style_block,
+    wrap_premium_report,
+)
 from .report_renderer import (
     _attack_section,
     _bullets,
@@ -2531,7 +2537,16 @@ class AuthorityTransformer:
             )
 
         # Build full HTML
-        html = self._assemble_html(article, body_content, seo_data, context, image_url=image_url)
+        html = self._assemble_html(
+            article,
+            body_content,
+            seo_data,
+            context,
+            image_url=image_url,
+            detection_status=detection_status,
+            product_tier=product_tier_verdict.tier,
+            content_source=content_source,
+        )
 
         # RX-P1M fix: composer_outcome.contradictions was computed inside
         # pipeline_composer.compose_report() against ITS OWN internally-
@@ -2664,6 +2679,10 @@ class AuthorityTransformer:
     def _assemble_html(
         self, article: DiscoveredArticle, body_content: str, seo_data: dict, context: ReportContext,
         image_url: Optional[str] = None,
+        *,
+        detection_status: str = "",
+        product_tier: str = "",
+        content_source: str = "",
     ) -> str:
         """Assemble the complete Blogger-compatible HTML article."""
         safe_source_url = _html_escape.escape(article.url, quote=True)
@@ -2693,6 +2712,26 @@ class AuthorityTransformer:
         # Pass image_url through so this becomes a real fetchable HTTPS URL
         # (see _generate_svg_thumbnail's docstring) instead of a data URI.
         svg_thumbnail = _generate_svg_thumbnail(article.title, article.labels, cvss, image_url=image_url)
+
+        # Customer-facing presentation layer. This is intentionally applied
+        # after all analytical content has been produced and before the final
+        # fail-closed publication validation. It changes presentation only:
+        # report text, evidence objects, ReportX/Dossier state, and quality
+        # thresholds remain untouched.
+        visual_style = premium_report_style_block()
+        accent, accent_soft = family_accent(context)
+        report_hero = build_report_hero(
+            article,
+            context,
+            detection_status=detection_status,
+            product_tier=product_tier,
+            content_source=content_source,
+        )
+        premium_body = wrap_premium_report(
+            body_content,
+            accent=accent,
+            accent_soft=accent_soft,
+        )
 
         # Executive Risk Command Center — real CVSS/EPSS/KEV data only,
         # rendered once here so both the LLM and template content paths
@@ -2779,11 +2818,14 @@ class AuthorityTransformer:
             schema_blocks += f'<script type="application/ld+json">\n{glossary_str}\n</script>\n'
 
         html = f"""{self.monetization.get_style_block()}
+{visual_style}
 {schema_blocks}
 <!-- CYBERDUDEBIVASH® SENTINEL APEX — Enterprise Threat Intelligence Report -->
 <!-- Generated: {datetime.now(timezone.utc).isoformat()} -->
 
 {svg_thumbnail}
+
+{report_hero}
 
 {risk_command_center}
 
@@ -2797,7 +2839,7 @@ class AuthorityTransformer:
 
 <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#e2e8f0;line-height:1.8;font-size:15px">
 
-{body_content}
+{premium_body}
 
 </div>
 
