@@ -154,8 +154,17 @@ def _provider_independent_candidate(article) -> bool:
     otherwise ransomware/breach/curated-malware candidates are discarded
     before v19.3 can ever route them around provider TPD exhaustion.
     """
-    rapid_eligible, _reason = _rapid.rapid_lane_eligibility(article)
-    if rapid_eligible:
+    rapid_eligible, rapid_reason = _rapid.rapid_lane_eligibility(article)
+    source = str(getattr(article, "source", "") or "").strip().lower()
+
+    # Only preserve external/direct strategic sources that v19.3 can publish
+    # without premium provider capacity. A first-party canonical URL remains a
+    # provenance advantage, not an evidence-richness bypass, preserving the
+    # allocator's original trust boundary.
+    if rapid_eligible and (
+        source in {"ransomware_intel", "breach_intel"}
+        or str(rapid_reason).startswith("curated_rss:")
+    ):
         return True
 
     words = _source_word_count(article)
