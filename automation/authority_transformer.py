@@ -2786,32 +2786,24 @@ class AuthorityTransformer:
         ext_refs = ""
         hashtags = self.linker.build_hashtag_block(article.labels)
 
-        # Secondary closing CTA — mutually exclusive by design, not stacked
-        # with the urgency CTA above or with each other. inject_mssp_cta
-        # (highest-ticket, enterprise lead gen) only fires for the same
-        # highest-urgency categories the urgency CTA already targets
-        # (KEV-listed or ransomware); showing it immediately alongside that
-        # CTA would be two "book a call" asks back to back, so it runs down
-        # here instead, after the reader has seen the full technical
-        # content. inject_api_cta (self-serve, lower-friction) only fires
-        # when a real CVE is present — its own content ("live CVE data, KEV
-        # alerts") has nothing to offer an article with no CVE. Checks both
-        # `cves` (regex-extracted from title+summary) and article.cve_id
-        # (structured, populated independently by source enrichment --
-        # e.g. nvd_source.py/cisa_kev_source.py's own API response) since
-        # an editorial/LLM-rewritten title+summary can omit the literal
-        # "CVE-YYYY-NNNNN" string even when the structured field carries a
-        # real one. Never both CTAs: two competing conversion asks in the
-        # same slot is worse than one well-chosen ask, and KEV/ransomware
-        # already wins the higher-value MSSP ask over the API one when
-        # both conditions are true.
+        # Secondary closing CTA — exactly one conversion path per report.
+        # High-urgency KEV/ransomware reports retain the enterprise-services
+        # path; source-backed CVE reports retain the self-serve API path.
+        # All other strategic intelligence families now receive one
+        # capability-oriented paid-platform CTA rather than ending with no
+        # conversion route. The strategic block is static HTML and links only
+        # to existing Sentinel APEX/API/Tools surfaces, so it adds no runtime
+        # storage/compute cost and no new payment processor.
         label_set = {str(label).lower() for label in (article.labels or [])}
         if article.kev_listed is True or "ransomware" in label_set:
             closing_cta = self.monetization.inject_mssp_cta()
         elif article.cve_id or cves:
             closing_cta = self.monetization.inject_api_cta()
         else:
-            closing_cta = ""
+            closing_cta = self.monetization.inject_strategic_intel_cta(
+                context.family,
+                article.labels,
+            )
 
         schema_blocks = ""
         if json_ld_str:
