@@ -1,5 +1,7 @@
+import inspect
 import re
 
+from automation.authority_transformer import AuthorityTransformer
 from automation.content_discovery import DiscoveredArticle
 from automation.premium_report_visuals import (
     build_report_hero,
@@ -142,3 +144,38 @@ def test_no_dynamic_or_unsafe_html_behaviors_are_introduced():
     assert "javascript:" not in lowered
     assert "onerror=" not in lowered
     assert "onclick=" not in lowered
+
+
+def test_assemble_html_preserves_legacy_wrapper_abi():
+    signature = inspect.signature(AuthorityTransformer._assemble_html)
+    assert list(signature.parameters) == [
+        "self",
+        "article",
+        "body_content",
+        "seo_data",
+        "context",
+        "image_url",
+    ]
+    assert "detection_status" not in signature.parameters
+    assert "product_tier" not in signature.parameters
+    assert "content_source" not in signature.parameters
+
+
+def test_actual_rapid_intelligence_label_gets_rapid_route_badge():
+    article = _article(labels=["Threat Intelligence", "Rapid Intelligence"])
+    context = build_report_context(article)
+    hero = build_report_hero(
+        article,
+        context,
+        detection_status="not_applicable",
+        product_tier="FLASH_READY",
+        content_source="evidence_compiled",
+    )
+    assert "RAPID INTELLIGENCE" in hero
+    assert "EVIDENCE COMPILED" not in hero
+
+
+def test_style_has_fallbacks_before_color_mix_enhancement():
+    css = premium_report_style_block()
+    assert "border:1px solid #31506a;" in css
+    assert "background:linear-gradient(145deg,#0d1a25,#08131d 72%);" in css
