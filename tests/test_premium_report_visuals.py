@@ -34,11 +34,19 @@ def test_premium_style_is_static_blogger_safe_and_has_mobile_contract():
     css = premium_report_style_block()
     assert '<style id="cdb-premium-report-v1">' in css
     assert ".cdb-report-hero" in css
+    assert ".cdb-hero-grid" in css
+    assert ".cdb-governance-rail" in css
+    assert ".cdb-reading-map" in css
     assert ".cdb-meta-grid" in css
+    assert ".cdb-decision-strip" in css
     assert ".cdb-section-card" in css
+    assert "counter-reset:cdb-section" in css
     assert ".cdb-premium-report table" in css
     assert ".cdb-premium-report pre" in css
     assert "@media(max-width:760px)" in css
+    assert "@media(max-width:520px)" in css
+    assert "@media(prefers-contrast:more)" in css
+    assert "@media print" in css
     assert "<script" not in css.lower()
 
 
@@ -54,10 +62,18 @@ def test_hero_maps_only_existing_report_state_and_escapes_untrusted_text():
     )
 
     assert "cdb-report-hero" in hero
+    assert 'data-experience="sentinel-apex-v2"' in hero
+    assert "INTELLIGENCE POSTURE" in hero
     assert "Quick Situation Snapshot" in hero
+    assert "SOURCE RECORD" in hero
+    assert "EVIDENCE GRAPH" in hero
+    assert "REPORTX / DOSSIER" in hero
+    assert "FAIL-CLOSED GATE" in hero
+    assert "SOC / IR" in hero
     assert "SOURCE-BACKED" in hero
     assert "EVIDENCE-GRAPH CONTROLLED" in hero
     assert "WITHHELD INSUFFICIENT EVIDENCE" in hero
+    assert "INTERNAL VALIDATION REQUIRED" in hero
     assert context.review_status in hero
     assert context.exploitation_label in hero
     assert context.patch_label in hero
@@ -92,6 +108,7 @@ def test_wrapper_preserves_body_bytes_inside_visual_container():
     wrapped = wrap_premium_report(body, accent="#2563eb", accent_soft="#bfdbfe")
     assert body in wrapped
     assert "cdb-premium-report" in wrapped
+    assert 'data-report-experience="v2"' in wrapped
 
 
 def test_report_renderer_primitives_expose_stable_visual_classes():
@@ -178,4 +195,55 @@ def test_actual_rapid_intelligence_label_gets_rapid_route_badge():
 def test_style_has_fallbacks_before_color_mix_enhancement():
     css = premium_report_style_block()
     assert "border:1px solid #31506a;" in css
-    assert "background:linear-gradient(145deg,#0d1a25,#08131d 72%);" in css
+    assert "background:linear-gradient(145deg,#0e1e2c,#07111a 72%);" in css
+
+
+def test_experience_v2_separates_governance_orientation_from_customer_validation():
+    article = _article(labels=["Ransomware", "Threat Intelligence", "Rapid Intelligence"])
+    context = build_report_context(article)
+    hero = build_report_hero(
+        article,
+        context,
+        detection_status="telemetry_specification_only",
+        product_tier="TACTICAL_READY",
+        content_source="reportx_composer",
+    )
+    assert "SOURCE RECORD" in hero
+    assert "EVIDENCE GRAPH" in hero
+    assert "REPORTX / DOSSIER" in hero
+    assert "FAIL-CLOSED GATE" in hero
+    assert "TELEMETRY SPECIFICATION ONLY" in hero
+    assert "INTERNAL VALIDATION REQUIRED" in hero
+    assert "RAPID INTELLIGENCE" in hero
+
+
+def test_experience_v2_does_not_claim_customer_exposure_or_compromise():
+    article = _article()
+    context = build_report_context(article)
+    hero = build_report_hero(
+        article,
+        context,
+        detection_status="not_applicable",
+        product_tier="TACTICAL",
+        content_source="reportx_composer",
+    ).lower()
+    assert "customer exposure confirmed" not in hero
+    assert "customer compromise confirmed" not in hero
+    assert "internal validation required" in hero
+    assert "customer exposure or compromise is not inferred" in hero
+
+
+def test_experience_v2_reading_map_is_orientation_not_fake_navigation_links():
+    article = _article()
+    context = build_report_context(article)
+    hero = build_report_hero(
+        article,
+        context,
+        detection_status="not_applicable",
+        product_tier="TACTICAL",
+        content_source="reportx_composer",
+    )
+    assert 'class="cdb-reading-map"' in hero
+    assert "<nav" in hero
+    reading_map = hero.split('class="cdb-reading-map"', 1)[1].split("</nav>", 1)[0]
+    assert "<a " not in reading_map
