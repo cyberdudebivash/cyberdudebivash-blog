@@ -40,7 +40,6 @@ class _Feed:
 
 
 _GLOBAL_FEEDS: tuple[_Feed, ...] = (
-    # ── Tier 1: Breaking News & CVE Coverage ─────────────────────────────────
     _Feed("The Hacker News", "https://feeds.feedburner.com/TheHackersNews"),
     _Feed("BleepingComputer", "https://www.bleepingcomputer.com/feed/"),
     _Feed("Krebs on Security", "https://krebsonsecurity.com/feed/"),
@@ -61,8 +60,6 @@ _GLOBAL_FEEDS: tuple[_Feed, ...] = (
     _Feed("ZDNet Security", "https://www.zdnet.com/topic/security/rss.xml"),
     _Feed("TechCrunch Security", "https://techcrunch.com/category/security/feed/"),
     _Feed("Cyber Defense Magazine", "https://www.cyberdefensemagazine.com/feed/"),
-
-    # ── Tier 2: Threat Intelligence & Vendor Research ────────────────────────
     _Feed("SANS Internet Storm Center", "https://isc.sans.edu/rssfeed_full.xml"),
     _Feed("Microsoft Security Blog", "https://www.microsoft.com/en-us/security/blog/feed/"),
     _Feed("Google Security Blog", "https://security.googleblog.com/feeds/posts/default"),
@@ -94,16 +91,12 @@ _GLOBAL_FEEDS: tuple[_Feed, ...] = (
     _Feed("Team Cymru Blog", "https://team-cymru.com/blog/feed/"),
     _Feed("PortSwigger Research", "https://portswigger.net/research/rss"),
     _Feed("Tripwire State of Security", "https://www.tripwire.com/state-of-security/feed"),
-
-    # ── Tier 3: Government CERTs & Regulatory Bodies ─────────────────────────
     _Feed("US-CERT Alerts", "https://www.cisa.gov/cybersecurity-advisories/all.xml"),
     _Feed("NCSC UK Alerts", "https://www.ncsc.gov.uk/api/1/services/v1/report-rss-feed.xml"),
     _Feed("ENISA News", "https://www.enisa.europa.eu/media/news-items/news-wires/RSS"),
     _Feed("CERT-EU Publications", "https://www.cert.europa.eu/publications/rss"),
     _Feed("Australian ASD ACSC", "https://www.cyber.gov.au/about-us/view-all-content/alerts-and-advisories/rss"),
     _Feed("NIST NVD Recent CVEs", "https://nvd.nist.gov/feeds/xml/cve/misc/nvd-rss-analyzed.xml"),
-
-    # ── Tier 4: Cloud & DevSecOps Security ───────────────────────────────────
     _Feed("AWS Security Blog", "https://aws.amazon.com/blogs/security/feed/"),
     _Feed("Azure Security Blog", "https://techcommunity.microsoft.com/gxcuf89792/rss/board?board.id=AzureSecurityBlog"),
     _Feed("Google Cloud Security Blog", "https://cloud.google.com/blog/topics/threat-intelligence/rss/"),
@@ -111,15 +104,11 @@ _GLOBAL_FEEDS: tuple[_Feed, ...] = (
     _Feed("Aqua Security Blog", "https://www.aquasec.com/blog/feed/"),
     _Feed("Lacework Blog", "https://www.lacework.com/blog/feed/"),
     _Feed("Sysdig Blog", "https://sysdig.com/blog/feed/"),
-
-    # ── Tier 5: AI Security & Emerging Threats ───────────────────────────────
     _Feed("MITRE ATT&CK Blog", "https://medium.com/feed/mitre-attack"),
     _Feed("OWASP Blog", "https://owasp.org/feed.xml"),
     _Feed("Protect AI Blog", "https://protectai.com/blog/rss.xml"),
     _Feed("HiddenLayer Blog", "https://hiddenlayer.com/research/feed/"),
     _Feed("LLM Security News", "https://llmsecurity.net/index.xml"),
-
-    # ── Tier 6: Community & Exploit Intelligence ──────────────────────────────
     _Feed("Reddit r/netsec", "https://www.reddit.com/r/netsec/.rss"),
     _Feed("Reddit r/cybersecurity", "https://www.reddit.com/r/cybersecurity/.rss"),
     _Feed("Full Disclosure", "https://seclists.org/rss/fulldisclosure.rss"),
@@ -142,11 +131,8 @@ class GlobalRSSAggregator:
     def discover(self, state: PublicationState) -> list[DiscoveredArticle]:
         """Return new DiscoveredArticle entries gathered from all global feeds."""
         articles: list[DiscoveredArticle] = []
-
         with ThreadPoolExecutor(max_workers=_MAX_WORKERS) as executor:
-            futures = {
-                executor.submit(self._fetch_feed, feed): feed for feed in _GLOBAL_FEEDS
-            }
+            futures = {executor.submit(self._fetch_feed, feed): feed for feed in _GLOBAL_FEEDS}
             for future in as_completed(futures):
                 feed = futures[future]
                 try:
@@ -158,11 +144,7 @@ class GlobalRSSAggregator:
                     article = self._to_article(feed, item, state)
                     if article is not None:
                         articles.append(article)
-
-        logger.info(
-            "Global RSS aggregation complete",
-            extra={"feeds_polled": len(_GLOBAL_FEEDS), "new_articles": len(articles)},
-        )
+        logger.info("Global RSS aggregation complete", extra={"feeds_polled": len(_GLOBAL_FEEDS), "new_articles": len(articles)})
         return articles
 
     def _fetch_feed(self, feed: _Feed) -> list[dict]:
@@ -170,50 +152,35 @@ class GlobalRSSAggregator:
         resp = None
         for attempt in range(1, _MAX_FETCH_ATTEMPTS + 1):
             try:
-                resp = requests.get(
-                    feed.url,
-                    timeout=_FEED_TIMEOUT_SECONDS,
-                    headers={"User-Agent": "CYBERDUDEBIVASH-SyndicationBot/1.0"},
-                )
-            except requests.RequestException as e:
+                resp = requests.get(feed.url, timeout=_FEED_TIMEOUT_SECONDS, headers={"User-Agent": "CYBERDUDEBIVASH-SyndicationBot/1.0"})
+            except Exception as e:
                 if attempt < _MAX_FETCH_ATTEMPTS:
-                    logger.info(
-                        "Retrying transient feed failure",
-                        extra={"feed": feed.name, "attempt": attempt, "error": str(e)},
-                    )
+                    logger.info("Retrying transient feed failure", extra={"feed": feed.name, "attempt": attempt, "error": str(e)})
                     continue
                 logger.warning("Feed fetch failed", extra={"feed": feed.name, "error": str(e)})
                 return []
 
             if resp.status_code in _RETRYABLE_STATUS_CODES:
                 if attempt < _MAX_FETCH_ATTEMPTS:
-                    logger.info(
-                        "Retrying transient feed response",
-                        extra={"feed": feed.name, "status": resp.status_code, "attempt": attempt},
-                    )
+                    logger.info("Retrying transient feed response", extra={"feed": feed.name, "status": resp.status_code, "attempt": attempt})
                     continue
-                logger.warning(
-                    "Feed fetch failed after transient retry",
-                    extra={"feed": feed.name, "status": resp.status_code},
-                )
+                logger.warning("Feed fetch failed after transient retry", extra={"feed": feed.name, "status": resp.status_code})
                 return []
 
             try:
                 resp.raise_for_status()
-            except requests.RequestException as e:
+            except Exception as e:
                 logger.warning("Feed fetch failed", extra={"feed": feed.name, "error": str(e)})
                 return []
             break
 
         if resp is None:
             return []
-
         try:
             items = _parse_feed_items(resp.text)
         except Exception as e:
             logger.warning("Feed parse failed", extra={"feed": feed.name, "error": str(e)})
             return []
-
         return items[:_MAX_ITEMS_PER_FEED]
 
     def _to_article(self, feed: _Feed, item: dict, state: PublicationState) -> Optional[DiscoveredArticle]:
@@ -221,32 +188,17 @@ class GlobalRSSAggregator:
         title = item.get("title", "")
         if not url or not title:
             return None
-
         pub_date = _parse_rfc_date(item.get("pub_date", ""))
         if not _is_recent(pub_date, self.config.max_article_age_hours):
             return None
-
         content_hash = _compute_hash(url, title)
         if state.is_published(content_hash):
             return None
-
         summary = item.get("summary", "")
         labels = _infer_labels(title, summary)
         for required_label in ["CYBERDUDEBIVASH", "Threat Intelligence", "Global Intel"]:
             if required_label not in labels:
                 labels.append(required_label)
-
         pub_iso = pub_date.isoformat() if pub_date else datetime.now(timezone.utc).isoformat()
         full_content = f"Source Publisher: {feed.name}\nOriginal Article: {url}\n\n{summary}"
-
-        return DiscoveredArticle(
-            url=url,
-            title=title,
-            summary=summary,
-            published_at=pub_iso,
-            content_hash=content_hash,
-            labels=labels,
-            source="global_rss",
-            full_content=full_content,
-            source_publisher=feed.name,
-        )
+        return DiscoveredArticle(url=url, title=title, summary=summary, published_at=pub_iso, content_hash=content_hash, labels=labels, source="global_rss", full_content=full_content, source_publisher=feed.name)
