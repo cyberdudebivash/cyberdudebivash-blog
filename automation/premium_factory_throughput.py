@@ -1,10 +1,13 @@
-"""P0 global CTI factory throughput controls.
+"""P0 global CTI publication controls.
 
-This module increases *capacity* without weakening any premium intelligence
-quality or evidence gate.  Production remains limited to five Blogger writes
-per run (the proven safe burst size), while scheduled cadence, candidate
-breadth, model-aware pacing, family balancing and durable retry capacity are
-scaled for a 150-200+ report/day Global CTI factory.
+The public Blogger lane runs in search-recovery mode: prioritize evidence,
+original analysis, freshness and family diversity over raw page volume.
+Ingestion, API generation and internal intelligence processing can continue at
+high throughput, but public Blogger writes are intentionally bounded to avoid
+turning source-backed automation into a scaled-content footprint.
+
+This is a risk-control mitigation while Search Console incident #219 is open;
+it is not a claim that publication volume alone caused the visibility cliff.
 
 Safety invariants:
 - no public quality threshold is changed;
@@ -45,10 +48,16 @@ from .logger import setup_logger
 
 logger = setup_logger("premium_factory_throughput")
 
-FACTORY_DAILY_FLOOR = 150
-FACTORY_DAILY_GOAL = 200
-FACTORY_RUNS_PER_DAY = 96  # four off-quarter-hour schedules per UTC hour
-FACTORY_WRITE_BURST = 5   # unchanged proven Blogger burst size
+# P0-SEARCH-RECOVERY-2026-09-22:
+# Search Console shows a sustained CTI visibility collapse after 2026-08-16.
+# Keep public publishing selective while root-cause recovery is measured.
+# Eight runs/day * two writes/run gives a hard theoretical ceiling of 16 new
+# Blogger pages/day, while the normal operating goal is 12 and floor is 6.
+# Internal feeds/APIs are not constrained by these public-page limits.
+FACTORY_DAILY_FLOOR = 6
+FACTORY_DAILY_GOAL = 12
+FACTORY_RUNS_PER_DAY = 8
+FACTORY_WRITE_BURST = 2
 FACTORY_RETRY_QUEUE_LIMIT = 500
 FACTORY_RETRY_ATTEMPTS = 5
 FACTORY_KEY_JUDGEMENT_MAX = 4
