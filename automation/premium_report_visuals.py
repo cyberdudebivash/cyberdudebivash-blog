@@ -76,7 +76,7 @@ def premium_report_style_block() -> str:
   --cdb-border:#284354;--cdb-border-strong:#3a5b6d;--cdb-text:#edf7fb;--cdb-muted:#9eb5c3;
   --cdb-subtle:#738e9f;--cdb-accent:#2563eb;--cdb-accent-soft:#bfdbfe;--cdb-green:#5ee6a8;
   color:var(--cdb-text);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-  font-size:15.5px;line-height:1.76;letter-spacing:.002em;counter-reset:cdb-section;
+  font-size:18px;line-height:1.78;letter-spacing:.002em;counter-reset:cdb-section;
   text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;
 }
 .cdb-premium-report *{box-sizing:border-box}
@@ -119,7 +119,7 @@ def premium_report_style_block() -> str:
 .cdb-signal-note{margin-top:16px;padding-top:13px;border-top:1px solid rgba(142,180,202,.14);color:#91aaba;font-size:11px;line-height:1.55}
 .cdb-governance-rail{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:10px 0 12px}
 .cdb-governance-step{position:relative;padding:10px 11px;border:1px solid #213a4b;border-radius:10px;background:#081722;color:#b8ccd8;font:800 9px/1.35 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.06em;text-align:center}
-.cdb-governance-step:not(:last-child):after{content:"›";position:absolute;right:-8px;top:50%;transform:translateY(-50%);z-index:2;color:var(--cdb-accent-soft);font-size:16px}
+.cdb-governance-step:not(:last-child):after{content:">";position:absolute;right:-8px;top:50%;transform:translateY(-50%);z-index:2;color:var(--cdb-accent-soft);font-size:16px}
 .cdb-reading-map{display:flex;gap:7px;overflow-x:auto;margin:0 0 12px;padding:9px;border:1px solid #213a4b;border-radius:12px;background:#07131d;scrollbar-width:thin}
 .cdb-reading-map span{flex:1 0 auto;min-width:112px;padding:7px 9px;border-radius:8px;background:#0a1a26;color:#91aaba;font:800 9px/1.25 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.065em;text-align:center}
 .cdb-reading-map b{color:var(--cdb-accent-soft);font-weight:900}
@@ -178,6 +178,121 @@ def premium_report_style_block() -> str:
 .cdb-callout-title{font:850 10.5px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--cdb-accent-soft)}
 .cdb-callout-body{margin-top:7px;color:#dcebf2}
 .cdb-report-provenance{margin-top:28px;padding-top:18px;border-top:1px solid #294454}
+
+/* CDB-P0-LEGIBILITY-V3
+   Customer readability floor for every downstream CTI/Dossier module.
+   Several legacy modules intentionally used 7–12px dense SOC typography.
+   At Blogger content widths and high-DPI displays that is too small for
+   sustained customer reading. These high-specificity presentation-only
+   overrides raise the minimum visual size without altering intelligence data,
+   ReportX/Dossier semantics, evidence gates, or publication controls. */
+.cdb-cti-dossier{font-size:17px!important;line-height:1.75!important}
+.cdb-cti-dossier .cdbd-body p,
+.cdb-cti-dossier .cdbd-body li,
+.cdb-cti-dossier .cdbd-body td,
+.cdb-cti-dossier .cdbd-body blockquote{font-size:16px!important;line-height:1.72!important;color:#e2edf4!important}
+.cdb-cti-dossier .cdbd-body th{font-size:13.5px!important;line-height:1.45!important;color:#a9efff!important}
+.cdb-cti-dossier pre{font-size:15px!important;line-height:1.68!important}
+.cdb-cti-dossier code{font-size:.95em!important;line-height:1.55!important}
+
+/* Command deck / report navigation */
+.cdb-cti-dossier .cdbd-eyebrow,
+.cdb-cti-dossier .cdbd-identity,
+.cdb-cti-dossier .cdbd-trust,
+.cdb-cti-dossier .cdbd-nav>b{font-size:12.5px!important;line-height:1.45!important;color:#b9d5e3!important}
+.cdb-cti-dossier .cdbd-nav a{font-size:12.5px!important;line-height:1.35!important;padding:8px 11px!important;color:#d7e9f3!important}
+.cdb-cti-dossier .cdbd-kpis{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important}
+.cdb-cti-dossier .cdbd-kpi{min-height:96px!important;padding:15px!important}
+.cdb-cti-dossier .cdbd-kpi span{font-size:12px!important;line-height:1.35!important;color:#9fb9c8!important}
+.cdb-cti-dossier .cdbd-kpi strong{font-size:16px!important;line-height:1.4!important;color:#fff!important}
+.cdb-cti-dossier .cdbd-command:before{font-size:11px!important;line-height:1.25!important}
+
+/* Premium v2 hero / metadata */
+.cdb-kicker{font-size:13px!important;line-height:1.4!important}
+.cdb-chip{font-size:12.5px!important;line-height:1.3!important;padding:8px 11px!important}
+.cdb-signal-overline{font-size:12px!important;line-height:1.35!important;color:#a8c1cf!important}
+.cdb-signal-family{font-size:15px!important;line-height:1.45!important}
+.cdb-signal-note{font-size:14px!important;line-height:1.65!important;color:#b9ccd8!important}
+.cdb-governance-step{font-size:12.5px!important;line-height:1.4!important;padding:12px 13px!important;color:#d3e4ed!important}
+.cdb-reading-map span{font-size:12px!important;line-height:1.35!important;padding:9px 11px!important;color:#bfd2dc!important}
+.cdb-meta-label,.cdb-snapshot-key,.cdb-decision-cell span{font-size:12px!important;line-height:1.35!important;color:#a9c0ce!important}
+.cdb-meta-value,.cdb-snapshot-val{font-size:15.5px!important;line-height:1.5!important;color:#f6fbfd!important}
+.cdb-snapshot-tag{font-size:11.5px!important;line-height:1.2!important;padding:7px 10px!important}
+.cdb-decision-cell strong{font-size:15px!important;line-height:1.5!important}
+
+/* Dossier v8 — operations control plane / 60-second brief / evidence ledger */
+.cdb-cti-dossier .cdbv8-panel-head{font-size:13.5px!important;line-height:1.4!important}
+.cdb-cti-dossier .cdbv8-panel-head b{font-size:11.5px!important;line-height:1.2!important}
+.cdb-cti-dossier .cdbv8-context-grid span,
+.cdb-cti-dossier .cdbv8-signal span,
+.cdb-cti-dossier .cdbv8-focus>b{font-size:12px!important;line-height:1.35!important;color:#a8becb!important}
+.cdb-cti-dossier .cdbv8-context-grid strong,
+.cdb-cti-dossier .cdbv8-signal strong{font-size:15px!important;line-height:1.45!important}
+.cdb-cti-dossier .cdbv8-focus>span,
+.cdb-cti-dossier .cdbv8-chain span,
+.cdb-cti-dossier .cdbv8-quality>span,
+.cdb-cti-dossier .cdbv8-quality b,
+.cdb-cti-dossier .cdbv8-nav-group{font-size:12px!important;line-height:1.4!important}
+.cdb-cti-dossier .cdbv8-signals{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important}
+.cdb-cti-dossier .cdbv8-brief-grid h4{font-size:13px!important;line-height:1.4!important}
+.cdb-cti-dossier .cdbv8-brief-grid p{font-size:16px!important;line-height:1.72!important;color:#e3eef5!important}
+.cdb-cti-dossier .cdbv8-ledger td:first-child,
+.cdb-cti-dossier .cdbv8-ledger td:last-child{font-size:14px!important;line-height:1.5!important}
+
+/* Dossier v9 — confidence, decisions, chronology, governance */
+.cdb-cti-dossier .cdbv9-head{font-size:13.5px!important;line-height:1.4!important}
+.cdb-cti-dossier .cdbv9-head b{font-size:11.5px!important;line-height:1.2!important}
+.cdb-cti-dossier .cdbv9-state span,
+.cdb-cti-dossier .cdbv9-decision span,
+.cdb-cti-dossier .cdbv9-framework-label{font-size:12px!important;line-height:1.35!important;color:#a8becb!important}
+.cdb-cti-dossier .cdbv9-state strong,
+.cdb-cti-dossier .cdbv9-decision strong{font-size:15px!important;line-height:1.5!important}
+.cdb-cti-dossier .cdbv9-note,
+.cdb-cti-dossier .cdbv9-timeline p{font-size:15px!important;line-height:1.65!important;color:#ddeaf2!important}
+.cdb-cti-dossier .cdbv9-escalation span,
+.cdb-cti-dossier .cdbv9-flow span,
+.cdb-cti-dossier .cdbv9-timeline b,
+.cdb-cti-dossier .cdbv9-framework b,
+.cdb-cti-dossier .cdbv9-framework small,
+.cdb-cti-dossier .cdbv9-quality>span,
+.cdb-cti-dossier .cdbv9-quality b{font-size:12px!important;line-height:1.4!important}
+.cdb-cti-dossier .cdbv9-framework>div{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:9px!important}
+
+/* Dossier v10 — evidence graph, exposure validation, chronology, gaps */
+.cdb-cti-dossier .cdbv10-head{font-size:13.5px!important;line-height:1.4!important}
+.cdb-cti-dossier .cdbv10-head b{font-size:11.5px!important;line-height:1.25!important}
+.cdb-cti-dossier .cdbv10-confidence-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+.cdb-cti-dossier .cdbv10-confidence-grid span,
+.cdb-cti-dossier .cdbv10-node small{font-size:12px!important;line-height:1.35!important;color:#a8becb!important}
+.cdb-cti-dossier .cdbv10-confidence-grid strong,
+.cdb-cti-dossier .cdbv10-node strong{font-size:15px!important;line-height:1.5!important}
+.cdb-cti-dossier .cdbv10-fact i,
+.cdb-cti-dossier .cdbv10-gap i{font-size:11.5px!important;line-height:1.4!important}
+.cdb-cti-dossier .cdbv10-fact span,
+.cdb-cti-dossier .cdbv10-boundary,
+.cdb-cti-dossier .cdbv10-exposure li,
+.cdb-cti-dossier .cdbv10-gap span,
+.cdb-cti-dossier .cdbv10-decision-grid p{font-size:14.5px!important;line-height:1.65!important;color:#dfeaf2!important}
+.cdb-cti-dossier .cdbv10-gap b,
+.cdb-cti-dossier .cdbv10-timeline i,
+.cdb-cti-dossier .cdbv10-timeline span{font-size:11.5px!important;line-height:1.35!important}
+.cdb-cti-dossier .cdbv10-timeline{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:9px!important}
+.cdb-cti-dossier .cdbv10-timeline strong{font-size:13.5px!important;line-height:1.5!important}
+.cdb-cti-dossier .cdbv10-capabilities{font-size:11.5px!important;line-height:1.35!important}
+.cdb-cti-dossier .cdbv10-capabilities b{font-size:11.5px!important}
+
+/* Revenue / plan-access modules: paid conversion must be readable too. */
+.cdb-cti-dossier .cdbv18-kicker{font-size:13px!important;line-height:1.4!important}
+.cdb-cti-dossier .cdbv18-kicker b{font-size:11.5px!important;line-height:1.2!important}
+.cdb-cti-dossier .cdbv18-boundary{font-size:14.5px!important;line-height:1.65!important}
+.cdb-cti-dossier .cdbv18-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+.cdb-cti-dossier .cdbv18-grid small{font-size:11.5px!important;line-height:1.35!important}
+.cdb-cti-dossier .cdbv18-grid strong{font-size:16px!important;line-height:1.4!important}
+.cdb-cti-dossier .cdbv18-grid p,
+.cdb-cti-dossier .cdbv18-primary span{font-size:14.5px!important;line-height:1.65!important;color:#d8e6ef!important}
+.cdb-cti-dossier .cdbv18-grid a,
+.cdb-cti-dossier .cdbv18-primary a{font-size:12px!important;line-height:1.3!important;padding:9px 11px!important}
+
 @media(max-width:900px){
   .cdb-hero-grid{grid-template-columns:1fr}.cdb-hero-aside{display:grid;grid-template-columns:1fr 1fr;gap:8px}
   .cdb-signal-note{margin-top:0;padding-top:0;padding-left:14px;border-top:0;border-left:1px solid rgba(142,180,202,.14)}
@@ -186,7 +301,7 @@ def premium_report_style_block() -> str:
 @media(max-width:760px){
   .cdb-report-hero{padding:22px 18px;border-radius:16px}.cdb-report-title{font-size:clamp(1.55rem,8vw,2.15rem)}
   .cdb-meta-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.cdb-governance-rail{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .cdb-governance-step:not(:last-child):after{display:none}.cdb-premium-report{font-size:14.5px;line-height:1.72}
+  .cdb-governance-step:not(:last-child):after{display:none}.cdb-premium-report{font-size:17px;line-height:1.76}
   .cdb-section-card{border-radius:12px}.cdb-premium-report h3{grid-template-columns:30px minmax(0,1fr);font-size:16.5px}
   .cdb-premium-report h3:before{width:27px;height:27px}
 }
@@ -195,7 +310,16 @@ def premium_report_style_block() -> str:
   .cdb-signal-note{padding-left:0;padding-top:12px;border-left:0;border-top:1px solid rgba(142,180,202,.14)}
   .cdb-report-hero{padding:19px 15px}.cdb-chip{font-size:10px}.cdb-reading-map{margin-left:-1px;margin-right:-1px}
   .cdb-section-card{padding:0 14px 15px!important}.cdb-section-card>div:first-child{margin-left:-14px!important;margin-right:-14px!important}
-  .cdb-premium-report th,.cdb-premium-report td{padding:10px 11px;font-size:12px}
+  .cdb-premium-report th,.cdb-premium-report td{padding:10px 11px;font-size:14.5px}
+  .cdb-cti-dossier .cdbd-kpis,
+  .cdb-cti-dossier .cdbv8-signals,
+  .cdb-cti-dossier .cdbv9-framework>div,
+  .cdb-cti-dossier .cdbv10-confidence-grid,
+  .cdb-cti-dossier .cdbv10-timeline,
+  .cdb-cti-dossier .cdbv18-grid{grid-template-columns:1fr!important}
+  .cdb-cti-dossier .cdbd-body p,
+  .cdb-cti-dossier .cdbd-body li,
+  .cdb-cti-dossier .cdbd-body td{font-size:16px!important}
 }
 @media(prefers-reduced-motion:reduce){.cdb-premium-report *{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 @media(prefers-contrast:more){
