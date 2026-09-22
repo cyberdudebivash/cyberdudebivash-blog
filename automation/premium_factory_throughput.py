@@ -284,6 +284,8 @@ def factory_nvd_discover(self, state: PublicationState) -> list[DiscoveredArticl
 
 
 def classify_factory_family(article: DiscoveredArticle) -> str:
+    if _scheduler.is_non_threat_editorial(article):
+        return "non_intelligence"
     text = " ".join(
         str(value or "")
         for value in (article.title, article.summary, article.full_content, " ".join(article.labels or []))
@@ -406,6 +408,8 @@ def classify_text_as_vulnerability(text: str) -> bool:
 
 
 def classify_delivery_class(article: DiscoveredArticle) -> Optional[str]:
+    if _scheduler.is_non_threat_editorial(article):
+        return None
     return _delivery_class_from_fields(
         title=article.title,
         summary=" ".join(filter(None, [article.summary, article.full_content or ""])),
@@ -525,10 +529,17 @@ def select_factory_publication_batch(
             "delivery_sla_missing_before": sorted(set(FACTORY_DAILY_DELIVERY_CLASSES) - set(_ACTIVE_DAILY_DELIVERED)),
             "selected_delivery_classes": {},
             "delivery_sla_missing_after_selection": sorted(set(FACTORY_DAILY_DELIVERY_CLASSES) - set(_ACTIVE_DAILY_DELIVERED)),
+            "non_intelligence_filtered": 0,
         })
 
-    fresh = _scheduler._dedupe_fresh(list(fresh_articles))
-    retry = _scheduler._remove_retry_duplicates(list(retry_articles), fresh)
+    fresh_all = _scheduler._dedupe_fresh(list(fresh_articles))
+    retry_all = _scheduler._remove_retry_duplicates(list(retry_articles), fresh_all)
+    non_intelligence_filtered = sum(
+        1 for article in [*fresh_all, *retry_all]
+        if _scheduler.is_non_threat_editorial(article)
+    )
+    fresh = [article for article in fresh_all if not _scheduler.is_non_threat_editorial(article)]
+    retry = [article for article in retry_all if not _scheduler.is_non_threat_editorial(article)]
 
     # Preserve the proven 3-fresh/2-retry shape. At factory cadence the larger
     # retry store drains continuously without allowing old failures to suppress
@@ -614,6 +625,7 @@ def select_factory_publication_batch(
         "delivery_sla_missing_after_selection": sorted(
             set(FACTORY_DAILY_DELIVERY_CLASSES) - delivered_after_selection
         ),
+        "non_intelligence_filtered": non_intelligence_filtered,
     }
     return _scheduler.PublicationSelection(selected, metrics)
 
