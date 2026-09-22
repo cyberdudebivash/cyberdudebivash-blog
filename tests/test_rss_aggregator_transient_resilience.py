@@ -78,3 +78,21 @@ def test_fetch_feed_does_not_retry_permanent_client_error(monkeypatch):
 
     assert items == []
     assert attempts == 1
+
+
+def test_fetch_feed_does_not_retry_unexpected_runtime_error(monkeypatch):
+    attempts = 0
+
+    def fake_get(*args, **kwargs):
+        nonlocal attempts
+        attempts += 1
+        raise RuntimeError("unexpected implementation failure")
+
+    monkeypatch.setattr("automation.rss_aggregator.requests.get", fake_get)
+
+    items = GlobalRSSAggregator.__new__(GlobalRSSAggregator)._fetch_feed(
+        _Feed("Test Feed", "https://example.test/rss")
+    )
+
+    assert items == []
+    assert attempts == 1

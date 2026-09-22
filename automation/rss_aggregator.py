@@ -148,16 +148,19 @@ class GlobalRSSAggregator:
         return articles
 
     def _fetch_feed(self, feed: _Feed) -> list[dict]:
-        """Fetch and parse a feed, retrying one transient network/server failure."""
+        """Fetch and parse a feed, retrying one transient transport/server failure."""
         resp = None
         for attempt in range(1, _MAX_FETCH_ATTEMPTS + 1):
             try:
                 resp = requests.get(feed.url, timeout=_FEED_TIMEOUT_SECONDS, headers={"User-Agent": "CYBERDUDEBIVASH-SyndicationBot/1.0"})
-            except Exception as e:
+            except requests.RequestException as e:
                 if attempt < _MAX_FETCH_ATTEMPTS:
                     logger.info("Retrying transient feed failure", extra={"feed": feed.name, "attempt": attempt, "error": str(e)})
                     continue
                 logger.warning("Feed fetch failed", extra={"feed": feed.name, "error": str(e)})
+                return []
+            except Exception as e:
+                logger.warning("Feed fetch failed without retry", extra={"feed": feed.name, "error": str(e)})
                 return []
 
             if resp.status_code in _RETRYABLE_STATUS_CODES:
