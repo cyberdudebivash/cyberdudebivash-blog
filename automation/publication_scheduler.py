@@ -40,9 +40,9 @@ _NON_WORD_RE = re.compile(r"[^a-z0-9]+")
 # title only so a real threat article mentioning employment/jobs in its body is
 # never suppressed by a keyword collision.
 _NON_THREAT_EDITORIAL_TITLE_RE = re.compile(
-    r"^\\s*(?:cyber\\s*security|cybersecurity|information\\s+security|infosec)\\s+"
-    r"(?:jobs?|job\\s+openings?|careers?|vacancies)\\b|"
-    r"\\b(?:cyber\\s*security|cybersecurity)\\s+jobs?\\s+available\\s+right\\s+now\\b",
+    r"^\s*(?:cyber\s*security|cybersecurity|information\s+security|infosec)\s+"
+    r"(?:jobs?|job\s+openings?|careers?|vacancies)\b|"
+    r"\b(?:cyber\s*security|cybersecurity)\s+jobs?\s+available\s+right\s+now\b",
     re.IGNORECASE,
 )
 
