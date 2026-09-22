@@ -1,8 +1,47 @@
 {
-  "generated": "2026-09-22T17:01:36.586Z",
+  "generated": "2026-09-22T21:24:36.644Z",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
   "count": 200,
   "items": [
+    {
+      "slug": "cve-2026-62985-npm-request-filtering-agent",
+      "title": "request-filtering-agent: Synchronous throw from createConnection() for literal private-IP hosts bypasses req.on('error'), crashing the Node.js process",
+      "url": "/posts/cve-2026-62985-npm-request-filtering-agent.html",
+      "generated": "2026-09-22T20:26:11.077Z",
+      "severity": "HIGH",
+      "cves": [
+        "CVE-2026-62985",
+        "CVE-2026-62985"
+      ],
+      "mitreAttack": [],
+      "sigma": [],
+      "kql": [],
+      "splunk": [],
+      "osquery": [],
+      "suricata": [
+        "alert ip $HOME_NET any -> 169.254.169.254 any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious IP 169.254.169.254\"; classtype:trojan-activity; sid:9000001; rev:1;)"
+      ]
+    },
+    {
+      "slug": "cve-2026-58268-go-github-com-emiago-sipgo",
+      "title": "SIPGO: DoS via unvalidated Content-Length in the stream parser",
+      "url": "/posts/cve-2026-58268-go-github-com-emiago-sipgo.html",
+      "generated": "2026-09-22T20:26:11.073Z",
+      "severity": "HIGH",
+      "cves": [
+        "CVE-2026-58268",
+        "CVE-2026-58268"
+      ],
+      "mitreAttack": [],
+      "sigma": [],
+      "kql": [],
+      "splunk": [],
+      "osquery": [],
+      "suricata": [
+        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://github.com/emiago/sipgo/blob/v1.4.0/sip/parser_stream.go#L195):\"; http.host; content:\"github.com\"; nocase; http.uri; content:\"/emiago/sipgo/blob/v1.4.0/sip/parser_stream.go#L195):\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
+        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://github.com/emiago/sipgo/blob/v1.4.0/sip/parser_stream.go#L132),\"; http.host; content:\"github.com\"; nocase; http.uri; content:\"/emiago/sipgo/blob/v1.4.0/sip/parser_stream.go#L132),\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)"
+      ]
+    },
     {
       "slug": "cve-2026-61629-go-github-com-lucasdillmann-nginx-ignition",
       "title": "nginx ignition has  ParseAcceptLanguage `_` separator bypass that enables ~75x CPU amplification via Accept-Language header in i18nMiddleware",
@@ -4202,48 +4241,6 @@
         "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL http://arstechnica.com/security/2026/07/now-defenders-are-embracing-the-prompt-injection-too&quot;&g\"; http.host; content:\"arstechnica.com\"; nocase; http.uri; content:\"/security/2026/07/now-defenders-are-embracing-the-prompt-injection-too&quot\\;&g\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)",
         "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000005; rev:1;)",
         "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain arstechnica.com\"; dns.query; content:\"arstechnica.com\"; nocase; classtype:trojan-activity; sid:9000006; rev:1;)"
-      ]
-    },
-    {
-      "slug": "world-cup-grudge-attackers-may-have-scored-argentine-fa-acce",
-      "title": "World Cup grudge attackers may have scored Argentine FA access via year-old infostealer infection",
-      "url": "/posts/world-cup-grudge-attackers-may-have-scored-argentine-fa-acce.html",
-      "generated": "2026-07-13T16:02:24.450Z",
-      "severity": "MEDIUM",
-      "cves": [],
-      "mitreAttack": [],
-      "sigma": [],
-      "kql": [],
-      "splunk": [],
-      "osquery": [],
-      "suricata": [
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/user/Malwarebeasts&quot;&gt;\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/user/Malwarebeasts&quot\\;&gt\\;\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.theregister.com/security/2026/07/13/world-cup-grudge-attackers-may-have-scored-argentine\"; http.host; content:\"www.theregister.com\"; nocase; http.uri; content:\"/security/2026/07/13/world-cup-grudge-attackers-may-have-scored-argentine\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uvfbdg/world_cup_grudge_attackers_may_have_scored/&\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uvfbdg/world_cup_grudge_attackers_may_have_scored/&\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.theregister.com\"; dns.query; content:\"www.theregister.com\"; nocase; classtype:trojan-activity; sid:9000005; rev:1;)"
-      ]
-    },
-    {
-      "slug": "i-vibed-an-application-inventory-service",
-      "title": "I vibed an Application Inventory Service",
-      "url": "/posts/i-vibed-an-application-inventory-service.html",
-      "generated": "2026-07-13T16:02:24.446Z",
-      "severity": "MEDIUM",
-      "cves": [],
-      "mitreAttack": [],
-      "sigma": [],
-      "kql": [],
-      "splunk": [],
-      "osquery": [],
-      "suricata": [
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://github.com/h0p3sf4ll/application-inventory-service&quot;&gt;https://github.com/h0p3sf4ll/app\"; http.host; content:\"github.com\"; nocase; http.uri; content:\"/h0p3sf4ll/application-inventory-service&quot\\;&gt\\;https\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://pypi.org/project/application-inventory-service/&quot;&gt;https://pypi.org/project/applicatio\"; http.host; content:\"pypi.org\"; nocase; http.uri; content:\"/project/application-inventory-service/&quot\\;&gt\\;https\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://github.com/h0p3sf4ll/application-inventory-service/blob/main/docs/BLOG_POST.md#building-an-a\"; http.host; content:\"github.com\"; nocase; http.uri; content:\"/h0p3sf4ll/application-inventory-service/blob/main/docs/BLOG_POST.md#building-an-a\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://github.com/h0p3sf4ll/application-inventory-service/blob/main/docs/BLOG_POST.md#operating-mod\"; http.host; content:\"github.com\"; nocase; http.uri; content:\"/h0p3sf4ll/application-inventory-service/blob/main/docs/BLOG_POST.md#operating-mod\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://github.com/h0p3sf4ll/application-inventory-service/blob/main/docs/BLOG_POST.md#scale-and-con\"; http.host; content:\"github.com\"; nocase; http.uri; content:\"/h0p3sf4ll/application-inventory-service/blob/main/docs/BLOG_POST.md#scale-and-con\"; nocase; classtype:trojan-activity; sid:9000005; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain pypi.org\"; dns.query; content:\"pypi.org\"; nocase; classtype:trojan-activity; sid:9000006; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000007; rev:1;)"
       ]
     }
   ]
