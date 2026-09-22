@@ -378,3 +378,38 @@ def test_daily_delivery_ledger_counts_only_successful_publications_from_current_
         "ransomware",
         "malware_campaign",
     }
+
+
+def test_factory_excludes_jobs_roundup_from_family_and_daily_delivery_sla(monkeypatch):
+    monkeypatch.setattr(factory, "_DAILY_DELIVERY_SLA_ACTIVE", True)
+    monkeypatch.setattr(factory, "_ACTIVE_DAILY_DELIVERED", frozenset())
+    monkeypatch.setattr(factory.time, "time", lambda: 0.0)
+
+    jobs = _article(
+        801,
+        title="Cybersecurity jobs available right now: September 22, 2026",
+        source="global_rss",
+    )
+    jobs.full_content = (
+        "Malware Reverse Engineer: analyze malware. "
+        "Threat Hunter: incident response, threat intelligence, detection engineering."
+    )
+    real_malware = _article(802, title="Backdoor malware attack compromises enterprise endpoints")
+    ransomware = _article(803, title="Akira ransomware claim", source="ransomware_intel")
+    breach = _article(804, title="Company publishes data breach notice", source="breach_intel")
+    cve = _article(805, title="CVE-2026-88888 remote code execution vulnerability", source="nvd", cve_id="CVE-2026-88888")
+    apt = _article(806, title="APT29 threat actor campaign update")
+
+    assert factory.classify_factory_family(jobs) == "non_intelligence"
+    assert factory.classify_delivery_class(jobs) is None
+
+    selection = factory.select_factory_publication_batch(
+        [],
+        [jobs, real_malware, ransomware, breach, cve, apt],
+        5,
+    )
+
+    assert jobs not in selection.articles
+    assert selection.metrics["non_intelligence_filtered"] == 1
+    assert "non_intelligence" not in selection.metrics["selected_families"]
+    assert len(selection.articles) == 5
