@@ -284,10 +284,10 @@ def factory_nvd_discover(self, state: PublicationState) -> list[DiscoveredArticl
 
 
 def classify_factory_family(article: DiscoveredArticle) -> str:
-    text = " ".join(
-        str(value or "")
-        for value in (article.title, article.summary, article.full_content, " ".join(article.labels or []))
-    ).lower()
+    # Classify the article's primary subject, not every keyword buried in the
+    # long-form body. This prevents jobs/careers roundups from becoming
+    # "malware" simply because a role description mentions malware analysis.
+    text = _scheduler.primary_subject_text(article)
     source = str(article.source or "").lower()
 
     if re.search(r"\b(?:zero[ -]?day|0[ -]?day)\b", text):
@@ -406,9 +406,14 @@ def classify_text_as_vulnerability(text: str) -> bool:
 
 
 def classify_delivery_class(article: DiscoveredArticle) -> Optional[str]:
+    if not _scheduler.is_cti_relevant(article):
+        return None
     return _delivery_class_from_fields(
         title=article.title,
-        summary=" ".join(filter(None, [article.summary, article.full_content or ""])),
+        # Daily customer-delivery credit follows the primary subject only.
+        # Full body text is excluded to prevent incidental terms in job/event
+        # roundups from falsely satisfying malware/campaign/attack SLAs.
+        summary=article.summary,
         labels=article.labels or [],
         source=article.source,
         report_family="",
@@ -527,6 +532,12 @@ def select_factory_publication_batch(
             "delivery_sla_missing_after_selection": sorted(set(FACTORY_DAILY_DELIVERY_CLASSES) - set(_ACTIVE_DAILY_DELIVERED)),
         })
 
+    fresh_relevance_blocked = sum(
+        1 for article in fresh_articles if not _scheduler.is_cti_relevant(article)
+    )
+    retry_relevance_blocked = sum(
+        1 for article in retry_articles if not _scheduler.is_cti_relevant(article)
+    )
     fresh = _scheduler._dedupe_fresh(list(fresh_articles))
     retry = _scheduler._remove_retry_duplicates(list(retry_articles), fresh)
 
@@ -600,6 +611,9 @@ def select_factory_publication_batch(
         "candidate_count": len(fresh) + len(retry),
         "fresh_candidates": len(fresh),
         "retry_candidates": len(retry),
+        "relevance_blocked": fresh_relevance_blocked + retry_relevance_blocked,
+        "fresh_relevance_blocked": fresh_relevance_blocked,
+        "retry_relevance_blocked": retry_relevance_blocked,
         "fresh_selected": sum(1 for a in selected if a in fresh_selected),
         "retry_selected": sum(1 for a in selected if a in retry_selected),
         "strategic_selected": sum(1 for a in selected if classify_factory_family(a) in _STRATEGIC_FACTORY_FAMILIES),
