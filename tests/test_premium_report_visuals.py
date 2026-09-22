@@ -247,3 +247,39 @@ def test_experience_v2_reading_map_is_orientation_not_fake_navigation_links():
     assert "<nav" in hero
     reading_map = hero.split('class="cdb-reading-map"', 1)[1].split("</nav>", 1)[0]
     assert "<a " not in reading_map
+
+
+def test_p0_enterprise_legibility_floor_covers_all_customer_dossier_layers():
+    css = premium_report_style_block()
+    assert "CDB-P0-LEGIBILITY-V3" in css
+    assert "font-size:18px;line-height:1.78" in css
+    assert ".cdb-cti-dossier{font-size:17px!important;line-height:1.75!important}" in css
+
+    # Command deck / navigation
+    assert ".cdb-cti-dossier .cdbd-kpi strong{font-size:16px!important" in css
+    assert ".cdb-cti-dossier .cdbd-nav a{font-size:12.5px!important" in css
+
+    # Dossier v8/v9/v10 content that previously rendered at 7-12px.
+    assert ".cdb-cti-dossier .cdbv8-brief-grid p{font-size:16px!important" in css
+    assert ".cdb-cti-dossier .cdbv9-state strong" in css
+    assert "font-size:15px!important;line-height:1.5!important" in css
+    assert ".cdb-cti-dossier .cdbv10-fact span" in css
+    assert "font-size:14.5px!important;line-height:1.65!important" in css
+
+    # Paid plan cards must be readable because they are part of conversion UX.
+    assert ".cdb-cti-dossier .cdbv18-grid strong{font-size:16px!important" in css
+    assert ".cdb-cti-dossier .cdbv18-grid p" in css
+    assert ".cdb-cti-dossier .cdbv18-primary span" in css
+
+    # Dense multi-column modules are expanded so larger type does not collapse.
+    assert ".cdb-cti-dossier .cdbd-kpis{grid-template-columns:repeat(3,minmax(0,1fr))!important" in css
+    assert ".cdb-cti-dossier .cdbv10-confidence-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important" in css
+    assert ".cdb-cti-dossier .cdbv18-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important" in css
+
+
+def test_p0_legibility_keeps_mobile_text_readable_and_avoids_blogger_entity_artifact():
+    css = premium_report_style_block()
+    assert ".cdb-premium-report{font-size:17px;line-height:1.76}" in css
+    assert ".cdb-premium-report th,.cdb-premium-report td{padding:10px 11px;font-size:14.5px}" in css
+    assert 'content:">"' in css
+    assert 'content:"›"' not in css
