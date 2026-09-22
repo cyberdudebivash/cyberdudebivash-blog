@@ -35,7 +35,7 @@ on:
 # high-frequency Sentinel APEX, AI-security, RSS, CVE and intelligence-hub
 # generators. GitHub Actions concurrency permits only one running and one
 # pending run per concurrency group, so unrelated content-generation jobs could
-# displace/serialize the 15-minute Blogger publication clock even though Blogger
+# displace/serialize the Blogger publication clock even though Blogger
 # writes only its publication ledger/quota state/run report and rebases before
 # pushing. Isolate the remote-publishing lane while still serializing Blogger
 # against itself. The existing pull --rebase + bounded push retry below remains
@@ -271,7 +271,7 @@ jobs:
             print(f'Dry run:    {r.get(\"dry_run\", False)}')
             factory = r.get('factory_throughput') or {}
             if factory:
-              print(f'Factory UTC today: {factory.get(\"published_today_utc\", 0)} / floor {factory.get(\"daily_floor\", 150)} / goal {factory.get(\"daily_goal\", 200)}')
+              print(f'Factory UTC today: {factory.get(\"published_today_utc\", 0)} / floor {factory.get(\"daily_floor\", 6)} / goal {factory.get(\"daily_goal\", 12)}')
               print(f'Factory theoretical write capacity/day: {factory.get(\"theoretical_daily_write_capacity\", 0)}')
             stage2 = r.get('premium_yield_stage2') or {}
             if stage2:
