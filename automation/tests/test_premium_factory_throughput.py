@@ -378,3 +378,54 @@ def test_daily_delivery_ledger_counts_only_successful_publications_from_current_
         "ransomware",
         "malware_campaign",
     }
+
+
+def test_factory_does_not_credit_jobs_roundup_as_malware_delivery(monkeypatch):
+    monkeypatch.setattr(factory.time, "time", lambda: 0.0)
+    jobs = _article(
+        930,
+        title="Cybersecurity jobs available right now: September 22, 2026",
+        source="global_rss",
+    )
+    jobs = replace(
+        jobs,
+        summary="Open cybersecurity roles across engineering, analysis, and leadership.",
+        full_content=(
+            "Malware Reverse Engineer: analyze malware campaigns. "
+            "SOC Analyst: investigate incidents. Threat Hunter: hunt intrusions."
+        ),
+    )
+
+    assert factory.classify_factory_family(jobs) == "threat_analysis"
+    assert factory.classify_delivery_class(jobs) is None
+
+    selection = factory.select_factory_publication_batch([], [jobs], 5)
+    assert selection.articles == []
+    assert selection.metrics["relevance_blocked"] == 1
+    assert selection.metrics["selected_delivery_classes"] == {}
+
+
+def test_delivery_class_uses_primary_subject_not_long_body_keyword_noise():
+    report = _article(
+        931,
+        title="Quarterly security workforce research update",
+        source="global_rss",
+    )
+    report = replace(
+        report,
+        summary="Research on staffing and skills demand across security teams.",
+        full_content="Respondents listed malware analysis, ransomware response, and threat hunting skills.",
+    )
+    assert factory.classify_delivery_class(report) == "threat_analysis"
+
+    malware = _article(
+        932,
+        title="Infostealer malware campaign compromises enterprise browser sessions",
+        source="global_rss",
+    )
+    malware = replace(
+        malware,
+        summary="Researchers observed an infostealer campaign compromising enterprise browser sessions.",
+        full_content="The publisher also lists open analyst roles.",
+    )
+    assert factory.classify_delivery_class(malware) == "malware_campaign"
