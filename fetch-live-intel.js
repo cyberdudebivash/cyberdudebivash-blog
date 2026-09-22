@@ -1039,8 +1039,13 @@ function normalizeSentinelApexRecord(raw, endpointKey) {
   const sevRaw    = sapexPick(raw, ['cvss', 'cvss_score']);
   const sevLabel  = String(sapexPick(raw, ['severity', 'threat_level', 'priority']) || '').toLowerCase();
   const numericCvss = Number(sevRaw);
-  const cvss = sevRaw !== undefined && sevRaw !== null && sevRaw !== '' && Number.isFinite(numericCvss) && numericCvss >= 0 && numericCvss <= 10
+  const sourceReportedCvss = sevRaw !== undefined && sevRaw !== null && sevRaw !== '' && Number.isFinite(numericCvss) && numericCvss >= 0 && numericCvss <= 10
     ? numericCvss : null;
+  // Sentinel APEX is a correlating CTI platform, not a primary CVSS
+  // authority. Accepting our own downstream copy as canonical would create a
+  // circular trust path. Direct NVD/vendor/research source objects populate
+  // the canonical score during correlateAndMerge().
+  const cvss = null;
 
   const refs = [
     ...sapexPickArray(raw, ['references', 'refs', 'links', 'sources']).map(r => (typeof r === 'string') ? r : (r && (r.url || r.source_name))),
@@ -1087,6 +1092,7 @@ function normalizeSentinelApexRecord(raw, endpointKey) {
     title: title || `Sentinel APEX Intelligence: ${id}`,
     desc: desc || title,
     cvss, severityLabel: sevLabel || null, refs, pubDate,
+    sourceReportedCvss,
     // Leave blank rather than a literal "Unknown Vendor"/"Unknown Product"
     // string — every live consumer (genExecutiveSummary, genBusinessImpact,
     // genAttackChain, genCommentary, genPlaybook) already has its own
@@ -1545,6 +1551,88 @@ function threatLevel(score) {
 }
 
 // ── PHASE 2: CORRELATION ENGINE ────────────────────────────────────────
+// P0-CVSS-AUTHORITY-2026-09-22:
+// CVSS is a sourced technical-severity fact, not a "take the worst number"
+// signal. Resolve it by source authority. Lower-authority disagreement is
+// retained as provenance but cannot override a stronger source. Equal-rank
+// disagreement is unresolved and therefore fail-closed.
+const CVSS_SOURCE_AUTHORITY = Object.freeze({
+  nvd: 100,
+  github_advisories: 95,
+  msrc: 95,
+  cisco_psirt: 95,
+  cisa_alerts: 90,
+  cisa_kev: 90,
+  googleprojectzero: 80,
+  talos: 75,
+  unit42: 75,
+  crowdstrike: 75,
+  sentinelone: 75,
+  rapid7: 72,
+  exploitdb: 65,
+  packetstorm: 60,
+  fulldisclosure: 60,
+  securityweek: 55,
+  bleepingcomputer: 55,
+  thehackernews: 50,
+  krebsonsecurity: 50,
+  sentinel_apex: 0,
+});
+
+function cvssEvidenceFromItem(item) {
+  if (Array.isArray(item && item._cvssEvidence)) return item._cvssEvidence.slice();
+  if (!item || typeof item.cvss !== 'number' || item.cvss < 0 || item.cvss > 10) return [];
+  const source = String(item.source || 'unknown').toLowerCase();
+  if (source === 'sentinel_apex') return [];
+  return [{
+    value: Number(item.cvss),
+    source,
+    rank: CVSS_SOURCE_AUTHORITY[source] || 40,
+  }];
+}
+
+function resolveAuthoritativeCvss(items) {
+  const evidence = [];
+  const seen = new Set();
+  (items || []).flatMap(cvssEvidenceFromItem).forEach(entry => {
+    const key = entry.source + ':' + entry.value + ':' + entry.rank;
+    if (!seen.has(key)) { seen.add(key); evidence.push(entry); }
+  });
+  if (!evidence.length) {
+    return { cvss:null, cvssSource:null, cvssConflict:false, cvssConflictUnresolved:false, _cvssEvidence:[] };
+  }
+  evidence.sort((a,b) => b.rank - a.rank || a.source.localeCompare(b.source));
+  const topRank = evidence[0].rank;
+  const top = evidence.filter(e => e.rank === topRank);
+  const topValues = [...new Set(top.map(e => e.value))];
+  const allValues = [...new Set(evidence.map(e => e.value))];
+  if (topValues.length !== 1) {
+    return {
+      cvss:null,
+      cvssSource:null,
+      cvssConflict:true,
+      cvssConflictUnresolved:true,
+      _cvssEvidence:evidence,
+    };
+  }
+  const chosen = top.find(e => e.value === topValues[0]);
+  return {
+    cvss:chosen.value,
+    cvssSource:chosen.source,
+    cvssConflict:allValues.length > 1,
+    cvssConflictUnresolved:false,
+    _cvssEvidence:evidence,
+  };
+}
+
+function technicalSeverityFromCvss(cvss) {
+  if (typeof cvss !== 'number' || cvss < 0 || cvss > 10) return 'UNRATED';
+  if (cvss >= 9.0) return 'CRITICAL';
+  if (cvss >= 7.0) return 'HIGH';
+  if (cvss >= 4.0) return 'MEDIUM';
+  return 'LOW';
+}
+
 function correlateAndMerge(sources) {
   const map = new Map();
   for (const batch of sources) {
@@ -1552,7 +1640,12 @@ function correlateAndMerge(sources) {
       if (!item.id) continue;
       const existing = map.get(item.id);
       if (!existing) {
-        map.set(item.id, { ...item, sourceCount:1, _sources:[item.source] });
+        map.set(item.id, {
+          ...item,
+          ...resolveAuthoritativeCvss([item]),
+          sourceCount:1,
+          _sources:[item.source],
+        });
       } else {
         // Winner strategy: cisa_kev > nvd > github_advisories > sentinel_apex
         // > cisa_alerts > msrc > rss sources. sentinel_apex sits below the
@@ -1592,10 +1685,10 @@ function correlateAndMerge(sources) {
         // Track all sources
         base._sources = [...new Set([...(existing._sources||[existing.source]), item.source])];
         base.sourceCount = base._sources.length;
-        // Best verified CVSS; preserve unknown rather than manufacturing 0.
-        const cvssValues = [existing.cvss, item.cvss]
-          .filter(v => typeof v === 'number' && v >= 0 && v <= 10);
-        base.cvss = cvssValues.length ? Math.max(...cvssValues) : null;
+        // Resolve technical severity by source authority, never by the
+        // numerically largest score. A stale secondary source cannot override
+        // a stronger NVD/vendor-grade value.
+        Object.assign(base, resolveAuthoritativeCvss([existing, item]));
         // Recency — take newer date
         const ed = new Date(existing.pubDate||0), id = new Date(item.pubDate||0);
         base.pubDate  = ed > id ? existing.pubDate : item.pubDate;
@@ -2078,7 +2171,9 @@ function qualityGate(item) {
     }
   }
 
-  // Severity must be assignable
+  // Severity must be assignable. Equal-authority CVSS disagreement is
+  // unresolved evidence and must never reach a customer-facing artifact.
+  if (item.cvssConflictUnresolved) reasons.push('Unresolved: conflicting authoritative CVSS values');
   const hasCvss   = typeof item.cvss === 'number' && item.cvss > 0;
   const hasTl     = !!item.threatLevel;
   if (!hasCvss && !hasTl) reasons.push('Missing: cvss or threatLevel');
@@ -2388,9 +2483,9 @@ function generatePostHTML(item) {
   const cvss = hasCvss ? item.cvss : null;
   const cvssDisplay = hasCvss ? String(cvss) : 'Not assigned';
   const cvssColor = !hasCvss?'#8b949e':cvss>=9.0?'#ff3b3b':cvss>=7.0?'#ff8c00':'#ffe000';
-  const sevLabel = hasCvss ? (cvss>=9.0?'CRITICAL':cvss>=7.0?'HIGH':cvss>=4.0?'MEDIUM':'LOW') : String(item.severityLabel||'UNASSESSED').toUpperCase();
-  const tl = item.threatLevel||sevLabel;
+  const sevLabel = technicalSeverityFromCvss(cvss);
   const score = item.priority||0;
+  const priorityLevel = item.threatLevel||threatLevel(score);
   const typeLabels = { CVE_REPORT:'🔴 CVE ANALYSIS', ZERO_DAY:'💀 ZERO-DAY', RANSOMWARE:'🏴 RANSOMWARE', MALWARE_REPORT:'🦠 MALWARE', DATA_BREACH:'⚠️ DATA BREACH', THREAT_ACTOR:'🎯 THREAT ACTOR', AI_SECURITY:'🤖 AI SECURITY', NEWS_REPORT:'📡 INTEL', ADVISORY:'🛡️ ADVISORY' };
   const typeLabel = typeLabels[item.type]||'⚡ INTEL';
   const vendorProductLabel = [item.vendor, item.product].filter(Boolean).join(' ');
@@ -3403,6 +3498,7 @@ if (require.main === module) {
     extractHttpUrls, parseCvssFromText, hasConfirmedExploitation,
     rssToIntel, qualityGate, validateRenderedPost, genExecutiveSummary, genBusinessImpact,
     genAttackChain, computePriorityScore, correlateAndMerge,
+    resolveAuthoritativeCvss, technicalSeverityFromCvss,
     extractSentinelApexRecords, normalizeSentinelApexRecord,
     sapexCanonicalId, sapexNativeMitre, fetchSentinelApex,
     watermarkStart,
