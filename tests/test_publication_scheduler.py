@@ -4,20 +4,22 @@ from automation.content_discovery import DiscoveredArticle
 from automation.publication_scheduler import (
     candidate_discovery_limit,
     classify_publication_family,
+    is_cti_relevant,
     select_publication_batch,
 )
 
 
-def article(idx: int, *, source: str, title: str, labels=None, url_host="example.test"):
+def article(idx: int, *, source: str, title: str, labels=None, url_host="example.test", summary=None, full_content=None):
     published = (datetime.now(timezone.utc) - timedelta(minutes=idx)).isoformat()
     return DiscoveredArticle(
         url=f"https://{url_host}/reports/{idx}.html",
         title=title,
-        summary=title,
+        summary=title if summary is None else summary,
         published_at=published,
         content_hash=f"hash-{source}-{idx}",
         labels=list(labels or ["Threat Intelligence"]),
         source=source,
+        full_content=full_content,
     )
 
 
@@ -148,3 +150,55 @@ def test_strategic_round_robin_represents_distinct_report_families():
     families = {classify_publication_family(item) for item in result.articles}
 
     assert {"zero_day", "malware", "ransomware", "breach", "campaign"}.issubset(families)
+
+
+def test_jobs_roundup_is_blocked_even_when_role_descriptions_mention_malware_and_soc():
+    jobs = article(
+        900,
+        source="global_rss",
+        title="Cybersecurity jobs available right now: September 22, 2026",
+        summary="Open security roles across engineering, analysis, and leadership.",
+        full_content=(
+            "Malware Reverse Engineer: analyze malware campaigns. "
+            "Threat Hunter: investigate intrusions. SOC Analyst: incident response."
+        ),
+    )
+
+    assert is_cti_relevant(jobs) is False
+
+    result = select_publication_batch([], [jobs], 5)
+    assert result.articles == []
+    assert result.metrics["relevance_blocked"] == 1
+    assert result.metrics["fresh_relevance_blocked"] == 1
+
+
+def test_primary_subject_classifier_ignores_incidental_body_keywords():
+    jobs = article(
+        901,
+        source="global_rss",
+        title="Cybersecurity jobs available right now",
+        summary="A roundup of current cybersecurity employment opportunities.",
+        full_content="Malware campaign analysis, ransomware response, and threat hunting are job duties.",
+    )
+    assert classify_publication_family(jobs) == "threat_analysis"
+
+    real_malware = article(
+        902,
+        source="global_rss",
+        title="New infostealer malware campaign targets enterprise browsers",
+        summary="Researchers observed a new infostealer distribution campaign.",
+        full_content="The article also advertises a webinar at the end.",
+    )
+    assert is_cti_relevant(real_malware) is True
+    assert classify_publication_family(real_malware) == "malware"
+
+
+def test_non_threat_term_does_not_override_real_incident_subject():
+    incident = article(
+        903,
+        source="global_rss",
+        title="Security conference website breached after credential compromise",
+        summary="Organizers disclosed a breach affecting the event website.",
+    )
+    assert is_cti_relevant(incident) is True
+    assert classify_publication_family(incident) == "breach"
