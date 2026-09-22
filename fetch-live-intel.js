@@ -2486,6 +2486,9 @@ function generatePostHTML(item) {
   const sevLabel = technicalSeverityFromCvss(cvss);
   const score = item.priority||0;
   const priorityLevel = item.threatLevel||threatLevel(score);
+  const cvssProvenance = item.cvssSource
+    ? `Canonical CVSS source: ${String(item.cvssSource).toUpperCase()}`
+    : 'Canonical CVSS source: not established';
   const typeLabels = { CVE_REPORT:'🔴 CVE ANALYSIS', ZERO_DAY:'💀 ZERO-DAY', RANSOMWARE:'🏴 RANSOMWARE', MALWARE_REPORT:'🦠 MALWARE', DATA_BREACH:'⚠️ DATA BREACH', THREAT_ACTOR:'🎯 THREAT ACTOR', AI_SECURITY:'🤖 AI SECURITY', NEWS_REPORT:'📡 INTEL', ADVISORY:'🛡️ ADVISORY' };
   const typeLabel = typeLabels[item.type]||'⚡ INTEL';
   const vendorProductLabel = [item.vendor, item.product].filter(Boolean).join(' ');
@@ -2653,7 +2656,7 @@ footer{background:var(--apex-surface);border-top:1px solid var(--apex-border);pa
 <body>
 <canvas id="mc"></canvas>
 <div class="ticker"><div class="ticker-inner">
-  <span class="ticker-item">⚡ ${escHtml(item.id)}${vendorProductLabel?` — ${escHtml(vendorProductLabel)}`:''} — Score ${score}/100 ${tl}</span>
+  <span class="ticker-item">⚡ ${escHtml(item.id)}${vendorProductLabel?` — ${escHtml(vendorProductLabel)}`:''} — Sentinel Priority ${score}/100 · ${priorityLevel}</span>
   <span class="ticker-item">🛡️ CYBERDUDEBIVASH SENTINEL APEX — 24/7 Global Threat Intelligence v4.0</span>
   <span class="ticker-item">⚠️ ${item.cisaKev?'CISA KEV CONFIRMED — ACTIVE EXPLOITATION':item.exploited?'ACTIVE EXPLOITATION DETECTED':'HIGH-PRIORITY SECURITY ADVISORY'}</span>
   <span class="ticker-item">⚡ ${escHtml(item.id)} — CVSS ${cvssDisplay} — ${(item.sourceCount||1)} Source(s) Collected</span>
@@ -2670,14 +2673,15 @@ footer{background:var(--apex-surface);border-top:1px solid var(--apex-border);pa
     <h1 class="rh1">${escHtml(item.title)}</h1>
     <p class="rsubtitle">${escHtml(truncAtWord(cleanDescText,350))}${cleanDescText.length>350?'…':''}</p>
     <div class="stats-bar">
-      <div class="stat red"><div class="sv">${cvss}</div><div class="sl">CVSS Score</div></div>
-      <div class="stat"><div class="sv" style="color:${cvssColor}">${tl}</div><div class="sl">Threat Level</div></div>
+      <div class="stat red"><div class="sv">${cvssDisplay}</div><div class="sl">CVSS Score</div></div>
+      <div class="stat"><div class="sv" style="color:${cvssColor}">${sevLabel}</div><div class="sl">Technical Severity</div></div>
       <div class="stat yellow"><div class="sv">${score}</div><div class="sl">Priority /100</div></div>
       <div class="stat orange"><div class="sv">${item.exploited?'YES':'TBD'}</div><div class="sl">Exploited ITW</div></div>
       <div class="stat ${item.cisaKev?'red':'green'}"><div class="sv">${item.cisaKev?'⚠️ KEV':'Monitor'}</div><div class="sl">CISA Status</div></div>
       <div class="stat"><div class="sv" style="color:var(--apex-green)">${item.sourceCount||1}x</div><div class="sl">Sources</div></div>
     </div>
-    ${item.cisaKev?`<div class="alert alert-crit"><span class="aico">🚨</span><div class="abody"><div class="atitle">CISA KNOWN EXPLOITED VULNERABILITY — MANDATORY REMEDIATION</div><p>Active exploitation confirmed. CISA KEV catalog listed. ${item.dueDate?`Federal agencies must remediate by <strong>${item.dueDate}</strong>.`:'All organizations must patch immediately.'} Required action: ${escHtml(item.reqAction||'Apply vendor patch immediately.')}</p></div></div>`:item.exploited?`<div class="alert alert-warn"><span class="aico">⚠️</span><div class="abody"><div class="atitle">ACTIVE EXPLOITATION DETECTED</div><p>Exploitation confirmed in the wild. Emergency patching required. Score: ${score}/100 — do not wait for maintenance window.</p></div></div>`:`<div class="alert alert-info"><span class="aico">🔵</span><div class="abody"><div class="atitle">HIGH-PRIORITY SECURITY ADVISORY — Priority Score: ${score}/100</div><p>CVSS ${cvss} ${tl}. SENTINEL APEX recommends immediate patch evaluation. Intelligence from ${item.sourceCount||1} confirmed source(s).</p></div></div>`}
+    <div style="margin:-18px 0 26px;font-size:12px;line-height:1.5;color:var(--apex-muted);font-family:var(--mono)">${escHtml(cvssProvenance)}${item.cvssConflict && !item.cvssConflictUnresolved?' · lower-authority score disagreement retained in provenance':''}</div>
+    ${item.cisaKev?`<div class="alert alert-crit"><span class="aico">🚨</span><div class="abody"><div class="atitle">CISA KNOWN EXPLOITED VULNERABILITY — MANDATORY REMEDIATION</div><p>Active exploitation confirmed. CISA KEV catalog listed. ${item.dueDate?`Federal agencies must remediate by <strong>${item.dueDate}</strong>.`:'All organizations must patch immediately.'} Required action: ${escHtml(item.reqAction||'Apply vendor patch immediately.')}</p></div></div>`:item.exploited?`<div class="alert alert-warn"><span class="aico">⚠️</span><div class="abody"><div class="atitle">ACTIVE EXPLOITATION DETECTED</div><p>Exploitation confirmed in the wild. Emergency patching required. Score: ${score}/100 — do not wait for maintenance window.</p></div></div>`:`<div class="alert alert-info"><span class="aico">🔵</span><div class="abody"><div class="atitle">HIGH-PRIORITY SECURITY ADVISORY — Priority Score: ${score}/100</div><p>${hasCvss?`CVSS ${cvss} · ${sevLabel}.`:`CVSS not assigned by an authoritative ingested source.`} Sentinel priority: ${priorityLevel} (${score}/100). Validate remediation urgency against vendor guidance and customer exposure. Intelligence from ${item.sourceCount||1} collected source(s).</p></div></div>`}
     <h2 class="sh"><span>📋</span> Executive Summary</h2>
     <div class="exec-box"><div class="ex-label">⚡ Analyst Assessment — SENTINEL APEX v4.0</div><p>${escHtml(execSummary)}</p><div style="margin-top:12px;font-size:12px;color:var(--apex-muted)">Intelligence sources: ${srcBadges}</div></div>
     ${genSeverityAnatomy(item, escHtml)}
