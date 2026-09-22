@@ -33,6 +33,19 @@ from .content_discovery import DiscoveredArticle
 _CVE_RE = re.compile(r"\bCVE-\d{4}-\d{4,}\b", re.IGNORECASE)
 _NON_WORD_RE = re.compile(r"[^a-z0-9]+")
 
+# Editorial/career roundups can contain dense security vocabulary (malware,
+# incident response, threat intelligence, etc.) inside job descriptions.  They
+# are useful cybersecurity content but they are not threat events and must not
+# consume paid CTI delivery/SLA slots.  Match the editorial intent from the
+# title only so a real threat article mentioning employment/jobs in its body is
+# never suppressed by a keyword collision.
+_NON_THREAT_EDITORIAL_TITLE_RE = re.compile(
+    r"^\\s*(?:cyber\\s*security|cybersecurity|information\\s+security|infosec)\\s+"
+    r"(?:jobs?|job\\s+openings?|careers?|vacancies)\\b|"
+    r"\\b(?:cyber\\s*security|cybersecurity)\\s+jobs?\\s+available\\s+right\\s+now\\b",
+    re.IGNORECASE,
+)
+
 _CANONICAL_HOSTS = {
     "blog.cyberdudebivash.in",
     "cti.cyberdudebivash.in",
@@ -90,6 +103,16 @@ def _text(article: DiscoveredArticle) -> str:
     ).lower()
 
 
+def is_non_threat_editorial_title(title: object) -> bool:
+    """Return True only for explicit non-threat editorial/career roundups."""
+    return bool(_NON_THREAT_EDITORIAL_TITLE_RE.search(str(title or "")))
+
+
+def is_non_threat_editorial(article: DiscoveredArticle) -> bool:
+    """Protect the CTI publication budget from non-intelligence editorial items."""
+    return is_non_threat_editorial_title(article.title)
+
+
 def _cves(article: DiscoveredArticle) -> set[str]:
     values = {match.upper() for match in _CVE_RE.findall(_text(article))}
     if article.cve_id:
@@ -104,6 +127,9 @@ def classify_publication_family(article: DiscoveredArticle) -> str:
     discovered article. It does not infer a malware family from unrelated
     metadata and it does not change ReportX's own publication-family label.
     """
+    if is_non_threat_editorial(article):
+        return "non_intelligence"
+
     text = _text(article)
     source = str(article.source or "").lower()
 
@@ -399,10 +425,17 @@ def select_publication_batch(
             "canonical_selected": 0,
             "selected_families": {},
             "selected_sources": {},
+            "non_intelligence_filtered": 0,
         })
 
-    fresh = _dedupe_fresh(list(fresh_articles))
-    retry = _remove_retry_duplicates(list(retry_articles), fresh)
+    fresh_all = _dedupe_fresh(list(fresh_articles))
+    retry_all = _remove_retry_duplicates(list(retry_articles), fresh_all)
+    non_intelligence_filtered = sum(
+        1 for article in [*fresh_all, *retry_all]
+        if is_non_threat_editorial(article)
+    )
+    fresh = [article for article in fresh_all if not is_non_threat_editorial(article)]
+    retry = [article for article in retry_all if not is_non_threat_editorial(article)]
 
     if fresh:
         retry_cap = min(2, max_posts // 2)
@@ -452,5 +485,6 @@ def select_publication_batch(
         "canonical_selected": sum(1 for a in selected if is_canonical_report(a)),
         "selected_families": dict(sorted(families.items())),
         "selected_sources": dict(sorted(sources.items())),
+        "non_intelligence_filtered": non_intelligence_filtered,
     }
     return PublicationSelection(selected, metrics)
