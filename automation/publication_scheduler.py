@@ -33,6 +33,36 @@ from .content_discovery import DiscoveredArticle
 _CVE_RE = re.compile(r"\bCVE-\d{4}-\d{4,}\b", re.IGNORECASE)
 _NON_WORD_RE = re.compile(r"[^a-z0-9]+")
 
+# P0-CTI-RELEVANCE-2026-09-22:
+# High-confidence editorial/non-threat subjects that must not enter the paid
+# threat-intelligence publication queue merely because their body mentions
+# malware, SOC, threat hunting, CVEs, or incident-response job duties.
+_NON_THREAT_PRIMARY_PATTERNS = (
+    re.compile(r"\bcybersecurity jobs? available\b", re.IGNORECASE),
+    re.compile(r"\b(?:job openings?|jobs? roundup|career opportunities?|careers? roundup|we(?:'|’)re hiring|hiring now)\b", re.IGNORECASE),
+    re.compile(r"\b(?:salary guide|resume tips?|interview tips?|how to get hired)\b", re.IGNORECASE),
+    re.compile(r"\b(?:webinar|conference|summit|event registration|podcast episode)\b", re.IGNORECASE),
+    re.compile(r"\b(?:training course|bootcamp|exam prep|certification training)\b", re.IGNORECASE),
+)
+
+# Strong primary-subject CTI signals. If one of these is present in the title
+# or concise summary, it can override an incidental editorial term (for
+# example, "Security conference website breached").
+_PRIMARY_CTI_RE = re.compile(
+    r"\b(?:CVE-\d{4}-\d{4,}|zero[ -]?day|0[ -]?day|vulnerabilit(?:y|ies)|security flaw|"
+    r"exploit(?:ed|ation)?|ransomware|malware|trojan|backdoor|infostealer|loader|botnet|"
+    r"rootkit|wiper|data breach|breach notice|data leak|exfiltrat(?:e|ed|ion)|phishing|"
+    r"intrusion|compromise(?:d)?|cyber attack|attack campaign|threat actor|APT\d*|"
+    r"nation[ -]?state|supply[ -]?chain compromise|prompt injection|AI security|"
+    r"incident response|security incident)\b",
+    re.IGNORECASE,
+)
+
+_STRUCTURED_CTI_SOURCES = frozenset({
+    "nvd", "cisa_kev", "cisa_advisory", "ransomware_intel", "breach_intel",
+    "threat_actor_intel", "github_advisories", "msrc", "cisco_psirt",
+})
+
 _CANONICAL_HOSTS = {
     "blog.cyberdudebivash.in",
     "cti.cyberdudebivash.in",
@@ -90,6 +120,45 @@ def _text(article: DiscoveredArticle) -> str:
     ).lower()
 
 
+def primary_subject_text(article: DiscoveredArticle) -> str:
+    """Return only fields that describe the article's primary subject.
+
+    Long-form body text is intentionally excluded. A jobs roundup may mention
+    malware analysis, threat hunting and incident response dozens of times in
+    role descriptions; those mentions are not evidence that the article itself
+    is malware or incident intelligence.
+    """
+    return " ".join(
+        str(part)
+        for part in (
+            article.title,
+            article.summary,
+            " ".join(str(label) for label in (article.labels or [])),
+        )
+        if part
+    ).lower()
+
+
+def is_cti_relevant(article: DiscoveredArticle) -> bool:
+    """Fail closed for obvious non-threat editorial content.
+
+    This is deliberately conservative: structured CTI sources and explicit CVE
+    records always remain eligible, and ambiguous security research remains
+    eligible for downstream ReportX/evidence validation. Only high-confidence
+    non-threat primary subjects are rejected here.
+    """
+    source = str(article.source or "").strip().lower()
+    if source in _STRUCTURED_CTI_SOURCES or article.cve_id:
+        return True
+
+    primary = primary_subject_text(article)
+    title = str(article.title or "")
+    has_cti_subject = bool(_PRIMARY_CTI_RE.search(primary))
+    if any(pattern.search(title) for pattern in _NON_THREAT_PRIMARY_PATTERNS):
+        return has_cti_subject
+    return True
+
+
 def _cves(article: DiscoveredArticle) -> set[str]:
     values = {match.upper() for match in _CVE_RE.findall(_text(article))}
     if article.cve_id:
@@ -104,7 +173,7 @@ def classify_publication_family(article: DiscoveredArticle) -> str:
     discovered article. It does not infer a malware family from unrelated
     metadata and it does not change ReportX's own publication-family label.
     """
-    text = _text(article)
+    text = primary_subject_text(article)
     source = str(article.source or "").lower()
 
     if re.search(r"\b(?:zero[ -]?day|0[ -]?day)\b", text):
@@ -195,6 +264,8 @@ def _dedupe_fresh(articles: list[DiscoveredArticle]) -> list[DiscoveredArticle]:
     result: list[DiscoveredArticle] = []
 
     for _, article in ordered:
+        if not is_cti_relevant(article):
+            continue
         content_hash = str(article.content_hash or "").strip()
         url = str(article.url or "").strip().lower()
         title = _normalised_title(article)
@@ -230,6 +301,8 @@ def _remove_retry_duplicates(
     result: list[DiscoveredArticle] = []
     seen: set[tuple[str, str, str]] = set()
     for article in retry_articles:
+        if not is_cti_relevant(article):
+            continue
         content_hash = str(article.content_hash or "").strip()
         url = str(article.url or "").strip().lower()
         title = _normalised_title(article)
@@ -401,6 +474,8 @@ def select_publication_batch(
             "selected_sources": {},
         })
 
+    fresh_relevance_blocked = sum(1 for article in fresh_articles if not is_cti_relevant(article))
+    retry_relevance_blocked = sum(1 for article in retry_articles if not is_cti_relevant(article))
     fresh = _dedupe_fresh(list(fresh_articles))
     retry = _remove_retry_duplicates(list(retry_articles), fresh)
 
@@ -441,6 +516,9 @@ def select_publication_batch(
         "candidate_count": len(fresh) + len(retry),
         "fresh_candidates": len(fresh),
         "retry_candidates": len(retry),
+        "relevance_blocked": fresh_relevance_blocked + retry_relevance_blocked,
+        "fresh_relevance_blocked": fresh_relevance_blocked,
+        "retry_relevance_blocked": retry_relevance_blocked,
         "fresh_selected": sum(1 for a in selected if _identity(a) in fresh_keys),
         "retry_selected": sum(1 for a in selected if _identity(a) in retry_keys),
         "strategic_selected": sum(
