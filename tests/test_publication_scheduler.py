@@ -4,6 +4,7 @@ from automation.content_discovery import DiscoveredArticle
 from automation.publication_scheduler import (
     candidate_discovery_limit,
     classify_publication_family,
+    is_non_threat_editorial,
     select_publication_batch,
 )
 
@@ -148,3 +149,50 @@ def test_strategic_round_robin_represents_distinct_report_families():
     families = {classify_publication_family(item) for item in result.articles}
 
     assert {"zero_day", "malware", "ransomware", "breach", "campaign"}.issubset(families)
+
+
+def test_cybersecurity_jobs_roundup_is_not_threat_intelligence_even_with_threat_keywords():
+    jobs = article(
+        900,
+        source="global_rss",
+        title="Cybersecurity jobs available right now: September 22, 2026",
+        labels=["Threat Intelligence", "Malware Research", "Incident Response"],
+    )
+    jobs.full_content = (
+        "Malware Reverse Engineer role analyzes malware campaigns. "
+        "Threat Hunter role supports incident response and threat intelligence."
+    )
+
+    assert is_non_threat_editorial(jobs) is True
+    assert classify_publication_family(jobs) == "non_intelligence"
+
+    malware = article(
+        901,
+        source="global_rss",
+        title="Malware campaign targets enterprise CI/CD jobs",
+    )
+    assert is_non_threat_editorial(malware) is False
+    assert classify_publication_family(malware) == "malware"
+
+
+def test_non_threat_editorial_is_removed_before_cti_publication_slot_allocation():
+    jobs = article(
+        910,
+        source="global_rss",
+        title="Cybersecurity jobs available right now: September 22, 2026",
+    )
+    jobs.full_content = "Malware reverse engineering and incident response jobs are listed."
+    threats = [
+        article(911, source="ransomware_intel", title="Akira ransomware victim claim"),
+        article(912, source="breach_intel", title="Company publishes data breach notice"),
+        article(913, source="global_rss", title="New infostealer malware campaign"),
+        article(914, source="nvd", title="CVE-2026-99114 critical vulnerability"),
+        article(915, source="global_rss", title="APT29 threat actor campaign activity"),
+    ]
+
+    result = select_publication_batch([], [jobs, *threats], 5)
+
+    assert jobs not in result.articles
+    assert len(result.articles) == 5
+    assert result.metrics["non_intelligence_filtered"] == 1
+    assert "non_intelligence" not in result.metrics["selected_families"]
