@@ -1,12 +1,14 @@
 name: "⚡ CYBERDUDEBIVASH® — Blogger Syndication Engine"
 
 on:
-  # P0-GLOBAL-CTI-FACTORY: scheduled cadence is the publication clock.
-  # Production code changes get one immediate canary via path-filtered push.
-  # State-only syndication commits (data/logs) MUST NOT retrigger this workflow;
-  # that feedback loop previously created self-induced provider quota exhaustion.
+  # P0-SEARCH-RECOVERY-2026-09-22:
+  # Keep public Blogger publication intentionally sparse while CTI Search
+  # Console incident #219 is under recovery. Internal ingestion/APIs continue
+  # independently. Eight public publication opportunities/day are sufficient
+  # for freshness without a high-volume page-generation footprint.
+  # Production code changes still get one immediate canary via path-filtered push.
   schedule:
-    - cron: "7,22,37,52 * * * *"
+    - cron: "17 */3 * * *"
   push:
     branches: [main]
     paths:
@@ -24,16 +26,16 @@ on:
           - "false"
           - "true"
       max_posts:
-        description: "Max posts per run (default/max production burst: 5)"
+        description: "Max posts per run (search-recovery production burst: 2)"
         required: false
-        default: "5"
+        default: "2"
 
 # P0-BLOGGER-FRESHNESS-2026-09-07:
 # The Blogger publisher previously shared `main-content-writers` with the
 # high-frequency Sentinel APEX, AI-security, RSS, CVE and intelligence-hub
 # generators. GitHub Actions concurrency permits only one running and one
 # pending run per concurrency group, so unrelated content-generation jobs could
-# displace/serialize the 15-minute Blogger publication clock even though Blogger
+# displace/serialize the Blogger publication clock even though Blogger
 # writes only its publication ledger/quota state/run report and rebases before
 # pushing. Isolate the remote-publishing lane while still serializing Blogger
 # against itself. The existing pull --rebase + bounded push retry below remains
@@ -167,7 +169,7 @@ jobs:
           PUTER_MAX_CALLS_PER_RUN: ${{ vars.PUTER_MAX_CALLS_PER_RUN }}
           PUTER_MIN_REMAINING_MICROCENTS: ${{ vars.PUTER_MIN_REMAINING_MICROCENTS }}
 
-          MAX_POSTS_PER_RUN: ${{ github.event.inputs.max_posts || '5' }}
+          MAX_POSTS_PER_RUN: ${{ github.event.inputs.max_posts || '2' }}
           CDB_FACTORY_RETRY_QUEUE_LIMIT: "500"
           CDB_FACTORY_RETRY_ATTEMPTS: "5"
         run: |
@@ -180,7 +182,7 @@ jobs:
           set +e
           python -m automation.premium_main \
             $DRY_RUN_FLAG \
-            --max-posts ${{ github.event.inputs.max_posts || '5' }} \
+            --max-posts ${{ github.event.inputs.max_posts || '2' }} \
             2>&1 | tee logs/pipeline-output.txt
           PIPELINE_EXIT=${PIPESTATUS[0]}
 
@@ -269,7 +271,7 @@ jobs:
             print(f'Dry run:    {r.get(\"dry_run\", False)}')
             factory = r.get('factory_throughput') or {}
             if factory:
-              print(f'Factory UTC today: {factory.get(\"published_today_utc\", 0)} / floor {factory.get(\"daily_floor\", 150)} / goal {factory.get(\"daily_goal\", 200)}')
+              print(f'Factory UTC today: {factory.get(\"published_today_utc\", 0)} / floor {factory.get(\"daily_floor\", 6)} / goal {factory.get(\"daily_goal\", 12)}')
               print(f'Factory theoretical write capacity/day: {factory.get(\"theoretical_daily_write_capacity\", 0)}')
             stage2 = r.get('premium_yield_stage2') or {}
             if stage2:
@@ -304,7 +306,7 @@ jobs:
             print(0)
           " 2>/dev/null || echo "0")
           echo "Total syndicated posts (all time): ${TOTAL}"
-          echo "Factory target: minimum 150 premium reports/day; operating goal 200/day"
+          echo "Public CTI recovery target: floor 6, goal 12, hard ceiling 16 Blogger pages/day"
           echo "Public CTI: https://cti.cyberdudebivash.in"
           echo "Source: https://blog.cyberdudebivash.in"
 
