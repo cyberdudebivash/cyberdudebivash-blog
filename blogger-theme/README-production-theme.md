@@ -54,13 +54,13 @@ Blogger's own theme editor.
 ## What a credentialed operator should do
 
 1. **Export the real live theme now**, before touching anything else, so
-   a true baseline exists:
-   ```
-   GET https://www.googleapis.com/blogger/v3/blogs/{blogId}/themes
-   ```
-   or via Blogger's dashboard: Theme → Edit HTML → Download full theme
-   (produces the exact live XML — the authentic replacement for the five
-   stale files here).
+   a true baseline exists. Use Blogger's dashboard theme backup/download
+   capability (Theme → Backup / Restore or Edit HTML, depending on the current
+   Blogger UI) and save the complete live theme XML. **Do not use a guessed
+   Blogger v3 theme API endpoint:** the public Blogger API v3 documents
+   blogs/posts/pages/comments and does not expose a supported theme
+   read/update resource. The downloaded dashboard export is therefore the
+   authoritative replacement for the five stale files here.
 2. **Checksum and commit it** as `blogger-theme/production-current.xml`
    with a `production-current.sha256` alongside it, so future drift is
    detectable (`sha256sum -c` against the live export) instead of
@@ -68,11 +68,10 @@ Blogger's own theme editor.
 3. **Locate and fix the `WebSite` JSON-LD node** in that real file —
    change its `@id`/`url` from `https://cyberbivash.blogspot.com/` (and
    `/#website`) to `https://cti.cyberdudebivash.in/` (and `/#website`),
-   matching this PR's `Config.public_cti_url` convention on the Python
-   side. Re-upload via the Themes API or dashboard, then re-verify with
-   `automation.social_preview_certifier.certify_live_html()` against a
-   real fetched page — the same check that found this defect is the
-   correct way to confirm it is gone.
+   matching `Config.public_cti_url` on the Python side. Re-upload through
+   Blogger's supported dashboard theme editor/restore flow, then re-verify with
+   `automation.social_preview_certifier.certify_live_html()` and
+   `python scripts/audit_live_cti_home.py` against the real public page.
 4. **Retire `cyberbivash-v22-*.xml` and `cyberbivash-v23-FINAL.xml`** once
    the real export lands — they predate the live theme and add no value
    as history once a real, checksummed snapshot exists.
