@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   freshness-check:
-    name: "Verify SENTINEL APEX runtime and intel freshness"
+    name: "Verify SENTINEL APEX runtime, intel, and Blogger freshness"
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -131,6 +131,51 @@ jobs:
           fi
           echo "::notice title=SENTINEL APEX Self-Healed::The runtime outage was recovered and production freshness re-verified successfully against the latest main branch."
 
+      - name: "Verify customer-facing Blogger publication freshness"
+        id: blogger_freshness
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const path = 'data/published_posts.json';
+          const thresholdMinutes = 390; // two missed 3h opportunities + 30m jitter
+          const futureToleranceMinutes = 5;
+
+          let data;
+          try {
+            data = JSON.parse(fs.readFileSync(path, 'utf8'));
+          } catch (error) {
+            console.error(`::error title=Blogger Freshness Monitor Error::Cannot read/parse ${path}: ${error.message}`);
+            process.exit(1);
+          }
+
+          const posts = Object.values((data && data.posts) || {});
+          const timestamps = posts
+            .map(post => Date.parse(post && post.published_at))
+            .filter(Number.isFinite);
+
+          if (!timestamps.length) {
+            console.error('::error title=Blogger Publication Freshness Unknown::No valid published_at timestamp exists in the publication ledger.');
+            process.exit(1);
+          }
+
+          const latest = Math.max(...timestamps);
+          const ageMinutes = Math.floor((Date.now() - latest) / 60000);
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `age_minutes=${ageMinutes}\n`);
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `latest_published_at=${new Date(latest).toISOString()}\n`);
+
+          if (ageMinutes < -futureToleranceMinutes) {
+            console.error(`::error title=Blogger Publication Timestamp Invalid::Latest publication timestamp is ${Math.abs(ageMinutes)} minutes in the future.`);
+            process.exit(1);
+          }
+          if (ageMinutes > thresholdMinutes) {
+            console.error(`::error title=Blogger Publication Stale::Customer-facing CTI has not received a successful Blogger publication for ${ageMinutes} minutes (limit ${thresholdMinutes}). Internal feed freshness is not sufficient to declare production healthy.`);
+            process.exit(1);
+          }
+
+          console.log(`✅ Blogger publication freshness healthy: latest successful publication is ${ageMinutes} minutes old.`);
+          NODE
+
       - name: "Monitor result summary"
         if: always()
         shell: bash
@@ -144,6 +189,8 @@ jobs:
           echo "Recovery run         : ${{ steps.recovery.outputs.recovery_run_id || 'not-dispatched' }}"
           echo "Recovery conclusion  : ${{ steps.recovery.outputs.recovery_conclusion || 'not-applicable' }}"
           echo "Post-recovery status : ${{ steps.post_recovery.outputs.status || 'not-applicable' }}"
+          echo "Blogger age (minutes): ${{ steps.blogger_freshness.outputs.age_minutes || 'unavailable' }}"
+          echo "Latest Blogger post  : ${{ steps.blogger_freshness.outputs.latest_published_at || 'unavailable' }}"
           echo "Timestamp             : $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
           echo "══════════════════════════════════════════════════════"
 
@@ -151,7 +198,11 @@ jobs:
         if: failure()
         shell: bash
         run: |
-          if [ "${{ steps.freshness.outputs.classifier_exit }}" = "1" ]; then
+          if [ "${{ steps.blogger_freshness.outcome }}" = "failure" ]; then
+            echo "::error title=SENTINEL APEX Blogger Freshness Alert::Internal generation may be healthy, but customer-facing Blogger publication is stale or its ledger is invalid."
+            echo "Latest Blogger publication: ${{ steps.blogger_freshness.outputs.latest_published_at || 'unavailable' }}"
+            echo "Blogger publication age: ${{ steps.blogger_freshness.outputs.age_minutes || 'unavailable' }} minutes"
+          elif [ "${{ steps.freshness.outputs.classifier_exit }}" = "1" ]; then
             echo "::error title=SENTINEL APEX Monitor Alert::Feed/monitor integrity validation failed. Runtime recovery was intentionally not dispatched."
           elif [ "${{ steps.freshness.outputs.recovery_required }}" = "true" ]; then
             echo "::error title=SENTINEL APEX Recovery Alert::A runtime outage was detected and automatic recovery did not restore a verified healthy state."
