@@ -14,6 +14,20 @@ const detIntel = require('../detection-intelligence');
 const detEngine = require('../../../Sentinel-APEX/engine-node/detection-engine');
 const detectionRules = require('../detection-rules');
 
+function currentCanonicalCveFixture() {
+  const store = detectionRules.loadCanonical();
+  const rule = (store.rules || []).find(r =>
+    r?.governance?.status !== 'REVOKED' &&
+    !!r?.platforms?.sigma &&
+    (r?.source?.articles || []).some(a => /^CVE-\d{4}-\d{4,7}$/i.test(String(a)))
+  );
+  if (!rule) throw new Error('Canonical detection store must contain at least one non-revoked CVE-linked Sigma rule');
+  const cve = rule.source.articles.find(a => /^CVE-\d{4}-\d{4,7}$/i.test(String(a)));
+  return { rule, cve: String(cve).toUpperCase() };
+}
+
+const CANONICAL_CVE_FIXTURE = currentCanonicalCveFixture();
+
 function realSigmaFor(techniqueId, evidence = 'test evidence') {
   const spec = detEngine.REGISTRY[techniqueId];
   return detEngine.toSigma(spec, ['https://example.com/ref'], '2026-08-26', evidence);
@@ -329,13 +343,14 @@ describe('Drop guard (Phase 32) -- reusable, tested primitive', () => {
 });
 
 describe('detection-rules.js extensions (getRulesByCVE/getRulesByCampaign) -- additive, real store', () => {
-  test('getRulesByCVE finds the real, committed CVE-2026-19598 rule', () => {
-    const rules = detectionRules.getRulesByCVE('CVE-2026-19598');
+  test('getRulesByCVE finds a real CVE-linked rule from the current canonical store', () => {
+    const rules = detectionRules.getRulesByCVE(CANONICAL_CVE_FIXTURE.cve);
     expect(rules.length).toBeGreaterThanOrEqual(1);
-    expect(rules[0].source.articles).toContain('CVE-2026-19598');
+    expect(rules.some(r => r.id === CANONICAL_CVE_FIXTURE.rule.id)).toBe(true);
+    expect(rules.some(r => r.source.articles.map(String).map(v => v.toUpperCase()).includes(CANONICAL_CVE_FIXTURE.cve))).toBe(true);
   });
   test('getRulesByCVE is case-insensitive and returns [] for an unknown CVE, never throws', () => {
-    expect(detectionRules.getRulesByCVE('cve-2026-19598').length).toBeGreaterThanOrEqual(1);
+    expect(detectionRules.getRulesByCVE(CANONICAL_CVE_FIXTURE.cve.toLowerCase()).length).toBeGreaterThanOrEqual(1);
     expect(detectionRules.getRulesByCVE('CVE-0000-00000')).toEqual([]);
   });
   test('getRulesByCampaign returns [] for a campaign with no linked rules, never throws', () => {
