@@ -131,50 +131,114 @@ jobs:
           fi
           echo "::notice title=SENTINEL APEX Self-Healed::The runtime outage was recovered and production freshness re-verified successfully against the latest main branch."
 
-      - name: "Verify customer-facing Blogger publication freshness"
+      - name: "Classify customer-facing Blogger publication freshness"
         id: blogger_freshness
         shell: bash
         run: |
-          node <<'NODE'
-          const fs = require('fs');
-          const path = 'data/published_posts.json';
-          const thresholdMinutes = 390; // two missed 3h opportunities + 30m jitter
-          const futureToleranceMinutes = 5;
+          set +e
+          BLOGGER_OUTPUT=$(python3 scripts/check_blogger_publication_freshness.py data/published_posts.json --max-age-minutes 240 2>&1)
+          BLOGGER_EXIT=$?
+          set -e
+          printf '%s\n' "$BLOGGER_OUTPUT"
+          BLOGGER_STATUS=$(printf '%s\n' "$BLOGGER_OUTPUT" | sed -n 's/^STATUS=//p' | tail -1)
+          BLOGGER_RECOVERY=$(printf '%s\n' "$BLOGGER_OUTPUT" | sed -n 's/^RECOVERY_REQUIRED=//p' | tail -1)
+          BLOGGER_AGE=$(printf '%s\n' "$BLOGGER_OUTPUT" | sed -n 's/^AGE_MINUTES=//p' | tail -1)
+          BLOGGER_LATEST=$(printf '%s\n' "$BLOGGER_OUTPUT" | sed -n 's/^LATEST_PUBLISHED_AT=//p' | tail -1)
+          echo "classifier_exit=$BLOGGER_EXIT" >> "$GITHUB_OUTPUT"
+          echo "status=${BLOGGER_STATUS:-UNKNOWN}" >> "$GITHUB_OUTPUT"
+          echo "recovery_required=${BLOGGER_RECOVERY:-false}" >> "$GITHUB_OUTPUT"
+          echo "age_minutes=${BLOGGER_AGE:-unknown}" >> "$GITHUB_OUTPUT"
+          echo "latest_published_at=${BLOGGER_LATEST:-unavailable}" >> "$GITHUB_OUTPUT"
 
-          let data;
-          try {
-            data = JSON.parse(fs.readFileSync(path, 'utf8'));
-          } catch (error) {
-            console.error(`::error title=Blogger Freshness Monitor Error::Cannot read/parse ${path}: ${error.message}`);
-            process.exit(1);
-          }
+          case "$BLOGGER_EXIT" in
+            0)
+              echo "Customer-facing Blogger freshness is healthy."
+              ;;
+            1)
+              echo "::error title=Blogger Freshness Monitor Integrity Failure::Cannot prove customer-facing publication freshness from persisted publication state."
+              exit 1
+              ;;
+            2)
+              echo "::warning title=Blogger CTI Publication Stale::No successful customer-facing Blogger publication inside the 240-minute SLO. Controlled Blogger recovery is eligible."
+              ;;
+            *)
+              echo "::error title=Blogger Freshness Contract Error::Unexpected classifier exit code $BLOGGER_EXIT."
+              exit "$BLOGGER_EXIT"
+              ;;
+          esac
 
-          const posts = Object.values((data && data.posts) || {});
-          const timestamps = posts
-            .map(post => Date.parse(post && post.published_at))
-            .filter(Number.isFinite);
+      - name: "Dispatch Blogger publication recovery when customer feed is stale"
+        id: blogger_recovery
+        if: steps.freshness.outputs.recovery_required != 'true' && steps.blogger_freshness.outputs.recovery_required == 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const workflowId = 'blogger-syndication.yml';
+            const cooldownMs = 45 * 60 * 1000;
+            const now = Date.now();
 
-          if (!timestamps.length) {
-            console.error('::error title=Blogger Publication Freshness Unknown::No valid published_at timestamp exists in the publication ledger.');
-            process.exit(1);
-          }
+            const { data } = await github.rest.actions.listWorkflowRuns({
+              owner,
+              repo,
+              workflow_id: workflowId,
+              branch: 'main',
+              per_page: 10
+            });
 
-          const latest = Math.max(...timestamps);
-          const ageMinutes = Math.floor((Date.now() - latest) / 60000);
-          fs.appendFileSync(process.env.GITHUB_OUTPUT, `age_minutes=${ageMinutes}\n`);
-          fs.appendFileSync(process.env.GITHUB_OUTPUT, `latest_published_at=${new Date(latest).toISOString()}\n`);
+            const latest = data.workflow_runs[0] || null;
+            if (latest && latest.status !== 'completed') {
+              core.notice('Blogger recovery suppressed: run #' + latest.run_number + ' is already ' + latest.status + '.');
+              core.setOutput('dispatch_state', 'already-running');
+              core.setOutput('recovery_run_url', latest.html_url || '');
+              return;
+            }
 
-          if (ageMinutes < -futureToleranceMinutes) {
-            console.error(`::error title=Blogger Publication Timestamp Invalid::Latest publication timestamp is ${Math.abs(ageMinutes)} minutes in the future.`);
-            process.exit(1);
-          }
-          if (ageMinutes > thresholdMinutes) {
-            console.error(`::error title=Blogger Publication Stale::Customer-facing CTI has not received a successful Blogger publication for ${ageMinutes} minutes (limit ${thresholdMinutes}). Internal feed freshness is not sufficient to declare production healthy.`);
-            process.exit(1);
-          }
+            if (latest && (now - Date.parse(latest.created_at)) < cooldownMs) {
+              core.warning('Blogger remains stale, but run #' + latest.run_number + ' started less than 45 minutes ago; suppressing duplicate recovery dispatch.');
+              core.setOutput('dispatch_state', 'cooldown');
+              core.setOutput('recovery_run_url', latest.html_url || '');
+              return;
+            }
 
-          console.log(`✅ Blogger publication freshness healthy: latest successful publication is ${ageMinutes} minutes old.`);
-          NODE
+            const dispatchStartedAt = Date.now();
+            await github.rest.actions.createWorkflowDispatch({
+              owner,
+              repo,
+              workflow_id: workflowId,
+              ref: 'main',
+              inputs: {
+                dry_run: 'false',
+                max_posts: '2'
+              }
+            });
+            core.setOutput('dispatch_state', 'dispatched');
+
+            const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+            for (let attempt = 1; attempt <= 20; attempt++) {
+              const { data: refreshed } = await github.rest.actions.listWorkflowRuns({
+                owner,
+                repo,
+                workflow_id: workflowId,
+                event: 'workflow_dispatch',
+                branch: 'main',
+                per_page: 10
+              });
+              const recoveryRun = refreshed.workflow_runs
+                .filter(run => Date.parse(run.created_at) >= dispatchStartedAt - 5000)
+                .sort((a, b) => Date.parse(a.created_at) - Date.parse(b.created_at))[0];
+              if (recoveryRun) {
+                core.setOutput('recovery_run_id', String(recoveryRun.id));
+                core.setOutput('recovery_run_url', recoveryRun.html_url || '');
+                core.notice('Customer-facing Blogger recovery dispatched as run #' + recoveryRun.run_number + '.');
+                return;
+              }
+              await sleep(3000);
+            }
+
+            throw new Error('Blogger recovery dispatch was accepted but no workflow run appeared within 60 seconds.');
 
       - name: "Monitor result summary"
         if: always()
@@ -189,8 +253,11 @@ jobs:
           echo "Recovery run         : ${{ steps.recovery.outputs.recovery_run_id || 'not-dispatched' }}"
           echo "Recovery conclusion  : ${{ steps.recovery.outputs.recovery_conclusion || 'not-applicable' }}"
           echo "Post-recovery status : ${{ steps.post_recovery.outputs.status || 'not-applicable' }}"
+          echo "Blogger freshness     : ${{ steps.blogger_freshness.outputs.status || 'UNAVAILABLE' }}"
           echo "Blogger age (minutes): ${{ steps.blogger_freshness.outputs.age_minutes || 'unavailable' }}"
           echo "Latest Blogger post  : ${{ steps.blogger_freshness.outputs.latest_published_at || 'unavailable' }}"
+          echo "Blogger recovery      : ${{ steps.blogger_recovery.outputs.dispatch_state || 'not-required' }}"
+          echo "Blogger recovery run  : ${{ steps.blogger_recovery.outputs.recovery_run_url || 'not-dispatched' }}"
           echo "Timestamp             : $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
           echo "══════════════════════════════════════════════════════"
 
@@ -199,9 +266,12 @@ jobs:
         shell: bash
         run: |
           if [ "${{ steps.blogger_freshness.outcome }}" = "failure" ]; then
-            echo "::error title=SENTINEL APEX Blogger Freshness Alert::Internal generation may be healthy, but customer-facing Blogger publication is stale or its ledger is invalid."
+            echo "::error title=SENTINEL APEX Blogger Freshness Alert::Internal generation may be healthy, but customer-facing Blogger publication freshness cannot be proven."
             echo "Latest Blogger publication: ${{ steps.blogger_freshness.outputs.latest_published_at || 'unavailable' }}"
             echo "Blogger publication age: ${{ steps.blogger_freshness.outputs.age_minutes || 'unavailable' }} minutes"
+          elif [ "${{ steps.blogger_recovery.outcome }}" = "failure" ]; then
+            echo "::error title=SENTINEL APEX Blogger Recovery Alert::Blogger was stale and the controlled self-healing dispatch failed."
+            echo "Blogger recovery run: ${{ steps.blogger_recovery.outputs.recovery_run_url || 'unavailable' }}"
           elif [ "${{ steps.freshness.outputs.classifier_exit }}" = "1" ]; then
             echo "::error title=SENTINEL APEX Monitor Alert::Feed/monitor integrity validation failed. Runtime recovery was intentionally not dispatched."
           elif [ "${{ steps.freshness.outputs.recovery_required }}" = "true" ]; then
