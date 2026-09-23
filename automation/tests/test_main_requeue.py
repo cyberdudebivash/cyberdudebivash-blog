@@ -10,12 +10,17 @@ window, e.g. RSS feeds). 21.5% of all runs hit this path historically;
 effectively 100% of the most recent 100 runs did, since Blogger's rate
 limit is now hit before every discovered batch is exhausted.
 """
+from types import SimpleNamespace
 from unittest.mock import Mock
 
+import automation.main as main_module
 from automation.content_discovery import DiscoveredArticle
 from automation.main import (
+    _article_selection_key,
     _merge_retry_and_fresh,
+    _next_backfill_candidate,
     _pipeline_exit_code,
+    _publication_attempt_limit,
     _pipeline_run_status,
     _requeue_unattempted,
 )
@@ -209,3 +214,58 @@ def test_published_source_url_suppresses_legacy_retry_hash():
     state.is_source_url_published.return_value = True
 
     assert _merge_retry_and_fresh([stale], [], state) == []
+
+
+def test_publication_attempt_budget_is_bounded_and_separate_from_write_target():
+    assert _publication_attempt_limit(0) == 0
+    assert _publication_attempt_limit(1) == 3
+    assert _publication_attempt_limit(2) == 6
+    # Global safety ceiling: a larger future write target must not create an
+    # unbounded transform/API retry loop.
+    assert _publication_attempt_limit(5) == 6
+
+
+def test_quality_backfill_selects_an_unattempted_candidate(monkeypatch):
+    first = _article(11)
+    replacement = _article(12)
+    attempted = {_article_selection_key(first)}
+
+    def fake_select(retry_articles, fresh_articles, max_posts):
+        assert max_posts == 1
+        assert first not in fresh_articles
+        assert replacement in fresh_articles
+        return SimpleNamespace(articles=[replacement])
+
+    monkeypatch.setattr(main_module, "select_publication_batch", fake_select)
+
+    candidate, source_kind = _next_backfill_candidate(
+        [],
+        [first, replacement],
+        attempted,
+    )
+
+    assert candidate is replacement
+    assert source_kind == "fresh"
+
+
+def test_quality_backfill_never_reselects_an_attempted_retry(monkeypatch):
+    attempted_retry = _article(21)
+    attempted_retry.source = "retry-source"
+    fresh = _article(22)
+    attempted = {_article_selection_key(attempted_retry)}
+
+    def fake_select(retry_articles, fresh_articles, max_posts):
+        assert retry_articles == []
+        assert fresh_articles == [fresh]
+        return SimpleNamespace(articles=[fresh])
+
+    monkeypatch.setattr(main_module, "select_publication_batch", fake_select)
+
+    candidate, source_kind = _next_backfill_candidate(
+        [attempted_retry],
+        [fresh],
+        attempted,
+    )
+
+    assert candidate is fresh
+    assert source_kind == "fresh"
