@@ -122,7 +122,7 @@ describe('publication and acquisition workflow regressions', () => {
     expect(workflow).toContain('git diff --cached --name-status');
   });
 
-  test('critical runtime freshness is the only condition wired to auto-recovery', () => {
+  test('runtime and customer publication freshness use separate controlled recovery paths', () => {
     const workflow = fs.readFileSync(path.join(root, '.github/workflows/freshness-check.yml'), 'utf8');
     const classifier = fs.readFileSync(path.join(root, 'scripts/check-intel-freshness.js'), 'utf8');
 
@@ -151,10 +151,8 @@ describe('publication and acquisition workflow regressions', () => {
     expect(runtimeOutageCase).toContain('recovery_required=true');
     expect(runtimeOutageCase).not.toContain('exit 2');
 
-    // Recovery is authorized only by the explicit output produced by exit 2.
-    // The single dispatch site must target the canonical generator workflow,
-    // wait for a successful completion, and must never be driven by generic
-    // workflow failure state.
+    // Runtime recovery is authorized only by the explicit output produced by
+    // the internal freshness classifier's exit code 2.
     const recoveryStep = workflow.split('- name: "Dispatch recovery and wait for completion"')[1]
       .split('- name: "Re-verify production after recovery"')[0];
     expect(recoveryStep).toBeDefined();
@@ -163,7 +161,26 @@ describe('publication and acquisition workflow regressions', () => {
     expect(recoveryStep).toContain("const workflowId = 'sentinel-apex.yml';");
     expect(recoveryStep).toContain('createWorkflowDispatch');
     expect(recoveryStep).toContain("current.conclusion !== 'success'");
-    expect((workflow.match(/github\.rest\.actions\.createWorkflowDispatch\s*\(/g) || [])).toHaveLength(1);
+
+    // Customer-facing Blogger freshness is an independent delivery SLO. Its
+    // recovery may dispatch only when the internal generator is not already in
+    // recovery, must retain the two-post public write cap, and must suppress
+    // duplicate dispatches while a recent/active Blogger run exists.
+    const bloggerRecoveryStep = workflow.split('- name: "Dispatch Blogger publication recovery when customer feed is stale"')[1]
+      .split('- name: "Dispatch recovery and wait for completion"')[0];
+    expect(bloggerRecoveryStep).toBeDefined();
+    expect(bloggerRecoveryStep).toContain("steps.freshness.outputs.recovery_required != 'true'");
+    expect(bloggerRecoveryStep).toContain("steps.blogger_freshness.outputs.recovery_required == 'true'");
+    expect(bloggerRecoveryStep).toContain("const workflowId = 'blogger-syndication.yml';");
+    expect(bloggerRecoveryStep).toContain("max_posts: '2'");
+    expect(bloggerRecoveryStep).toContain('45 * 60 * 1000');
+    expect(bloggerRecoveryStep).toContain("latest.status !== 'completed'");
+    expect(bloggerRecoveryStep).toContain('createWorkflowDispatch');
+
+    // Exactly two self-healing dispatch sites are permitted: one for the
+    // internal generator and one for the customer-facing Blogger delivery
+    // lane. Any third dispatch path is a regression.
+    expect((workflow.match(/github\.rest\.actions\.createWorkflowDispatch\s*\(/g) || [])).toHaveLength(2);
 
     // A successful recovery is not enough by itself. The monitor must refresh
     // the canonical main branch and run the same classifier again; unresolved
