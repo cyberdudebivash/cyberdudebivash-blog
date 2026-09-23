@@ -126,6 +126,64 @@ def _empty_selection_metrics() -> dict:
     }
 
 
+def _article_selection_key(article: DiscoveredArticle) -> str:
+    """Stable per-run identity for attempted/backfill de-duplication."""
+    content_hash = str(getattr(article, "content_hash", "") or "").strip()
+    if content_hash:
+        return f"hash:{content_hash}"
+    return f"url:{str(getattr(article, 'url', '') or '').strip()}"
+
+
+def _publication_attempt_limit(publish_target: int) -> int:
+    """Bound transformation attempts independently from successful writes.
+
+    P0-2026-09-23: the public Blogger write cap is a *successful publication*
+    budget, not an attempt budget. If a source-backed candidate correctly
+    fails the premium integrity gate, the factory may try a replacement while
+    retaining the same public write ceiling. The cap is deliberately small so
+    a bad source window cannot turn into unbounded LLM/API work.
+    """
+    target = max(0, int(publish_target or 0))
+    if target == 0:
+        return 0
+    return min(6, max(target, target * 3))
+
+
+def _next_backfill_candidate(
+    retry_articles: list[DiscoveredArticle],
+    fresh_articles: list[DiscoveredArticle],
+    attempted_keys: set[str],
+) -> tuple[DiscoveredArticle | None, str | None]:
+    """Select one unattempted replacement using the active production scheduler."""
+    remaining_retry = [
+        article for article in retry_articles
+        if _article_selection_key(article) not in attempted_keys
+    ]
+    remaining_fresh = [
+        article for article in fresh_articles
+        if _article_selection_key(article) not in attempted_keys
+    ]
+    if not remaining_retry and not remaining_fresh:
+        return None, None
+
+    selection = select_publication_batch(
+        remaining_retry,
+        remaining_fresh,
+        1,
+    )
+    if not selection.articles:
+        return None, None
+
+    candidate = selection.articles[0]
+    key = _article_selection_key(candidate)
+    if key in attempted_keys:
+        return None, None
+    source_kind = "retry" if any(
+        _article_selection_key(article) == key for article in remaining_retry
+    ) else "fresh"
+    return candidate, source_kind
+
+
 def run_pipeline(config: Config, dry_run: bool = False) -> dict:
     """Execute the full syndication pipeline."""
     run_start = datetime.now(timezone.utc).isoformat()
@@ -140,6 +198,9 @@ def run_pipeline(config: Config, dry_run: bool = False) -> dict:
         "requeued": 0,
         "integrity_blocked": 0,
         "fetch_back_discrepancies": 0,
+        "publish_target": max(0, int(config.max_posts_per_run or 0)),
+        "publication_attempt_limit": _publication_attempt_limit(config.max_posts_per_run),
+        "backfill_selected": 0,
         **_empty_selection_metrics(),
         "posts": [],
         "errors": [],
@@ -207,8 +268,57 @@ def run_pipeline(config: Config, dry_run: bool = False) -> dict:
         fresh_articles,
         config.max_posts_per_run,
     )
-    articles = selection.articles
+    articles = list(selection.articles)
     report.update(selection.metrics)
+    publish_target = max(0, int(config.max_posts_per_run or 0))
+    attempt_limit = _publication_attempt_limit(publish_target)
+    attempted_keys = {_article_selection_key(article) for article in articles}
+
+    def _enqueue_quality_backfill(reason: str) -> None:
+        """Append one replacement without increasing the successful write cap."""
+        if dry_run:
+            return
+        if report["published"] >= publish_target:
+            return
+        if len(articles) >= attempt_limit:
+            return
+
+        candidate, source_kind = _next_backfill_candidate(
+            retry_articles,
+            fresh_articles,
+            attempted_keys,
+        )
+        if candidate is None:
+            return
+
+        key = _article_selection_key(candidate)
+        attempted_keys.add(key)
+        articles.append(candidate)
+        report["backfill_selected"] += 1
+        report["discovered"] = len(articles)
+
+        family = classify_publication_family(candidate)
+        source = str(candidate.source or "unknown")
+        report.setdefault("selected_families", {})
+        report.setdefault("selected_sources", {})
+        report["selected_families"][family] = report["selected_families"].get(family, 0) + 1
+        report["selected_sources"][source] = report["selected_sources"].get(source, 0) + 1
+        if source_kind == "fresh":
+            report["fresh_selected"] = int(report.get("fresh_selected", 0)) + 1
+        elif source_kind == "retry":
+            report["retry_selected"] = int(report.get("retry_selected", 0)) + 1
+
+        logger.warning(
+            "Premium candidate blocked; queued quality-preserving backfill",
+            extra={
+                "reason": reason,
+                "replacement_title": candidate.title[:100],
+                "replacement_family": family,
+                "backfill_selected": report["backfill_selected"],
+                "attempt_limit": attempt_limit,
+                "publish_target": publish_target,
+            },
+        )
     report["canonical_candidates"] = len(canonical_fresh)
     # Preserve the historical `discovered` field semantics used by workflow
     # summaries: this is the selected/attempted publication batch, while the
@@ -239,6 +349,11 @@ def run_pipeline(config: Config, dry_run: bool = False) -> dict:
 
     # --- Transform and Publish ---
     for idx, article in enumerate(articles):
+        # The list may grow when a quality-blocked candidate is replaced.
+        # Never let replacement attempts increase the successful Blogger write
+        # budget established by config/search-recovery policy.
+        if not dry_run and report["published"] >= publish_target:
+            break
         post_result = {
             "source_url": article.url,
             "title": article.title,
@@ -403,6 +518,7 @@ def run_pipeline(config: Config, dry_run: bool = False) -> dict:
             discovery.state.add_to_retry_queue(article, str(e))
             report["failed"] += 1
             report["integrity_blocked"] += 1
+            _enqueue_quality_backfill("integrity_blocked")
 
         except BloggerAuthError as e:
             logger.error("Authentication error — stopping pipeline", extra={"error": str(e)})
@@ -444,6 +560,7 @@ def run_pipeline(config: Config, dry_run: bool = False) -> dict:
             discovery.state.record_failure(article.url, str(e))
             discovery.state.add_to_retry_queue(article, str(e))
             report["failed"] += 1
+            _enqueue_quality_backfill("publish_error")
 
         except Exception as e:
             logger.exception("Unexpected error processing article", extra={"url": article.url})
@@ -456,6 +573,10 @@ def run_pipeline(config: Config, dry_run: bool = False) -> dict:
 
         report["posts"].append(post_result)
 
+    # discovered/attempted is dynamic because integrity-preserving backfill may
+    # append replacement candidates during the loop.
+    report["discovered"] = len(report["posts"])
+    report["attempted"] = len(report["posts"])
     report["run_end"] = datetime.now(timezone.utc).isoformat()
     report["run_status"] = _pipeline_run_status(report)
 
