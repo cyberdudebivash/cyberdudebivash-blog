@@ -145,10 +145,12 @@ def test_factory_scheduler_drains_cve_supply_without_starving_strategic_intel(mo
     ]
     malware = _article(100, title="New malware loader campaign targets enterprises")
 
-    selection = factory.select_factory_publication_batch([], vulnerabilities + [malware], 5)
+    requested = 5
+    expected = min(requested, factory.FACTORY_WRITE_BURST)
+    selection = factory.select_factory_publication_batch([], vulnerabilities + [malware], requested)
 
-    assert len(selection.articles) == 5
-    assert selection.metrics["vulnerability_selected"] == 4
+    assert len(selection.articles) == expected
+    assert selection.metrics["vulnerability_selected"] == expected - 1
     assert selection.metrics["strategic_selected"] == 1
     assert selection.metrics["selected_families"]["malware"] == 1
 
@@ -289,17 +291,19 @@ def test_daily_delivery_sla_prioritizes_missing_ransomware_without_disabling_cve
         source="ransomware_intel",
     )
 
+    requested = 5
+    expected = min(requested, factory.FACTORY_WRITE_BURST)
     selection = factory.select_factory_publication_batch(
         [],
         vulnerabilities + [ransomware],
-        5,
+        requested,
     )
 
-    assert len(selection.articles) == 5
+    assert len(selection.articles) == expected
     assert ransomware in selection.articles
     assert selection.metrics["selected_delivery_classes"]["ransomware"] == 1
     assert "ransomware" not in selection.metrics["delivery_sla_missing_after_selection"]
-    assert selection.metrics["vulnerability_selected"] == 4
+    assert selection.metrics["vulnerability_selected"] == expected - 1
 
 
 def test_daily_delivery_sla_never_holds_empty_slots_or_fabricates_supply(monkeypatch):
@@ -317,10 +321,12 @@ def test_daily_delivery_sla_never_holds_empty_slots_or_fabricates_supply(monkeyp
         for i in range(10)
     ]
 
-    selection = factory.select_factory_publication_batch([], vulnerabilities, 5)
+    requested = 5
+    expected = min(requested, factory.FACTORY_WRITE_BURST)
+    selection = factory.select_factory_publication_batch([], vulnerabilities, requested)
 
-    assert len(selection.articles) == 5
-    assert selection.metrics["vulnerability_selected"] == 5
+    assert len(selection.articles) == expected
+    assert selection.metrics["vulnerability_selected"] == expected
     assert selection.metrics["selected_delivery_classes"] == {}
     assert set(selection.metrics["delivery_sla_missing_after_selection"]) == set(
         factory.FACTORY_DAILY_DELIVERY_CLASSES
@@ -403,13 +409,41 @@ def test_factory_excludes_jobs_roundup_from_family_and_daily_delivery_sla(monkey
     assert factory.classify_factory_family(jobs) == "non_intelligence"
     assert factory.classify_delivery_class(jobs) is None
 
+    requested = 5
+    expected = min(requested, factory.FACTORY_WRITE_BURST)
     selection = factory.select_factory_publication_batch(
         [],
         [jobs, real_malware, ransomware, breach, cve, apt],
-        5,
+        requested,
     )
 
     assert jobs not in selection.articles
     assert selection.metrics["non_intelligence_filtered"] == 1
     assert "non_intelligence" not in selection.metrics["selected_families"]
-    assert len(selection.articles) == 5
+    assert len(selection.articles) == expected
+
+
+def test_factory_scheduler_never_exceeds_current_public_blogger_write_cap(monkeypatch):
+    """The scheduler contract must follow the live public-page recovery cap.
+
+    This guards the exact 2026-09-23 P0 regression where production was
+    intentionally reduced from five to two writes/run but legacy tests still
+    asserted five, causing every Blogger workflow to abort before publishing.
+    """
+    monkeypatch.setattr(factory.time, "time", lambda: 0.0)
+    candidates = [
+        _article(
+            i,
+            title=f"CVE-2026-{40000 + i} critical vulnerability",
+            source="nvd",
+            cve_id=f"CVE-2026-{40000 + i}",
+        )
+        for i in range(20)
+    ]
+
+    requested = factory.FACTORY_WRITE_BURST + 10
+    selection = factory.select_factory_publication_batch([], candidates, requested)
+
+    assert len(selection.articles) == factory.FACTORY_WRITE_BURST
+    assert len(selection.articles) <= requested
+    assert selection.metrics["vulnerability_selected"] == factory.FACTORY_WRITE_BURST
