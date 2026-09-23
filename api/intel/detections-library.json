@@ -1,8 +1,53 @@
 {
-  "generated": "2026-09-23T17:09:28.326Z",
+  "generated": "2026-09-23T21:34:31.211Z",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
   "count": 200,
   "items": [
+    {
+      "slug": "cve-2026-76087-composer-verbb-formie",
+      "title": "Formie: Unauthenticated users can overwrite incomplete submissions via submit action",
+      "url": "/posts/cve-2026-76087-composer-verbb-formie.html",
+      "generated": "2026-09-23T21:17:53.979Z",
+      "severity": "HIGH",
+      "cves": [
+        "CVE-2026-76087",
+        "CVE-2026-76087"
+      ],
+      "mitreAttack": [],
+      "sigma": [],
+      "kql": [],
+      "splunk": [],
+      "osquery": [],
+      "suricata": [
+        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://github.com/advisories?query=GHSA-pgxq-p76c-x9cg),\"; http.host; content:\"github.com\"; nocase; http.uri; content:\"/advisories?query=GHSA-pgxq-p76c-x9cg),\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)"
+      ]
+    },
+    {
+      "slug": "cve-2026-76086-composer-verbb-formie",
+      "title": "Formie: Integration form-settings action allows SSRF and exfiltration of stored integration credentials",
+      "url": "/posts/cve-2026-76086-composer-verbb-formie.html",
+      "generated": "2026-09-23T21:17:53.972Z",
+      "severity": "HIGH",
+      "cves": [
+        "CVE-2026-76086",
+        "CVE-2026-76086"
+      ],
+      "mitreAttack": [
+        {
+          "id": "T1041",
+          "name": "Exfiltration Over C2 Channel",
+          "tactic": "exfiltration",
+          "confidence": "MEDIUM"
+        }
+      ],
+      "sigma": [],
+      "kql": [],
+      "splunk": [],
+      "osquery": [],
+      "suricata": [
+        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://github.com/advisories?query=GHSA-cvpc-hccg-wmw4).\"; http.host; content:\"github.com\"; nocase; http.uri; content:\"/advisories?query=GHSA-cvpc-hccg-wmw4).\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)"
+      ]
+    },
     {
       "slug": "cve-2026-62985-npm-request-filtering-agent",
       "title": "request-filtering-agent: Synchronous throw from createConnection() for literal private-IP hosts bypasses req.on('error'), crashing the Node.js process",
@@ -4192,55 +4237,6 @@
         "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uvh6l2/stolen_from/&quot;&gt;[link]&lt;/a&gt;&lt;/s\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uvh6l2/stolen_from/&quot\\;&gt\\;[link]&lt\\;/a&gt\\;&lt\\;/s\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
         "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uvh6l2/stolen_from/&quot;&gt;[comments]&lt;/a&gt;&l\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uvh6l2/stolen_from/&quot\\;&gt\\;[comments]&lt\\;/a&gt\\;&l\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
         "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)"
-      ]
-    },
-    {
-      "slug": "official-jscrambler-npm-package-compromised-malicious-versi",
-      "title": "Official jscrambler npm package compromised: malicious versions 8.14, 8.16, 8.17, and 8.20",
-      "url": "/posts/official-jscrambler-npm-package-compromised-malicious-versi.html",
-      "generated": "2026-07-13T16:55:38.568Z",
-      "severity": "MEDIUM",
-      "cves": [],
-      "mitreAttack": [
-        {
-          "id": "T1071",
-          "name": "Application Layer Protocol",
-          "tactic": "command-and-control",
-          "confidence": "MEDIUM"
-        }
-      ],
-      "sigma": [],
-      "kql": [],
-      "splunk": [],
-      "osquery": [],
-      "suricata": [
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uvgoqh/official_jscrambler_npm_package_compromised/\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uvgoqh/official_jscrambler_npm_package_compromised/\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://external-preview.redd.it/soEnRgazSodHkCLKLzMn6rFh9u5QgBWQ7AJa5iRvlYE.jpeg?width=640&amp;amp;\"; http.host; content:\"external-preview.redd.it\"; nocase; http.uri; content:\"/soEnRgazSodHkCLKLzMn6rFh9u5QgBWQ7AJa5iRvlYE.jpeg?width=640&amp\\;amp\\;\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/user/NapierPalm&quot;&gt;\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/user/NapierPalm&quot\\;&gt\\;\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://jscrambler.com/blog/security-advisory-malicious-npm-package&quot;&gt;[link]&lt;/a&gt;&lt;/sp\"; http.host; content:\"jscrambler.com\"; nocase; http.uri; content:\"/blog/security-advisory-malicious-npm-package&quot\\;&gt\\;[link]&lt\\;/a&gt\\;&lt\\;/sp\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000005; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain jscrambler.com\"; dns.query; content:\"jscrambler.com\"; nocase; classtype:trojan-activity; sid:9000006; rev:1;)"
-      ]
-    },
-    {
-      "slug": "now-defenders-are-embracing-the-prompt-injection-too",
-      "title": "Now, defenders are embracing the prompt injection, too",
-      "url": "/posts/now-defenders-are-embracing-the-prompt-injection-too.html",
-      "generated": "2026-07-13T16:55:38.563Z",
-      "severity": "MEDIUM",
-      "cves": [],
-      "mitreAttack": [],
-      "sigma": [],
-      "kql": [],
-      "splunk": [],
-      "osquery": [],
-      "suricata": [
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uvfwrs/now_defenders_are_embracing_the_prompt_injec\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uvfwrs/now_defenders_are_embracing_the_prompt_injec\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://external-preview.redd.it/I9BynHPypiYzBhGLhh7VR623LpJTBx7GogoZFupvhEk.jpeg?width=640&amp;amp;\"; http.host; content:\"external-preview.redd.it\"; nocase; http.uri; content:\"/I9BynHPypiYzBhGLhh7VR623LpJTBx7GogoZFupvhEk.jpeg?width=640&amp\\;amp\\;\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/user/arstechnica&quot;&gt;\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/user/arstechnica&quot\\;&gt\\;\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL http://arstechnica.com/security/2026/07/now-defenders-are-embracing-the-prompt-injection-too&quot;&g\"; http.host; content:\"arstechnica.com\"; nocase; http.uri; content:\"/security/2026/07/now-defenders-are-embracing-the-prompt-injection-too&quot\\;&g\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000005; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain arstechnica.com\"; dns.query; content:\"arstechnica.com\"; nocase; classtype:trojan-activity; sid:9000006; rev:1;)"
       ]
     }
   ]
