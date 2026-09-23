@@ -1,0 +1,126 @@
+name: "🛡️ SENTINEL APEX — Customer Release Certification"
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: read
+
+concurrency:
+  group: customer-release-certification
+  cancel-in-progress: false
+
+jobs:
+  certify:
+    name: "Fail-Closed Customer Release Gate"
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+
+    steps:
+      - name: "Checkout exact release candidate"
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: "Setup Python"
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: "Setup Node.js"
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: "Install locked dependencies"
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pytest pytest-timeout
+          npm ci --legacy-peer-deps
+
+      - name: "Block release while P0 customer incidents remain open"
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const blockers = [219, 222];
+            const open = [];
+            for (const issue_number of blockers) {
+              const { data } = await github.rest.issues.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number
+              });
+              if (data.state === 'open') open.push('#' + issue_number + ' ' + data.title);
+            }
+            if (open.length) {
+              core.setFailed('Customer release HOLD — unresolved P0 incidents: ' + open.join(' | '));
+            }
+
+      - name: "Certify authoritative Blogger theme baseline"
+        run: |
+          python scripts/certify_blogger_theme_baseline.py --json
+
+      - name: "Certify Blogger delivery freshness from durable ledger"
+        run: |
+          python scripts/check_blogger_publication_freshness.py data/published_posts.json --max-age-minutes 240 --json
+
+      - name: "Run proof-first/theme/freshness regression suite"
+        run: |
+          python -m pytest             tests/test_blogger_theme_baseline.py             tests/test_live_cti_home_audit.py             tests/test_blogger_publication_freshness.py             --tb=short --timeout=30 -q
+
+      - name: "Compile Python production modules"
+        run: python -m compileall -q automation scripts
+
+      - name: "Run complete Blogger evidence/syndication suite"
+        run: python -m pytest tests/ automation/tests/ --tb=short --timeout=30 -q
+
+      - name: "Run TypeScript + complete Jest certification"
+        run: |
+          npx tsc --noEmit
+          npm run test:ci
+        env:
+          NODE_ENV: test
+
+      - name: "Run E2E, governance, performance and resilience suites"
+        run: |
+          npm run test:e2e
+          npm run test:governance
+          npm run test:performance
+          npm run test:resilience
+        env:
+          NODE_ENV: test
+
+      - name: "Production dependency critical-vulnerability gate"
+        run: npm audit --omit=dev --audit-level=critical
+
+      - name: "Live CTI proof-first audit"
+        run: |
+          python scripts/audit_live_cti_home.py             --url https://cti.cyberdudebivash.in/             --max-freshness-days 2             --json
+
+      - name: "Critical production HTTP surfaces"
+        shell: bash
+        run: |
+          set -euo pipefail
+          urls=(
+            "https://blog.cyberdudebivash.in/"
+            "https://blog.cyberdudebivash.in/live-intel.json"
+            "https://blog.cyberdudebivash.in/rss.xml"
+            "https://blog.cyberdudebivash.in/sitemap.xml"
+            "https://cti.cyberdudebivash.in/"
+          )
+          for url in "${urls[@]}"; do
+            code=$(curl -sSL --max-time 20 -o /tmp/release-response -w "%{http_code}" "$url")
+            test "$code" = "200" || { echo "::error::$url returned HTTP $code"; exit 1; }
+            test -s /tmp/release-response || { echo "::error::$url returned an empty body"; exit 1; }
+            echo "PASS $code $url"
+          done
+
+      - name: "Release verdict"
+        run: |
+          echo "CUSTOMER_RELEASE_STATUS=GO"
+          echo "All fail-closed pre-customer-release gates passed for commit $GITHUB_SHA."
