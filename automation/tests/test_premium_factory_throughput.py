@@ -303,7 +303,7 @@ def test_daily_delivery_sla_prioritizes_missing_ransomware_without_disabling_cve
     assert ransomware in selection.articles
     assert selection.metrics["selected_delivery_classes"]["ransomware"] == 1
     assert "ransomware" not in selection.metrics["delivery_sla_missing_after_selection"]
-    assert selection.metrics["vulnerability_selected"] == 4
+    assert selection.metrics["vulnerability_selected"] == expected - 1
 
 
 def test_daily_delivery_sla_never_holds_empty_slots_or_fabricates_supply(monkeypatch):
