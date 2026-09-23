@@ -2,14 +2,14 @@
   "platform": "CYBERDUDEBIVASH SENTINEL APEX — AI Security Intelligence Division",
   "endpoint": "/api/intel/ai-security.json",
   "doctrine": "Sentinel-APEX/prompts/ai-security-master-prompt.md",
-  "generated": "2026-09-23T13:34:34.698Z",
+  "generated": "2026-09-23T18:21:42.822Z",
   "disclaimer": "Evidence-graded AI security intelligence. Confidence and evidence labels attached per item. Community leads are corroborated before publication.",
   "stats": {
-    "published": 27,
+    "published": 16,
     "p1": 1,
     "leadsHeld": 3,
     "analystReports": 0,
-    "sourcesOk": 4,
+    "sourcesOk": 5,
     "sourcesTotal": 6,
     "sourceHealth": [
       {
@@ -29,11 +29,11 @@
         "error": null
       },
       {
-        "name": "GitHub Security Advisories",
-        "key": "ghsa",
+        "name": "NVD (prompt injection)",
+        "key": "nvd_pi",
         "tier": 1,
         "status": "ok",
-        "items": 60,
+        "items": 40,
         "error": null
       },
       {
@@ -45,23 +45,23 @@
         "error": null
       },
       {
-        "name": "NVD (prompt injection)",
-        "key": "nvd_pi",
+        "name": "GitHub Security Advisories",
+        "key": "ghsa",
         "tier": 1,
         "status": "ok",
-        "items": 40,
+        "items": 60,
         "error": null
       },
       {
         "name": "NVD (AI/LLM keyword)",
         "key": "nvd_ai",
         "tier": 1,
-        "status": "degraded",
-        "items": 0,
-        "error": "This operation was aborted"
+        "status": "ok",
+        "items": 40,
+        "error": null
       }
     ],
-    "runtimeMs": 15145
+    "runtimeMs": 6519
   },
   "frameworks": {
     "owasp_llm_top10": {
@@ -88,7 +88,7 @@
       "AML.T0057": "LLM Data Leakage"
     }
   },
-  "count": 27,
+  "count": 16,
   "items": [
     {
       "id": "96262aa70a3d49f4",
@@ -283,102 +283,46 @@
       "has_analyst_report": false
     },
     {
-      "id": "976f39de7e910d32",
-      "title": "MCP Atlassian: Path Traversal / Arbitrary File Read in confluence_upload_attachment MCP tool (incomplete fix of GHSA-xjgw-4wvw-rgm4)",
-      "url": "https://github.com/advisories/GHSA-p6hp-93wp-fh6p",
+      "id": "4f735d543d590b2e",
+      "title": "9router: Image prefetch DNS rebinding allows SSRF to internal services",
+      "url": "https://github.com/advisories/GHSA-cmhj-wh2f-9cgx",
       "source": "GitHub Security Advisories",
       "tier": 1,
-      "published": "2026-09-22T20:35:21Z",
-      "cve": "CVE-2026-77262",
+      "published": "2026-09-23T18:12:28Z",
+      "cve": "CVE-2026-56676",
       "severity": "high",
       "cvss": null,
       "evidence_label": "VERIFIED_ADVISORY",
       "categories": [
         {
-          "id": "agent_tool",
-          "label": "Agentic / Tool / MCP Exploitation"
+          "id": "infra",
+          "label": "AI Infrastructure / Inference Server"
         }
       ],
       "owasp_llm": [
         {
-          "id": "LLM06",
-          "name": "Sensitive Information Disclosure / Excessive Agency"
+          "id": "LLM05",
+          "name": "Supply Chain Vulnerabilities"
         }
       ],
       "mitre_atlas": [
         {
-          "id": "AML.T0053",
-          "name": "LLM Plugin Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": true,
-          "mcp": true,
-          "rag": false,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "elevated"
-      },
-      "enterprise_impact": {
-        "score": 63,
-        "priority": "P2"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
-        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "5cee706d59c3548d",
-      "title": "MCP Atlassian: SSRF redirect protection missing for basic-auth and OAuth authentication branches",
-      "url": "https://github.com/advisories/GHSA-6529-c226-h328",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-09-22T20:35:13Z",
-      "cve": "CVE-2026-77261",
-      "severity": "high",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "agent_tool",
-          "label": "Agentic / Tool / MCP Exploitation"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM06",
-          "name": "Sensitive Information Disclosure / Excessive Agency"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0053",
-          "name": "LLM Plugin Compromise"
+          "id": "AML.T0010",
+          "name": "ML Supply Chain Compromise"
         }
       ],
       "agent_risk": {
         "flags": {
           "agentic": false,
-          "mcp": true,
+          "mcp": false,
           "rag": false,
           "tool_use": false,
           "supply_chain": false
         },
-        "level": "elevated"
+        "level": "standard"
       },
       "enterprise_impact": {
-        "score": 63,
+        "score": 43,
         "priority": "P2"
       },
       "confidence": {
@@ -389,580 +333,8 @@
       },
       "corroboration": 1,
       "detection": {
-        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
-        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "6622baaa3d78cf72",
-      "title": "MCP Atlassian: Arbitrary local file READ via unconstrained file_path in upload_attachment (Confluence + Jira)",
-      "url": "https://github.com/advisories/GHSA-f4p7-qx46-wc5j",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-09-22T20:35:00Z",
-      "cve": "CVE-2026-77260",
-      "severity": "high",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "prompt_injection",
-          "label": "Prompt Injection"
-        },
-        {
-          "id": "agent_tool",
-          "label": "Agentic / Tool / MCP Exploitation"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM01",
-          "name": "Prompt Injection"
-        },
-        {
-          "id": "LLM06",
-          "name": "Sensitive Information Disclosure / Excessive Agency"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0051",
-          "name": "LLM Prompt Injection"
-        },
-        {
-          "id": "AML.T0053",
-          "name": "LLM Plugin Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": true,
-          "rag": false,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "elevated"
-      },
-      "enterprise_impact": {
-        "score": 63,
-        "priority": "P2"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Monitor LLM gateway logs for delimiter-breaking tokens, role-swap phrases (\"ignore previous\", \"you are now\"), and base64/hex blobs in user or retrieved content.",
-        "hunt": "Correlate anomalous tool-invocation sequences that immediately follow untrusted content ingestion (email, web, RAG chunks)."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "f59384569b81de84",
-      "title": "MCP Atlassian: HTTP upload tools accept arbitrary server-local file paths",
-      "url": "https://github.com/advisories/GHSA-mrq8-fv7v-hhjg",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-09-22T20:34:58Z",
-      "cve": "CVE-2026-77257",
-      "severity": "high",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "agent_tool",
-          "label": "Agentic / Tool / MCP Exploitation"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM06",
-          "name": "Sensitive Information Disclosure / Excessive Agency"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0053",
-          "name": "LLM Plugin Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": true,
-          "rag": false,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "elevated"
-      },
-      "enterprise_impact": {
-        "score": 63,
-        "priority": "P2"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
-        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "960eba5e11e9c4ae",
-      "title": "MCP Atlassian: ENABLED_TOOLS / Toolset authorization bypass",
-      "url": "https://github.com/advisories/GHSA-3r68-hf9h-887v",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-09-22T20:34:55Z",
-      "cve": "CVE-2026-77243",
-      "severity": "high",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "agent_tool",
-          "label": "Agentic / Tool / MCP Exploitation"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM06",
-          "name": "Sensitive Information Disclosure / Excessive Agency"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0053",
-          "name": "LLM Plugin Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": true,
-          "rag": false,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "elevated"
-      },
-      "enterprise_impact": {
-        "score": 63,
-        "priority": "P2"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
-        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "5ce4170c4b88e893",
-      "title": "MCP Atlassian: Arbitrary File Read & Exfiltration (Confused Deputy) in JIRA update_issue",
-      "url": "https://github.com/advisories/GHSA-2xj6-xx86-cwwc",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-09-22T20:34:52Z",
-      "cve": "CVE-2026-77255",
-      "severity": "high",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "agent_tool",
-          "label": "Agentic / Tool / MCP Exploitation"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM06",
-          "name": "Sensitive Information Disclosure / Excessive Agency"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0053",
-          "name": "LLM Plugin Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": true,
-          "mcp": true,
-          "rag": false,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "elevated"
-      },
-      "enterprise_impact": {
-        "score": 63,
-        "priority": "P2"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
-        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "977a0ddaabb408d1",
-      "title": "MCP Atlassian: Jira and Confluence attachment upload tools can read arbitrary server-local files",
-      "url": "https://github.com/advisories/GHSA-vc25-24vv-fxxm",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-09-22T20:34:50Z",
-      "cve": "CVE-2026-77253",
-      "severity": "high",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "agent_tool",
-          "label": "Agentic / Tool / MCP Exploitation"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM06",
-          "name": "Sensitive Information Disclosure / Excessive Agency"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0053",
-          "name": "LLM Plugin Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": true,
-          "rag": false,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "elevated"
-      },
-      "enterprise_impact": {
-        "score": 63,
-        "priority": "P2"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
-        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "4a9de129df70d193",
-      "title": "MCP Atlassian: JIRA_PROJECTS_FILTER / CONFLUENCE_SPACES_FILTER allow forbidden-project content exfiltration (one LIVE-proven on Atlassian Cloud)",
-      "url": "https://github.com/advisories/GHSA-w66g-j6c4-hcfc",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-09-22T20:34:47Z",
-      "cve": "CVE-2026-77251",
-      "severity": "high",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "agent_tool",
-          "label": "Agentic / Tool / MCP Exploitation"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM06",
-          "name": "Sensitive Information Disclosure / Excessive Agency"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0053",
-          "name": "LLM Plugin Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": true,
-          "rag": false,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "elevated"
-      },
-      "enterprise_impact": {
-        "score": 63,
-        "priority": "P2"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
-        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "fe28da71f4fdc66d",
-      "title": "MCP Atlassian: MCP HTTP Client Server-Local File Exfiltration via Unvalidated Attachment Upload Path",
-      "url": "https://github.com/advisories/GHSA-wv8v-v4c5-v75j",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-09-22T20:34:45Z",
-      "cve": "CVE-2026-77246",
-      "severity": "high",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "agent_tool",
-          "label": "Agentic / Tool / MCP Exploitation"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM06",
-          "name": "Sensitive Information Disclosure / Excessive Agency"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0053",
-          "name": "LLM Plugin Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": true,
-          "rag": true,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "elevated"
-      },
-      "enterprise_impact": {
-        "score": 63,
-        "priority": "P2"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
-        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "2c34892366610cfd",
-      "title": "MCP Atlassian: Path traversal in upload_attachment allows arbitrary file read and exfiltration via MCP tool call",
-      "url": "https://github.com/advisories/GHSA-mfv2-4wvm-9pgp",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-09-22T20:35:06Z",
-      "cve": "CVE-2026-77266",
-      "severity": "medium",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "agent_tool",
-          "label": "Agentic / Tool / MCP Exploitation"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM06",
-          "name": "Sensitive Information Disclosure / Excessive Agency"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0053",
-          "name": "LLM Plugin Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": true,
-          "mcp": true,
-          "rag": false,
-          "tool_use": true,
-          "supply_chain": false
-        },
-        "level": "high"
-      },
-      "enterprise_impact": {
-        "score": 60,
-        "priority": "P2"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
-        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "bf0c3334b481579c",
-      "title": "MCP Atlassian: Arbitrary File Read via Upload Attachment Tools",
-      "url": "https://github.com/advisories/GHSA-f26r-j276-ggg4",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-09-22T20:35:11Z",
-      "cve": "CVE-2026-77270",
-      "severity": "medium",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "prompt_injection",
-          "label": "Prompt Injection"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM01",
-          "name": "Prompt Injection"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0051",
-          "name": "LLM Prompt Injection"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": true,
-          "rag": false,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "elevated"
-      },
-      "enterprise_impact": {
-        "score": 50,
-        "priority": "P2"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Monitor LLM gateway logs for delimiter-breaking tokens, role-swap phrases (\"ignore previous\", \"you are now\"), and base64/hex blobs in user or retrieved content.",
-        "hunt": "Correlate anomalous tool-invocation sequences that immediately follow untrusted content ingestion (email, web, RAG chunks)."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "d01cb09ebd4b93b0",
-      "title": "MCP Atlassian: Path traversal in upload_attachment allows arbitrary file read (incomplete fix for CVE-2026-27825)",
-      "url": "https://github.com/advisories/GHSA-h7wj-5v37-59r2",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-09-22T20:35:03Z",
-      "cve": "CVE-2026-77269",
-      "severity": "medium",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "agent_tool",
-          "label": "Agentic / Tool / MCP Exploitation"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM06",
-          "name": "Sensitive Information Disclosure / Excessive Agency"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0053",
-          "name": "LLM Plugin Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": true,
-          "rag": false,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "elevated"
-      },
-      "enterprise_impact": {
-        "score": 50,
-        "priority": "P2"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
-        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
+        "detect": "Expose-check inference servers (Triton/vLLM/Ollama/MLflow/Ray) for unauthenticated management endpoints.",
+        "hunt": "Shodan/asset-inventory sweep for AI infra bound to 0.0.0.0 without auth."
       },
       "has_analyst_report": false
     },
