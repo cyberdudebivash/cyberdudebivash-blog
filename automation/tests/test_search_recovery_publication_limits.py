@@ -17,3 +17,13 @@ def test_blogger_workflow_uses_recovery_cadence_and_burst():
     assert 'default: "2"' in workflow
     assert "github.event.inputs.max_posts || '2'" in workflow
     assert "hard ceiling 16 Blogger pages/day" in workflow
+
+
+def test_freshness_monitor_covers_customer_facing_blogger_and_preserves_write_cap():
+    workflow = Path(".github/workflows/freshness-check.yml").read_text(encoding="utf-8")
+    assert "check_blogger_publication_freshness.py" in workflow
+    assert "--max-age-minutes 240" in workflow
+    assert "blogger-syndication.yml" in workflow
+    assert "max_posts: '2'" in workflow
+    assert "45 * 60 * 1000" in workflow
+    assert "steps.freshness.outputs.recovery_required != 'true'" in workflow
