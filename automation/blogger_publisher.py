@@ -4,6 +4,8 @@ Handles OAuth2 token refresh and article publication to Blogger via API v3.
 Implements retry logic, failure recovery, and audit logging.
 """
 
+import html
+import re
 import time
 from typing import Optional
 
@@ -16,6 +18,30 @@ logger = setup_logger("blogger_publisher")
 
 BLOGGER_API_BASE = "https://www.googleapis.com/blogger/v3"
 TOKEN_URL = "https://oauth2.googleapis.com/token"
+
+# Blogger renders post content on index pages until its jump break. Large CTI
+# reports otherwise trigger automatic pagination, collapsing a requested list
+# of recent reports to a single post on desktop and mobile.
+_JUMP_BREAK = "<!--more-->"
+_FIRST_PARAGRAPH = re.compile(r"</p\\s*>", re.IGNORECASE)
+_MAX_INDEX_EXCERPT_BYTES = 4096
+
+
+def with_index_jump_break(content: str, title: str) -> str:
+    """Bound homepage HTML without truncating the canonical report body.
+
+    Keep an existing editor-authored jump break. Prefer the first complete
+    paragraph for the index; when a report has no early paragraph, use a
+    short escaped title teaser before the full report. The post permalink
+    always retains the entire original body after the marker.
+    """
+    if _JUMP_BREAK in content:
+        return content
+    first = _FIRST_PARAGRAPH.search(content)
+    if first and len(content[:first.end()].encode("utf-8")) <= _MAX_INDEX_EXCERPT_BYTES:
+        return content[:first.end()] + _JUMP_BREAK + content[first.end():]
+    teaser = f'<p class="cdb-index-excerpt">{html.escape(title, quote=True)}</p>'
+    return teaser + _JUMP_BREAK + content
 
 
 class BloggerAuthError(Exception):
@@ -174,7 +200,7 @@ class BloggerPublisher:
         payload = {
             "kind": "blogger#post",
             "title": title,
-            "content": content,
+            "content": with_index_jump_break(content, title),
             "labels": labels,
         }
         if image_url:
