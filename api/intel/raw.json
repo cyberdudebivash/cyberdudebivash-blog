@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-24T09:10:05.509Z",
+  "generated": "2026-09-24T14:20:42.320Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -8,60 +8,8 @@
   "endpoint": "/api/intel/raw.json",
   "description": "Raw unfiltered S2N feed — all items including suppressed. Enterprise tier.",
   "note": "Access requires Enterprise API key. Includes suppression_reason and full IOC data.",
-  "count": 114,
+  "count": 115,
   "items": [
-    {
-      "id": "CVE-2026-87902",
-      "title": "Hackers start exploiting critical WordPress flaw for code execution",
-      "description": "Threat actors have moved from probing WordPress sites vulnerable to CVE-2026-87902 to exploiting the flaw to write files to disk that execute shell commands when accessed. [...]",
-      "cvss": 9.2,
-      "final_ps": 66,
-      "quality_score": 0.473,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 3,
-      "merged_sources": [
-        "sentinel_apex",
-        "thehackernews",
-        "securityweek"
-      ],
-      "first_seen": "2026-09-24",
-      "last_seen": "2026-09-24",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-87902"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.bleepingcomputer.com/news/security/hackers-start-exploiting-critical-wordpress-flaw-for-code-execution/",
-        "https://thehackernews.com/2026/09/attackers-exploit-wordpress-cve-2026.html",
-        "https://www.securityweek.com/critical-wordpress-vulnerability-exploited-immediately-after-disclosure/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "multi_source=3 sources",
-          "recency=999d (score=0.05)",
-          "QS=0.473"
-        ],
-        "priority": [
-          "+10 CVSS≥9",
-          "+8 multi_source≥3"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
     {
       "id": "SENTINELAPEX-7ee9b9d6860d",
       "title": "Arista patches actively exploited VeloCloud Orchestrator zero-day",
@@ -202,6 +150,51 @@
       "iocs": []
     },
     {
+      "id": "BLEEPINGCOMPUTER-2020c664baac5f72",
+      "title": "CISA: Ransomware gangs now exploiting critical TeamCity flaw",
+      "description": "​The U.S. Cybersecurity and Infrastructure Security Agency (CISA) warned federal agencies on Wednesday that ransomware gangs are now also exploiting a critical JetBrains TeamCity vulnerability patched in July. [...]",
+      "cvss": 0,
+      "final_ps": 51,
+      "quality_score": 0.42,
+      "threat_level": "MEDIUM",
+      "type": "RANSOMWARE",
+      "source": "bleepingcomputer",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "bleepingcomputer"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": true,
+      "vendor": "BleepingComputer",
+      "product": "Threat Intelligence",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.bleepingcomputer.com/news/security/cisa-ransomware-gangs-now-exploiting-critical-teamcity-flaw/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.72 (bleepingcomputer)",
+          "data_confidence=0.65",
+          "recency=0d (score=1.00)",
+          "QS=0.420"
+        ],
+        "priority": [
+          "+10 ransomware_confirmed",
+          "+4 critical_infra"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "iocs": []
+    },
+    {
       "id": "CVE-2023-27351",
       "title": "CVE-2023-27351: PaperCut NG/MF Improper Authentication Vulnerability — CISA KEV Active Exploitation",
       "description": "",
@@ -327,6 +320,97 @@
           "+10 ransomware_confirmed",
           "+10 CVSS≥9",
           "+8 exploited_in_wild"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "SENTINELAPEX-a3b065125bfe",
+      "title": "CISA: Ransomware gangs now exploiting critical TeamCity flaw",
+      "description": "​The U.S. Cybersecurity and Infrastructure Security Agency (CISA) warned federal agencies on Wednesday that ransomware gangs are now also exploiting a critical JetBrains TeamCity vulnerability patched in July. [...]",
+      "cvss": 0,
+      "final_ps": 49,
+      "quality_score": 0.392,
+      "threat_level": "MEDIUM",
+      "type": "RANSOMWARE",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": true,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.bleepingcomputer.com/news/security/cisa-ransomware-gangs-now-exploiting-critical-teamcity-flaw/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.35",
+          "recency=0d (score=1.00)",
+          "QS=0.392"
+        ],
+        "priority": [
+          "+10 ransomware_confirmed",
+          "+4 critical_infra"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-86064",
+      "title": "Klever-Go: /log controls global node logging",
+      "description": "An unauthenticated client can connect to GET /log, send an arbitrary logger profile as the first WebSocket message, and mutate the node's global logging configuration before receiving live logs from the process. I confirmed this against a local validator built from this repositor... [Full analysis a",
+      "cvss": 8.6,
+      "final_ps": 48,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-23",
+      "last_seen": "2026-09-23",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-86064"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-9v8p-frvj-2pcm"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=48 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -706,21 +790,65 @@
       "iocs": []
     },
     {
-      "id": "SENTINELAPEX-107f3d79ba32",
-      "title": "InfraTrust report warns network management systems under attack",
-      "description": "Attackers are increasingly targeting the management systems used to control enterprise infrastructure, with several critical vulnerabilities actively exploited before or shortly after vendors disclosed them. [...]",
+      "id": "BLEEPINGCOMPUTER-3375141d84d4afdf",
+      "title": "Hackers now exploit critical Roundcube flaw in code injection attacks",
+      "description": "A high-severity Roundcube Webmail vulnerability patched in May is now being actively exploited in attacks, according to the Canadian Centre for Cyber Security. [...]",
+      "cvss": 0,
+      "final_ps": 46,
+      "quality_score": 0.48,
+      "threat_level": "MEDIUM",
+      "type": "AI_SECURITY",
+      "source": "bleepingcomputer",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "bleepingcomputer"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": true,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "BleepingComputer",
+      "product": "Threat Intelligence",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.bleepingcomputer.com/news/security/critical-roundcube-flaw-now-actively-exploited-in-code-injection-attacks/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.72 (bleepingcomputer)",
+          "data_confidence=0.65",
+          "recency=0d (score=1.00)",
+          "QS=0.480"
+        ],
+        "priority": [
+          "+8 exploited_in_wild"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "iocs": []
+    },
+    {
+      "id": "SENTINELAPEX-ddeaabf27dba",
+      "title": "Hackers now exploit critical Roundcube flaw in code injection attacks",
+      "description": "A high-severity Roundcube Webmail vulnerability patched in May is now being actively exploited in attacks, according to the Canadian Centre for Cyber Security. [...]",
       "cvss": 0,
       "final_ps": 45,
       "quality_score": 0.452,
       "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
+      "type": "AI_SECURITY",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-09-23",
-      "last_seen": "2026-09-23",
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
       "exploited": true,
       "cisa_kev": false,
       "ransomware": false,
@@ -730,7 +858,7 @@
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://www.bleepingcomputer.com/news/security/infratrust-report-warns-network-management-systems-under-attack/"
+        "https://www.bleepingcomputer.com/news/security/critical-roundcube-flaw-now-actively-exploited-in-code-injection-attacks/"
       ],
       "explanation": {
         "quality": [
@@ -846,41 +974,41 @@
       "iocs": []
     },
     {
-      "id": "SECURITYWEEK-b7bd29bc41188772",
-      "title": "US Court Sentences Armenian Man to Prison for Ryuk Ransomware Attacks",
-      "description": "Karen Vardanyan has also been ordered to pay over $1.2 million in restitution to victims. The post US Court Sentences Armenian Man to Prison for Ryuk Ransomware Attacks appeared first on SecurityWeek .",
+      "id": "SENTINELAPEX-107f3d79ba32",
+      "title": "InfraTrust report warns network management systems under attack",
+      "description": "Attackers are increasingly targeting the management systems used to control enterprise infrastructure, with several critical vulnerabilities actively exploited before or shortly after vendors disclosed them. [...]",
       "cvss": 0,
-      "final_ps": 42,
-      "quality_score": 0.415,
+      "final_ps": 43,
+      "quality_score": 0.438,
       "threat_level": "LOW",
-      "type": "RANSOMWARE",
-      "source": "securityweek",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
-        "securityweek"
+        "sentinel_apex"
       ],
-      "first_seen": "2026-09-24",
-      "last_seen": "2026-09-24",
-      "exploited": false,
+      "first_seen": "2026-09-23",
+      "last_seen": "2026-09-23",
+      "exploited": true,
       "cisa_kev": false,
-      "ransomware": true,
-      "vendor": "SecurityWeek",
-      "product": "Threat Intelligence",
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://www.securityweek.com/us-court-sentences-armenian-man-to-prison-for-ryuk-ransomware-attacks/"
+        "https://www.bleepingcomputer.com/news/security/infratrust-report-warns-network-management-systems-under-attack/"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.70 (securityweek)",
-          "data_confidence=0.65",
-          "recency=0d (score=1.00)",
-          "QS=0.415"
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.35",
+          "recency=1d (score=0.85)",
+          "QS=0.438"
         ],
         "priority": [
-          "+10 ransomware_confirmed"
+          "+8 exploited_in_wild"
         ],
         "suppression": "Single-source item with no CVE IDs or IOCs",
         "merge": null
@@ -1063,50 +1191,6 @@
           "+12 PoC_available",
           "+8 exploited_in_wild",
           "+7 zero_day"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
-      "iocs": []
-    },
-    {
-      "id": "SENTINELAPEX-33c90592899a",
-      "title": "Unattributed Ransomware Campaign — Active Threat",
-      "description": "OpenAI Agent Hacked Australian Government Medicare Portal in Worlds First Rogue AI Breach",
-      "cvss": 0,
-      "final_ps": 41,
-      "quality_score": 0.392,
-      "threat_level": "LOW",
-      "type": "RANSOMWARE",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-24",
-      "last_seen": "2026-09-24",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": true,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://intel.cyberdudebivash.com/reports/intel--1790238671/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.35",
-          "recency=0d (score=1.00)",
-          "QS=0.392"
-        ],
-        "priority": [
-          "+10 ransomware_confirmed"
         ],
         "suppression": "Single-source item with no CVE IDs or IOCs",
         "merge": null
@@ -3232,47 +3316,50 @@
       "iocs": []
     },
     {
-      "id": "SENTINELAPEX-18abcb70dac0",
-      "title": "CDB-RAN-04 Campaign",
-      "description": "New Galago Ransomware Operation Emerges With Links to Panzer Group",
-      "cvss": 0,
-      "final_ps": 39,
-      "quality_score": 0.343,
+      "id": "CVE-2026-85102",
+      "title": "Check Point warns of hackers exploiting Security Gateway VPN RCE flaw",
+      "description": "",
+      "cvss": 9.8,
+      "final_ps": 38,
+      "quality_score": 0.497,
       "threat_level": "LOW",
-      "type": "RANSOMWARE",
+      "type": "CVE_REPORT",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-09-24",
-      "last_seen": "2026-09-24",
-      "exploited": false,
+      "first_seen": "2026-09-23",
+      "last_seen": "2026-09-23",
+      "exploited": true,
       "cisa_kev": false,
-      "ransomware": true,
+      "ransomware": false,
       "vendor": "",
       "product": "",
       "due_date": null,
-      "cves": [],
+      "cves": [
+        "CVE-2026-85102"
+      ],
       "ioc_count": 0,
       "refs": [
-        "https://intel.cyberdudebivash.com/reports/intel--1790238667/"
+        "https://www.bleepingcomputer.com/news/security/check-point-warns-of-hackers-exploiting-security-gateway-vpn-rce-flaw/"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.10",
+          "data_confidence=0.45",
           "recency=0d (score=1.00)",
-          "QS=0.343"
+          "QS=0.497"
         ],
         "priority": [
-          "+10 ransomware_confirmed"
+          "+10 CVSS≥9",
+          "+8 exploited_in_wild"
         ],
-        "suppression": "Quality score below minimum threshold (QS < 0.35)",
+        "suppression": null,
         "merge": null
       },
-      "suppressed": true,
-      "suppression_reason": "Quality score below minimum threshold (QS < 0.35)",
+      "suppressed": false,
+      "suppression_reason": null,
       "iocs": []
     },
     {
@@ -3502,6 +3589,54 @@
         "priority": [
           "+10 CVSS≥9",
           "+4 critical_infra"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-87902",
+      "title": "Hackers start exploiting critical WordPress flaw for code execution",
+      "description": "",
+      "cvss": 9.2,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-87902"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.bleepingcomputer.com/news/security/hackers-start-exploiting-critical-wordpress-flaw-for-code-execution/",
+        "https://thehackernews.com/2026/09/attackers-exploit-wordpress-cve-2026.html",
+        "https://www.securityweek.com/critical-wordpress-vulnerability-exploited-immediately-after-disclosure/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
         ],
         "suppression": null,
         "merge": null
@@ -4852,52 +4987,6 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-86064",
-      "title": "Klever-Go: /log controls global node logging",
-      "description": "",
-      "cvss": 8.6,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-23",
-      "last_seen": "2026-09-23",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-86064"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-9v8p-frvj-2pcm"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
       "id": "CVE-2026-82407",
       "title": "Klever-Go: Validator registration accepts an unvalidated BLS public key → consensus liveness DoS",
       "description": "",
@@ -5109,52 +5198,6 @@
       "ioc_count": 0,
       "refs": [
         "https://github.com/advisories/GHSA-4fwh-wrm6-97xm"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-68490",
-      "title": "New Cpanel Vulnerability Allows Attackers to Access Other Users’ Accounts",
-      "description": "",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-23",
-      "last_seen": "2026-09-23",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-68490"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cybersecuritynews.com/cpanel-user-account-access-flaw/"
       ],
       "explanation": {
         "quality": [

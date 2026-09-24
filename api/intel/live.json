@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-24T09:10:05.509Z",
+  "generated": "2026-09-24T14:20:42.320Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,62 +7,13 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 5333,
+  "total_published": 5347,
   "s2n_stats": {
     "passed": 104,
-    "suppressed": 10,
+    "suppressed": 11,
     "avg_qs": 0.493
   },
   "items": [
-    {
-      "id": "CVE-2026-87902",
-      "title": "Hackers start exploiting critical WordPress flaw for code execution",
-      "description": "Threat actors have moved from probing WordPress sites vulnerable to CVE-2026-87902 to exploiting the flaw to write files to disk that execute shell commands when accessed. [...]",
-      "cvss": 9.2,
-      "final_ps": 66,
-      "quality_score": 0.473,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 3,
-      "merged_sources": [
-        "sentinel_apex",
-        "thehackernews",
-        "securityweek"
-      ],
-      "first_seen": "2026-09-24",
-      "last_seen": "2026-09-24",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-87902"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.bleepingcomputer.com/news/security/hackers-start-exploiting-critical-wordpress-flaw-for-code-execution/",
-        "https://thehackernews.com/2026/09/attackers-exploit-wordpress-cve-2026.html",
-        "https://www.securityweek.com/critical-wordpress-vulnerability-exploited-immediately-after-disclosure/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "multi_source=3 sources",
-          "recency=999d (score=0.05)",
-          "QS=0.473"
-        ],
-        "priority": [
-          "+10 CVSS≥9",
-          "+8 multi_source≥3"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
     {
       "id": "CVE-2026-82409",
       "title": "Klever-Go: Elasticsearch bulk / painless injection via on-chain account name -> explorer/indexer data forgery",
@@ -271,6 +222,49 @@
           "+10 ransomware_confirmed",
           "+10 CVSS≥9",
           "+8 exploited_in_wild"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-86064",
+      "title": "Klever-Go: /log controls global node logging",
+      "description": "An unauthenticated client can connect to GET /log, send an arbitrary logger profile as the first WebSocket message, and mutate the node's global logging configuration before receiving live logs from the process. I confirmed this against a local validator built from this repositor... [Full analysis a",
+      "cvss": 8.6,
+      "final_ps": 48,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-23",
+      "last_seen": "2026-09-23",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-86064"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-9v8p-frvj-2pcm"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=48 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -2807,6 +2801,52 @@
       "suppression_reason": null
     },
     {
+      "id": "CVE-2026-85102",
+      "title": "Check Point warns of hackers exploiting Security Gateway VPN RCE flaw",
+      "description": "Cybersecurity company Check Point has confirmed active exploitation of CVE-2026-85102, a pre-authentication remote code execution (RCE) vulnerability in the VPN certificate-handling functionality of its Security Gateway product. [...]",
+      "cvss": 9.8,
+      "final_ps": 38,
+      "quality_score": 0.497,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-23",
+      "last_seen": "2026-09-23",
+      "exploited": true,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-85102"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.bleepingcomputer.com/news/security/check-point-warns-of-hackers-exploiting-security-gateway-vpn-rce-flaw/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.497"
+        ],
+        "priority": [
+          "+10 CVSS≥9",
+          "+8 exploited_in_wild"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
       "id": "CVE-2026-93616",
       "title": "Check Point Fixes a New Actively Exploited Critical Security Flaw",
       "description": "Check Point fixes an actively exploited flaw that lets unauthenticated attackers upload and run scripts on vulnerable Security Management Servers. Check Point has released emergency hotfixes for CVE-2026-93616, a critical path traversal flaw in its Security Management Server. The... [Full analysis a",
@@ -3029,6 +3069,55 @@
         "priority": [
           "+10 CVSS≥9",
           "+4 critical_infra"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-87902",
+      "title": "Hackers start exploiting critical WordPress flaw for code execution",
+      "description": "Threat actors have moved from probing WordPress sites vulnerable to CVE-2026-87902 to exploiting the flaw to write files to disk that execute shell commands when accessed. [...]",
+      "cvss": 9.2,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 3,
+      "merged_sources": [
+        "sentinel_apex",
+        "thehackernews",
+        "securityweek"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-87902"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.bleepingcomputer.com/news/security/hackers-start-exploiting-critical-wordpress-flaw-for-code-execution/",
+        "https://thehackernews.com/2026/09/attackers-exploit-wordpress-cve-2026.html",
+        "https://www.securityweek.com/critical-wordpress-vulnerability-exploited-immediately-after-disclosure/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
         ],
         "suppression": null,
         "merge": null
@@ -4296,97 +4385,6 @@
         ],
         "priority": [
           "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-48842",
-      "title": "Critical: Roundcube Webmail SQL Injection Vulnerability Exploited in the Wild (CVE-2026-48842)",
-      "description": "Critical: Roundcube Webmail SQL Injection Vulnerability Exploited in the Wild (CVE-2026-48842)",
-      "cvss": null,
-      "final_ps": 25,
-      "quality_score": 0.428,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-24",
-      "last_seen": "2026-09-24",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-48842"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-48842",
-        "https://intel.cyberdudebivash.com/reports/2026/09/intel--1790238675_CVE-2026-48842.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.10",
-          "recency=0d (score=1.00)",
-          "QS=0.427"
-        ],
-        "priority": [
-          "+8 exploited_in_wild"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-86064",
-      "title": "Klever-Go: /log controls global node logging",
-      "description": "An unauthenticated client can connect to GET /log, send an arbitrary logger profile as the first WebSocket message, and mutate the node's global logging configuration before receiving live logs from the process. I confirmed this against a local validator built from this repositor... [Full analysis a",
-      "cvss": 8.6,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-23",
-      "last_seen": "2026-09-23",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-86064"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-9v8p-frvj-2pcm"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
         ],
         "suppression": null,
         "merge": null
