@@ -40,7 +40,7 @@ describe('POST /api/v1/billing/gumroad-webhook', () => {
   const originalSecret = process.env.GUMROAD_WEBHOOK_SECRET;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
     process.env.GUMROAD_WEBHOOK_SECRET = SECRET;
     mockRedis.exists.mockResolvedValue(0);
   });
@@ -109,6 +109,27 @@ describe('POST /api/v1/billing/gumroad-webhook', () => {
     expect(res.statusCode).toBe(200);
     expect(res.body).toEqual({ received: true, status: 'already_recorded', sale_id: 'sale_1' });
     expect(mockRedis.hmset).not.toHaveBeenCalled();
+  });
+
+  test('partial storage failure remains retryable and completion is last', async () => {
+    mockRedis.hmset.mockRejectedValueOnce(new Error('temporary failure'));
+    const first = response();
+    await handleGumroadWebhook(request(), first);
+    expect(first.statusCode).toBe(500);
+    expect(mockRedis.setex).not.toHaveBeenCalled();
+    const retry = response();
+    await handleGumroadWebhook(request(), retry);
+    expect(retry.statusCode).toBe(200);
+    expect(mockRedis.setex.mock.invocationCallOrder[0]).toBeGreaterThan(mockRedis.zadd.mock.invocationCallOrder[0]);
+  });
+
+  test('dedup storage outage fails closed before writing sale', async () => {
+    mockRedis.exists.mockRejectedValueOnce(new Error('unavailable'));
+    const res = response();
+    await handleGumroadWebhook(request(), res);
+    expect(res.statusCode).toBe(500);
+    expect(mockRedis.hmset).not.toHaveBeenCalled();
+    expect(mockRedis.setex).not.toHaveBeenCalled();
   });
 
   test('a refunded sale is recorded with refunded: true', async () => {
