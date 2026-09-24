@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-24T03:56:03.095Z",
+  "generated": "2026-09-24T09:10:05.509Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,13 +7,105 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 5329,
+  "total_published": 5333,
   "s2n_stats": {
-    "passed": 117,
-    "suppressed": 6,
-    "avg_qs": 0.481
+    "passed": 104,
+    "suppressed": 10,
+    "avg_qs": 0.493
   },
   "items": [
+    {
+      "id": "CVE-2026-87902",
+      "title": "Hackers start exploiting critical WordPress flaw for code execution",
+      "description": "Threat actors have moved from probing WordPress sites vulnerable to CVE-2026-87902 to exploiting the flaw to write files to disk that execute shell commands when accessed. [...]",
+      "cvss": 9.2,
+      "final_ps": 66,
+      "quality_score": 0.473,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 3,
+      "merged_sources": [
+        "sentinel_apex",
+        "thehackernews",
+        "securityweek"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-87902"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.bleepingcomputer.com/news/security/hackers-start-exploiting-critical-wordpress-flaw-for-code-execution/",
+        "https://thehackernews.com/2026/09/attackers-exploit-wordpress-cve-2026.html",
+        "https://www.securityweek.com/critical-wordpress-vulnerability-exploited-immediately-after-disclosure/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "multi_source=3 sources",
+          "recency=999d (score=0.05)",
+          "QS=0.473"
+        ],
+        "priority": [
+          "+10 CVSS≥9",
+          "+8 multi_source≥3"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-82409",
+      "title": "Klever-Go: Elasticsearch bulk / painless injection via on-chain account name -> explorer/indexer data forgery",
+      "description": "Component: Elasticsearch indexer (indexer/)\nPrimary location: indexer/common.go:2395-2407 (serializedDataForUpdateAccounts)\nEntry point: SetAccountName native transaction (contract type 12) — core/process/transaction/txProcess.go:688\n\nDescription\n\nWhen the node indexes account up... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 54,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "CRITICAL_INFRASTRUCTURE",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-23",
+      "last_seen": "2026-09-23",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-82409"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-7c7c-373r-gfjj"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "+4 critical_infra"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
     {
       "id": "CVE-2026-50522",
       "title": "Critical SharePoint RCE CVE-2026-50522 Under Active Exploitation After Public PoC",
@@ -312,6 +404,221 @@
           "+10 CVSS≥9",
           "+8 exploited_in_wild",
           "+7 zero_day"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-56669",
+      "title": "elysia has Inefficient Algorithmic Complexity and Interpretation Conflict",
+      "description": "Elysia v1.4.28 is vulnerable to denial-of-service attacks due to CPU exhaustion in the form data normalization code.\n\nElysia uses getAll to retrieve value from FormData. It is called directly relative to the total number of key-value pairs in the form data. The total amount of wo... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 46,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-23",
+      "last_seen": "2026-09-23",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-56669"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-9643-4qgh-g8mx"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=46 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-61685",
+      "title": "ReactPress has SQL injection via dynamic column names in TypeORM query builders",
+      "description": "Summary\n\nReactPress API list endpoints build TypeORM QueryBuilder conditions using\nunsanitized HTTP query parameter *names* as SQL column identifiers\n(e.g. ` article.${key} `). TypeORM parameterizes values but not column\nnames, allowing unauthenticated attackers to inject SQL thr... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 46,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-23",
+      "last_seen": "2026-09-23",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-61685"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-wmw4-mw6x-6vfm"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=46 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-77394",
+      "title": "OpenC3 COSMOS: Stored, cross-user XSS via Telemetry screen BUTTON widget",
+      "description": "Summary\nA user who can save a telemetry screen (permission system_set) can embed JavaScript in a screen BUTTON widget. The BUTTON widget eval()s the stored button text in the browser when the button is activated, and screens are shared content rendered to other users in the scope... [Full analysis a",
+      "cvss": 7.6,
+      "final_ps": 46,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-23",
+      "last_seen": "2026-09-23",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-77394"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-gvf2-2rh5-mpgf"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=46 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-76089",
+      "title": "Formie: Missing authorization on sent notification resend modal exposes submission PII",
+      "description": "Impact\n\nThe control panel action formie/sent-notifications/get-resend-modal-content (SentNotificationsController::actionGetResendModalContent) performed only requireAcceptsJson() and loaded a SentNotification by request id without permission or object-level authorization checks.\n... [Full analysis a",
+      "cvss": 7.7,
+      "final_ps": 46,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-23",
+      "last_seen": "2026-09-23",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-76089"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-9rg8-2wvr-fgjh"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=46 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-59990",
+      "title": "Jawn: Uncontrolled nesting depth in JSON parser",
+      "description": "The Jawn parser before 1.6.1 is vulnerable to a denial of service attack via untrusted input.\n\nImpact\n\nA remote attacker who can submit JSON to any jawn-backed parse method can exhaust JVM heap and trigger java.lang.OutOfMemoryError.  This is treated by Scala as a fatal error and... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 46,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-23",
+      "last_seen": "2026-09-23",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-59990"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-cc4v-rvgp-2pf3"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=46 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -2004,7 +2311,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2026-15158",
@@ -2047,7 +2356,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2026-60206",
@@ -2089,7 +2400,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2026-49952",
@@ -2131,7 +2444,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2026-65761",
@@ -2173,7 +2488,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2026-15409",
@@ -2217,7 +2534,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2024-24919",
@@ -2261,7 +2580,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2026-13001",
@@ -2616,6 +2937,52 @@
         "priority": [
           "+10 CVSS≥9",
           "+8 exploited_in_wild"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-94127",
+      "title": "F5 BIG-IP APM Zero-Day Exploited in Zero-Day RCE Attacks",
+      "description": "F5 warns of a critical BIG-IP APM zero-day, CVE-2026-94127, allowing remote code execution. Attackers are already exploiting it. F5 has released emergency security updates for a critical vulnerability, tracked as CVE-2026-94127 (CVSS score of 9.8), in BIG-IP Access Policy Manager... [Full analysis a",
+      "cvss": 9.8,
+      "final_ps": 35,
+      "quality_score": 0.438,
+      "threat_level": "HIGH",
+      "type": "ZERO_DAY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-23",
+      "last_seen": "2026-09-23",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-94127"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://securityaffairs.com/199619/security/f5-big-ip-apm-zero-day-exploited-in-zero-day-rce-attacks.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9",
+          "+7 zero_day"
         ],
         "suppression": null,
         "merge": null
@@ -3937,12 +4304,12 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-16828",
-      "title": "CVE-2026-16828: IBM Power Systems Firmware FW1120.00, FW1110.00 through FW1110.30, FW1060.00 through FW1060.80, and FW95",
-      "description": "IBM Power Systems Firmware FW1120.00, FW1110.00 through FW1110.30, FW1060.00 through FW1060.80, and FW950.00 through FW950.H2 is affected by a vulnerability in the ASMI web interface. An unauthenticated attacker on the management network can cause the ASMI web server to crash wit... [Full analysis a",
-      "cvss": 9.1,
-      "final_ps": 28,
-      "quality_score": 0.438,
+      "id": "CVE-2026-48842",
+      "title": "Critical: Roundcube Webmail SQL Injection Vulnerability Exploited in the Wild (CVE-2026-48842)",
+      "description": "Critical: Roundcube Webmail SQL Injection Vulnerability Exploited in the Wild (CVE-2026-48842)",
+      "cvss": null,
+      "final_ps": 25,
+      "quality_score": 0.428,
       "threat_level": "MEDIUM",
       "type": "CVE_REPORT",
       "source": "sentinel_apex",
@@ -3950,72 +4317,28 @@
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-08-19",
-      "last_seen": "2026-08-19",
-      "exploited": false,
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": true,
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "",
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-16828"
+        "CVE-2026-48842"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-16828"
+        "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-48842",
+        "https://intel.cyberdudebivash.com/reports/2026/09/intel--1790238675_CVE-2026-48842.html"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
+          "data_confidence=0.10",
           "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-85102",
-      "title": "Check Point warns of hackers exploiting Security Gateway VPN RCE flaw",
-      "description": "Cybersecurity company Check Point has confirmed active exploitation of CVE-2026-85102, a pre-authentication remote code execution (RCE) vulnerability in the VPN certificate-handling functionality of its Security Gateway product. [...]",
-      "cvss": 0,
-      "final_ps": 26,
-      "quality_score": 0.455,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "bleepingcomputer",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "bleepingcomputer"
-      ],
-      "first_seen": "2026-09-23",
-      "last_seen": "2026-09-23",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "BleepingComputer",
-      "product": "Threat Intelligence",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-85102"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.bleepingcomputer.com/news/security/check-point-warns-of-hackers-exploiting-security-gateway-vpn-rce-flaw/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.72 (bleepingcomputer)",
-          "data_confidence=0.40",
-          "recency=0d (score=1.00)",
-          "QS=0.455"
+          "QS=0.427"
         ],
         "priority": [
           "+8 exploited_in_wild"
@@ -4027,360 +4350,21 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-17613",
-      "title": "CVE-2026-17613: Penpot cross-team file takeover via import-binfile (unpatched in 2.17.2)",
-      "description": "Posted by Louis Sanchez via Fulldisclosure on Sep 22 Posting this as an update rather than a first disclosure. The advisory\nwent public on 2026-08-04 with no vendor fix. Penpot has shipped two\nreleases since then, 2.17.1 and 2.17.2 -- the latter 14 days ago, on\n2026-08-27 -- and ... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 25,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-22",
-      "last_seen": "2026-09-22",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-17613"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://seclists.org/fulldisclosure/2026/Sep/47"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+7 zero_day"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-82409",
-      "title": "Klever-Go: Elasticsearch bulk / painless injection via on-chain account name -> explorer/indexer data forgery",
-      "description": "**Component:** Elasticsearch indexer (`indexer/`)\n**Primary location:** `indexer/common.go:2395-2407` (`serializedDataForUpdateAccounts`)\n**Entry point:** `SetAccountName` native transaction (contract type 12) — `core/process/transaction/txProcess.go:688` --- ## Description When the node indexes acc",
-      "cvss": 0,
-      "final_ps": 22,
-      "quality_score": 0.453,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-09-23",
-      "last_seen": "2026-09-23",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "go",
-      "product": "github.com/klever-io/klever-go",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-82409",
-        "CVE-2026-82409"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-7c7c-373r-gfjj",
-        "https://github.com/klever-io/klever-go/security/advisories/GHSA-7c7c-373r-gfjj",
-        "https://github.com/klever-io/klever-go/commit/f00366768b24be18fa7ae9de2e1905caa8b350af",
-        "https://github.com/klever-io/klever-go/commit/f54ea730cc80a3ba4f906586a7d221b281548190"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.40",
-          "recency=0d (score=1.00)",
-          "QS=0.453"
-        ],
-        "priority": [
-          "+4 critical_infra"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-56669",
-      "title": "elysia has Inefficient Algorithmic Complexity and Interpretation Conflict",
-      "description": "Elysia v1.4.28 is vulnerable to denial-of-service attacks due to CPU exhaustion in the form data normalization code. Elysia uses `getAll` to retrieve value from FormData. It is called directly relative to the total number of key-value pairs in the form data. The total amount of work the for loop has",
-      "cvss": 7.5,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-09-23",
-      "last_seen": "2026-09-23",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "npm",
-      "product": "elysia",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-56669",
-        "CVE-2026-56669"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-9643-4qgh-g8mx",
-        "https://github.com/elysiajs/elysia/security/advisories/GHSA-9643-4qgh-g8mx",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-56669",
-        "https://github.com/elysiajs/elysia/commit/8358ff9efbcedf9534995f5977f26b9ceab59329"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-59990",
-      "title": "Jawn: Uncontrolled nesting depth in JSON parser",
-      "description": "The Jawn parser before 1.6.1 is vulnerable to a denial of service attack via untrusted input. ### Impact A remote attacker who can submit JSON to any jawn-backed parse method can exhaust JVM heap and trigger `java.lang.OutOfMemoryError`. This is treated by Scala as a fatal error and not typically ha",
-      "cvss": 7.5,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-09-23",
-      "last_seen": "2026-09-23",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "maven",
-      "product": "org.typelevel:jawn-parser_2.12",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-59990",
-        "CVE-2026-59990"
-      ],
-      "ioc_count": 1,
-      "refs": [
-        "https://github.com/advisories/GHSA-cc4v-rvgp-2pf3",
-        "https://github.com/typelevel/jawn/security/advisories/GHSA-cc4v-rvgp-2pf3",
-        "https://github.com/typelevel/jawn/commit/191cb3a44e77f1afab439ee636bf66bdf3c54a04",
-        "https://github.com/typelevel/jawn/commit/6219666641f9408498f85868f835e17bd8a72fed"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-61685",
-      "title": "ReactPress has SQL injection via dynamic column names in TypeORM query builders",
-      "description": "## Summary ReactPress API list endpoints build TypeORM `QueryBuilder` conditions using\nunsanitized HTTP query parameter *names* as SQL column identifiers\n(e.g. `` `article.${key}` ``). TypeORM parameterizes values but not column\nnames, allowing unauthenticated attackers to inject SQL through crafted",
-      "cvss": 7.5,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-09-23",
-      "last_seen": "2026-09-23",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "npm",
-      "product": "@fecommunity/reactpress",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61685",
-        "CVE-2026-61685"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-wmw4-mw6x-6vfm",
-        "https://github.com/fecommunity/reactpress/security/advisories/GHSA-wmw4-mw6x-6vfm",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-61685",
-        "https://github.com/fecommunity/reactpress/commit/78ecb70af1c021455c05fdcbe137212c70e310d6"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-77394",
-      "title": "OpenC3 COSMOS: Stored, cross-user XSS via Telemetry screen BUTTON widget",
-      "description": "## Summary\nA user who can save a telemetry **screen** (permission `system_set`) can embed JavaScript in a screen `BUTTON` widget. The `BUTTON` widget **`eval()`s the stored button text in the browser** when the button is activated, and screens are **shared content rendered to other users in the scop",
-      "cvss": 7.6,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-09-23",
-      "last_seen": "2026-09-23",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "npm",
-      "product": "@openc3/vue-common",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-77394",
-        "CVE-2026-77394"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-gvf2-2rh5-mpgf",
-        "https://github.com/OpenC3/cosmos/security/advisories/GHSA-gvf2-2rh5-mpgf",
-        "https://github.com/OpenC3/cosmos/pull/3560",
-        "https://github.com/OpenC3/cosmos/commit/10371f8f410b9ad588f98dfa3befaaacb6587cd3"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-76089",
-      "title": "Formie: Missing authorization on sent notification resend modal exposes submission PII",
-      "description": "### Impact The control panel action `formie/sent-notifications/get-resend-modal-content` (`SentNotificationsController::actionGetResendModalContent`) performed only `requireAcceptsJson()` and loaded a `SentNotification` by request `id` without permission or object-level authorization checks. Any aut",
-      "cvss": 7.7,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-09-23",
-      "last_seen": "2026-09-23",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "composer",
-      "product": "verbb/formie",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-76089",
-        "CVE-2026-76089"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-9rg8-2wvr-fgjh",
-        "https://github.com/verbb/formie/security/advisories/GHSA-9rg8-2wvr-fgjh",
-        "https://github.com/verbb/formie/commit/9f4e23c36b907ed7677563231eaba373fdb8b84b",
-        "https://github.com/verbb/formie/commit/ff81a895fa91a2e4efb8d4714501ba2d92df0b76"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-55099",
-      "title": "icalendar has Algorithmic Complexity in Equality",
-      "description": "Summary\n\nComponent.__eq__ compares subcomponents in O(2^n) time relative to nesting depth. Because the parser accepts arbitrarily nested components, a sub-kilobyte .ics file is enough to make a single equality check run for minutes or hang indefinitely. Any application that compa... [Full analysis a",
-      "cvss": 7.5,
+      "id": "CVE-2026-86064",
+      "title": "Klever-Go: /log controls global node logging",
+      "description": "An unauthenticated client can connect to GET /log, send an arbitrary logger profile as the first WebSocket message, and mutate the node's global logging configuration before receiving live logs from the process. I confirmed this against a local validator built from this repositor... [Full analysis a",
+      "cvss": 8.6,
       "final_ps": 18,
       "quality_score": 0.438,
       "threat_level": "MEDIUM",
-      "type": "CRITICAL_INFRASTRUCTURE",
+      "type": "NEWS_REPORT",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-08-25",
-      "last_seen": "2026-08-25",
+      "first_seen": "2026-09-23",
+      "last_seen": "2026-09-23",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -4388,11 +4372,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-55099"
+        "CVE-2026-86064"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-cv84-9p8j-fj68"
+        "https://github.com/advisories/GHSA-9v8p-frvj-2pcm"
       ],
       "explanation": {
         "quality": [
