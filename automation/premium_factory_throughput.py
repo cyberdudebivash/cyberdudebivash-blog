@@ -51,13 +51,14 @@ logger = setup_logger("premium_factory_throughput")
 # P0-SEARCH-RECOVERY-2026-09-22:
 # Search Console shows a sustained CTI visibility collapse after 2026-08-16.
 # Keep public publishing selective while root-cause recovery is measured.
-# Eight runs/day * two writes/run gives a hard theoretical ceiling of 16 new
-# Blogger pages/day, while the normal operating goal is 12 and floor is 6.
+# Eight runs/day * four writes/run gives a bounded theoretical ceiling of 32
+# Blogger pages/day. Eligibility, source evidence and fetch-back gates remain
+# unchanged; this capacity is not a guarantee of 32 eligible reports.
 # Internal feeds/APIs are not constrained by these public-page limits.
 FACTORY_DAILY_FLOOR = 6
-FACTORY_DAILY_GOAL = 12
+FACTORY_DAILY_GOAL = 24
 FACTORY_RUNS_PER_DAY = 8
-FACTORY_WRITE_BURST = 2
+FACTORY_WRITE_BURST = 4
 FACTORY_RETRY_QUEUE_LIMIT = 500
 FACTORY_RETRY_ATTEMPTS = 5
 FACTORY_KEY_JUDGEMENT_MAX = 4
