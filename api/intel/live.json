@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-24T14:20:42.320Z",
+  "generated": "2026-09-24T18:36:43.239Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,11 +7,11 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 5347,
+  "total_published": 5351,
   "s2n_stats": {
-    "passed": 104,
-    "suppressed": 11,
-    "avg_qs": 0.493
+    "passed": 102,
+    "suppressed": 7,
+    "avg_qs": 0.497
   },
   "items": [
     {
@@ -222,49 +222,6 @@
           "+10 ransomware_confirmed",
           "+10 CVSS≥9",
           "+8 exploited_in_wild"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-86064",
-      "title": "Klever-Go: /log controls global node logging",
-      "description": "An unauthenticated client can connect to GET /log, send an arbitrary logger profile as the first WebSocket message, and mutate the node's global logging configuration before receiving live logs from the process. I confirmed this against a local validator built from this repositor... [Full analysis a",
-      "cvss": 8.6,
-      "final_ps": 48,
-      "quality_score": 0.493,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-23",
-      "last_seen": "2026-09-23",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-86064"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-9v8p-frvj-2pcm"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=0d (score=1.00)",
-          "QS=0.493"
-        ],
-        "priority": [
-          "base_ps=48 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -560,49 +517,6 @@
       "ioc_count": 0,
       "refs": [
         "https://github.com/advisories/GHSA-9rg8-2wvr-fgjh"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=0d (score=1.00)",
-          "QS=0.493"
-        ],
-        "priority": [
-          "base_ps=46 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-59990",
-      "title": "Jawn: Uncontrolled nesting depth in JSON parser",
-      "description": "The Jawn parser before 1.6.1 is vulnerable to a denial of service attack via untrusted input.\n\nImpact\n\nA remote attacker who can submit JSON to any jawn-backed parse method can exhaust JVM heap and trigger java.lang.OutOfMemoryError.  This is treated by Scala as a fatal error and... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 46,
-      "quality_score": 0.493,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-23",
-      "last_seen": "2026-09-23",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-59990"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-cc4v-rvgp-2pf3"
       ],
       "explanation": {
         "quality": [
@@ -2305,9 +2219,7 @@
         ],
         "suppression": null,
         "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
+      }
     },
     {
       "id": "CVE-2026-15158",
@@ -2350,9 +2262,7 @@
         ],
         "suppression": null,
         "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
+      }
     },
     {
       "id": "CVE-2026-60206",
@@ -3069,6 +2979,51 @@
         "priority": [
           "+10 CVSS≥9",
           "+4 critical_infra"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-59167",
+      "title": "SunEditor: Critical XSS vulnerability - sanitizer bypass",
+      "description": "Summary\n\nSUNEDITOR v2.47.10 appears to allow JavaScript execution through crafted namespaced HTML elements.\n\nThe sanitization logic does not fully remove executable event-handler attributes from certain custom/namespaced tags. As a result, an attacker may be able to inject HTML c... [Full analysis a",
+      "cvss": 10,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-59167"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-6rf4-v2fh-m6p4"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
         ],
         "suppression": null,
         "merge": null
@@ -4123,43 +4078,47 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-16836",
-      "title": "CVE-2026-16836: IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a remote attacker to cause a denial of service",
-      "description": "IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a remote attacker to cause a denial of service due to uncontrolled resource consumption.",
-      "cvss": 9.8,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "AI_SECURITY",
-      "source": "sentinel_apex",
+      "id": "CVE-2026-63498",
+      "title": "Snipe-IT: Stored XSS via Inline XML Rendering in the Uploaded Files API",
+      "description": "Snipe-IT's uploaded-files API accepts XML documents and later serves them inline without applying the safe-inline allowlist used by the equivalent web controller. An authenticated user who can attach files to a supported object can upload an XSLT stylesheet and an XML document that references it thr",
+      "cvss": 8.7,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
       "sources_confirmed": 1,
       "merged_sources": [
-        "sentinel_apex"
+        "github_advisories"
       ],
-      "first_seen": "2026-08-19",
-      "last_seen": "2026-08-19",
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "",
-      "product": "",
+      "vendor": "composer",
+      "product": "snipe/snipe-it",
       "due_date": null,
       "cves": [
-        "CVE-2026-16836"
+        "CVE-2026-63498",
+        "CVE-2026-63498"
       ],
-      "ioc_count": 0,
+      "ioc_count": 1,
       "refs": [
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-16836"
+        "https://github.com/advisories/GHSA-396x-xmvh-p563",
+        "https://github.com/grokability/snipe-it/security/advisories/GHSA-396x-xmvh-p563",
+        "https://github.com/grokability/snipe-it/commit/e929b31f0b183c5810bd2b833c1f6f643cbe5284",
+        "https://github.com/grokability/snipe-it/releases/tag/v8.7.0"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
           "recency=0d (score=1.00)",
-          "QS=0.438"
+          "QS=0.523"
         ],
         "priority": [
-          "+10 CVSS≥9"
+          "base_ps=21 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4168,43 +4127,47 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-16831",
-      "title": "CVE-2026-16831: IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a remote attacker to cause a denial of service",
-      "description": "IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a remote attacker to cause a denial of service due to uncontrolled resource consumption.",
-      "cvss": 9.8,
-      "final_ps": 28,
-      "quality_score": 0.438,
+      "id": "CVE-2026-85057",
+      "title": "ZITADEL: Actions V1 sandbox escape: host file read via require()",
+      "description": "### Summary A vulnerability in ZITADEL Actions V1 allows an organization Action author to read files from the ZITADEL host filesystem through the JavaScript `require()` module loader. On common self-hosted deployments this can be chained to steal bootstrap credentials (including the Login Client PAT",
+      "cvss": 8.7,
+      "final_ps": 21,
+      "quality_score": 0.523,
       "threat_level": "MEDIUM",
-      "type": "AI_SECURITY",
-      "source": "sentinel_apex",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
       "sources_confirmed": 1,
       "merged_sources": [
-        "sentinel_apex"
+        "github_advisories"
       ],
-      "first_seen": "2026-08-19",
-      "last_seen": "2026-08-19",
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "",
-      "product": "",
+      "vendor": "go",
+      "product": "github.com/zitadel/zitadel",
       "due_date": null,
       "cves": [
-        "CVE-2026-16831"
+        "CVE-2026-85057",
+        "CVE-2026-85057"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-16831"
+        "https://github.com/advisories/GHSA-fgmf-7rf8-m6vf",
+        "https://github.com/zitadel/zitadel/security/advisories/GHSA-fgmf-7rf8-m6vf",
+        "https://github.com/zitadel/zitadel/commit/afe108640cf57a17e8b743fbcdad9ae636eb3eb7",
+        "https://github.com/zitadel/zitadel/commit/baf6ed501b684f47048553d9034e8d3aa824950e"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
           "recency=0d (score=1.00)",
-          "QS=0.438"
+          "QS=0.523"
         ],
         "priority": [
-          "+10 CVSS≥9"
+          "base_ps=21 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4213,43 +4176,47 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-16850",
-      "title": "CVE-2026-16850: IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a remote attacker to execute arbitrary code du",
-      "description": "IBM AIX 7.2, and 7.3 and IBM PowerVM VIOS 4.1 could allow a remote attacker to execute arbitrary code due to command injection via crafted Router Advertisements.",
-      "cvss": 9,
-      "final_ps": 28,
-      "quality_score": 0.438,
+      "id": "CVE-2026-85056",
+      "title": "ZITADEL: MFA bypass via session reuse in Login V2",
+      "description": "### Summary A vulnerability in ZITADEL’s Login V2 UI allowed a password-verified browser session to be reused for a new authentication request without re-checking a user’s enrolled second factor (TOTP, OTP, or U2F). An attacker who already knows valid credentials can fully authenticate to an applica",
+      "cvss": 8.2,
+      "final_ps": 21,
+      "quality_score": 0.523,
       "threat_level": "MEDIUM",
-      "type": "AI_SECURITY",
-      "source": "sentinel_apex",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
       "sources_confirmed": 1,
       "merged_sources": [
-        "sentinel_apex"
+        "github_advisories"
       ],
-      "first_seen": "2026-08-19",
-      "last_seen": "2026-08-19",
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "",
-      "product": "",
+      "vendor": "go",
+      "product": "github.com/zitadel/zitadel",
       "due_date": null,
       "cves": [
-        "CVE-2026-16850"
+        "CVE-2026-85056",
+        "CVE-2026-85056"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-16850"
+        "https://github.com/advisories/GHSA-9993-rfwp-rhwf",
+        "https://github.com/zitadel/zitadel/security/advisories/GHSA-9993-rfwp-rhwf",
+        "https://github.com/zitadel/zitadel/commit/049dbb25a56587fb3980c85c99819cad69f637db",
+        "https://github.com/zitadel/zitadel/commit/56f4798ed31fc1cfcd9a0e7f6f0152289d2fdc43"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
           "recency=0d (score=1.00)",
-          "QS=0.438"
+          "QS=0.523"
         ],
         "priority": [
-          "+10 CVSS≥9"
+          "base_ps=21 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4258,43 +4225,47 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-75149",
-      "title": "CVE-2026-75149: marimo before 0.23.15 contains a code injection vulnerability in the notebook configuration handler that",
-      "description": "marimo before 0.23.15 contains a code injection vulnerability in the notebook configuration handler that allows attackers to execute arbitrary commands by supplying a crafted MCP server entry with an attacker-controlled command value embedded in a notebook. When the notebook is o... [Full analysis a",
-      "cvss": 9.1,
-      "final_ps": 28,
-      "quality_score": 0.438,
+      "id": "CVE-2026-62368",
+      "title": "Snipe-IT: Stored XSS via Custom Field name in asset-list column headers",
+      "description": "### Impact\nA user with the \"customfields.create\" permission can store HTML/JS in a Custom Field name, which is later rendered as an asset-list column title WITHOUT escaping at app/Presenters/AssetPresenter.php line 364 ('title' => $field->name) and injected into the table header by the bundled boots",
+      "cvss": 8.1,
+      "final_ps": 21,
+      "quality_score": 0.523,
       "threat_level": "MEDIUM",
-      "type": "AI_SECURITY",
-      "source": "sentinel_apex",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
       "sources_confirmed": 1,
       "merged_sources": [
-        "sentinel_apex"
+        "github_advisories"
       ],
-      "first_seen": "2026-08-19",
-      "last_seen": "2026-08-19",
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "",
-      "product": "",
+      "vendor": "composer",
+      "product": "snipe/snipe-it",
       "due_date": null,
       "cves": [
-        "CVE-2026-75149"
+        "CVE-2026-62368",
+        "CVE-2026-62368"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-75149"
+        "https://github.com/advisories/GHSA-p9h3-gvpq-5539",
+        "https://github.com/grokability/snipe-it/security/advisories/GHSA-p9h3-gvpq-5539",
+        "https://github.com/grokability/snipe-it/commit/58754e4e3b86b58a0c4523012ef04a2ae990d2c8",
+        "https://github.com/grokability/snipe-it/releases/tag/v8.7.0"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
           "recency=0d (score=1.00)",
-          "QS=0.438"
+          "QS=0.523"
         ],
         "priority": [
-          "+10 CVSS≥9"
+          "base_ps=21 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4303,43 +4274,47 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-66794",
-      "title": "CVE-2026-66794: A flaw was found in the cluster-proxy-addon component of Multicluster Engine for Kubernetes. This vulner",
-      "description": "A flaw was found in the cluster-proxy-addon component of Multicluster Engine for Kubernetes. This vulnerability allows an unauthenticated attacker, who can access the user-facing route, to bypass authentication and authorization checks. By manipulating URL path segments, the atta... [Full analysis a",
-      "cvss": 9.1,
-      "final_ps": 28,
-      "quality_score": 0.438,
+      "id": "CVE-2026-63493",
+      "title": "Snipe-IT: 2FA bypass via the API token flow",
+      "description": "### Impact An attacker who knows a victim's password fully bypasses that account's 2FA and obtains a persistent token with full API access as the user (read and write across the user's permissions, including admin if the victim is an admin). The token is an API credential, not a web/UI session (usin",
+      "cvss": 7.5,
+      "final_ps": 21,
+      "quality_score": 0.523,
       "threat_level": "MEDIUM",
-      "type": "CLOUD_SECURITY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 2,
       "merged_sources": [
+        "github_advisories",
         "sentinel_apex"
       ],
-      "first_seen": "2026-08-19",
-      "last_seen": "2026-08-19",
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "",
-      "product": "",
+      "vendor": "composer",
+      "product": "snipe/snipe-it",
       "due_date": null,
       "cves": [
-        "CVE-2026-66794"
+        "CVE-2026-63493"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-66794"
+        "https://github.com/advisories/GHSA-hxcx-9h4f-42xx",
+        "https://github.com/grokability/snipe-it/security/advisories/GHSA-hxcx-9h4f-42xx",
+        "https://github.com/grokability/snipe-it/pull/19294",
+        "https://github.com/grokability/snipe-it/commit/87c362962a670f427be071850b218e43eff5d08e"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
           "recency=0d (score=1.00)",
-          "QS=0.438"
+          "QS=0.523"
         ],
         "priority": [
-          "+10 CVSS≥9"
+          "base_ps=21 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4348,11 +4323,11 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-16835",
-      "title": "CVE-2026-16835: IBM Power Systems Firmware FW1120.00, FW1110.00 through FW1110.30, FW1060.00 through FW1060.80, and FW95",
-      "description": "IBM Power Systems Firmware FW1120.00, FW1110.00 through FW1110.30, FW1060.00 through FW1060.80, and FW950.00 through FW950.H2 is affected by a vulnerability in the FSP management network protocol. An unauthenticated attacker on the management network can bypass authentication and... [Full analysis a",
-      "cvss": 9.1,
-      "final_ps": 28,
+      "id": "CVE-2026-94606",
+      "title": "CVE-2026-94606 authentik: MFA Bypass via State Confusion / Parameter Injection in AuthenticatorEmailStage",
+      "description": "CVE-2026-94606 authentik: MFA Bypass via State Confusion / Parameter Injection in AuthenticatorEmailStage",
+      "cvss": 7.5,
+      "final_ps": 18,
       "quality_score": 0.438,
       "threat_level": "MEDIUM",
       "type": "CVE_REPORT",
@@ -4361,8 +4336,8 @@
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-08-19",
-      "last_seen": "2026-08-19",
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -4370,11 +4345,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-16835"
+        "CVE-2026-94606"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-16835"
+        "https://vulners.com/cvelist/CVELIST:CVE-2026-94606?utm_source=rss&utm_medium=rss&utm_campaign=rss"
       ],
       "explanation": {
         "quality": [
@@ -4384,7 +4359,52 @@
           "QS=0.438"
         ],
         "priority": [
-          "+10 CVSS≥9"
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-94609",
+      "title": "CVE-2026-94609 authentik: Privilege Escalation to Superuser via Group Hierarchy",
+      "description": "CVE-2026-94609 authentik: Privilege Escalation to Superuser via Group Hierarchy",
+      "cvss": 7.8,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-94609"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://vulners.com/cvelist/CVELIST:CVE-2026-94609?utm_source=rss&utm_medium=rss&utm_campaign=rss"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
         ],
         "suppression": null,
         "merge": null
