@@ -3,11 +3,8 @@ name: "🧠 SENTINEL APEX — AI Security Intelligence Pipeline"
 # Dedicated AI Security Intelligence lane, run ALONGSIDE (never merged with) the
 # general intel pipeline (sentinel-apex.yml). See Sentinel-APEX/pipeline/AI-SECURITY-PIPELINE.md.
 #
-# Cron is aligned to even UTC hours, minute 7, so pushes land inside the Vercel
-# deploy window defined by vercel-ignore-build.sh (bot builds allowed only in the
-# first 10 minutes of even UTC hours — minute 7 qualifies). This lane never
-# contributes to Vercel rate-limit exhaustion. Commit prefix "SENTINEL APEX
-# AI-SEC:" is matched by the bot throttle.
+# Existing cadence retained: even UTC hours at minute 7.
+# Hosting retirement does not increase ingestion or publication workload.
 #
 # Offset from :00 (rather than exactly on the hour) so this schedule doesn't
 # stack with the other 8 cron schedules in this repo on the same wall-clock
@@ -18,7 +15,7 @@ name: "🧠 SENTINEL APEX — AI Security Intelligence Pipeline"
 
 on:
   schedule:
-    - cron: "7 */2 * * *"   # even UTC hours, :07 (inside the Vercel deploy window)
+    - cron: "7 */2 * * *"   # even UTC hours, :07
   workflow_dispatch:
     inputs:
       run_analyst:
@@ -101,3 +98,4 @@ jobs:
             if git push origin HEAD; then echo "✅ pushed"; break; fi
             echo "push failed, retrying in $((2**i))s"; git pull --rebase origin "$(git rev-parse --abbrev-ref HEAD)" || { echo "⚠️ Rebase conflict — aborting cleanly, will retry"; git rebase --abort 2>/dev/null || true; }; sleep $((2**i))
           done
+

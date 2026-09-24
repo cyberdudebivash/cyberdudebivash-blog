@@ -25,10 +25,10 @@ jobs:
     name: "Production URL Health Check"
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    # Only run after deployment settles (Vercel needs ~60s to propagate)
+    # Public health probe; this workflow does not prove that a commit was deployed.
 
     steps:
-      - name: "⏳ Wait for Vercel deployment"
+      - name: "⏳ Allow deployment propagation"
         run: sleep 90
 
       - name: "🚀 Smoke test — critical pages"
@@ -80,7 +80,7 @@ jobs:
           echo "══════════════════════════════════"
           if [ "$FAILED" -gt 0 ]; then
             echo "❌ SMOKE TEST FAILED — $FAILED page(s) unhealthy"
-            echo "::error title=Production Smoke Test Failed::${FAILED} critical page(s) are not responding correctly. Check Vercel deployment logs."
+            echo "::error title=Production Smoke Test Failed::${FAILED} critical page(s) are not responding correctly. Check Cloudflare Worker deployment identity and logs."
             exit 1
           else
             echo "✅ ALL PAGES HEALTHY — Production smoke test passed"
@@ -144,3 +144,4 @@ jobs:
           fi
 
           [ "$FAILED" -eq 0 ] || exit 1
+

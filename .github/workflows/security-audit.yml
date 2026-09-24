@@ -7,6 +7,12 @@ on:
       - 'package.json'
       - 'package-lock.json'
       - 'api/**'
+      - 'workers/**'
+      - 'wrangler.jsonc'
+      - '.assetsignore'
+      - 'vercel.json'
+      - '.vercelignore'
+      - 'vercel-ignore-build.sh'
       - 'automation/**'
       - 'lib/**'
       - 'scripts/**'
@@ -20,6 +26,12 @@ on:
       - 'package.json'
       - 'package-lock.json'
       - 'api/**'
+      - 'workers/**'
+      - 'wrangler.jsonc'
+      - '.assetsignore'
+      - 'vercel.json'
+      - '.vercelignore'
+      - 'vercel-ignore-build.sh'
       - 'automation/**'
       - 'lib/**'
       - 'scripts/**'
@@ -110,29 +122,10 @@ jobs:
           fi
           echo "No credential/private-key signatures detected in tracked production content"
 
-      - name: "🔐 Security Headers Validation"
+      - name: "Cloudflare runtime and security headers"
         run: |
-          if [ ! -f "vercel.json" ]; then
-            echo "::warning::vercel.json not found — static deployment header validation not applicable here"
-            exit 0
-          fi
-          node - <<'NODE'
-          const v = require('./vercel.json');
-          const headers = v.headers || [];
-          const all = new Set(headers.flatMap(h => (h.headers || []).map(x => x.key)));
-          const required = [
-            'Strict-Transport-Security',
-            'X-Content-Type-Options',
-            'Referrer-Policy',
-            'Content-Security-Policy'
-          ];
-          const missing = required.filter(x => !all.has(x));
-          if (missing.length) {
-            console.error('Missing required production security headers: ' + missing.join(', '));
-            process.exit(1);
-          }
-          console.log('Required production security headers are present');
-          NODE
+          node scripts/check-cloudflare-runtime.js
+          node --test workers/lib/security-headers.test.js scripts/check-cloudflare-runtime.test.js
 
       - name: "📋 Audit Summary"
         if: always()
@@ -140,3 +133,4 @@ jobs:
           echo "SENTINEL APEX security audit completed"
           echo "Timestamp: $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
           echo "Trigger: ${{ github.event_name }}"
+

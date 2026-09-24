@@ -137,7 +137,7 @@ jobs:
             echo "redis_ready=true" >> "$GITHUB_OUTPUT"
           else
             echo "redis_ready=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::Watchlist change evaluation AND alert delivery both skipped — UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN are not configured as GitHub Actions repository secrets. Same values already used in Vercel's environment (a different secret store) need to be added here too before this workflow can run."
+            echo "::warning::Watchlist change evaluation AND alert delivery both skipped — UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN are not configured as GitHub Actions repository secrets. Same values already used in the Cloudflare Worker environment (a different secret store) need to be added here too before this workflow can run."
           fi
           if [ "$HAS_CF_ACCOUNT" = "true" ] && [ "$HAS_CF_DB" = "true" ] && [ "$HAS_CF_TOKEN" = "true" ]; then
             echo "d1_ready=true" >> "$GITHUB_OUTPUT"
@@ -166,3 +166,4 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         run: node scripts/deliver-watchlist-notifications.js --limit=50
+
