@@ -2,24 +2,16 @@
   "platform": "CYBERDUDEBIVASH SENTINEL APEX — AI Security Intelligence Division",
   "endpoint": "/api/intel/ai-security.json",
   "doctrine": "Sentinel-APEX/prompts/ai-security-master-prompt.md",
-  "generated": "2026-09-24T17:01:16.259Z",
+  "generated": "2026-09-24T21:26:35.559Z",
   "disclaimer": "Evidence-graded AI security intelligence. Confidence and evidence labels attached per item. Community leads are corroborated before publication.",
   "stats": {
-    "published": 11,
-    "p1": 0,
+    "published": 15,
+    "p1": 2,
     "leadsHeld": 1,
     "analystReports": 0,
     "sourcesOk": 5,
     "sourcesTotal": 6,
     "sourceHealth": [
-      {
-        "name": "NVD (prompt injection)",
-        "key": "nvd_pi",
-        "tier": 1,
-        "status": "ok",
-        "items": 40,
-        "error": null
-      },
       {
         "name": "r/MachineLearning",
         "key": "reddit_ml",
@@ -45,6 +37,14 @@
         "error": null
       },
       {
+        "name": "NVD (prompt injection)",
+        "key": "nvd_pi",
+        "tier": 1,
+        "status": "ok",
+        "items": 40,
+        "error": null
+      },
+      {
         "name": "GitHub Security Advisories",
         "key": "ghsa",
         "tier": 1,
@@ -61,7 +61,7 @@
         "error": null
       }
     ],
-    "runtimeMs": 1199
+    "runtimeMs": 9805
   },
   "frameworks": {
     "owasp_llm_top10": {
@@ -88,20 +88,80 @@
       "AML.T0057": "LLM Data Leakage"
     }
   },
-  "count": 11,
+  "count": 15,
   "items": [
     {
-      "id": "4f735d543d590b2e",
-      "title": "9router: Image prefetch DNS rebinding allows SSRF to internal services",
-      "url": "https://github.com/advisories/GHSA-cmhj-wh2f-9cgx",
+      "id": "24523da833a2c9ae",
+      "title": "DBHub HTTP transport DNS rebinding allows unauthenticated browser-origin SQL execution",
+      "url": "https://github.com/advisories/GHSA-fm8p-53ww-hf6w",
       "source": "GitHub Security Advisories",
       "tier": 1,
-      "published": "2026-09-23T18:12:28Z",
-      "cve": "CVE-2026-56676",
-      "severity": "high",
+      "published": "2026-09-24T19:36:57Z",
+      "cve": "CVE-2026-61742",
+      "severity": "critical",
       "cvss": null,
       "evidence_label": "VERIFIED_ADVISORY",
       "categories": [
+        {
+          "id": "prompt_injection",
+          "label": "Prompt Injection"
+        }
+      ],
+      "owasp_llm": [
+        {
+          "id": "LLM01",
+          "name": "Prompt Injection"
+        }
+      ],
+      "mitre_atlas": [
+        {
+          "id": "AML.T0051",
+          "name": "LLM Prompt Injection"
+        }
+      ],
+      "agent_risk": {
+        "flags": {
+          "agentic": false,
+          "mcp": true,
+          "rag": false,
+          "tool_use": false,
+          "supply_chain": false
+        },
+        "level": "elevated"
+      },
+      "enterprise_impact": {
+        "score": 75,
+        "priority": "P1"
+      },
+      "confidence": {
+        "source": "HIGH",
+        "evidence": "HIGH",
+        "overall": "HIGH",
+        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
+      },
+      "corroboration": 1,
+      "detection": {
+        "detect": "Monitor LLM gateway logs for delimiter-breaking tokens, role-swap phrases (\"ignore previous\", \"you are now\"), and base64/hex blobs in user or retrieved content.",
+        "hunt": "Correlate anomalous tool-invocation sequences that immediately follow untrusted content ingestion (email, web, RAG chunks)."
+      },
+      "has_analyst_report": false
+    },
+    {
+      "id": "e29402ecfe524201",
+      "title": "Decepticon: Role-boundary forgery via ChatML special-token literals in web crawl output composed into LLM context",
+      "url": "https://github.com/advisories/GHSA-g5f9-3xfg-p9mf",
+      "source": "GitHub Security Advisories",
+      "tier": 1,
+      "published": "2026-09-24T19:17:49Z",
+      "cve": "CVE-2026-61732",
+      "severity": "critical",
+      "cvss": null,
+      "evidence_label": "VERIFIED_ADVISORY",
+      "categories": [
+        {
+          "id": "prompt_injection",
+          "label": "Prompt Injection"
+        },
         {
           "id": "infra",
           "label": "AI Infrastructure / Inference Server"
@@ -109,11 +169,19 @@
       ],
       "owasp_llm": [
         {
+          "id": "LLM01",
+          "name": "Prompt Injection"
+        },
+        {
           "id": "LLM05",
           "name": "Supply Chain Vulnerabilities"
         }
       ],
       "mitre_atlas": [
+        {
+          "id": "AML.T0051",
+          "name": "LLM Prompt Injection"
+        },
         {
           "id": "AML.T0010",
           "name": "ML Supply Chain Compromise"
@@ -130,7 +198,63 @@
         "level": "standard"
       },
       "enterprise_impact": {
-        "score": 43,
+        "score": 65,
+        "priority": "P1"
+      },
+      "confidence": {
+        "source": "HIGH",
+        "evidence": "HIGH",
+        "overall": "HIGH",
+        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
+      },
+      "corroboration": 1,
+      "detection": {
+        "detect": "Monitor LLM gateway logs for delimiter-breaking tokens, role-swap phrases (\"ignore previous\", \"you are now\"), and base64/hex blobs in user or retrieved content.",
+        "hunt": "Correlate anomalous tool-invocation sequences that immediately follow untrusted content ingestion (email, web, RAG chunks)."
+      },
+      "has_analyst_report": false
+    },
+    {
+      "id": "05edad8528012251",
+      "title": "Cline: Cross-Origin WebSocket Hijacking in Cline Hub Dashboard (`/browser` endpoint)",
+      "url": "https://github.com/advisories/GHSA-3cj3-hqcr-g934",
+      "source": "GitHub Security Advisories",
+      "tier": 1,
+      "published": "2026-09-24T19:48:34Z",
+      "cve": "CVE-2026-59723",
+      "severity": "high",
+      "cvss": null,
+      "evidence_label": "VERIFIED_ADVISORY",
+      "categories": [
+        {
+          "id": "agent_tool",
+          "label": "Agentic / Tool / MCP Exploitation"
+        }
+      ],
+      "owasp_llm": [
+        {
+          "id": "LLM06",
+          "name": "Sensitive Information Disclosure / Excessive Agency"
+        }
+      ],
+      "mitre_atlas": [
+        {
+          "id": "AML.T0053",
+          "name": "LLM Plugin Compromise"
+        }
+      ],
+      "agent_risk": {
+        "flags": {
+          "agentic": false,
+          "mcp": true,
+          "rag": false,
+          "tool_use": false,
+          "supply_chain": false
+        },
+        "level": "elevated"
+      },
+      "enterprise_impact": {
+        "score": 63,
         "priority": "P2"
       },
       "confidence": {
@@ -141,44 +265,44 @@
       },
       "corroboration": 1,
       "detection": {
-        "detect": "Expose-check inference servers (Triton/vLLM/Ollama/MLflow/Ray) for unauthenticated management endpoints.",
-        "hunt": "Shodan/asset-inventory sweep for AI infra bound to 0.0.0.0 without auth."
+        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
+        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
       },
       "has_analyst_report": false
     },
     {
-      "id": "70ff5f331e3aff05",
-      "title": "lightrag-hku: Sensitive Information Exposure Through Raw Exception Messages in API Error Responses",
-      "url": "https://github.com/advisories/GHSA-hrmj-7rvj-4hg8",
+      "id": "a7e5a1fde0c62731",
+      "title": "@bytebase/dbhub's read-only mode does not prevent database writes",
+      "url": "https://github.com/advisories/GHSA-mwwr-p57h-56pf",
       "source": "GitHub Security Advisories",
       "tier": 1,
-      "published": "2026-09-22T20:37:36Z",
-      "cve": "CVE-2026-85709",
-      "severity": "medium",
+      "published": "2026-09-24T19:37:59Z",
+      "cve": "CVE-2026-61788",
+      "severity": "high",
       "cvss": null,
       "evidence_label": "VERIFIED_ADVISORY",
       "categories": [
         {
-          "id": "infra",
-          "label": "AI Infrastructure / Inference Server"
+          "id": "prompt_injection",
+          "label": "Prompt Injection"
         }
       ],
       "owasp_llm": [
         {
-          "id": "LLM05",
-          "name": "Supply Chain Vulnerabilities"
+          "id": "LLM01",
+          "name": "Prompt Injection"
         }
       ],
       "mitre_atlas": [
         {
-          "id": "AML.T0010",
-          "name": "ML Supply Chain Compromise"
+          "id": "AML.T0051",
+          "name": "LLM Prompt Injection"
         }
       ],
       "agent_risk": {
         "flags": {
           "agentic": false,
-          "mcp": false,
+          "mcp": true,
           "rag": true,
           "tool_use": false,
           "supply_chain": false
@@ -186,7 +310,7 @@
         "level": "elevated"
       },
       "enterprise_impact": {
-        "score": 40,
+        "score": 63,
         "priority": "P2"
       },
       "confidence": {
@@ -197,8 +321,120 @@
       },
       "corroboration": 1,
       "detection": {
-        "detect": "Expose-check inference servers (Triton/vLLM/Ollama/MLflow/Ray) for unauthenticated management endpoints.",
-        "hunt": "Shodan/asset-inventory sweep for AI infra bound to 0.0.0.0 without auth."
+        "detect": "Monitor LLM gateway logs for delimiter-breaking tokens, role-swap phrases (\"ignore previous\", \"you are now\"), and base64/hex blobs in user or retrieved content.",
+        "hunt": "Correlate anomalous tool-invocation sequences that immediately follow untrusted content ingestion (email, web, RAG chunks)."
+      },
+      "has_analyst_report": false
+    },
+    {
+      "id": "472d7c698e32b322",
+      "title": "Language Servers for AWS vulnerable to arbitrary file write",
+      "url": "https://github.com/advisories/GHSA-6v3r-4p5c-mrp5",
+      "source": "GitHub Security Advisories",
+      "tier": 1,
+      "published": "2026-09-24T19:15:39Z",
+      "cve": "CVE-2026-12958",
+      "severity": "high",
+      "cvss": null,
+      "evidence_label": "VERIFIED_ADVISORY",
+      "categories": [
+        {
+          "id": "agent_tool",
+          "label": "Agentic / Tool / MCP Exploitation"
+        }
+      ],
+      "owasp_llm": [
+        {
+          "id": "LLM06",
+          "name": "Sensitive Information Disclosure / Excessive Agency"
+        }
+      ],
+      "mitre_atlas": [
+        {
+          "id": "AML.T0053",
+          "name": "LLM Plugin Compromise"
+        }
+      ],
+      "agent_risk": {
+        "flags": {
+          "agentic": true,
+          "mcp": false,
+          "rag": false,
+          "tool_use": false,
+          "supply_chain": false
+        },
+        "level": "elevated"
+      },
+      "enterprise_impact": {
+        "score": 63,
+        "priority": "P2"
+      },
+      "confidence": {
+        "source": "HIGH",
+        "evidence": "HIGH",
+        "overall": "HIGH",
+        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
+      },
+      "corroboration": 1,
+      "detection": {
+        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
+        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
+      },
+      "has_analyst_report": false
+    },
+    {
+      "id": "f422718024d75160",
+      "title": "yara-x: Unvalidated deserialization in safe `Rules::deserialize` allows memory corruption and UB",
+      "url": "https://github.com/advisories/GHSA-2jx3-ff3v-j7jj",
+      "source": "GitHub Security Advisories",
+      "tier": 1,
+      "published": "2026-09-24T19:09:28Z",
+      "cve": null,
+      "severity": "medium",
+      "cvss": null,
+      "evidence_label": "VERIFIED_ADVISORY",
+      "categories": [
+        {
+          "id": "agent_tool",
+          "label": "Agentic / Tool / MCP Exploitation"
+        }
+      ],
+      "owasp_llm": [
+        {
+          "id": "LLM06",
+          "name": "Sensitive Information Disclosure / Excessive Agency"
+        }
+      ],
+      "mitre_atlas": [
+        {
+          "id": "AML.T0053",
+          "name": "LLM Plugin Compromise"
+        }
+      ],
+      "agent_risk": {
+        "flags": {
+          "agentic": true,
+          "mcp": false,
+          "rag": false,
+          "tool_use": false,
+          "supply_chain": false
+        },
+        "level": "elevated"
+      },
+      "enterprise_impact": {
+        "score": 35,
+        "priority": "P3"
+      },
+      "confidence": {
+        "source": "HIGH",
+        "evidence": "MODERATE",
+        "overall": "HIGH",
+        "rationale": "Authoritative source (GitHub Security Advisories)."
+      },
+      "corroboration": 1,
+      "detection": {
+        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
+        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
       },
       "has_analyst_report": false
     },
