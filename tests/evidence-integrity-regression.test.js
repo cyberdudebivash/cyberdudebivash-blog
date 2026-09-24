@@ -164,7 +164,7 @@ describe('publication and acquisition workflow regressions', () => {
 
     // Customer-facing Blogger freshness is an independent delivery SLO. Its
     // recovery may dispatch only when the internal generator is not already in
-    // recovery, must retain the two-post public write cap, and must suppress
+    // recovery, must retain the bounded four-post public write cap, and must suppress
     // duplicate dispatches while a recent/active Blogger run exists.
     const bloggerRecoveryStep = workflow.split('- name: "Dispatch Blogger publication recovery when customer feed is stale"')[1]
       .split('- name: "Dispatch recovery and wait for completion"')[0];
@@ -172,7 +172,7 @@ describe('publication and acquisition workflow regressions', () => {
     expect(bloggerRecoveryStep).toContain("steps.freshness.outputs.recovery_required != 'true'");
     expect(bloggerRecoveryStep).toContain("steps.blogger_freshness.outputs.recovery_required == 'true'");
     expect(bloggerRecoveryStep).toContain("const workflowId = 'blogger-syndication.yml';");
-    expect(bloggerRecoveryStep).toContain("max_posts: '2'");
+    expect(bloggerRecoveryStep).toContain("max_posts: '4'");
     expect(bloggerRecoveryStep).toContain('45 * 60 * 1000');
     expect(bloggerRecoveryStep).toContain("latest.status !== 'completed'");
     expect(bloggerRecoveryStep).toContain('createWorkflowDispatch');

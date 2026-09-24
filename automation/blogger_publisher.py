@@ -23,7 +23,7 @@ TOKEN_URL = "https://oauth2.googleapis.com/token"
 # reports otherwise trigger automatic pagination, collapsing a requested list
 # of recent reports to a single post on desktop and mobile.
 _JUMP_BREAK = "<!--more-->"
-_FIRST_PARAGRAPH = re.compile(r"</p\\s*>", re.IGNORECASE)
+_FIRST_PARAGRAPH = re.compile(r"</p\s*>", re.IGNORECASE)
 _MAX_INDEX_EXCERPT_BYTES = 4096
 
 
