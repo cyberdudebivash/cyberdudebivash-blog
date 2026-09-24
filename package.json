@@ -13,7 +13,9 @@
     "test:governance": "jest tests/governance --runInBand",
     "test:performance": "jest tests/performance --runInBand --passWithNoTests",
     "test:resilience": "jest tests/resilience --runInBand --passWithNoTests",
-    "test:ci": "jest --ci --coverage --maxWorkers=2"
+    "test:ci": "jest --ci --coverage --maxWorkers=2",
+    "build:cloudflare": "node scripts/build-cloudflare-assets.js",
+    "check:cloudflare": "node scripts/check-cloudflare-runtime.js && node --test workers/lib/security-headers.test.js scripts/check-cloudflare-runtime.test.js"
   },
   "keywords": [
     "cybersecurity",
@@ -46,3 +48,4 @@
     "wrangler": "4.123.0"
   }
 }
+

@@ -85,8 +85,7 @@ out.
 1. Check Upstash's own status page and dashboard first — this may be a
    provider-side outage, not something to work around locally.
 2. If `UPSTASH_REDIS_REST_URL`/`UPSTASH_REDIS_REST_TOKEN` were rotated or
-   corrupted (not a provider outage), restore them in Vercel → Project →
-   Settings → Environment Variables from the source of truth for those
+   corrupted (not a provider outage), restore them in the Cloudflare Worker secret store from the source of truth for those
    credentials, then redeploy.
 3. If actual data loss occurred (not just connectivity), follow the
    **Backup & Restore** procedure above once a new/recovered Redis
@@ -105,8 +104,8 @@ non-200 or undersized response on a critical page; or a customer reports
 `api/v1/*` endpoints failing directly.
 
 1. Check the most recent `smoke-test.yml` run — it already checks critical
-   page HTTP status and response size after every deploy.
-2. Check Vercel's own deployment logs for the affected function.
+   page HTTP status and response size after selected main-branch pushes.
+2. Inspect the affected Cloudflare Worker request logs and active deployment version.
 3. If the failure correlates with a recent push, prefer `git revert` of
    the specific commit over `git reset` — see **Rollback** below.
 4. If it's an upstream dependency (Redis, Razorpay, Resend), see
@@ -114,30 +113,15 @@ non-200 or undersized response on a critical page; or a customer reports
 
 ---
 
-## Payment Provider Outage (Razorpay / manual UPI)
+## Payment Provider Outage (Razorpay / Gumroad)
 
-Manual UPI/bank-transfer is the primary path today (`OPERATIONS.md`);
-Razorpay is secondary and, per that same document, may not yet be
-fully activated end-to-end. Stripe was fully removed from this platform
-2026-09-10 — see `ENVIRONMENT_VARIABLE_MATRIX.md`.
-
-1. **Manual UPI/bank transfer**: this path depends on human review of
-   submitted transaction references, not a third-party API — an "outage"
-   here means the reviewer is unavailable, not a technical failure.
-   Payment intents remain queryable in Redis (`api/_lib/payment-utils.js`)
-   regardless.
-2. **Razorpay**: check the provider's own status page. If a webhook is
-   failing signature verification (not a provider outage), confirm
-   `RAZORPAY_WEBHOOK_SECRET` in Vercel matches what's configured in the
-   Razorpay dashboard.
-3. **Before relying on `action=create-subscription`**: `api/_lib/subscriptions.js`'s
-   `createSubscription` builds a `plan_id` of the form
-   `plan_<planType>_<period>` and expects a matching Plan object to
-   already exist in the Razorpay dashboard — verify each Plan's real
-   amount matches `api/_lib/payment-utils.js`'s `PLANS` directly, every
-   time any tier's price changes. This is the same class of risk
-   `docs/PRICING.md` documents for the pricing pages themselves, just on
-   infrastructure this repo can't inspect.
+Only Razorpay and Gumroad are authorized payment sources. If a provider is
+unavailable, defer checkout and reconcile authenticated provider events after
+recovery. Never grant entitlement from a redirect or an unverified reference.
+Check webhook authentication failures against the Cloudflare Worker secret
+store and provider configuration without printing secrets or payment payloads.
+Preserve idempotency and existing paid access; do not enable manual payment
+fallbacks. Verify configured product, amount and currency before reopening sales.
 
 ---
 
@@ -176,9 +160,8 @@ gracefully, not to require an incident response.
 
 1. Check `.github/workflows/sentinel-apex.yml` and
    `intelligence-engine-ci.yml`'s most recent runs first.
-2. `OPERATIONS.md` section 1.1 documents the one already-diagnosed
-   systemic failure mode (deploy starvation from overlapping in-flight
-   Vercel builds) and its fix — check that before assuming a new problem.
+2. Compare the generated artifact commit with the active Cloudflare deployment.
+   A successful pipeline or merge does not establish public delivery.
 3. For a data-quality issue (not a pipeline crash), check
    `platform/open-issues.md` first — several specific, evidenced defect
    classes in IOC extraction and ATT&CK mapping are already tracked there
@@ -188,21 +171,12 @@ gracefully, not to require an incident response.
 
 ## Rollback
 
-This is a static + serverless Vercel deployment with **no build step** —
-anything committed to `main` and not excluded by `.vercelignore` is served
-as-is at its repository path.
-
-1. **Preferred**: `git revert <bad-commit>` and push — preserves history,
-   triggers a normal redeploy, and is safe to do even if other commits
-   landed on `main` afterward (unlike `git reset --hard`, which this
-   platform's own git safety protocol avoids using unless explicitly
-   requested).
-2. **Faster, if Vercel dashboard access is available**: promote the
-   previous known-good deployment directly in Vercel — instant, no git
-   history change, but should still be followed by a `git revert` so
-   `main` doesn't silently diverge from what's actually live.
-3. Either way, `smoke-test.yml` runs automatically after the next push and
-   will confirm critical pages are healthy again.
+Use the Cloudflare release and rollback procedure in `OPERATIONS.md`.
+Record the current and previous known-good Worker version IDs before changing
+production. Restore the verified previous version through Cloudflare deployment
+controls, then reconcile source with a reviewed `git revert`. Rebuild assets
+and explicitly deploy; a GitHub merge alone is not a deployment. Verify public
+pages, API headers and payment callback behavior after rollback.
 
 ---
 
@@ -237,3 +211,4 @@ system exists:
   display, webhook secret mismatch).
 - Anything else: no defined escalation path beyond direct email exists yet
   — this is itself the gap, not a procedure to follow.
+

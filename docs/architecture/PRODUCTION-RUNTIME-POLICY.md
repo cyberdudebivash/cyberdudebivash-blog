@@ -1,79 +1,22 @@
-# SENTINEL APEX — Production Runtime Policy
+# Production runtime policy
 
-**Effective:** 2026-08-26
-**Authority:** Operator directive, issued immediately after PR #137 (Cloudflare-Native Alert Orchestration v1) merged.
-**Status:** Active policy. Supersedes any prior "scheduling authority is undecided" framing in this repository's own comments (e.g. `wrangler.jsonc`'s original header, `workers/lib/router.js#handleScheduled`'s original docstring) for the alert-delivery subsystem specifically — see the Migration Status table below for what has and has not yet been brought into compliance.
+Effective 2026-09-24 under explicit operator direction: retire Vercel completely.
+This supersedes historical dual-host migration and cutover instructions.
 
----
+- Cloudflare Workers is the supported HTTP runtime for the separate blog.
+- Blogger remains the CTI publication destination.
+- Existing GitHub Actions ingestion, generation and publication schedules remain;
+  hosting retirement must not stop them or increase their cadence.
+- The existing Node-compatible API handlers and Worker request/response adapter
+  remain supported. They are not a retired hosting dependency.
+- Preserve existing D1/R2 and legacy Redis state until separately audited,
+  reconciled and migrated. Do not destroy state as part of hosting cleanup.
+- Only Razorpay and Gumroad may supply payment confirmation. Preserve signature
+  verification, idempotency, customer isolation and secure delivery.
+- No new paid resources, plan upgrades or unbounded work. Confirm account limits
+  and measured usage before increasing throughput.
 
-## 1. The policy, stated once
-
-> **Cloudflare Workers is the only production runtime going forward.**
->
-> - No Vercel production runtime for new capability.
-> - No Upstash Redis production dependency for new capability.
-> - No GitHub Actions as a production scheduler for new capability.
->
-> **GitHub Actions remains permitted** for CI, automated tests, CodeQL, build verification, and deployment assurance — it is a development-and-verification tool, not a production execution environment, going forward.
-
-This is a **forward-looking policy for new capability**, not a retroactive claim that every existing production dependency has already been migrated. §3 states precisely what is and is not yet in compliance, and why retroactive migration is sequenced deliberately rather than attempted all at once.
-
----
-
-## 2. Rationale
-
-- **Consolidation**: this platform already runs its primary HTTP surface on Cloudflare Workers (`workers/entry.js` → `workers/lib/router.js`, dual-runtime alongside Vercel via the same handler code). Extending Cloudflare to own scheduling and durable state removes a second, independently-operated runtime (GitHub Actions' scheduler) and a second, independently-operated data store (Upstash) from the critical path of any NEW capability, reducing operational surface area over time.
-- **Cost and control**: Cloudflare Workers + D1 + Cron Triggers are the platform this operator has chosen to invest in operationally; GitHub Actions' scheduler was always a stopgap (documented as such from its own introduction — see `.github/workflows/alert-delivery.yml`'s header: "GitHub's native scheduler is UNRELIABLE below roughly 30 minutes," never framed as a permanent home).
-- **Correctness discipline this policy imposes**: any new scheduled/durable-state capability must be designed against the assumption that its trigger mechanism does NOT provide exactly-once execution (Cloudflare Cron Triggers, like GitHub Actions schedules, are at-least-once at best) — see §5's non-negotiables, carried forward unchanged from the Alert Orchestration v1 mandate that first established this discipline.
-
----
-
-## 3. Migration status — the honest inventory, not an aspiration
-
-| Subsystem | Runtime / Store | Status | Reference |
-|---|---|---|---|
-| **Alert-delivery control plane** (preferences, delivery jobs, delivery log, dead letters, audit log) | Cloudflare D1 (scheduler: GitHub Actions bridge active; Cloudflare Cron Trigger code-complete, not yet live-deployed) | **Migrated** (PR #138) | `SENTINEL-APEX-CLOUDFLARE-ONLY-ALERT-RUNTIME-V1-CERTIFICATION.md` |
-| **Watchlists / change detection** | **Cloudflare D1** (same `sentinel-apex-core` database as the row above; scheduler: same GitHub Actions bridge, `alert-delivery.yml`'s evaluate step now gated on D1 too) | **Migrated this round** | `SENTINEL-APEX-CLOUDFLARE-ONLY-RUNTIME-COMPLETION-V2-CERTIFICATION.md` |
-| Customer identity / auth | Redis (Upstash) | **Not migrated** — audited this round with real evidence (rate-limiter latency/traffic-volume, blast radius, a cross-subsystem coupling with billing), deliberately deferred, not merely unattempted | `SENTINEL-APEX-AUTH-BILLING-DEFERRAL-AUDIT-V2.md` §A |
-| Billing / payments | Redis (Upstash), confirmed to mirror Razorpay/human-admin-owned truth, never itself the ledger | **Not migrated** — audited this round with real evidence, deliberately deferred | same, §B |
-| ReportX / Intelligence Factory (35 files: quality scoring, product composition, publication policy, investigation/case management, etc.) | Redis (Upstash) | **Not migrated** — audited this round at cluster + representative-sample level, deliberately deferred, zero coupling with anything migrated | `SENTINEL-APEX-REPORTX-INTEL-FACTORY-RUNTIME-AUDIT-V2.md` |
-| Content-generation pipeline (Intel Factory, Blogger syndication, RSS/CVE/intelligence-hub page generation) | GitHub Actions (scheduled, with real filesystem + `git commit`/push access) | **Not migrated, and not straightforwardly migratable** — Cloudflare Workers has no persistent filesystem and cannot `git commit`; this pipeline's actual mechanism is structurally incompatible with the Workers execution model as currently designed | same, §3 |
-| Weekly security scan, pipeline-health CI check | GitHub Actions | **Compliant as-is** — this is exactly the CI/build/security-assurance use this policy explicitly permits, not a production scheduler | same, §3 |
-| Primary HTTP surface (`api/v1/*`, static asset serving) | Dual-runtime: Vercel (live production today) + Cloudflare Workers (parity-verified, not yet the sole live production target) | **Partially migrated** (pre-dates this policy) — see `docs/architecture/VERCEL-CLOUDFLARE-PARITY-MATRIX.md` if present, or the PRE-MIGRATION-FORENSICS.md lineage this repo's `wrangler.jsonc` header references | `wrangler.jsonc` |
-
-**Net position**: this policy is declared and two subsystems (alert delivery, watchlists/change-detection) have been brought into compliance with real evidence — both share the same `sentinel-apex-core` D1 database and the same GitHub Actions bridge scheduler, neither with a live-verified Cloudflare Cron Trigger yet. The platform as a whole is NOT yet Cloudflare-only. Any future task or mandate that assumes otherwise should be corrected against this table, not against the policy's own aspirational framing.
-
----
-
-## 4. What "brought into compliance" requires — the evidence bar
-
-A subsystem is not considered migrated merely because Cloudflare-native code exists for it. Per the precedent set by the alert-delivery migration, compliance requires:
-
-1. **A real, evidence-based dependency inventory** written before migration code, classifying every touched file (see the Dependency Inventory doc's own classification legend: `CLOUDFLARE_ACTIVE` / `MIGRATION_REQUIRED` / `CI_ONLY` / `LEGACY` / `DEAD` / `UNKNOWN`).
-2. **Verification of the target Cloudflare primitive's actual behavior**, against current documentation AND, wherever feasible from the available sandbox, local emulation (`wrangler ... --local`) — never assumed from training data or the target primitive's name alone.
-3. **A trigger-independence guarantee**: the migrated capability must continue to function correctly if its Cloudflare-native trigger is not yet live-deployed (i.e., a working bridge or fallback during the transition window) — never a "flag day" cutover that depends on unverifiable production access this session may not have.
-4. **A certification document** disclosing exactly what was and was not proven, with the credential/access gaps stated plainly (see `SENTINEL-APEX-CLOUDFLARE-ONLY-ALERT-RUNTIME-V1-CERTIFICATION.md` §2/§13 for the template this establishes).
-5. **Full regression evidence** (existing test suites unbroken, new tests for the new mechanism, run and reported with exact pass/fail counts — never "should work").
-
----
-
-## 5. Non-negotiables for any future scheduled/durable-state migration under this policy
-
-Carried forward unchanged from the Alert Orchestration v1 mandate, since they are runtime-agnostic correctness properties, not specific to Redis or D1:
-
-- Never assume the trigger mechanism (Cloudflare Cron, GitHub Actions, or any other scheduler) provides exactly-once execution. Design for at-least-once, with idempotency as the actual safety mechanism.
-- Never weaken atomic claim, lease expiration, idempotency, retry bounds, terminal-failure handling, delivery/job identity, customer isolation, or any existing security control "because of migration complexity." If the target Cloudflare primitive cannot match an existing property, STOP, document why, and choose a stronger primitive — do not ship a weaker system.
-- Never destroy the source system's data before reconciliation is complete and verified.
-- Never leave a period with zero working scheduler — a bridge/dual-write period is required until the new trigger is proven live.
-- PR/task titles and certification claims must scope accurately to what was actually migrated — never claim platform-wide completion for a subsystem-scoped change.
-
----
-
-## 6. Amending this policy
-
-This document reflects an explicit operator directive. Loosening or reversing it (e.g., re-introducing a new GitHub-Actions-as-scheduler dependency, or a new Redis production dependency for a NEW capability) requires the same standard as any other architectural change under this repository's governance constitution: current-architecture/proposed-architecture/reason/expected-benefits/compatibility/migration-plan/rollback-plan, documented explicitly, not inferred from a single task's convenience.
-
----
-
-*CYBERDUDEBIVASH® SENTINEL APEX — Production Runtime Policy*
-*Established by the Cloudflare-Only Alert Runtime v1 tranche, 2026-08-26.*
+Source configuration is not evidence of live deployment, entitlement fulfillment
+or cloud account usage. Historical audit documents retain their original dates
+and findings; their hosting instructions must not be used for current releases.
+Use OPERATIONS.md and RUNBOOKS.md for release and recovery procedures.
