@@ -93,12 +93,11 @@ module.exports = async function handleGumroadWebhook(req, res) {
 
   try {
     const dedupKey = `payment:gumroad:sale:seen:${saleId}`;
-    const dup = await redis.exists(dedupKey).catch(() => 0);
+    const dup = await redis.exists(dedupKey);
     if (dup && parseInt(dup, 10) > 0) {
       return res.status(200).json({ received: true, status: 'already_recorded', sale_id: saleId });
     }
 
-    await redis.setex(dedupKey, SUBMISSION_TTL_SECONDS, '1');
     await redis.hmset(`payment:gumroad:sale:${saleId}`, {
       saleId, email, productId, productPermalink, productName,
       price, currency, refunded: String(refunded),
@@ -109,6 +108,9 @@ module.exports = async function handleGumroadWebhook(req, res) {
 
     await auditLog('GUMROAD_SALE_RECORDED', { saleId, email, productId, productPermalink, price, currency, refunded });
 
+    // Mark complete only after every write succeeds so partial failures retry.
+    // Repeated hash and index writes use the same sale ID.
+    await redis.setex(dedupKey, SUBMISSION_TTL_SECONDS, '1');
     return res.status(200).json({ received: true, status: 'recorded', sale_id: saleId });
   } catch (e) {
     console.error(`[GUMROAD WEBHOOK] Handler error: ${e.message}`);

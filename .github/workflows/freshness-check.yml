@@ -240,6 +240,12 @@ jobs:
 
             throw new Error('Blogger recovery dispatch was accepted but no workflow run appeared within 60 seconds.');
 
+      - name: "Verify public Blogger feed and homepage delivery"
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: |
+          python3 scripts/check_blogger_public_delivery.py
+
       - name: "Monitor result summary"
         if: always()
         shell: bash
