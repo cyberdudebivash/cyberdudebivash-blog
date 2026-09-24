@@ -200,7 +200,7 @@ class BloggerPublisher:
         payload = {
             "kind": "blogger#post",
             "title": title,
-            "content": with_index_jump_break(content, title),
+            "content": content,
             "labels": labels,
         }
         if image_url:
