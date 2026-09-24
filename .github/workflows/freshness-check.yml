@@ -1,12 +1,17 @@
 name: "⚡ SENTINEL APEX — Intel Feed Freshness Monitor"
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - scripts/check_blogger_public_delivery.py
+      - .github/workflows/freshness-check.yml
   schedule:
     - cron: '13,43 * * * *'
   workflow_dispatch:
 
 concurrency:
-  group: blog-freshness-check
+  group: blog-freshness-check-${{ github.event_name }}
   cancel-in-progress: true
 
 permissions:
@@ -14,7 +19,21 @@ permissions:
   actions: write
 
 jobs:
+  public-delivery-canary:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Verify public delivery with the released probe
+        run: python3 scripts/check_blogger_public_delivery.py
+
   freshness-check:
+    if: github.event_name != 'push'
     name: "Verify SENTINEL APEX runtime, intel, and Blogger freshness"
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -241,6 +260,7 @@ jobs:
             throw new Error('Blogger recovery dispatch was accepted but no workflow run appeared within 60 seconds.');
 
       - name: "Verify public Blogger feed and homepage delivery"
+        id: public_delivery
         if: ${{ !cancelled() }}
         shell: bash
         run: |
@@ -259,6 +279,7 @@ jobs:
           echo "Recovery run         : ${{ steps.recovery.outputs.recovery_run_id || 'not-dispatched' }}"
           echo "Recovery conclusion  : ${{ steps.recovery.outputs.recovery_conclusion || 'not-applicable' }}"
           echo "Post-recovery status : ${{ steps.post_recovery.outputs.status || 'not-applicable' }}"
+          echo "Public delivery step : ${{ steps.public_delivery.outcome || 'unavailable' }}"
           echo "Blogger freshness     : ${{ steps.blogger_freshness.outputs.status || 'UNAVAILABLE' }}"
           echo "Blogger age (minutes): ${{ steps.blogger_freshness.outputs.age_minutes || 'unavailable' }}"
           echo "Latest Blogger post  : ${{ steps.blogger_freshness.outputs.latest_published_at || 'unavailable' }}"
@@ -271,7 +292,11 @@ jobs:
         if: failure()
         shell: bash
         run: |
-          if [ "${{ steps.blogger_freshness.outcome }}" = "failure" ]; then
+          if [ "${{ steps.public_delivery.outcome }}" = "failure" ]; then
+            echo "::error title=Blogger Public Delivery Verification Failed::Public feed/homepage verification failed. Inspect the probe JSON for endpoint, HTTP status, attempts and defect. Publication is not verified; do not dispatch more posts to repair a read failure."
+            echo "Monitor run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo "Generator post-recovery status: ${{ steps.post_recovery.outputs.status || 'not-applicable' }}"
+          elif [ "${{ steps.blogger_freshness.outcome }}" = "failure" ]; then
             echo "::error title=SENTINEL APEX Blogger Freshness Alert::Internal generation may be healthy, but customer-facing Blogger publication freshness cannot be proven."
             echo "Latest Blogger publication: ${{ steps.blogger_freshness.outputs.latest_published_at || 'unavailable' }}"
             echo "Blogger publication age: ${{ steps.blogger_freshness.outputs.age_minutes || 'unavailable' }} minutes"
@@ -289,3 +314,4 @@ jobs:
           echo "Initial classifier exit: ${{ steps.freshness.outputs.classifier_exit || 'unavailable' }}"
           echo "Post-recovery exit: ${{ steps.post_recovery.outputs.classifier_exit || 'not-applicable' }}"
           echo "Timestamp: $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+
