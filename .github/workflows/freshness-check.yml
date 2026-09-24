@@ -36,7 +36,8 @@ jobs:
     if: github.event_name != 'push'
     name: "Verify SENTINEL APEX runtime, intel, and Blogger freshness"
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # Recovery can consume 11.5 minutes; reserve up to 9 for bounded public reads.
+    timeout-minutes: 25
 
     steps:
       - name: "Checkout repository"
@@ -261,6 +262,7 @@ jobs:
 
       - name: "Verify public Blogger feed and homepage delivery"
         id: public_delivery
+        timeout-minutes: 9
         if: ${{ !cancelled() }}
         shell: bash
         run: |
