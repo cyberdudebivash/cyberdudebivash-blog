@@ -25,7 +25,7 @@ def test_missing_early_paragraph_uses_escaped_teaser():
     assert result.endswith(report)
 
 
-def test_publish_sends_bounded_excerpt_and_full_report():
+def test_publish_sends_prepared_artifact_byte_for_byte():
     cfg = Config()
     cfg.blogger_blog_id = '12345'
     publisher = BloggerPublisher(cfg)
@@ -33,9 +33,11 @@ def test_publish_sends_bounded_excerpt_and_full_report():
     publisher._token_expiry = float('inf')
     response = MagicMock(status_code=200, ok=True)
     response.json.return_value = {'id': 'post-1', 'status': 'LIVE', 'url': 'https://cti.cyberdudebivash.in/2026/09/test.html'}
-    report = '<p>Evidence summary.</p><div>' + ('report ' * 10000) + '</div>'
+    original = '<p>Evidence summary.</p><div>' + ('report ' * 10000) + '</div>'
+    report = with_index_jump_break(original, 'Test Intel')
     with patch('requests.post', return_value=response) as post:
         publisher.publish_post('Test Intel', report, ['Threat Intelligence'])
     sent = post.call_args.kwargs['json']['content']
-    assert sent.replace('<!--more-->', '') == report
+    assert sent == report
+    assert sent.replace('<!--more-->', '') == original
     assert sent.index('<!--more-->') < 4096
