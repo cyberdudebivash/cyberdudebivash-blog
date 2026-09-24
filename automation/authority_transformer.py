@@ -18,6 +18,7 @@ from bs4 import BeautifulSoup
 from .analytical_depth_gate import LLM_AUTHORED_SOURCES, evaluate_product_tier
 from .category_mapper import primary_category
 from .config import Config
+from .blogger_publisher import with_index_jump_break
 from .content_discovery import DiscoveredArticle
 from .download_center import build_mitre_navigator_layer
 from .internal_linker import InternalLinker
@@ -2571,6 +2572,10 @@ class AuthorityTransformer:
         # every time -- the dimension-level findings from composer_outcome
         # still apply unchanged (the graph itself doesn't depend on
         # content_source).
+        # Bound Blogger index rendering before evidence validation and artifact
+        # hashing. The exact excerpt-bearing bytes are certified, published,
+        # and compared by the post-publication fetch-back gate.
+        html = with_index_jump_break(html, self._build_blogger_title(article))
         from sentinel_engine.reportx.contradiction_engine import find_text_contradictions
         final_text_contradictions = tuple(c.to_dict() for c in find_text_contradictions(html))
         all_contradictions = tuple(composer_outcome.contradictions) + final_text_contradictions
