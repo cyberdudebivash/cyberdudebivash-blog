@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-23T23:54:16.394Z",
+  "generated": "2026-09-24T03:56:03.095Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,10 +7,10 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 5322,
+  "total_published": 5329,
   "s2n_stats": {
-    "passed": 118,
-    "suppressed": 5,
+    "passed": 117,
+    "suppressed": 6,
     "avg_qs": 0.481
   },
   "items": [
@@ -357,49 +357,6 @@
           "+10 CVSS≥9",
           "+8 exploited_in_wild",
           "+7 zero_day"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-55099",
-      "title": "icalendar has Algorithmic Complexity in Equality",
-      "description": "Summary\n\nComponent.__eq__ compares subcomponents in O(2^n) time relative to nesting depth. Because the parser accepts arbitrarily nested components, a sub-kilobyte .ics file is enough to make a single equality check run for minutes or hang indefinitely. Any application that compa... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 45,
-      "quality_score": 0.397,
-      "threat_level": "MEDIUM",
-      "type": "CRITICAL_INFRASTRUCTURE",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-08-25",
-      "last_seen": "2026-08-25",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-55099"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-cv84-9p8j-fj68"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=29d (score=0.05)",
-          "QS=0.397"
-        ],
-        "priority": [
-          "+4 critical_infra"
         ],
         "suppression": null,
         "merge": null
@@ -2304,9 +2261,7 @@
         ],
         "suppression": null,
         "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
+      }
     },
     {
       "id": "CVE-2026-13001",
@@ -4403,6 +4358,51 @@
         ],
         "priority": [
           "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-55099",
+      "title": "icalendar has Algorithmic Complexity in Equality",
+      "description": "Summary\n\nComponent.__eq__ compares subcomponents in O(2^n) time relative to nesting depth. Because the parser accepts arbitrarily nested components, a sub-kilobyte .ics file is enough to make a single equality check run for minutes or hang indefinitely. Any application that compa... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "CRITICAL_INFRASTRUCTURE",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-08-25",
+      "last_seen": "2026-08-25",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-55099"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-cv84-9p8j-fj68"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
         ],
         "suppression": null,
         "merge": null
