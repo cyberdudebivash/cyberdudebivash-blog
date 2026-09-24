@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-24T21:48:37.759Z",
+  "generated": "2026-09-24T22:08:08.921Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,13 +7,298 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 5361,
+  "total_published": 5373,
   "s2n_stats": {
-    "passed": 106,
+    "passed": 113,
     "suppressed": 8,
-    "avg_qs": 0.496
+    "avg_qs": 0.492
   },
   "items": [
+    {
+      "id": "CVE-2026-76460",
+      "title": "Cisco ISE scores a perfect CVSS 10.0 — unauthenticated API bypass to root (CVE-2026-76460)",
+      "description": "This one is as bad as it sounds. CVE-2026-76460 is an authentication bypass in Cisco ISE's admin API that gives unauthenticated attackers root-level command execution. No creds, no user interaction, no complexity. Every supported ISE version (3.1 through 3.51) is affected. The kicker: Cisco explicit",
+      "cvss": 10,
+      "final_ps": 81,
+      "quality_score": 0.505,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "reddit_cyber",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "reddit_cyber"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": true,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "reddit_cyber",
+      "product": "Threat Intelligence",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-76460"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.reddit.com/r/cybersecurity/comments/1wp9l25/cisco_ise_scores_a_perfect_cvss_100/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.42 (reddit_cyber)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.505"
+        ],
+        "priority": [
+          "+10 CVSS≥9",
+          "+8 exploited_in_wild"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-57170",
+      "title": "Trestle SSTI in Jinja2 include tags allows arbitrary code execution (Incomplete fix of CVE-2026-46439)",
+      "description": "Reporter: Cavan Loughran, Celvex Group Inc. Summary\n-------\nThe fix for CVE-2026-46439 (3.12.2 / 4.0.3) removed the recursive re-render loop in trestle/core/commands/author/jinja.py render_template, but the custom include tags in trestle/core/jinja/tags.py (MDSectionInclude, MDCleanInclude) still re",
+      "cvss": 7.8,
+      "final_ps": 55,
+      "quality_score": 0.52,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 2,
+      "merged_sources": [
+        "github_advisories",
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "pip",
+      "product": "compliance-trestle",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-57170",
+        "CVE-2026-46439"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-mr95-65j8-9mxp",
+        "https://github.com/oscal-compass/compliance-trestle/security/advisories/GHSA-mr95-65j8-9mxp",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-57170",
+        "https://github.com/oscal-compass/compliance-trestle/pull/2270"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "multi_source=2 sources",
+          "recency=999d (score=0.05)",
+          "QS=0.520"
+        ],
+        "priority": [
+          "base_ps=55 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-61816",
+      "title": "zbateson/mail-mime-parser has uncontrolled resource consumption (CPU/memory DoS) parsing untrusted MIME",
+      "description": "### Impact An uncontrolled resource consumption / algorithmic complexity vulnerability affecting any application that parses untrusted email with this library. Three independent parsing paths are super-linear in cost, so a byte-size cap on the caller side does **not** bound the work done. A crafted ",
+      "cvss": 7.5,
+      "final_ps": 54,
+      "quality_score": 0.52,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 2,
+      "merged_sources": [
+        "github_advisories",
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "composer",
+      "product": "zbateson/mail-mime-parser",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-61816"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-f6v3-2qmr-vfjx",
+        "https://github.com/zbateson/mail-mime-parser/security/advisories/GHSA-f6v3-2qmr-vfjx",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-61816",
+        "https://github.com/zbateson/mail-mime-parser/commit/1691e695821f70461f9554e9bb71be2859404a24"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "multi_source=2 sources",
+          "recency=999d (score=0.05)",
+          "QS=0.520"
+        ],
+        "priority": [
+          "base_ps=54 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-57231",
+      "title": "Podman: Malformed Image can trick podman run into leaking host environment variables into the container",
+      "description": "## Summary An container image that contains a environment variable with just a key and no value can trick podman into passing that variable from the host into the container. This is made worse by the fact that using an asterisk (*) will cause podman to pass all host variables into the container. So ",
+      "cvss": 7.5,
+      "final_ps": 54,
+      "quality_score": 0.52,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 2,
+      "merged_sources": [
+        "github_advisories",
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "go",
+      "product": "github.com/containers/podman/v5",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-57231"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-4hq8-gpf5-8p68",
+        "https://github.com/podman-container-tools/podman/security/advisories/GHSA-4hq8-gpf5-8p68",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-57231",
+        "https://github.com/podman-container-tools/podman/commit/6c431b73dbf8e4b20b778644d7a80caebdb75050"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "multi_source=2 sources",
+          "recency=999d (score=0.05)",
+          "QS=0.520"
+        ],
+        "priority": [
+          "base_ps=54 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-61788",
+      "title": "@bytebase/dbhub's read-only mode does not prevent database writes",
+      "description": "### Summary Setting `readonly = true` on the `execute_sql` tool does not make the connection read-only. The connectors are written to set PostgreSQL `default_transaction_read_only=on` (and open SQLite in `readOnly` mode), but that code is gated on a config value that is never populated, so it never ",
+      "cvss": 7.4,
+      "final_ps": 54,
+      "quality_score": 0.52,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 2,
+      "merged_sources": [
+        "github_advisories",
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "@bytebase/dbhub",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-61788"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-mwwr-p57h-56pf",
+        "https://github.com/bytebase/dbhub/security/advisories/GHSA-mwwr-p57h-56pf",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-61788",
+        "https://github.com/bytebase/dbhub/pull/342"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "multi_source=2 sources",
+          "recency=999d (score=0.05)",
+          "QS=0.520"
+        ],
+        "priority": [
+          "base_ps=54 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-61815",
+      "title": "zbateson/mail-mime-parser has CRLF header injection via attachment filename",
+      "description": "### Impact A CRLF (carriage-return / line-feed) header injection affecting any application that uses this library to build or forward MIME messages with an attacker-influenced attachment filename. Attachment filenames are interpolated into the `Content-Type` and `Content-Disposition` header values w",
+      "cvss": 7.2,
+      "final_ps": 53,
+      "quality_score": 0.52,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 2,
+      "merged_sources": [
+        "github_advisories",
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "composer",
+      "product": "zbateson/mail-mime-parser",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-61815"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-36h5-qg4p-q2qf",
+        "https://github.com/zbateson/mail-mime-parser/security/advisories/GHSA-36h5-qg4p-q2qf",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-61815",
+        "https://github.com/zbateson/mail-mime-parser/commit/81859c06abb5d79f04b7a3254d293d0a91065948"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "multi_source=2 sources",
+          "recency=999d (score=0.05)",
+          "QS=0.520"
+        ],
+        "priority": [
+          "base_ps=53 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
     {
       "id": "CVE-2026-50522",
       "title": "Critical SharePoint RCE CVE-2026-50522 Under Active Exploitation After Public PoC",
@@ -302,6 +587,49 @@
       "ioc_count": 0,
       "refs": [
         "https://vulners.com/nvd/NVD:CVE-2026-85057?utm_source=rss&utm_medium=rss&utm_campaign=rss"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.443"
+        ],
+        "priority": [
+          "base_ps=47 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-95985",
+      "title": "Low Security Vulnerability (CVE-2026-95985)",
+      "description": "CVE-2026-95985",
+      "cvss": 8.8,
+      "final_ps": 47,
+      "quality_score": 0.443,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-95985"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://vulners.com/nvd/NVD:CVE-2026-95985?utm_source=rss&utm_medium=rss&utm_campaign=rss"
       ],
       "explanation": {
         "quality": [
@@ -2001,7 +2329,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2024-4898",
@@ -2045,7 +2375,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2019-0708",
@@ -2089,7 +2421,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2025-69212",
@@ -2133,7 +2467,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2024-36401",
@@ -2177,7 +2513,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2026-15748",
@@ -2221,7 +2559,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2026-12495",
@@ -2263,7 +2603,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2026-15013",
@@ -3069,6 +3411,186 @@
         "priority": [
           "+10 CVSS≥9",
           "+4 critical_infra"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-13249",
+      "title": "CVE-2026-13249 - Unauthenticated RCE Arbitrary File Upload Honeywell PD45 Industrial Printer version F10.19.010040",
+      "description": "CVE-2026-13249 - Unauthenticated RCE Arbitrary File Upload Honeywell PD45 Industrial Printer version F10.19.010040",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-13249"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-13249"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-13248",
+      "title": "CVE-2026-13248 - Authenticated Remote Code Execution via Arbitrary File Write in the Intermec Fingerprint Command Interf",
+      "description": "CVE-2026-13248 - Authenticated Remote Code Execution via Arbitrary File Write in the Intermec Fingerprint Command Interface",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-13248"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-13248"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-86858",
+      "title": "CVE-2026-86858 - Unauthenticated Privilege Escalation via GraphQL in ServiceNow AI Platform",
+      "description": "CVE-2026-86858 - Unauthenticated Privilege Escalation via GraphQL in ServiceNow AI Platform",
+      "cvss": 9.1,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-86858"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-86858"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-13016",
+      "title": "CVE-2026-13016 - Unauthenticated SQL Injection in ServiceNow AI Platform",
+      "description": "CVE-2026-13016 - Unauthenticated SQL Injection in ServiceNow AI Platform",
+      "cvss": 9.1,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-13016"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-13016"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
         ],
         "suppression": null,
         "merge": null
@@ -3888,539 +4410,6 @@
         ],
         "priority": [
           "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-79654",
-      "title": "CVE-2026-79654 - Ketello: katello content view history api cross-organization authorization bypass",
-      "description": "CVE ID : CVE-2026-79654\n\n Published : Aug. 26, 2026, 5:37 a.m. | 25minutes ago\n\n Description : A flaw was found in Katello where the Content View History API does not properly enforce authorization when accessing a Content View specified by the user. An authenticated user with pe... [Full analysis a",
-      "cvss": 9.8,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-08-26",
-      "last_seen": "2026-08-26",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-79654"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-79654"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-59723",
-      "title": "Cline: Cross-Origin WebSocket Hijacking in Cline Hub Dashboard (`/browser` endpoint)",
-      "description": "### Summary The Cline Hub dashboard server (`@cline/cline-hub`), launched via the `cline dashboard` CLI command, accepts WebSocket connections on the `/browser` endpoint without validating the HTTP `Origin` header. When `ROOM_SECRET` is not set—the default for local (`127.0.0.1`) binds—`isAuthorized",
-      "cvss": 8.8,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 2,
-      "merged_sources": [
-        "github_advisories",
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-24",
-      "last_seen": "2026-09-24",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "npm",
-      "product": "cline",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-59723"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-3cj3-hqcr-g934",
-        "https://github.com/cline/cline/security/advisories/GHSA-3cj3-hqcr-g934",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-59723",
-        "https://github.com/cline/cline/pull/11724"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-57171",
-      "title": "Trestle is vulnerable to arbitrary file write via path traversal in author generate commands (Incomplete fix of CVE-2026",
-      "description": "**At a glance** - **Actor:** attacker who controls the -o/--output argument to trestle author {catalog,profile,ssp}-generate (e.g. via a CI pipeline that derives the output directory from repository-controlled data) - **Primitive:** attacker-controlled --output value reaches trestle_root / args.outp",
-      "cvss": 8.4,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 2,
-      "merged_sources": [
-        "github_advisories",
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-24",
-      "last_seen": "2026-09-24",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "pip",
-      "product": "compliance-trestle",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-57171",
-        "CVE-2026-46345"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-r4vp-3vw6-r2x5",
-        "https://github.com/oscal-compass/compliance-trestle/security/advisories/GHSA-4q5v-7g7x-j79w",
-        "https://github.com/oscal-compass/compliance-trestle/security/advisories/GHSA-r4vp-3vw6-r2x5",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-57171"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-61782",
-      "title": "@rsdoctor/rspack-plugin has Unauthenticated HTTP API that Exposes Project Source Code and Build Metadata",
-      "description": "### Summary The default Rsdoctor report HTTP server started by `@rsdoctor/rspack-plugin` binds to all network interfaces (`0.0.0.0`) and serves a `POST /api/data/key` endpoint with no authentication and wildcard CORS (`Access-Control-Allow-Origin: *`). Any network-adjacent or remote attacker can sen",
-      "cvss": 7.5,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 2,
-      "merged_sources": [
-        "github_advisories",
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-24",
-      "last_seen": "2026-09-24",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "npm",
-      "product": "@rsdoctor/rspack-plugin",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61782"
-      ],
-      "ioc_count": 1,
-      "refs": [
-        "https://github.com/advisories/GHSA-jmg2-rcxh-w8q3",
-        "https://github.com/web-infra-dev/rsdoctor/security/advisories/GHSA-jmg2-rcxh-w8q3",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-61782",
-        "https://github.com/web-infra-dev/rsdoctor/pull/1744"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-57178",
-      "title": "social-auth-core: VK App backend accepts unsigned callback data when auth_key is missing",
-      "description": "### Impact The `vk-app` backend accepted VK application callback data without verifying the callback signature when the `auth_key` parameter was omitted. Applications using this backend could treat unsigned attacker-controlled data as a verified VK identity. An attacker could choose callback fields ",
-      "cvss": 7.4,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 2,
-      "merged_sources": [
-        "github_advisories",
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-24",
-      "last_seen": "2026-09-24",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "pip",
-      "product": "social-auth-core",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-57178"
-      ],
-      "ioc_count": 1,
-      "refs": [
-        "https://github.com/advisories/GHSA-3c93-f73f-qc9h",
-        "https://github.com/python-social-auth/social-core/security/advisories/GHSA-3c93-f73f-qc9h",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-57178",
-        "https://github.com/python-social-auth/social-core/pull/1811"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-57170",
-      "title": "Trestle SSTI in Jinja2 include tags allows arbitrary code execution (Incomplete fix of CVE-2026-46439)",
-      "description": "Reporter: Cavan Loughran, Celvex Group Inc. Summary\n-------\nThe fix for CVE-2026-46439 (3.12.2 / 4.0.3) removed the recursive re-render loop in trestle/core/commands/author/jinja.py render_template, but the custom include tags in trestle/core/jinja/tags.py (MDSectionInclude, MDCleanInclude) still re",
-      "cvss": 7.8,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 2,
-      "merged_sources": [
-        "github_advisories",
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-24",
-      "last_seen": "2026-09-24",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "pip",
-      "product": "compliance-trestle",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-57170",
-        "CVE-2026-46439"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-mr95-65j8-9mxp",
-        "https://github.com/oscal-compass/compliance-trestle/security/advisories/GHSA-mr95-65j8-9mxp",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-57170",
-        "https://github.com/oscal-compass/compliance-trestle/pull/2270"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-61816",
-      "title": "zbateson/mail-mime-parser has uncontrolled resource consumption (CPU/memory DoS) parsing untrusted MIME",
-      "description": "### Impact An uncontrolled resource consumption / algorithmic complexity vulnerability affecting any application that parses untrusted email with this library. Three independent parsing paths are super-linear in cost, so a byte-size cap on the caller side does **not** bound the work done. A crafted ",
-      "cvss": 7.5,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 2,
-      "merged_sources": [
-        "github_advisories",
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-24",
-      "last_seen": "2026-09-24",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "composer",
-      "product": "zbateson/mail-mime-parser",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61816"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-f6v3-2qmr-vfjx",
-        "https://github.com/zbateson/mail-mime-parser/security/advisories/GHSA-f6v3-2qmr-vfjx",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-61816",
-        "https://github.com/zbateson/mail-mime-parser/commit/1691e695821f70461f9554e9bb71be2859404a24"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-57231",
-      "title": "Podman: Malformed Image can trick podman run into leaking host environment variables into the container",
-      "description": "## Summary An container image that contains a environment variable with just a key and no value can trick podman into passing that variable from the host into the container. This is made worse by the fact that using an asterisk (*) will cause podman to pass all host variables into the container. So ",
-      "cvss": 7.5,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 2,
-      "merged_sources": [
-        "github_advisories",
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-24",
-      "last_seen": "2026-09-24",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "go",
-      "product": "github.com/containers/podman/v5",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-57231"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-4hq8-gpf5-8p68",
-        "https://github.com/podman-container-tools/podman/security/advisories/GHSA-4hq8-gpf5-8p68",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-57231",
-        "https://github.com/podman-container-tools/podman/commit/6c431b73dbf8e4b20b778644d7a80caebdb75050"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-61788",
-      "title": "@bytebase/dbhub's read-only mode does not prevent database writes",
-      "description": "### Summary Setting `readonly = true` on the `execute_sql` tool does not make the connection read-only. The connectors are written to set PostgreSQL `default_transaction_read_only=on` (and open SQLite in `readOnly` mode), but that code is gated on a config value that is never populated, so it never ",
-      "cvss": 7.4,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 2,
-      "merged_sources": [
-        "github_advisories",
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-24",
-      "last_seen": "2026-09-24",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "npm",
-      "product": "@bytebase/dbhub",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61788"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-mwwr-p57h-56pf",
-        "https://github.com/bytebase/dbhub/security/advisories/GHSA-mwwr-p57h-56pf",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-61788",
-        "https://github.com/bytebase/dbhub/pull/342"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-61815",
-      "title": "zbateson/mail-mime-parser has CRLF header injection via attachment filename",
-      "description": "### Impact A CRLF (carriage-return / line-feed) header injection affecting any application that uses this library to build or forward MIME messages with an attacker-influenced attachment filename. Attachment filenames are interpolated into the `Content-Type` and `Content-Disposition` header values w",
-      "cvss": 7.2,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 2,
-      "merged_sources": [
-        "github_advisories",
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-24",
-      "last_seen": "2026-09-24",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "composer",
-      "product": "zbateson/mail-mime-parser",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61815"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-36h5-qg4p-q2qf",
-        "https://github.com/zbateson/mail-mime-parser/security/advisories/GHSA-36h5-qg4p-q2qf",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-61815",
-        "https://github.com/zbateson/mail-mime-parser/commit/81859c06abb5d79f04b7a3254d293d0a91065948"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-95985",
-      "title": "Low Security Vulnerability (CVE-2026-95985)",
-      "description": "CVE-2026-95985",
-      "cvss": 8.8,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-24",
-      "last_seen": "2026-09-24",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-95985"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://vulners.com/nvd/NVD:CVE-2026-95985?utm_source=rss&utm_medium=rss&utm_campaign=rss"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
         ],
         "suppression": null,
         "merge": null
