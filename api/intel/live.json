@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-24T22:08:08.921Z",
+  "generated": "2026-09-25T00:43:01.632Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,70 +7,25 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 5373,
+  "total_published": 5383,
   "s2n_stats": {
-    "passed": 113,
+    "passed": 104,
     "suppressed": 8,
     "avg_qs": 0.492
   },
   "items": [
     {
-      "id": "CVE-2026-76460",
-      "title": "Cisco ISE scores a perfect CVSS 10.0 — unauthenticated API bypass to root (CVE-2026-76460)",
-      "description": "This one is as bad as it sounds. CVE-2026-76460 is an authentication bypass in Cisco ISE's admin API that gives unauthenticated attackers root-level command execution. No creds, no user interaction, no complexity. Every supported ISE version (3.1 through 3.51) is affected. The kicker: Cisco explicit",
-      "cvss": 10,
-      "final_ps": 81,
-      "quality_score": 0.505,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "reddit_cyber",
+      "id": "CVE-2026-85057",
+      "title": "ZITADEL: Actions V1 sandbox escape: host file read via require()",
+      "description": "Summary\n\nA vulnerability in ZITADEL Actions V1 allows an organization Action author to read files from the ZITADEL host filesystem through the JavaScript require() module loader. On common self-hosted deployments this can be chained to steal bootstrap credentials (including the L... [Full analysis a",
+      "cvss": 9.8,
+      "final_ps": 60,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "MALWARE_REPORT",
+      "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
-        "reddit_cyber"
-      ],
-      "first_seen": "2026-09-24",
-      "last_seen": "2026-09-24",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "reddit_cyber",
-      "product": "Threat Intelligence",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-76460"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.reddit.com/r/cybersecurity/comments/1wp9l25/cisco_ise_scores_a_perfect_cvss_100/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.42 (reddit_cyber)",
-          "data_confidence=1.00",
-          "recency=0d (score=1.00)",
-          "QS=0.505"
-        ],
-        "priority": [
-          "+10 CVSS≥9",
-          "+8 exploited_in_wild"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-57170",
-      "title": "Trestle SSTI in Jinja2 include tags allows arbitrary code execution (Incomplete fix of CVE-2026-46439)",
-      "description": "Reporter: Cavan Loughran, Celvex Group Inc. Summary\n-------\nThe fix for CVE-2026-46439 (3.12.2 / 4.0.3) removed the recursive re-render loop in trestle/core/commands/author/jinja.py render_template, but the custom include tags in trestle/core/jinja/tags.py (MDSectionInclude, MDCleanInclude) still re",
-      "cvss": 7.8,
-      "final_ps": 55,
-      "quality_score": 0.52,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 2,
-      "merged_sources": [
-        "github_advisories",
         "sentinel_apex"
       ],
       "first_seen": "2026-09-24",
@@ -78,30 +33,68 @@
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "pip",
-      "product": "compliance-trestle",
+      "vendor": "",
+      "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-57170",
-        "CVE-2026-46439"
+        "CVE-2026-85057"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-mr95-65j8-9mxp",
-        "https://github.com/oscal-compass/compliance-trestle/security/advisories/GHSA-mr95-65j8-9mxp",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-57170",
-        "https://github.com/oscal-compass/compliance-trestle/pull/2270"
+        "https://github.com/advisories/GHSA-fgmf-7rf8-m6vf"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=1.00",
-          "multi_source=2 sources",
-          "recency=999d (score=0.05)",
-          "QS=0.520"
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
         ],
         "priority": [
-          "base_ps=55 (no boosts)"
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-85056",
+      "title": "ZITADEL: MFA bypass via session reuse in Login V2",
+      "description": "Summary\n\nA vulnerability in ZITADELs Login V2 UI allowed a password-verified browser session to be reused for a new authentication request without re-checking a users enrolled second factor (TOTP, OTP, or U2F). An attacker who already knows valid credentials can fully authenticat... [Full analysis a",
+      "cvss": 9.8,
+      "final_ps": 60,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-85056"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-9993-rfwp-rhwf"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
         ],
         "suppression": null,
         "merge": null
@@ -110,16 +103,15 @@
     {
       "id": "CVE-2026-61816",
       "title": "zbateson/mail-mime-parser has uncontrolled resource consumption (CPU/memory DoS) parsing untrusted MIME",
-      "description": "### Impact An uncontrolled resource consumption / algorithmic complexity vulnerability affecting any application that parses untrusted email with this library. Three independent parsing paths are super-linear in cost, so a byte-size cap on the caller side does **not** bound the work done. A crafted ",
-      "cvss": 7.5,
-      "final_ps": 54,
-      "quality_score": 0.52,
+      "description": "Impact\n\nAn uncontrolled resource consumption / algorithmic complexity vulnerability affecting any application that parses untrusted email with this library.\n\nThree independent parsing paths are super-linear in cost, so a byte-size cap on the caller side does not bound the work do... [Full analysis a",
+      "cvss": 9.8,
+      "final_ps": 60,
+      "quality_score": 0.493,
       "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 2,
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
       "merged_sources": [
-        "github_advisories",
         "sentinel_apex"
       ],
       "first_seen": "2026-09-24",
@@ -127,77 +119,25 @@
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "composer",
-      "product": "zbateson/mail-mime-parser",
+      "vendor": "",
+      "product": "",
       "due_date": null,
       "cves": [
         "CVE-2026-61816"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-f6v3-2qmr-vfjx",
-        "https://github.com/zbateson/mail-mime-parser/security/advisories/GHSA-f6v3-2qmr-vfjx",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-61816",
-        "https://github.com/zbateson/mail-mime-parser/commit/1691e695821f70461f9554e9bb71be2859404a24"
+        "https://github.com/advisories/GHSA-f6v3-2qmr-vfjx"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=1.00",
-          "multi_source=2 sources",
-          "recency=999d (score=0.05)",
-          "QS=0.520"
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
         ],
         "priority": [
-          "base_ps=54 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-57231",
-      "title": "Podman: Malformed Image can trick podman run into leaking host environment variables into the container",
-      "description": "## Summary An container image that contains a environment variable with just a key and no value can trick podman into passing that variable from the host into the container. This is made worse by the fact that using an asterisk (*) will cause podman to pass all host variables into the container. So ",
-      "cvss": 7.5,
-      "final_ps": 54,
-      "quality_score": 0.52,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 2,
-      "merged_sources": [
-        "github_advisories",
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-24",
-      "last_seen": "2026-09-24",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "go",
-      "product": "github.com/containers/podman/v5",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-57231"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-4hq8-gpf5-8p68",
-        "https://github.com/podman-container-tools/podman/security/advisories/GHSA-4hq8-gpf5-8p68",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-57231",
-        "https://github.com/podman-container-tools/podman/commit/6c431b73dbf8e4b20b778644d7a80caebdb75050"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=1.00",
-          "multi_source=2 sources",
-          "recency=999d (score=0.05)",
-          "QS=0.520"
-        ],
-        "priority": [
-          "base_ps=54 (no boosts)"
+          "+10 CVSS≥9"
         ],
         "suppression": null,
         "merge": null
@@ -206,16 +146,15 @@
     {
       "id": "CVE-2026-61788",
       "title": "@bytebase/dbhub's read-only mode does not prevent database writes",
-      "description": "### Summary Setting `readonly = true` on the `execute_sql` tool does not make the connection read-only. The connectors are written to set PostgreSQL `default_transaction_read_only=on` (and open SQLite in `readOnly` mode), but that code is gated on a config value that is never populated, so it never ",
-      "cvss": 7.4,
-      "final_ps": 54,
-      "quality_score": 0.52,
+      "description": "Summary\n\nSetting readonly = true on the execute_sql tool does not make the connection read-only. The connectors are written to set PostgreSQL default_transaction_read_only=on (and open SQLite in readOnly mode), but that code is gated on a config value that is never populated, so ... [Full analysis a",
+      "cvss": 9.8,
+      "final_ps": 60,
+      "quality_score": 0.493,
       "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 2,
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
       "merged_sources": [
-        "github_advisories",
         "sentinel_apex"
       ],
       "first_seen": "2026-09-24",
@@ -223,77 +162,25 @@
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "npm",
-      "product": "@bytebase/dbhub",
+      "vendor": "",
+      "product": "",
       "due_date": null,
       "cves": [
         "CVE-2026-61788"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-mwwr-p57h-56pf",
-        "https://github.com/bytebase/dbhub/security/advisories/GHSA-mwwr-p57h-56pf",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-61788",
-        "https://github.com/bytebase/dbhub/pull/342"
+        "https://github.com/advisories/GHSA-mwwr-p57h-56pf"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=1.00",
-          "multi_source=2 sources",
-          "recency=999d (score=0.05)",
-          "QS=0.520"
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
         ],
         "priority": [
-          "base_ps=54 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-61815",
-      "title": "zbateson/mail-mime-parser has CRLF header injection via attachment filename",
-      "description": "### Impact A CRLF (carriage-return / line-feed) header injection affecting any application that uses this library to build or forward MIME messages with an attacker-influenced attachment filename. Attachment filenames are interpolated into the `Content-Type` and `Content-Disposition` header values w",
-      "cvss": 7.2,
-      "final_ps": 53,
-      "quality_score": 0.52,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 2,
-      "merged_sources": [
-        "github_advisories",
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-24",
-      "last_seen": "2026-09-24",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "composer",
-      "product": "zbateson/mail-mime-parser",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61815"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-36h5-qg4p-q2qf",
-        "https://github.com/zbateson/mail-mime-parser/security/advisories/GHSA-36h5-qg4p-q2qf",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-61815",
-        "https://github.com/zbateson/mail-mime-parser/commit/81859c06abb5d79f04b7a3254d293d0a91065948"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=1.00",
-          "multi_source=2 sources",
-          "recency=999d (score=0.05)",
-          "QS=0.520"
-        ],
-        "priority": [
-          "base_ps=53 (no boosts)"
+          "+10 CVSS≥9"
         ],
         "suppression": null,
         "merge": null
@@ -560,92 +447,6 @@
       }
     },
     {
-      "id": "CVE-2026-85057",
-      "title": "Low Security Vulnerability (CVE-2026-85057)",
-      "description": "CVE-2026-85057",
-      "cvss": 8.7,
-      "final_ps": 47,
-      "quality_score": 0.443,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-24",
-      "last_seen": "2026-09-24",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-85057"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://vulners.com/nvd/NVD:CVE-2026-85057?utm_source=rss&utm_medium=rss&utm_campaign=rss"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.443"
-        ],
-        "priority": [
-          "base_ps=47 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-95985",
-      "title": "Low Security Vulnerability (CVE-2026-95985)",
-      "description": "CVE-2026-95985",
-      "cvss": 8.8,
-      "final_ps": 47,
-      "quality_score": 0.443,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-24",
-      "last_seen": "2026-09-24",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-95985"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://vulners.com/nvd/NVD:CVE-2026-95985?utm_source=rss&utm_medium=rss&utm_campaign=rss"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.443"
-        ],
-        "priority": [
-          "base_ps=47 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
       "id": "CVE-2026-58644",
       "title": "CISA Adds Exploited SharePoint RCE Zero-Day CVE-2026-58644 to KEV",
       "description": "",
@@ -689,9 +490,53 @@
       }
     },
     {
-      "id": "CVE-2026-63493",
-      "title": "Snipe-IT: 2FA bypass via the API token flow",
-      "description": "Impact\n\nAn attacker who knows a victim's password fully bypasses that account's 2FA and obtains a persistent token with full API access as the user (read and write across the user's permissions, including admin if the victim is an admin).\n\nThe token is an API credential, not a we... [Full analysis a",
+      "id": "CVE-2026-57170",
+      "title": "Trestle SSTI in Jinja2 include tags allows arbitrary code execution (Incomplete fix of CVE-2026-46439)",
+      "description": "Reporter: Cavan Loughran, Celvex Group Inc.\n\nSummary\n\nThe fix for CVE-2026-46439 (3.12.2 / 4.0.3) removed the recursive re-render loop in trestle/core/commands/author/jinja.py render_template, but the custom include tags in trestle/core/jinja/tags.py (MDSectionInclude, MDCleanInc... [Full analysis a",
+      "cvss": 7.8,
+      "final_ps": 46,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-57170",
+        "CVE-2026-46439"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-mr95-65j8-9mxp"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=46 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-57231",
+      "title": "Podman: Malformed Image can trick podman run into leaking host environment variables into the container",
+      "description": "Summary\n\nAn container image that contains a environment variable with just a key and no value can trick podman into passing that variable from the host into the container. This is made worse by the fact that using an asterisk (*) will cause podman to pass all host variables into ... [Full analysis a",
       "cvss": 7.5,
       "final_ps": 46,
       "quality_score": 0.493,
@@ -711,11 +556,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-63493"
+        "CVE-2026-57231"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-hxcx-9h4f-42xx"
+        "https://github.com/advisories/GHSA-4hq8-gpf5-8p68"
       ],
       "explanation": {
         "quality": [
@@ -726,49 +571,6 @@
         ],
         "priority": [
           "base_ps=46 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-85056",
-      "title": "Low Security Vulnerability (CVE-2026-85056)",
-      "description": "CVE-2026-85056",
-      "cvss": 8.2,
-      "final_ps": 45,
-      "quality_score": 0.443,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-24",
-      "last_seen": "2026-09-24",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-85056"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://vulners.com/nvd/NVD:CVE-2026-85056?utm_source=rss&utm_medium=rss&utm_campaign=rss"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.443"
-        ],
-        "priority": [
-          "base_ps=45 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -1808,135 +1610,6 @@
       }
     },
     {
-      "id": "CVE-2026-61823",
-      "title": "CVE-2026-61823 - code16 Sharp vulnerable to stored XSS via iframe srcdoc Attribute",
-      "description": "CVE-2026-61823 - code16 Sharp vulnerable to stored XSS via iframe srcdoc Attribute",
-      "cvss": 6.1,
-      "final_ps": 40,
-      "quality_score": 0.453,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-24",
-      "last_seen": "2026-09-24",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61823"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-61823"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.50",
-          "recency=0d (score=1.00)",
-          "QS=0.453"
-        ],
-        "priority": [
-          "base_ps=40 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-57440",
-      "title": "CVE-2026-57440 - Mediawiki EmbedVideo Extension has stored XSS via malformed src url with $wgEmbedVideoRequireConsent di",
-      "description": "CVE-2026-57440 - Mediawiki EmbedVideo Extension has stored XSS via malformed src url with $wgEmbedVideoRequireConsent disabled",
-      "cvss": 6.1,
-      "final_ps": 40,
-      "quality_score": 0.453,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-24",
-      "last_seen": "2026-09-24",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-57440"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-57440"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.50",
-          "recency=0d (score=1.00)",
-          "QS=0.453"
-        ],
-        "priority": [
-          "base_ps=40 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-97322",
-      "title": "CVE-2026-97322 - YunaiV/zhijiantianya ruoyi-vue-pro File Upload FileController.java cross site scripting",
-      "description": "CVE-2026-97322 - YunaiV/zhijiantianya ruoyi-vue-pro File Upload FileController.java cross site scripting",
-      "cvss": 6.1,
-      "final_ps": 40,
-      "quality_score": 0.453,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-24",
-      "last_seen": "2026-09-24",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-97322"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-97322"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.50",
-          "recency=0d (score=1.00)",
-          "QS=0.453"
-        ],
-        "priority": [
-          "base_ps=40 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
       "id": "CVE-2026-56742",
       "title": "Cilium: Namespaced HTTPRoutes can redirect traffic to other namespaces",
       "description": "Impact\n\nIn Cilium clusters using Gateway API (https://docs.cilium.io/en/stable/network/servicemesh/gateway-api/gateway-api/), users with permissions to create or update namespaced HTTPRoutes can mirror HTTP traffic to any Service in any namespace, bypassing the ReferenceGrant aut... [Full analysis a",
@@ -2329,9 +2002,7 @@
         ],
         "suppression": null,
         "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
+      }
     },
     {
       "id": "CVE-2024-4898",
@@ -2375,9 +2046,7 @@
         ],
         "suppression": null,
         "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
+      }
     },
     {
       "id": "CVE-2019-0708",
@@ -2421,9 +2090,7 @@
         ],
         "suppression": null,
         "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
+      }
     },
     {
       "id": "CVE-2025-69212",
@@ -2467,9 +2134,7 @@
         ],
         "suppression": null,
         "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
+      }
     },
     {
       "id": "CVE-2024-36401",
@@ -2513,9 +2178,7 @@
         ],
         "suppression": null,
         "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
+      }
     },
     {
       "id": "CVE-2026-15748",
@@ -2559,9 +2222,7 @@
         ],
         "suppression": null,
         "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
+      }
     },
     {
       "id": "CVE-2026-12495",
@@ -2603,9 +2264,7 @@
         ],
         "suppression": null,
         "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
+      }
     },
     {
       "id": "CVE-2026-15013",
@@ -3327,6 +2986,52 @@
       "suppression_reason": null
     },
     {
+      "id": "CVE-2026-76460",
+      "title": "Cisco ISE scores a perfect CVSS 10.0 — unauthenticated API bypass to root (CVE-2026-76460)",
+      "description": "This one is as bad as it sounds. CVE-2026-76460 is an authentication bypass in Cisco ISE's admin API that gives unauthenticated attackers root-level command execution. No creds, no user interaction, no complexity. Every supported ISE version (3.1 through 3.51) is affected. The kicker: Cisco explicit",
+      "cvss": 10,
+      "final_ps": 36,
+      "quality_score": 0.45,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "reddit_cyber",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "reddit_cyber"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": true,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "reddit_cyber",
+      "product": "Threat Intelligence",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-76460"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.reddit.com/r/cybersecurity/comments/1wp9l25/cisco_ise_scores_a_perfect_cvss_100/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.42 (reddit_cyber)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.450"
+        ],
+        "priority": [
+          "+10 CVSS≥9",
+          "+8 exploited_in_wild"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
       "id": "CVE-2026-94127",
       "title": "F5 BIG-IP APM Zero-Day Exploited in Zero-Day RCE Attacks",
       "description": "F5 warns of a critical BIG-IP APM zero-day, CVE-2026-94127, allowing remote code execution. Attackers are already exploiting it. F5 has released emergency security updates for a critical vulnerability, tracked as CVE-2026-94127 (CVSS score of 9.8), in BIG-IP Access Policy Manager... [Full analysis a",
@@ -3411,6 +3116,366 @@
         "priority": [
           "+10 CVSS≥9",
           "+4 critical_infra"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-61732",
+      "title": "Decepticon: Role-boundary forgery via ChatML special-token literals in web crawl output composed into LLM context",
+      "description": "Summary\n\nDecepticon wraps web crawl results the output of agent reconnaissance against target services into LLM messages without neutralizing ChatML special-token literals. Under the BYOK (Bring Your Own Key) deployment model, users configure their own LLM credentials to any Open... [Full analysis a",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-61732"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-g5f9-3xfg-p9mf"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-56737",
+      "title": "phpMyFAQ's two-factor authentication login bypasses the password factor",
+      "description": "Summary\nThe public two-factor verification endpoint POST /check logs a user in based solely on a valid\n6-digit TOTP token and a chosen user-id. It does not require and is not bound to a prior\nsuccessful password authentication. For any account that has 2FA enabled, an unauthentic... [Full analysis a",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-56737"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-8gpw-xvpf-hvx5"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-61782",
+      "title": "@rsdoctor/rspack-plugin has Unauthenticated HTTP API that Exposes Project Source Code and Build Metadata",
+      "description": "Summary\n\nThe default Rsdoctor report HTTP server started by @rsdoctor/rspack-plugin binds to all network interfaces (0.0.0.0) and serves a POST /api/data/key endpoint with no authentication and wildcard CORS (Access-Control-Allow-Origin: *). Any network-adjacent or remote attacke... [Full analysis a",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-61782"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-jmg2-rcxh-w8q3"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-12957",
+      "title": "Language Servers for AWS Vulnerable to Arbitrary Code Execution",
+      "description": "Summary\nLanguage Servers for AWS (the aws/language-servers project) provide the underlying language-server runtime that powers Amazon Q Developer's AI coding assistance across its IDE plugins (Visual Studio Code, JetBrains, Eclipse, and\nVisual Studio).\n\nImproper trust boundary en... [Full analysis a",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-12957"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-xhcr-j4j9-3gh7"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-57232",
+      "title": "Contao: Server-Side Request Forgery (SSRF) via Unvalidated RSS Feed URL in Feed Reader Module",
+      "description": "Summary\n\nThe Feed Reader front-end module passes RSS feed URLs from its configuration directly to $this->feedIo->read($url) without any scheme validation or private-IP blocklist. A backend user with module-edit permissions can configure an arbitrary URL pointing to internal netwo... [Full analysis a",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-57232"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-87mg-5grr-rhwh"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-77967",
+      "title": "CVE-2026-77967 - Botslab G980H Dashcams Authentication Bypass by Capture-replay",
+      "description": "CVE ID : CVE-2026-77967\n\n Published : Sept. 24, 2026, 7:51 p.m. | 9minutes ago\n\n Description : The Botslab G980H dash camera firmware accepts a reusable authentication value without adequately verifying its freshness or association with the requesting client. An unauthenticated a... [Full analysis a",
+      "cvss": 9.1,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-77967"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-77967"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-56736",
+      "title": "phpMyFAQ has Stored XSS in Admin FAQ Editor via HTML Entity Bypass in Frontend FAQ Submission",
+      "description": "Summary\nA stored cross-site scripting (XSS) vulnerability in phpMyFAQ allows any unauthenticated user (or low-privileged registered user) to inject arbitrary JavaScript that executes in an administrator's browser when they review or edit a user-submitted FAQ entry. This leads to ... [Full analysis a",
+      "cvss": 9.1,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-56736"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-pgwp-vc7q-cvj3"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-95699",
+      "title": "CVE-2026-95699 - MrSteam iSteamX Improper Isolation or Compartmentalization",
+      "description": "CVE-2026-95699 - MrSteam iSteamX Improper Isolation or Compartmentalization",
+      "cvss": 9.6,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-95699"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-95699"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
         ],
         "suppression": null,
         "merge": null
@@ -4145,11 +4210,11 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-77262",
-      "title": "MCP Atlassian: Path Traversal / Arbitrary File Read in confluence_upload_attachment MCP tool (incomplete fix of GHSA-xjg",
-      "description": "Summary\n\nmcp-atlassian exposes an MCP tool confluence_upload_attachment whose file_path argument is passed directly to open(file_path, \"rb\") without any path validation. An attacker able to invoke the tool can read arbitrary files readable by the server process and exfiltrate the... [Full analysis a",
-      "cvss": 9,
-      "final_ps": 28,
+      "id": "CVE-2026-59723",
+      "title": "Cline: Cross-Origin WebSocket Hijacking in Cline Hub Dashboard (/browser endpoint)",
+      "description": "Summary\n\nThe Cline Hub dashboard server (@cline/cline-hub), launched via the cline dashboard CLI command, accepts WebSocket connections on the /browser endpoint without validating the HTTP Origin header. When ROOM_SECRET is not setthe default for local (127.0.0.1) bindsisAuthoriz... [Full analysis a",
+      "cvss": 8.8,
+      "final_ps": 18,
       "quality_score": 0.438,
       "threat_level": "MEDIUM",
       "type": "NEWS_REPORT",
@@ -4158,8 +4223,8 @@
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-09-22",
-      "last_seen": "2026-09-22",
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -4167,12 +4232,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-77262",
-        "CVE-2026-27825"
+        "CVE-2026-59723"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-p6hp-93wp-fh6p"
+        "https://github.com/advisories/GHSA-3cj3-hqcr-g934"
       ],
       "explanation": {
         "quality": [
@@ -4182,7 +4246,7 @@
           "QS=0.438"
         ],
         "priority": [
-          "+10 CVSS≥9"
+          "base_ps=18 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4191,56 +4255,11 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-85734",
-      "title": "lightrag-hku: No Rate Limiting on /login Endpoint Allows Brute-Force Attacks",
-      "description": "Summary\nThe POST /login endpoint has no rate limiting, account lockout, or delay on failed attempts. An attacker can submit unlimited password guesses at full network speed.\n\nDetails\n\nlightrag/api/lightrag_server.py:2161\n@app.post(\"/login\")\nasync def login(form_data: OAuth2Passwo... [Full analysis a",
-      "cvss": 9.1,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "AI_SECURITY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-22",
-      "last_seen": "2026-09-22",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-85734"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-frch-4w6v-q5xx"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-77269",
-      "title": "MCP Atlassian: Path traversal in upload_attachment allows arbitrary file read (incomplete fix for CVE-2026-27825)",
-      "description": "Summary\n\nThe confluence_upload_attachment and confluence_upload_attachments MCP tools accept a file_path parameter and do not validate that the path is confined to an allowed directory before opening the file. An attacker who can call these tools can read any file accessible to t... [Full analysis a",
-      "cvss": 9,
-      "final_ps": 28,
+      "id": "CVE-2026-57171",
+      "title": "Trestle is vulnerable to arbitrary file write via path traversal in author generate commands (Incomplete fix of CVE-2026",
+      "description": "At a glance\n\n- Actor: attacker who controls the -o/--output argument to trestle author {catalog,profile,ssp}-generate (e.g. via a CI pipeline that derives the output directory from repository-controlled data)\n\n- Primitive: attacker-controlled --output value reaches trestle_root /... [Full analysis a",
+      "cvss": 8.4,
+      "final_ps": 18,
       "quality_score": 0.438,
       "threat_level": "MEDIUM",
       "type": "CVE_REPORT",
@@ -4249,8 +4268,8 @@
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-09-22",
-      "last_seen": "2026-09-22",
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -4258,12 +4277,12 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-77269",
-        "CVE-2026-27825"
+        "CVE-2026-57171",
+        "CVE-2026-46345"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-h7wj-5v37-59r2"
+        "https://github.com/advisories/GHSA-r4vp-3vw6-r2x5"
       ],
       "explanation": {
         "quality": [
@@ -4273,7 +4292,7 @@
           "QS=0.438"
         ],
         "priority": [
-          "+10 CVSS≥9"
+          "base_ps=18 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4282,21 +4301,21 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-62987",
-      "title": "Fabio - Incomplete fix for CVE-2025-48865: operator-configured trust headers (clientip/tls/requestid) still strippable v",
-      "description": "Affected: github.com/fabiolb/fabio >= 1.6.6 through 1.7.1 and master HEAD (c75f8a6).\n\nSummary\nThe v1.6.6 fix for CVE-2025-48865 sweeps the client Connection header against a hardcoded allowlist protectHeaders (proxy/http_headers.go:28-36) containing only the 7 X-Forwarded family ... [Full analysis a",
-      "cvss": 9.1,
-      "final_ps": 28,
+      "id": "CVE-2026-62368",
+      "title": "Snipe-IT: Stored XSS via Custom Field name in asset-list column headers",
+      "description": "Impact\nA user with the \"customfields.create\" permission can store HTML/JS in a Custom Field name, which is later rendered as an asset-list column title WITHOUT escaping at app/Presenters/AssetPresenter.php line 364 ('title' => $field->name) and injected into the table header by t... [Full analysis a",
+      "cvss": 7.8,
+      "final_ps": 18,
       "quality_score": 0.438,
       "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
+      "type": "NEWS_REPORT",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-09-22",
-      "last_seen": "2026-09-22",
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -4304,12 +4323,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-62987",
-        "CVE-2025-48865"
+        "CVE-2026-62368"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-fq95-v8xc-jm3v"
+        "https://github.com/advisories/GHSA-p9h3-gvpq-5539"
       ],
       "explanation": {
         "quality": [
@@ -4319,7 +4337,7 @@
           "QS=0.438"
         ],
         "priority": [
-          "+10 CVSS≥9"
+          "base_ps=18 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4328,11 +4346,11 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-60004",
-      "title": "CISA Warns of Exploited Gitea Vulnerability",
-      "description": "CVE-2026-60004 is a remote code execution vulnerability patched by Gitea developers in late July with the release of version 1.27.1.\n The post CISA Warns of Exploited Gitea Vulnerability appeared first on SecurityWeek .",
-      "cvss": 9.8,
-      "final_ps": 28,
+      "id": "CVE-2026-97404",
+      "title": "[OSSA-2026-042] OpenStack Zaqar: Zaqar empty URL-Signature header bypasses authentication (CVE-2026-97404)",
+      "description": "Posted by Goutham Pacha Ravi on Sep 24 =======================================================================\nOSSA-2026-042: Zaqar empty URL-Signature header bypasses authentication\n=======================================================================\n\n:Date: September 24, 202... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 18,
       "quality_score": 0.438,
       "threat_level": "MEDIUM",
       "type": "CVE_REPORT",
@@ -4341,8 +4359,8 @@
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-08-26",
-      "last_seen": "2026-08-26",
+      "first_seen": "2026-09-24",
+      "last_seen": "2026-09-24",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -4350,11 +4368,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-60004"
+        "CVE-2026-97404"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://www.securityweek.com/cisa-warns-of-exploited-gitea-vulnerability/"
+        "https://seclists.org/oss-sec/2026/q3/921"
       ],
       "explanation": {
         "quality": [
@@ -4364,52 +4382,7 @@
           "QS=0.438"
         ],
         "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-76148",
-      "title": "CVE-2026-76148 - CorvusSKK Code Injection Vulnerability",
-      "description": "CVE ID : CVE-2026-76148\n\n Published : Aug. 26, 2026, 4:55 a.m. | 1hour, 7minutes ago\n\n Description : CorvusSKK contains a code injection vulnerability, which may lead to arbitrary code execution on the affected product.\n\n Severity: 8.4 | HIGH\n\n Visit the link for more details, su... [Full analysis a",
-      "cvss": 9.8,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-08-26",
-      "last_seen": "2026-08-26",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-76148"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-76148"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
+          "base_ps=18 (no boosts)"
         ],
         "suppression": null,
         "merge": null
