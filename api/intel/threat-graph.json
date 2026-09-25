@@ -1,15 +1,15 @@
 {
-  "generated": "2026-09-25T19:55:15.345Z",
+  "generated": "2026-09-25T23:11:05.598Z",
   "version": "1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX v4.0",
   "stats": {
-    "total_nodes": 14630,
+    "total_nodes": 14637,
     "actors": 8,
-    "cves": 6417,
-    "campaigns": 1438,
+    "cves": 6420,
+    "campaigns": 1441,
     "malware": 0,
     "iocs": 909,
-    "edges": 4154
+    "edges": 4160
   },
   "nodes": {
     "actor:lockbit": {
@@ -1090,6 +1090,11 @@
           "target": "CVE-2026-12957",
           "relationship": "exploits",
           "confidence": 0.85
+        },
+        {
+          "target": "BLEEPINGCOMPUTER-aebbf454a9b78757",
+          "relationship": "exploits",
+          "confidence": 0.85
         }
       ],
       "attributes": {
@@ -1796,6 +1801,11 @@
         },
         {
           "target": "REDDIT_CYBER-4a775ac9f7ebef68",
+          "relationship": "exploits",
+          "confidence": 0.85
+        },
+        {
+          "target": "BLEEPINGCOMPUTER-aebbf454a9b78757",
           "relationship": "exploits",
           "confidence": 0.85
         }
@@ -11334,7 +11344,7 @@
       "attributes": {
         "ioc_type": "ipv4",
         "confidence": 0.88,
-        "first_seen": "2026-09-24"
+        "first_seen": "2026-09-25"
       },
       "connections": []
     },
@@ -253328,7 +253338,7 @@
       "attributes": {
         "cvss": 9.8,
         "threat_level": "MEDIUM",
-        "priority_score": 49,
+        "priority_score": 47,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
@@ -260822,7 +260832,7 @@
       "attributes": {
         "cvss": 10,
         "threat_level": "MEDIUM",
-        "priority_score": 46,
+        "priority_score": 51,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
@@ -273774,7 +273784,7 @@
       "attributes": {
         "cvss": 7.4,
         "threat_level": "LOW",
-        "priority_score": 42,
+        "priority_score": 40,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
@@ -273972,7 +273982,7 @@
       "attributes": {
         "cvss": 6.8,
         "threat_level": "LOW",
-        "priority_score": 40,
+        "priority_score": 38,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
@@ -275368,6 +275378,144 @@
         "type": "CVE_REPORT"
       },
       "connections": []
+    },
+    "CVE-2026-100368": {
+      "id": "CVE-2026-100368",
+      "type": "CVE",
+      "name": "CliInvoke.Specializations has command injection in PowerShell and Cmd shell wrappers",
+      "attributes": {
+        "cvss": 8.4,
+        "threat_level": "MEDIUM",
+        "priority_score": 64,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "nuget",
+        "product": "CliInvoke.Specializations",
+        "published": "2026-09-25",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-100369": {
+      "id": "CVE-2026-100369",
+      "type": "CVE",
+      "name": "CliInvoke: Argument Injection in Extensibility Runner Factory",
+      "attributes": {
+        "cvss": 8.4,
+        "threat_level": "MEDIUM",
+        "priority_score": 64,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "nuget",
+        "product": "CliInvoke",
+        "published": "2026-09-25",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-57443": {
+      "id": "CVE-2026-57443",
+      "type": "CVE",
+      "name": "SCBE-AETHERMOORE Unauthenticated AetherBrowser Ops API Exposes Operator Email Digests",
+      "attributes": {
+        "cvss": 7.5,
+        "threat_level": "MEDIUM",
+        "priority_score": 62,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "pip",
+        "product": "scbe-aethermoore",
+        "published": "2026-09-25",
+        "type": "CVE_REPORT"
+      },
+      "connections": [
+        {
+          "target": "ioc:ipv4:0.0.0.0",
+          "relationship": "linked_to",
+          "confidence": 0.88
+        }
+      ]
+    },
+    "BLEEPINGCOMPUTER-aebbf454a9b78757": {
+      "id": "BLEEPINGCOMPUTER-aebbf454a9b78757",
+      "type": "Intel",
+      "name": "ShinyHunters hacked Clop leak site using Grav CMS path traversal flaw",
+      "attributes": {
+        "cvss": 0,
+        "threat_level": "LOW",
+        "priority_score": 36,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": true,
+        "vendor": "BleepingComputer",
+        "product": "Threat Intelligence",
+        "published": "2026-09-25",
+        "type": "RANSOMWARE"
+      },
+      "connections": []
+    },
+    "campaign:cve-2026-100368": {
+      "id": "campaign:cve-2026-100368",
+      "type": "Campaign",
+      "name": "nuget CliInvoke.Specializations Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-25",
+        "last_seen": "2026-09-25",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-100368"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-100368",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-100369": {
+      "id": "campaign:cve-2026-100369",
+      "type": "Campaign",
+      "name": "nuget CliInvoke Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-25",
+        "last_seen": "2026-09-25",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-100369"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-100369",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-57443": {
+      "id": "campaign:cve-2026-57443",
+      "type": "Campaign",
+      "name": "pip scbe-aethermoore Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-25",
+        "last_seen": "2026-09-25",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-57443 | 1 shared IOC(s) across items"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-57443",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
     }
   },
   "edges": [
@@ -312928,6 +313076,60 @@
       "id": "campaign:cve-2026-86439→includes→CVE-2026-86439",
       "source": "campaign:cve-2026-86439",
       "target": "CVE-2026-86439",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-25",
+      "sources": []
+    },
+    {
+      "id": "CVE-2026-57443→linked_to→ioc:ipv4:0.0.0.0",
+      "source": "CVE-2026-57443",
+      "target": "ioc:ipv4:0.0.0.0",
+      "relationship": "linked_to",
+      "confidence": 0.88,
+      "first_seen": "2026-09-25",
+      "sources": []
+    },
+    {
+      "id": "actor:shinyhunters→exploits→BLEEPINGCOMPUTER-aebbf454a9b78757",
+      "source": "actor:shinyhunters",
+      "target": "BLEEPINGCOMPUTER-aebbf454a9b78757",
+      "relationship": "exploits",
+      "confidence": 0.85,
+      "first_seen": "2026-09-25",
+      "sources": []
+    },
+    {
+      "id": "actor:cl0p→exploits→BLEEPINGCOMPUTER-aebbf454a9b78757",
+      "source": "actor:cl0p",
+      "target": "BLEEPINGCOMPUTER-aebbf454a9b78757",
+      "relationship": "exploits",
+      "confidence": 0.85,
+      "first_seen": "2026-09-25",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-100368→includes→CVE-2026-100368",
+      "source": "campaign:cve-2026-100368",
+      "target": "CVE-2026-100368",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-25",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-100369→includes→CVE-2026-100369",
+      "source": "campaign:cve-2026-100369",
+      "target": "CVE-2026-100369",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-25",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-57443→includes→CVE-2026-57443",
+      "source": "campaign:cve-2026-57443",
+      "target": "CVE-2026-57443",
       "relationship": "includes",
       "confidence": 1,
       "first_seen": "2026-09-25",

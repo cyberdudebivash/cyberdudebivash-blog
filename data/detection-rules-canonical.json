@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-09-10T05:04:56.304Z",
+    "generated": "2026-09-25T23:11:06.021Z",
     "generator": "SENTINEL APEX Detection Engine v5.0",
     "total_rules": 5
   },
@@ -210,10 +210,10 @@
       "technique_id": "T1059.001",
       "title": "Suspicious Encoded PowerShell Invocation",
       "level": "high",
-      "description": "PHP-CGI argument injection exploited to deploy ransomware. Attackers exploited a public-facing PHP flaw, ran encoded PowerShell, established registry ",
+      "description": "CliInvoke.Specializations has command injection in PowerShell and Cmd shell wrappers. ### Impact\nAn OS command injection vulnerability exists in the P",
       "data_source": "process_creation",
       "platforms": {
-        "sigma": "title: Suspicious Encoded PowerShell Invocation\nid: 180ec008-0df2-59e2-a4d6-7b0797640f02\nstatus: experimental\ndescription: 'Suspicious Encoded PowerShell Invocation. Evidence basis: s exploited a public-facing PHP flaw, ran encoded PowerShell, established registry Run key persistence, and us. CYBERDUDEBIVASH SENTINEL APEX Detection Engineering.'\nreferences:\n- 'https://nvd.nist.gov/vuln/detail/CVE-2024-4577'\n- 'https://vendor.example/advisory'\nauthor: CYBERDUDEBIVASH SENTINEL APEX Detection Engineering\ndate: 2026-08-26\ntags:\n- attack.t1059.001\nlogsource:\n    product: windows\n    category: process_creation\ndetection:\n    selection:\n        Image|endswith: \\powershell.exe\n        CommandLine|contains:\n            - '-EncodedCommand'\n            - '-enc '\n            - FromBase64String\n    condition: selection\nfalsepositives:\n    - Legitimate administrative activity\n    - Authorized security testing\nlevel: high",
+        "sigma": "title: Suspicious Encoded PowerShell Invocation\nid: 180ec008-0df2-59e2-a4d6-7b0797640f02\nstatus: experimental\ndescription: 'Suspicious Encoded PowerShell Invocation. Evidence basis: liInvoke.Specializations has command injection in PowerShell and Cmd shell wrappers. ### Impact An OS command. CYBERDUDEBIVASH SENTINEL APEX Detection Engineering.'\nreferences:\n- 'https://nvd.nist.gov/vuln/detail/CVE-2026-100368'\n- 'https://github.com/advisories/GHSA-wrvw-254r-wpmv'\n- 'https://github.com/alastairlundy/CliInvoke/security/advisories/GHSA-wrvw-254r-wpmv'\n- 'https://nvd.nist.gov/vuln/detail/CVE-2026-100368'\nauthor: CYBERDUDEBIVASH SENTINEL APEX Detection Engineering\ndate: 2026-09-25\ntags:\n- attack.t1059.001\nlogsource:\n    product: windows\n    category: process_creation\ndetection:\n    selection:\n        Image|endswith: \\powershell.exe\n        CommandLine|contains:\n            - '-EncodedCommand'\n            - '-enc '\n            - FromBase64String\n    condition: selection\nfalsepositives:\n    - Legitimate administrative activity\n    - Authorized security testing\nlevel: high",
         "kql": "DeviceProcessEvents\n| where FolderPath endswith \"\\\\powershell.exe\"\n| where (ProcessCommandLine contains \"-EncodedCommand\" or ProcessCommandLine contains \"-enc \" or ProcessCommandLine contains \"FromBase64String\")\n| project Timestamp, DeviceName, FolderPath, ProcessCommandLine, InitiatingProcessFolderPath",
         "splunk": "| tstats count from datamodel=Endpoint where nodename=Endpoint.Processes Processes.process_path=\"*\\powershell.exe\" (Processes.process=\"*-EncodedCommand*\" OR Processes.process=\"*-enc *\" OR Processes.process=\"*FromBase64String*\") by Processes.process_path Processes.parent_process_path _time",
         "osquery": "SELECT * FROM processes WHERE path LIKE '%\\powershell.exe' AND (cmdline LIKE '%-EncodedCommand%' OR cmdline LIKE '%-enc %' OR cmdline LIKE '%FromBase64String%');"
@@ -223,18 +223,16 @@
         "status": "GENERATED",
         "confidence": "MEDIUM",
         "created_at": "2026-08-26T12:20:05.069Z",
-        "updated_at": "2026-08-26T12:20:16.455Z",
-        "version": "1.0.8"
+        "updated_at": "2026-09-25T23:11:06.021Z",
+        "version": "1.0.9"
       },
       "source": {
-        "iocs": [
-          "evil-c2[.]top"
-        ],
+        "iocs": [],
         "articles": [
-          "CVE-2024-4577"
+          "CVE-2026-100368"
         ],
         "campaigns": [],
-        "evidence": "PHP-CGI argument injection exploited to deploy ransomware. Attackers exploited a public-facing PHP flaw, ran encoded PowerShell, established registry Run key persistence, and used vssadmin to delete v"
+        "evidence": "CliInvoke.Specializations has command injection in PowerShell and Cmd shell wrappers. ### Impact\nAn OS command injection vulnerability exists in the PowerShell and Cmd shell wrappers provided by the `"
       },
       "history": [
         {
@@ -288,6 +286,12 @@
         {
           "version": "1.0.8",
           "timestamp": "2026-08-26T12:20:16.455Z",
+          "change": "Rule updated",
+          "author": "detection-engine"
+        },
+        {
+          "version": "1.0.9",
+          "timestamp": "2026-09-25T23:11:06.021Z",
           "change": "Rule updated",
           "author": "detection-engine"
         }
