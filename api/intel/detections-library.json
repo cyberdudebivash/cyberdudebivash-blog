@@ -1,8 +1,44 @@
 {
-  "generated": "2026-09-24T21:35:11.017Z",
+  "generated": "2026-09-25T05:04:04.647Z",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
   "count": 200,
   "items": [
+    {
+      "slug": "cve-2026-57178-pip-social-auth-core",
+      "title": "social-auth-core: VK App backend accepts unsigned callback data when auth_key is missing",
+      "url": "/posts/cve-2026-57178-pip-social-auth-core.html",
+      "generated": "2026-09-24T21:48:37.887Z",
+      "severity": "HIGH",
+      "cves": [
+        "CVE-2026-57178"
+      ],
+      "mitreAttack": [],
+      "sigma": [],
+      "kql": [],
+      "splunk": [],
+      "osquery": [],
+      "suricata": [
+        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://github.com/python-social-auth/social-core/pull/1811\"; http.host; content:\"github.com\"; nocase; http.uri; content:\"/python-social-auth/social-core/pull/1811\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)"
+      ]
+    },
+    {
+      "slug": "cve-2026-61782-npm-rsdoctor-rspack-plugin",
+      "title": "@rsdoctor/rspack-plugin has Unauthenticated HTTP API that Exposes Project Source Code and Build Metadata",
+      "url": "/posts/cve-2026-61782-npm-rsdoctor-rspack-plugin.html",
+      "generated": "2026-09-24T21:48:37.883Z",
+      "severity": "HIGH",
+      "cves": [
+        "CVE-2026-61782"
+      ],
+      "mitreAttack": [],
+      "sigma": [],
+      "kql": [],
+      "splunk": [],
+      "osquery": [],
+      "suricata": [
+        "alert ip $HOME_NET any -> 0.0.0.0 any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious IP 0.0.0.0\"; classtype:trojan-activity; sid:9000001; rev:1;)"
+      ]
+    },
     {
       "slug": "cve-2026-59990-maven-org-typelevel-jawn-parser-2-12",
       "title": "Jawn: Uncontrolled nesting depth in JSON parser",
@@ -4209,41 +4245,6 @@
       "osquery": [],
       "suricata": [
         "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://github.com/DIRACGrid/DIRAC/blob/integration/src/DIRAC/WorkloadManagementSystem/Utilities/Pil\"; http.host; content:\"github.com\"; nocase; http.uri; content:\"/DIRACGrid/DIRAC/blob/integration/src/DIRAC/WorkloadManagementSystem/Utilities/Pil\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)"
-      ]
-    },
-    {
-      "slug": "dirac-sql-injection-and-lack-of-access-control-in-pilotmana",
-      "title": "DIRAC: SQL injection and lack of access control in PilotManager service",
-      "url": "/posts/dirac-sql-injection-and-lack-of-access-control-in-pilotmana.html",
-      "generated": "2026-07-13T19:02:06.422Z",
-      "severity": "HIGH",
-      "cves": [],
-      "mitreAttack": [],
-      "sigma": [],
-      "kql": [],
-      "splunk": [],
-      "osquery": [],
-      "suricata": [
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://github.com/DIRACGrid/DIRAC/blob/1738e7c6d2f31d26f1364255d9d2e87b4896c922/src/DIRAC/WorkloadM\"; http.host; content:\"github.com\"; nocase; http.uri; content:\"/DIRACGrid/DIRAC/blob/1738e7c6d2f31d26f1364255d9d2e87b4896c922/src/DIRAC/WorkloadM\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)"
-      ]
-    },
-    {
-      "slug": "every-ai-coding-agent-writes-the-secrets-you-paste-straight",
-      "title": "Every AI coding agent writes the secrets you paste straight to a plaintext history file — and nobody scans it",
-      "url": "/posts/every-ai-coding-agent-writes-the-secrets-you-paste-straight.html",
-      "generated": "2026-07-13T18:02:05.683Z",
-      "severity": "MEDIUM",
-      "cves": [],
-      "mitreAttack": [],
-      "sigma": [],
-      "kql": [],
-      "splunk": [],
-      "osquery": [],
-      "suricata": [
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://github.com/Ishannaik/agent-sweep/&quot;&gt;https://github.com/Ishannaik/agent-sweep/&lt;/a&g\"; http.host; content:\"github.com\"; nocase; http.uri; content:\"/Ishannaik/agent-sweep/&quot\\;&gt\\;https\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/user/Ishannaik&quot;&gt;\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/user/Ishannaik&quot\\;&gt\\;\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uvibbw/every_ai_coding_agent_writes_the_secrets_you\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uvibbw/every_ai_coding_agent_writes_the_secrets_you\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)"
       ]
     }
   ]
