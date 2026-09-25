@@ -1,15 +1,15 @@
 {
-  "generated": "2026-09-25T15:33:23.962Z",
+  "generated": "2026-09-25T15:54:50.172Z",
   "version": "1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX v4.0",
   "stats": {
-    "total_nodes": 14605,
+    "total_nodes": 14607,
     "actors": 8,
     "cves": 6395,
-    "campaigns": 1436,
+    "campaigns": 1437,
     "malware": 0,
     "iocs": 909,
-    "edges": 4152
+    "edges": 4153
   },
   "nodes": {
     "actor:lockbit": {
@@ -274914,6 +274914,44 @@
           "confidence": 1
         }
       ]
+    },
+    "CISA-a705dc0d86f58906": {
+      "id": "CISA-a705dc0d86f58906",
+      "type": "Intel",
+      "name": "CISA Adds Two Known Exploited Vulnerabilities to Catalog",
+      "attributes": {
+        "cvss": 0,
+        "threat_level": "MEDIUM",
+        "priority_score": 63,
+        "exploited": true,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "CISA US-CERT",
+        "product": "Multiple Products",
+        "published": "2026-09-25",
+        "type": "ADVISORY"
+      },
+      "connections": []
+    },
+    "campaign:cluster-e35c6cf7": {
+      "id": "campaign:cluster-e35c6cf7",
+      "type": "Campaign",
+      "name": "Microsoft Ecosystem Targeting Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-25",
+        "last_seen": "2026-09-25",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | 2 related CVEs: CVE-2026-65660, CVE-2026-67279 | 1 item(s) confirmed exploited in the wild"
+      },
+      "connections": [
+        {
+          "target": "CISA-a705dc0d86f58906",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
     }
   },
   "edges": [
@@ -312456,6 +312494,15 @@
       "id": "campaign:cve-2026-61823→includes→CVE-2026-61823",
       "source": "campaign:cve-2026-61823",
       "target": "CVE-2026-61823",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-25",
+      "sources": []
+    },
+    {
+      "id": "campaign:cluster-e35c6cf7→includes→CISA-a705dc0d86f58906",
+      "source": "campaign:cluster-e35c6cf7",
+      "target": "CISA-a705dc0d86f58906",
       "relationship": "includes",
       "confidence": 1,
       "first_seen": "2026-09-25",
