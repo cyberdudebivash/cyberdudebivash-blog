@@ -1,8 +1,27 @@
 {
-  "generated": "2026-09-25T11:57:02.667Z",
+  "generated": "2026-09-25T17:17:28.210Z",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
   "count": 200,
   "items": [
+    {
+      "slug": "cve-2026-57440-composer-starcitizenwiki-embedvideo",
+      "title": "Mediawiki EmbedVideo Extension has stored XSS via malformed src url with $wgEmbedVideoRequireConsent disabled",
+      "url": "/posts/cve-2026-57440-composer-starcitizenwiki-embedvideo.html",
+      "generated": "2026-09-25T15:33:24.387Z",
+      "severity": "HIGH",
+      "cves": [
+        "CVE-2026-57440",
+        "CVE-2026-57440"
+      ],
+      "mitreAttack": [],
+      "sigma": [],
+      "kql": [],
+      "splunk": [],
+      "osquery": [],
+      "suricata": [
+        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://github.com/StarCitizenWiki/mediawiki-extensions-EmbedVideo/blob/a573a16d925ee0ea0d34b360856d\"; http.host; content:\"github.com\"; nocase; http.uri; content:\"/StarCitizenWiki/mediawiki-extensions-EmbedVideo/blob/a573a16d925ee0ea0d34b360856d\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)"
+      ]
+    },
     {
       "slug": "cve-2026-57178-pip-social-auth-core",
       "title": "social-auth-core: VK App backend accepts unsigned callback data when auth_key is missing",
@@ -4219,32 +4238,6 @@
         "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uvlm1j/im_taking_ec_council_cct_exam/&quot;&gt;[lin\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uvlm1j/im_taking_ec_council_cct_exam/&quot\\;&gt\\;[lin\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
         "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uvlm1j/im_taking_ec_council_cct_exam/&quot;&gt;[com\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uvlm1j/im_taking_ec_council_cct_exam/&quot\\;&gt\\;[com\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
         "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)"
-      ]
-    },
-    {
-      "slug": "cve-2026-61668-pip-dirac",
-      "title": "DIRAC: Pilot code downloaded over unverified HTTPS connection",
-      "url": "/posts/cve-2026-61668-pip-dirac.html",
-      "generated": "2026-07-13T19:02:06.426Z",
-      "severity": "HIGH",
-      "cves": [
-        "CVE-2026-61668",
-        "CVE-2026-61668"
-      ],
-      "mitreAttack": [
-        {
-          "id": "T1557",
-          "name": "Adversary-in-the-Middle",
-          "tactic": "credential-access",
-          "confidence": "HIGH"
-        }
-      ],
-      "sigma": [],
-      "kql": [],
-      "splunk": [],
-      "osquery": [],
-      "suricata": [
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://github.com/DIRACGrid/DIRAC/blob/integration/src/DIRAC/WorkloadManagementSystem/Utilities/Pil\"; http.host; content:\"github.com\"; nocase; http.uri; content:\"/DIRACGrid/DIRAC/blob/integration/src/DIRAC/WorkloadManagementSystem/Utilities/Pil\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)"
       ]
     }
   ]
