@@ -39,6 +39,11 @@ def main():
             failures.append(f"{ENGINE}: missing runtime trust state: {state}")
     if "cveCount || '50+'" in engine:
         failures.append(f"{ENGINE}: synthetic CVE fallback count is forbidden")
+    for forbidden in ["4,800+ analysts", "1,200+ CVEs tracked", "48H pre-disclosure", "typical weaponization window", "tracks emerging threats before NVD publication"]:
+        if forbidden.lower() in engine.lower():
+            failures.append(f"{ENGINE}: unsupported synthetic intelligence claim remains: {forbidden}")
+    if "riskScore:   null" not in engine:
+        failures.append(f"{ENGINE}: heuristic numeric risk scoring must remain disabled")
     for required in ["soc-runtime-state", "soc-critical", "soc-exploited", "soc-reports"]:
         if required not in engine:
             failures.append(f"{ENGINE}: SOC console is not runtime-bound: {required}")
