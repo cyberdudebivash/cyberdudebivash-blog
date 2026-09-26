@@ -32,9 +32,11 @@ def main():
             if claim.lower() in text.lower():
                 failures.append(f"{surface}: unsupported commercial claim remains: {claim}")
     engine=ENGINE.read_text(encoding="utf-8-sig")
-    for required in ["setRuntimeState('UNAVAILABLE'", "setRuntimeState('DEGRADED'", "setRuntimeState('LIVE'", "setRuntimeState('STALE'"]:
-        if required not in engine:
-            failures.append(f"{ENGINE}: missing runtime trust state: {required}")
+    for state in ["UNAVAILABLE", "DEGRADED", "LIVE", "STALE"]:
+        single = f"setRuntimeState('{state}'"
+        double = f'setRuntimeState("{state}"'
+        if single not in engine and double not in engine:
+            failures.append(f"{ENGINE}: missing runtime trust state: {state}")
     if "cveCount || '50+'" in engine:
         failures.append(f"{ENGINE}: synthetic CVE fallback count is forbidden")
     if failures:
