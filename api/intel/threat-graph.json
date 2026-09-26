@@ -1,15 +1,15 @@
 {
-  "generated": "2026-09-26T07:17:39.171Z",
+  "generated": "2026-09-26T11:46:20.666Z",
   "version": "1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX v4.0",
   "stats": {
-    "total_nodes": 14637,
+    "total_nodes": 14641,
     "actors": 8,
-    "cves": 6420,
-    "campaigns": 1441,
+    "cves": 6423,
+    "campaigns": 1442,
     "malware": 0,
     "iocs": 909,
-    "edges": 4160
+    "edges": 4161
   },
   "nodes": {
     "actor:lockbit": {
@@ -272168,17 +272168,17 @@
     "CVE-2026-65660": {
       "id": "CVE-2026-65660",
       "type": "CVE",
-      "name": "U.S. CISA adds Microsoft SharePoint and Mikrotik RouterOS flaws to its Known Exploited Vulnerabilities catalog",
+      "name": "Critical: SharePoint RCE and MikroTik RouterOS Flaws Actively Exploited in the Wild (CVE-2026-65660)",
       "attributes": {
-        "cvss": 6.5,
-        "threat_level": "LOW",
-        "priority_score": 38,
-        "exploited": false,
+        "cvss": 8.8,
+        "threat_level": "MEDIUM",
+        "priority_score": 63,
+        "exploited": true,
         "cisa_kev": false,
         "ransomware": false,
         "vendor": "",
         "product": "",
-        "published": "2026-09-25",
+        "published": "2026-09-26",
         "type": "CLOUD_SECURITY"
       },
       "connections": []
@@ -273041,17 +273041,17 @@
     "CVE-2026-87902": {
       "id": "CVE-2026-87902",
       "type": "CVE",
-      "name": "Hackers start exploiting critical WordPress flaw for code execution",
+      "name": "U.S. CISA adds WordPress flaw to its Known Exploited Vulnerabilities catalog",
       "attributes": {
-        "cvss": 0,
-        "threat_level": "LOW",
-        "priority_score": 12,
+        "cvss": 9.1,
+        "threat_level": "MEDIUM",
+        "priority_score": 49,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
         "vendor": "",
         "product": "",
-        "published": "2026-09-24",
+        "published": "2026-09-26",
         "type": "CVE_REPORT"
       },
       "connections": []
@@ -273908,9 +273908,9 @@
       "type": "CVE",
       "name": "Critical ServiceNow Vulnerabilities Let Attackers Bypass Authorization – Update Now!",
       "attributes": {
-        "cvss": 7.5,
-        "threat_level": "LOW",
-        "priority_score": 43,
+        "cvss": 9.1,
+        "threat_level": "MEDIUM",
+        "priority_score": 49,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
@@ -275512,6 +275512,80 @@
       "connections": [
         {
           "target": "CVE-2026-57443",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "CVE-2026-53493": {
+      "id": "CVE-2026-53493",
+      "type": "CVE",
+      "name": "Containerd has image-pull DoS via crafted OCI index graph amplification",
+      "attributes": {
+        "cvss": 9.8,
+        "threat_level": "MEDIUM",
+        "priority_score": 51,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "",
+        "product": "",
+        "published": "2026-09-25",
+        "type": "NEWS_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2024-24576": {
+      "id": "CVE-2024-24576",
+      "type": "CVE",
+      "name": "Critical Phishing -- Actively Exploited (CVE-2024-24576)",
+      "attributes": {
+        "cvss": 0,
+        "threat_level": "LOW",
+        "priority_score": 31,
+        "exploited": true,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "",
+        "product": "",
+        "published": "2026-09-26",
+        "type": "SOCIAL_ENGINEERING"
+      },
+      "connections": []
+    },
+    "CVE-2024-21762": {
+      "id": "CVE-2024-21762",
+      "type": "CVE",
+      "name": "Critical Security Vulnerability -- Actively Exploited [High EPSS] (CVE-2024-21762)",
+      "attributes": {
+        "cvss": 0,
+        "threat_level": "LOW",
+        "priority_score": 31,
+        "exploited": true,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "",
+        "product": "",
+        "published": "2026-09-26",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "campaign:cve-2026-65660": {
+      "id": "campaign:cve-2026-65660",
+      "type": "Campaign",
+      "name": "Multi-Vendor Platform Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-26",
+        "last_seen": "2026-09-26",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-65660 | 1 item(s) confirmed exploited in the wild"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-65660",
           "relationship": "includes",
           "confidence": 1
         }
@@ -313133,6 +313207,15 @@
       "relationship": "includes",
       "confidence": 1,
       "first_seen": "2026-09-25",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-65660→includes→CVE-2026-65660",
+      "source": "campaign:cve-2026-65660",
+      "target": "CVE-2026-65660",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-26",
       "sources": []
     }
   ]
