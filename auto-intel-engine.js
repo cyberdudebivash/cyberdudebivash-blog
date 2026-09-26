@@ -532,7 +532,8 @@
     var isPremium = window.__cdb_is_premium || false;
 
     if (!items.length) {
-      container.innerHTML = '<div class="intel-empty"><span>⚡</span><p>Loading live threat intelligence…</p></div>';
+      setRuntimeState('UNAVAILABLE', 'No verified intelligence records are currently available.');
+      container.innerHTML = '<div class="intel-empty"><span>⚠</span><p>Intelligence temporarily unavailable. No stale or synthetic records are being substituted.</p></div>';
       return;
     }
 
