@@ -532,7 +532,8 @@
     var isPremium = window.__cdb_is_premium || false;
 
     if (!items.length) {
-      container.innerHTML = '<div class="intel-empty"><span>⚡</span><p>Loading live threat intelligence…</p></div>';
+      setRuntimeState('UNAVAILABLE', 'No verified intelligence records are currently available.');
+      container.innerHTML = '<div class="intel-empty"><span>⚠</span><p>Intelligence temporarily unavailable. No stale or synthetic records are being substituted.</p></div>';
       return;
     }
 
@@ -562,6 +563,33 @@
     injectInternalLinks(container);
   }
 
+  function setRuntimeState(state, detail) {
+    var el = document.getElementById('intel-runtime-state');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'intel-runtime-state';
+      el.className = 'intel-runtime-state';
+      var feed = document.getElementById('intel-feed');
+      if (feed && feed.parentNode) feed.parentNode.insertBefore(el, feed);
+    }
+    el.setAttribute('data-state', state);
+    el.textContent = state + (detail ? ' · ' + detail : '');
+  }
+
+  function newestTimestamp(items) {
+    var times = items.map(function(i) { return new Date(i.pubDate || i.date || 0).getTime(); })
+      .filter(function(t) { return Number.isFinite(t) && t > 0; });
+    return times.length ? Math.max.apply(Math, times) : 0;
+  }
+
+  function updateRuntimeState(items) {
+    var newest = newestTimestamp(items);
+    if (!newest) return setRuntimeState('DEGRADED', 'Freshness timestamp unavailable');
+    var ageMinutes = Math.max(0, Math.floor((Date.now() - newest) / 60000));
+    if (ageMinutes <= 240) return setRuntimeState('LIVE', 'Newest verified record ' + ageMinutes + 'm old');
+    setRuntimeState('STALE', 'Newest verified record ' + ageMinutes + 'm old');
+  }
+
   function updateLiveCounts(items) {
     var critical = items.filter(function(i){ return i.severity === 'critical'; }).length;
     var exploited = items.filter(function(i){ return i.isExploited; }).length;
@@ -569,7 +597,7 @@
 
     setCount('intel-critical-count', critical);
     setCount('intel-exploited-count', exploited);
-    setCount('intel-cve-count', cveCount || '50+');
+    setCount('intel-cve-count', cveCount);
     setCount('intel-total-count', items.length);
   }
 
@@ -756,7 +784,11 @@
 .kev-vendor{color:#aaa;}
 .kev-date{color:#555;}
 .kev-action{color:#888;font-size:.80em;}
-.intel-empty{text-align:center;padding:40px;color:#333;}
+.intel-empty{text-align:center;padding:40px;color:#64748b;}
+.intel-runtime-state{margin:0 0 12px;padding:8px 12px;border:1px solid #1a2535;border-radius:6px;font-size:.74em;font-weight:800;letter-spacing:.06em;color:#94a3b8;background:#0a0e1a;}
+.intel-runtime-state[data-state="LIVE"]{color:#00ff88;border-color:#00ff8844;}
+.intel-runtime-state[data-state="STALE"]{color:#ffd166;border-color:#ffd16644;}
+.intel-runtime-state[data-state="DEGRADED"],.intel-runtime-state[data-state="UNAVAILABLE"]{color:#ff6b6b;border-color:#ff6b6b44;}
 .intel-empty span{font-size:2em;display:block;margin-bottom:10px;}
 .share-menu{position:fixed;bottom:20px;right:20px;background:#0d1117;border:1px solid #00ff88;border-radius:10px;padding:12px;z-index:9999;display:flex;flex-direction:column;gap:8px;min-width:200px;}
 .share-menu a,.share-menu button{display:block;color:#e0e0e0;text-decoration:none;padding:8px 12px;border-radius:6px;background:#0a0e1a;font-size:.85em;text-align:center;border:none;cursor:pointer;}
