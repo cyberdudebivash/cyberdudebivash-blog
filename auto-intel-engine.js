@@ -574,6 +574,12 @@
     }
     el.setAttribute('data-state', state);
     el.textContent = state + (detail ? ' · ' + detail : '');
+    var socState = document.getElementById('soc-runtime-state');
+    if (socState) {
+      socState.setAttribute('data-state', state);
+      socState.textContent = state;
+      socState.title = detail || '';
+    }
   }
 
   function newestTimestamp(items) {
@@ -599,6 +605,9 @@
     setCount('intel-exploited-count', exploited);
     setCount('intel-cve-count', cveCount);
     setCount('intel-total-count', items.length);
+    setCount('soc-critical', critical);
+    setCount('soc-exploited', exploited);
+    setCount('soc-reports', items.length);
   }
 
   function setCount(id, val) {

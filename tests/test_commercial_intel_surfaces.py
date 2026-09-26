@@ -39,6 +39,15 @@ def main():
             failures.append(f"{ENGINE}: missing runtime trust state: {state}")
     if "cveCount || '50+'" in engine:
         failures.append(f"{ENGINE}: synthetic CVE fallback count is forbidden")
+    for required in ["soc-runtime-state", "soc-critical", "soc-exploited", "soc-reports"]:
+        if required not in engine:
+            failures.append(f"{ENGINE}: SOC console is not runtime-bound: {required}")
+    for surface in SURFACES:
+        page=surface.read_text(encoding="utf-8-sig")
+        if "SOC and CTI operations console" not in page:
+            failures.append(f"{surface}: hybrid SOC/CTI console missing")
+        if "no certification claim" not in page.lower():
+            failures.append(f"{surface}: SOC 2 non-certification disclosure missing")
     if failures:
         raise SystemExit("\n".join(failures))
     print("commercial-intel-surface-integrity: PASS")

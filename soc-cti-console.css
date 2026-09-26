@@ -1,0 +1,12 @@
+/* CYBERDUDEBIVASH Hybrid SOC + CTI Console
+   Operational-control UI only. Does not assert SOC 2 certification/attestation. */
+:root{--soc-bg:#071019;--soc-panel:#0b1722;--soc-line:#1d3344;--soc-text:#d8e5ee;--soc-muted:#7f96a6;--soc-ok:#58d68d;--soc-warn:#f4d03f;--soc-bad:#ec7063;--soc-info:#5dade2}
+.soc-shell{max-width:1400px;margin:0 auto 18px;padding:0 20px}
+.soc-commandbar{display:grid;grid-template-columns:1.3fr repeat(4,minmax(120px,.7fr));gap:10px;background:var(--soc-bg);border:1px solid var(--soc-line);border-radius:10px;padding:12px}
+.soc-kpi{background:var(--soc-panel);border:1px solid var(--soc-line);border-radius:8px;padding:10px 12px;min-height:66px}
+.soc-kpi-label{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--soc-muted)}
+.soc-kpi-value{margin-top:5px;font-weight:800;color:var(--soc-text)}
+.soc-kpi-value[data-state="LIVE"]{color:var(--soc-ok)}.soc-kpi-value[data-state="STALE"]{color:var(--soc-warn)}.soc-kpi-value[data-state="DEGRADED"],.soc-kpi-value[data-state="UNAVAILABLE"]{color:var(--soc-bad)}
+.soc-tabs{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}.soc-tab{border:1px solid var(--soc-line);background:var(--soc-panel);color:var(--soc-muted);padding:7px 11px;border-radius:6px;font-size:.76rem}.soc-tab[aria-current="page"]{color:var(--soc-text);border-color:var(--soc-info)}
+.soc-trust{display:flex;gap:12px;flex-wrap:wrap;font-size:.72rem;color:var(--soc-muted);padding-top:8px}.soc-trust strong{color:var(--soc-text)}
+@media(max-width:900px){.soc-commandbar{grid-template-columns:1fr 1fr}.soc-commandbar .soc-kpi:first-child{grid-column:1/-1}}
