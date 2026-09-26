@@ -85,7 +85,7 @@
     },
     ransomware: {
       primary:   { cta:'🛡️ Get Ransomware Defense Kit',  url:'/products.html' },
-      secondary: { cta:'⚡ SOC Pro — $18/mo',            url:'/pricing.html' },
+      secondary: { cta:'SOC Intelligence Plans',            url:'/pricing.html' },
       sub: '800+ YARA rules, IR playbook, IOC bundle for active ransomware campaigns.'
     },
     apt: {
@@ -99,9 +99,9 @@
       sub: 'LLM attack surfaces, prompt injection TTPs, enterprise AI governance — research-grade.'
     },
     general: {
-      primary:   { cta:'⚡ Start SOC Pro — $18/mo',       url:'/pricing.html' },
+      primary:   { cta:'SOC Intelligence Plans',       url:'/pricing.html' },
       secondary: { cta:'📦 Browse Products',              url:'/products.html' },
-      sub: '48H pre-disclosure CVEs, daily IOC feeds, SIEM rules. 4,800+ analysts subscribed.'
+      sub: 'Evidence-backed intelligence, detection context, and operational feeds.'
     }
   };
 
@@ -309,10 +309,10 @@
       isExploited: /actively exploit|in the wild|actively used|cisa kev|zero.day exploit/i.test(text),
       isCritical:  /critical|cvss 9\.|cvss 10|emergency patch/i.test(text),
       isBreaking:  /breaking|just in|alert|urgent|emergency/i.test(item.title || ''),
-      riskScore:   0,
+      riskScore:   null,
       postContext: detectPostContext(text)
     };
-    enriched.riskScore = calculateRiskScore(enriched);
+    // Risk is not synthesized from keyword heuristics. Use source-backed severity/exploitation evidence only.
     return enriched;
   }
 
@@ -390,7 +390,7 @@
   function generateAnalystNote(item) {
     var ctx   = item.postContext || 'general';
     var notes = ANALYST_NOTES[ctx] || ANALYST_NOTES.general;
-    var note  = notes[item.riskScore % notes.length];
+    var note = notes[0];
     var today = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric' });
     return `<div class="analyst-note">
   <div class="analyst-note-hdr">
@@ -424,12 +424,7 @@
   }
 
   function generateTrustFooter() {
-    return `<div class="intel-trust-footer">
-  <span>🛡️ <strong>4,800+</strong> analysts subscribed</span>
-  <span>📊 <strong>1,200+</strong> CVEs tracked 2026</span>
-  <span>⚡ Updated every <strong>10 min</strong></span>
-  <span><a href="/rss.xml" style="color:#475569;text-decoration:none">📡 RSS Feed</a></span>
-</div>`;
+    return '<div class="intel-trust-footer"><span>Evidence-first intelligence</span><span>Freshness verified at runtime</span><span>No synthetic customer or coverage metrics</span><span><a href="/rss.xml" style="color:#475569;text-decoration:none">RSS Feed</a></span></div>';
   }
 
   /* ══════════════════════════════════════════════════════════════════
@@ -459,7 +454,7 @@
       return '<span class="tag-chip">' + t + '</span>';
     }).join('');
 
-    var riskBar = '<div class="risk-bar-wrap"><div class="risk-label">RISK SCORE</div><div class="risk-track"><div class="risk-fill" style="width:' + item.riskScore + '%;background:' + sc + '"></div></div><span class="risk-num">' + item.riskScore + '/100</span></div>';
+    var riskBar = '<div class="risk-bar-wrap"><div class="risk-label">EVIDENCE-BASED PRIORITY</div><span class="risk-num">'+ item.severity.toUpperCase() +'</span></div>';
 
     // Freemium content gate
     var cleanText = stripHTML(item.rawContent);
