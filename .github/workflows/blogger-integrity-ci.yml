@@ -5,6 +5,12 @@ on:
     branches: [main]
     paths:
       - 'automation/**'
+      - 'malware/**'
+      - 'ai-security/**'
+      - 'intel/**'
+      - 'api.html'
+      - 'pricing.html'
+      - 'tests/test_commercial_intel_surfaces.py'
       - 'tests/**/*.py'
       - 'requirements.txt'
       - '.github/workflows/blogger-syndication.yml'
@@ -37,6 +43,8 @@ jobs:
     timeout-minutes: 10
 
     steps:
+      - name: Commercial intelligence surface integrity
+        run: python3 tests/test_commercial_intel_surfaces.py
       - name: "Checkout"
         uses: actions/checkout@v5
         with:
