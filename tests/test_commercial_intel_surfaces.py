@@ -22,6 +22,8 @@ FORBIDDEN = {
     ],
 }
 
+ENGINE = Path("auto-intel-engine.js")
+
 def main():
     failures=[]
     for surface in SURFACES:
@@ -29,6 +31,12 @@ def main():
         for claim in FORBIDDEN.get(surface.as_posix(), []):
             if claim.lower() in text.lower():
                 failures.append(f"{surface}: unsupported commercial claim remains: {claim}")
+    engine=ENGINE.read_text(encoding="utf-8-sig")
+    for required in ["setRuntimeState('UNAVAILABLE'", "setRuntimeState('DEGRADED'", "setRuntimeState('LIVE'", "setRuntimeState('STALE'"]:
+        if required not in engine:
+            failures.append(f"{ENGINE}: missing runtime trust state: {required}")
+    if "cveCount || '50+'" in engine:
+        failures.append(f"{ENGINE}: synthetic CVE fallback count is forbidden")
     if failures:
         raise SystemExit("\n".join(failures))
     print("commercial-intel-surface-integrity: PASS")
