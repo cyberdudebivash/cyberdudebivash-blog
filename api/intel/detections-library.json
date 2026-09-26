@@ -1,8 +1,59 @@
 {
-  "generated": "2026-09-25T21:39:13.691Z",
+  "generated": "2026-09-26T05:06:33.098Z",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
   "count": 200,
   "items": [
+    {
+      "slug": "cve-2026-57443-pip-scbe-aethermoore",
+      "title": "SCBE-AETHERMOORE Unauthenticated AetherBrowser Ops API Exposes Operator Email Digests",
+      "url": "/posts/cve-2026-57443-pip-scbe-aethermoore.html",
+      "generated": "2026-09-25T23:11:06.055Z",
+      "severity": "HIGH",
+      "cves": [
+        "CVE-2026-57443",
+        "CVE-2026-57443"
+      ],
+      "mitreAttack": [],
+      "sigma": [],
+      "kql": [],
+      "splunk": [],
+      "osquery": [],
+      "suricata": [
+        "alert ip $HOME_NET any -> 0.0.0.0 any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious IP 0.0.0.0\"; classtype:trojan-activity; sid:9000001; rev:1;)"
+      ]
+    },
+    {
+      "slug": "cve-2026-100368-nuget-cliinvoke-specializations",
+      "title": "CliInvoke.Specializations has command injection in PowerShell and Cmd shell wrappers",
+      "url": "/posts/cve-2026-100368-nuget-cliinvoke-specializations.html",
+      "generated": "2026-09-25T23:11:06.046Z",
+      "severity": "HIGH",
+      "cves": [
+        "CVE-2026-100368",
+        "CVE-2026-100368"
+      ],
+      "mitreAttack": [
+        {
+          "id": "T1059.001",
+          "name": "PowerShell",
+          "tactic": "execution",
+          "confidence": "HIGH"
+        }
+      ],
+      "sigma": [
+        "title: Suspicious Encoded PowerShell Invocation\nid: 180ec008-0df2-59e2-a4d6-7b0797640f02\nstatus: experimental\ndescription: 'Suspicious Encoded PowerShell Invocation. Evidence basis: liInvoke.Specializations has command injection in PowerShell and Cmd shell wrappers. ### Impact An OS command. CYBERDUDEBIVASH SENTINEL APEX Detection Engineering.'\nreferences:\n- 'https://nvd.nist.gov/vuln/detail/CVE-2026-100368'\nauthor: CYBERDUDEBIVASH SENTINEL APEX Detection Engineering\ndate: 2026-09-25\ntags:\n- attack.t1059.001\nlogsource:\n    product: windows\n    category: process_creation\ndetection:\n    selection:\n        Image|endswith: \\powershell.exe\n        CommandLine|contains:\n            - '-EncodedCommand'\n            - '-enc '\n            - FromBase64String\n    condition: selection\nfalsepositives:\n    - Legitimate administrative activity\n    - Authorized security testing\nlevel: high"
+      ],
+      "kql": [
+        "DeviceProcessEvents\n| where FolderPath endswith \"\\\\powershell.exe\"\n| where (ProcessCommandLine contains \"-EncodedCommand\" or ProcessCommandLine contains \"-enc \" or ProcessCommandLine contains \"FromBase64String\")\n| project Timestamp, DeviceName, FolderPath, ProcessCommandLine, InitiatingProcessFolderPath"
+      ],
+      "splunk": [
+        "| tstats count from datamodel=Endpoint where nodename=Endpoint.Processes Processes.process_path=\"*\\powershell.exe\" (Processes.process=\"*-EncodedCommand*\" OR Processes.process=\"*-enc *\" OR Processes.process=\"*FromBase64String*\") by Processes.process_path Processes.parent_process_path _time"
+      ],
+      "osquery": [
+        "SELECT * FROM processes WHERE path LIKE '%\\powershell.exe' AND (cmdline LIKE '%-EncodedCommand%' OR cmdline LIKE '%-enc %' OR cmdline LIKE '%FromBase64String%');"
+      ],
+      "suricata": []
+    },
     {
       "slug": "cve-2026-57440-composer-starcitizenwiki-embedvideo",
       "title": "Mediawiki EmbedVideo Extension has stored XSS via malformed src url with $wgEmbedVideoRequireConsent disabled",
@@ -4199,45 +4250,6 @@
         "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/netsec/comments/1uvqpri/context_bombs_using_ai_guardrails_as_a_defensive/&q\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/netsec/comments/1uvqpri/context_bombs_using_ai_guardrails_as_a_defensive/&q\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
         "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)",
         "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain agentic.tracebit.com\"; dns.query; content:\"agentic.tracebit.com\"; nocase; classtype:trojan-activity; sid:9000005; rev:1;)"
-      ]
-    },
-    {
-      "slug": "cet-compliant-callstack-spoofing-via-thread-pool-amp-enum",
-      "title": "CET-Compliant Callstack Spoofing via Thread Pool &amp; Enum Callback Trampolining (Rust PoC)",
-      "url": "/posts/cet-compliant-callstack-spoofing-via-thread-pool-amp-enum.html",
-      "generated": "2026-07-13T20:32:01.466Z",
-      "severity": "MEDIUM",
-      "cves": [],
-      "mitreAttack": [],
-      "sigma": [],
-      "kql": [],
-      "splunk": [],
-      "osquery": [],
-      "suricata": [
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/user/_MrTiz&quot;&gt;\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/user/_MrTiz&quot\\;&gt\\;\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://mrtiz.github.io/cet-callstack-spoofing-thread-pool-trampoline&quot;&gt;[link]&lt;/a&gt;&lt;/\"; http.host; content:\"mrtiz.github.io\"; nocase; http.uri; content:\"/cet-callstack-spoofing-thread-pool-trampoline&quot\\;&gt\\;[link]&lt\\;/a&gt\\;&lt\\;/\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/netsec/comments/1uvnbim/cetcompliant_callstack_spoofing_via_thread_pool/&qu\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/netsec/comments/1uvnbim/cetcompliant_callstack_spoofing_via_thread_pool/&qu\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain mrtiz.github.io\"; dns.query; content:\"mrtiz.github.io\"; nocase; classtype:trojan-activity; sid:9000005; rev:1;)"
-      ]
-    },
-    {
-      "slug": "im-taking-ec-council-cct-exam",
-      "title": "Im taking ec council cct exam",
-      "url": "/posts/im-taking-ec-council-cct-exam.html",
-      "generated": "2026-07-13T19:32:02.019Z",
-      "severity": "MEDIUM",
-      "cves": [],
-      "mitreAttack": [],
-      "sigma": [],
-      "kql": [],
-      "splunk": [],
-      "osquery": [],
-      "suricata": [
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/user/SeaworthinessNo1719&quot;&gt;\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/user/SeaworthinessNo1719&quot\\;&gt\\;\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uvlm1j/im_taking_ec_council_cct_exam/&quot;&gt;[lin\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uvlm1j/im_taking_ec_council_cct_exam/&quot\\;&gt\\;[lin\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uvlm1j/im_taking_ec_council_cct_exam/&quot;&gt;[com\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uvlm1j/im_taking_ec_council_cct_exam/&quot\\;&gt\\;[com\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)"
       ]
     }
   ]
