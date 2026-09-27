@@ -500,6 +500,11 @@
       socState.textContent = state;
       socState.title = detail || '';
     }
+    try {
+      document.dispatchEvent(new CustomEvent('cdb:soc-runtime-state', {
+        detail: { state: state, description: detail || '' }
+      }));
+    } catch (e) {}
   }
 
   function newestTimestamp(items) {
