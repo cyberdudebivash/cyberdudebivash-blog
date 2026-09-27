@@ -106,74 +106,12 @@
   };
 
   /* ── ANALYST NOTE TEMPLATES ─────────────────────────────────────── */
-  var ANALYST_NOTES = {
-    cve: [
-      'This vulnerability is high-priority for patch management. Organizations should validate affected versions against the cited vendor or vulnerability source and prioritize remediation according to confirmed exposure, exploitation evidence, and asset criticality.',
-      'CVEs with CVSS ≥ 7.5 are monitored by threat actors within 48 hours of NVD publication. Pre-patch network segmentation and compensating controls are recommended for all internet-facing assets.',
-      'Based on historical exploitation patterns, this vulnerability class is typically weaponized within 48 hours of PoC release. Immediate patching or mitigation is strongly advised for all affected systems.'
-    ],
-    ransomware: [
-      'Ransomware operators increasingly target backup systems and domain controllers before encryption begins. Network segmentation and offline backup verification are the most effective immediate countermeasures for this campaign.',
-      'This ransomware family uses living-off-the-land techniques to evade signature-based EDR. Behavioral detection rules and anomalous process execution monitoring are more effective than hash-based approaches.',
-      'Initial access via phishing and exposed RDP remain the dominant vectors. MFA enforcement and RDP gateway controls eliminate the majority of initial access risk associated with this threat group.'
-    ],
-    apt: [
-      'Nation-state actors in this campaign demonstrate patience — initial access may precede active operations by weeks or months. Assume long-dwell presence in affected environments and conduct comprehensive threat hunt.',
-      'Infrastructure used by this threat actor overlaps with previously attributed campaigns. IOCs have limited shelf-life as attribution-aware actors rapidly rotate infrastructure after public disclosure.',
-      'This actor\'s targeting is strategic, not opportunistic. If your organization operates in energy, defense, financial services, or critical infrastructure verticals, treat this as a direct targeting risk.'
-    ],
-    ai: [
-      'AI security risks are maturing rapidly. Organizations deploying LLMs in production workflows must assume adversarial input at the application layer and implement input validation at the architecture level — not just the model level.',
-      'Prompt injection attacks targeting enterprise AI pipelines are increasingly sophisticated. The attack surface expands significantly when LLMs have tool-use or API access capabilities within automated workflows.',
-      'AI governance controls are lagging deployment velocity. Security teams should prioritize AI asset inventory and data access mapping before deploying compensating controls for this class of attack.'
-    ],
-    general: [
-      'Automated source enrichment does not establish ATT&CK mapping, attribution, exploitation, or deployment readiness. Use canonical ReportX evidence for those claims.',
-      'CYBERDUDEBIVASH SENTINEL APEX analysts assess this threat as operationally relevant to enterprise environments with internet-facing infrastructure based on current dark web signals and active campaign tracking.',
-      'Use the cited source, publication timestamp, and available evidence fields to determine operational relevance. Detection content must be independently validated before deployment.'
-    ]
-  };
+
 
   /* ── DEFENSIVE ACTIONS MAP ──────────────────────────────────────── */
-  var DEFENSIVE_ACTIONS = {
-    cve: [
-      'Apply vendor patch immediately — prioritize internet-facing and domain controller assets',
-      'Enable SIEM detection rules for known exploitation indicators (network + host)',
-      'Deploy YARA signatures across EDR platform to catch post-exploitation activity',
-      'Review WAF rulesets for exploitation payload patterns if web-facing component is affected'
-    ],
-    ransomware: [
-      'Isolate newly discovered encrypted endpoints — prevent lateral propagation',
-      'Deploy IOC block list: IP/domain/hash indicators to firewall deny list immediately',
-      'Disable unnecessary SMB lateral movement paths between workstations',
-      'Verify offline backup integrity — confirm backup systems are unaffected by encryption'
-    ],
-    apt: [
-      'Hunt for IOCs across EDR telemetry — assume implants may predate public disclosure',
-      'Review authentication logs for anomalous access patterns matching actor TTPs',
-      'Audit service accounts and privileged credentials on affected system segments',
-      'Enable enhanced logging on domain controllers, VPN, and network perimeter systems'
-    ],
-    ai: [
-      'Audit all LLM API endpoints and agentic tool integrations for prompt injection surface',
-      'Implement input validation and output filtering on all AI pipeline touchpoints',
-      'Review data access permissions granted to AI agent and automation components',
-      'Deploy behavioral monitoring for anomalous AI API usage patterns and data access'
-    ],
-    general: [
-      'Monitor threat actor infrastructure associated with this campaign for new indicators',
-      'Review network and authentication logs for indicators matching published IOCs',
-      'Verify detection coverage for MITRE ATT&CK techniques identified in this report',
-      'Ensure endpoint detection rules are updated and active across all managed endpoints'
-    ]
-  };
 
-  var SEVERITY_KEYWORDS = {
-    critical: ['critical','cvss 9','cvss 10','actively exploit','0-day','zero-day','unauthenticated rce','pre-auth rce','emergency patch','cisa kev','cisa mandate'],
-    high:     ['high','cvss 7','cvss 8','remote code exec','privilege escal','auth bypass'],
-    medium:   ['medium','moderate','cvss 5','cvss 6','xss','csrf','information disclos'],
-    low:      ['low','cvss 1','cvss 2','cvss 3','cvss 4','denial of service']
-  };
+
+
 
   /* ══════════════════════════════════════════════════════════════════
      § 3. CACHE LAYER
