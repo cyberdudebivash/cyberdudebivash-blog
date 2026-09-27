@@ -365,6 +365,159 @@
     try { return new URL(url).hostname.replace('www.',''); } catch(e) { return 'SENTINEL'; }
   }
 
+  function calculateRiskScore(item) {
+    var score = 0;
+    if (item.severity === 'critical') score += 40;
+    else if (item.severity === 'high') score += 25;
+    else if (item.severity === 'medium') score += 10;
+    if (item.isExploited) score += 30;
+    if (item.isCritical) score += 15;
+    if (item.cvssScore && parseFloat(item.cvssScore) >= 9) score += 20;
+    if (item.cveIds.length) score += item.cveIds.length * 5;
+    if (item.threatActor) score += 15;
+    return Math.min(score, 100);
+  }
+
+  /* ══════════════════════════════════════════════════════════════════
+     § 6b. POST ENRICHMENT BLOCKS — Analyst Note / Actions / CTA / Trust
+  ══════════════════════════════════════════════════════════════════ */
+  function generateAnalystNote(item) {
+    return '<div class="analyst-note"><div class="analyst-note-hdr"><span class="analyst-badge">EVIDENCE STATUS</span></div><p class="analyst-text">Automated source enrichment only. No human analyst assessment is asserted by this view. Inspect canonical claim and evidence records before operational action.</p></div>';
+  }
+
+  function generateDefensiveActions(item) {
+    return '<div class="defensive-block"><div class="defensive-hdr">OPERATIONAL ACTION</div><p class="analyst-text">Validate affected assets, cited evidence, exploitation state and detection maturity before containment, blocking or deployment decisions.</p></div>';
+  }
+
+  function generateContextCTA(item) {
+    var ctx = item.postContext || 'general';
+    var cp  = CONTEXT_PRODUCTS[ctx] || CONTEXT_PRODUCTS.general;
+    var titleEnc = escHTML(item.title).replace(/'/g, "\\'");
+    return `<div class="ctx-cta-row">
+  <a class="ctx-btn-primary" href="${cp.primary.url}" onclick="if(window.trackEvent)window.trackEvent('intel_cta_primary',{ctx:'${ctx}'})">${cp.primary.cta}</a>
+  <a class="ctx-btn-secondary" href="${cp.secondary.url}" onclick="if(window.trackEvent)window.trackEvent('intel_cta_secondary',{ctx:'${ctx}'})">${cp.secondary.cta}</a>
+  <button class="ctx-share-btn" onclick="sharePost('${titleEnc}','${item.link}')">↗ Share</button>
+</div>`;
+  }
+
+  function generateTrustFooter() {
+    return '<div class="intel-trust-footer"><span>Evidence-first intelligence</span><span>Freshness verified at runtime</span><span>No synthetic customer or coverage metrics</span><span><a href="/rss.xml" style="color:#475569;text-decoration:none">RSS Feed</a></span></div>';
+  }
+
+  /* ══════════════════════════════════════════════════════════════════
+     § 7. POST GENERATOR — Full HTML Article
+  ══════════════════════════════════════════════════════════════════ */
+  function generatePostHTML(item, isPremium) {
+    var sevColor  = { critical:'#ff2244', high:'#ff6600', medium:'#ffd700', low:'#44ff88', not_assessed:'#94a3b8' };
+    var sevBg     = { critical:'rgba(255,34,68,0.12)', high:'rgba(255,102,0,0.12)', medium:'rgba(255,215,0,0.10)', low:'rgba(68,255,136,0.10)', not_assessed:'rgba(148,163,184,0.10)' };
+    var sc = sevColor[item.severity] || '#ffd700';
+    var sb = sevBg[item.severity] || 'rgba(255,215,0,0.10)';
+
+    var mitreHTML = item.mitreMap.length ? '<div class="mitre-row">' +
+      item.mitreMap.map(function(m) {
+        return '<span class="mitre-tag"><strong>' + m.id + '</strong> ' + m.name + ' <em>(' + m.tactic + ')</em></span>';
+      }).join('') + '</div>' : '';
+
+    var cveHTML = item.cveIds.length ? '<div class="cve-row">' +
+      item.cveIds.map(function(c) {
+        return '<a class="cve-badge" href="/cve/' + c + '.html" title="' + c + '">' + c + '</a>';
+      }).join('') + '</div>' : '';
+
+    var actorHTML = item.threatActor ?
+      '<div class="actor-pill" style="border-color:' + item.threatActor.color + ';color:' + item.threatActor.color + '">⚠ ' +
+      item.threatActor.name.toUpperCase() + ' · ' + item.threatActor.type + ' · ' + item.threatActor.nation + '</div>' : '';
+
+    var tagsHTML = item.tags.map(function(t) {
+      return '<span class="tag-chip">' + t + '</span>';
+    }).join('');
+
+    var riskBar = '<div class="risk-bar-wrap"><div class="risk-label">EVIDENCE-BASED PRIORITY</div><span class="risk-num">'+ item.severity.toUpperCase() +'</span></div>';
+
+    // Freemium content gate
+    var cleanText = stripHTML(item.rawContent);
+    var freeChars = Math.floor(cleanText.length * (CFG.FREEMIUM_THRESHOLD / 100));
+    var freeText  = cleanText.slice(0, Math.max(freeChars, 280));
+    var lockedText = cleanText.slice(freeChars);
+
+    var contentHTML = '<p class="post-body">' + escHTML(freeText) + '…</p>';
+    if (isPremium) {
+      contentHTML = '<p class="post-body">' + escHTML(cleanText) + '</p>';
+    } else {
+      contentHTML += generatePaywall(item);
+    }
+
+    var timeStr = formatTime(item.pubDate);
+    var sourceUrl = safeExternalUrl(item.link);
+    var exploitBadge = item.isExploited ? '<span class="badge badge-exploit">● ACTIVELY EXPLOITED</span>' : '';
+    var breakingBadge = item.isBreaking ? '<span class="badge badge-breaking">⚡ BREAKING</span>' : '';
+
+    return `<article class="intel-post" data-severity="${item.severity}">
+  <div class="post-header" style="border-left:4px solid ${sc};background:${sb}">
+    <div class="post-meta-row">
+      <span class="severity-chip" style="background:${sc};color:#000">${item.severity.toUpperCase()}</span>
+      ${exploitBadge}${breakingBadge}
+      ${item.cvssScore ? `<span class="cvss-pill">CVSS ${item.cvssScore}</span>` : ''}
+      <span class="source-chip">${escHTML(item.source)}</span>
+      <span class="time-chip">🕐 ${timeStr}</span>
+    </div>
+    <h2 class="post-title">${sourceUrl ? '<a href="' + escHTML(sourceUrl) + '" target="_blank" rel="noopener noreferrer">' + escHTML(item.title) + '</a>' : escHTML(item.title)}</h2>
+    ${actorHTML}
+    ${cveHTML}
+  </div>
+  <div class="post-body-wrap">
+    ${mitreHTML}
+    ${riskBar}
+    ${contentHTML}
+    ${tagsHTML ? '<div class="tags-row">' + tagsHTML + '</div>' : ''}
+    ${generateAnalystNote(item)}
+    ${generateDefensiveActions(item)}
+  </div>
+  ${generateContextCTA(item)}
+  ${generateTrustFooter()}
+</article>`;
+  }
+
+  function generatePaywall(item) {
+    return '<div class="freemium-gate"><div class="gate-box"><div class="gate-icon">🔒</div><div class="gate-title">Additional Intelligence Requires Entitlement</div><div class="gate-perks"><span>Plan-scoped evidence and operational context are delivered only when available and entitled.</span></div><a class="gate-cta" href="/pricing.html">View Intelligence Plans</a></div></div>';
+  }
+
+  /* ══════════════════════════════════════════════════════════════════
+     § 8. PAGE PUBLISHER
+  ══════════════════════════════════════════════════════════════════ */
+  function publishToSection(sectionId, items, options) {
+    var container = document.getElementById(sectionId);
+    if (!container) return;
+
+    options = options || {};
+    var limit = options.limit || 20;
+    var isPremium = window.__cdb_is_premium || false;
+
+    if (!items.length) {
+      setRuntimeState('UNAVAILABLE', 'No verified intelligence records are currently available.');
+      container.innerHTML = '<div class="intel-empty"><span>⚠</span><p>Intelligence temporarily unavailable. No stale or synthetic records are being substituted.</p></div>';
+      return;
+    }
+
+    // Filter by section type
+    var filtered = items;
+    if (options.section === 'malware') {
+      filtered = items.filter(function(i) {
+        return /malware|ransomware|trojan|worm|botnet|spyware|keylog|stealer|rat\b/i.test(i.title + ' ' + i.rawContent);
+      });
+    } else if (options.section === 'ai_security') {
+      filtered = items.filter(function(i) {
+        return /ai|llm|gpt|artificial intel|machine learn|prompt|copilot|chatgpt|claude|gemini/i.test(i.title + ' ' + i.rawContent);
+      });
+    } else if (options.section === 'breaking') {
+      filtered = items.filter(function(i) { return i.isBreaking || i.isExploited || i.severity === 'critical'; });
+    }
+
+    if (!filtered.length) {
+      container.innerHTML = '<div class="intel-empty"><span>⚠</span><p>No evidence-matched intelligence is currently available for this workspace. Unrelated records are not substituted.</p></div>';
+      updateLiveCounts([]);
+      return;
+    }
+
     var html = filtered.slice(0, limit).map(function(item) {
       return generatePostHTML(item, isPremium);
     }).join('\n');
