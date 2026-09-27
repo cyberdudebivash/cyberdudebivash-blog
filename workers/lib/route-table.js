@@ -60,6 +60,9 @@ const ASSET_REWRITES = [
   [/^\/feed\.xml$/, '/rss.xml'],
   [/^\/atom\.xml$/, '/rss.xml'],
   [/^\/$/, '/index.html'],
+  [/^\/intel\/?$/, '/intel/index.html'],
+  [/^\/malware\/?$/, '/malware/index.html'],
+  [/^\/ai-security\/?$/, '/ai-security/index.html'],
 ];
 
 const REDIRECTS = [
