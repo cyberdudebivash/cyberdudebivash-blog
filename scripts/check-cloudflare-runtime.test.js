@@ -10,7 +10,7 @@ const root = path.resolve(__dirname, '..');
 function fixture(t) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cloudflare-gate-'));
   t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
-  for (const file of ['scripts/check-cloudflare-runtime.js', 'scripts/build-cloudflare-assets.js', 'workers/lib/security-headers.js', 'package.json']) {
+  for (const file of ['scripts/check-cloudflare-runtime.js', 'scripts/build-cloudflare-assets.js', 'workers/lib/security-headers.js', 'package.json', 'wrangler.jsonc']) {
     const dest = path.join(dir, file);
     fs.mkdirSync(path.dirname(dest), { recursive: true });
     fs.copyFileSync(path.join(root, file), dest);
@@ -31,6 +31,15 @@ test('a reintroduced deployment file blocks release', t => {
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /Retired deployment file reintroduced/);
 });
+test('missing production Worker route blocks release', t => {
+  const dir = fixture(t);
+  const file = path.join(dir, 'wrangler.jsonc');
+  fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('blog.cyberdudebivash.in/*', 'example.invalid/*'));
+  const result = run(dir);
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /Production Worker route is missing/);
+});
+
 test('missing dynamic security headers block release', t => {
   const dir = fixture(t);
   fs.writeFileSync(path.join(dir, 'workers/lib/security-headers.js'), 'module.exports = {applyBaselineHeaders: response => response};');

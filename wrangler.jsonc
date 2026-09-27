@@ -1,11 +1,7 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
 
-  // Still deliberately incapable of a production DNS takeover: no
-  // routes, no custom_domains, no production hostname. Safe to build,
-  // dry-run, and validate locally until an authenticated operator performs
-  // the already-governed production deployment.
-
+  // Production route is explicit and version-controlled. This binds the existing\n  // proxied blog hostname to this Worker; it does not create or modify DNS records.\n  // Deployments remain gated by the production workflow and live verification.\n
   "name": "cyberdudebivash-blog",
   "main": "workers/entry.js",
   "compatibility_date": "2026-08-17",
@@ -16,6 +12,13 @@
     "binding": "ASSETS",
     "html_handling": "none"
   },
+
+  "routes": [
+    {
+      "pattern": "blog.cyberdudebivash.in/*",
+      "zone_name": "cyberdudebivash.in"
+    }
+  ],
 
   "rules": [
     { "type": "CompiledWasm", "globs": ["**/*.wasm"], "fallthrough": true },
@@ -54,11 +57,4 @@
     "crons": ["*/30 * * * *"]
   }
 
-  // Intentionally absent (do not add without a separate, explicit
-  // authorization step):
-  //   routes                — would start claiming a hostname/path
-  //   custom_domains        — would touch DNS
-  //   kv_namespaces         — no blog-owned namespace is justified here
-  //   services              — no service bindings to other platforms required
-  //   vars / secrets with real values — use Cloudflare secrets/vars; never commit
-}
+  // DNS records and real secret values remain intentionally absent. Runtime\n  // secrets/vars are managed in Cloudflare; deployment credentials are GitHub secrets.\n}

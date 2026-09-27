@@ -1,0 +1,128 @@
+name: "🚀 SENTINEL APEX — Cloudflare Production Deploy"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'intel/**'
+      - 'malware/**'
+      - 'ai-security/**'
+      - 'soc-cti-console.css'
+      - 'soc-triage-workspace.js'
+      - 'soc-hybrid-workspace.js'
+      - 'soc-evidence-drawer.js'
+      - 'workers/**'
+      - 'scripts/build-cloudflare-assets.js'
+      - 'scripts/build-cloudflare-assets.test.js'
+      - 'wrangler.jsonc'
+      - '.github/workflows/cloudflare-production-deploy.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-production-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: "Build, deploy and certify blog.cyberdudebivash.in"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+
+    steps:
+      - name: "Checkout exact commit"
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: "Setup Node.js"
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: "Install locked dependencies"
+        run: npm ci --legacy-peer-deps --ignore-scripts
+
+      - name: "Cloudflare runtime gate"
+        run: |
+          npm run check:cloudflare
+          node --test scripts/build-cloudflare-assets.test.js workers/lib/route-table.test.js workers/lib/router.test.js
+
+      - name: "Commercial dashboard integrity gate"
+        run: python3 tests/test_commercial_intel_surfaces.py
+
+      - name: "Build allowlisted production assets"
+        run: |
+          npm run build:cloudflare
+          test -s dist-public/intel/index.html
+          test -s dist-public/malware/index.html
+          test -s dist-public/ai-security/index.html
+          test -s dist-public/soc-cti-console.css
+          test -s dist-public/soc-triage-workspace.js
+          test -s dist-public/soc-hybrid-workspace.js
+          test -s dist-public/soc-evidence-drawer.js
+
+      - name: "Require deployment credentials"
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          test -n "$CLOUDFLARE_API_TOKEN" || { echo "::error::CLOUDFLARE_API_TOKEN is not configured"; exit 1; }
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "::error::CLOUDFLARE_ACCOUNT_ID is not configured"; exit 1; }
+
+      - name: "Deploy exact commit to Cloudflare Worker"
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler deploy --config wrangler.jsonc
+
+      - name: "Certify live Hybrid SOC + CTI production surfaces"
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://blog.cyberdudebivash.in"
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+
+          verify_page() {
+            local route="$1"
+            local file="$2"
+            local url="$base$route?release_sha=$GITHUB_SHA"
+            local code=""
+            for attempt in 1 2 3 4 5 6; do
+              code="$(curl -sS -L --max-time 25 -H 'Cache-Control: no-cache' -o "$file" -w '%{http_code}' "$url" || true)"
+              if [ "$code" = "200" ] && grep -Fq 'HYBRID SOC + CTI' "$file"; then
+                break
+              fi
+              echo "Waiting for Cloudflare propagation: $route attempt $attempt status=$code"
+              sleep 10
+            done
+            test "$code" = "200" || { echo "::error::$route returned HTTP $code"; exit 1; }
+            grep -Fq 'HYBRID SOC + CTI' "$file" || { echo "::error::$route is still serving the legacy dashboard"; exit 1; }
+            grep -Fq 'Operational Intelligence Queue' "$file" || { echo "::error::$route missing PRO workspace"; exit 1; }
+            grep -Fq 'SOC 2-aligned evidence; no certification claim' "$file" || { echo "::error::$route missing assurance disclosure"; exit 1; }
+          }
+
+          verify_page "/intel/" "$tmp/intel.html"
+          verify_page "/malware/" "$tmp/malware.html"
+          verify_page "/ai-security/" "$tmp/ai-security.html"
+
+          ! grep -Fiq 'updated every 10 minutes from global threat feeds' "$tmp/intel.html"
+          ! grep -Fiq '48h pre-disclosure CVE reports' "$tmp/intel.html"
+          ! grep -Fiq '67+ victims this month' "$tmp/malware.html"
+          ! grep -Fiq '73% of enterprise AI deployments vulnerable' "$tmp/ai-security.html"
+
+          for asset in soc-cti-console.css soc-triage-workspace.js soc-hybrid-workspace.js soc-evidence-drawer.js; do
+            code="$(curl -sS -L --max-time 20 -o /dev/null -w '%{http_code}' "$base/$asset?release_sha=$GITHUB_SHA")"
+            test "$code" = "200" || { echo "::error::$asset returned HTTP $code"; exit 1; }
+          done
+
+          echo "PRODUCTION_DEPLOYMENT_VERIFIED_SHA=$GITHUB_SHA"
+          echo "Hybrid SOC + CTI PRO console is live on all three customer surfaces."
