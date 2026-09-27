@@ -232,6 +232,7 @@ def test_hybrid_workspace_clears_hidden_selection_and_exposes_state_accessibly()
     assert "No visible intelligence record selected." in controller
     assert "Runtime state " in controller
     assert "Evidence contract state " in controller
+    assert "aria-pressed" in controller
 
 
 def test_pro_console_exposes_evidence_safe_analyst_context():
@@ -246,3 +247,6 @@ def test_pro_console_exposes_evidence_safe_analyst_context():
         assert "SOC 2-aligned evidence model" in html
         assert "SOC 2 certified" not in html
         assert "SOC 2 Type II certified" not in html
+    css = Path("soc-cti-console.css").read_text(encoding="utf-8")
+    assert ".soc-ops-commandbar" not in css
+    assert ".soc-ops-actions" not in css
