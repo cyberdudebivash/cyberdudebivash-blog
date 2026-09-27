@@ -44,3 +44,30 @@ def test_empty_feed_fails_closed():
     import pytest
     with pytest.raises(ValueError, match="empty_or_invalid"):
         probe.evaluate({"feed": {}}, "", "", NOW)
+
+
+def test_retry_delay_honors_provider_seconds_without_shortening():
+    assert probe.retry_delay("37", 1, NOW) == 37
+
+
+def test_retry_delay_uses_bounded_exponential_fallback():
+    assert probe.retry_delay(None, 1, NOW) == 5
+    assert probe.retry_delay(None, 2, NOW) == 10
+
+
+def test_fetch_uses_single_request_when_attempt_budget_is_one(monkeypatch):
+    calls = []
+
+    class Response:
+        url = probe.BASE + "/"
+        def __enter__(self): return self
+        def __exit__(self, *args): return False
+        def read(self, _limit): return b"ok"
+
+    def fake_urlopen(request, timeout):
+        calls.append((request.full_url, timeout))
+        return Response()
+
+    monkeypatch.setattr(probe, "urlopen", fake_urlopen)
+    assert probe.fetch(probe.BASE + "/", "desktop", attempts=1) == "ok"
+    assert len(calls) == 1
