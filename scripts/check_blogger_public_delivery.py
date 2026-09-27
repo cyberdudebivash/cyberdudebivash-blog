@@ -57,8 +57,8 @@ def retry_delay(value, attempt, now=None):
     return max(1, delay)
 
 
-def fetch(url, endpoint="public"):
-    for attempt in range(1, 4):
+def fetch(url, endpoint="public", attempts=3, max_retry_after=60):
+    for attempt in range(1, attempts + 1):
         request = Request(url, headers={"Cache-Control": "no-cache", "User-Agent": "CDB-Public-Delivery-Monitor/1.0"})
         try:
             with urlopen(request, timeout=15) as response:
