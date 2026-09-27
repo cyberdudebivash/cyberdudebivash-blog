@@ -1,7 +1,7 @@
 ﻿/**
  * CYBERDUDEBIVASH SENTINEL APEX — Universal Monetization Engine v1.0
- * Injects: Sticky CTA Bar, Exit Intent Popup, Scroll CTAs, Social Proof Toasts,
- *          Urgency Triggers, Lead Capture, Paywall Gates, Affiliate Triggers
+ * Injects: Sticky CTA Bar, Exit Intent Popup, Scroll CTAs, Evidence-safe Conversion UX,
+ *          Evidence-Bound CTAs, Lead Capture, Paywall Gates, Affiliate Triggers
  * Deploy: <script src="/monetization.js" defer></script> on every page
  */
 (function () {
@@ -82,9 +82,9 @@
 
     const bar = el('div', { id: 'apex-sticky' });
     const msgs = [
-      `<span class="apex-sticky-badge">🔴 LIVE</span> <strong>CVE-2026-28401 CVSS 10.0</strong> — Ivanti Connect Secure actively exploited. Get instant alerts.`,
-      `<span class="apex-sticky-badge">⚡ HOT</span> <strong>Volt Typhoon</strong> pre-positioned in US critical infrastructure. Stay ahead of nation-state threats.`,
-      `<span class="apex-sticky-badge">🛡️ PRO</span> Get <strong>evidence-linked</strong> CVE intelligence and operational context. SOC Pro — $18/mo.`,
+      `<span class="apex-sticky-badge">🛡️ INTEL</span> <strong>Evidence-linked threat intelligence</strong> with source provenance and runtime freshness.`,
+      `<span class="apex-sticky-badge">⚡ SOC</span> <strong>Operational intelligence workspace</strong> for triage, investigation, evidence review and API delivery.`,
+      `<span class="apex-sticky-badge">🔌 API</span> Use authenticated API access for plan-scoped intelligence and operational integrations.`,
     ];
     const msgDiv = el('div', { class: 'apex-sticky-msg' });
     msgDiv.innerHTML = msgs[Math.floor(Math.random() * msgs.length)];
@@ -165,7 +165,7 @@
         <button class="apex-exit-close" id="apex-exit-close-btn">×</button>
         <div class="apex-exit-tag">🎯 Wait — Free Intelligence Access</div>
         <div class="apex-exit-h">Don't miss the next <span>critical zero-day</span> alert</div>
-        <p class="apex-exit-sub">3,800+ SOC analysts and CISOs get our threat alerts before public disclosure. Join free — unsubscribe anytime.</p>
+        <p class="apex-exit-sub">Get source-linked threat intelligence updates and product announcements. Join free — unsubscribe anytime.</p>
         <div class="apex-exit-perks">
           <div class="apex-exit-perk"><strong>Evidence-Linked Intel</strong>Critical CVE alerts with source provenance</div>
           <div class="apex-exit-perk"><strong>IOC Feed</strong>Weekly IP/domain/hash bundles</div>
@@ -214,55 +214,9 @@
 
   // ─── 3. SOCIAL PROOF TOASTS ──────────────────────────────────────────────
   function buildToasts() {
-    injectStyle(`
-      #apex-toast { position:fixed;bottom:24px;left:24px;z-index:99990;
-        background:#0d1117;border:1px solid rgba(0,255,224,.2);border-radius:8px;
-        padding:12px 16px;max-width:300px;font-family:'Segoe UI',sans-serif;font-size:12px;
-        display:flex;align-items:center;gap:10px;box-shadow:0 4px 24px rgba(0,0,0,.4);
-        transform:translateX(-120%);transition:transform .4s cubic-bezier(.4,0,.2,1); }
-      #apex-toast.show { transform:translateX(0); }
-      .apex-toast-avatar { width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#001a12,#0a3040);
-        border:1px solid rgba(0,255,224,.2);display:flex;align-items:center;justify-content:center;
-        font-size:14px;flex-shrink:0; }
-      .apex-toast-body { flex:1; }
-      .apex-toast-name { color:#c9d1d9;font-weight:700;font-size:12px; }
-      .apex-toast-action { color:#8892a4;font-size:11px;margin-top:2px; }
-      .apex-toast-time { color:#4a5568;font-size:10px;margin-top:1px; }
-    `);
-
-    const toasts = [
-      { avatar: '🛡️', name: 'SOC Analyst, Fortune 500', action: 'Subscribed to SOC Pro', time: '2 min ago' },
-      { avatar: '🔐', name: 'CISO, Healthcare Org', action: 'Downloaded Ransomware IOC Pack', time: '7 min ago' },
-      { avatar: '🤖', name: 'Threat Hunter, Gov Agency', action: 'Activated API access', time: '12 min ago' },
-      { avatar: '⚡', name: 'Security Engineer, EU Bank', action: 'Purchased SIEM Detection Pack', time: '18 min ago' },
-      { avatar: '🎯', name: 'Red Team Lead, Tech Firm', action: 'Upgraded to Enterprise plan', time: '23 min ago' },
-      { avatar: '📊', name: 'IR Analyst, MSSP', action: 'Downloaded Volt Typhoon IOC Bundle', time: '31 min ago' },
-      { avatar: '🛡️', name: 'SOC Manager, Finance', action: 'Subscribed to threat alerts', time: '45 min ago' },
-    ];
-
-    const toast = el('div', { id: 'apex-toast' });
-    document.body.appendChild(toast);
-
-    let ti = 0;
-    function showToast() {
-      const t = toasts[ti % toasts.length];
-      toast.innerHTML = `
-        <div class="apex-toast-avatar">${t.avatar}</div>
-        <div class="apex-toast-body">
-          <div class="apex-toast-name">${t.name}</div>
-          <div class="apex-toast-action">${t.action}</div>
-          <div class="apex-toast-time">${t.time}</div>
-        </div>`;
-      toast.classList.add('show');
-      setTimeout(() => { toast.classList.remove('show'); }, 5000);
-      ti++;
-    }
-
-    // First toast after 8s, then every interval
-    setTimeout(() => {
-      showToast();
-      setInterval(showToast, CFG.toastInterval);
-    }, 8000);
+    // Synthetic purchase/subscription activity is intentionally disabled.
+    // Commercial trust signals must originate from auditable first-party events.
+    return;
   }
 
   // ─── 4. INLINE SCROLL CTAs ───────────────────────────────────────────────
@@ -363,35 +317,12 @@
     });
   }
 
-  // ─── 6. URGENCY COUNTER (posts) ──────────────────────────────────────────
+  // ─── 6. EVIDENCE-SAFE URGENCY POLICY ────────────────────────────────────
   function buildUrgencyCounter() {
-    const isPost = window.location.pathname.includes('/posts/');
-    if (!isPost) return;
-
-    injectStyle(`
-      #apex-urgency { background:rgba(255,68,68,.07);border:1px solid rgba(255,68,68,.2);
-        border-radius:6px;padding:10px 16px;margin:20px 0;font-family:'Segoe UI',sans-serif;
-        font-size:12px;color:#c9d1d9;display:flex;align-items:center;gap:12px; }
-      #apex-urgency .dot { width:8px;height:8px;border-radius:50%;background:#ff4444;
-        flex-shrink:0;animation:apex-pulse 1.5s infinite; }
-      #apex-urgency strong { color:#ff6b6b; }
-    `);
-
-    // Find first h2 after article start
-    const h2s = $$('h2');
-    if (!h2s.length) return;
-
-    // Random active viewers between 24-89
-    const viewers = Math.floor(Math.random() * 65) + 24;
-    const urgency = document.createElement('div');
-    urgency.id = 'apex-urgency';
-    urgency.innerHTML = `
-      <div class="dot"></div>
-      <span><strong>${viewers} security professionals</strong> are viewing this report right now &mdash;
-      <strong>CVE is actively exploited</strong> &mdash;
-      <a href="${CFG.pricingUrl}" style="color:#00ffe0;text-decoration:none;font-weight:700;">Get instant alerts →</a></span>`;
-
-    h2s[0].before(urgency);
+    // Disabled: synthetic viewer counts and blanket exploitation assertions
+    // are not acceptable commercial trust signals. Urgency must originate
+    // from evidence bound to the individual intelligence record.
+    return;
   }
 
   // ─── 7. AFFILIATE CTAs ────────────────────────────────────────────────────
@@ -465,7 +396,7 @@
     widget.className = 'apex-lead-widget';
     widget.innerHTML = `
       <h3>📧 Free Intel Alerts</h3>
-      <p>Get zero-day alerts, CVE reports, and IOC bundles before public disclosure.</p>
+      <p>Get source-linked threat intelligence updates, CVE reports, and available IOC/detection content.</p>
       <form action="${CFG.formsubmit}" method="POST">
         <input class="apex-lead-input" type="email" name="email" placeholder="soc@yourcompany.com" required>
         <input type="hidden" name="_subject" value="Sidebar Newsletter Signup">

@@ -1,7 +1,11 @@
 (function(){
 'use strict';
 var selected=null;
+var SESSION_KEY='cdb_soc_selected_record_v1';
 function reportId(card){var id=String(card&&card.getAttribute('data-report-id')||'').trim();return /^[A-Za-z0-9][A-Za-z0-9._:-]{0,179}$/.test(id)?id:null;}
+function recordId(card){var id=String(card&&card.getAttribute('data-record-id')||'').trim();return /^[A-Za-z0-9][A-Za-z0-9._:-]{0,179}$/.test(id)?id:null;}
+function remember(card){try{var id=recordId(card);if(id)sessionStorage.setItem(SESSION_KEY,id);else sessionStorage.removeItem(SESSION_KEY);}catch(e){}}
+function remembered(){try{return sessionStorage.getItem(SESSION_KEY)||'';}catch(e){return '';}}
 function setSelectionActions(root,card){var id=reportId(card);root.querySelectorAll('[data-requires-selection]').forEach(function(a){var evidenceOnly=a.hasAttribute('data-requires-report-id');var enabled=!!card&&(!evidenceOnly||!!id);if(enabled)a.removeAttribute('aria-disabled');else a.setAttribute('aria-disabled','true');});txt(root,'[data-selected-evidence]',id?'Canonical report ID available':'Browser-derived record · canonical evidence ID unavailable');}
 function txt(root,sel,v){var e=root.querySelector(sel);if(e)e.textContent=String(v);}
 function all(root,sel,v){root.querySelectorAll(sel).forEach(function(e){e.textContent=String(v);});}
@@ -18,18 +22,19 @@ function selectCard(card){
  if(selected){selected.classList.remove('soc-selected-record');var prev=selected.querySelector('.soc-record-select');if(prev)prev.setAttribute('aria-pressed','false');}selected=card;card.classList.add('soc-selected-record');var active=card.querySelector('.soc-record-select');if(active)active.setAttribute('aria-pressed','true');
  var title=card.querySelector('.post-title');var root=document.querySelector('.soc-workspace');if(!root)return;
  txt(root,'[data-selected-record]',title?title.textContent.trim():'Selected intelligence record');all(root,'[data-case-record]',title?title.textContent.trim():'Selected intelligence record');all(root,'[data-case-position]',position(card,cards(root)));all(root,'[data-case-evidence]',reportId(card)?'ELIGIBLE':'UNAVAILABLE');
- setSelectionActions(root,card);
- document.dispatchEvent(new CustomEvent('cdb:soc-record-selected',{detail:{card:card}}));
+ setSelectionActions(root,card);remember(card);
+ document.dispatchEvent(new CustomEvent('cdb:soc-record-selected',{detail:{card:card,reportId:reportId(card),recordId:recordId(card),reportUrl:String(card.getAttribute('data-report-url')||'')}}));
 }
 function update(root){
  var list=cards(root);list.forEach(ensureSelect);
- if(selected && (selected.hidden || selected.style.display==='none' || !document.documentElement.contains(selected))){selected.classList.remove('soc-selected-record');var active=selected.querySelector('.soc-record-select');if(active)active.setAttribute('aria-pressed','false');selected=null;txt(root,'[data-selected-record]','No visible intelligence record selected.');all(root,'[data-case-record]','No record selected');all(root,'[data-case-position]','—');all(root,'[data-case-evidence]','UNAVAILABLE');setSelectionActions(root,null);}
+ if(selected && (selected.hidden || selected.style.display==='none' || !document.documentElement.contains(selected))){selected.classList.remove('soc-selected-record');var active=selected.querySelector('.soc-record-select');if(active)active.setAttribute('aria-pressed','false');selected=null;remember(null);txt(root,'[data-selected-record]','No visible intelligence record selected.');all(root,'[data-case-record]','No record selected');all(root,'[data-case-position]','—');all(root,'[data-case-evidence]','UNAVAILABLE');setSelectionActions(root,null);}
  var critical=list.filter(function(c){return severity(c)==='CRITICAL';}).length;
  var high=list.filter(function(c){return severity(c)==='HIGH';}).length;
  var exploited=list.filter(function(c){return !!c.querySelector('.badge-exploit');}).length;
  txt(root,'[data-ws-visible]',list.filter(function(c){return !c.hidden;}).length);
  txt(root,'[data-ws-critical]',critical);txt(root,'[data-ws-high]',high);txt(root,'[data-ws-exploited]',exploited);
  var state=document.getElementById('soc-runtime-state');var runtime=state?state.textContent:'VERIFYING';txt(root,'[data-ws-runtime]',runtime);var rt=root.querySelector('[data-ws-runtime]');if(rt){rt.setAttribute('data-state',runtime);rt.setAttribute('aria-label','Runtime state '+runtime);}all(root,'[data-case-runtime]',runtime);
+ if(!selected){var saved=remembered();if(saved){var match=list.find(function(card){return recordId(card)===saved&&!card.hidden&&card.style.display!=='none';});if(match)selectCard(match);}}
 }
 function bindEvidence(root){
  var drawer=document.getElementById('soc-evidence-drawer');if(!drawer)return;

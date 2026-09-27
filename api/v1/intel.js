@@ -11,6 +11,7 @@
  *  action=ransomware   GET  Ransomware campaign feed
  *  action=search       GET  Full-text search across all intel (?q=query)
  *  action=stats        GET  Platform stats — no auth required
+ *  action=dashboard    GET  Sanitized first-party dashboard feed — no auth required
  *  action=graph        GET  Threat actor relationship graph (tier-gated)
  *  action=campaigns    GET  Campaign clusters (?severity=&has_kev=)
  *  action=campaign     GET  Single campaign detail (?id=campaign:...)
@@ -44,6 +45,71 @@ const detectionIntelligence = require('../_lib/detection-intelligence');
 const defenseProfileStore = require('../_lib/defense-profile-store');
 const defenseCompatibility = require('../_lib/defense-compatibility');
 const sec = require('../_lib/security');
+const reportsIndex = require('../intel/reports-index.json');
+
+function safeHttps(raw) {
+  try {
+    const u = new URL(String(raw || '').trim());
+    return (u.protocol === 'https:' && !u.username && !u.password) ? u.href : null;
+  } catch (_) { return null; }
+}
+
+function dashboardReportFor(item) {
+  const cves = new Set([...(item.cves || []), item.id]
+    .filter(v => /^CVE-\d{4}-\d{4,7}$/i.test(String(v || '')))
+    .map(v => String(v).toUpperCase()));
+  if (!cves.size) return null;
+  return (reportsIndex.reports || []).find(r =>
+    (r.cves || []).some(cve => cves.has(String(cve).toUpperCase()))
+  ) || null;
+}
+
+function publicDashboardItems(section, limit) {
+  const raw = getIntel('live', 'enterprise', { page: 1, limit: 100 });
+  let items = Array.isArray(raw.items) ? raw.items.slice() : [];
+  if (section === 'malware') {
+    items = items.filter(i => i.ransomware === true ||
+      /malware|ransomware|trojan|worm|botnet|spyware|stealer|\brat\b/i
+        .test(String(i.title || '') + ' ' + String(i.description || i.desc || '')));
+  } else if (section === 'ai_security') {
+    items = items.filter(i =>
+      /\bai\b|llm|gpt|artificial intelligence|machine learning|prompt injection|copilot|chatgpt|claude|gemini/i
+        .test(String(i.title || '') + ' ' + String(i.description || i.desc || '')));
+  }
+  items = items.slice(0, limit);
+  return {
+    generated_at: raw.intel_meta && raw.intel_meta.generated_at || null,
+    source_platform: raw.intel_meta && raw.intel_meta.source_platform || 'CYBERDUDEBIVASH SENTINEL APEX',
+    items: items.map(i => {
+      const report = dashboardReportFor(i);
+      const refs = Array.isArray(i.refs) ? i.refs : [];
+      const reportUrl = report && report.url
+        ? new URL(report.url, 'https://blog.cyberdudebivash.in').href
+        : null;
+      const sourceUrl = refs.map(safeHttps).find(Boolean) || safeHttps(reportUrl);
+      return {
+        id: String(i.id || ''),
+        title: String(i.title || 'Untitled intelligence record'),
+        description: String(i.description || i.desc || '').slice(0, 600),
+        published: i.published || i.pubDate || i.last_seen || i.first_seen || null,
+        severity: String(i.threat_level || 'NOT_ASSESSED').toUpperCase(),
+        exploited: i.exploited === true,
+        cisa_kev: i.cisa_kev === true || i.cisaKev === true,
+        ransomware: i.ransomware === true,
+        cvss: Number.isFinite(Number(i.cvss)) ? Number(i.cvss) : null,
+        vendor: i.vendor || null,
+        product: i.product || null,
+        source: i.source || 'sentinel_apex',
+        source_url: sourceUrl,
+        cves: Array.isArray(i.cves) ? i.cves.slice(0, 10) :
+          (/^CVE-/i.test(String(i.id || '')) ? [String(i.id).toUpperCase()] : []),
+        report_id: report ? report.report_id : null,
+        report_url: report ? report.url : null
+      };
+    })
+  };
+}
+
 
 /* ─── Main Router ────────────────────────────────────────────── */
 module.exports = async (req, res) => {
@@ -70,6 +136,44 @@ module.exports = async (req, res) => {
       });
     } catch (e) {
       return res.status(500).json({ success: false, error: 'Stats unavailable' });
+    }
+  }
+  
+  /* ── Public: sanitized dashboard feed — no API key required ── */
+  if (action === 'dashboard') {
+    if (req.method !== 'GET') {
+      return apiError(res, 405, 'METHOD_NOT_ALLOWED', 'GET required for dashboard feed');
+    }
+    const sectionRaw = String(req.query.section || 'intel').toLowerCase().trim().replace(/-/g, '_');
+    const section = ['intel', 'malware', 'ai_security'].includes(sectionRaw) ? sectionRaw : 'intel';
+    const limit = Math.min(25, Math.max(1, parseInt(req.query.limit || '25', 10) || 25));
+    try {
+      const data = publicDashboardItems(section, limit);
+      sec.applySecurityHeaders(res);
+      res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=120');
+      return res.status(200).json({
+        success: true,
+        data: { section, ...data },
+        meta: {
+          platform: 'CYBERDUDEBIVASH SENTINEL APEX v4.0',
+          timestamp: new Date().toISOString(),
+          contract: 'cdb.dashboard-feed.v1'
+        }
+      });
+    } catch (e) {
+      sec.applySecurityHeaders(res);
+      res.setHeader('Cache-Control', 'no-store');
+      return res.status(503).json({
+        success: false,
+        error: {
+          code: 'DASHBOARD_FEED_UNAVAILABLE',
+          message: 'First-party dashboard intelligence is temporarily unavailable.'
+        },
+        meta: {
+          platform: 'CYBERDUDEBIVASH SENTINEL APEX v4.0',
+          timestamp: new Date().toISOString()
+        }
+      });
     }
   }
 

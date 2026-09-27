@@ -242,11 +242,60 @@ def test_pro_console_exposes_evidence_safe_analyst_context():
     for path in SURFACES:
         html = path.read_text(encoding="utf-8-sig")
         assert 'class="soc-pro-rail"' in html
-        assert "Case persistence" in html
-        assert "NOT CONFIGURED" in html
+        assert "Selection persistence" in html
+        assert ">SESSION</dd>" in html
         assert "SOC 2-aligned evidence model" in html
         assert "SOC 2 certified" not in html
         assert "SOC 2 Type II certified" not in html
     css = Path("soc-cti-console.css").read_text(encoding="utf-8")
     assert ".soc-ops-commandbar" not in css
     assert ".soc-ops-actions" not in css
+
+
+def test_soc_dashboard_uses_first_party_runtime_data_plane():
+    engine = Path("auto-intel-engine.js").read_text(encoding="utf-8")
+    api = Path("api/v1/intel.js").read_text(encoding="utf-8")
+    assert "fetchDashboardFeed(section" in engine
+    load = engine.split("function loadSection(section)", 1)[1].split("// Boot on DOMContentLoaded", 1)[0]
+    assert "fetchDashboardFeed(section" in load
+    assert "aggregateFeeds(section" not in load
+    assert "First-party dashboard feed unavailable; no synthetic fallback substituted" in load
+    assert "updateRuntimeState(enriched, payload.generated_at)" in load
+    assert "action === 'dashboard'" in api
+    assert "contract: 'cdb.dashboard-feed.v1'" in api
+    assert "getIntel('live', 'enterprise'" in api
+    for secret_field in ["iocs:", "explanation:", "scoring:", "actor_attribution:"]:
+        dashboard_block = api.split("function publicDashboardItems", 1)[1].split("/* ─── Main Router", 1)[0]
+        assert secret_field not in dashboard_block
+
+
+def test_soc_dashboard_canonical_identity_and_session_selection_are_real():
+    engine = Path("auto-intel-engine.js").read_text(encoding="utf-8")
+    controller = Path("soc-hybrid-workspace.js").read_text(encoding="utf-8")
+    drawer = Path("soc-evidence-drawer.js").read_text(encoding="utf-8")
+    assert "data-record-id" in engine
+    assert "data-report-id" in engine
+    assert "SESSION_KEY='cdb_soc_selected_record_v1'" in controller
+    assert "sessionStorage.setItem" in controller
+    assert "sessionStorage.getItem" in controller
+    assert "AUTH_REQUIRED" in drawer
+    assert "Canonical evidence requires authentication" in drawer
+    assert "Open authenticated API dashboard" in drawer
+    assert "cdb:soc-record-selected" in drawer
+
+
+def test_commercial_runtime_has_no_synthetic_customer_activity_toasts():
+    monetization = Path("monetization.js").read_text(encoding="utf-8")
+    for forbidden in [
+        "SOC Analyst, Fortune 500",
+        "Subscribed to SOC Pro",
+        "CISO, Healthcare Org",
+        "Threat Hunter, Gov Agency",
+        "3,800+ SOC analysts",
+        "before public disclosure",
+        "security professionals</strong> are viewing this report right now",
+        "Math.floor(Math.random() * 65) + 24",
+    ]:
+        assert forbidden not in monetization
+    assert "Synthetic purchase/subscription activity is intentionally disabled." in monetization
+    assert "synthetic viewer counts and blanket exploitation assertions" in monetization
