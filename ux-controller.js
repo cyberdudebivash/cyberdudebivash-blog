@@ -387,7 +387,7 @@
       text:    '\uD83D\uDCE7 Get Free Threat Alerts',
       href:    '/leads.html',
       cls:     '',
-      urgency: 'Join 4,800+ security professionals — free forever'
+      urgency: 'Get free threat alerts and evidence-linked intelligence updates'
     },
     medium: {
       text:    '\uD83D\uDCE6 Explore Detection Packs',

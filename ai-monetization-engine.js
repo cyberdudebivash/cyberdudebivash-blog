@@ -170,7 +170,7 @@
         },
         researcher: {
           headline:  '📧 Get Weekly Intelligence Briefings — Free',
-          sub:       'You\'re clearly a serious security researcher. Join 2,400+ analysts getting weekly CVE + IOC briefings.',
+          sub:       'You\'re clearly a serious security researcher. Get weekly CVE + IOC intelligence briefings.',
           cta:       '📧 Subscribe Free →',
           ctaUrl:    CFG.leadsUrl,
           badge:     '📚 RESEARCHER',

@@ -84,7 +84,7 @@
     const msgs = [
       `<span class="apex-sticky-badge">🔴 LIVE</span> <strong>CVE-2026-28401 CVSS 10.0</strong> — Ivanti Connect Secure actively exploited. Get instant alerts.`,
       `<span class="apex-sticky-badge">⚡ HOT</span> <strong>Volt Typhoon</strong> pre-positioned in US critical infrastructure. Stay ahead of nation-state threats.`,
-      `<span class="apex-sticky-badge">🛡️ PRO</span> Get <strong>48-hour pre-disclosure</strong> CVE reports before public release. SOC Pro — $18/mo.`,
+      `<span class="apex-sticky-badge">🛡️ PRO</span> Get <strong>evidence-linked</strong> CVE intelligence and operational context. SOC Pro — $18/mo.`,
     ];
     const msgDiv = el('div', { class: 'apex-sticky-msg' });
     msgDiv.innerHTML = msgs[Math.floor(Math.random() * msgs.length)];
@@ -167,7 +167,7 @@
         <div class="apex-exit-h">Don't miss the next <span>critical zero-day</span> alert</div>
         <p class="apex-exit-sub">3,800+ SOC analysts and CISOs get our threat alerts before public disclosure. Join free — unsubscribe anytime.</p>
         <div class="apex-exit-perks">
-          <div class="apex-exit-perk"><strong>48H Pre-Disclosure</strong>Critical CVE alerts before NVD</div>
+          <div class="apex-exit-perk"><strong>Evidence-Linked Intel</strong>Critical CVE alerts with source provenance</div>
           <div class="apex-exit-perk"><strong>IOC Feed</strong>Weekly IP/domain/hash bundles</div>
           <div class="apex-exit-perk"><strong>YARA Rules</strong>Detection rules for new malware</div>
           <div class="apex-exit-perk"><strong>SIEM Queries</strong>Ready-to-deploy detection logic</div>
@@ -302,7 +302,7 @@
       { icon: '🛡️', title: 'Get Full IOC Pack + YARA Rules', sub: 'SOC Pro members receive complete IOC bundles, YARA signatures, and SIEM queries for every report published.', btn: 'Unlock with SOC Pro →', url: CFG.pricingUrl },
       { icon: '⚡', title: 'Get Real-Time CVE Alerts via API', sub: 'Integrate our threat intelligence directly into your SIEM. CVE scores, exploitability data, and IOCs via REST API.', btn: 'Explore API Access →', url: CFG.apiUrl },
       { icon: '📦', title: 'Download Detection Rule Pack', sub: 'Pre-built Sigma rules, Splunk SPL, KQL, and Elastic queries ready to deploy. Available in the Products Store.', btn: 'Browse Products →', url: CFG.productsUrl },
-      { icon: '🎯', title: '48H Pre-Disclosure Intelligence', sub: 'Get critical CVE reports before NVD publication. 3,800+ security pros trust CYBERDUDEBIVASH SENTINEL APEX for early warning.', btn: 'Subscribe SOC Pro →', url: CFG.pricingUrl },
+      { icon: '🎯', title: 'Evidence-Linked Intelligence', sub: 'Get critical CVE intelligence with source provenance and explicit evidence states.', btn: 'Subscribe SOC Pro →', url: CFG.pricingUrl },
     ];
 
     const articleBody = $('article') || $('.article-wrap') || $('main') || $('body');
@@ -473,7 +473,7 @@
         <button class="apex-lead-submit" type="submit">Get Free Alerts →</button>
       </form>
       <ul class="apex-lead-perks">
-        <li>48H pre-disclosure CVE reports</li>
+        <li>Evidence-linked CVE intelligence reports</li>
         <li>Weekly IOC + YARA bundles</li>
         <li>Ransomware group tracker</li>
         <li>SIEM detection queries</li>

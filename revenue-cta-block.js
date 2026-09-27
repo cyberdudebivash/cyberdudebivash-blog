@@ -61,7 +61,7 @@
   var CONTEXT_COPY = {
     cve: {
       headline:       'Get Full Detection Coverage for This CVE',
-      sub:            'SOC Pro members receive complete IOC tables, SIEM detection rules (Splunk/Elastic/KQL), YARA signatures, and automated STIX feeds — 48 hours before NVD publication.',
+      sub:            'SOC Pro members receive complete IOC tables, SIEM detection rules (Splunk/Elastic/KQL), YARA signatures, and automated STIX feeds with evidence-linked publication timing.',
       products_label: '\uD83D\uDCE6 Get Detection Pack',
       api_label:      '\uD83D\uDD0C Automate via API',
       badge:          '\uD83D\uDD34\u00A0ACTIVE CVE THREAT INTELLIGENCE'
@@ -89,7 +89,7 @@
     },
     general: {
       headline:       'Upgrade Your Threat Intelligence — SOC Pro',
-      sub:            '48H pre-disclosure CVE reports, full IOC bundles, SIEM detection rules, YARA signatures, and ransomware tracking. Used by 4,800+ security professionals globally.',
+      sub:            'Evidence-linked CVE reports, full IOC bundles, SIEM detection rules, YARA signatures, and ransomware tracking.',
       products_label: '\uD83D\uDCE6 Browse Products',
       api_label:      '\uD83D\uDD0C API Access',
       badge:          '\u26A1\u00A0CYBERDUDEBIVASH SENTINEL APEX'
@@ -408,7 +408,7 @@
             '<div class="rcb-card-icon">\u26A1</div>' +
             '<div class="rcb-card-title">SOC Pro Membership</div>' +
             '<div class="rcb-card-sub">' +
-              'Full IOC packs, SIEM rules, 48H pre-disclosure CVE reports, and ransomware tracker. ' +
+              'Full IOC packs, SIEM rules, evidence-linked CVE reports, and ransomware tracker. ' +
               'Reduce SOC triage time by 60%.' +
             '</div>' +
             '<div class="rcb-card-price" data-cx-price="18" data-cx-orig="49">' +
@@ -472,7 +472,7 @@
         '<div class="rcb-trust">' +
           '<div class="rcb-trust-stat">\uD83D\uDEE1\uFE0F <strong>4,800+</strong> SOC analysts subscribed</div>' +
           '<div class="rcb-trust-stat">\uD83D\uDCCA <strong>1,200+</strong> CVEs tracked in 2026</div>' +
-          '<div class="rcb-trust-stat">\u26A1 <strong>48H</strong> pre-disclosure alerts</div>' +
+          '<div class="rcb-trust-stat">\u26A1 <strong>Evidence-linked</strong> intelligence alerts</div>' +
           '<div class="rcb-trust-stat">\uD83C\uDF10 <strong>Updated</strong> every 10 minutes</div>' +
           '<div class="rcb-trust-stat">\uD83C\uDFE2 <strong>Fortune 500</strong> clients</div>' +
         '</div>' +

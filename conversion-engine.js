@@ -475,7 +475,7 @@
       },
       security_pro: {
         badge:    '\u26A1 SOC PRO MEMBERSHIP',
-        headline: 'SOC Pro — 48H Pre-Disclosure Intel + Full IOC Access',
+        headline: 'SOC Pro — Evidence-Linked Intel + Full IOC Access',
         sub:      'Get critical CVE reports before NVD publication. Full IOC bundles, SIEM rules, and ransomware tracking. $18/month.',
         cta:      'Start 7-Day Free Trial \u2192',
         url:      '/pricing.html'
@@ -696,7 +696,7 @@
           badge:  '\uD83D\uDEA8 HIGH-INTENT ALERT — Exclusive Offer',
           h1:     'You\'re one step from <span>full intel access</span>',
           sub:    'You\'ve spent significant time here — that tells us you need serious threat intelligence. Get SOC Pro and unlock everything.',
-          perk1:  { title: 'Pre-Disclosure CVE',  body: '48H before NVD release' },
+          perk1:  { title: 'CVE Intelligence',  body: 'Evidence-linked publication timing' },
           perk2:  { title: 'Full IOC Tables',     body: 'IP / domain / hash bundles' },
           perk3:  { title: 'YARA + Sigma Rules',  body: 'Deploy-ready detection' },
           perk4:  { title: 'SIEM Queries',        body: 'Splunk / Elastic / KQL' },
@@ -709,7 +709,7 @@
           badge:  '\uD83C\uDFAF THREAT INTELLIGENCE ALERT',
           h1:     'Don\'t miss the next <span>critical zero-day</span>',
           sub:    '3,800+ SOC analysts receive our threat briefings before public disclosure. Free subscription — unsubscribe anytime.',
-          perk1:  { title: 'Zero-Day Alerts',     body: '48H before public release' },
+          perk1:  { title: 'Zero-Day Alerts',     body: 'Source-backed emerging-threat alerts' },
           perk2:  { title: 'IOC Bundles',         body: 'Weekly IPs, domains, hashes' },
           perk3:  { title: 'YARA Rules',          body: 'New malware signatures' },
           perk4:  { title: 'Ransomware Tracker',  body: 'Active group campaigns' },
@@ -1044,7 +1044,7 @@
         {
           icon: '\uD83D\uDEE1\uFE0F',
           title: 'SOC Pro — Get Ransomware Intel Before Campaigns Hit',
-          sub:   'Track active ransomware groups with 48H pre-disclosure intel, IOC feeds updated daily, and a dedicated Slack alerts channel.',
+          sub:   'Track active ransomware groups with evidence-linked intelligence, IOC feeds, and operational alerting.',
           cta:   'Join SOC Pro \u2014 $18/mo \u2192',
           url:   '/pricing.html',
           track: 'ctx_prod_ransom_2'
@@ -1098,7 +1098,7 @@
         {
           icon: '\u26A1',
           title: 'SOC Pro — Full Platform Access at $18/mo',
-          sub:   '48H pre-disclosure CVEs, complete IOC bundles, SIEM rules, ransomware tracker, and API access. 7-day free trial.',
+          sub:   'Evidence-linked CVE intelligence, complete IOC bundles, SIEM rules, ransomware tracker, and API access.',
           cta:   'Start Free Trial \u2192',
           url:   '/pricing.html',
           track: 'ctx_prod_gen_2'
