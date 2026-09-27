@@ -11,7 +11,7 @@
   }
   function safeSourceUrl(raw) {
     try {
-      var u = new URL(String(raw || ''), window.location.origin);
+      var u = new URL(String(raw || '').trim());
       if (u.protocol !== 'https:' || u.username || u.password) return null;
       return u.href;
     } catch (e) { return null; }
