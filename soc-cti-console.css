@@ -40,3 +40,15 @@
 .intel-post.soc-selected-record{outline:2px solid var(--soc-info);outline-offset:3px}
 .soc-record-select{margin-left:auto;border:1px solid var(--soc-line);background:#0b1722;color:var(--soc-text);border-radius:5px;padding:4px 8px;font-size:.68rem;cursor:pointer}
 @media(max-width:900px){.soc-workspace{grid-template-columns:1fr}.soc-workspace-grid{grid-template-columns:1fr 1fr}}@media(max-width:520px){.soc-workspace{padding:0 10px}.soc-workspace-grid,.soc-evidence-state-grid,.soc-workspace-actions{grid-template-columns:1fr 1fr}}
+
+/* v2 production interaction polish */
+.soc-workspace-panel{box-shadow:0 18px 55px rgba(0,0,0,.28)}
+.soc-workspace-panel:focus-within{border-color:rgba(93,173,226,.55)}
+.soc-workspace-metric strong[data-state="LIVE"],[data-ws-runtime][data-state="LIVE"]{color:var(--soc-ok)}
+.soc-workspace-metric strong[data-state="STALE"],[data-ws-runtime][data-state="STALE"]{color:var(--soc-warn)}
+.soc-workspace-metric strong[data-state="DEGRADED"],.soc-workspace-metric strong[data-state="UNAVAILABLE"],[data-ws-runtime][data-state="DEGRADED"],[data-ws-runtime][data-state="UNAVAILABLE"]{color:var(--soc-bad)}
+.soc-workspace-actions a:focus-visible,.soc-workspace-actions button:focus-visible,.soc-record-select:focus-visible{outline:2px solid var(--soc-info);outline-offset:2px}
+.soc-workspace-actions [aria-disabled="true"]{filter:saturate(.45)}
+.soc-workspace-context [data-selected-evidence]{display:inline-block;margin-top:4px;color:var(--soc-muted)}
+@media(min-width:1100px){.soc-workspace>aside.soc-workspace-panel{position:sticky;top:84px;align-self:start}}
+@media(prefers-reduced-motion:reduce){.soc-workspace *{scroll-behavior:auto!important;transition:none!important}}
