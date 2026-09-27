@@ -112,6 +112,7 @@ const DIRECT_API_HANDLERS = new Set([
 
 const DYNAMIC_API_HANDLERS = [
   [/^\/api\/v1\/detections\/rules\/([^/]+)$/, 'api/v1/detections/rules/[id]'],
+  [/^\/api\/v1\/intel\/evidence\/([^/]+)$/, 'api/v1/intel/evidence/[id]'],
   [/^\/api\/v1\/ioc\/([^/]+)$/, 'api/v1/ioc/[id]'],
 ];
 
