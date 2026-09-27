@@ -64,3 +64,14 @@ def test_wrong_canonical_is_blocked():
     """
     codes = {f.code for f in audit_html(html, now=NOW)}
     assert "canonical_wrong_host" in codes
+
+
+def test_global_threat_and_insurance_score_are_blocked_live():
+    html = """
+    <html><head><link rel="canonical" href="https://cti.cyberdudebivash.in/"></head>
+    <body><p>Global Threat Level 88.4</p><p>Cyber Insurance Score 94/100</p>
+    <time>21 September 2026</time></body></html>
+    """
+    codes = {f.code for f in audit_html(html, now=NOW)}
+    assert "global_threat_level_claim" in codes
+    assert "cyber_insurance_score_claim" in codes

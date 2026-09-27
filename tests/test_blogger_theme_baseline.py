@@ -86,3 +86,9 @@ def test_theme_without_explicit_website_jsonld_fails():
     result = certify_theme("<html><body>clean</body></html>")
     assert result["status"] == "FAIL"
     assert {f["code"] for f in result["findings"]} == {"website_jsonld_missing"}
+
+
+def test_global_threat_level_fixture_is_blocked():
+    result = certify_theme('''<script type="application/ld+json">{"@type":"WebSite","url":"https://cti.cyberdudebivash.in/"}</script><p>Global Threat Level 88.4</p>''')
+    assert result["status"] == "FAIL"
+    assert "global_threat_level_claim" in {x["code"] for x in result["findings"]}

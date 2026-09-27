@@ -43,6 +43,7 @@ BLOCKED_PATTERNS: tuple[tuple[str, str], ...] = (
     ("tenant_health_claim", r"Global\s+Tenant\s+Health\s+99\.98%"),
     ("indicator_count_claim", r"Real-time\s+Indicators\s*:\s*142,890\+"),
     ("board_sla_claim", r"Board\s+SLA\s+Compliance\s+99\.4%"),
+    ("global_threat_level_claim", r"Global\s+Threat\s+Level\s+88\.4"),
     ("cyber_insurance_score_claim", r"Cyber\s+Insurance\s+Score\s+94/100"),
     ("soc2_type2_claim", r"SOC\s*2\s*Type\s*II"),
 )
