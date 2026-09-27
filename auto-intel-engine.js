@@ -86,7 +86,7 @@
     ransomware: {
       primary:   { cta:'🛡️ Get Ransomware Defense Kit',  url:'/products.html' },
       secondary: { cta:'SOC Intelligence Plans',            url:'/pricing.html' },
-      sub: '800+ YARA rules, IR playbook, IOC bundle for active ransomware campaigns.'
+      sub: 'Evidence-backed ransomware context and available detection content, subject to validation state and entitlement.'
     },
     apt: {
       primary:   { cta:'🎯 Get APT Intel Pack',           url:'/products.html' },
@@ -128,7 +128,7 @@
       'AI governance controls are lagging deployment velocity. Security teams should prioritize AI asset inventory and data access mapping before deploying compensating controls for this class of attack.'
     ],
     general: [
-      'This threat report has been enriched with MITRE ATT&CK mappings, IOC extraction, and risk scoring by the CYBERDUDEBIVASH SENTINEL APEX analysis pipeline. Subscribe to SOC Pro for full detection coverage delivered 48 hours before NVD.',
+      'Automated source enrichment does not establish ATT&CK mapping, attribution, exploitation, or deployment readiness. Use canonical ReportX evidence for those claims.',
       'CYBERDUDEBIVASH SENTINEL APEX analysts assess this threat as operationally relevant to enterprise environments with internet-facing infrastructure based on current dark web signals and active campaign tracking.',
       'Use the cited source, publication timestamp, and available evidence fields to determine operational relevance. Detection content must be independently validated before deployment.'
     ]
@@ -332,20 +332,14 @@
   }
 
   function mapMITRE(text) {
-    var found = [];
-    for (var kw in MITRE_MAP) {
-      if (text.indexOf(kw) !== -1) {
-        found.push(MITRE_MAP[kw]);
-        if (found.length >= 3) break;
-      }
-    }
-    return found;
+    // ATT&CK mappings require canonical behavioral evidence from ReportX.
+    // Browser keyword matching must never manufacture technique claims.
+    return [];
   }
 
   function detectThreatActor(text) {
-    for (var actor in THREAT_ACTORS) {
-      if (text.indexOf(actor) !== -1) return { name: actor, ...THREAT_ACTORS[actor] };
-    }
+    // Attribution requires source-bound canonical claims. Do not infer actors
+    // or nationality from keyword occurrence in browser-rendered text.
     return null;
   }
 
@@ -388,28 +382,11 @@
      § 6b. POST ENRICHMENT BLOCKS — Analyst Note / Actions / CTA / Trust
   ══════════════════════════════════════════════════════════════════ */
   function generateAnalystNote(item) {
-    var ctx   = item.postContext || 'general';
-    var notes = ANALYST_NOTES[ctx] || ANALYST_NOTES.general;
-    var note = notes[0];
-    var today = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric' });
-    return `<div class="analyst-note">
-  <div class="analyst-note-hdr">
-    <span class="analyst-badge">🔍 CYBERDUDEBIVASH ANALYST NOTE</span>
-    <span class="analyst-meta">Assessed ${today}</span>
-  </div>
-  <p class="analyst-text">${escHTML(note)}</p>
-</div>`;
+    return '<div class="analyst-note"><div class="analyst-note-hdr"><span class="analyst-badge">EVIDENCE STATUS</span></div><p class="analyst-text">Automated source enrichment only. No human analyst assessment is asserted by this view. Inspect canonical claim and evidence records before operational action.</p></div>';
   }
 
   function generateDefensiveActions(item) {
-    var ctx     = item.postContext || 'general';
-    var actions = DEFENSIVE_ACTIONS[ctx] || DEFENSIVE_ACTIONS.general;
-    var items   = actions.slice(0, 4).map(a => `<li>${escHTML(a)}</li>`).join('');
-    return `<div class="defensive-block">
-  <div class="defensive-hdr">⚡ IMMEDIATE DEFENSIVE ACTIONS</div>
-  <ol class="defensive-list">${items}</ol>
-  <a class="defensive-link" href="/products.html">⬇ Get Full Detection Bundle →</a>
-</div>`;
+    return '<div class="defensive-block"><div class="defensive-hdr">OPERATIONAL ACTION</div><p class="analyst-text">Validate affected assets, cited evidence, exploitation state and detection maturity before containment, blocking or deployment decisions.</p></div>';
   }
 
   function generateContextCTA(item) {
@@ -470,10 +447,11 @@
     }
 
     var timeStr = formatTime(item.pubDate);
+    var sourceUrl = safeExternalUrl(item.link);
     var exploitBadge = item.isExploited ? '<span class="badge badge-exploit">● ACTIVELY EXPLOITED</span>' : '';
     var breakingBadge = item.isBreaking ? '<span class="badge badge-breaking">⚡ BREAKING</span>' : '';
 
-    return `<article class="intel-post" data-severity="${item.severity}" data-risk="${item.riskScore}">
+    return `<article class="intel-post" data-severity="${item.severity}">
   <div class="post-header" style="border-left:4px solid ${sc};background:${sb}">
     <div class="post-meta-row">
       <span class="severity-chip" style="background:${sc};color:#000">${item.severity.toUpperCase()}</span>
@@ -482,7 +460,7 @@
       <span class="source-chip">${item.source}</span>
       <span class="time-chip">🕐 ${timeStr}</span>
     </div>
-    <h2 class="post-title"><a href="${item.link}" target="_blank" rel="noopener">${escHTML(item.title)}</a></h2>
+    <h2 class="post-title">${sourceUrl ? '<a href="' + escHTML(sourceUrl) + '" target="_blank" rel="noopener noreferrer">' + escHTML(item.title) + '</a>' : escHTML(item.title)}</h2>
     ${actorHTML}
     ${cveHTML}
   </div>
@@ -500,19 +478,7 @@
   }
 
   function generatePaywall(item) {
-    return `<div class="freemium-gate">
-  <div class="gate-blur-overlay"></div>
-  <div class="gate-box">
-    <div class="gate-icon">🔒</div>
-    <div class="gate-title">Full Intel Locked — SOC Pro Required</div>
-    <div class="gate-perks">
-      <span>✓ Full IOC list</span><span>✓ YARA detection rules</span>
-      <span>✓ SIEM queries</span><span>✓ Response playbook</span>
-    </div>
-    <a class="gate-cta" href="/pricing.html">Unlock with SOC Pro — $18/mo</a>
-    <a class="gate-cta gate-cta-outline" href="/pricing.html#free">Get Free Sample Report</a>
-  </div>
-</div>`;
+    return '<div class="freemium-gate"><div class="gate-box"><div class="gate-icon">🔒</div><div class="gate-title">Additional Intelligence Requires Entitlement</div><div class="gate-perks"><span>Plan-scoped evidence and operational context are delivered only when available and entitled.</span></div><a class="gate-cta" href="/pricing.html">View Intelligence Plans</a></div></div>';
   }
 
   /* ══════════════════════════════════════════════════════════════════
@@ -538,15 +504,18 @@
       filtered = items.filter(function(i) {
         return /malware|ransomware|trojan|worm|botnet|spyware|keylog|stealer|rat\b/i.test(i.title + ' ' + i.rawContent);
       });
-      if (!filtered.length) filtered = items;
     } else if (options.section === 'ai_security') {
       filtered = items.filter(function(i) {
         return /ai|llm|gpt|artificial intel|machine learn|prompt|copilot|chatgpt|claude|gemini/i.test(i.title + ' ' + i.rawContent);
       });
-      if (!filtered.length) filtered = items;
     } else if (options.section === 'breaking') {
-      filtered = items.filter(function(i) { return i.riskScore >= 50 || i.isBreaking || i.isExploited; });
-      if (!filtered.length) filtered = items.sort(function(a,b) { return b.riskScore - a.riskScore; });
+      filtered = items.filter(function(i) { return i.isBreaking || i.isExploited || i.severity === 'critical'; });
+    }
+
+    if (!filtered.length) {
+      container.innerHTML = '<div class="intel-empty"><span>⚠</span><p>No evidence-matched intelligence is currently available for this workspace. Unrelated records are not substituted.</p></div>';
+      updateLiveCounts([]);
+      return;
     }
 
     var html = filtered.slice(0, limit).map(function(item) {
@@ -706,6 +675,14 @@
   /* ══════════════════════════════════════════════════════════════════
      § 13. UTILITY FUNCTIONS
   ══════════════════════════════════════════════════════════════════ */
+  function safeExternalUrl(value) {
+    try {
+      var u = new URL(String(value || ''), window.location.origin);
+      if (u.protocol !== 'https:') return null;
+      return u.href;
+    } catch (e) { return null; }
+  }
+
   function stripHTML(html) {
     var tmp = document.createElement('DIV');
     tmp.innerHTML = html || '';
@@ -850,7 +827,7 @@
     injectStyles();
     aggregateFeeds(section, function(items) {
       var enriched = items.map(enrichItem)
-        .sort(function(a,b){ return b.riskScore - a.riskScore; });
+        ;
 
       publishToSection(containerId, enriched, { section: section, limit: 25 });
       updateTicker(enriched);
