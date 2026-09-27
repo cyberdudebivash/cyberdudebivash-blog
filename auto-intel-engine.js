@@ -601,7 +601,9 @@
 
   function formatTime(dateStr) {
     try {
+      if (!dateStr) return 'Timestamp unavailable';
       var d = new Date(dateStr);
+      if (Number.isNaN(d.getTime())) return 'Timestamp unavailable';
       var now = new Date();
       var diff = Math.floor((now - d) / 60000);
       if (diff < 1)   return 'Just now';
