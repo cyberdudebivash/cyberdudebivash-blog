@@ -409,7 +409,7 @@
             '<div class="rcb-card-title">SOC Pro Membership</div>' +
             '<div class="rcb-card-sub">' +
               'Full IOC packs, SIEM rules, evidence-linked CVE reports, and ransomware tracker. ' +
-              'Reduce SOC triage time by 60%.' +
+              'Support faster, evidence-driven SOC triage.' +
             '</div>' +
             '<div class="rcb-card-price" data-cx-price="18" data-cx-orig="49">' +
               '<span class="rcb-orig">$49</span>$18' +
@@ -473,7 +473,7 @@
           '<div class="rcb-trust-stat">\uD83D\uDEE1\uFE0F <strong>4,800+</strong> SOC analysts subscribed</div>' +
           '<div class="rcb-trust-stat">\uD83D\uDCCA <strong>1,200+</strong> CVEs tracked in 2026</div>' +
           '<div class="rcb-trust-stat">\u26A1 <strong>Evidence-linked</strong> intelligence alerts</div>' +
-          '<div class="rcb-trust-stat">\uD83C\uDF10 <strong>Updated</strong> every 10 minutes</div>' +
+          '<div class="rcb-trust-stat">\uD83C\uDF10 <strong>Timestamped</strong> feed freshness</div>' +
           '<div class="rcb-trust-stat">\uD83C\uDFE2 <strong>Fortune 500</strong> clients</div>' +
         '</div>' +
 

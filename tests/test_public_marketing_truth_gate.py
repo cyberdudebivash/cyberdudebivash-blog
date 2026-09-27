@@ -2,6 +2,7 @@ from pathlib import Path
 
 PUBLIC_MARKETING = (
     "revenue-cta-block.js","ux-controller.js","conversion-engine.js",
+    "contact.html","archive.html","intelligence.html","breaking/index.html",
     "ai-monetization-engine.js","monetization.js","products.html","api.html",
 )
 FORBIDDEN = (
@@ -14,6 +15,8 @@ FORBIDDEN = (
     "48h before nvd",
     "48h before public release",
     "updated every 10 minutes",
+    "every 10 minutes",
+    "reduce soc triage time by 60%",
     '<span class="val">2,400+</span><span class="lbl">downloads</span>',
     '<span class="val">4.9★</span><span class="lbl">avg rating</span>',
     '<span class="val">500+</span><span class="lbl">soc teams</span>',
