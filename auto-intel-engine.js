@@ -106,74 +106,12 @@
   };
 
   /* ── ANALYST NOTE TEMPLATES ─────────────────────────────────────── */
-  var ANALYST_NOTES = {
-    cve: [
-      'This vulnerability is high-priority for patch management. Organizations should validate affected versions against the cited vendor or vulnerability source and prioritize remediation according to confirmed exposure, exploitation evidence, and asset criticality.',
-      'CVEs with CVSS ≥ 7.5 are monitored by threat actors within 48 hours of NVD publication. Pre-patch network segmentation and compensating controls are recommended for all internet-facing assets.',
-      'Based on historical exploitation patterns, this vulnerability class is typically weaponized within 48 hours of PoC release. Immediate patching or mitigation is strongly advised for all affected systems.'
-    ],
-    ransomware: [
-      'Ransomware operators increasingly target backup systems and domain controllers before encryption begins. Network segmentation and offline backup verification are the most effective immediate countermeasures for this campaign.',
-      'This ransomware family uses living-off-the-land techniques to evade signature-based EDR. Behavioral detection rules and anomalous process execution monitoring are more effective than hash-based approaches.',
-      'Initial access via phishing and exposed RDP remain the dominant vectors. MFA enforcement and RDP gateway controls eliminate the majority of initial access risk associated with this threat group.'
-    ],
-    apt: [
-      'Nation-state actors in this campaign demonstrate patience — initial access may precede active operations by weeks or months. Assume long-dwell presence in affected environments and conduct comprehensive threat hunt.',
-      'Infrastructure used by this threat actor overlaps with previously attributed campaigns. IOCs have limited shelf-life as attribution-aware actors rapidly rotate infrastructure after public disclosure.',
-      'This actor\'s targeting is strategic, not opportunistic. If your organization operates in energy, defense, financial services, or critical infrastructure verticals, treat this as a direct targeting risk.'
-    ],
-    ai: [
-      'AI security risks are maturing rapidly. Organizations deploying LLMs in production workflows must assume adversarial input at the application layer and implement input validation at the architecture level — not just the model level.',
-      'Prompt injection attacks targeting enterprise AI pipelines are increasingly sophisticated. The attack surface expands significantly when LLMs have tool-use or API access capabilities within automated workflows.',
-      'AI governance controls are lagging deployment velocity. Security teams should prioritize AI asset inventory and data access mapping before deploying compensating controls for this class of attack.'
-    ],
-    general: [
-      'Automated source enrichment does not establish ATT&CK mapping, attribution, exploitation, or deployment readiness. Use canonical ReportX evidence for those claims.',
-      'CYBERDUDEBIVASH SENTINEL APEX analysts assess this threat as operationally relevant to enterprise environments with internet-facing infrastructure based on current dark web signals and active campaign tracking.',
-      'Use the cited source, publication timestamp, and available evidence fields to determine operational relevance. Detection content must be independently validated before deployment.'
-    ]
-  };
+
 
   /* ── DEFENSIVE ACTIONS MAP ──────────────────────────────────────── */
-  var DEFENSIVE_ACTIONS = {
-    cve: [
-      'Apply vendor patch immediately — prioritize internet-facing and domain controller assets',
-      'Enable SIEM detection rules for known exploitation indicators (network + host)',
-      'Deploy YARA signatures across EDR platform to catch post-exploitation activity',
-      'Review WAF rulesets for exploitation payload patterns if web-facing component is affected'
-    ],
-    ransomware: [
-      'Isolate newly discovered encrypted endpoints — prevent lateral propagation',
-      'Deploy IOC block list: IP/domain/hash indicators to firewall deny list immediately',
-      'Disable unnecessary SMB lateral movement paths between workstations',
-      'Verify offline backup integrity — confirm backup systems are unaffected by encryption'
-    ],
-    apt: [
-      'Hunt for IOCs across EDR telemetry — assume implants may predate public disclosure',
-      'Review authentication logs for anomalous access patterns matching actor TTPs',
-      'Audit service accounts and privileged credentials on affected system segments',
-      'Enable enhanced logging on domain controllers, VPN, and network perimeter systems'
-    ],
-    ai: [
-      'Audit all LLM API endpoints and agentic tool integrations for prompt injection surface',
-      'Implement input validation and output filtering on all AI pipeline touchpoints',
-      'Review data access permissions granted to AI agent and automation components',
-      'Deploy behavioral monitoring for anomalous AI API usage patterns and data access'
-    ],
-    general: [
-      'Monitor threat actor infrastructure associated with this campaign for new indicators',
-      'Review network and authentication logs for indicators matching published IOCs',
-      'Verify detection coverage for MITRE ATT&CK techniques identified in this report',
-      'Ensure endpoint detection rules are updated and active across all managed endpoints'
-    ]
-  };
 
-  var SEVERITY_KEYWORDS = {
-    critical: ['critical','cvss 9','cvss 10','actively exploit','0-day','zero-day','unauthenticated rce','pre-auth rce','emergency patch','cisa kev','cisa mandate'],
-    high:     ['high','cvss 7','cvss 8','remote code exec','privilege escal','auth bypass'],
-    medium:   ['medium','moderate','cvss 5','cvss 6','xss','csrf','information disclos'],
-    low:      ['low','cvss 1','cvss 2','cvss 3','cvss 4','denial of service']
-  };
+
+
 
   /* ══════════════════════════════════════════════════════════════════
      § 3. CACHE LAYER
@@ -297,33 +235,23 @@
     var enriched = {
       title:       item.title || 'Untitled',
       link:        item.link || item.url || '#',
-      pubDate:     item.pubDate || new Date().toISOString(),
+      pubDate:     item.pubDate || null,
       source:      extractSource(item.link || ''),
       rawContent:  item.content || item.description || '',
-      severity:    detectSeverity(text),
+      severity:    'not_assessed',
       cveIds:      extractCVEs(text),
       mitreMap:    mapMITRE(text),
       threatActor: detectThreatActor(text),
-      cvssScore:   extractCVSS(text),
+      cvssScore:   null,
       tags:        extractTags(text),
-      isExploited: /actively exploit|in the wild|actively used|cisa kev|zero.day exploit/i.test(text),
-      isCritical:  /critical|cvss 9\.|cvss 10|emergency patch/i.test(text),
-      isBreaking:  /breaking|just in|alert|urgent|emergency/i.test(item.title || ''),
+      isExploited: false,
+      isCritical:  false,
+      isBreaking:  false,
       riskScore:   null,
       postContext: detectPostContext(text)
     };
     // Risk is not synthesized from keyword heuristics. Use source-backed severity/exploitation evidence only.
     return enriched;
-  }
-
-  function detectSeverity(text) {
-    for (var lvl in SEVERITY_KEYWORDS) {
-      var kws = SEVERITY_KEYWORDS[lvl];
-      for (var i = 0; i < kws.length; i++) {
-        if (text.indexOf(kws[i]) !== -1) return lvl;
-      }
-    }
-    return 'medium';
   }
 
   function extractCVEs(text) {
@@ -343,15 +271,6 @@
     return null;
   }
 
-  function extractCVSS(text) {
-    var m = text.match(/cvss[:\s]+(\d+\.?\d*)/i) || text.match(/score[:\s]+(\d+\.?\d*)/i);
-    if (m) {
-      var v = parseFloat(m[1]);
-      if (v >= 0 && v <= 10) return v.toFixed(1);
-    }
-    return null;
-  }
-
   function extractTags(text) {
     var tags = [];
     var keywords = ['ransomware','zero-day','cve','apt','backdoor','phishing','supply chain',
@@ -363,19 +282,6 @@
 
   function extractSource(url) {
     try { return new URL(url).hostname.replace('www.',''); } catch(e) { return 'SENTINEL'; }
-  }
-
-  function calculateRiskScore(item) {
-    var score = 0;
-    if (item.severity === 'critical') score += 40;
-    else if (item.severity === 'high') score += 25;
-    else if (item.severity === 'medium') score += 10;
-    if (item.isExploited) score += 30;
-    if (item.isCritical) score += 15;
-    if (item.cvssScore && parseFloat(item.cvssScore) >= 9) score += 20;
-    if (item.cveIds.length) score += item.cveIds.length * 5;
-    if (item.threatActor) score += 15;
-    return Math.min(score, 100);
   }
 
   /* ══════════════════════════════════════════════════════════════════
@@ -408,8 +314,8 @@
      § 7. POST GENERATOR — Full HTML Article
   ══════════════════════════════════════════════════════════════════ */
   function generatePostHTML(item, isPremium) {
-    var sevColor  = { critical:'#ff2244', high:'#ff6600', medium:'#ffd700', low:'#44ff88' };
-    var sevBg     = { critical:'rgba(255,34,68,0.12)', high:'rgba(255,102,0,0.12)', medium:'rgba(255,215,0,0.10)', low:'rgba(68,255,136,0.10)' };
+    var sevColor  = { critical:'#ff2244', high:'#ff6600', medium:'#ffd700', low:'#44ff88', not_assessed:'#94a3b8' };
+    var sevBg     = { critical:'rgba(255,34,68,0.12)', high:'rgba(255,102,0,0.12)', medium:'rgba(255,215,0,0.10)', low:'rgba(68,255,136,0.10)', not_assessed:'rgba(148,163,184,0.10)' };
     var sc = sevColor[item.severity] || '#ffd700';
     var sb = sevBg[item.severity] || 'rgba(255,215,0,0.10)';
 
@@ -457,7 +363,7 @@
       <span class="severity-chip" style="background:${sc};color:#000">${item.severity.toUpperCase()}</span>
       ${exploitBadge}${breakingBadge}
       ${item.cvssScore ? `<span class="cvss-pill">CVSS ${item.cvssScore}</span>` : ''}
-      <span class="source-chip">${item.source}</span>
+      <span class="source-chip">${escHTML(item.source)}</span>
       <span class="time-chip">🕐 ${timeStr}</span>
     </div>
     <h2 class="post-title">${sourceUrl ? '<a href="' + escHTML(sourceUrl) + '" target="_blank" rel="noopener noreferrer">' + escHTML(item.title) + '</a>' : escHTML(item.title)}</h2>
@@ -677,8 +583,8 @@
   ══════════════════════════════════════════════════════════════════ */
   function safeExternalUrl(value) {
     try {
-      var u = new URL(String(value || ''), window.location.origin);
-      if (u.protocol !== 'https:') return null;
+      var u = new URL(String(value || '').trim());
+      if (u.protocol !== 'https:' || u.username || u.password) return null;
       return u.href;
     } catch (e) { return null; }
   }
@@ -695,14 +601,16 @@
 
   function formatTime(dateStr) {
     try {
+      if (!dateStr) return 'Timestamp unavailable';
       var d = new Date(dateStr);
+      if (Number.isNaN(d.getTime())) return 'Timestamp unavailable';
       var now = new Date();
       var diff = Math.floor((now - d) / 60000);
       if (diff < 1)   return 'Just now';
       if (diff < 60)  return diff + 'm ago';
       if (diff < 1440) return Math.floor(diff/60) + 'h ago';
       return d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
-    } catch(e) { return 'Recent'; }
+    } catch(e) { return 'Timestamp unavailable'; }
   }
 
   /* ══════════════════════════════════════════════════════════════════

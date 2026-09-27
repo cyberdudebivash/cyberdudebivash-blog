@@ -103,3 +103,38 @@ def test_priority_intelligence_triage_workspace_contract():
         assert 'data-triage-severity' in html
         assert 'Filters operate only on rendered source records.' in html
         assert '/soc-triage-workspace.js' in html
+
+
+def test_browser_intel_engine_fails_closed_without_canonical_claim_evidence():
+    engine = Path("auto-intel-engine.js").read_text(encoding="utf-8")
+    assert "pubDate:     item.pubDate || null" in engine
+    assert "severity:    'not_assessed'" in engine
+    assert "cvssScore:   null" in engine
+    assert "isExploited: false" in engine
+    assert "isCritical:  false" in engine
+    assert "isBreaking:  false" in engine
+    assert "SEVERITY_KEYWORDS" not in engine
+    assert "function detectSeverity" not in engine
+    assert "function extractCVSS" not in engine
+    assert "48 hours of NVD publication" not in engine
+    assert "current dark web signals" not in engine
+
+
+def test_browser_intel_external_links_require_absolute_credential_free_https():
+    engine = Path("auto-intel-engine.js").read_text(encoding="utf-8")
+    assert "new URL(String(value || '').trim())" in engine
+    assert "u.protocol !== 'https:' || u.username || u.password" in engine
+    assert "new URL(String(value || ''), window.location.origin)" not in engine
+
+
+def test_browser_intel_missing_or_invalid_time_is_not_presented_as_fresh():
+    engine = Path("auto-intel-engine.js").read_text(encoding="utf-8")
+    assert "if (!dateStr) return 'Timestamp unavailable'" in engine
+    assert "Number.isNaN(d.getTime())" in engine
+    assert "return 'Recent'" not in engine
+
+
+def test_browser_intel_source_label_is_html_escaped():
+    engine = Path("auto-intel-engine.js").read_text(encoding="utf-8")
+    assert 'source-chip\">${escHTML(item.source)}' in engine
+    assert 'source-chip\">${item.source}' not in engine
