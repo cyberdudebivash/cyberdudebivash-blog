@@ -166,3 +166,11 @@ def test_soc_commandbar_has_no_dead_root_routes():
         assert 'href="/api-dashboard.html" data-soc-action="detect"' in html
         assert 'href="/api-dashboard.html" data-soc-action="watch"' in html
         assert 'href="/api.html" data-soc-action="export"' in html
+
+
+def test_evidence_inspector_source_links_are_absolute_https_only():
+    drawer = Path("soc-evidence-drawer.js").read_text(encoding="utf-8")
+    assert "new URL(String(raw || '').trim())" in drawer
+    assert "new URL(String(raw || ''), window.location.origin)" not in drawer
+    assert "u.protocol !== 'https:' || u.username || u.password" in drawer
+    assert "noopener noreferrer" in drawer
