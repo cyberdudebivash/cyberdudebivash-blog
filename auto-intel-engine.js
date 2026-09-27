@@ -346,19 +346,6 @@
     try { return new URL(url).hostname.replace('www.',''); } catch(e) { return 'SENTINEL'; }
   }
 
-  function calculateRiskScore(item) {
-    var score = 0;
-    if (item.severity === 'critical') score += 40;
-    else if (item.severity === 'high') score += 25;
-    else if (item.severity === 'medium') score += 10;
-    if (item.isExploited) score += 30;
-    if (item.isCritical) score += 15;
-    if (item.cvssScore && parseFloat(item.cvssScore) >= 9) score += 20;
-    if (item.cveIds.length) score += item.cveIds.length * 5;
-    if (item.threatActor) score += 15;
-    return Math.min(score, 100);
-  }
-
   /* ══════════════════════════════════════════════════════════════════
      § 6b. POST ENRICHMENT BLOCKS — Analyst Note / Actions / CTA / Trust
   ══════════════════════════════════════════════════════════════════ */
