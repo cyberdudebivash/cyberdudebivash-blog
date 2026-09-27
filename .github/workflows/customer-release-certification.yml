@@ -66,6 +66,19 @@ jobs:
               core.setFailed('Customer release HOLD — unresolved P0 incidents: ' + open.join(' | '));
             }
 
+      - name: "Require authoritative post-cutover Blogger theme evidence"
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s blogger-theme/production-current.xml || {
+            echo "::error title=Missing production theme evidence::Export the actual post-cutover live Blogger theme as blogger-theme/production-current.xml."
+            exit 1
+          }
+          test -s blogger-theme/production-current.sha256 || {
+            echo "::error title=Missing production theme checksum::Commit the SHA-256 for the actual post-cutover live Blogger theme."
+            exit 1
+          }
+
       - name: "Certify authoritative Blogger theme baseline"
         run: |
           python scripts/certify_blogger_theme_baseline.py --json
