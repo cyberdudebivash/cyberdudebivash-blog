@@ -125,7 +125,7 @@ jobs:
       - name: "Cloudflare runtime and security headers"
         run: |
           node scripts/check-cloudflare-runtime.js
-          node --test workers/lib/security-headers.test.js scripts/check-cloudflare-runtime.test.js
+          node --test workers/lib/security-headers.test.js scripts/check-cloudflare-runtime.test.js scripts/build-cloudflare-assets.test.js workers/lib/route-table.test.js workers/lib/router.test.js
 
       - name: "📋 Audit Summary"
         if: always()
