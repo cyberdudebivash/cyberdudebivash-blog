@@ -1,7 +1,7 @@
 ﻿/**
  * CYBERDUDEBIVASH SENTINEL APEX — Universal Monetization Engine v1.0
  * Injects: Sticky CTA Bar, Exit Intent Popup, Scroll CTAs, Evidence-safe Conversion UX,
- *          Urgency Triggers, Lead Capture, Paywall Gates, Affiliate Triggers
+ *          Evidence-Bound CTAs, Lead Capture, Paywall Gates, Affiliate Triggers
  * Deploy: <script src="/monetization.js" defer></script> on every page
  */
 (function () {
@@ -317,35 +317,12 @@
     });
   }
 
-  // ─── 6. URGENCY COUNTER (posts) ──────────────────────────────────────────
+  // ─── 6. EVIDENCE-SAFE URGENCY POLICY ────────────────────────────────────
   function buildUrgencyCounter() {
-    const isPost = window.location.pathname.includes('/posts/');
-    if (!isPost) return;
-
-    injectStyle(`
-      #apex-urgency { background:rgba(255,68,68,.07);border:1px solid rgba(255,68,68,.2);
-        border-radius:6px;padding:10px 16px;margin:20px 0;font-family:'Segoe UI',sans-serif;
-        font-size:12px;color:#c9d1d9;display:flex;align-items:center;gap:12px; }
-      #apex-urgency .dot { width:8px;height:8px;border-radius:50%;background:#ff4444;
-        flex-shrink:0;animation:apex-pulse 1.5s infinite; }
-      #apex-urgency strong { color:#ff6b6b; }
-    `);
-
-    // Find first h2 after article start
-    const h2s = $$('h2');
-    if (!h2s.length) return;
-
-    // Random active viewers between 24-89
-    const viewers = Math.floor(Math.random() * 65) + 24;
-    const urgency = document.createElement('div');
-    urgency.id = 'apex-urgency';
-    urgency.innerHTML = `
-      <div class="dot"></div>
-      <span><strong>${viewers} security professionals</strong> are viewing this report right now &mdash;
-      <strong>CVE is actively exploited</strong> &mdash;
-      <a href="${CFG.pricingUrl}" style="color:#00ffe0;text-decoration:none;font-weight:700;">Get instant alerts →</a></span>`;
-
-    h2s[0].before(urgency);
+    // Disabled: synthetic viewer counts and blanket exploitation assertions
+    // are not acceptable commercial trust signals. Urgency must originate
+    // from evidence bound to the individual intelligence record.
+    return;
   }
 
   // ─── 7. AFFILIATE CTAs ────────────────────────────────────────────────────
@@ -419,7 +396,7 @@
     widget.className = 'apex-lead-widget';
     widget.innerHTML = `
       <h3>📧 Free Intel Alerts</h3>
-      <p>Get zero-day alerts, CVE reports, and IOC bundles before public disclosure.</p>
+      <p>Get source-linked threat intelligence updates, CVE reports, and available IOC/detection content.</p>
       <form action="${CFG.formsubmit}" method="POST">
         <input class="apex-lead-input" type="email" name="email" placeholder="soc@yourcompany.com" required>
         <input type="hidden" name="_subject" value="Sidebar Newsletter Signup">
