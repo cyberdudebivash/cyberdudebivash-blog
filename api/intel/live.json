@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-27T10:47:48.221Z",
+  "generated": "2026-09-27T12:21:08.732Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,10 +7,10 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 5451,
+  "total_published": 5452,
   "s2n_stats": {
     "passed": 100,
-    "suppressed": 6,
+    "suppressed": 5,
     "avg_qs": 0.494
   },
   "items": [
@@ -275,6 +275,49 @@
       }
     },
     {
+      "id": "CVE-2026-86439",
+      "title": "Knowns Unrestricted Path Traversal leading to out-of-bounds arbitrary .md file read, write, and deletion in MCP Docs + M",
+      "description": "Overview\n\nVerified. Multiple Unrestricted Path Traversal vulnerabilities exist in the Knowns MCP docs and memory tools, allowing arbitrary file read, write, and deletion operations outside the project sandbox. The storage layer functions (Get, Create, Update, Rename, Delete) in b... [Full analysis a",
+      "cvss": 8.8,
+      "final_ps": 47,
+      "quality_score": 0.478,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-25",
+      "last_seen": "2026-09-25",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-86439"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-9gfj-28hw-jchp"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=1d (score=0.85)",
+          "QS=0.478"
+        ],
+        "priority": [
+          "base_ps=47 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
       "id": "CVE-2026-58644",
       "title": "CISA Adds Exploited SharePoint RCE Zero-Day CVE-2026-58644 to KEV",
       "description": "",
@@ -402,49 +445,6 @@
           "+12 PoC_available",
           "+8 exploited_in_wild",
           "+7 zero_day"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-57443",
-      "title": "SCBE-AETHERMOORE Unauthenticated AetherBrowser Ops API Exposes Operator Email Digests",
-      "description": "Summary\n\nThe AetherBrowser API server (scripts/aetherbrowser/api_server.py) exposes the POST /api/ops/check-email endpoint without any authentication. Any remote attacker can call this endpoint and trigger execution of the email_reader.py subprocess, which connects to configured ... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 44,
-      "quality_score": 0.478,
-      "threat_level": "LOW",
-      "type": "AI_SECURITY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-25",
-      "last_seen": "2026-09-25",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-57443"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-q986-4x7x-gx39"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=1d (score=0.85)",
-          "QS=0.478"
-        ],
-        "priority": [
-          "base_ps=44 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4352,10 +4352,10 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-86439",
-      "title": "Knowns Unrestricted Path Traversal leading to out-of-bounds arbitrary .md file read, write, and deletion in MCP Docs + M",
-      "description": "Overview\n\nVerified. Multiple Unrestricted Path Traversal vulnerabilities exist in the Knowns MCP docs and memory tools, allowing arbitrary file read, write, and deletion operations outside the project sandbox. The storage layer functions (Get, Create, Update, Rename, Delete) in b... [Full analysis a",
-      "cvss": 8.8,
+      "id": "CVE-2026-61825",
+      "title": "code16/sharp has a stored XSS via data-html-content Sanitizer Bypass",
+      "description": "Impact\nThe vulnerability allows an attacker to bypass the HTML sanitizer by using the data-html-content attribute in the content of a SharpEditorFormField.\n\nPatches\nThe field must now explicitly configure SharpFormEditorField::RAW_HTML in the toolbar to keep this behavior. When u... [Full analysis a",
+      "cvss": 8.7,
       "final_ps": 18,
       "quality_score": 0.438,
       "threat_level": "MEDIUM",
@@ -4374,11 +4374,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-86439"
+        "CVE-2026-61825"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-9gfj-28hw-jchp"
+        "https://github.com/advisories/GHSA-vj3q-vp3g-j9c8"
       ],
       "explanation": {
         "quality": [

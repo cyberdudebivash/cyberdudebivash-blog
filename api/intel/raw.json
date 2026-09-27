@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-27T10:47:48.221Z",
+  "generated": "2026-09-27T12:21:08.732Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -8,7 +8,7 @@
   "endpoint": "/api/intel/raw.json",
   "description": "Raw unfiltered S2N feed — all items including suppressed. Enterprise tier.",
   "note": "Access requires Enterprise API key. Includes suppression_reason and full IOC data.",
-  "count": 106,
+  "count": 105,
   "items": [
     {
       "id": "SENTINELAPEX-081ea8a0a518",
@@ -43,51 +43,6 @@
           "data_confidence=0.35",
           "recency=0d (score=1.00)",
           "QS=0.452"
-        ],
-        "priority": [
-          "+8 exploited_in_wild",
-          "+7 zero_day"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
-      "iocs": []
-    },
-    {
-      "id": "THEHACKERNEWS-41c656f86bde4b6d",
-      "title": "Warning: Two Unpatched Citrix NetScaler RCE Zero-Days Under Active Exploitation",
-      "description": "Two new unpatched zero-day vulnerabilities in Citrix NetScaler ADC and NetScaler Gateway appliances that allow remote code execution are being actively exploited in the wild, security firm watchTowr said on September 26. Citrix has not confirmed the flaws or published a fix. Some administrators say ",
-      "cvss": 0,
-      "final_ps": 57,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "ZERO_DAY",
-      "source": "thehackernews",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "thehackernews"
-      ],
-      "first_seen": "2026-09-27",
-      "last_seen": "2026-09-27",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "The Hacker News",
-      "product": "Threat Intelligence",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://thehackernews.com/2026/09/warning-two-unpatched-citrix-netscaler.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.55 (thehackernews)",
-          "data_confidence=0.65",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
         ],
         "priority": [
           "+8 exploited_in_wild",
@@ -377,6 +332,52 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-86439",
+      "title": "Knowns Unrestricted Path Traversal leading to out-of-bounds arbitrary .md file read, write, and deletion in MCP Docs + M",
+      "description": "Overview\n\nVerified. Multiple Unrestricted Path Traversal vulnerabilities exist in the Knowns MCP docs and memory tools, allowing arbitrary file read, write, and deletion operations outside the project sandbox. The storage layer functions (Get, Create, Update, Rename, Delete) in b... [Full analysis a",
+      "cvss": 8.8,
+      "final_ps": 47,
+      "quality_score": 0.478,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-25",
+      "last_seen": "2026-09-25",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-86439"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-9gfj-28hw-jchp"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=1d (score=0.85)",
+          "QS=0.478"
+        ],
+        "priority": [
+          "base_ps=47 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
       "id": "CVE-2026-58644",
       "title": "CISA Adds Exploited SharePoint RCE Zero-Day CVE-2026-58644 to KEV",
       "description": "",
@@ -510,52 +511,6 @@
           "+12 PoC_available",
           "+8 exploited_in_wild",
           "+7 zero_day"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-57443",
-      "title": "SCBE-AETHERMOORE Unauthenticated AetherBrowser Ops API Exposes Operator Email Digests",
-      "description": "Summary\n\nThe AetherBrowser API server (scripts/aetherbrowser/api_server.py) exposes the POST /api/ops/check-email endpoint without any authentication. Any remote attacker can call this endpoint and trigger execution of the email_reader.py subprocess, which connects to configured ... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 44,
-      "quality_score": 0.478,
-      "threat_level": "LOW",
-      "type": "AI_SECURITY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-25",
-      "last_seen": "2026-09-25",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-57443"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-q986-4x7x-gx39"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=1d (score=0.85)",
-          "QS=0.478"
-        ],
-        "priority": [
-          "base_ps=44 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4679,52 +4634,6 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-86439",
-      "title": "Knowns Unrestricted Path Traversal leading to out-of-bounds arbitrary .md file read, write, and deletion in MCP Docs + M",
-      "description": "",
-      "cvss": 8.8,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-25",
-      "last_seen": "2026-09-25",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-86439"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-9gfj-28hw-jchp"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
       "id": "CVE-2026-61825",
       "title": "code16/sharp has a stored XSS via data-html-content Sanitizer Bypass",
       "description": "",
@@ -4752,6 +4661,52 @@
       "ioc_count": 0,
       "refs": [
         "https://github.com/advisories/GHSA-vj3q-vp3g-j9c8"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-100368",
+      "title": "CliInvoke.Specializations has command injection in PowerShell and Cmd shell wrappers",
+      "description": "",
+      "cvss": 8.4,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-25",
+      "last_seen": "2026-09-25",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-100368"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-wrvw-254r-wpmv"
       ],
       "explanation": {
         "quality": [
@@ -4817,14 +4772,14 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-100368",
-      "title": "CliInvoke.Specializations has command injection in PowerShell and Cmd shell wrappers",
+      "id": "CVE-2026-57443",
+      "title": "SCBE-AETHERMOORE Unauthenticated AetherBrowser Ops API Exposes Operator Email Digests",
       "description": "",
-      "cvss": 8.4,
+      "cvss": 7.5,
       "final_ps": 18,
       "quality_score": 0.438,
       "threat_level": "LOW",
-      "type": "NEWS_REPORT",
+      "type": "AI_SECURITY",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
@@ -4839,11 +4794,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-100368"
+        "CVE-2026-57443"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-wrvw-254r-wpmv"
+        "https://github.com/advisories/GHSA-q986-4x7x-gx39"
       ],
       "explanation": {
         "quality": [
