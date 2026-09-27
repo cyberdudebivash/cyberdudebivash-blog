@@ -69,6 +69,8 @@ BLOCKED_PUBLIC_PATTERNS: tuple[tuple[str, str, str], ...] = (
     ("soc2_type2_claim", r"SOC\s*2\s*Type\s*II", "SOC 2 Type II wording requires audit evidence."),
     ("indicator_count_claim", r"Real-time\s+Indicators\s*:\s*142,890\+", "Unproven real-time indicator count is public."),
     ("board_sla_claim", r"Board\s+SLA\s+Compliance\s+99\.4%", "Unproven board SLA metric is public."),
+    ("global_threat_level_claim", r"Global\s+Threat\s+Level\s+88\.4", "Unproven global threat-level metric is public."),
+    ("cyber_insurance_score_claim", r"Cyber\s+Insurance\s+Score\s+94/100", "Unproven cyber-insurance score is public."),
 )
 
 _CUSTOM_DOMAIN = "https://cti.cyberdudebivash.in/"
