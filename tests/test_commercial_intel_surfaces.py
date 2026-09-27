@@ -232,3 +232,17 @@ def test_hybrid_workspace_clears_hidden_selection_and_exposes_state_accessibly()
     assert "No visible intelligence record selected." in controller
     assert "Runtime state " in controller
     assert "Evidence contract state " in controller
+
+
+def test_pro_console_exposes_evidence_safe_analyst_context():
+    controller = Path("soc-hybrid-workspace.js").read_text(encoding="utf-8")
+    for token in ["data-case-record","data-case-position","data-case-runtime","data-case-evidence"]:
+        assert token in controller
+    for path in SURFACES:
+        html = path.read_text(encoding="utf-8-sig")
+        assert 'class="soc-pro-rail"' in html
+        assert "Case persistence" in html
+        assert "NOT CONFIGURED" in html
+        assert "SOC 2-aligned evidence model" in html
+        assert "SOC 2 certified" not in html
+        assert "SOC 2 Type II certified" not in html
