@@ -138,3 +138,18 @@ def test_browser_intel_source_label_is_html_escaped():
     engine = Path("auto-intel-engine.js").read_text(encoding="utf-8")
     assert 'source-chip\">${escHTML(item.source)}' in engine
     assert 'source-chip\">${item.source}' not in engine
+
+
+def test_priority_triage_is_feed_scoped_async_aware_and_accessible():
+    triage = Path("soc-triage-workspace.js").read_text(encoding="utf-8")
+    assert "feed.querySelectorAll('.intel-post')" in triage
+    assert "document.querySelectorAll('.intel-post')" not in triage
+    assert "new MutationObserver" in triage
+    assert ".observe(feed,{childList:true,subtree:true})" in triage
+    assert "x.severity===sev" in triage
+    for path in SURFACES:
+        html = path.read_text(encoding="utf-8-sig")
+        assert 'data-triage-feed="#intel-feed"' in html
+        assert 'aria-live="polite"' in html
+        assert '>All severities</option>' in html
+        assert '>All evidence states</option>' not in html
