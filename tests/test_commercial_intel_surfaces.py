@@ -47,6 +47,12 @@ def main():
             failures.append(f"{ENGINE}: fail-closed triage regression: {forbidden_pattern}")
     if "No evidence-matched intelligence is currently available for this workspace" not in engine:
         failures.append(f"{ENGINE}: category-specific empty state must fail closed")
+    for forbidden_engine_claim in ["Unlock with SOC Pro — $18/mo", "48 hours before NVD", "800+ YARA rules", "data-risk=\"\${item.riskScore}\""]:
+        if forbidden_engine_claim.lower() in engine.lower():
+            failures.append(f"{ENGINE}: legacy commercial/inference claim remains: {forbidden_engine_claim}")
+    for required_guard in ["ATT&CK mappings require canonical behavioral evidence from ReportX", "Attribution requires source-bound canonical claims", "safeExternalUrl", 'rel="noopener noreferrer"']:
+        if required_guard not in engine:
+            failures.append(f"{ENGINE}: missing evidence/security guard: {required_guard}")
     if "riskScore:   null" not in engine:
         failures.append(f"{ENGINE}: heuristic numeric risk scoring must remain disabled")
     for required in ["soc-runtime-state", "soc-critical", "soc-exploited", "soc-reports"]:
