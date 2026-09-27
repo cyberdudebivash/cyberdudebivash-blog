@@ -197,3 +197,15 @@ def test_ai_security_static_taxonomy_is_not_asserted_as_live_risk_telemetry():
     assert "ANALYSIS CATEGORY" in html
     assert "⚠ Active AI Risks" not in html
     assert '<span class="risk-level risk-critical">CRITICAL</span>' not in html
+
+
+def test_hybrid_workspace_fails_closed_without_canonical_report_id():
+    controller = Path("soc-hybrid-workspace.js").read_text(encoding="utf-8")
+    assert "data-report-id" in controller
+    assert "data-requires-report-id" in controller
+    assert "Browser-derived record · canonical evidence ID unavailable" in controller
+    assert "title" not in controller.split("function reportId(card)",1)[1].split("}",1)[0].lower()
+    for path in SURFACES:
+        html = path.read_text(encoding="utf-8-sig")
+        assert "data-requires-report-id" in html
+        assert "Canonical evidence requires a ReportX report ID." in html
