@@ -189,4 +189,27 @@ describe('ReportXBundle -- real integration with the existing, unmodified Produc
     expect(product.modules.overview.content.name).toBe('Qilin');
     expect(product.modules.overview.content.aliases).toEqual(['Agenda']);
   });
+  test('SOC evidence contract preserves canonical epistemic state without recomputation', () => {
+    const bundle = loadReportXBundleFromFile(FIXTURE_PATH);
+    const contract = bundle.toSocEvidenceContract();
+    const raw = require(FIXTURE_PATH);
+    expect(contract.schema).toBe('cdb.soc-evidence.v1');
+    expect(contract.report_id).toBe(raw.bundle.report_id);
+    expect(contract.claims).toEqual(raw.bundle.claims.map(c => ({
+      claim_id: c.claim_id,
+      claim_type: c.claim_type,
+      text: c.text,
+      status: c.status,
+      confidence: c.confidence,
+      corroboration_state: c.corroboration_state,
+      source_independence: Boolean(c.source_independence),
+      observed_vs_context: c.observed_vs_context,
+      temporal_scope: c.temporal_scope || null,
+      applicability: c.applicability || '',
+      contradictions: c.contradictions || [],
+      evidence_refs: c.evidence_refs || [],
+      source_refs: c.source_refs || [],
+    })));
+    expect(contract.sources.every(s => Object.prototype.hasOwnProperty.call(s, 'content_sha256'))).toBe(true);
+  });
 });
