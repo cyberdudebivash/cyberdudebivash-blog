@@ -299,3 +299,25 @@ def test_commercial_runtime_has_no_synthetic_customer_activity_toasts():
         assert forbidden not in monetization
     assert "Synthetic purchase/subscription activity is intentionally disabled." in monetization
     assert "synthetic viewer counts and blanket exploitation assertions" in monetization
+
+
+def test_analyst_context_rail_tracks_runtime_and_selection_outside_workspace_root():
+    engine = Path("auto-intel-engine.js").read_text(encoding="utf-8")
+    controller = Path("soc-hybrid-workspace.js").read_text(encoding="utf-8")
+    assert "cdb:soc-runtime-state" in engine
+    for token in [
+        "all(document,'[data-case-record]'",
+        "all(document,'[data-case-position]'",
+        "all(document,'[data-case-runtime]'",
+        "all(document,'[data-case-evidence]'",
+    ]:
+        assert token in controller
+
+
+def test_dashboard_api_normalizes_multi_reference_urls_and_malware_scope():
+    api = Path("api/v1/intel.js").read_text(encoding="utf-8")
+    dashboard = api.split("function publicDashboardItems", 1)[1].split("/* ─── Main Router", 1)[0]
+    assert ".flatMap(ref => String(ref || '').split(/\\s*;\\s*/))" in dashboard
+    assert "explicitRansomwareRecord" in dashboard
+    assert "cveLinkedRansomware" in dashboard
+    assert "return explicitMalware || explicitRansomwareRecord || cveLinkedRansomware" in dashboard
