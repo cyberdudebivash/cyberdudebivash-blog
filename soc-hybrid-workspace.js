@@ -11,11 +11,11 @@ function severity(card){var e=card.querySelector('.severity-chip');return e?Stri
 function ensureSelect(card){
  if(card.querySelector('.soc-record-select'))return;
  var row=card.querySelector('.post-meta-row');if(!row)return;
- var b=document.createElement('button');b.type='button';b.className='soc-record-select';b.textContent='Select for analysis';b.setAttribute('aria-label','Select intelligence record for SOC analysis');
+ var b=document.createElement('button');b.type='button';b.className='soc-record-select';b.textContent='Select for analysis';b.setAttribute('aria-label','Select intelligence record for SOC analysis');b.setAttribute('aria-pressed','false');
  b.addEventListener('click',function(){selectCard(card);});row.appendChild(b);
 }
 function selectCard(card){
- if(selected)selected.classList.remove('soc-selected-record');selected=card;card.classList.add('soc-selected-record');
+ if(selected){selected.classList.remove('soc-selected-record');var prev=selected.querySelector('.soc-record-select');if(prev)prev.setAttribute('aria-pressed','false');}selected=card;card.classList.add('soc-selected-record');var active=card.querySelector('.soc-record-select');if(active)active.setAttribute('aria-pressed','true');
  var title=card.querySelector('.post-title');var root=document.querySelector('.soc-workspace');if(!root)return;
  txt(root,'[data-selected-record]',title?title.textContent.trim():'Selected intelligence record');all(root,'[data-case-record]',title?title.textContent.trim():'Selected intelligence record');all(root,'[data-case-position]',position(card,cards(root)));all(root,'[data-case-evidence]',reportId(card)?'ELIGIBLE':'UNAVAILABLE');
  setSelectionActions(root,card);
@@ -23,7 +23,7 @@ function selectCard(card){
 }
 function update(root){
  var list=cards(root);list.forEach(ensureSelect);
- if(selected && (selected.hidden || selected.style.display==='none' || !document.documentElement.contains(selected))){selected.classList.remove('soc-selected-record');selected=null;txt(root,'[data-selected-record]','No visible intelligence record selected.');all(root,'[data-case-record]','No record selected');all(root,'[data-case-position]','—');all(root,'[data-case-evidence]','UNAVAILABLE');setSelectionActions(root,null);}
+ if(selected && (selected.hidden || selected.style.display==='none' || !document.documentElement.contains(selected))){selected.classList.remove('soc-selected-record');var active=selected.querySelector('.soc-record-select');if(active)active.setAttribute('aria-pressed','false');selected=null;txt(root,'[data-selected-record]','No visible intelligence record selected.');all(root,'[data-case-record]','No record selected');all(root,'[data-case-position]','—');all(root,'[data-case-evidence]','UNAVAILABLE');setSelectionActions(root,null);}
  var critical=list.filter(function(c){return severity(c)==='CRITICAL';}).length;
  var high=list.filter(function(c){return severity(c)==='HIGH';}).length;
  var exploited=list.filter(function(c){return !!c.querySelector('.badge-exploit');}).length;
