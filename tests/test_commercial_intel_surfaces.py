@@ -80,6 +80,21 @@ def test_enterprise_soc_command_center_contract():
         assert 'updated every 10 minutes from global threat feeds' not in html.lower()
         assert 'Unlock SOC Pro — $18/mo' not in html
 
+def test_evidence_inspector_governance_contract():
+    drawer = (ROOT / "soc-evidence-drawer.js").read_text(encoding="utf-8")
+    for required in [
+        "Not human reviewed",
+        "Test-only review fixture — not production review",
+        "Human review: APPROVE",
+        "Human review: REJECT",
+        "Human review: REQUEST_CHANGES",
+        "u.protocol !== 'https:'",
+        "u.username || u.password",
+        "noopener noreferrer",
+    ]:
+        assert required in drawer
+    assert "review.decision || review.status || 'Recorded'" not in drawer
+
 def test_priority_intelligence_triage_workspace_contract():
     for path in SURFACES:
         html = path.read_text(encoding="utf-8-sig")
