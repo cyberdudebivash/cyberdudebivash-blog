@@ -208,6 +208,7 @@
       isBreaking:  false,
       riskScore:   null,
       postContext: detectPostContext(((item && item.title) || '') + ' ' + ((item && item.description) || '')),
+      recordId:    item && item.id || null,
       reportId:    item && item.report_id || null,
       reportUrl:   item && item.report_url || null
     };
@@ -403,7 +404,9 @@
     var breakingBadge = item.isBreaking ? '<span class="badge badge-breaking">⚡ BREAKING</span>' : '';
 
     var reportAttr = item.reportId ? ' data-report-id="' + escHTML(item.reportId) + '"' : '';
-    return `<article class="intel-post" data-severity="${item.severity}"${reportAttr}>
+    var recordAttr = item.recordId ? ' data-record-id="' + escHTML(item.recordId) + '"' : '';
+    var reportUrlAttr = item.reportUrl ? ' data-report-url="' + escHTML(item.reportUrl) + '"' : '';
+    return `<article class="intel-post" data-severity="${item.severity}"${recordAttr}${reportAttr}${reportUrlAttr}>
   <div class="post-header" style="border-left:4px solid ${sc};background:${sb}">
     <div class="post-meta-row">
       <span class="severity-chip" style="background:${sc};color:#000">${item.severity.toUpperCase()}</span>
