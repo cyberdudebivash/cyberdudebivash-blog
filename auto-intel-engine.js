@@ -168,6 +168,51 @@
       .catch(function(e) { callback(e, []); });
   }
 
+  function fetchDashboardFeed(section, callback) {
+    var url = '/api/v1/intel?action=dashboard&section=' + encodeURIComponent(section || 'intel') + '&limit=25';
+    fetch(url, {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' },
+      cache: 'no-store'
+    })
+      .then(function(r) {
+        if (!r.ok) throw new Error('dashboard_http_' + r.status);
+        return r.json();
+      })
+      .then(function(d) {
+        if (!d || d.success !== true || !d.data || !Array.isArray(d.data.items)) {
+          throw new Error('dashboard_contract_invalid');
+        }
+        callback(null, d.data);
+      })
+      .catch(function(err) { callback(err, null); });
+  }
+
+  function normalizeDashboardItem(item) {
+    var severity = String(item && item.severity || 'NOT_ASSESSED').toLowerCase();
+    if (!/^(critical|high|medium|low)$/.test(severity)) severity = 'not_assessed';
+    return {
+      title:       item && item.title || 'Untitled intelligence record',
+      link:        item && (item.source_url || item.report_url) || '#',
+      pubDate:     item && item.published || null,
+      source:      item && item.source || 'sentinel_apex',
+      rawContent:  item && item.description || '',
+      severity:    severity,
+      cveIds:      item && Array.isArray(item.cves) ? item.cves.slice(0, 5) : [],
+      mitreMap:    [],
+      threatActor: null,
+      cvssScore:   item && Number.isFinite(Number(item.cvss)) ? Number(item.cvss) : null,
+      tags:        [],
+      isExploited: !!(item && item.exploited),
+      isCritical:  severity === 'critical',
+      isBreaking:  false,
+      riskScore:   null,
+      postContext: detectPostContext(((item && item.title) || '') + ' ' + ((item && item.description) || '')),
+      reportId:    item && item.report_id || null,
+      reportUrl:   item && item.report_url || null
+    };
+  }
+
   function fetchNVDRecent(callback) {
     var cached = cacheGet('nvd_recent');
     if (cached) { callback(null, cached); return; }
@@ -357,7 +402,8 @@
     var exploitBadge = item.isExploited ? '<span class="badge badge-exploit">● ACTIVELY EXPLOITED</span>' : '';
     var breakingBadge = item.isBreaking ? '<span class="badge badge-breaking">⚡ BREAKING</span>' : '';
 
-    return `<article class="intel-post" data-severity="${item.severity}">
+    var reportAttr = item.reportId ? ' data-report-id="' + escHTML(item.reportId) + '"' : '';
+    return `<article class="intel-post" data-severity="${item.severity}"${reportAttr}>
   <div class="post-header" style="border-left:4px solid ${sc};background:${sb}">
     <div class="post-meta-row">
       <span class="severity-chip" style="background:${sc};color:#000">${item.severity.toUpperCase()}</span>
@@ -458,12 +504,13 @@
     return times.length ? Math.max.apply(Math, times) : 0;
   }
 
-  function updateRuntimeState(items) {
-    var newest = newestTimestamp(items);
+  function updateRuntimeState(items, generatedAt) {
+    var generated = generatedAt ? new Date(generatedAt).getTime() : 0;
+    var newest = Number.isFinite(generated) && generated > 0 ? generated : newestTimestamp(items);
     if (!newest) return setRuntimeState('DEGRADED', 'Freshness timestamp unavailable');
     var ageMinutes = Math.max(0, Math.floor((Date.now() - newest) / 60000));
-    if (ageMinutes <= 240) return setRuntimeState('LIVE', 'Newest verified record ' + ageMinutes + 'm old');
-    setRuntimeState('STALE', 'Newest verified record ' + ageMinutes + 'm old');
+    if (ageMinutes <= 240) return setRuntimeState('LIVE', 'First-party feed verified ' + ageMinutes + 'm ago');
+    setRuntimeState('STALE', 'First-party feed last generated ' + ageMinutes + 'm ago');
   }
 
   function updateLiveCounts(items) {
@@ -733,15 +780,23 @@
   function loadSection(section) {
     var containerId = 'intel-feed';
     injectStyles();
-    aggregateFeeds(section, function(items) {
-      var enriched = items.map(enrichItem)
-        ;
+    setRuntimeState('VERIFYING', 'Checking first-party dashboard intelligence');
+    fetchDashboardFeed(section, function(err, payload) {
+      if (err || !payload) {
+        setRuntimeState('UNAVAILABLE', 'First-party dashboard feed unavailable; no synthetic fallback substituted');
+        updateLiveCounts([]);
+        var container = document.getElementById(containerId);
+        if (container) container.innerHTML = '<div class="intel-empty"><span>⚠</span><p>First-party intelligence is temporarily unavailable. The dashboard will retry automatically; no third-party or synthetic records are substituted.</p></div>';
+        setTimeout(function(){ loadSection(section); }, Math.min(CFG.REFRESH_MS, 120000));
+        return;
+      }
 
+      var enriched = payload.items.map(normalizeDashboardItem);
       publishToSection(containerId, enriched, { section: section, limit: 25 });
+      updateRuntimeState(enriched, payload.generated_at);
       updateTicker(enriched);
       renderCISAKEV('kev-live-list');
 
-      // Re-run every REFRESH_MS
       setTimeout(function(){ loadSection(section); }, CFG.REFRESH_MS);
     });
   }
