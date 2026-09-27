@@ -47,7 +47,7 @@ def main():
             failures.append(f"{ENGINE}: fail-closed triage regression: {forbidden_pattern}")
     if "No evidence-matched intelligence is currently available for this workspace" not in engine:
         failures.append(f"{ENGINE}: category-specific empty state must fail closed")
-    for forbidden_engine_claim in ["Unlock with SOC Pro — $18/mo", "48 hours before NVD", "800+ YARA rules", "data-risk=\"\${item.riskScore}\""]:
+    for forbidden_engine_claim in ["Unlock with SOC Pro — $18/mo", "48 hours before NVD", "800+ YARA rules", r'data-risk="${item.riskScore}"']:
         if forbidden_engine_claim.lower() in engine.lower():
             failures.append(f"{ENGINE}: legacy commercial/inference claim remains: {forbidden_engine_claim}")
     for required_guard in ["ATT&CK mappings require canonical behavioral evidence from ReportX", "Attribution requires source-bound canonical claims", "safeExternalUrl", 'rel="noopener noreferrer"']:
@@ -81,7 +81,7 @@ def test_enterprise_soc_command_center_contract():
         assert 'Unlock SOC Pro — $18/mo' not in html
 
 def test_evidence_inspector_governance_contract():
-    drawer = (ROOT / "soc-evidence-drawer.js").read_text(encoding="utf-8")
+    drawer = Path("soc-evidence-drawer.js").read_text(encoding="utf-8")
     for required in [
         "Not human reviewed",
         "Test-only review fixture — not production review",
