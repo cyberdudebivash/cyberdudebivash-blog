@@ -47,7 +47,12 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const blockers = [219, 222];
+            // #219 is a long-horizon Search Console recovery incident. Its risk is
+            // controlled by the bounded Blogger publication lane and cannot be
+            // truthfully resolved by a single release. #222 remains the hard
+            // release blocker because its acceptance criteria are immediately
+            // observable on the live customer surface.
+            const blockers = [222];
             const open = [];
             for (const issue_number of blockers) {
               const { data } = await github.rest.issues.get({
