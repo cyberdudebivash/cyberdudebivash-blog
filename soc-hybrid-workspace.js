@@ -9,7 +9,7 @@ function severity(card){var e=card.querySelector('.severity-chip');return e?Stri
 function ensureSelect(card){
  if(card.querySelector('.soc-record-select'))return;
  var row=card.querySelector('.post-meta-row');if(!row)return;
- var b=document.createElement('button');b.type='button';b.className='soc-record-select';b.textContent='Select for analysis';
+ var b=document.createElement('button');b.type='button';b.className='soc-record-select';b.textContent='Select for analysis';b.setAttribute('aria-label','Select intelligence record for SOC analysis');
  b.addEventListener('click',function(){selectCard(card);});row.appendChild(b);
 }
 function selectCard(card){
@@ -26,7 +26,7 @@ function update(root){
  var exploited=list.filter(function(c){return !!c.querySelector('.badge-exploit');}).length;
  txt(root,'[data-ws-visible]',list.filter(function(c){return !c.hidden;}).length);
  txt(root,'[data-ws-critical]',critical);txt(root,'[data-ws-high]',high);txt(root,'[data-ws-exploited]',exploited);
- var state=document.getElementById('soc-runtime-state');txt(root,'[data-ws-runtime]',state?state.textContent:'VERIFYING');
+ var state=document.getElementById('soc-runtime-state');var runtime=state?state.textContent:'VERIFYING';txt(root,'[data-ws-runtime]',runtime);var rt=root.querySelector('[data-ws-runtime]');if(rt)rt.setAttribute('data-state',runtime);
 }
 function bindEvidence(root){
  var drawer=document.getElementById('soc-evidence-drawer');if(!drawer)return;
