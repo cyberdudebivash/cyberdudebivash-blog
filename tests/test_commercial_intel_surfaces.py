@@ -174,3 +174,26 @@ def test_evidence_inspector_source_links_are_absolute_https_only():
     assert "new URL(String(raw || ''), window.location.origin)" not in drawer
     assert "u.protocol !== 'https:' || u.username || u.password" in drawer
     assert "noopener noreferrer" in drawer
+
+
+def test_hybrid_soc_cti_workspace_v2_is_runtime_and_evidence_bound():
+    controller = Path("soc-hybrid-workspace.js").read_text(encoding="utf-8")
+    css = Path("soc-cti-console.css").read_text(encoding="utf-8")
+    for path in SURFACES:
+        html = path.read_text(encoding="utf-8-sig")
+        assert 'class="soc-workspace"' in html
+        assert 'data-workspace-feed="#intel-feed"' in html
+        assert 'Runtime-derived · no synthetic telemetry' in html
+        assert 'ReportX-bound only' in html
+        assert '/soc-hybrid-workspace.js' in html
+        assert 'data-requires-selection' in html
+    for required in ["data-ws-runtime","data-ws-visible","data-ws-critical","data-ws-exploited","data-ws-evidence","data-ws-claims","data-ws-confirmed","cdb:soc-record-selected"]:
+        assert required in controller
+    assert "soc-selected-record" in css
+
+def test_ai_security_static_taxonomy_is_not_asserted_as_live_risk_telemetry():
+    html = Path("ai-security/index.html").read_text(encoding="utf-8-sig")
+    assert "AI Security Analysis Taxonomy" in html
+    assert "ANALYSIS CATEGORY" in html
+    assert "⚠ Active AI Risks" not in html
+    assert '<span class="risk-level risk-critical">CRITICAL</span>' not in html
