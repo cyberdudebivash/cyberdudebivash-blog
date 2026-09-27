@@ -71,3 +71,11 @@ def test_fetch_uses_single_request_when_attempt_budget_is_one(monkeypatch):
     monkeypatch.setattr(probe, "urlopen", fake_urlopen)
     assert probe.fetch(probe.BASE + "/", "desktop", attempts=1) == "ok"
     assert len(calls) == 1
+
+
+def test_actions_push_canary_uses_single_attempt_budget():
+    workflow = Path(".github/workflows/freshness-check.yml").read_text(encoding="utf-8")
+    marker = "name: Verify public delivery with the released probe"
+    assert marker in workflow
+    block = workflow.split(marker, 1)[1].split("\n\n  freshness-check:", 1)[0]
+    assert "python3 scripts/check_blogger_public_delivery.py --attempts 1" in block
