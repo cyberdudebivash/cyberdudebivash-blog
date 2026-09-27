@@ -204,6 +204,7 @@
       cvssScore:   item && Number.isFinite(Number(item.cvss)) ? Number(item.cvss) : null,
       tags:        [],
       isExploited: !!(item && item.exploited),
+      ransomware:  !!(item && item.ransomware),
       isCritical:  severity === 'critical',
       isBreaking:  false,
       riskScore:   null,
@@ -457,7 +458,7 @@
     var filtered = items;
     if (options.section === 'malware') {
       filtered = items.filter(function(i) {
-        return /malware|ransomware|trojan|worm|botnet|spyware|keylog|stealer|rat\b/i.test(i.title + ' ' + i.rawContent);
+        return i.ransomware === true || /malware|ransomware|trojan|worm|botnet|spyware|keylog|stealer|rat\b/i.test(i.title + ' ' + i.rawContent);
       });
     } else if (options.section === 'ai_security') {
       filtered = items.filter(function(i) {
