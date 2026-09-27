@@ -28,8 +28,15 @@ describe('resolveRoute — feed asset aliases', () => {
   }
 });
 
-describe('resolveRoute — root index alias', () => {
+describe('resolveRoute — root and dashboard index aliases', () => {
   test('/ resolves to the /index.html asset', () => assert.deepEqual(resolveRoute('/'), { type: 'asset', path: '/index.html' }));
+  for (const [requestPath, assetPath] of [
+    ['/intel', '/intel/index.html'], ['/intel/', '/intel/index.html'],
+    ['/malware', '/malware/index.html'], ['/malware/', '/malware/index.html'],
+    ['/ai-security', '/ai-security/index.html'], ['/ai-security/', '/ai-security/index.html'],
+  ]) {
+    test(`${requestPath} resolves to ${assetPath}`, () => assert.deepEqual(resolveRoute(requestPath), { type: 'asset', path: assetPath }));
+  }
   test('does not rewrite a non-root path that merely starts with /', () => assert.equal(resolveRoute('/about.html'), null));
 });
 
