@@ -80,11 +80,82 @@ jobs:
           test -n "$CLOUDFLARE_API_TOKEN" || { echo "::error::CLOUDFLARE_API_TOKEN is not configured"; exit 1; }
           test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "::error::CLOUDFLARE_ACCOUNT_ID is not configured"; exit 1; }
 
-      - name: "Deploy exact commit to Cloudflare Worker"
+      - name: "Retire Vercel DNS and deploy Cloudflare Custom Domain atomically"
+        shell: bash
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: npx wrangler deploy --config wrangler.jsonc
+        run: |
+          set -euo pipefail
+          api="https://api.cloudflare.com/client/v4"
+          zone_name="cyberdudebivash.in"
+          hostname="blog.cyberdudebivash.in"
+          auth=(-H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H "Content-Type: application/json")
+
+          zone_json="$(curl -fsS "${auth[@]}" "$api/zones?name=$zone_name&status=active")"
+          test "$(jq -r '.success' <<<"$zone_json")" = "true" || { echo "::error::Cloudflare zone lookup failed"; exit 1; }
+          zone_id="$(jq -r 'if (.result|length)==1 then .result[0].id else empty end' <<<"$zone_json")"
+          test -n "$zone_id" || { echo "::error::Expected exactly one active Cloudflare zone for $zone_name"; exit 1; }
+
+          dns_json="$(curl -fsS "${auth[@]}" "$api/zones/$zone_id/dns_records?name=$hostname&per_page=100")"
+          test "$(jq -r '.success' <<<"$dns_json")" = "true" || { echo "::error::Cloudflare DNS lookup failed"; exit 1; }
+
+          legacy_count="$(jq '[.result[] | select(.type=="CNAME" and ((.content|ascii_downcase)|contains("vercel")))] | length' <<<"$dns_json")"
+          unrelated_cname_count="$(jq '[.result[] | select(.type=="CNAME" and (((.content|ascii_downcase)|contains("vercel"))|not))] | length' <<<"$dns_json")"
+
+          if [ "$unrelated_cname_count" -gt 0 ]; then
+            echo "::error::Refusing migration: $hostname has a non-Vercel CNAME that requires operator review."
+            exit 1
+          fi
+          if [ "$legacy_count" -gt 1 ]; then
+            echo "::error::Refusing migration: multiple legacy Vercel CNAME records found for $hostname."
+            exit 1
+          fi
+
+          rollback_needed=0
+          legacy_record=""
+          if [ "$legacy_count" -eq 1 ]; then
+            legacy_record="$(jq -c '.result[] | select(.type=="CNAME" and ((.content|ascii_downcase)|contains("vercel"))) | {id,type,name,content,ttl,proxied}' <<<"$dns_json")"
+            legacy_id="$(jq -r '.id' <<<"$legacy_record")"
+            legacy_target="$(jq -r '.content' <<<"$legacy_record")"
+            echo "Retiring legacy Vercel DNS target for $hostname: $legacy_target"
+            delete_json="$(curl -fsS -X DELETE "${auth[@]}" "$api/zones/$zone_id/dns_records/$legacy_id")"
+            test "$(jq -r '.success' <<<"$delete_json")" = "true" || { echo "::error::Failed to delete legacy Vercel CNAME"; exit 1; }
+            rollback_needed=1
+          else
+            echo "No legacy Vercel CNAME exists; continuing idempotently."
+          fi
+
+          rollback() {
+            status=$?
+            if [ "$status" -ne 0 ] && [ "$rollback_needed" -eq 1 ] && [ -n "$legacy_record" ]; then
+              echo "::warning::Custom Domain deployment failed; restoring the previous DNS record to avoid an outage."
+              restore_payload="$(jq -c '{type,name,content,ttl,proxied}' <<<"$legacy_record")"
+              curl -fsS -X POST "${auth[@]}" --data "$restore_payload" "$api/zones/$zone_id/dns_records" >/dev/null || true
+            fi
+            exit "$status"
+          }
+          trap rollback EXIT
+
+          npx wrangler deploy --config wrangler.jsonc
+          rollback_needed=0
+          trap - EXIT
+
+      - name: "Verify Vercel DNS retirement"
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          api="https://api.cloudflare.com/client/v4"
+          auth=(-H "Authorization: Bearer $CLOUDFLARE_API_TOKEN")
+          zone_json="$(curl -fsS "${auth[@]}" "$api/zones?name=cyberdudebivash.in&status=active")"
+          zone_id="$(jq -r 'if (.result|length)==1 then .result[0].id else empty end' <<<"$zone_json")"
+          test -n "$zone_id"
+          dns_json="$(curl -fsS "${auth[@]}" "$api/zones/$zone_id/dns_records?name=blog.cyberdudebivash.in&per_page=100")"
+          vercel_refs="$(jq '[.result[] | select((.content // "" | ascii_downcase) | contains("vercel"))] | length' <<<"$dns_json")"
+          test "$vercel_refs" -eq 0 || { echo "::error::Legacy Vercel DNS target is still present"; exit 1; }
+          echo "Vercel DNS retirement verified."
 
       - name: "Certify live Hybrid SOC + CTI production surfaces"
         shell: bash

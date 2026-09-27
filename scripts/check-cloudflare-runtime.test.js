@@ -31,13 +31,22 @@ test('a reintroduced deployment file blocks release', t => {
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /Retired deployment file reintroduced/);
 });
-test('missing production Worker route blocks release', t => {
+test('missing production Worker Custom Domain blocks release', t => {
   const dir = fixture(t);
   const file = path.join(dir, 'wrangler.jsonc');
-  fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('blog.cyberdudebivash.in/*', 'example.invalid/*'));
+  fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('"pattern": "blog.cyberdudebivash.in"', '"pattern": "example.invalid"'));
   const result = run(dir);
   assert.notEqual(result.status, 0);
-  assert.match(result.stderr, /Production Worker route is missing/);
+  assert.match(result.stderr, /Production Worker Custom Domain is missing/);
+});
+
+test('downgrading production back to a Worker Route blocks release', t => {
+  const dir = fixture(t);
+  const file = path.join(dir, 'wrangler.jsonc');
+  fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('"custom_domain": true', '"zone_name": "cyberdudebivash.in"').replace('"blog.cyberdudebivash.in"', '"blog.cyberdudebivash.in/*"'));
+  const result = run(dir);
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /Custom Domain|Legacy Worker Route/);
 });
 
 test('missing dynamic security headers block release', t => {

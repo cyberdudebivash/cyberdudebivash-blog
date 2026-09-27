@@ -17,8 +17,10 @@ for (const name of Object.keys({ ...pkg.dependencies, ...pkg.devDependencies }))
 }
 
 const wrangler = fs.readFileSync(path.join(root, 'wrangler.jsonc'), 'utf8');
-assert.match(wrangler, /"pattern"\s*:\s*"blog\.cyberdudebivash\.in\/\*"/, 'Production Worker route is missing');
-assert.match(wrangler, /"zone_name"\s*:\s*"cyberdudebivash\.in"/, 'Production Worker zone binding is missing');
+assert.match(wrangler, /"pattern"\s*:\s*"blog\.cyberdudebivash\.in"/, 'Production Worker Custom Domain is missing');
+assert.match(wrangler, /"custom_domain"\s*:\s*true/, 'Production Worker must own the hostname as a Custom Domain');
+assert.doesNotMatch(wrangler, /blog\.cyberdudebivash\.in\/\*/, 'Legacy Worker Route must not replace the Custom Domain');
+assert.doesNotMatch(wrangler, /vercel/i, 'Retired Vercel origin reference reintroduced into Wrangler config');
 for (const asset of ['soc-cti-console.css', 'soc-triage-workspace.js', 'soc-hybrid-workspace.js', 'soc-evidence-drawer.js']) {
   assert.ok(PUBLIC_ROOT_FILES.includes(asset), `Hybrid SOC production asset missing from allowlist: ${asset}`);
 }
@@ -44,4 +46,4 @@ for (const route of ['/', '/*.html']) {
   for (const header of required) assert.ok(effective.get(header.toLowerCase()), `${route}: missing ${header}`);
   assert.match(effective.get('content-security-policy'), /checkout\.razorpay\.com/, `${route}: checkout CSP must be retained`);
 }
-console.log('Cloudflare runtime gate passed: Vercel retired, production route bound, SOC assets allowlisted, headers enforced.');
+console.log('Cloudflare runtime gate passed: Vercel retired, Custom Domain owns production origin, SOC assets allowlisted, headers enforced.');
