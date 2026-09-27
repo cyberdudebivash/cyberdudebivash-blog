@@ -224,3 +224,11 @@ def test_malware_actor_taxonomy_does_not_assert_unbound_live_activity():
     assert "Activity state requires current evidence" in html
     assert '<div class="threat-status status-active">● ACTIVE</div>' not in html
     assert '<div class="threat-status status-high">⚠ HIGH ACTIVITY</div>' not in html
+
+
+def test_hybrid_workspace_clears_hidden_selection_and_exposes_state_accessibly():
+    controller = Path("soc-hybrid-workspace.js").read_text(encoding="utf-8")
+    assert "selected.hidden || selected.style.display==='none'" in controller
+    assert "No visible intelligence record selected." in controller
+    assert "Runtime state " in controller
+    assert "Evidence contract state " in controller
