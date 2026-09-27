@@ -61,8 +61,8 @@ if __name__ == "__main__":
     main()
 
 def test_enterprise_soc_command_center_contract():
-    for path in COMMERCIAL_SURFACES:
-        html = _read(path)
+    for path in SURFACES:
+        html = path.read_text(encoding="utf-8-sig")
         assert 'soc-ops-commandbar' in html
         assert 'Validate → Investigate → Hunt → Detect → Watch → Export' in html
         assert 'SOC 2-aligned evidence; no certification claim' in html
