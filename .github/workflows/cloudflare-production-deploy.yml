@@ -67,6 +67,9 @@ jobs:
           test -s dist-public/soc-hybrid-workspace.js
           test -s dist-public/soc-evidence-drawer.js
 
+      - name: "Wrangler configuration dry-run"
+        run: npx wrangler deploy --dry-run --config wrangler.jsonc --outdir .wrangler-dry-run
+
       - name: "Require deployment credentials"
         shell: bash
         env:
