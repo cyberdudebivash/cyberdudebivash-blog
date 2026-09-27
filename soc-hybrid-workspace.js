@@ -21,17 +21,18 @@ function selectCard(card){
 }
 function update(root){
  var list=cards(root);list.forEach(ensureSelect);
+ if(selected && (selected.hidden || selected.style.display==='none' || !document.documentElement.contains(selected))){selected.classList.remove('soc-selected-record');selected=null;txt(root,'[data-selected-record]','No visible intelligence record selected.');setSelectionActions(root,null);}
  var critical=list.filter(function(c){return severity(c)==='CRITICAL';}).length;
  var high=list.filter(function(c){return severity(c)==='HIGH';}).length;
  var exploited=list.filter(function(c){return !!c.querySelector('.badge-exploit');}).length;
  txt(root,'[data-ws-visible]',list.filter(function(c){return !c.hidden;}).length);
  txt(root,'[data-ws-critical]',critical);txt(root,'[data-ws-high]',high);txt(root,'[data-ws-exploited]',exploited);
- var state=document.getElementById('soc-runtime-state');var runtime=state?state.textContent:'VERIFYING';txt(root,'[data-ws-runtime]',runtime);var rt=root.querySelector('[data-ws-runtime]');if(rt)rt.setAttribute('data-state',runtime);
+ var state=document.getElementById('soc-runtime-state');var runtime=state?state.textContent:'VERIFYING';txt(root,'[data-ws-runtime]',runtime);var rt=root.querySelector('[data-ws-runtime]');if(rt){rt.setAttribute('data-state',runtime);rt.setAttribute('aria-label','Runtime state '+runtime);}
 }
 function bindEvidence(root){
  var drawer=document.getElementById('soc-evidence-drawer');if(!drawer)return;
  function sync(){
-  var s=drawer.getAttribute('data-evidence-state')||'UNAVAILABLE';txt(root,'[data-ws-evidence]',s.replace(/_/g,' '));
+  var s=drawer.getAttribute('data-evidence-state')||'UNAVAILABLE';txt(root,'[data-ws-evidence]',s.replace(/_/g,' '));var evs=root.querySelector('[data-ws-evidence]');if(evs)evs.setAttribute('aria-label','Evidence contract state '+s.replace(/_/g,' '));
   var claims=drawer.querySelectorAll('.evidence-claim');txt(root,'[data-ws-claims]',claims.length);
   txt(root,'[data-ws-confirmed]',drawer.querySelectorAll('.evidence-status').length?[].filter.call(drawer.querySelectorAll('.evidence-status'),function(x){return x.textContent==='CONFIRMED';}).length:0);
  }
