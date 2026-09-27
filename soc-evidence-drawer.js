@@ -9,6 +9,21 @@
       Array.isArray(c.claims) && Array.isArray(c.sources) && Array.isArray(c.evidence) &&
       c.claims.every(function(x){return x && typeof x.claim_id==='string' && VALID_STATUS.has(x.status) && VALID_CORROBORATION.has(x.corroboration_state);});
   }
+  function safeSourceUrl(raw) {
+    try {
+      var u = new URL(String(raw || ''), window.location.origin);
+      if (u.protocol !== 'https:' || u.username || u.password) return null;
+      return u.href;
+    } catch (e) { return null; }
+  }
+  function reviewLabel(review) {
+    if (!review) return 'Not human reviewed';
+    if (review.is_test_only_fixture) return 'Test-only review fixture — not production review';
+    if (review.decision === 'APPROVE') return 'Human review: APPROVE';
+    if (review.decision === 'REJECT') return 'Human review: REJECT';
+    if (review.decision === 'REQUEST_CHANGES') return 'Human review: REQUEST_CHANGES';
+    return 'Human review state unavailable';
+  }
   function indexBy(list,key){var out=Object.create(null); list.forEach(function(x){if(x&&typeof x[key]==='string')out[x[key]]=x;});return out;}
   function row(label,value){var r=make('div','evidence-row');r.append(make('span','evidence-label',label),make('span','evidence-value',value));return r;}
   function render(container, contract) {
@@ -37,14 +52,14 @@
         if(src){
           var s=make('div','evidence-source');
           s.append(row('Publisher',src.publisher),row('Source type',src.source_type),row('Source date',src.source_date),row('Retrieved',src.retrieved_at),row('Reliability',src.reliability),row('SHA-256',src.content_sha256));
-          if(/^https:\/\//i.test(src.url||'')){var a=make('a','evidence-source-link','Open cited source');a.href=src.url;a.target='_blank';a.rel='noopener noreferrer';s.append(a);}
+          var safeUrl=safeSourceUrl(src.url); if(safeUrl){var a=make('a','evidence-source-link','Open cited source');a.href=safeUrl;a.target='_blank';a.rel='noopener noreferrer';s.append(a);}
           refs.append(s);
         }
       });
       card.append(refs); container.append(card);
     });
     var review=contract.review;
-    container.append(row('Human review',review ? (review.decision || review.status || 'Recorded') : 'Not recorded'));
+    container.append(row('Human review',reviewLabel(review)));
     return true;
   }
   window.CDBSocEvidenceDrawer=Object.freeze({render:render,validate:validContract});
