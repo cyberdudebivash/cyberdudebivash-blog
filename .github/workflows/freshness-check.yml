@@ -30,7 +30,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Verify public delivery with the released probe
-        run: python3 scripts/check_blogger_public_delivery.py
+        run: python3 scripts/check_blogger_public_delivery.py --attempts 1
 
   freshness-check:
     if: github.event_name != 'push'
