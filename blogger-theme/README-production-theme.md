@@ -86,3 +86,20 @@ work. Editing a theme file that has already been proven not to match
 production would not fix anything live and risks leaving a *third*,
 equally-stale artifact behind — worse than the honest gap this README
 documents.
+
+
+## Production cutover helper
+
+After exporting the **actual current live theme** from Blogger dashboard to
+`blogger-theme/production-current.xml`, run:
+
+`python scripts/prepare_blogger_production_theme.py`
+
+The helper refuses to use any historical v22/v23/v24 export. It preserves the
+operator export unchanged, writes `production-candidate.xml` plus a SHA-256,
+removes the known unsupported trust fixtures, and corrects the known WebSite
+Blogspot identity. Before upload, review the candidate diff and run
+`python scripts/certify_blogger_theme_baseline.py --theme blogger-theme/production-candidate.xml --checksum blogger-theme/production-candidate.sha256`.
+After Blogger upload, export the live theme again as `production-current.xml`,
+checksum it, and run both the baseline certifier and live homepage audit. A
+candidate PASS is not production evidence; only the post-upload live audit is.
