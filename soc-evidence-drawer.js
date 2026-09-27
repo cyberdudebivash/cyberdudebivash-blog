@@ -62,5 +62,41 @@
     container.append(row('Human review',reviewLabel(review)));
     return true;
   }
-  window.CDBSocEvidenceDrawer=Object.freeze({render:render,validate:validContract});
+
+  function renderAuthRequired(container, detail) {
+    container.replaceChildren();
+    container.setAttribute('data-evidence-state','AUTH_REQUIRED');
+    var card=make('div','evidence-auth-required');
+    card.append(
+      make('strong','', 'Canonical evidence requires authentication'),
+      row('Report ID', detail && detail.reportId || 'Not established'),
+      row('Access state','Entitlement-bound')
+    );
+    var p=make('p','evidence-auth-copy','The selected record is linked to a canonical report, but claim-level evidence is available only through authenticated product access.');
+    card.append(p);
+    if (detail && detail.reportUrl) {
+      var reportLink=make('a','evidence-source-link','Open canonical public report');
+      reportLink.href=detail.reportUrl;reportLink.rel='noopener noreferrer';card.append(reportLink);
+    }
+    var authLink=make('a','evidence-source-link','Open authenticated API dashboard');
+    authLink.href='/api-dashboard.html';card.append(authLink);
+    container.append(card);
+  }
+
+  function bindController() {
+    var container=document.getElementById('soc-evidence-drawer');
+    if(!container)return;
+    document.addEventListener('cdb:soc-record-selected',function(ev){
+      var detail=ev&&ev.detail||{};
+      if(!detail.reportId){
+        container.setAttribute('data-evidence-state','UNAVAILABLE');
+        container.replaceChildren(make('div','evidence-error','Canonical evidence unavailable for this rendered record. No report identity is inferred from title, CVE text, URL, or DOM content.'));
+        return;
+      }
+      renderAuthRequired(container,detail);
+    });
+  }
+
+  window.CDBSocEvidenceDrawer=Object.freeze({render:render,validate:validContract,renderAuthRequired:renderAuthRequired});
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bindController);else bindController();
 })();
