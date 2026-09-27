@@ -74,8 +74,8 @@ if __name__ == "__main__":
 def test_enterprise_soc_command_center_contract():
     for path in SURFACES:
         html = path.read_text(encoding="utf-8-sig")
-        assert 'soc-ops-commandbar' in html
-        assert 'Validate → Investigate → Hunt → Detect → Watch → Export' in html
+        assert 'class="soc-workspace"' in html
+        assert 'aria-label="Selected intelligence actions"' in html
         assert 'SOC 2-aligned evidence; no certification claim' in html
         assert 'updated every 10 minutes from global threat feeds' not in html.lower()
         assert 'Unlock SOC Pro — $18/mo' not in html
@@ -209,3 +209,26 @@ def test_hybrid_workspace_fails_closed_without_canonical_report_id():
         html = path.read_text(encoding="utf-8-sig")
         assert "data-requires-report-id" in html
         assert "Canonical evidence requires a ReportX report ID." in html
+
+
+def test_hybrid_console_has_single_nonduplicated_operational_command_surface():
+    for path in SURFACES:
+        html = path.read_text(encoding="utf-8-sig")
+        assert 'soc-ops-commandbar' not in html
+        assert html.count('class="soc-commandbar"') == 1
+        assert html.count('class="soc-workspace"') == 1
+
+def test_malware_actor_taxonomy_does_not_assert_unbound_live_activity():
+    html = Path("malware/index.html").read_text(encoding="utf-8-sig")
+    assert "ANALYSIS CATEGORY" in html
+    assert "Activity state requires current evidence" in html
+    assert '<div class="threat-status status-active">● ACTIVE</div>' not in html
+    assert '<div class="threat-status status-high">⚠ HIGH ACTIVITY</div>' not in html
+
+
+def test_hybrid_workspace_clears_hidden_selection_and_exposes_state_accessibly():
+    controller = Path("soc-hybrid-workspace.js").read_text(encoding="utf-8")
+    assert "selected.hidden || selected.style.display==='none'" in controller
+    assert "No visible intelligence record selected." in controller
+    assert "Runtime state " in controller
+    assert "Evidence contract state " in controller
