@@ -1,7 +1,9 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
 
-  // Production route is explicit and version-controlled. This binds the existing\n  // proxied blog hostname to this Worker; it does not create or modify DNS records.\n  // Deployments remain gated by the production workflow and live verification.\n
+  // Production route is explicit and version-controlled. This binds the existing
+  // proxied blog hostname to this Worker; it does not create or modify DNS records.
+  // Deployments remain gated by the production workflow and live verification.
   "name": "cyberdudebivash-blog",
   "main": "workers/entry.js",
   "compatibility_date": "2026-08-17",
@@ -57,4 +59,6 @@
     "crons": ["*/30 * * * *"]
   }
 
-  // DNS records and real secret values remain intentionally absent. Runtime\n  // secrets/vars are managed in Cloudflare; deployment credentials are GitHub secrets.\n}
+  // DNS records and real secret values remain intentionally absent.
+  // Runtime secrets/vars are managed in Cloudflare; deployment credentials are GitHub secrets.
+}
