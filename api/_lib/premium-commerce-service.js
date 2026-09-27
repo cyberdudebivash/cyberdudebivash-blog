@@ -67,12 +67,31 @@ async function publishCertifiedReport(input) {
   if (!title || !reportType) throw Object.assign(new Error('title and report_type are required'), { code: 'INVALID_REPORT_METADATA' });
 
   const filenameBase = safeSlug(input.filename || title || certification.reportId);
+  const reportxJson = JSON.stringify(input.reportxExport);
+  const evidenceSha256 = crypto.createHash('sha256').update(reportxJson, 'utf8').digest('hex');
   const stored = await storage.putCertifiedArtifact({
     reportId: certification.reportId,
     sha256: certification.artifactSha256,
     renderedText: certification.renderedText,
     filename: filenameBase,
   });
+
+  const evidenceStored = await storage.putCanonicalEvidence({
+    reportId: certification.reportId,
+    renderedSha256: certification.artifactSha256,
+    evidenceSha256,
+    reportxJson,
+  });
+  const evidenceIntegrity = await storage.headCanonicalEvidence({
+    key: evidenceStored.key,
+    reportId: certification.reportId,
+    renderedSha256: certification.artifactSha256,
+    evidenceSha256,
+    expectedSize: evidenceStored.size,
+  });
+  if (!evidenceIntegrity.ok) {
+    throw Object.assign(new Error(`R2 evidence verification failed: ${evidenceIntegrity.reason}`), { code: 'EVIDENCE_VERIFICATION_FAILED' });
+  }
 
   const integrity = await storage.headCertifiedArtifact({
     key: stored.key,

@@ -45,3 +45,20 @@ test('rejects report/hash/size mismatch during sellability or fulfillment check'
   await expect(storage.headCertifiedArtifact({key:stored.key,reportId:'R1',sha256:'b'.repeat(64),expectedSize:4})).resolves.toMatchObject({ok:false,reason:'ARTIFACT_HASH_METADATA_MISMATCH'});
   await expect(storage.headCertifiedArtifact({key:stored.key,reportId:'R1',sha256:'a'.repeat(64),expectedSize:99})).resolves.toMatchObject({ok:false,reason:'ARTIFACT_SIZE_MISMATCH'});
 });
+
+
+test('stores canonical ReportX evidence bound to reviewed rendered artifact hash', async () => {
+  const bucket=fakeBucket();storage.setR2Binding(bucket);
+  const renderedSha='a'.repeat(64), evidenceSha='b'.repeat(64);
+  const stored=await storage.putCanonicalEvidence({reportId:'RPT 1',renderedSha256:renderedSha,evidenceSha256:evidenceSha,reportxJson:'{"bundle":{}}'});
+  expect(stored.key).toBe(`premium-reports/rpt-1/${renderedSha}.reportx.json`);
+  await expect(storage.headCanonicalEvidence({key:stored.key,reportId:'RPT 1',renderedSha256:renderedSha,evidenceSha256:evidenceSha,expectedSize:stored.size}))
+    .resolves.toMatchObject({ok:true,evidenceSha256:evidenceSha});
+});
+
+test('canonical evidence verification fails closed on rendered hash or evidence hash mismatch', async () => {
+  const bucket=fakeBucket();storage.setR2Binding(bucket);
+  const stored=await storage.putCanonicalEvidence({reportId:'R1',renderedSha256:'a'.repeat(64),evidenceSha256:'b'.repeat(64),reportxJson:'{}'});
+  await expect(storage.headCanonicalEvidence({key:stored.key,reportId:'R1',renderedSha256:'c'.repeat(64)})).resolves.toMatchObject({ok:false,reason:'EVIDENCE_RENDERED_HASH_MISMATCH'});
+  await expect(storage.headCanonicalEvidence({key:stored.key,reportId:'R1',renderedSha256:'a'.repeat(64),evidenceSha256:'d'.repeat(64)})).resolves.toMatchObject({ok:false,reason:'EVIDENCE_HASH_METADATA_MISMATCH'});
+});

@@ -16,6 +16,7 @@ jest.mock('../premium-commerce-store', () => ({
 }));
 jest.mock('../premium-report-storage', () => ({
   putCertifiedArtifact: jest.fn(), headCertifiedArtifact: jest.fn(), getCertifiedArtifact: jest.fn(),
+  putCanonicalEvidence: jest.fn(), headCanonicalEvidence: jest.fn(), getCanonicalEvidence: jest.fn(),
 }));
 jest.mock('../premium-report-certification', () => ({ evaluatePremiumCertification: jest.fn() }));
 
@@ -38,6 +39,8 @@ beforeEach(() => {
   process.env.PREMIUM_COMMERCE_CURRENCIES = 'INR';
   razorpay.configured.mockReturnValue(true);
   storage.headCertifiedArtifact.mockResolvedValue({ ok: true, size: 42 });
+  storage.putCanonicalEvidence.mockResolvedValue({ key: 'premium-reports/rpt/a.reportx.json', size: 128, contentType: 'application/json; charset=utf-8' });
+  storage.headCanonicalEvidence.mockResolvedValue({ ok: true, size: 128, evidenceSha256: 'b'.repeat(64) });
   store.getCatalogReport.mockResolvedValue(report);
 });
 
@@ -56,6 +59,8 @@ describe('certified publication and sellability', () => {
       reportxExport: {}, title: report.title, reportType: 'malware', summary: 'x', priceMinor: 19900, currency: 'INR',
     });
     expect(storage.putCertifiedArtifact).toHaveBeenCalledTimes(1);
+    expect(storage.putCanonicalEvidence).toHaveBeenCalledTimes(1);
+    expect(storage.headCanonicalEvidence).toHaveBeenCalledTimes(1);
     expect(storage.headCertifiedArtifact).toHaveBeenCalledTimes(1);
     expect(store.upsertCertifiedReport).toHaveBeenCalledTimes(1);
     expect(out.certification).toBe('PREMIUM_CERTIFIED');
@@ -66,6 +71,15 @@ describe('certified publication and sellability', () => {
     await expect(service.publishCertifiedReport({ reportxExport: {}, priceMinor: 19900, currency: 'INR' }))
       .rejects.toMatchObject({ code: 'REPORT_NOT_PREMIUM_CERTIFIED' });
     expect(storage.putCertifiedArtifact).not.toHaveBeenCalled();
+    expect(store.upsertCertifiedReport).not.toHaveBeenCalled();
+  });
+
+  test('does not catalog when canonical evidence cannot be verified in R2', async () => {
+    cert.evaluatePremiumCertification.mockReturnValue({ certified: true, reportId: 'RPT-1', artifactSha256: 'a'.repeat(64), renderedText: '# r', reviewerIdentity: 'a', reviewTimestamp: 't' });
+    storage.putCertifiedArtifact.mockResolvedValue({ key: report.artifact_key, size: 42, contentType: report.artifact_content_type });
+    storage.headCanonicalEvidence.mockResolvedValue({ ok: false, reason: 'EVIDENCE_NOT_FOUND' });
+    await expect(service.publishCertifiedReport({ reportxExport: {}, title: 'x', reportType: 'malware', priceMinor: 19900, currency: 'INR' }))
+      .rejects.toMatchObject({ code: 'EVIDENCE_VERIFICATION_FAILED' });
     expect(store.upsertCertifiedReport).not.toHaveBeenCalled();
   });
 
