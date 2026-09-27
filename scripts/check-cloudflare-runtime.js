@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { applyBaselineHeaders } = require('../workers/lib/security-headers');
-const { HEADERS_FILE_CONTENT } = require('./build-cloudflare-assets');
+const { HEADERS_FILE_CONTENT, PUBLIC_ROOT_FILES } = require('./build-cloudflare-assets');
 const root = path.resolve(__dirname, '..');
 
 for (const file of ['vercel.json', '.vercelignore', 'vercel-ignore-build.sh']) {
@@ -14,6 +14,13 @@ for (const file of ['vercel.json', '.vercelignore', 'vercel-ignore-build.sh']) {
 const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
 for (const name of Object.keys({ ...pkg.dependencies, ...pkg.devDependencies })) {
   assert.ok(name !== 'vercel' && !name.startsWith('@vercel/'), `Retired deployment dependency: ${name}`);
+}
+
+const wrangler = fs.readFileSync(path.join(root, 'wrangler.jsonc'), 'utf8');
+assert.match(wrangler, /"pattern"\s*:\s*"blog\.cyberdudebivash\.in\/\*"/, 'Production Worker route is missing');
+assert.match(wrangler, /"zone_name"\s*:\s*"cyberdudebivash\.in"/, 'Production Worker zone binding is missing');
+for (const asset of ['soc-cti-console.css', 'soc-triage-workspace.js', 'soc-hybrid-workspace.js', 'soc-evidence-drawer.js']) {
+  assert.ok(PUBLIC_ROOT_FILES.includes(asset), `Hybrid SOC production asset missing from allowlist: ${asset}`);
 }
 const required = ['Strict-Transport-Security', 'X-Content-Type-Options', 'Referrer-Policy', 'Content-Security-Policy'];
 for (const status of [200, 302, 404, 500]) {
@@ -37,4 +44,4 @@ for (const route of ['/', '/*.html']) {
   for (const header of required) assert.ok(effective.get(header.toLowerCase()), `${route}: missing ${header}`);
   assert.match(effective.get('content-security-policy'), /checkout\.razorpay\.com/, `${route}: checkout CSP must be retained`);
 }
-console.log('Cloudflare runtime gate passed: retired files absent, dynamic and static headers enforced.');
+console.log('Cloudflare runtime gate passed: Vercel retired, production route bound, SOC assets allowlisted, headers enforced.');
