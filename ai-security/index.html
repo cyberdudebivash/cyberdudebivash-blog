@@ -119,6 +119,35 @@ a{color:inherit;text-decoration:none;}
  <p class="soc-triage-note">Filters operate only on rendered source records. They do not create severity, exploitation, attribution or confidence claims.</p>
  <div class="soc-triage-empty" data-triage-empty hidden>No records match the selected filters.</div>
 </section>
+<section class="soc-workspace" data-workspace-feed="#intel-feed" aria-label="Hybrid SOC and CTI analyst workspace">
+  <div class="soc-workspace-panel">
+    <div class="soc-workspace-head"><div><span class="soc-eyebrow">HYBRID SOC + CTI</span><strong>Operational Intelligence Queue</strong></div><span class="soc-workspace-meta">Runtime-derived · no synthetic telemetry</span></div>
+    <div class="soc-workspace-grid">
+      <div class="soc-workspace-metric"><span>Runtime</span><strong data-ws-runtime>VERIFYING</strong></div>
+      <div class="soc-workspace-metric"><span>Visible records</span><strong data-ws-visible>0</strong></div>
+      <div class="soc-workspace-metric"><span>Critical</span><strong data-ws-critical>0</strong></div>
+      <div class="soc-workspace-metric"><span>Exploitation-labelled</span><strong data-ws-exploited>0</strong></div>
+    </div>
+    <div class="soc-workspace-context"><strong>Selected:</strong> <span data-selected-record>No intelligence record selected. Select a rendered record before operational actions.</span><br><span data-selected-evidence>Canonical evidence requires a ReportX report ID.</span></div>
+    <div class="soc-workspace-actions" aria-label="Selected intelligence actions">
+      <a href="#soc-evidence-drawer" data-requires-selection data-requires-report-id>Validate Evidence</a>
+      <a href="/api-dashboard.html" data-requires-selection>Investigate</a>
+      <a href="/api-dashboard.html" data-requires-selection>Hunt</a>
+      <a href="/api-dashboard.html" data-requires-selection>Detection Content</a>
+      <a href="/api-dashboard.html" data-requires-selection>Watch</a>
+      <a href="/api.html" data-requires-selection>Export / API</a>
+    </div>
+  </div>
+  <aside class="soc-workspace-panel">
+    <div class="soc-workspace-head"><div><span class="soc-eyebrow">EVIDENCE POSTURE</span><strong>Canonical Claim State</strong></div><span class="soc-workspace-meta">ReportX-bound only</span></div>
+    <div class="soc-evidence-state-grid">
+      <div class="soc-evidence-state"><span>Contract</span><b data-ws-evidence>UNAVAILABLE</b></div>
+      <div class="soc-evidence-state"><span>Claims</span><b data-ws-claims>0</b></div>
+      <div class="soc-evidence-state"><span>Confirmed</span><b data-ws-confirmed>0</b></div>
+    </div>
+    <div class="soc-workspace-context">SOC 2-aligned operational evidence model. This interface does not assert certification, attestation, customer incidents, MTTD, MTTR, or tenant telemetry.</div>
+  </aside>
+</section>
 <section class="soc-evidence-drawer" id="soc-evidence-drawer" aria-live="polite"><div class="evidence-error">Select canonical ReportX intelligence to inspect evidence provenance.</div></section>\n<div class="main-wrap">
   <main>
     <div class="page-head">
@@ -149,14 +178,14 @@ a{color:inherit;text-decoration:none;}
 
   <aside>
     <div class="sidebar-card">
-      <div class="sidebar-head">⚠ Active AI Risks</div>
+      <div class="sidebar-head">AI Security Analysis Taxonomy</div>
       <div class="sidebar-body">
-        <div class="ai-risk-item"><div class="risk-title">Prompt Injection via Tool Calls</div><span class="risk-level risk-critical">CRITICAL</span></div>
-        <div class="ai-risk-item"><div class="risk-title">Indirect Injection (RAG poisoning)</div><span class="risk-level risk-critical">CRITICAL</span></div>
-        <div class="ai-risk-item"><div class="risk-title">Jailbreak via Roleplay</div><span class="risk-level risk-high">HIGH</span></div>
-        <div class="ai-risk-item"><div class="risk-title">Model Inversion Attacks</div><span class="risk-level risk-high">HIGH</span></div>
-        <div class="ai-risk-item"><div class="risk-title">LLM Agent Privilege Escalation</div><span class="risk-level risk-critical">CRITICAL</span></div>
-        <div class="ai-risk-item"><div class="risk-title">Adversarial Input Evasion</div><span class="risk-level risk-medium">MEDIUM</span></div>
+        <div class="ai-risk-item"><div class="risk-title">Prompt Injection via Tool Calls</div><span class="risk-level">ANALYSIS CATEGORY</span></div>
+        <div class="ai-risk-item"><div class="risk-title">Indirect Injection (RAG poisoning)</div><span class="risk-level">ANALYSIS CATEGORY</span></div>
+        <div class="ai-risk-item"><div class="risk-title">Jailbreak via Roleplay</div><span class="risk-level">ANALYSIS CATEGORY</span></div>
+        <div class="ai-risk-item"><div class="risk-title">Model Inversion Attacks</div><span class="risk-level">ANALYSIS CATEGORY</span></div>
+        <div class="ai-risk-item"><div class="risk-title">LLM Agent Privilege Escalation</div><span class="risk-level">ANALYSIS CATEGORY</span></div>
+        <div class="ai-risk-item"><div class="risk-title">Adversarial Input Evasion</div><span class="risk-level">ANALYSIS CATEGORY</span></div>
       </div>
     </div>
     <div class="upgrade-card">
@@ -180,7 +209,8 @@ a{color:inherit;text-decoration:none;}
   <div style="margin-top:12px">© 2026 CyberDudeBivash Pvt. Ltd. — CYBERDUDEBIVASH SENTINEL APEX AI Security</div>
 </div>
 <script src="/security-engine.js"></script>
-<script src="/soc-triage-workspace.js"></script>\n<script src="/soc-evidence-drawer.js"></script>\n<script src="/auto-intel-engine.js"></script>
+<script src="/soc-triage-workspace.js"></script>
+<script src="/soc-hybrid-workspace.js"></script>\n<script src="/soc-evidence-drawer.js"></script>\n<script src="/auto-intel-engine.js"></script>
 <script src="/monetization.js" defer></script>
 <script src="/analytics-engine.js" defer></script>
 
