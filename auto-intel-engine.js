@@ -86,7 +86,7 @@
     ransomware: {
       primary:   { cta:'🛡️ Get Ransomware Defense Kit',  url:'/products.html' },
       secondary: { cta:'SOC Intelligence Plans',            url:'/pricing.html' },
-      sub: '800+ YARA rules, IR playbook, IOC bundle for active ransomware campaigns.'
+      sub: 'Evidence-backed ransomware context and available detection content, subject to validation state and entitlement.'
     },
     apt: {
       primary:   { cta:'🎯 Get APT Intel Pack',           url:'/products.html' },
@@ -128,7 +128,7 @@
       'AI governance controls are lagging deployment velocity. Security teams should prioritize AI asset inventory and data access mapping before deploying compensating controls for this class of attack.'
     ],
     general: [
-      'This threat report has been enriched with MITRE ATT&CK mappings, IOC extraction, and risk scoring by the CYBERDUDEBIVASH SENTINEL APEX analysis pipeline. Subscribe to SOC Pro for full detection coverage delivered 48 hours before NVD.',
+      'Automated source enrichment does not establish ATT&CK mapping, attribution, exploitation, or deployment readiness. Use canonical ReportX evidence for those claims.',
       'CYBERDUDEBIVASH SENTINEL APEX analysts assess this threat as operationally relevant to enterprise environments with internet-facing infrastructure based on current dark web signals and active campaign tracking.',
       'Use the cited source, publication timestamp, and available evidence fields to determine operational relevance. Detection content must be independently validated before deployment.'
     ]
@@ -827,7 +827,7 @@
     injectStyles();
     aggregateFeeds(section, function(items) {
       var enriched = items.map(enrichItem)
-        .sort(function(a,b){ return b.riskScore - a.riskScore; });
+        ;
 
       publishToSection(containerId, enriched, { section: section, limit: 25 });
       updateTicker(enriched);
