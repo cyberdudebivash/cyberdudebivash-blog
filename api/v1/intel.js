@@ -68,9 +68,13 @@ function publicDashboardItems(section, limit) {
   const raw = getIntel('live', 'enterprise', { page: 1, limit: 100 });
   let items = Array.isArray(raw.items) ? raw.items.slice() : [];
   if (section === 'malware') {
-    items = items.filter(i => i.ransomware === true ||
-      /malware|ransomware|trojan|worm|botnet|spyware|stealer|\brat\b/i
-        .test(String(i.title || '') + ' ' + String(i.description || i.desc || '')));
+    items = items.filter(i => {
+      const text = String(i.title || '') + ' ' + String(i.description || i.desc || '');
+      const explicitMalware = /malware|ransomware|trojan|worm|botnet|spyware|stealer|\brat\b/i.test(text);
+      const explicitRansomwareRecord = String(i.type || '').toUpperCase() === 'RANSOMWARE';
+      const cveLinkedRansomware = i.ransomware === true && /^CVE-\d{4}-\d{4,7}$/i.test(String(i.id || ''));
+      return explicitMalware || explicitRansomwareRecord || cveLinkedRansomware;
+    });
   } else if (section === 'ai_security') {
     items = items.filter(i =>
       /\bai\b|llm|gpt|artificial intelligence|machine learning|prompt injection|copilot|chatgpt|claude|gemini/i
@@ -82,7 +86,9 @@ function publicDashboardItems(section, limit) {
     source_platform: raw.intel_meta && raw.intel_meta.source_platform || 'CYBERDUDEBIVASH SENTINEL APEX',
     items: items.map(i => {
       const report = dashboardReportFor(i);
-      const refs = Array.isArray(i.refs) ? i.refs : [];
+      const refs = (Array.isArray(i.refs) ? i.refs : [])
+        .flatMap(ref => String(ref || '').split(/\s*;\s*/))
+        .filter(Boolean);
       const reportUrl = report && report.url
         ? new URL(report.url, 'https://blog.cyberdudebivash.in').href
         : null;
