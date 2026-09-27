@@ -5,6 +5,7 @@ const razorpay = require('./razorpay');
 const store = require('./premium-commerce-store');
 const storage = require('./premium-report-storage');
 const { evaluatePremiumCertification } = require('./premium-report-certification');
+const { loadReportXBundle } = require('./reportx-adapter');
 
 function allowedCurrencies() {
   const raw = String(process.env.PREMIUM_COMMERCE_CURRENCIES || 'INR');
@@ -302,6 +303,45 @@ async function downloadReport({ user, reportId }) {
   };
 }
 
+async function getEvidenceContract({ user, reportId }) {
+  if (!user || !user.userId) throw Object.assign(new Error('Authenticated customer required'), { code: 'UNAUTHORIZED' });
+  const id = String(reportId || '').trim();
+  if (!id) throw Object.assign(new Error('Report ID required'), { code: 'INVALID_REPORT_ID' });
+  const entitlement = await store.getEntitlement(user.userId, id);
+  if (!entitlement) throw Object.assign(new Error('Active entitlement not found'), { code: 'ENTITLEMENT_NOT_FOUND' });
+
+  const renderedIntegrity = await storage.headCertifiedArtifact({
+    key: entitlement.artifact_key, reportId: id, sha256: entitlement.artifact_sha256,
+    expectedSize: Number(entitlement.artifact_size_bytes),
+  });
+  if (!renderedIntegrity.ok) throw Object.assign(new Error('Purchased artifact unavailable'), { code: 'EVIDENCE_UNAVAILABLE' });
+
+  const evidenceKey = storage.buildEvidenceKey(id, entitlement.artifact_sha256);
+  const evidenceHead = await storage.headCanonicalEvidence({
+    key: evidenceKey, reportId: id, renderedSha256: entitlement.artifact_sha256,
+  });
+  if (!evidenceHead.ok || !evidenceHead.evidenceSha256) throw Object.assign(new Error('Canonical evidence unavailable'), { code: 'EVIDENCE_UNAVAILABLE' });
+
+  const object = await storage.getCanonicalEvidence(evidenceKey);
+  if (!object || typeof object.arrayBuffer !== 'function') throw Object.assign(new Error('Canonical evidence unreadable'), { code: 'EVIDENCE_UNAVAILABLE' });
+  const bytes = new Uint8Array(await object.arrayBuffer());
+  if (bytes.byteLength !== evidenceHead.size) throw Object.assign(new Error('Canonical evidence size changed'), { code: 'EVIDENCE_INTEGRITY_ERROR' });
+  const json = new TextDecoder().decode(bytes);
+  const actualSha = crypto.createHash('sha256').update(json, 'utf8').digest('hex');
+  if (actualSha !== evidenceHead.evidenceSha256) throw Object.assign(new Error('Canonical evidence hash mismatch'), { code: 'EVIDENCE_INTEGRITY_ERROR' });
+
+  let bundle;
+  try { bundle = loadReportXBundle(json); } catch (_) {
+    throw Object.assign(new Error('Canonical evidence is invalid'), { code: 'EVIDENCE_INVALID' });
+  }
+  if (String(bundle.reportId || '') !== id) throw Object.assign(new Error('Canonical evidence report mismatch'), { code: 'EVIDENCE_INTEGRITY_ERROR' });
+  const certification = evaluatePremiumCertification(JSON.parse(json));
+  if (!certification.certified || certification.reportId !== id || certification.artifactSha256 !== entitlement.artifact_sha256) {
+    throw Object.assign(new Error('Canonical evidence no longer validates against purchased artifact'), { code: 'EVIDENCE_CERTIFICATION_INVALID' });
+  }
+  return bundle.toSocEvidenceContract();
+}
+
 module.exports = {
   allowedCurrencies,
   validateMoney,
@@ -314,4 +354,5 @@ module.exports = {
   processWebhookRefund,
   listLibrary,
   downloadReport,
+  getEvidenceContract,
 };

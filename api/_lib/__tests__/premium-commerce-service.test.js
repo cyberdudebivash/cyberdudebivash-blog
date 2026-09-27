@@ -15,7 +15,7 @@ jest.mock('../premium-commerce-store', () => ({
   listLibrary: jest.fn(), recordDownload: jest.fn(),
 }));
 jest.mock('../premium-report-storage', () => ({
-  putCertifiedArtifact: jest.fn(), headCertifiedArtifact: jest.fn(), getCertifiedArtifact: jest.fn(),
+  putCertifiedArtifact: jest.fn(), headCertifiedArtifact: jest.fn(), getCertifiedArtifact: jest.fn(), buildEvidenceKey: jest.fn(),
   putCanonicalEvidence: jest.fn(), headCanonicalEvidence: jest.fn(), getCanonicalEvidence: jest.fn(),
 }));
 jest.mock('../premium-report-certification', () => ({ evaluatePremiumCertification: jest.fn() }));
@@ -41,6 +41,7 @@ beforeEach(() => {
   storage.headCertifiedArtifact.mockResolvedValue({ ok: true, size: 42 });
   storage.putCanonicalEvidence.mockResolvedValue({ key: 'premium-reports/rpt/a.reportx.json', size: 128, contentType: 'application/json; charset=utf-8' });
   storage.headCanonicalEvidence.mockResolvedValue({ ok: true, size: 128, evidenceSha256: 'b'.repeat(64) });
+  storage.buildEvidenceKey.mockReturnValue('premium-reports/rpt/a.reportx.json');
   store.getCatalogReport.mockResolvedValue(report);
 });
 
@@ -183,5 +184,37 @@ describe('fulfillment and refunds', () => {
     const full = await service.processWebhookRefund({ payment_id: 'pay_1', amount: 19900, status: 'processed' }, { id: 'pay_1', amount: 19900, amount_refunded: 19900, status: 'refunded' });
     expect(full.full_refund).toBe(true);
     expect(store.markFullyRefunded).toHaveBeenCalledWith(expect.objectContaining({ orderId: 'pord_1', ownerId: 'usr_1', reportId: 'RPT-1' }));
+  });
+});
+
+
+describe('canonical evidence retrieval', () => {
+  const exportJson = JSON.stringify({bundle:{report_id:'RPT-1',is_premium_tier:true,sources:[],evidence:[],claims:[],review:{}},commercial_readiness:{}});
+  test('requires active entitlement and verifies bytes before projecting canonical evidence', async () => {
+    const sha=require('crypto').createHash('sha256').update(exportJson,'utf8').digest('hex');
+    store.getEntitlement.mockResolvedValue({owner_id:'usr_1',report_id:'RPT-1',artifact_key:report.artifact_key,artifact_sha256:report.artifact_sha256,artifact_size_bytes:42});
+    storage.headCertifiedArtifact.mockResolvedValue({ok:true,size:42});
+    storage.headCanonicalEvidence.mockResolvedValue({ok:true,size:Buffer.byteLength(exportJson),evidenceSha256:sha});
+    storage.getCanonicalEvidence.mockResolvedValue({arrayBuffer:async()=>Uint8Array.from(Buffer.from(exportJson)).buffer});
+    cert.evaluatePremiumCertification.mockReturnValue({certified:true,reportId:'RPT-1',artifactSha256:report.artifact_sha256});
+    const adapter=require('../reportx-adapter');
+    const spy=jest.spyOn(adapter.ReportXBundle.prototype,'toSocEvidenceContract').mockReturnValue({schema:'cdb.soc-evidence.v1'});
+    const out=await service.getEvidenceContract({user,reportId:'RPT-1'});
+    expect(out).toEqual({schema:'cdb.soc-evidence.v1'});
+    spy.mockRestore();
+  });
+
+  test('fails closed when no active entitlement exists', async () => {
+    store.getEntitlement.mockResolvedValue(null);
+    await expect(service.getEvidenceContract({user,reportId:'RPT-1'})).rejects.toMatchObject({code:'ENTITLEMENT_NOT_FOUND'});
+    expect(storage.getCanonicalEvidence).not.toHaveBeenCalled();
+  });
+
+  test('fails closed when evidence bytes do not match metadata hash', async () => {
+    store.getEntitlement.mockResolvedValue({artifact_key:report.artifact_key,artifact_sha256:report.artifact_sha256,artifact_size_bytes:42});
+    storage.headCertifiedArtifact.mockResolvedValue({ok:true,size:42});
+    storage.headCanonicalEvidence.mockResolvedValue({ok:true,size:2,evidenceSha256:'f'.repeat(64)});
+    storage.getCanonicalEvidence.mockResolvedValue({arrayBuffer:async()=>Uint8Array.from(Buffer.from('{}')).buffer});
+    await expect(service.getEvidenceContract({user,reportId:'RPT-1'})).rejects.toMatchObject({code:'EVIDENCE_INTEGRITY_ERROR'});
   });
 });
