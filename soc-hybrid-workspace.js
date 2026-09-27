@@ -1,6 +1,8 @@
 (function(){
 'use strict';
 var selected=null;
+function reportId(card){var id=String(card&&card.getAttribute('data-report-id')||'').trim();return /^[A-Za-z0-9][A-Za-z0-9._:-]{0,179}$/.test(id)?id:null;}
+function setSelectionActions(root,card){var id=reportId(card);root.querySelectorAll('[data-requires-selection]').forEach(function(a){var evidenceOnly=a.hasAttribute('data-requires-report-id');var enabled=!!card&&(!evidenceOnly||!!id);if(enabled)a.removeAttribute('aria-disabled');else a.setAttribute('aria-disabled','true');});txt(root,'[data-selected-evidence]',id?'Canonical report ID available':'Browser-derived record · canonical evidence ID unavailable');}
 function txt(root,sel,v){var e=root.querySelector(sel);if(e)e.textContent=String(v);}
 function cards(root){var sel=root.getAttribute('data-workspace-feed')||'#intel-feed';var feed=document.querySelector(sel);return feed?[].slice.call(feed.querySelectorAll('.intel-post')):[];}
 function severity(card){var e=card.querySelector('.severity-chip');return e?String(e.textContent||'').trim().toUpperCase():'NOT ASSESSED';}
@@ -14,7 +16,7 @@ function selectCard(card){
  if(selected)selected.classList.remove('soc-selected-record');selected=card;card.classList.add('soc-selected-record');
  var title=card.querySelector('.post-title');var root=document.querySelector('.soc-workspace');if(!root)return;
  txt(root,'[data-selected-record]',title?title.textContent.trim():'Selected intelligence record');
- root.querySelectorAll('[data-requires-selection]').forEach(function(a){a.removeAttribute('aria-disabled');});
+ setSelectionActions(root,card);
  document.dispatchEvent(new CustomEvent('cdb:soc-record-selected',{detail:{card:card}}));
 }
 function update(root){
@@ -37,7 +39,7 @@ function bindEvidence(root){
 }
 function init(root){
  var feed=document.querySelector(root.getAttribute('data-workspace-feed')||'#intel-feed');
- root.querySelectorAll('[data-requires-selection]').forEach(function(a){a.setAttribute('aria-disabled','true');a.addEventListener('click',function(e){if(a.getAttribute('aria-disabled')==='true')e.preventDefault();});});
+ root.querySelectorAll('[data-requires-selection]').forEach(function(a){a.setAttribute('aria-disabled','true');a.addEventListener('click',function(e){if(a.getAttribute('aria-disabled')==='true')e.preventDefault();});});setSelectionActions(root,null);
  if(feed&&window.MutationObserver)new MutationObserver(function(){update(root);}).observe(feed,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden']});
  var state=document.getElementById('soc-runtime-state');if(state&&window.MutationObserver)new MutationObserver(function(){update(root);}).observe(state,{childList:true,attributes:true});
  bindEvidence(root);update(root);
