@@ -293,6 +293,9 @@ def test_commercial_runtime_has_no_synthetic_customer_activity_toasts():
         "Threat Hunter, Gov Agency",
         "3,800+ SOC analysts",
         "before public disclosure",
+        "security professionals</strong> are viewing this report right now",
+        "Math.floor(Math.random() * 65) + 24",
     ]:
         assert forbidden not in monetization
     assert "Synthetic purchase/subscription activity is intentionally disabled." in monetization
+    assert "synthetic viewer counts and blanket exploitation assertions" in monetization
