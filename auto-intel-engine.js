@@ -316,16 +316,6 @@
     return enriched;
   }
 
-  function detectSeverity(text) {
-    for (var lvl in SEVERITY_KEYWORDS) {
-      var kws = SEVERITY_KEYWORDS[lvl];
-      for (var i = 0; i < kws.length; i++) {
-        if (text.indexOf(kws[i]) !== -1) return lvl;
-      }
-    }
-    return 'medium';
-  }
-
   function extractCVEs(text) {
     var matches = text.match(/CVE-\d{4}-\d{4,7}/gi) || [];
     return [...new Set(matches)].slice(0, 5);
@@ -340,15 +330,6 @@
   function detectThreatActor(text) {
     // Attribution requires source-bound canonical claims. Do not infer actors
     // or nationality from keyword occurrence in browser-rendered text.
-    return null;
-  }
-
-  function extractCVSS(text) {
-    var m = text.match(/cvss[:\s]+(\d+\.?\d*)/i) || text.match(/score[:\s]+(\d+\.?\d*)/i);
-    if (m) {
-      var v = parseFloat(m[1]);
-      if (v >= 0 && v <= 10) return v.toFixed(1);
-    }
     return null;
   }
 
