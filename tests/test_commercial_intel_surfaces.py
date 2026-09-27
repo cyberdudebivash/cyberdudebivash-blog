@@ -153,3 +153,16 @@ def test_priority_triage_is_feed_scoped_async_aware_and_accessible():
         assert 'aria-live="polite"' in html
         assert '>All severities</option>' in html
         assert '>All evidence states</option>' not in html
+
+
+def test_soc_commandbar_has_no_dead_root_routes():
+    dead = ["/investigations.html", "/hunts.html", "/detections.html", "/watchlists.html"]
+    for path in SURFACES:
+        html = path.read_text(encoding="utf-8-sig")
+        for route in dead:
+            assert route not in html
+        assert 'href="/api-dashboard.html" data-soc-action="investigate"' in html
+        assert 'href="/api-dashboard.html" data-soc-action="hunt"' in html
+        assert 'href="/api-dashboard.html" data-soc-action="detect"' in html
+        assert 'href="/api-dashboard.html" data-soc-action="watch"' in html
+        assert 'href="/api.html" data-soc-action="export"' in html
