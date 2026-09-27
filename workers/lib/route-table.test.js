@@ -75,7 +75,7 @@ describe('resolveRoute — pretty-URL rewrites', () => {
 });
 
 describe('resolveRoute — direct api/** filesystem routes', () => {
-  test('every real handler file on disk is either routed or a known internal-only module (43-file parity check)', () => {
+  test('every real handler file on disk is either routed or a known internal-only module (44-file parity check)', () => {
     const files = [];
     function walk(dir) {
       for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -86,14 +86,14 @@ describe('resolveRoute — direct api/** filesystem routes', () => {
       }
     }
     walk(path.join(__dirname, '..', '..', 'api'));
-    // 40 routable handlers (38 DIRECT_API_HANDLERS + 2 DYNAMIC_API_HANDLERS)
+    // 41 routable handlers (38 DIRECT_API_HANDLERS + 3 DYNAMIC_API_HANDLERS)
     // + 3 internal-only "legacy" library modules that live directly under
     // api/v1/** (not api/_lib/**) but are require()'d by their routed
     // sibling, never routed themselves: api/v1/billing-legacy.js (required
     // by api/v1/billing.js), api/v1/products/legacy-index.js (required by
     // api/v1/products/index.js), api/v1/reports/legacy-index.js (required
     // by api/v1/reports/index.js).
-    assert.equal(files.length, 43, 'expected exactly 43 real api/** files (40 routable + 3 internal-only legacy modules) — update route-table.js and/or this test if this changes');
+    assert.equal(files.length, 44, 'expected exactly 44 real api/** files (41 routable + 3 internal-only legacy modules) — update route-table.js and/or this test if this changes');
 
     const INDEX_HANDLERS = new Set(['api/v1/products/index', 'api/v1/quality/index', 'api/v1/reports/index']);
     const DYNAMIC_FILE_SUFFIX = /\[id]$/;
@@ -134,6 +134,7 @@ describe('resolveRoute — dynamic [id] segments', () => {
   test('/api/v1/ioc/<anything else> hits [id] with that value', () => assert.deepEqual(resolveRoute('/api/v1/ioc/T1059.001'), { type: 'handler', handlerPath: 'api/v1/ioc/[id]', query: { id: 'T1059.001' } }));
   test('/api/v1/detections/rules (bare) hits the list handler, not [id]', () => assert.deepEqual(resolveRoute('/api/v1/detections/rules'), { type: 'handler', handlerPath: 'api/v1/detections/rules', query: {} }));
   test('/api/v1/detections/rules/<id> hits [id] with that value', () => assert.deepEqual(resolveRoute('/api/v1/detections/rules/rule-42'), { type: 'handler', handlerPath: 'api/v1/detections/rules/[id]', query: { id: 'rule-42' } }));
+  test('/api/v1/intel/evidence/<id> reaches the entitlement-bound evidence handler', () => assert.deepEqual(resolveRoute('/api/v1/intel/evidence/report-42'), { type: 'handler', handlerPath: 'api/v1/intel/evidence/[id]', query: { id: 'report-42' } }));
 });
 
 describe('resolveRoute — apex sub-path routing', () => {
@@ -165,10 +166,10 @@ describe('resolveRoute — no match', () => {
 });
 
 describe('table sanity', () => {
-  test('DIRECT_API_HANDLERS and DYNAMIC_API_HANDLERS together account for all 40 handlers with no overlap', () => {
+  test('DIRECT_API_HANDLERS and DYNAMIC_API_HANDLERS together account for all 41 handlers with no overlap', () => {
     const dynamicPaths = DYNAMIC_API_HANDLERS.map(([, handlerPath]) => handlerPath);
     const all = [...DIRECT_API_HANDLERS, ...dynamicPaths];
-    assert.equal(all.length, 40);
+    assert.equal(all.length, 41);
     assert.equal(new Set(all).size, 40, 'duplicate handler path across DIRECT_API_HANDLERS/DYNAMIC_API_HANDLERS');
   });
 });
