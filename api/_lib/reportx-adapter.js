@@ -78,6 +78,64 @@ class ReportXBundle {
     return this._raw.bundle.claims.find(c => c.claim_id === claimId) || null;
   }
 
+  /**
+   * SOC/CTI customer-safe projection. This is intentionally read-only:
+   * every epistemic/corroboration/review value is copied from the canonical
+   * ReportX export and is never recomputed in System 5.
+   */
+  toSocEvidenceContract() {
+    const sources = this.getSources().map(source => ({
+      source_id: source.source_id,
+      url: source.url,
+      publisher: source.publisher,
+      source_type: source.source_type,
+      source_role: source.source_role,
+      retrieved_at: source.retrieved_at,
+      source_date: source.source_date,
+      temporal_precision: source.temporal_precision,
+      reliability: source.reliability,
+      content_sha256: source.content_sha256 || null,
+      accessibility: source.accessibility,
+    }));
+    const evidence = this.getEvidence().map(record => ({
+      evidence_id: record.evidence_id,
+      source_id: record.source_id,
+      excerpt: record.excerpt,
+      locator: record.locator || '',
+    }));
+    const claims = this.getClaims().map(claim => ({
+      claim_id: claim.claim_id,
+      claim_type: claim.claim_type,
+      text: claim.text,
+      status: claim.status,
+      confidence: claim.confidence,
+      corroboration_state: claim.corroboration_state,
+      source_independence: Boolean(claim.source_independence),
+      observed_vs_context: claim.observed_vs_context,
+      temporal_scope: claim.temporal_scope || null,
+      applicability: claim.applicability || '',
+      contradictions: claim.contradictions || [],
+      evidence_refs: claim.evidence_refs || [],
+      source_refs: claim.source_refs || [],
+    }));
+    return Object.freeze({
+      schema: 'cdb.soc-evidence.v1',
+      report_id: this.reportId,
+      premium_tier: this.isPremiumTier,
+      commercial_readiness: Object.freeze({
+        verdict: this.getVerdict(),
+        pass_count: this.getPassCount(),
+        total_count: this.getTotalControlCount(),
+      }),
+      review: this.getReview() || null,
+      sources,
+      evidence,
+      claims,
+      threat_products: this.getThreatProducts(),
+      detection_rules: this.getDetectionRules(),
+    });
+  }
+
   /** Claims whose observed_vs_context is OBSERVED -- incident-specific, not general actor background. */
   getIncidentSpecificClaims() {
     return this._raw.bundle.claims.filter(c => c.observed_vs_context === 'OBSERVED');
