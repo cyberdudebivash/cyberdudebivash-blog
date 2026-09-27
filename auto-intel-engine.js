@@ -108,7 +108,7 @@
   /* ── ANALYST NOTE TEMPLATES ─────────────────────────────────────── */
   var ANALYST_NOTES = {
     cve: [
-      'This vulnerability is high-priority for patch management. Organizations running affected versions should treat this as P1 remediation. SOC teams should activate detection rules before public PoC availability — typical weaponization window is 24–72 hours post-disclosure.',
+      'This vulnerability is high-priority for patch management. Organizations should validate affected versions against the cited vendor or vulnerability source and prioritize remediation according to confirmed exposure, exploitation evidence, and asset criticality.',
       'CVEs with CVSS ≥ 7.5 are monitored by threat actors within 48 hours of NVD publication. Pre-patch network segmentation and compensating controls are recommended for all internet-facing assets.',
       'Based on historical exploitation patterns, this vulnerability class is typically weaponized within 48 hours of PoC release. Immediate patching or mitigation is strongly advised for all affected systems.'
     ],
@@ -130,7 +130,7 @@
     general: [
       'This threat report has been enriched with MITRE ATT&CK mappings, IOC extraction, and risk scoring by the CYBERDUDEBIVASH SENTINEL APEX analysis pipeline. Subscribe to SOC Pro for full detection coverage delivered 48 hours before NVD.',
       'CYBERDUDEBIVASH SENTINEL APEX analysts assess this threat as operationally relevant to enterprise environments with internet-facing infrastructure based on current dark web signals and active campaign tracking.',
-      'CYBERDUDEBIVASH SENTINEL APEX tracks emerging threats before NVD publication. SOC Pro members receive machine-readable IOC feeds, SIEM rules, and YARA signatures for every major threat within 24 hours of identification.'
+      'Use the cited source, publication timestamp, and available evidence fields to determine operational relevance. Detection content must be independently validated before deployment.'
     ]
   };
 
