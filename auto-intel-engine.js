@@ -549,6 +549,12 @@
       if (!filtered.length) filtered = items.sort(function(a,b) { return b.riskScore - a.riskScore; });
     }
 
+    if (!filtered.length) {
+      container.innerHTML = '<div class="intel-empty"><span>⚠</span><p>No evidence-matched intelligence is currently available for this workspace. Unrelated records are not substituted.</p></div>';
+      updateLiveCounts([]);
+      return;
+    }
+
     var html = filtered.slice(0, limit).map(function(item) {
       return generatePostHTML(item, isPremium);
     }).join('\n');
