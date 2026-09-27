@@ -59,3 +59,12 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+def test_enterprise_soc_command_center_contract():
+    for path in COMMERCIAL_SURFACES:
+        html = _read(path)
+        assert 'soc-ops-commandbar' in html
+        assert 'Validate → Investigate → Hunt → Detect → Watch → Export' in html
+        assert 'SOC 2-aligned evidence; no certification claim' in html
+        assert 'updated every 10 minutes from global threat feeds' not in html.lower()
+        assert 'Unlock SOC Pro — $18/mo' not in html
