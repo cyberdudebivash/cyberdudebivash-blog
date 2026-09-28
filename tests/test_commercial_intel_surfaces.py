@@ -576,7 +576,7 @@ def test_homepage_is_soc2_cti_customer_command_center_and_not_static_incident_ma
         "DISABLED",
         "Search intelligence",
         "CISA KEV",
-        "Priority = analyst workflow ordering",
+        "<b>Priority</b> = analyst workflow ordering",
         'id="homepage-feed-state">VERIFYING',
         'id="homepage-priority-runtime">VERIFYING',
         "Open Hybrid SOC + CTI operational workspace",
