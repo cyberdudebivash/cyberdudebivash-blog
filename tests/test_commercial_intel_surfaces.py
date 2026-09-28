@@ -599,13 +599,22 @@ def test_cloudflare_release_fail_closes_on_soc2_cti_customer_assurance():
     ]:
         assert required in workflow
 
+def test_homepage_has_single_authoritative_header_and_control_strip():
+    html = Path("index.html").read_text(encoding="utf-8-sig")
+    assert html.count('<header id="main-header">') == 1
+    assert html.count('id="live-critical-alert-bar"') == 1
+    assert html.count('class="apex-status-bar"') == 1
+    assert html.count('id="cdb-live-command-center"') == 1
+    assert html.count('class="mobile-nav-drawer"') == 1
+
+
 def test_homepage_is_soc2_cti_customer_command_center_and_not_static_incident_marketing():
     html = Path("index.html").read_text(encoding="utf-8-sig")
     css = Path("apex-command-center.css").read_text(encoding="utf-8")
     runtime = Path("apex-command-center.js").read_text(encoding="utf-8")
     for required in [
         "LIVE HYBRID SOC 2 + CTI OPERATIONS",
-        "Enterprise <em>Security Intelligence Command Center</em>",
+        "Enterprise Security Intelligence Command Center",
         "/customer-assurance.html",
         "ALIGNED · NOT CERTIFIED",
         'id="cdb-integrity-state"',
@@ -767,7 +776,7 @@ def test_homepage_exposes_premium_soc2_cti_brand_and_live_hero():
 def test_homepage_command_center_meets_enterprise_visibility_floor():
     html = Path("index.html").read_text(encoding="utf-8-sig")
     css = Path("apex-command-center.css").read_text(encoding="utf-8")
-    assert "Hybrid SOC 2 + CTI Enterprise Security Intelligence Command Center" in html
+    assert "CYBERDUDEBIVASH SENTINEL APEX SOC 2 & CTI PLATFORM" in html
     assert "/apex-command-center.css?v=20260928-brandhero1" in html
     assert "/apex-command-center.js?v=20260928-brandhero1" in html
     for required in [
