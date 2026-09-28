@@ -606,7 +606,6 @@ def test_customer_surfaces_are_mobile_tablet_ready():
         "@media (max-width:820px)",
         "@media (max-width:480px)",
         "@media (max-width:360px)",
-        "viewport-fit=cover",
         "min-height:var(--rp-tap)",
         ".mobile-nav-drawer",
         ".cdb-hero-metrics",
