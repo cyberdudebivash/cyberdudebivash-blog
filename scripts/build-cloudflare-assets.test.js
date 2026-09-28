@@ -136,8 +136,8 @@ describe('build-cloudflare-assets', () => {
 
   test('expected public artifacts are present', () => {
     const mustExist = [
-      'index.html', 'customer-assurance.html', 'leads.html', 'robots.txt', 'rss.xml', 'sitemap.xml',
-      'search-index.json', 'live-intel.json',
+      'index.html', 'customer-assurance.html', 'service-status.html', 'enterprise-onboarding.html', 'cti-delivery-acceptance.html', 'leads.html', 'robots.txt', 'rss.xml', 'sitemap.xml',
+      'search-index.json', 'live-intel.json', 'api/intel/customer-assurance.json', 'api/intel/service-assurance.json', 'api/intel/cti-delivery-acceptance.json',
       'apex-v13.css', 'analytics-engine.js', 'banner-orchestrator.js',
       'soc-cti-console.css', 'soc-triage-workspace.js', 'soc-taxonomy-pivots.js',
       'soc-hybrid-workspace.js', 'soc-evidence-drawer.js',

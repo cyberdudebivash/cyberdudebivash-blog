@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """P0 commercial intelligence surface integrity gate."""
 from pathlib import Path
+import json
 
 SURFACES = [
     Path("malware/index.html"),
@@ -64,6 +65,40 @@ def main():
             failures.append(f"{surface}: hybrid SOC/CTI console missing")
         if "no certification claim" not in page.lower():
             failures.append(f"{surface}: SOC 2 non-certification disclosure missing")
+    # P0 full SOC 2 / CTI customer-release package: these checks execute in
+    # the production workflow's direct python invocation, not only under pytest.
+    required_release_files = [
+        Path("customer-assurance.html"),
+        Path("service-status.html"),
+        Path("enterprise-onboarding.html"),
+        Path("cti-delivery-acceptance.html"),
+        Path("api/intel/customer-assurance.json"),
+        Path("api/intel/service-assurance.json"),
+        Path("api/intel/cti-delivery-acceptance.json"),
+        Path("api/v1/customer/assurance.js"),
+    ]
+    for release_file in required_release_files:
+        if not release_file.exists():
+            failures.append(f"{release_file}: required customer-release artifact missing")
+
+    enterprise = Path("enterprise.html").read_text(encoding="utf-8-sig")
+    for forbidden in [
+        "99.9% SLA UPTIME", "99.9% uptime SLA", "Sub-100ms latency",
+        "Low FP guarantee", "4-hour emergency response SLA",
+        "24–72 hours before public disclosure", "Pre-disclosure CVE access",
+        "Early CVE disclosure access", "4-hour emergency SLA",
+        "FORTUNE 500 READY", "SLA-backed CVE data", "SLA guarantees",
+    ]:
+        if forbidden.lower() in enterprise.lower():
+            failures.append(f"enterprise.html: unsupported assurance/commercial claim remains: {forbidden}")
+
+    service = json.loads(Path("api/intel/service-assurance.json").read_text(encoding="utf-8"))
+    acceptance = json.loads(Path("api/intel/cti-delivery-acceptance.json").read_text(encoding="utf-8"))
+    if service.get("historical_uptime_percentage") is not None or service.get("historical_uptime_claimed") is not False:
+        failures.append("api/intel/service-assurance.json: historical uptime must fail closed without measured history")
+    if acceptance.get("automatic_acceptance") is not False or len(acceptance.get("criteria", [])) != 10:
+        failures.append("api/intel/cti-delivery-acceptance.json: acceptance contract must require 10 explicit customer criteria")
+
     if failures:
         raise SystemExit("\n".join(failures))
     print("commercial-intel-surface-integrity: PASS")
@@ -576,10 +611,15 @@ def test_homepage_is_soc2_cti_customer_command_center_and_not_static_incident_ma
         "DISABLED",
         "Search intelligence",
         "CISA KEV",
-        "Priority = analyst workflow ordering",
+        "<b>Priority</b> = analyst workflow ordering",
         'id="homepage-feed-state">VERIFYING',
         'id="homepage-priority-runtime">VERIFYING',
         "Open Hybrid SOC + CTI operational workspace",
+        "PRIORITY INTELLIGENCE",
+        "Review customer control and evidence posture",
+        "Evidence-Bound Analyst Queues",
+        "No synthetic victim counters",
+        "Source and freshness bound",
         "Evidence-Bound · Runtime Verified",
     ]:
         assert required in html
@@ -589,6 +629,15 @@ def test_homepage_is_soc2_cti_customer_command_center_and_not_static_incident_ma
         "Nation-State APT Tracking in Real Time",
         "Ransomware Group Activity — Live Updates",
         "FEED STATUS: <strong>SHOWN BELOW</strong>",
+        "Most Exploited CVEs This Week",
+        "67 Victims",
+        "$4.2B Demanded",
+        "3B Users at Risk",
+        "2 Unpatched",
+        "PoC in Wild",
+        "73% of production enterprise AI deployments vulnerable",
+        "67% of successful attacks go undetected for 72+ hours",
+        "150GB exfiltrated",
     ]:
         assert forbidden not in html
 
@@ -607,17 +656,15 @@ def test_cloudflare_release_certifies_homepage_soc2_cti_command_center():
     ]:
         assert required in workflow
 
-def test_homepage_is_soc2_cti_grade_operational_console():
+
+def test_homepage_exposes_runtime_derived_cti_metrics_and_control_evidence():
     html = Path("index.html").read_text(encoding="utf-8-sig")
     for required in [
-        "Hybrid SOC + CTI · Customer Control Plane",
-        "Operational trust before analyst action.",
         "Live CTI operational metrics",
         "Production Control Evidence",
         "Exact Git SHA → Cloudflare deployment",
         "Allowlisted production asset bundle",
         "API-key boundary for protected operations",
-        "SOC 2-aligned operational evidence; no SOC 2 certification or auditor attestation is claimed.",
         'id="soc2-total-published"',
         'id="soc2-critical-count"',
         'id="soc2-kev-count"',
@@ -628,28 +675,165 @@ def test_homepage_is_soc2_cti_grade_operational_console():
         "stats.cisaKev",
         "stats.exploited",
         "stats.sources",
+        "SOC 2-aligned controls support due diligence but do not replace an independent auditor attestation.",
     ]:
         assert required in html
 
-    for forbidden in [
-        "SOC 2 Type II certified",
-        "SOC2 certified",
-        "updated every 10 minutes from global threat feeds",
-        "before public disclosure",
+def test_homepage_release_gate_waits_for_current_release_markers_not_just_http_200():
+    workflow = Path(".github/workflows/cloudflare-production-deploy.yml").read_text(encoding="utf-8")
+    homepage_gate = workflow.split('name: "Certify SOC 2 + CTI homepage command center"', 1)[1].split('name: "Certify SOC 2 + CTI customer assurance"', 1)[0]
+    assert 'local ready=0' in homepage_gate
+    assert "grep -Fq 'Live CTI operational metrics' \"$file\"" in homepage_gate
+    assert 'grep -Fq \'id="soc2-kev-count"\' "$file"' in homepage_gate
+    assert 'grep -Fq \'id="soc2-pipeline-age"\' "$file"' in homepage_gate
+    assert 'ready=1' in homepage_gate
+    assert 'test "$ready" -eq 1' in homepage_gate
+    assert 'if [ "$code" = "200" ]; then break; fi' not in homepage_gate
+
+def test_full_soc2_cti_customer_release_package_contract():
+    assurance = Path("customer-assurance.html").read_text(encoding="utf-8-sig")
+    service = Path("service-status.html").read_text(encoding="utf-8-sig")
+    onboarding = Path("enterprise-onboarding.html").read_text(encoding="utf-8-sig")
+    acceptance = Path("cti-delivery-acceptance.html").read_text(encoding="utf-8-sig")
+    dashboard = Path("api-dashboard.html").read_text(encoding="utf-8-sig")
+    enterprise = Path("enterprise.html").read_text(encoding="utf-8-sig")
+
+    for required in [
+        "/service-status.html",
+        "/enterprise-onboarding.html",
+        "/cti-delivery-acceptance.html",
+        "GET /api/v1/customer/assurance?download=1",
     ]:
-        assert forbidden.lower() not in html.lower()
+        assert required in assurance
+
+    for required in [
+        "Availability without invented percentages.",
+        "Historical uptime percentages are not fabricated",
+        "Marketing copy is not an SLA.",
+        "security@cyberdudebivash.in",
+        "contact@cyberdudebivash.in",
+        "ALIGNED · NOT CERTIFIED",
+    ]:
+        assert required in service
+
+    for required in [
+        "From security review to accepted CTI delivery.",
+        "Security & vendor-risk review",
+        "Access provisioning",
+        "CTI integration validation",
+        "Delivery acceptance",
+        "GET /api/v1/customer/assurance",
+    ]:
+        assert required in onboarding
+
+    for criterion in [f"A{i}" for i in range(1, 11)]:
+        assert criterion in acceptance
+    assert "No silent acceptance." in acceptance
+    assert "CUSTOMER VERIFY" in acceptance
+
+    assert "Download Assurance JSON" in dashboard
+    assert "/api/v1/customer/assurance?download=1" in dashboard
+    assert "sessionKey" in dashboard
+    assert "localStorage.setItem" not in dashboard
+    assert "sessionStorage.setItem" not in dashboard
+
+    for forbidden in [
+        "99.9% SLA UPTIME",
+        "99.9% uptime SLA",
+        "Sub-100ms latency",
+        "Low FP guarantee",
+        "4-hour emergency response SLA",
+        "24–72 hours before public disclosure",
+        "Pre-disclosure CVE access",
+        "Early CVE disclosure access",
+        "4-hour emergency SLA",
+        "FORTUNE 500 READY",
+        "SLA-backed CVE data",
+        "SLA guarantees",
+        "Major Bank Reduces MTTD",
+        "Hospital Network Deploys",
+        "MSSP White-Labels CYBERDUDEBIVASH",
+        "Email support (24h SLA)",
+        "Custom rule development SLA",
+    ]:
+        assert forbidden.lower() not in enterprise.lower()
 
 
-def test_cloudflare_release_certifies_soc2_cti_homepage_console():
+def test_machine_readable_service_and_acceptance_truth_boundaries():
+    service = json.loads(Path("api/intel/service-assurance.json").read_text(encoding="utf-8"))
+    acceptance = json.loads(Path("api/intel/cti-delivery-acceptance.json").read_text(encoding="utf-8"))
+    assurance = json.loads(Path("api/intel/customer-assurance.json").read_text(encoding="utf-8"))
+
+    assert service["historical_uptime_percentage"] is None
+    assert service["historical_uptime_claimed"] is False
+    assert service["contractual_sla"]["status"] == "CUSTOMER_SPECIFIC_IF_EXECUTED"
+    assert acceptance["automatic_acceptance"] is False
+    assert len(acceptance["criteria"]) == 10
+    assert {c["id"] for c in acceptance["criteria"]} == {f"A{i}" for i in range(1, 11)}
+    assert assurance["soc2_certified"] is False
+    assert assurance["soc2_attestation_published"] is False
+    assert assurance["customer_resources"]["authenticated_customer_evidence"] == "/api/v1/customer/assurance"
+    assert assurance["customer_resources"]["service_assurance"] == "/service-status.html"
+    assert assurance["customer_resources"]["enterprise_onboarding"] == "/enterprise-onboarding.html"
+    assert assurance["customer_resources"]["cti_delivery_acceptance"] == "/cti-delivery-acceptance.html"
+
+
+def test_authenticated_customer_assurance_export_is_scoped_and_fail_closed():
+    handler = Path("api/v1/customer/assurance.js").read_text(encoding="utf-8")
+    route_table = Path("workers/lib/route-table.js").read_text(encoding="utf-8")
+    router = Path("workers/lib/router.js").read_text(encoding="utf-8")
+
+    for required in [
+        "authenticate(req, res)",
+        "globalIpRateLimit",
+        "Cache-Control",
+        "no-store",
+        "soc2_certified: false",
+        "soc2_attestation_published: false",
+        "historical_uptime_percentage: null",
+        "Content-Disposition",
+        "customer_scope",
+    ]:
+        assert required in handler
+    assert "user.keyHash" not in handler
+    assert "api_key" not in handler.lower()
+    assert "'api/v1/customer/assurance'" in route_table
+    assert "'api/v1/customer/assurance': () => require('../../api/v1/customer/assurance')" in router
+
+
+def test_cloudflare_release_certifies_complete_customer_release_package():
     workflow = Path(".github/workflows/cloudflare-production-deploy.yml").read_text(encoding="utf-8")
     for required in [
-        "Certify SOC 2 + CTI homepage command center",
-        'fetch_page "/"',
-        "Hybrid SOC + CTI · Customer Control Plane",
-        "Operational trust before analyst action.",
-        "Production Control Evidence",
-        'id="soc2-kev-count"',
-        "SOC 2-aligned operational evidence; no SOC 2 certification or auditor attestation is claimed.",
+        "dist-public/service-status.html",
+        "dist-public/enterprise-onboarding.html",
+        "dist-public/cti-delivery-acceptance.html",
+        "dist-public/api/intel/service-assurance.json",
+        "dist-public/api/intel/cti-delivery-acceptance.json",
+        'fetch_page "/service-status.html"',
+        'fetch_page "/enterprise-onboarding.html"',
+        'fetch_page "/cti-delivery-acceptance.html"',
+        'test "$code" = "401"',
+        "Download Assurance JSON",
+        "CUSTOMER_SPECIFIC_IF_EXECUTED",
+        ".automatic_acceptance == false",
+        "CUSTOM SLA BY CONTRACT",
+        "Operational patterns without invented customer outcomes",
+        'test "$enterprise_ready" -eq 1',
     ]:
         assert required in workflow
+
+def test_api_dashboard_contract_and_freshness_copy_is_truth_bound():
+    dashboard = Path("api-dashboard.html").read_text(encoding="utf-8-sig")
+    for required in [
+        "Operational intelligence feed with runtime timestamps",
+        "Contract-defined SLA where explicitly executed",
+        "Dedicated analyst option / contract-defined SLA",
+    ]:
+        assert required in dashboard
+    for forbidden in [
+        "Real-time intel feed",
+        "SLA guarantee",
+        "Dedicated analyst / custom SLA",
+    ]:
+        assert forbidden not in dashboard
 

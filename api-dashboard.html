@@ -199,6 +199,17 @@ const data = await res.json();</div>
       <div class="chart-bar" id="usage-chart"></div>
       <div style="margin-top:24px"></div>
     </div>
+    <div class="card" id="customer-assurance-card">
+      <div class="card-title">🛡 Customer Assurance & Evidence</div>
+      <p style="font-size:13px;color:var(--apex-muted);margin-bottom:14px">Authenticated customers can export a customer-scoped SOC 2/CTI assurance package. This is operational evidence, not a SOC 2 Type I/II attestation.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-secondary" onclick="downloadAssurancePackage()">Download Assurance JSON</button>
+        <a class="btn btn-secondary" href="/customer-assurance.html">Public Assurance</a>
+        <a class="btn btn-secondary" href="/service-status.html">Service Assurance</a>
+        <a class="btn btn-secondary" href="/cti-delivery-acceptance.html">Delivery Acceptance</a>
+      </div>
+      <div id="assurance-status" style="font-size:12px;color:var(--apex-muted);margin-top:12px">Authentication required: load your dashboard with an API key before exporting customer-scoped evidence.</div>
+    </div>
     <div class="card hidden" id="my-subscription-card">
       <div class="card-title">💳 My Subscription</div>
       <div id="subscription-content"></div>
@@ -462,7 +473,7 @@ X-API-Key: sentinel_your_key_here</div>
         <li>Full search (unlimited results)</li>
         <li>Priority Slack/Discord channel</li>
         <li>Pay via UPI or bank transfer</li>
-        <li class="locked">Dedicated analyst / custom SLA</li>
+        <li class="locked">Dedicated analyst option / contract-defined SLA</li>
       </ul>
       <button class="btn" style="background:rgba(0,255,136,.15);border:1px solid rgba(0,255,136,.4);color:#00ff88;width:100%" onclick="ApexPaymentFlow.startUpgrade('team')">🛡️ Upgrade to Team →</button>
     </div>
@@ -474,12 +485,12 @@ X-API-Key: sentinel_your_key_here</div>
         <li>Unlimited API requests</li>
         <li>All Sentinel Team features included</li>
         <li>Unlimited team seats</li>
-        <li>Real-time intel feed</li>
+        <li>Operational intelligence feed with runtime timestamps</li>
         <li>Bulk data export</li>
         <li>Custom advisory reports</li>
         <li>White-label licensing</li>
         <li>Dedicated analyst support</li>
-        <li>SLA guarantee</li>
+        <li>Contract-defined SLA where explicitly executed</li>
         <li>MSSP licensing available</li>
       </ul>
       <button class="btn" style="background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.4);color:#a855f7;width:100%" onclick="window.location.href='/enterprise.html'">🏢 Contact Sales →</button>
@@ -601,6 +612,31 @@ async function registerKey() {
     }
   } catch(e){ showAlert(alert,'error','Request failed — check your connection and retry.'); }
   btn.disabled=false; btn.textContent='⚡ Generate My API Key';
+}
+
+async function downloadAssurancePackage() {
+  const status=document.getElementById('assurance-status');
+  if(!sessionKey){
+    if(status){status.style.color='var(--apex-red)';status.textContent='Authentication required: load your dashboard with an API key first.';}
+    return;
+  }
+  if(status){status.style.color='var(--apex-muted)';status.textContent='Generating customer-scoped assurance export…';}
+  try{
+    const res=await fetch(API+'/api/v1/customer/assurance?download=1',{headers:{'X-API-Key':sessionKey}});
+    if(!res.ok){
+      const data=await res.json().catch(()=>({}));
+      throw new Error((data.error&&data.error.message)||('HTTP '+res.status));
+    }
+    const blob=await res.blob();
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download='sentinel-apex-customer-assurance.json';
+    document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+    if(status){status.style.color='var(--apex-green)';status.textContent='Customer-scoped assurance package exported. API key material is not included.';}
+  }catch(e){
+    if(status){status.style.color='var(--apex-red)';status.textContent='Assurance export failed: '+String(e.message||e);}
+  }
 }
 
 async function loadDashboard(silent) {

@@ -17,6 +17,9 @@ on:
       - 'products.html'
       - 'pricing.html'
       - 'customer-assurance.html'
+      - 'service-status.html'
+      - 'enterprise-onboarding.html'
+      - 'cti-delivery-acceptance.html'
       - 'soc-cti-console.css'
       - 'soc-triage-workspace.js'
       - 'soc-taxonomy-pivots.js'
@@ -28,6 +31,7 @@ on:
       - 'revenue-cta-block.js'
       - 'ai-monetization-engine.js'
       - 'api/v1/intel.js'
+      - 'api/v1/customer/assurance.js'
       - 'api/intel/**'
       - 'workers/**'
       - 'scripts/build-cloudflare-assets.js'
@@ -84,7 +88,12 @@ jobs:
           test -s dist-public/breaking/index.html
           test -s dist-public/leads.html
           test -s dist-public/customer-assurance.html
+          test -s dist-public/service-status.html
+          test -s dist-public/enterprise-onboarding.html
+          test -s dist-public/cti-delivery-acceptance.html
           test -s dist-public/api/intel/customer-assurance.json
+          test -s dist-public/api/intel/service-assurance.json
+          test -s dist-public/api/intel/cti-delivery-acceptance.json
           test -s dist-public/soc-cti-console.css
           test -s dist-public/soc-triage-workspace.js
           test -s dist-public/soc-taxonomy-pivots.js
@@ -237,13 +246,21 @@ jobs:
             local route="$1"
             local file="$2"
             local code=""
+            local ready=0
             for attempt in 1 2 3 4 5 6; do
               code="$(curl -sS -L --max-time 25 -H 'Cache-Control: no-cache' -o "$file" -w '%{http_code}' "$base$route?release_sha=$GITHUB_SHA" || true)"
-              if [ "$code" = "200" ]; then break; fi
-              echo "Waiting for homepage propagation: $route attempt $attempt status=$code"
+              if [ "$code" = "200" ] \
+                && grep -Fq 'Live CTI operational metrics' "$file" \
+                && grep -Fq 'id="soc2-kev-count"' "$file" \
+                && grep -Fq 'id="soc2-pipeline-age"' "$file"; then
+                ready=1
+                break
+              fi
+              echo "Waiting for homepage release propagation: $route attempt $attempt status=$code"
               sleep 10
             done
             test "$code" = "200" || { echo "::error::$route returned HTTP $code"; exit 1; }
+            test "$ready" -eq 1 || { echo "::error::$route never exposed the current SOC 2 + CTI release markers"; exit 1; }
           }
 
           fetch_page "/" "$tmp/home.html"
@@ -252,41 +269,20 @@ jobs:
           grep -Fq 'ALIGNED · NOT CERTIFIED' "$tmp/home.html" || { echo "::error::Homepage SOC 2 truth boundary missing"; exit 1; }
           grep -Fq 'SOURCE-BOUND' "$tmp/home.html" || { echo "::error::Homepage intelligence integrity state missing"; exit 1; }
           grep -Fq 'Synthetic Telemetry' "$tmp/home.html" || { echo "::error::Homepage synthetic telemetry disclosure missing"; exit 1; }
+          grep -Fq 'Live CTI operational metrics' "$tmp/home.html" || { echo "::error::Homepage live CTI metrics missing"; exit 1; }
+          grep -Fq 'Production Control Evidence' "$tmp/home.html" || { echo "::error::Homepage production control evidence missing"; exit 1; }
+          grep -Fq 'id="soc2-kev-count"' "$tmp/home.html" || { echo "::error::Homepage CISA KEV runtime metric missing"; exit 1; }
+          grep -Fq 'id="soc2-pipeline-age"' "$tmp/home.html" || { echo "::error::Homepage runtime-derived freshness missing"; exit 1; }
+          grep -Fq 'Exact Git SHA → Cloudflare deployment' "$tmp/home.html" || { echo "::error::Homepage deployment integrity evidence missing"; exit 1; }
           grep -Fq '/customer-assurance.html' "$tmp/home.html" || { echo "::error::Homepage assurance navigation missing"; exit 1; }
+          grep -Fq 'Evidence-Bound Analyst Queues' "$tmp/home.html" || { echo "::error::Evidence-bound analyst queues missing"; exit 1; }
+          grep -Fq 'No synthetic victim counters' "$tmp/home.html" || { echo "::error::Homepage synthetic victim-counter policy missing"; exit 1; }
+          ! grep -Fq 'Most Exploited CVEs This Week' "$tmp/home.html" || { echo "::error::Static exploited-this-week panel remains"; exit 1; }
+          ! grep -Fq '67 Victims' "$tmp/home.html" || { echo "::error::Static victim-count assertion remains"; exit 1; }
+          ! grep -Fq '$4.2B Demanded' "$tmp/home.html" || { echo "::error::Unsupported ransomware commercial metric remains"; exit 1; }
+          ! grep -Fq '3B Users at Risk' "$tmp/home.html" || { echo "::error::Static exposure-count assertion remains"; exit 1; }
           ! grep -Fq 'Qilin/LockBit 4.0 Active — 67 Victims April' "$tmp/home.html" || { echo "::error::Stale hardcoded incident assertion remains on homepage"; exit 1; }
           ! grep -Fq 'Nation-State APT Tracking in Real Time' "$tmp/home.html" || { echo "::error::Unsupported real-time APT claim remains"; exit 1; }
-
-          echo "SOC 2 + CTI homepage command center certified on $GITHUB_SHA"
-
-      - name: "Certify SOC 2 + CTI homepage command center"
-        shell: bash
-        run: |
-          set -euo pipefail
-          base="https://blog.cyberdudebivash.in"
-          tmp="$(mktemp -d)"
-          trap 'rm -rf "$tmp"' EXIT
-
-          fetch_page() {
-            local route="$1"
-            local file="$2"
-            local code=""
-            for attempt in 1 2 3 4 5 6; do
-              code="$(curl -sS -L --max-time 25 -H 'Cache-Control: no-cache' -o "$file" -w '%{http_code}' "$base$route?release_sha=$GITHUB_SHA" || true)"
-              if [ "$code" = "200" ]; then break; fi
-              echo "Waiting for homepage propagation: $route attempt $attempt status=$code"
-              sleep 10
-            done
-            test "$code" = "200" || { echo "::error::$route returned HTTP $code"; exit 1; }
-          }
-
-          fetch_page "/" "$tmp/home.html"
-          grep -Fq 'Hybrid SOC + CTI · Customer Control Plane' "$tmp/home.html" || { echo "::error::Homepage missing Hybrid SOC + CTI control plane"; exit 1; }
-          grep -Fq 'Operational trust before analyst action.' "$tmp/home.html" || { echo "::error::Homepage missing operational trust hierarchy"; exit 1; }
-          grep -Fq 'Production Control Evidence' "$tmp/home.html" || { echo "::error::Homepage missing production control evidence"; exit 1; }
-          grep -Fq 'id="soc2-kev-count"' "$tmp/home.html" || { echo "::error::Homepage missing live CISA KEV metric"; exit 1; }
-          grep -Fq 'id="soc2-pipeline-age"' "$tmp/home.html" || { echo "::error::Homepage missing runtime-derived freshness metric"; exit 1; }
-          grep -Fq 'SOC 2-aligned operational evidence; no SOC 2 certification or auditor attestation is claimed.' "$tmp/home.html" || { echo "::error::Homepage assurance truth boundary missing"; exit 1; }
-          ! grep -Fiq 'SOC 2 Type II certified' "$tmp/home.html" || { echo "::error::Unsupported SOC 2 certification claim on homepage"; exit 1; }
 
           echo "SOC 2 + CTI homepage command center certified on $GITHUB_SHA"
 
@@ -327,11 +323,63 @@ jobs:
           jq -e '.soc2_attestation_published == false' "$tmp/assurance.json" >/dev/null || { echo "::error::Machine-readable attestation status is not fail-closed"; exit 1; }
           jq -e '.cti_controls.source_bound_evidence == true and .cti_controls.runtime_derived_freshness == true and .cti_controls.synthetic_customer_activity_metrics == false' "$tmp/assurance.json" >/dev/null || { echo "::error::CTI assurance controls are incomplete"; exit 1; }
 
-          fetch_page "/enterprise.html" "$tmp/enterprise.html"
+          enterprise_ready=0
+          for attempt in 1 2 3 4 5 6; do
+            code="$(curl -sS -L --max-time 25 -H 'Cache-Control: no-cache' -o "$tmp/enterprise.html" -w '%{http_code}' "$base/enterprise.html?release_sha=$GITHUB_SHA" || true)"
+            if [ "$code" = "200" ] \
+              && grep -Fq 'CUSTOM SLA BY CONTRACT' "$tmp/enterprise.html" \
+              && grep -Fq 'Operational patterns without invented customer outcomes' "$tmp/enterprise.html"; then
+              enterprise_ready=1
+              break
+            fi
+            echo "Waiting for enterprise release propagation: attempt $attempt status=$code"
+            sleep 10
+          done
+          test "$enterprise_ready" -eq 1 || { echo "::error::Enterprise release markers did not propagate"; exit 1; }
           grep -Fq '/customer-assurance.html' "$tmp/enterprise.html" || { echo "::error::Enterprise assurance path missing"; exit 1; }
 
           fetch_page "/intelligence.html" "$tmp/intelligence.html"
           grep -Fq '/customer-assurance.html' "$tmp/intelligence.html" || { echo "::error::CTI assurance path missing"; exit 1; }
+
+          fetch_page "/service-status.html" "$tmp/service-status.html"
+          grep -Fq 'Availability without invented percentages.' "$tmp/service-status.html" || { echo "::error::Service assurance truth model missing"; exit 1; }
+          grep -Fq 'Marketing copy is not an SLA.' "$tmp/service-status.html" || { echo "::error::Service SLA truth boundary missing"; exit 1; }
+          grep -Fq 'security@cyberdudebivash.in' "$tmp/service-status.html" || { echo "::error::Security escalation contact missing"; exit 1; }
+          grep -Fq 'contact@cyberdudebivash.in' "$tmp/service-status.html" || { echo "::error::Customer incident contact missing"; exit 1; }
+
+          fetch_page "/enterprise-onboarding.html" "$tmp/onboarding.html"
+          grep -Fq 'From security review to accepted CTI delivery.' "$tmp/onboarding.html" || { echo "::error::Enterprise onboarding workflow missing"; exit 1; }
+          grep -Fq 'GET /api/v1/customer/assurance' "$tmp/onboarding.html" || { echo "::error::Authenticated assurance export is absent from onboarding"; exit 1; }
+
+          fetch_page "/cti-delivery-acceptance.html" "$tmp/acceptance.html"
+          grep -Fq 'Acceptance is evidence, not assumption.' "$tmp/acceptance.html" || { echo "::error::CTI acceptance gate missing"; exit 1; }
+          grep -Fq 'No silent acceptance.' "$tmp/acceptance.html" || { echo "::error::Acceptance truth boundary missing"; exit 1; }
+
+          fetch_page "/api/intel/service-assurance.json" "$tmp/service-assurance.json"
+          jq -e '.historical_uptime_percentage == null and .historical_uptime_claimed == false and .contractual_sla.status == "CUSTOMER_SPECIFIC_IF_EXECUTED"' "$tmp/service-assurance.json" >/dev/null || { echo "::error::Service assurance machine contract is unsafe"; exit 1; }
+
+          fetch_page "/api/intel/cti-delivery-acceptance.json" "$tmp/acceptance.json"
+          jq -e '.automatic_acceptance == false and (.criteria | length) == 10' "$tmp/acceptance.json" >/dev/null || { echo "::error::CTI delivery acceptance machine contract is incomplete"; exit 1; }
+
+          code="$(curl -sS -L --max-time 20 -o "$tmp/auth-assurance.json" -w '%{http_code}' "$base/api/v1/customer/assurance?release_sha=$GITHUB_SHA")"
+          test "$code" = "401" || { echo "::error::Authenticated customer assurance route must exist and fail closed with HTTP 401 without a key; got $code"; exit 1; }
+
+          fetch_page "/api-dashboard.html" "$tmp/api-dashboard-assurance.html"
+          grep -Fq 'Download Assurance JSON' "$tmp/api-dashboard-assurance.html" || { echo "::error::Customer dashboard assurance export control missing"; exit 1; }
+          grep -Fq '/api/v1/customer/assurance?download=1' "$tmp/api-dashboard-assurance.html" || { echo "::error::Customer dashboard assurance export endpoint missing"; exit 1; }
+          grep -Fq 'Operational intelligence feed with runtime timestamps' "$tmp/api-dashboard-assurance.html" || { echo "::error::Customer dashboard runtime freshness language missing"; exit 1; }
+          grep -Fq 'Contract-defined SLA where explicitly executed' "$tmp/api-dashboard-assurance.html" || { echo "::error::Customer dashboard SLA contract boundary missing"; exit 1; }
+          ! grep -Fq 'Real-time intel feed' "$tmp/api-dashboard-assurance.html" || { echo "::error::Unsupported real-time feed claim remains on customer dashboard"; exit 1; }
+          ! grep -Fq 'SLA guarantee' "$tmp/api-dashboard-assurance.html" || { echo "::error::Unscoped SLA guarantee remains on customer dashboard"; exit 1; }
+
+          ! grep -Fiq '99.9% SLA UPTIME' "$tmp/enterprise.html" || { echo "::error::Unsupported enterprise uptime SLA remains"; exit 1; }
+          ! grep -Fiq 'Sub-100ms latency' "$tmp/enterprise.html" || { echo "::error::Unsupported enterprise latency claim remains"; exit 1; }
+          ! grep -Fiq 'Low FP guarantee' "$tmp/enterprise.html" || { echo "::error::Unsupported detection guarantee remains"; exit 1; }
+          ! grep -Fiq 'before public disclosure' "$tmp/enterprise.html" || { echo "::error::Unsupported pre-disclosure claim remains"; exit 1; }
+          ! grep -Fiq 'Major Bank Reduces' "$tmp/enterprise.html" || { echo "::error::Synthetic bank case study remains"; exit 1; }
+          ! grep -Fiq 'Hospital Network Deploys' "$tmp/enterprise.html" || { echo "::error::Synthetic healthcare case study remains"; exit 1; }
+          ! grep -Fiq 'MSSP White-Labels' "$tmp/enterprise.html" || { echo "::error::Synthetic MSSP outcome claim remains"; exit 1; }
+          ! grep -Fiq 'Email support (24h SLA)' "$tmp/enterprise.html" || { echo "::error::Unscoped fixed support SLA remains"; exit 1; }
 
           echo "CTI customer assurance certified on $GITHUB_SHA"
 
