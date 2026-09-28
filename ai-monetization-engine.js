@@ -145,12 +145,12 @@
       const p = this.profile;
       const msgs = {
         buyer: {
-          headline:  '⚡ Ready to Upgrade Your Detection Coverage?',
-          sub:       'You\'ve been exploring our intelligence platform. Lock in the best price now — offer expires soon.',
-          cta:       '🛒 Get SOC Pro — Best Price Today',
+          headline:  '⚡ Ready to Upgrade Your Intelligence Workflow?',
+          sub:       'Compare active subscription and certified-intelligence purchase paths with explicit entitlement and delivery terms.',
+          cta:       'View Verified Purchase Options →',
           ctaUrl:    CFG.pricingUrl,
-          badge:     '🔥 BEST SELLER',
-          urgency:   true
+          badge:     '🛡️ VERIFIED PURCHASE PATH',
+          urgency:   false
         },
         enterprise: {
           headline:  '🏢 Enterprise Threat Intelligence — Custom Proposal',
@@ -161,7 +161,7 @@
           urgency:   false
         },
         developer: {
-          headline:  '🔌 Start Free API Trial — No Credit Card',
+          headline:  '🔌 Get a Free API Key — No Credit Card',
           sub:       'Integrate CVE feeds, IOC data, and AI risk scoring in minutes. 100 free requests/day forever.',
           cta:       '⚡ Start Free API Trial →',
           ctaUrl:    CFG.apiUrl,
@@ -741,17 +741,17 @@
     // Map content topics to products/CTAs
     topicMap: [
       { signals: ['cve','zero-day','vulnerability','cvss','patch'],
-        product: { icon:'🛡️', title:'Get Detection Rules for This CVE', sub:'Sigma + YARA rules deployable in 5 minutes.', cta:'Download Detection Pack →', url:'/products.html', price:'$49' } },
+        product: { icon:'🛡️', title:'Detection & Intelligence Options', sub:'Review currently verified detection, dossier, API, and certified-report options for this vulnerability context.', cta:'View Active Options →', url:'/products.html', price:'See options' } },
       { signals: ['ransomware','lockbit','qilin','akira','encrypt','ransom'],
-        product: { icon:'🔐', title:'Ransomware Defense Pack', sub:'800+ YARA rules + IR playbook. Stop encryption before it starts.', cta:'Get Ransomware Pack →', url:'/products.html', price:'$89' } },
+        product: { icon:'🔐', title:'Ransomware Intelligence Options', sub:'Review active subscriptions, certified reports, and inquiry-only artifacts with explicit delivery status.', cta:'View Active Options →', url:'/products.html', price:'See options' } },
       { signals: ['apt','volt typhoon','lazarus','nation-state','ics','scada','critical infrastructure'],
-        product: { icon:'🏢', title:'Enterprise Threat Intelligence Advisory', sub:'Dedicated analyst + early APT disclosure. Custom proposal for your team.', cta:'Get Enterprise Advisory →', url:'/enterprise.html', price:'Custom' } },
+        product: { icon:'🏢', title:'Enterprise Threat Intelligence Advisory', sub:'Request a scoped enterprise proposal for your team, SIEM stack, and intelligence requirements.', cta:'Get Enterprise Proposal →', url:'/enterprise.html', price:'Custom' } },
       { signals: ['api','integration','siem','soar','automation','webhook','feed'],
-        product: { icon:'🔌', title:'CYBERDUDEBIVASH SENTINEL APEX Threat Intelligence API', sub:'Integrate CVE + IOC data into your stack. Free tier available.', cta:'Start Free API Trial →', url:'/api.html', price:'Free' } },
+        product: { icon:'🔌', title:'CYBERDUDEBIVASH SENTINEL APEX Threat Intelligence API', sub:'Start with a free API key, then upgrade for documented plan-scoped intelligence and integrations.', cta:'Get Free API Key →', url:'/api-dashboard.html', price:'Free' } },
       { signals: ['sigma','yara','detection','rule','splunk','elastic','sentinel','chronicle'],
-        product: { icon:'🎯', title:'Sigma Megapack 2026 — 1,200+ Rules', sub:'Production-ready detection rules mapped to MITRE ATT&CK v15.', cta:'Get Sigma Megapack →', url:'/products.html', price:'$149' } },
+        product: { icon:'🎯', title:'Detection Engineering Options', sub:'Browse verified purchase paths and inquiry-only artifacts with delivery state clearly disclosed.', cta:'View Active Options →', url:'/products.html', price:'See options' } },
       { signals: ['ai','llm','prompt injection','generative','gpt','chatgpt','copilot'],
-        product: { icon:'🤖', title:'AI Security Risk Report 2026', sub:'Full analysis of LLM attack surfaces, prompt injection TTPs, and enterprise mitigations.', cta:'Get AI Security Report →', url:'/products.html', price:'$49' } },
+        product: { icon:'🤖', title:'AI Security Intelligence Options', sub:'Review active intelligence, API, and enterprise offerings for AI-security workflows.', cta:'View Active Options →', url:'/products.html', price:'See options' } },
     ],
 
     detect() {
@@ -766,12 +766,7 @@
     },
 
     buildCard(product, style = 'full') {
-      const sc = SCARCITY.getDownloadsLeft();
-      const scarcityColor = sc <= 3 ? '#ff4d6d' : sc <= 7 ? '#ff8c42' : '#ffd700';
-      const { final, discount, code } = DYNPRICE.compute(parseInt(product.price) || 49);
-      const priceDisplay = isNaN(parseInt(product.price))
-        ? product.price
-        : (discount > 0 ? `<del style="color:#475569;font-size:.8rem">$${parseInt(product.price)}</del> <strong style="color:${CFG.CYAN}">$${final}</strong>` : `<strong style="color:${CFG.CYAN}">$${product.price}</strong>`);
+      const priceDisplay = `<strong style="color:${CFG.CYAN}">${product.price}</strong>`;
 
       if (style === 'compact') {
         return `
@@ -783,8 +778,8 @@
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem;flex-shrink:0">
               <span style="font-size:.85rem">${priceDisplay}</span>
-              <span style="font-size:.65rem;color:${scarcityColor};font-weight:700">🔥 Only ${sc} left today</span>
-              <a href="${product.url}" onclick="window.AIM?.SCARCITY?.decrementOnClick('download')" style="background:linear-gradient(135deg,${CFG.CYAN},#00d4ff);color:#000;font-weight:800;font-size:.78rem;padding:.45rem .95rem;border-radius:7px;text-decoration:none;white-space:nowrap;">${product.cta}</a>
+              <span style="font-size:.65rem;color:#94a3b8;font-weight:700">Availability and entitlement verified on destination</span>
+              <a href="${product.url}" style="background:linear-gradient(135deg,${CFG.CYAN},#00d4ff);color:#000;font-weight:800;font-size:.78rem;padding:.45rem .95rem;border-radius:7px;text-decoration:none;white-space:nowrap;">${product.cta}</a>
             </div>
           </div>`;
       }
@@ -803,11 +798,11 @@
           <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem">
             <div>
               <div style="font-size:.85rem;margin-bottom:.2rem">${priceDisplay}</div>
-              ${SCARCITY.renderBadge('downloads', 'downloads')}
+              <span style="font-size:.68rem;color:#94a3b8;font-weight:700">No synthetic scarcity or countdowns</span>
             </div>
             <div style="display:flex;flex-direction:column;gap:.4rem;align-items:flex-end">
-              <a href="${product.url}" onclick="window.AIM?.SCARCITY?.decrementOnClick('download')" style="background:linear-gradient(135deg,${CFG.CYAN},#00d4ff);color:#000;font-weight:800;font-size:.85rem;padding:.6rem 1.35rem;border-radius:9px;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;box-shadow:0 0 20px rgba(0,255,224,.2);">${product.cta}</a>
-              ${discount > 0 ? `<span style="font-size:.68rem;color:#22c55e;font-weight:700">✓ ${Math.round(discount*100)}% discount applied · Code: ${code}</span>` : ''}
+              <a href="${product.url}" style="background:linear-gradient(135deg,${CFG.CYAN},#00d4ff);color:#000;font-weight:800;font-size:.85rem;padding:.6rem 1.35rem;border-radius:9px;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;box-shadow:0 0 20px rgba(0,255,224,.2);">${product.cta}</a>
+              <span style="font-size:.68rem;color:#94a3b8;font-weight:700">Price and delivery terms are controlled by the destination offer.</span>
             </div>
           </div>
         </div>`;
@@ -1036,24 +1031,16 @@
     // 1. Classify intent
     INTENT.classify();
 
-    // 2. Dynamic pricing
-    DYNPRICE.injectPricingBadges();
-
-    // 3. Countdown timers
-    COUNTDOWN.startAll();
-
-    // 4. Scarcity refresh
-    SCARCITY.refreshAll();
-
-    // 5. Social proof toasts
-    SOCIAL_PROOF.init();
+    // 2-5. Synthetic dynamic pricing, countdowns, scarcity and social-proof
+    // engines are intentionally disabled. Commercial trust signals must be
+    // backed by first-party entitlement, catalog, payment or delivery state.
 
     // 6. Content → Money pipeline (post pages) — PHASE 5: delayed, scroll-gated via ENGAGEMENT_TRIGGERS
     // Direct injection only on high-intent; otherwise handled by mediumTrigger scroll gate
     setTimeout(() => CONTENT_PIPELINE.injectIntoPost(), 2500);
 
-    // 7. Bundle cross-sell — PHASE 5: delayed to avoid immediate injection
-    setTimeout(() => BUNDLE_ENGINE.injectBundlePrompt(), 3500);
+    // 7. Legacy bundle scarcity cross-sell is intentionally disabled.
+    // Certified intelligence and subscriptions remain the active purchase paths.
 
     // 8. Subscription upgrade — PHASE 5: delay to prevent load-time CTA collision
     setTimeout(() => SUB_UPGRADE.init(), 4000);
