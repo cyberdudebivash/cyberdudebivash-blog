@@ -1671,6 +1671,8 @@
     .soc2-cti-legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.soc2-cti-legend span{font-size:10px;color:#8296a5;background:#08131c;border:1px solid #1c2d3a;border-radius:999px;padding:6px 9px}.soc2-cti-legend b{color:#bdd6e4}
     a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid #00ffe0!important;outline-offset:3px!important}
     @media(max-width:600px){.soc2-cti-search>div{flex-direction:column}.soc2-cti-search button{width:100%}}
+    .skip-link{position:fixed;left:12px;top:12px;z-index:10000;transform:translateY(-160%);background:#00ffe0;color:#061016;padding:10px 14px;border-radius:7px;font-weight:900;text-decoration:none;transition:transform .15s}
+    .skip-link:focus{transform:translateY(0)}
 </style>
 
   <!-- Google Analytics 4 — CYBERDUDEBIVASH SENTINEL APEX -->
@@ -1870,6 +1872,7 @@ input:focus, textarea:focus {
 <link rel="stylesheet" href="/mobile-first.css?v=20260705">
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to operational dashboard</a>
 
 <!-- MATRIX RAIN CANVAS -->
 <canvas id="matrixCanvas"></canvas>
@@ -2075,7 +2078,7 @@ input:focus, textarea:focus {
 </div>
 
 <!-- P0 SOC 2 + CTI CUSTOMER COMMAND CENTER -->
-<section class="soc2-cti-command" aria-labelledby="soc2-cti-title">
+<section class="soc2-cti-command" id="main-content" aria-labelledby="soc2-cti-title" tabindex="-1">
   <div class="soc2-cti-inner">
     <div class="soc2-cti-head">
       <div>
