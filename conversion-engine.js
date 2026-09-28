@@ -461,7 +461,7 @@
       },
       enterprise: {
         badge:    '\uD83C\uDFE2 ENTERPRISE INTELLIGENCE PLATFORM',
-        headline: 'Enterprise Threat Intel — SLA-Backed, White-Label',
+        headline: 'Enterprise Threat Intel — Source-Bound, Contract-Scoped',
         sub:      'Dedicated analyst support, custom detection engineering, and white-label feeds. Built for Fortune 500 security teams.',
         cta:      'Get Enterprise Proposal \u2192',
         url:      '/enterprise.html'
@@ -708,7 +708,7 @@
         medium: {
           badge:  '\uD83C\uDFAF THREAT INTELLIGENCE ALERT',
           h1:     'Don\'t miss the next <span>critical zero-day</span>',
-          sub:    '3,800+ SOC analysts receive our threat briefings before public disclosure. Free subscription — unsubscribe anytime.',
+          sub:    '3,800+ SOC analysts receive our threat briefings with source-bound delivery evidence. Free subscription — unsubscribe anytime.',
           perk1:  { title: 'Zero-Day Alerts',     body: 'Source-backed emerging-threat alerts' },
           perk2:  { title: 'IOC Bundles',         body: 'Weekly IPs, domains, hashes' },
           perk3:  { title: 'YARA Rules',          body: 'New malware signatures' },
@@ -1026,7 +1026,7 @@
         {
           icon: '\uD83D\uDD0C',
           title: 'Automate CVE Intelligence into Your SIEM via API',
-          sub:   'Real-time CVE data, exploitability scores, and IOC feeds via REST API. Free tier. Production-grade SLA for teams.',
+          sub:   'Real-time CVE data, exploitability scores, and IOC feeds via REST API. Free tier. Contract-scoped service terms for teams.',
           cta:   'Start Free API Trial \u2192',
           url:   '/api.html',
           track: 'ctx_prod_cve_2'
