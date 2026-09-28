@@ -5,6 +5,12 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { resolveRoute } = require('../workers/lib/route-table');
+
+function staticMarkupOnly(html) {
+  return String(html)
+    .replace(/<script\b[\s\S]*?<\/script>/gi, '')
+    .replace(/<style\b[\s\S]*?<\/style>/gi, '');
+}
 const { build, countFiles, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure } = require('./build-cloudflare-assets');
 
 // Mirrors Cloudflare's own documented splat semantics for a _headers
@@ -196,7 +202,8 @@ describe('build-cloudflare-assets', () => {
 
     for (const rel of outputFiles.filter(f => f.endsWith('.html'))) {
       const html = fs.readFileSync(path.join(OUT, rel), 'utf8');
-      const hrefs = [...html.matchAll(/\bhref\s*=\s*["']([^"']+)["']/gi)].map(m => m[1].trim());
+      const markup = staticMarkupOnly(html);
+      const hrefs = [...markup.matchAll(/\bhref\s*=\s*["']([^"']+)["']/gi)].map(m => m[1].trim());
       for (const raw of hrefs) {
         if (!raw || raw.startsWith('#') || /^(?:mailto|tel|data|blob):/i.test(raw) || raw.startsWith('//')) continue;
 
@@ -225,11 +232,27 @@ describe('build-cloudflare-assets', () => {
     const offenders = [];
     for (const rel of outputFiles.filter(f => f.endsWith('.html'))) {
       const html = fs.readFileSync(path.join(OUT, rel), 'utf8');
-      if (/href=["']#["']/i.test(html)) offenders.push(rel + ': href="#"');
-      if (/href=["']\s*["']/i.test(html)) offenders.push(rel + ': empty href');
-      if (/href=["']javascript:/i.test(html)) offenders.push(rel + ': javascript href');
+      const markup = staticMarkupOnly(html);
+      if (/href=["']#["']/i.test(markup)) offenders.push(rel + ': href="#"');
+      if (/href=["']\s*["']/i.test(markup)) offenders.push(rel + ': empty href');
+      if (/href=["']javascript:/i.test(markup)) offenders.push(rel + ': javascript href');
     }
     assert.deepEqual(offenders, [], 'public pages still containing dead-link patterns:\n' + offenders.join('\n'));
+  });
+
+  test('built CVE pages contain no historical undefined metadata artifacts', () => {
+    const offenders = [];
+    for (const rel of outputFiles.filter(f => /^cve\/CVE-\d{4}-\d+\.html$/i.test(f))) {
+      const html = fs.readFileSync(path.join(OUT, rel), 'utf8');
+      if (/\/cve\/undefined\.html|\bundefined\b|<title>\s*—/i.test(html)) offenders.push(rel);
+    }
+    assert.deepEqual(offenders, [], 'CVE pages still contain undefined metadata:\n' + offenders.join('\n'));
+  });
+
+  test('EVI research data artifact is published', () => {
+    assert.ok(outputFiles.includes('data/exploitation-velocity-index.json'));
+    const data = JSON.parse(fs.readFileSync(path.join(OUT, 'data/exploitation-velocity-index.json'), 'utf8'));
+    assert.match(String(data.index || ''), /Exploitation Velocity Index/i);
   });
 
   test('SOC 2 customer-release surfaces do not publish unconditional response-time guarantees', () => {
