@@ -613,6 +613,31 @@ def test_full_soc_cti_dashboard_stays_panable_on_mobile_and_tablet():
         assert required in responsive
 
 
+def test_global_customer_experience_contract():
+    css = Path("customer-experience.css").read_text(encoding="utf-8")
+    runtime = Path("customer-experience.js").read_text(encoding="utf-8")
+    builder = Path("scripts/build-cloudflare-assets.js").read_text(encoding="utf-8")
+    for required in [
+        "--cx-tap:48px", "focus-visible", "input::placeholder",
+        "button:disabled", ".cx-skip-link", "prefers-reduced-motion",
+    ]:
+        assert required in css
+    for required in [
+        "Skip to main content", "aria-label", "aria-required",
+        "aria-live", "aria-disabled", "keydown",
+    ]:
+        assert required in runtime
+    for required in [
+        "injectCustomerExperience", "customer-experience.css?v=20260928-cx1",
+        "customer-experience.js?v=20260928-cx1", "copyFileForPublicBuild",
+    ]:
+        assert required in builder
+
+    for surface in ["workbench.html","api-dashboard.html","threat-intelligence.html"]:
+        html = Path(surface).read_text(encoding="utf-8-sig")
+        assert 'href="#"' not in html, surface
+
+
 def test_mobile_panorama_keeps_complete_dashboard_reachable():
     responsive = Path("responsive-platform.css").read_text(encoding="utf-8")
     assert "overflow-x:clip" not in responsive
