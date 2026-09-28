@@ -309,6 +309,8 @@ jobs:
           grep -Fq 'overflow-x:auto!important' "$tmp/responsive-platform.css" || { echo "::error::Horizontal panoramic access missing"; exit 1; }
           grep -Fq '.mobile-nav-drawer a:not(.nav-cta)' "$tmp/responsive-platform.css" || { echo "::error::Mobile drawer link visibility guard missing"; exit 1; }
           grep -Fq 'min-width:930px!important' "$tmp/responsive-platform.css" || { echo "::error::SOC/CTI workspace pan width missing"; exit 1; }
+          grep -Fq 'min-width:1180px!important' "$tmp/responsive-platform.css" || { echo "::error::Full dashboard pan canvas missing"; exit 1; }
+          grep -Fq 'grid-template-columns:680px 424px!important' "$tmp/responsive-platform.css" || { echo "::error::Phone full-dashboard topology missing"; exit 1; }
           grep -Fq 'scroll-snap-type:x proximity' "$tmp/responsive-platform.css" || { echo "::error::Touch swipe lane behavior missing"; exit 1; }
           if grep -Fq 'overflow-x:clip' "$tmp/responsive-platform.css"; then echo "::error::Responsive CSS still clips horizontal customer content"; exit 1; fi
           grep -Fq "fetchJson('/live-intel.json')" "$tmp/apex-command-center.js" || { echo "::error::Command center is not bound to first-party live intelligence"; exit 1; }

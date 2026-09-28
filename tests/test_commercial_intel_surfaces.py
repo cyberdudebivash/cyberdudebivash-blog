@@ -599,6 +599,20 @@ def test_cloudflare_release_fail_closes_on_soc2_cti_customer_assurance():
     ]:
         assert required in workflow
 
+def test_full_soc_cti_dashboard_stays_panable_on_mobile_and_tablet():
+    responsive = Path("responsive-platform.css").read_text(encoding="utf-8")
+    for required in [
+        "P0 FULL DASHBOARD PAN CANVAS",
+        "grid-template-columns:minmax(720px,1.55fr) minmax(420px,.85fr)!important",
+        "min-width:1180px!important",
+        "grid-template-columns:680px 424px!important",
+        "width:1120px!important",
+        ".cdb-stack{min-width:420px!important}",
+        ".cdb-ops::-webkit-scrollbar{height:10px!important}",
+    ]:
+        assert required in responsive
+
+
 def test_mobile_panorama_keeps_complete_dashboard_reachable():
     responsive = Path("responsive-platform.css").read_text(encoding="utf-8")
     assert "overflow-x:clip" not in responsive
