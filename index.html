@@ -1663,6 +1663,14 @@
     @media(max-width:960px){.soc2-cti-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.soc2-cti-workflow{grid-template-columns:repeat(3,minmax(0,1fr))}.soc2-cti-head{align-items:flex-start;flex-direction:column}.soc2-cti-head-actions{justify-content:flex-start}}
     @media(max-width:600px){.soc2-cti-command{padding:22px 14px}.soc2-cti-grid,.soc2-cti-workflow{grid-template-columns:1fr 1fr}.soc2-cti-card{min-height:116px}.soc2-cti-step{min-height:68px}}
     @media(max-width:390px){.soc2-cti-grid,.soc2-cti-workflow{grid-template-columns:1fr}}
+
+    .soc2-cti-search{margin:0 0 12px;padding:12px;border:1px solid rgba(148,163,184,.14);background:#08131c;border-radius:10px}
+    .soc2-cti-search label{display:block;font:800 9px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:1.2px;text-transform:uppercase;color:#7890a0;margin-bottom:7px}
+    .soc2-cti-search>div{display:flex;gap:8px}.soc2-cti-search input{flex:1;min-width:0;background:#050d14;border:1px solid #213645;color:#e2e8f0;border-radius:8px;padding:10px 12px;font-size:13px}
+    .soc2-cti-search button{background:#00ffe0;color:#061016;border:0;border-radius:8px;padding:10px 14px;font-size:11px;font-weight:900;cursor:pointer}
+    .soc2-cti-legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.soc2-cti-legend span{font-size:10px;color:#8296a5;background:#08131c;border:1px solid #1c2d3a;border-radius:999px;padding:6px 9px}.soc2-cti-legend b{color:#bdd6e4}
+    a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid #00ffe0!important;outline-offset:3px!important}
+    @media(max-width:600px){.soc2-cti-search>div{flex-direction:column}.soc2-cti-search button{width:100%}}
 </style>
 
   <!-- Google Analytics 4 — CYBERDUDEBIVASH SENTINEL APEX -->
@@ -1935,48 +1943,26 @@ input:focus, textarea:focus {
   </div>
 </div>
 
-<!-- LIVE CRITICAL THREAT ALERT BAR — CYBERDUDEBIVASH SENTINEL APEX v12 -->
-<div id="live-critical-alert-bar">
+<!-- PRIORITY INTELLIGENCE BAR — evidence-safe, no hardcoded incident assertions -->
+<div id="live-critical-alert-bar" aria-label="Priority intelligence">
   <div class="lcab-inner">
     <div class="lcab-label">
       <div class="lcab-dot"></div>
-      <span class="lcab-title">LIVE THREATS</span>
+      <span class="lcab-title">PRIORITY INTELLIGENCE</span>
     </div>
     <div class="lcab-divider"></div>
-    <div class="lcab-threats" id="lcab-threats-container">
-      <a href="posts/cve-2026-33825-microsoft-defender-zero-day-bluehammer-redsun.html" class="lcab-threat">
-        <span class="lcab-tbadge">ZERO-DAY</span>
-        <span class="lcab-ttext">MS Defender CVE-2026-33825 BlueHammer/RedSun</span>
-        <span class="lcab-tcvss">CVSS 8.8</span>
-      </a>
-      <a href="posts/cve-2026-35616-fortinet-forticlient-ems-zero-day.html" class="lcab-threat">
-        <span class="lcab-tbadge kev">CISA KEV</span>
-        <span class="lcab-ttext">Fortinet FortiClient EMS Pre-Auth RCE</span>
-        <span class="lcab-tcvss">CVSS 9.8</span>
-      </a>
-      <a href="posts/cve-2026-33824-windows-ike-service-rce-critical.html" class="lcab-threat">
-        <span class="lcab-tbadge">CRITICAL</span>
-        <span class="lcab-ttext">Windows IKE Unauth RCE All Versions</span>
-        <span class="lcab-tcvss">CVSS 9.8</span>
-      </a>
-      <a href="posts/cve-2026-28401-ivanti-connect-secure-zero-day-supply-chain.html" class="lcab-threat">
-        <span class="lcab-tbadge apt">APT</span>
-        <span class="lcab-ttext">Ivanti Connect Secure Supply Chain RCE</span>
-        <span class="lcab-tcvss">CVSS 10.0</span>
-      </a>
-      <a href="posts/april-2026-ransomware-roundup-qilin-akira-lockbit-blackbasta.html" class="lcab-threat">
-        <span class="lcab-tbadge rsm">RANSOMWARE</span>
-        <span class="lcab-ttext">Qilin/LockBit 4.0 Active — 67 Victims April</span>
-        <span class="lcab-tcvss">HIGH</span>
-      </a>
+    <div class="lcab-threats">
+      <a href="/breaking/" class="lcab-threat"><span class="lcab-tbadge">TRIAGE</span><span class="lcab-ttext">Open evidence-bound breaking intelligence queue</span></a>
+      <a href="/intel/" class="lcab-threat"><span class="lcab-tbadge kev">CTI</span><span class="lcab-ttext">Open Hybrid SOC + CTI operational workspace</span></a>
+      <a href="/customer-assurance.html" class="lcab-threat"><span class="lcab-tbadge apt">ASSURANCE</span><span class="lcab-ttext">Review customer control and evidence posture</span></a>
     </div>
-    <span class="lcab-time">Updated: <span id="lcab-dt"></span></span>
+    <span class="lcab-time">Runtime: <strong id="homepage-priority-runtime">VERIFYING</strong></span>
   </div>
 </div>
 <!-- APEX THREAT STATUS BAR -->
 <div class="apex-status-bar">
   <div class="apex-status-inner">
-    <span class="apex-status-pill red-pill"><span class="spill-dot"></span>FEED STATUS: <strong>SHOWN BELOW</strong></span>
+    <span class="apex-status-pill red-pill"><span class="spill-dot"></span>FEED: <strong id="homepage-feed-state">VERIFYING</strong></span>
     <span class="apex-status-pill orange-pill"><span class="spill-dot"></span><strong>CISA KEV</strong> Structured Source</span>
     <span class="apex-status-pill red-pill"><span class="spill-dot"></span><strong>Evidence</strong> Status Shown Per Item</span>
     <span class="apex-status-pill purple-pill"><span class="spill-dot"></span>SOURCES: <strong>ATTRIBUTED</strong></span>
@@ -2102,6 +2088,19 @@ input:focus, textarea:focus {
         <a class="soc2-cti-link" href="/intel/">Open CTI Console</a>
         <a class="soc2-cti-link" href="/api-dashboard.html">Customer API</a>
       </div>
+    </div>
+
+    <form class="soc2-cti-search" action="/search.html" method="get" role="search" aria-label="Search threat intelligence">
+      <label for="soc2-home-search">Search intelligence</label>
+      <div>
+        <input id="soc2-home-search" name="q" type="search" placeholder="CVE, vendor, actor, malware, IOC..." autocomplete="off">
+        <button type="submit">Search CTI</button>
+      </div>
+    </form>
+    <div class="soc2-cti-legend" aria-label="Triage semantics">
+      <span><b>CRITICAL/HIGH/MEDIUM/LOW</b> = technical severity when sourced</span>
+      <span><b>CISA KEV</b> = catalog-confirmed known exploitation</span>
+      <span><b>Priority</b> = analyst workflow ordering, not a substitute for CVSS</span>
     </div>
 
     <div class="soc2-cti-grid" aria-label="Operational assurance status">
@@ -4230,7 +4229,12 @@ document.addEventListener('keydown', function(e) {
   ]).then(function(results){
     var intelOk=results[0].status==='fulfilled';
     var assuranceOk=results[1].status==='fulfilled';
-    setRuntime(intelOk,'First-party intelligence '+(intelOk?'reachable':'unavailable')+' · checked '+new Date().toISOString().replace('T',' ').slice(0,19)+'Z');
+    var checked=new Date().toISOString().replace('T',' ').slice(0,19)+'Z';
+    setRuntime(intelOk,'First-party intelligence '+(intelOk?'reachable':'unavailable')+' · checked '+checked);
+    var feedState=document.getElementById('homepage-feed-state');
+    var priorityRuntime=document.getElementById('homepage-priority-runtime');
+    if(feedState) feedState.textContent=intelOk?'AVAILABLE':'DEGRADED';
+    if(priorityRuntime) priorityRuntime.textContent=intelOk?'AVAILABLE':'DEGRADED';
     if(assurance&&assuranceCard){
       if(assuranceOk && results[1].value && results[1].value.soc2_certified===false){
         assurance.textContent='ALIGNED · NOT CERTIFIED';
