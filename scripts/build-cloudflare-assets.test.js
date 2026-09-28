@@ -139,7 +139,7 @@ describe('build-cloudflare-assets', () => {
       'index.html', 'robots.txt', 'rss.xml', 'sitemap.xml',
       'search-index.json', 'live-intel.json',
       'apex-v13.css', 'analytics-engine.js', 'banner-orchestrator.js',
-      'soc-cti-console.css', 'soc-triage-workspace.js',
+      'soc-cti-console.css', 'soc-triage-workspace.js', 'soc-taxonomy-pivots.js',
       'soc-hybrid-workspace.js', 'soc-evidence-drawer.js',
     ];
     for (const f of mustExist) {
