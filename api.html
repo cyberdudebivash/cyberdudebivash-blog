@@ -164,6 +164,7 @@
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-XTGLNMNNC7",{page_path:window.location.pathname,cookie_flags:"SameSite=None;Secure"});</script>
 </head>
 <body>
+<div id="commercial-context" style="display:none;max-width:1180px;margin:16px auto 0;padding:12px 16px;border:1px solid rgba(0,255,224,.25);border-radius:10px;background:#08131d;color:#b9c6d2;font-size:13px"></div>
 
 <nav>
   <a href="/" class="nav-logo">CYBERDUDE<span>BIVASH</span></a>
@@ -528,5 +529,14 @@ req = urllib.request.<span class="c-func">Request</span>(
 <script src="/email-engine.js" defer></script>
 
 <script src="/auto-intel-engine.js"></script>
+<script>
+(function(){
+  var p=new URLSearchParams(location.search), id=p.get('entity_id'), title=p.get('title'), intent=p.get('intent');
+  if(!id&&!title)return;
+  var el=document.getElementById('commercial-context');if(!el)return;
+  el.style.display='block';
+  el.textContent='Selected intelligence context: '+[id,title,intent].filter(Boolean).join(' · ')+'. This context is preserved so you can choose the relevant commercial workflow.';
+})();
+</script>
 </body>
 </html>
