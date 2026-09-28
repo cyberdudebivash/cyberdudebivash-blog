@@ -1669,6 +1669,22 @@
     .soc2-cti-search>div{display:flex;gap:8px}.soc2-cti-search input{flex:1;min-width:0;background:#050d14;border:1px solid #213645;color:#e2e8f0;border-radius:8px;padding:10px 12px;font-size:13px}
     .soc2-cti-search button{background:#00ffe0;color:#061016;border:0;border-radius:8px;padding:10px 14px;font-size:11px;font-weight:900;cursor:pointer}
     .soc2-cti-legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.soc2-cti-legend span{font-size:10px;color:#8296a5;background:#08131c;border:1px solid #1c2d3a;border-radius:999px;padding:6px 9px}.soc2-cti-legend b{color:#bdd6e4}
+    .soc2-cti-livegrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin:12px 0}
+    .soc2-live-stat{position:relative;overflow:hidden;background:#06111a;border:1px solid #172b39;border-radius:10px;padding:12px;min-height:92px}
+    .soc2-live-stat:before{content:'';position:absolute;inset:0 auto 0 0;width:2px;background:#00ffe0;opacity:.45}
+    .soc2-live-stat[data-tone="critical"]:before{background:#ff4d6d}.soc2-live-stat[data-tone="kev"]:before{background:#fb923c}.soc2-live-stat[data-tone="exploit"]:before{background:#fbbf24}.soc2-live-stat[data-tone="source"]:before{background:#a78bfa}.soc2-live-stat[data-tone="fresh"]:before{background:#4ade80}
+    .soc2-live-k{display:block;color:#607889;font:800 9px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:1.1px;text-transform:uppercase}
+    .soc2-live-v{display:block;color:#edfaff;font-size:21px;line-height:1.1;font-weight:950;margin:8px 0 5px;font-variant-numeric:tabular-nums}
+    .soc2-live-m{display:block;color:#738b9a;font-size:10px;line-height:1.35}
+    .soc2-cti-controlbar{display:grid;grid-template-columns:1.1fr .9fr;gap:10px;margin-top:12px}
+    .soc2-control-panel{background:#07131d;border:1px solid #1a2d3b;border-radius:10px;padding:13px}
+    .soc2-control-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:9px;color:#e5f5fb;font-size:11px;font-weight:900}
+    .soc2-control-title span{color:#688192;font:700 9px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:1px;text-transform:uppercase}
+    .soc2-control-row{display:grid;grid-template-columns:130px 1fr auto;gap:10px;align-items:center;padding:7px 0;border-top:1px solid rgba(148,163,184,.08);font-size:10px}
+    .soc2-control-row:first-of-type{border-top:0}.soc2-control-name{color:#90a8b6}.soc2-control-evidence{color:#c5d7e0}.soc2-control-state{font-weight:900;color:#4ade80;white-space:nowrap}.soc2-control-state.warn{color:#fbbf24}
+    .soc2-assurance-summary{display:flex;flex-direction:column;gap:8px}.soc2-assurance-summary p{margin:0;color:#839aa9;font-size:10.5px;line-height:1.5}.soc2-assurance-summary strong{color:#dbeef5}
+    @media(max-width:1080px){.soc2-cti-livegrid{grid-template-columns:repeat(3,minmax(0,1fr))}.soc2-cti-controlbar{grid-template-columns:1fr}}
+    @media(max-width:600px){.soc2-cti-livegrid{grid-template-columns:repeat(2,minmax(0,1fr))}.soc2-control-row{grid-template-columns:1fr auto}.soc2-control-evidence{grid-column:1/-1}}
     a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid #00ffe0!important;outline-offset:3px!important}
     @media(max-width:600px){.soc2-cti-search>div{flex-direction:column}.soc2-cti-search button{width:100%}}
     .skip-link{position:fixed;left:12px;top:12px;z-index:10000;transform:translateY(-160%);background:#00ffe0;color:#061016;padding:10px 14px;border-radius:7px;font-weight:900;text-decoration:none;transition:transform .15s}
@@ -2127,6 +2143,32 @@ input:focus, textarea:focus {
         <strong class="soc2-cti-value ok">DISABLED</strong>
         <span class="soc2-cti-meta">No fabricated customer activity, viewer counts, or false SOC operational metrics.</span>
       </article>
+    </div>
+
+    <div class="soc2-cti-livegrid" aria-label="Live CTI operational metrics">
+      <article class="soc2-live-stat"><span class="soc2-live-k">Published Intel</span><strong class="soc2-live-v" id="soc2-total-published">—</strong><span class="soc2-live-m">First-party published corpus</span></article>
+      <article class="soc2-live-stat" data-tone="critical"><span class="soc2-live-k">Critical</span><strong class="soc2-live-v" id="soc2-critical-count">—</strong><span class="soc2-live-m">Current feed records labelled critical</span></article>
+      <article class="soc2-live-stat" data-tone="kev"><span class="soc2-live-k">CISA KEV</span><strong class="soc2-live-v" id="soc2-kev-count">—</strong><span class="soc2-live-m">Catalog-confirmed known exploitation</span></article>
+      <article class="soc2-live-stat" data-tone="exploit"><span class="soc2-live-k">Exploited</span><strong class="soc2-live-v" id="soc2-exploited-count">—</strong><span class="soc2-live-m">Records carrying exploitation evidence</span></article>
+      <article class="soc2-live-stat" data-tone="source"><span class="soc2-live-k">Sources</span><strong class="soc2-live-v" id="soc2-source-count">—</strong><span class="soc2-live-m">Attributed pipeline sources</span></article>
+      <article class="soc2-live-stat" data-tone="fresh"><span class="soc2-live-k">Pipeline Age</span><strong class="soc2-live-v" id="soc2-pipeline-age">VERIFYING</strong><span class="soc2-live-m" id="soc2-pipeline-time">Runtime-derived freshness</span></article>
+    </div>
+
+    <div class="soc2-cti-controlbar">
+      <div class="soc2-control-panel" aria-label="Production control evidence">
+        <div class="soc2-control-title">Production Control Evidence <span>Fail-closed release</span></div>
+        <div class="soc2-control-row"><span class="soc2-control-name">Change integrity</span><span class="soc2-control-evidence">Exact Git SHA → Cloudflare deployment</span><span class="soc2-control-state">ENFORCED</span></div>
+        <div class="soc2-control-row"><span class="soc2-control-name">Public exposure</span><span class="soc2-control-evidence">Allowlisted production asset bundle</span><span class="soc2-control-state">ENFORCED</span></div>
+        <div class="soc2-control-row"><span class="soc2-control-name">Customer access</span><span class="soc2-control-evidence">API-key boundary for protected operations</span><span class="soc2-control-state">ENFORCED</span></div>
+        <div class="soc2-control-row"><span class="soc2-control-name">SOC 2 status</span><span class="soc2-control-evidence">Operational evidence model only</span><span class="soc2-control-state warn">NOT CERTIFIED</span></div>
+      </div>
+      <div class="soc2-control-panel soc2-assurance-summary" aria-label="Customer assurance summary">
+        <div class="soc2-control-title">Customer Assurance <span>Truth boundary</span></div>
+        <p><strong>Source provenance:</strong> source identity and evidence context are retained where available.</p>
+        <p><strong>Freshness:</strong> derived from first-party pipeline timestamps; no fixed-latency promise is inferred.</p>
+        <p><strong>Telemetry:</strong> synthetic viewer, customer, incident, or adoption metrics are prohibited.</p>
+        <p><strong>Compliance:</strong> SOC 2-aligned controls support due diligence but do not replace an independent auditor attestation.</p>
+      </div>
     </div>
 
     <div class="soc2-cti-workflow" aria-label="SOC and CTI workflow">
@@ -4238,6 +4280,31 @@ document.addEventListener('keydown', function(e) {
     var priorityRuntime=document.getElementById('homepage-priority-runtime');
     if(feedState) feedState.textContent=intelOk?'AVAILABLE':'DEGRADED';
     if(priorityRuntime) priorityRuntime.textContent=intelOk?'AVAILABLE':'DEGRADED';
+    if(intelOk && results[0].value){
+      var intel=results[0].value;
+      var stats=intel.stats||{};
+      function put(id,value){var el=document.getElementById(id);if(el)el.textContent=value;}
+      put('soc2-total-published',Number.isFinite(Number(intel.totalPublished))?Number(intel.totalPublished).toLocaleString():'—');
+      put('soc2-critical-count',Number.isFinite(Number(stats.critical))?Number(stats.critical).toLocaleString():'—');
+      put('soc2-kev-count',Number.isFinite(Number(stats.cisaKev))?Number(stats.cisaKev).toLocaleString():'—');
+      put('soc2-exploited-count',Number.isFinite(Number(stats.exploited))?Number(stats.exploited).toLocaleString():'—');
+      put('soc2-source-count',Number.isFinite(Number(stats.sources))?Number(stats.sources).toLocaleString():'—');
+      var stamp=intel.generatedAt||intel.lastUpdated||(intel.metadata&&intel.metadata.lastPipelineRun);
+      var ageEl=document.getElementById('soc2-pipeline-age');
+      var timeEl=document.getElementById('soc2-pipeline-time');
+      if(stamp&&ageEl&&timeEl){
+        var ms=Date.now()-Date.parse(stamp);
+        if(Number.isFinite(ms)&&ms>=0){
+          var mins=Math.floor(ms/60000);
+          var hours=Math.floor(mins/60);
+          ageEl.textContent=hours>0?(hours+'h '+(mins%60)+'m'):(mins+'m');
+          timeEl.textContent='Generated '+new Date(stamp).toISOString().replace('T',' ').slice(0,19)+'Z';
+        }else{
+          ageEl.textContent='UNKNOWN';
+          timeEl.textContent='Pipeline timestamp could not be evaluated';
+        }
+      }
+    }
     if(assurance&&assuranceCard){
       if(assuranceOk && results[1].value && results[1].value.soc2_certified===false){
         assurance.textContent='ALIGNED · NOT CERTIFIED';
