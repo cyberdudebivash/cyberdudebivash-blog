@@ -17,6 +17,9 @@ on:
       - 'products.html'
       - 'pricing.html'
       - 'customer-assurance.html'
+      - 'service-status.html'
+      - 'enterprise-onboarding.html'
+      - 'cti-delivery-acceptance.html'
       - 'soc-cti-console.css'
       - 'soc-triage-workspace.js'
       - 'soc-taxonomy-pivots.js'
@@ -28,6 +31,7 @@ on:
       - 'revenue-cta-block.js'
       - 'ai-monetization-engine.js'
       - 'api/v1/intel.js'
+      - 'api/v1/customer/assurance.js'
       - 'api/intel/**'
       - 'workers/**'
       - 'scripts/build-cloudflare-assets.js'
@@ -84,7 +88,12 @@ jobs:
           test -s dist-public/breaking/index.html
           test -s dist-public/leads.html
           test -s dist-public/customer-assurance.html
+          test -s dist-public/service-status.html
+          test -s dist-public/enterprise-onboarding.html
+          test -s dist-public/cti-delivery-acceptance.html
           test -s dist-public/api/intel/customer-assurance.json
+          test -s dist-public/api/intel/service-assurance.json
+          test -s dist-public/api/intel/cti-delivery-acceptance.json
           test -s dist-public/soc-cti-console.css
           test -s dist-public/soc-triage-workspace.js
           test -s dist-public/soc-taxonomy-pivots.js
@@ -319,6 +328,38 @@ jobs:
 
           fetch_page "/intelligence.html" "$tmp/intelligence.html"
           grep -Fq '/customer-assurance.html' "$tmp/intelligence.html" || { echo "::error::CTI assurance path missing"; exit 1; }
+
+          fetch_page "/service-status.html" "$tmp/service-status.html"
+          grep -Fq 'Availability without invented percentages.' "$tmp/service-status.html" || { echo "::error::Service assurance truth model missing"; exit 1; }
+          grep -Fq 'Marketing copy is not an SLA.' "$tmp/service-status.html" || { echo "::error::Service SLA truth boundary missing"; exit 1; }
+          grep -Fq 'security@cyberdudebivash.in' "$tmp/service-status.html" || { echo "::error::Security escalation contact missing"; exit 1; }
+          grep -Fq 'contact@cyberdudebivash.in' "$tmp/service-status.html" || { echo "::error::Customer incident contact missing"; exit 1; }
+
+          fetch_page "/enterprise-onboarding.html" "$tmp/onboarding.html"
+          grep -Fq 'From security review to accepted CTI delivery.' "$tmp/onboarding.html" || { echo "::error::Enterprise onboarding workflow missing"; exit 1; }
+          grep -Fq 'GET /api/v1/customer/assurance' "$tmp/onboarding.html" || { echo "::error::Authenticated assurance export is absent from onboarding"; exit 1; }
+
+          fetch_page "/cti-delivery-acceptance.html" "$tmp/acceptance.html"
+          grep -Fq 'Acceptance is evidence, not assumption.' "$tmp/acceptance.html" || { echo "::error::CTI acceptance gate missing"; exit 1; }
+          grep -Fq 'No silent acceptance.' "$tmp/acceptance.html" || { echo "::error::Acceptance truth boundary missing"; exit 1; }
+
+          fetch_page "/api/intel/service-assurance.json" "$tmp/service-assurance.json"
+          jq -e '.historical_uptime_percentage == null and .historical_uptime_claimed == false and .contractual_sla.status == "CUSTOMER_SPECIFIC_IF_EXECUTED"' "$tmp/service-assurance.json" >/dev/null || { echo "::error::Service assurance machine contract is unsafe"; exit 1; }
+
+          fetch_page "/api/intel/cti-delivery-acceptance.json" "$tmp/acceptance.json"
+          jq -e '.automatic_acceptance == false and (.criteria | length) == 10' "$tmp/acceptance.json" >/dev/null || { echo "::error::CTI delivery acceptance machine contract is incomplete"; exit 1; }
+
+          code="$(curl -sS -L --max-time 20 -o "$tmp/auth-assurance.json" -w '%{http_code}' "$base/api/v1/customer/assurance?release_sha=$GITHUB_SHA")"
+          test "$code" = "401" || { echo "::error::Authenticated customer assurance route must exist and fail closed with HTTP 401 without a key; got $code"; exit 1; }
+
+          fetch_page "/api-dashboard.html" "$tmp/api-dashboard-assurance.html"
+          grep -Fq 'Download Assurance JSON' "$tmp/api-dashboard-assurance.html" || { echo "::error::Customer dashboard assurance export control missing"; exit 1; }
+          grep -Fq '/api/v1/customer/assurance?download=1' "$tmp/api-dashboard-assurance.html" || { echo "::error::Customer dashboard assurance export endpoint missing"; exit 1; }
+
+          ! grep -Fiq '99.9% SLA UPTIME' "$tmp/enterprise.html" || { echo "::error::Unsupported enterprise uptime SLA remains"; exit 1; }
+          ! grep -Fiq 'Sub-100ms latency' "$tmp/enterprise.html" || { echo "::error::Unsupported enterprise latency claim remains"; exit 1; }
+          ! grep -Fiq 'Low FP guarantee' "$tmp/enterprise.html" || { echo "::error::Unsupported detection guarantee remains"; exit 1; }
+          ! grep -Fiq 'before public disclosure' "$tmp/enterprise.html" || { echo "::error::Unsupported pre-disclosure claim remains"; exit 1; }
 
           echo "CTI customer assurance certified on $GITHUB_SHA"
 

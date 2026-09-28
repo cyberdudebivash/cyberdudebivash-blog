@@ -199,6 +199,17 @@ const data = await res.json();</div>
       <div class="chart-bar" id="usage-chart"></div>
       <div style="margin-top:24px"></div>
     </div>
+    <div class="card" id="customer-assurance-card">
+      <div class="card-title">🛡 Customer Assurance & Evidence</div>
+      <p style="font-size:13px;color:var(--apex-muted);margin-bottom:14px">Authenticated customers can export a customer-scoped SOC 2/CTI assurance package. This is operational evidence, not a SOC 2 Type I/II attestation.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-secondary" onclick="downloadAssurancePackage()">Download Assurance JSON</button>
+        <a class="btn btn-secondary" href="/customer-assurance.html">Public Assurance</a>
+        <a class="btn btn-secondary" href="/service-status.html">Service Assurance</a>
+        <a class="btn btn-secondary" href="/cti-delivery-acceptance.html">Delivery Acceptance</a>
+      </div>
+      <div id="assurance-status" style="font-size:12px;color:var(--apex-muted);margin-top:12px">Authentication required: load your dashboard with an API key before exporting customer-scoped evidence.</div>
+    </div>
     <div class="card hidden" id="my-subscription-card">
       <div class="card-title">💳 My Subscription</div>
       <div id="subscription-content"></div>
@@ -601,6 +612,31 @@ async function registerKey() {
     }
   } catch(e){ showAlert(alert,'error','Request failed — check your connection and retry.'); }
   btn.disabled=false; btn.textContent='⚡ Generate My API Key';
+}
+
+async function downloadAssurancePackage() {
+  const status=document.getElementById('assurance-status');
+  if(!sessionKey){
+    if(status){status.style.color='var(--apex-red)';status.textContent='Authentication required: load your dashboard with an API key first.';}
+    return;
+  }
+  if(status){status.style.color='var(--apex-muted)';status.textContent='Generating customer-scoped assurance export…';}
+  try{
+    const res=await fetch(API+'/api/v1/customer/assurance?download=1',{headers:{'X-API-Key':sessionKey}});
+    if(!res.ok){
+      const data=await res.json().catch(()=>({}));
+      throw new Error((data.error&&data.error.message)||('HTTP '+res.status));
+    }
+    const blob=await res.blob();
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download='sentinel-apex-customer-assurance.json';
+    document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+    if(status){status.style.color='var(--apex-green)';status.textContent='Customer-scoped assurance package exported. API key material is not included.';}
+  }catch(e){
+    if(status){status.style.color='var(--apex-red)';status.textContent='Assurance export failed: '+String(e.message||e);}
+  }
 }
 
 async function loadDashboard(silent) {

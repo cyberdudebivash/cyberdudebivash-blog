@@ -33,6 +33,7 @@ const HANDLER_MODULES = {
   'api/v1/billing/gumroad-webhook': () => require('../../api/v1/billing/gumroad-webhook'),
   'api/v1/billing/razorpay-webhook': () => require('../../api/v1/billing/razorpay-webhook'),
   'api/v1/connectors': () => require('../../api/v1/connectors'),
+  'api/v1/customer/assurance': () => require('../../api/v1/customer/assurance'),
   'api/v1/customer/dashboard': () => require('../../api/v1/customer/dashboard'),
   'api/v1/customer/download': () => require('../../api/v1/customer/download'),
   'api/v1/defense-profile': () => require('../../api/v1/defense-profile'),
