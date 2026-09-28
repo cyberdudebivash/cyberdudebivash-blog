@@ -67,6 +67,10 @@ const PROHIBITED_DIR_SEGMENTS = new Set([
   'logs', 'data', 'coverage',
 ]);
 
+const PUBLIC_PATH_EXCEPTIONS = new Set([
+  'data/exploitation-velocity-index.json',
+]);
+
 const PROHIBITED_EXACT_FILENAMES = new Set([
   'claude.md', 'business-transformation-roadmap-2026.md',
   'audit-report-2026-05-28.md', 'operations.md', 'runbooks.md',
@@ -86,6 +90,7 @@ function isProhibited(relPath) {
   const segments = lower.split('/');
   const basename = segments[segments.length - 1];
 
+  if (PUBLIC_PATH_EXCEPTIONS.has(lower)) return false;
   if (segments.some(seg => PROHIBITED_DIR_SEGMENTS.has(seg))) return true;
   if (PROHIBITED_EXACT_FILENAMES.has(basename)) return true;
   if (basename.startsWith('.env')) return true;
@@ -144,7 +149,13 @@ describe('build-cloudflare-assets', () => {
   // Regression guard for the false-positive bug this test previously had:
   // real content whose slug/filename merely contains one of the prohibited
   // words as a substring must NOT be flagged.
-  test('legitimate content containing prohibited words as substrings is not flagged', () => {
+  test('explicit public data exception is narrow and does not expose the data directory generally', () => {
+  assert.equal(isProhibited('data/exploitation-velocity-index.json'), false);
+  assert.equal(isProhibited('data/private.json'), true);
+  assert.equal(isProhibited('data/config.json'), true);
+});
+
+test('legitimate content containing prohibited words as substrings is not flagged', () => {
     const legitimateExamples = [
       'posts/nissan-employee-data-breached-in-oracle-peoplesoft-hack.html',
       'posts/rockwell-automation-patches-vulnerabilities-in-ics-controlle.html',
