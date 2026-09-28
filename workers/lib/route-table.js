@@ -65,10 +65,18 @@ const ASSET_REWRITES = [
   [/^\/ai-security\/?$/, '/ai-security/index.html'],
   [/^\/breaking\/?$/, '/breaking/index.html'],
   [/^\/detections\/?$/, '/detections/index.html'],
+  [/^\/threat\/volttyphoon\.html$/, '/threat/volt-typhoon.html'],
+  [/^\/threat\/lazarusgroup\.html$/, '/threat/lazarus.html'],
+  [/^\/threat\/lockbit4\.0\.html$/, '/threat/lockbit.html'],
 ];
 
 const REDIRECTS = [
   [/^\/rss$/, '/rss.xml', 308],
+  [/^\/posts\/?$/, '/archive.html', 308],
+  [/^\/intel\.html$/, '/intel/', 308],
+  [/^\/threat\/kimsuky\.html$/, '/search.html?q=Kimsuky', 308],
+  [/^\/threat\/sandworm\.html$/, '/search.html?q=Sandworm', 308],
+  [/^\/threat\/blackbasta\.html$/, '/search.html?q=Black%20Basta', 308],
 ];
 
 const DIRECT_API_HANDLERS = new Set([
