@@ -822,3 +822,18 @@ def test_cloudflare_release_certifies_complete_customer_release_package():
     ]:
         assert required in workflow
 
+def test_api_dashboard_contract_and_freshness_copy_is_truth_bound():
+    dashboard = Path("api-dashboard.html").read_text(encoding="utf-8-sig")
+    for required in [
+        "Operational intelligence feed with runtime timestamps",
+        "Contract-defined SLA where explicitly executed",
+        "Dedicated analyst option / contract-defined SLA",
+    ]:
+        assert required in dashboard
+    for forbidden in [
+        "Real-time intel feed",
+        "SLA guarantee",
+        "Dedicated analyst / custom SLA",
+    ]:
+        assert forbidden not in dashboard
+
