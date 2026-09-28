@@ -750,6 +750,11 @@ def test_full_soc2_cti_customer_release_package_contract():
         "FORTUNE 500 READY",
         "SLA-backed CVE data",
         "SLA guarantees",
+        "Major Bank Reduces MTTD",
+        "Hospital Network Deploys",
+        "MSSP White-Labels CYBERDUDEBIVASH",
+        "Email support (24h SLA)",
+        "Custom rule development SLA",
     ]:
         assert forbidden.lower() not in enterprise.lower()
 
@@ -811,6 +816,9 @@ def test_cloudflare_release_certifies_complete_customer_release_package():
         "Download Assurance JSON",
         "CUSTOMER_SPECIFIC_IF_EXECUTED",
         ".automatic_acceptance == false",
+        "CUSTOM SLA BY CONTRACT",
+        "Operational patterns without invented customer outcomes",
+        'test "$enterprise_ready" -eq 1',
     ]:
         assert required in workflow
 

@@ -323,7 +323,19 @@ jobs:
           jq -e '.soc2_attestation_published == false' "$tmp/assurance.json" >/dev/null || { echo "::error::Machine-readable attestation status is not fail-closed"; exit 1; }
           jq -e '.cti_controls.source_bound_evidence == true and .cti_controls.runtime_derived_freshness == true and .cti_controls.synthetic_customer_activity_metrics == false' "$tmp/assurance.json" >/dev/null || { echo "::error::CTI assurance controls are incomplete"; exit 1; }
 
-          fetch_page "/enterprise.html" "$tmp/enterprise.html"
+          enterprise_ready=0
+          for attempt in 1 2 3 4 5 6; do
+            code="$(curl -sS -L --max-time 25 -H 'Cache-Control: no-cache' -o "$tmp/enterprise.html" -w '%{http_code}' "$base/enterprise.html?release_sha=$GITHUB_SHA" || true)"
+            if [ "$code" = "200" ] \
+              && grep -Fq 'CUSTOM SLA BY CONTRACT' "$tmp/enterprise.html" \
+              && grep -Fq 'Operational patterns without invented customer outcomes' "$tmp/enterprise.html"; then
+              enterprise_ready=1
+              break
+            fi
+            echo "Waiting for enterprise release propagation: attempt $attempt status=$code"
+            sleep 10
+          done
+          test "$enterprise_ready" -eq 1 || { echo "::error::Enterprise release markers did not propagate"; exit 1; }
           grep -Fq '/customer-assurance.html' "$tmp/enterprise.html" || { echo "::error::Enterprise assurance path missing"; exit 1; }
 
           fetch_page "/intelligence.html" "$tmp/intelligence.html"
@@ -360,6 +372,10 @@ jobs:
           ! grep -Fiq 'Sub-100ms latency' "$tmp/enterprise.html" || { echo "::error::Unsupported enterprise latency claim remains"; exit 1; }
           ! grep -Fiq 'Low FP guarantee' "$tmp/enterprise.html" || { echo "::error::Unsupported detection guarantee remains"; exit 1; }
           ! grep -Fiq 'before public disclosure' "$tmp/enterprise.html" || { echo "::error::Unsupported pre-disclosure claim remains"; exit 1; }
+          ! grep -Fiq 'Major Bank Reduces' "$tmp/enterprise.html" || { echo "::error::Synthetic bank case study remains"; exit 1; }
+          ! grep -Fiq 'Hospital Network Deploys' "$tmp/enterprise.html" || { echo "::error::Synthetic healthcare case study remains"; exit 1; }
+          ! grep -Fiq 'MSSP White-Labels' "$tmp/enterprise.html" || { echo "::error::Synthetic MSSP outcome claim remains"; exit 1; }
+          ! grep -Fiq 'Email support (24h SLA)' "$tmp/enterprise.html" || { echo "::error::Unscoped fixed support SLA remains"; exit 1; }
 
           echo "CTI customer assurance certified on $GITHUB_SHA"
 
