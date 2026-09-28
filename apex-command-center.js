@@ -27,10 +27,12 @@
   function setRuntime(kind,label,meta){
     var pill=$('cdb-runtime-pill'),txt=$('cdb-runtime-text'),detail=$('cdb-runtime-detail');
     if(pill) pill.dataset.state=kind;if(txt)txt.textContent=label;if(detail)detail.textContent=meta||'';
+    var edge=$('cdb-edge-state');if(edge){edge.dataset.state=kind;edge.innerHTML='<span class="cdb-dot"></span>'+escapeText(kind==='live'?'PRODUCTION EDGE · VERIFIED':kind==='bad'?'PRODUCTION EDGE · UNAVAILABLE':'PRODUCTION EDGE · VERIFY');}
   }
   function setKpi(id,value,note){
     var v=$(id),n=$(id+'-note');if(v)v.textContent=value;if(n)n.textContent=note||'';
   }
+  function setText(id,value){var el=$(id);if(el)el.textContent=value;}
   function feedStamp(feed){return feed.generatedAt||feed.lastUpdated||(feed.metadata&&feed.metadata.lastPipelineRun)||(feed.metadata&&feed.metadata.generatedAt)||null;}
   function normalizeSeverity(item){
     var s=String(item.threatLevel||'').toUpperCase();
@@ -62,7 +64,12 @@
     setKpi('cdb-exploited',fmt.format(Number(stats.exploited)||0),'Records with exploitation evidence');
     setKpi('cdb-ransomware',fmt.format(Number(stats.ransomware)||0),'Ransomware-associated records');
     setKpi('cdb-sources',fmt.format(Number(stats.sources)||0),'Attributed pipeline sources');
+    setText('cdb-hero-total',fmt.format(Number(feed.totalPublished)||0));
+    setText('cdb-hero-kev',fmt.format(Number(stats.cisaKev)||0));
+    setText('cdb-hero-sources',fmt.format(Number(stats.sources)||0));
     var freshEl=$('cdb-freshness');if(freshEl)freshEl.textContent=fresh.label;
+    setText('cdb-hero-freshness',fresh.label);
+    setText('cdb-hero-freshness-note',fresh.iso?'Feed timestamp verified':'Timestamp unavailable');
     var timeEl=$('cdb-feed-time');if(timeEl)timeEl.textContent=fresh.iso||'timestamp unavailable';
     if(fresh.minutes==null)setRuntime('warn','FEED TIMESTAMP UNKNOWN','First-party feed reachable; freshness timestamp unavailable.');
     else if(fresh.minutes<=360)setRuntime('live','PRODUCTION DATA LIVE','First-party feed age '+fresh.label+'.');
@@ -70,6 +77,7 @@
   }
   function renderAssurance(a,s,acc){
     var soc=$('cdb-soc2-state');if(soc)soc.textContent=a&&a.soc2_certified===false?'ALIGNED · NOT CERTIFIED':'VERIFY';
+    setText('cdb-hero-assurance',a&&a.soc2_certified===false?'ALIGNED · NOT CERTIFIED':'VERIFY');
     var integrity=$('cdb-integrity-state');if(integrity)integrity.textContent=a&&a.cti_controls&&a.cti_controls.source_bound_evidence?'SOURCE-BOUND':'VERIFY';
     var synth=$('cdb-synthetic-state');if(synth)synth.textContent=a&&a.cti_controls&&a.cti_controls.synthetic_customer_activity_metrics===false?'DISABLED':'VERIFY';
     var sla=$('cdb-sla-state');if(sla)sla.textContent=s&&s.contractual_sla&&s.contractual_sla.status==='CUSTOMER_SPECIFIC_IF_EXECUTED'?'BY CONTRACT':'VERIFY';
