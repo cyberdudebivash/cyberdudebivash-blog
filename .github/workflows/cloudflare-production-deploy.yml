@@ -258,6 +258,38 @@ jobs:
 
           echo "SOC 2 + CTI homepage command center certified on $GITHUB_SHA"
 
+      - name: "Certify SOC 2 + CTI homepage command center"
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://blog.cyberdudebivash.in"
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+
+          fetch_page() {
+            local route="$1"
+            local file="$2"
+            local code=""
+            for attempt in 1 2 3 4 5 6; do
+              code="$(curl -sS -L --max-time 25 -H 'Cache-Control: no-cache' -o "$file" -w '%{http_code}' "$base$route?release_sha=$GITHUB_SHA" || true)"
+              if [ "$code" = "200" ]; then break; fi
+              echo "Waiting for homepage propagation: $route attempt $attempt status=$code"
+              sleep 10
+            done
+            test "$code" = "200" || { echo "::error::$route returned HTTP $code"; exit 1; }
+          }
+
+          fetch_page "/" "$tmp/home.html"
+          grep -Fq 'Hybrid SOC + CTI · Customer Control Plane' "$tmp/home.html" || { echo "::error::Homepage missing Hybrid SOC + CTI control plane"; exit 1; }
+          grep -Fq 'Operational trust before analyst action.' "$tmp/home.html" || { echo "::error::Homepage missing operational trust hierarchy"; exit 1; }
+          grep -Fq 'Production Control Evidence' "$tmp/home.html" || { echo "::error::Homepage missing production control evidence"; exit 1; }
+          grep -Fq 'id="soc2-kev-count"' "$tmp/home.html" || { echo "::error::Homepage missing live CISA KEV metric"; exit 1; }
+          grep -Fq 'id="soc2-pipeline-age"' "$tmp/home.html" || { echo "::error::Homepage missing runtime-derived freshness metric"; exit 1; }
+          grep -Fq 'SOC 2-aligned operational evidence; no SOC 2 certification or auditor attestation is claimed.' "$tmp/home.html" || { echo "::error::Homepage assurance truth boundary missing"; exit 1; }
+          ! grep -Fiq 'SOC 2 Type II certified' "$tmp/home.html" || { echo "::error::Unsupported SOC 2 certification claim on homepage"; exit 1; }
+
+          echo "SOC 2 + CTI homepage command center certified on $GITHUB_SHA"
+
       - name: "Certify SOC 2 + CTI customer assurance"
         shell: bash
         run: |
