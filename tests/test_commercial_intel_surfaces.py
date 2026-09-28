@@ -599,6 +599,14 @@ def test_cloudflare_release_fail_closes_on_soc2_cti_customer_assurance():
     ]:
         assert required in workflow
 
+def test_homepage_command_center_suppresses_conversion_overlays():
+    engine = Path("conversion-engine.js").read_text(encoding="utf-8")
+    assert "var COMMAND_CENTER_HOME = page === '/';" in engine
+    assert "if (COMMAND_CENTER_HOME) return;" in engine
+    assert "Never cover the enterprise command-center hero with an intent card." in engine
+    assert "no exit-intent" in engine.lower()
+
+
 def test_homepage_has_single_authoritative_header_and_control_strip():
     html = Path("index.html").read_text(encoding="utf-8-sig")
     assert html.count('<header id="main-header">') == 1
