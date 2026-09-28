@@ -54,6 +54,17 @@ function safeHttps(raw) {
   } catch (_) { return null; }
 }
 
+function cvssSeverity(cvss, fallback) {
+  const n = Number(cvss);
+  if (Number.isFinite(n)) {
+    if (n >= 9) return 'CRITICAL';
+    if (n >= 7) return 'HIGH';
+    if (n >= 4) return 'MEDIUM';
+    if (n > 0) return 'LOW';
+  }
+  return String(fallback || 'NOT_ASSESSED').toUpperCase();
+}
+
 function dashboardReportFor(item) {
   const cves = new Set([...(item.cves || []), item.id]
     .filter(v => /^CVE-\d{4}-\d{4,7}$/i.test(String(v || '')))
@@ -98,7 +109,8 @@ function publicDashboardItems(section, limit) {
         title: String(i.title || 'Untitled intelligence record'),
         description: String(i.description || i.desc || '').slice(0, 600),
         published: i.published || i.pubDate || i.last_seen || i.first_seen || null,
-        severity: String(i.threat_level || 'NOT_ASSESSED').toUpperCase(),
+        severity: cvssSeverity(i.cvss, i.threat_level),
+        priority: String(i.threat_level || 'NOT_ASSESSED').toUpperCase(),
         exploited: i.exploited === true,
         cisa_kev: i.cisa_kev === true || i.cisaKev === true,
         ransomware: i.ransomware === true,
