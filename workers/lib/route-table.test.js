@@ -87,14 +87,14 @@ describe('resolveRoute — direct api/** filesystem routes', () => {
       }
     }
     walk(path.join(__dirname, '..', '..', 'api'));
-    // 41 routable handlers (38 DIRECT_API_HANDLERS + 3 DYNAMIC_API_HANDLERS)
+    // 42 routable handlers (39 DIRECT_API_HANDLERS + 3 DYNAMIC_API_HANDLERS)
     // + 3 internal-only "legacy" library modules that live directly under
     // api/v1/** (not api/_lib/**) but are require()'d by their routed
     // sibling, never routed themselves: api/v1/billing-legacy.js (required
     // by api/v1/billing.js), api/v1/products/legacy-index.js (required by
     // api/v1/products/index.js), api/v1/reports/legacy-index.js (required
     // by api/v1/reports/index.js).
-    assert.equal(files.length, 44, 'expected exactly 44 real api/** files (41 routable + 3 internal-only legacy modules) — update route-table.js and/or this test if this changes');
+    assert.equal(files.length, 45, 'expected exactly 45 real api/** files (42 routable + 3 internal-only legacy modules) — update route-table.js and/or this test if this changes');
 
     const INDEX_HANDLERS = new Set(['api/v1/products/index', 'api/v1/quality/index', 'api/v1/reports/index']);
     const DYNAMIC_FILE_SUFFIX = /\[id]$/;
@@ -167,10 +167,10 @@ describe('resolveRoute — no match', () => {
 });
 
 describe('table sanity', () => {
-  test('DIRECT_API_HANDLERS and DYNAMIC_API_HANDLERS together account for all 41 handlers with no overlap', () => {
+  test('DIRECT_API_HANDLERS and DYNAMIC_API_HANDLERS together account for all 42 handlers with no overlap', () => {
     const dynamicPaths = DYNAMIC_API_HANDLERS.map(([, handlerPath]) => handlerPath);
     const all = [...DIRECT_API_HANDLERS, ...dynamicPaths];
-    assert.equal(all.length, 41);
-    assert.equal(new Set(all).size, 41, 'duplicate handler path across DIRECT_API_HANDLERS/DYNAMIC_API_HANDLERS');
+    assert.equal(all.length, 42);
+    assert.equal(new Set(all).size, 42, 'duplicate handler path across DIRECT_API_HANDLERS/DYNAMIC_API_HANDLERS');
   });
 });
