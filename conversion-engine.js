@@ -90,6 +90,7 @@
 
   var CYAN   = '#00ffe0';
   var page   = window.location.pathname;
+  var COMMAND_CENTER_HOME = page === '/';
 
   /* ═══════════════════════════════════════════════════════════════════════
      SECTION 1 — CORE UTILITIES + window.trackEvent()
@@ -798,6 +799,11 @@
     }
 
     function init () {
+      /* The production command center must stay unobstructed: no exit-intent
+         capture overlay on the homepage hero. Conversion overlays remain
+         available on deeper content/product pages. */
+      if (COMMAND_CENTER_HOME) return;
+
       /* Disable monetization.js exit intent so only ours fires */
       ls.set('exit_shown', '0');
 
@@ -972,6 +978,9 @@
     }
 
     function init () {
+      /* Never cover the enterprise command-center hero with an intent card. */
+      if (COMMAND_CENTER_HOME) return;
+
       INTENT.onUpgrade(onIntentUpgrade);
 
       /* Return visitor banner (disabled via CFG.returnBanner — see SECTION 0) */
