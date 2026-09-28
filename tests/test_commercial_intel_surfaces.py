@@ -161,11 +161,11 @@ def test_soc_commandbar_has_no_dead_root_routes():
         html = path.read_text(encoding="utf-8-sig")
         for route in dead:
             assert route not in html
-        assert 'href="/api-dashboard.html" data-soc-action="investigate"' in html
-        assert 'href="/api-dashboard.html" data-soc-action="hunt"' in html
-        assert 'href="/api-dashboard.html" data-soc-action="detect"' in html
-        assert 'href="/api-dashboard.html" data-soc-action="watch"' in html
-        assert 'href="/api.html" data-soc-action="export"' in html
+        assert 'href="/dossier.html" data-soc-action="investigate"' in html
+        assert 'href="/dossier.html" data-soc-action="hunt"' in html
+        assert 'href="/dossier.html" data-soc-action="detect"' in html
+        assert 'href="/dossier.html" data-soc-action="watch"' in html
+        assert 'href="/dossier.html" data-soc-action="export"' in html
 
 
 def test_evidence_inspector_source_links_are_absolute_https_only():
@@ -191,12 +191,16 @@ def test_hybrid_soc_cti_workspace_v2_is_runtime_and_evidence_bound():
         assert required in controller
     assert "soc-selected-record" in css
 
-def test_ai_security_static_taxonomy_is_not_asserted_as_live_risk_telemetry():
+def test_ai_security_taxonomy_is_live_feed_bound_not_placeholder_telemetry():
     html = Path("ai-security/index.html").read_text(encoding="utf-8-sig")
     assert "AI Security Analysis Taxonomy" in html
-    assert "ANALYSIS CATEGORY" in html
+    assert "data-intel-pivot" in html
+    assert "data-pivot-state" in html
+    assert "LIVE FEED PIVOT" in html
+    assert "ANALYSIS CATEGORY" not in html
     assert "⚠ Active AI Risks" not in html
     assert '<span class="risk-level risk-critical">CRITICAL</span>' not in html
+    assert "/soc-taxonomy-pivots.js" in html
 
 
 def test_hybrid_workspace_fails_closed_without_canonical_report_id():
@@ -218,10 +222,16 @@ def test_hybrid_console_has_single_nonduplicated_operational_command_surface():
         assert html.count('class="soc-commandbar"') == 1
         assert html.count('class="soc-workspace"') == 1
 
-def test_malware_actor_taxonomy_does_not_assert_unbound_live_activity():
+def test_malware_taxonomy_is_live_feed_bound_not_placeholder_activity():
     html = Path("malware/index.html").read_text(encoding="utf-8-sig")
-    assert "ANALYSIS CATEGORY" in html
-    assert "Activity state requires current evidence" in html
+    assert "data-intel-pivot" in html
+    assert "data-pivot-state" in html
+    assert "LIVE FEED PIVOT" in html
+    assert "ANALYSIS CATEGORY" not in html
+    assert "Activity state requires current evidence" not in html
+    assert "Sample IOCs (Free)" not in html
+    assert 'id="selected-record-preview"' in html
+    assert "/soc-taxonomy-pivots.js" in html
     assert '<div class="threat-status status-active">● ACTIVE</div>' not in html
     assert '<div class="threat-status status-high">⚠ HIGH ACTIVITY</div>' not in html
 
@@ -321,3 +331,49 @@ def test_dashboard_api_normalizes_multi_reference_urls_and_malware_scope():
     assert "explicitRansomwareRecord" in dashboard
     assert "cveLinkedRansomware" in dashboard
     assert "return explicitMalware || explicitRansomwareRecord || cveLinkedRansomware" in dashboard
+
+
+def test_selected_record_actions_are_contextual_customer_workflows():
+    controller = Path("soc-hybrid-workspace.js").read_text(encoding="utf-8")
+    for token in [
+        "entityContext(card)",
+        "focus=overview",
+        "focus=attack",
+        "focus=detections",
+        "focus=watch",
+        "focus=export",
+    ]:
+        assert token in controller
+    assert "syncActionTargets(root,card)" in controller
+    assert "selected-record-preview" in controller
+
+
+def test_dossier_completes_investigate_hunt_detect_watch_and_export_flows():
+    html = Path("dossier.html").read_text(encoding="utf-8-sig")
+    for anchor in [
+        'id="dossier-overview"',
+        'id="dossier-evidence"',
+        'id="dossier-attack"',
+        'id="dossier-detections"',
+        'id="watch-btn-container"',
+        'id="dossier-export"',
+    ]:
+        assert anchor in html
+    for fn in [
+        "downloadCurrentDossier",
+        "downloadCurrentDetectionPack",
+        "copyCurrentApiCommand",
+        "applyWorkflowFocus",
+    ]:
+        assert fn in html
+    assert "action=detection-pack" in html
+    assert "No placeholder or synthetic artifact is produced." in html
+
+
+def test_taxonomy_pivot_runtime_filters_rendered_intelligence_only():
+    pivots = Path("soc-taxonomy-pivots.js").read_text(encoding="utf-8")
+    assert "feed.querySelectorAll('.intel-post')" in pivots
+    assert "data-filter-query" in pivots
+    assert "data-triage-search" in pivots
+    assert "No current match in rendered feed" in pivots
+    assert "new MutationObserver(refresh)" in pivots
