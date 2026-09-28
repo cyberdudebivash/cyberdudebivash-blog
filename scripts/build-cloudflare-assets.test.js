@@ -172,13 +172,15 @@ describe('build-cloudflare-assets', () => {
     }
   });
 
-  test('no public HTML artifact contains placeholder hash links', () => {
+  test('no public HTML artifact contains dead-link URL patterns', () => {
     const offenders = [];
     for (const rel of outputFiles.filter(f => f.endsWith('.html'))) {
       const html = fs.readFileSync(path.join(OUT, rel), 'utf8');
-      if (/href=["']#["']/i.test(html)) offenders.push(rel);
+      if (/href=["']#["']/i.test(html)) offenders.push(rel + ': href="#"');
+      if (/href=["']\s*["']/i.test(html)) offenders.push(rel + ': empty href');
+      if (/href=["']javascript:/i.test(html)) offenders.push(rel + ': javascript href');
     }
-    assert.deepEqual(offenders, [], 'public pages still containing href="#":\n' + offenders.join('\n'));
+    assert.deepEqual(offenders, [], 'public pages still containing dead-link patterns:\n' + offenders.join('\n'));
   });
 
   test('SOC 2 customer-release surfaces do not publish unconditional response-time guarantees', () => {
