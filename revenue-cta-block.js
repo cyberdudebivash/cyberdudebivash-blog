@@ -110,7 +110,7 @@
       show:    true,
       badge:   '\uD83D\uDD25 HIGH DEMAND — 23 spots left this month',
       timer:   true,
-      timerLabel: 'Trial offer expires in:'
+      timerLabel: 'Plan options:'
     },
     medium: {
       show:    true,
@@ -362,7 +362,7 @@
   /* ── BUILD RETURN VISITOR HEADLINE ───────────────────────────────── */
   function buildHeadline(copy, visitCount) {
     if (visitCount >= 3) {
-      return 'Welcome Back — Your SOC Pro Trial is Still Available';
+      return 'Welcome Back — SOC Pro Plans Are Available';
     }
     if (visitCount === 2) {
       return copy.headline + ' — Exclusive Returning Reader Offer';
@@ -417,7 +417,7 @@
               '<span class="rcb-save">Save 63%</span>' +
             '</div>' +
             '<a href="' + LINKS.pricing + '" class="rcb-card-btn" data-track="rcb_soc_pro_click">' +
-              'Start 7-Day Free Trial \u2192' +
+              'View Plans \u2192' +
             '</a>' +
           '</div>' +
 
