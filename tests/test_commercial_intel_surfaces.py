@@ -613,6 +613,31 @@ def test_full_soc_cti_dashboard_stays_panable_on_mobile_and_tablet():
         assert required in responsive
 
 
+def test_global_customer_experience_commercial_hardening_contract():
+    css = Path("customer-experience.css").read_text(encoding="utf-8")
+    runtime = Path("customer-experience.js").read_text(encoding="utf-8")
+    builder = Path("scripts/build-cloudflare-assets.js").read_text(encoding="utf-8")
+    for required in [
+        "--cx-content:1640px", "prefers-contrast:more", "aria-busy",
+        ".cx-external-link::after", ".cx-scroll-region", "[aria-invalid=\"true\"]",
+        "dialog,[role=\"dialog\"],[aria-modal=\"true\"]", "@media(hover:none),(pointer:coarse)",
+    ]:
+        assert required in css
+    for required in [
+        "function enhanceLinks()", "function enhanceForms()", "function enhanceTables()",
+        "function enhanceDialogs()", "noopener", "noreferrer", "aria-invalid",
+        "Submitting form.", "Scrollable data table", "Scrollable code or text block",
+    ]:
+        assert required in runtime
+    for required in [
+        'CX_CSS = \'/customer-experience.css?v=20260928-cx2\'',
+        'CX_JS = \'/customer-experience.js?v=20260928-cx2\'',
+        '<html lang="en"$1>', '<meta charset="utf-8">',
+        'viewport-fit=cover',
+    ]:
+        assert required in builder
+
+
 def test_global_customer_experience_contract():
     css = Path("customer-experience.css").read_text(encoding="utf-8")
     runtime = Path("customer-experience.js").read_text(encoding="utf-8")
@@ -628,8 +653,8 @@ def test_global_customer_experience_contract():
     ]:
         assert required in runtime
     for required in [
-        "injectCustomerExperience", "customer-experience.css?v=20260928-cx1",
-        "customer-experience.js?v=20260928-cx1", "copyFileForPublicBuild",
+        "injectCustomerExperience", "customer-experience.css?v=20260928-cx2",
+        "customer-experience.js?v=20260928-cx2", "copyFileForPublicBuild",
     ]:
         assert required in builder
 
