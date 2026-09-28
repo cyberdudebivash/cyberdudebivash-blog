@@ -11,7 +11,7 @@ function staticMarkupOnly(html) {
     .replace(/<script\b[\s\S]*?<\/script>/gi, '')
     .replace(/<style\b[\s\S]*?<\/style>/gi, '');
 }
-const { build, countFiles, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure } = require('./build-cloudflare-assets');
+const { build, countFiles, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure, hasUndefinedMetadataArtifacts } = require('./build-cloudflare-assets');
 
 // Mirrors Cloudflare's own documented splat semantics for a _headers
 // pattern: "a splat pattern -- signified by an asterisk (*) -- will
@@ -102,6 +102,16 @@ function walk(dir) {
   }
   return out;
 }
+
+test('CVE undefined-metadata detector ignores legitimate technical code but rejects broken generated metadata', () => {
+  assert.equal(hasUndefinedMetadataArtifacts('<pre><code>function f(){ return undefined }</code></pre>'), false);
+  assert.equal(hasUndefinedMetadataArtifacts('<p>JavaScript undefined behavior is discussed here.</p>'), false);
+  assert.equal(hasUndefinedMetadataArtifacts('<link rel="canonical" href="https://blog.cyberdudebivash.in/cve/undefined.html">'), true);
+  assert.equal(hasUndefinedMetadataArtifacts('<meta property="og:url" content="https://blog.cyberdudebivash.in/cve/undefined.html">'), true);
+  assert.equal(hasUndefinedMetadataArtifacts('<meta name="description" content="undefined">'), true);
+  assert.equal(hasUndefinedMetadataArtifacts('<title> — CYBERDUDEBIVASH SENTINEL APEX</title>'), true);
+  assert.equal(hasUndefinedMetadataArtifacts('{"url":"https://blog.cyberdudebivash.in/cve/undefined.html"}'), true);
+});
 
 test('customer experience injector handles valid HTML and malformed public HTML is rejected', () => {
   const valid = '<!doctype html><html><head><title>x</title></head><body><main>x</main></body></html>';
@@ -260,7 +270,7 @@ describe('build-cloudflare-assets', () => {
     const offenders = [];
     for (const rel of outputFiles.filter(f => /^cve\/CVE-\d{4}-\d+\.html$/i.test(f))) {
       const html = fs.readFileSync(path.join(OUT, rel), 'utf8');
-      if (/\/cve\/undefined\.html|\bundefined\b|<title>\s*—/i.test(html)) offenders.push(rel);
+      if (hasUndefinedMetadataArtifacts(html)) offenders.push(rel);
     }
     assert.deepEqual(offenders, [], 'CVE pages still contain undefined metadata:\n' + offenders.join('\n'));
   });
