@@ -20,7 +20,7 @@ const PUBLIC_DIRS = [
 
 const PUBLIC_ROOT_FILES = [
   'about.html', 'api-dashboard.html', 'api.html', 'archive.html',
-  'buy.html', 'contact.html', 'enterprise.html', 'faq.html', 'index.html',
+  'buy.html', 'contact.html', 'customer-assurance.html', 'enterprise.html', 'faq.html', 'index.html',
   'intelligence.html', 'leads.html', 'mitre-attack-detection.html', 'newsletter.html',
   'order-confirmation.html', 'owasp-llm-top10.html', 'pricing.html',
   'privacy.html', 'products.html', 'search.html',

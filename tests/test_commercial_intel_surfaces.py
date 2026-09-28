@@ -520,3 +520,47 @@ def test_cloudflare_release_certifies_revenue_critical_customer_journeys():
         "u.searchParams.set('entity_id'",
     ]:
         assert required in workflow
+
+def test_soc2_cti_customer_assurance_is_truthful_public_and_machine_readable():
+    html = Path("customer-assurance.html").read_text(encoding="utf-8")
+    machine = Path("api/intel/customer-assurance.json").read_text(encoding="utf-8")
+    build = Path("scripts/build-cloudflare-assets.js").read_text(encoding="utf-8")
+    enterprise = Path("enterprise.html").read_text(encoding="utf-8-sig")
+    intelligence = Path("intelligence.html").read_text(encoding="utf-8-sig")
+
+    assert "SOC 2-aligned operational evidence; not SOC 2 certified." in html
+    assert "does not represent this service as SOC 2 certified" in html
+    assert "source-bound evidence" in html.lower()
+    assert "No synthetic SOC telemetry" in html
+    assert "/security-disclosure.html" in html
+    assert "/.well-known/security.txt" in html
+    assert "/privacy.html" in html
+    assert "/terms.html" in html
+    assert "/api/intel/customer-assurance.json" in html
+    assert '"soc2_certified": false' in machine
+    assert '"soc2_attestation_published": false' in machine
+    assert "SOC_2_ALIGNED_OPERATIONAL_EVIDENCE_NOT_CERTIFIED" in machine
+    assert "customer-assurance.html" in build
+    assert "/customer-assurance.html" in enterprise
+    assert "/customer-assurance.html" in intelligence
+    for forbidden in [
+        "SOC 2 certified platform",
+        "SOC 2 Type II certified",
+        "SOC2 certified",
+        "auditor attestation available",
+    ]:
+        assert forbidden.lower() not in html.lower()
+
+
+def test_cloudflare_release_fail_closes_on_soc2_cti_customer_assurance():
+    workflow = Path(".github/workflows/cloudflare-production-deploy.yml").read_text(encoding="utf-8")
+    for required in [
+        "Certify SOC 2 + CTI customer assurance",
+        'fetch_page "/customer-assurance.html"',
+        "SOC 2-aligned operational evidence; not SOC 2 certified.",
+        'fetch_page "/api/intel/customer-assurance.json"',
+        ".soc2_certified == false",
+        "CTI customer assurance certified",
+    ]:
+        assert required in workflow
+
