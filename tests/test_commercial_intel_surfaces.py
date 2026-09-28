@@ -599,6 +599,37 @@ def test_cloudflare_release_fail_closes_on_soc2_cti_customer_assurance():
     ]:
         assert required in workflow
 
+def test_customer_surfaces_are_mobile_tablet_ready():
+    responsive = Path("responsive-platform.css").read_text(encoding="utf-8")
+    for required in [
+        "@media (max-width:1180px)",
+        "@media (max-width:820px)",
+        "@media (max-width:480px)",
+        "@media (max-width:360px)",
+        "viewport-fit=cover",
+        "min-height:var(--rp-tap)",
+        ".mobile-nav-drawer",
+        ".cdb-hero-metrics",
+        "grid-template-columns:1fr!important",
+        "overflow-x:auto!important",
+        "env(safe-area-inset-bottom",
+        "@media (hover:none),(pointer:coarse)",
+    ]:
+        assert required in responsive
+
+    surfaces = [
+        "index.html", "intel/index.html", "hunts.html", "detections/index.html",
+        "customer-assurance.html", "service-status.html", "enterprise-onboarding.html",
+        "customer-incident-response.html", "cti-delivery-acceptance.html",
+        "api-dashboard.html", "products.html", "pricing.html", "enterprise.html",
+        "search.html", "api.html", "workbench.html",
+    ]
+    for surface in surfaces:
+        html = Path(surface).read_text(encoding="utf-8-sig")
+        assert "viewport-fit=cover" in html, surface
+        assert "/responsive-platform.css?v=20260928-mobile1" in html, surface
+
+
 def test_homepage_command_center_suppresses_conversion_overlays():
     engine = Path("conversion-engine.js").read_text(encoding="utf-8")
     assert "var COMMAND_CENTER_HOME = page === '/';" in engine
