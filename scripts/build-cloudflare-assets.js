@@ -8,7 +8,6 @@
  */
 const fs = require('fs');
 const path = require('path');
-const { renderPage: renderCvePage } = require('../generate-cve-pages');
 
 const ROOT = path.join(__dirname, '..');
 const OUT = path.join(ROOT, 'dist-public');
@@ -139,6 +138,10 @@ function repairLegacyCveHtml(src, html) {
   if (!data.description && /^https?:\/\//i.test(data.report_url || '')) {
     data.description = 'SENTINEL APEX intelligence record for ' + id + '. See the linked report for source context and analysis.';
   }
+  // Lazy import keeps the Cloudflare runtime policy fixture isolated: that
+  // fixture copies this builder without the root generator module and never
+  // executes a public-asset build.
+  const { renderPage: renderCvePage } = require('../generate-cve-pages');
   const repaired = renderCvePage(data);
   if (/\/cve\/undefined\.html|\bundefined\b|<title>\s*—/i.test(repaired)) {
     throw new Error('CVE repair still contains undefined metadata: ' + rel);
