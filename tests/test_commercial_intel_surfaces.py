@@ -625,7 +625,8 @@ def test_global_customer_experience_commercial_hardening_contract():
         assert required in css
     for required in [
         "function enhanceLinks()", "function enhanceForms()", "function enhanceTables()",
-        "function enhanceDialogs()", "noopener", "noreferrer", "aria-invalid",
+        "function enhanceDialogs()", "function observeDynamicUi()", "MutationObserver",
+        "function labelFor(el)", "noopener", "noreferrer", "aria-invalid",
         "Submitting form.", "Scrollable data table", "Scrollable code or text block",
     ]:
         assert required in runtime
