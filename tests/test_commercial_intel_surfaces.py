@@ -621,3 +621,26 @@ def test_cloudflare_release_certifies_homepage_soc2_cti_command_center():
     ]:
         assert required in workflow
 
+
+def test_homepage_exposes_runtime_derived_cti_metrics_and_control_evidence():
+    html = Path("index.html").read_text(encoding="utf-8-sig")
+    for required in [
+        "Live CTI operational metrics",
+        "Production Control Evidence",
+        "Exact Git SHA → Cloudflare deployment",
+        "Allowlisted production asset bundle",
+        "API-key boundary for protected operations",
+        'id="soc2-total-published"',
+        'id="soc2-critical-count"',
+        'id="soc2-kev-count"',
+        'id="soc2-exploited-count"',
+        'id="soc2-source-count"',
+        'id="soc2-pipeline-age"',
+        "intel.totalPublished",
+        "stats.cisaKev",
+        "stats.exploited",
+        "stats.sources",
+        "SOC 2-aligned controls support due diligence but do not replace an independent auditor attestation.",
+    ]:
+        assert required in html
+
