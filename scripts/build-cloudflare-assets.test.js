@@ -138,7 +138,7 @@ describe('build-cloudflare-assets', () => {
     const mustExist = [
       'index.html', 'customer-assurance.html', 'service-status.html', 'customer-incident-response.html', 'enterprise-onboarding.html', 'cti-delivery-acceptance.html', 'leads.html', 'robots.txt', 'rss.xml', 'sitemap.xml',
       'search-index.json', 'live-intel.json', 'api/intel/customer-assurance.json', 'api/intel/service-assurance.json', 'api/intel/customer-incident-response.json', 'api/intel/cti-delivery-acceptance.json',
-      'apex-v13.css', 'apex-command-center.css', 'responsive-platform.css', 'apex-command-center.js', 'analytics-engine.js', 'banner-orchestrator.js',
+      'apex-v13.css', 'apex-command-center.css', 'responsive-platform.css', 'customer-experience.css', 'apex-command-center.js', 'customer-experience.js', 'analytics-engine.js', 'banner-orchestrator.js',
       'soc-cti-console.css', 'soc-triage-workspace.js', 'soc-taxonomy-pivots.js',
       'soc-hybrid-workspace.js', 'soc-evidence-drawer.js',
     ];
@@ -148,6 +148,24 @@ describe('build-cloudflare-assets', () => {
     assert.ok(outputFiles.includes('breaking/index.html'), 'expected breaking/index.html in dist-public/');
     assert.ok(outputFiles.some(f => f.startsWith('posts/') && f.endsWith('.html')), 'expected at least one posts/*.html');
     assert.ok(outputFiles.some(f => f.startsWith('api/intel/') && f.endsWith('.json')), 'expected at least one api/intel/*.json');
+  });
+
+  test('every built HTML page receives the global customer experience layer', () => {
+    const htmlFiles = outputFiles.filter(f => f.endsWith('.html'));
+    assert.ok(htmlFiles.length > 100, 'expected a substantial number of public HTML pages');
+    for (const rel of htmlFiles) {
+      const html = fs.readFileSync(path.join(OUT, rel), 'utf8');
+      assert.match(html, /\/customer-experience\.css\?v=20260928-cx1/, rel + ' missing customer experience CSS');
+      assert.match(html, /\/customer-experience\.js\?v=20260928-cx1/, rel + ' missing customer experience JS');
+      assert.match(html, /name=["']viewport["']/i, rel + ' missing viewport metadata');
+    }
+  });
+
+  test('critical operational pages contain no placeholder hash links', () => {
+    for (const rel of ['workbench.html','api-dashboard.html','threat-intelligence.html','index.html','hunts.html','intel/index.html']) {
+      const html = fs.readFileSync(path.join(OUT, rel), 'utf8');
+      assert.doesNotMatch(html, /href=["']#["']/i, rel + ' still contains href="#"');
+    }
   });
 
   test('SOC 2 customer-release surfaces do not publish unconditional response-time guarantees', () => {
