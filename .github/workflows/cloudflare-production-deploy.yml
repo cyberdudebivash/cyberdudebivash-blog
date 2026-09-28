@@ -312,6 +312,8 @@ jobs:
           grep -Fq 'function enhanceLinks()' "$tmp/customer-experience.js" || { echo "::error::Global hyperlink hardening runtime missing"; exit 1; }
           grep -Fq 'function enhanceForms()' "$tmp/customer-experience.js" || { echo "::error::Global form hardening runtime missing"; exit 1; }
           grep -Fq 'function enhanceTables()' "$tmp/customer-experience.js" || { echo "::error::Global table accessibility runtime missing"; exit 1; }
+          grep -Fq 'function observeDynamicUi()' "$tmp/customer-experience.js" || { echo "::error::Dynamic DOM accessibility hardening missing"; exit 1; }
+          grep -Fq 'function labelFor(el)' "$tmp/customer-experience.js" || { echo "::error::Cross-browser form label hardening missing"; exit 1; }
           grep -Fq 'noopener' "$tmp/customer-experience.js" || { echo "::error::External link rel hardening missing"; exit 1; }
           grep -Fq 'aria-invalid' "$tmp/customer-experience.js" || { echo "::error::Form validation accessibility missing"; exit 1; }
           grep -Fq 'Scrollable data table' "$tmp/customer-experience.js" || { echo "::error::Scrollable table semantics missing"; exit 1; }
