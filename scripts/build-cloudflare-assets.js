@@ -107,10 +107,25 @@ function injectCustomerExperience(html) {
   return out;
 }
 
+function validatePublicHtmlStructure(html, sourcePath = 'public HTML') {
+  const text = String(html);
+  const required = [
+    ['<html', /<html\b/i], ['</html>', /<\/html>/i],
+    ['<head', /<head\b/i], ['</head>', /<\/head>/i],
+    ['<body', /<body\b/i], ['</body>', /<\/body>/i],
+  ];
+  const missing = required.filter(([, re]) => !re.test(text)).map(([name]) => name);
+  if (missing.length) {
+    throw new Error(`Malformed public HTML: ${sourcePath} missing ${missing.join(', ')}`);
+  }
+  return text;
+}
+
 function copyFileForPublicBuild(src, dest) {
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   if (src.toLowerCase().endsWith('.html')) {
-    fs.writeFileSync(dest, injectCustomerExperience(fs.readFileSync(src, 'utf8')));
+    const html = validatePublicHtmlStructure(fs.readFileSync(src, 'utf8'), path.relative(ROOT, src));
+    fs.writeFileSync(dest, injectCustomerExperience(html));
   } else {
     fs.copyFileSync(src, dest);
   }
@@ -162,4 +177,4 @@ if (require.main === module) {
   console.log(`dist-public/ built: ${countFiles(out)} files`);
 }
 
-module.exports = { build, countFiles, PUBLIC_DIRS, PUBLIC_ROOT_FILES, ROOT, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, CX_CSS, CX_JS };
+module.exports = { build, countFiles, PUBLIC_DIRS, PUBLIC_ROOT_FILES, ROOT, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure, CX_CSS, CX_JS };
