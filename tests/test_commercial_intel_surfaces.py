@@ -156,13 +156,13 @@ def test_priority_triage_is_feed_scoped_async_aware_and_accessible():
 
 
 def test_soc_commandbar_has_no_dead_root_routes():
-    dead = ["/investigations.html", "/hunts.html", "/detections.html", "/watchlists.html"]
+    dead = ["/investigations.html", "/detections.html", "/watchlists.html"]
     for path in SURFACES:
         html = path.read_text(encoding="utf-8-sig")
         for route in dead:
             assert route not in html
         assert 'href="/dossier.html" data-soc-action="investigate"' in html
-        assert 'href="/dossier.html" data-soc-action="hunt"' in html
+        assert 'href="/hunts.html" data-soc-action="hunt"' in html
         assert 'href="/dossier.html" data-soc-action="detect"' in html
         assert 'href="/dossier.html" data-soc-action="watch"' in html
         assert 'href="/dossier.html" data-soc-action="export"' in html
@@ -338,7 +338,7 @@ def test_selected_record_actions_are_contextual_customer_workflows():
     for token in [
         "entityContext(card)",
         "focus=overview",
-        "focus=attack",
+        "/hunts.html?entity_type=",
         "focus=detections",
         "focus=watch",
         "focus=export",
