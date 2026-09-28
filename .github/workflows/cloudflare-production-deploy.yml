@@ -296,8 +296,8 @@ jobs:
           grep -Fq '/apex-command-center.css' "$tmp/home.html" || { echo "::error::Homepage command-center stylesheet missing"; exit 1; }
           grep -Fq '/apex-command-center.js' "$tmp/home.html" || { echo "::error::Homepage command-center runtime missing"; exit 1; }
           grep -Fq '/responsive-platform.css?v=20260928-mobile2' "$tmp/home.html" || { echo "::error::Homepage responsive production layer missing"; exit 1; }
-          grep -Fq '/customer-experience.css?v=20260928-cx1' "$tmp/home.html" || { echo "::error::Homepage global customer experience CSS missing"; exit 1; }
-          grep -Fq '/customer-experience.js?v=20260928-cx1' "$tmp/home.html" || { echo "::error::Homepage global customer experience runtime missing"; exit 1; }
+          grep -Fq '/customer-experience.css?v=20260928-cx2' "$tmp/home.html" || { echo "::error::Homepage global customer experience CSS missing"; exit 1; }
+          grep -Fq '/customer-experience.js?v=20260928-cx2' "$tmp/home.html" || { echo "::error::Homepage global customer experience runtime missing"; exit 1; }
           grep -Fq 'viewport-fit=cover' "$tmp/home.html" || { echo "::error::Homepage safe-area viewport configuration missing"; exit 1; }
 
           fetch_asset "/apex-command-center.css" "$tmp/apex-command-center.css"
@@ -309,6 +309,15 @@ jobs:
           grep -Fq 'focus-visible' "$tmp/customer-experience.css" || { echo "::error::Global focus visibility contract missing"; exit 1; }
           grep -Fq 'Skip to main content' "$tmp/customer-experience.js" || { echo "::error::Skip-link accessibility runtime missing"; exit 1; }
           grep -Fq 'aria-required' "$tmp/customer-experience.js" || { echo "::error::Form accessibility runtime missing"; exit 1; }
+          grep -Fq 'function enhanceLinks()' "$tmp/customer-experience.js" || { echo "::error::Global hyperlink hardening runtime missing"; exit 1; }
+          grep -Fq 'function enhanceForms()' "$tmp/customer-experience.js" || { echo "::error::Global form hardening runtime missing"; exit 1; }
+          grep -Fq 'function enhanceTables()' "$tmp/customer-experience.js" || { echo "::error::Global table accessibility runtime missing"; exit 1; }
+          grep -Fq 'noopener' "$tmp/customer-experience.js" || { echo "::error::External link rel hardening missing"; exit 1; }
+          grep -Fq 'aria-invalid' "$tmp/customer-experience.js" || { echo "::error::Form validation accessibility missing"; exit 1; }
+          grep -Fq 'Scrollable data table' "$tmp/customer-experience.js" || { echo "::error::Scrollable table semantics missing"; exit 1; }
+          grep -Fq 'prefers-contrast:more' "$tmp/customer-experience.css" || { echo "::error::High-contrast customer mode missing"; exit 1; }
+          grep -Fq '.cx-external-link::after' "$tmp/customer-experience.css" || { echo "::error::External-link visibility treatment missing"; exit 1; }
+          grep -Fq '[aria-invalid="true"]' "$tmp/customer-experience.css" || { echo "::error::Invalid form state styling missing"; exit 1; }
           grep -Fq '@media (max-width:1180px)' "$tmp/responsive-platform.css" || { echo "::error::Tablet breakpoint missing"; exit 1; }
           grep -Fq '@media (max-width:820px)' "$tmp/responsive-platform.css" || { echo "::error::Phone/tablet breakpoint missing"; exit 1; }
           grep -Fq '@media (max-width:480px)' "$tmp/responsive-platform.css" || { echo "::error::Small-phone breakpoint missing"; exit 1; }
