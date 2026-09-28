@@ -20,6 +20,13 @@ describe('resolveRoute — blocked paths', () => {
 
 describe('resolveRoute — redirect', () => {
   test('/rss redirects permanently to /rss.xml', () => assert.deepEqual(resolveRoute('/rss'), { type: 'redirect', to: '/rss.xml', status: 308 }));
+  test('/posts/ redirects to archive', () => assert.deepEqual(resolveRoute('/posts/'), { type: 'redirect', to: '/archive.html', status: 308 }));
+  test('/intel.html redirects to live intel hub', () => assert.deepEqual(resolveRoute('/intel.html'), { type: 'redirect', to: '/intel/', status: 308 }));
+  test('legacy threat aliases with no dedicated page redirect to search', () => {
+    assert.deepEqual(resolveRoute('/threat/kimsuky.html'), { type: 'redirect', to: '/search.html?q=Kimsuky', status: 308 });
+    assert.deepEqual(resolveRoute('/threat/sandworm.html'), { type: 'redirect', to: '/search.html?q=Sandworm', status: 308 });
+    assert.deepEqual(resolveRoute('/threat/blackbasta.html'), { type: 'redirect', to: '/search.html?q=Black%20Basta', status: 308 });
+  });
 });
 
 describe('resolveRoute — feed asset aliases', () => {
@@ -36,6 +43,9 @@ describe('resolveRoute — root and dashboard index aliases', () => {
     ['/ai-security', '/ai-security/index.html'], ['/ai-security/', '/ai-security/index.html'],
     ['/breaking', '/breaking/index.html'], ['/breaking/', '/breaking/index.html'],
     ['/detections', '/detections/index.html'], ['/detections/', '/detections/index.html'],
+    ['/threat/volttyphoon.html', '/threat/volt-typhoon.html'],
+    ['/threat/lazarusgroup.html', '/threat/lazarus.html'],
+    ['/threat/lockbit4.0.html', '/threat/lockbit.html'],
   ]) {
     test(`${requestPath} resolves to ${assetPath}`, () => assert.deepEqual(resolveRoute(requestPath), { type: 'asset', path: assetPath }));
   }
