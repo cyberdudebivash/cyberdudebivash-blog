@@ -501,3 +501,22 @@ def test_commercial_truth_engines_do_not_emit_synthetic_counters_or_scarcity():
     assert "Real-time CVE feed (0-delay)" not in api
     assert "Zero manual triage" not in api
     assert "under 30 minutes" not in api
+
+
+def test_cloudflare_release_certifies_revenue_critical_customer_journeys():
+    workflow = Path(".github/workflows/cloudflare-production-deploy.yml").read_text(encoding="utf-8")
+    for required in [
+        'Certify revenue-critical customer journeys',
+        'fetch_page "/breaking/"',
+        'fetch_page "/leads.html"',
+        'Get Free Intelligence Sample',
+        '/api/v1/newsletter',
+        'fetch_page "/api-dashboard.html"',
+        'your key is issued immediately on this page',
+        'Authentication required: enter your API key',
+        'fetch_page "/products.html"',
+        'Unverified standalone bundles have been withdrawn from direct sale',
+        'function contextualUrl(base, item, intent)',
+        "u.searchParams.set('entity_id'",
+    ]:
+        assert required in workflow
