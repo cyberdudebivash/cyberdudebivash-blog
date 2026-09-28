@@ -1,0 +1,78 @@
+name: "🧭 SENTINEL APEX — Production Drift Reconciler"
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: production-drift-reconciler
+  cancel-in-progress: true
+
+jobs:
+  reconcile:
+    name: "Reconcile main with Cloudflare production"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: "Compare main with latest successful production deploy"
+        id: drift
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          api="https://api.github.com/repos/$GITHUB_REPOSITORY"
+          auth=(-H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28")
+
+          main_json="$(curl -fsS "${auth[@]}" "$api/commits/main")"
+          main_sha="$(jq -r '.sha // empty' <<<"$main_json")"
+          test -n "$main_sha" || { echo "::error::Unable to resolve main SHA"; exit 1; }
+
+          runs_json="$(curl -fsS "${auth[@]}" "$api/actions/workflows/cloudflare-production-deploy.yml/runs?branch=main&per_page=20")"
+          deployed_sha="$(jq -r '[.workflow_runs[] | select(.status=="completed" and .conclusion=="success")][0].head_sha // empty' <<<"$runs_json")"
+
+          echo "main_sha=$main_sha" >> "$GITHUB_OUTPUT"
+          echo "deployed_sha=$deployed_sha" >> "$GITHUB_OUTPUT"
+
+          if [ "$main_sha" = "$deployed_sha" ]; then
+            echo "drift=false" >> "$GITHUB_OUTPUT"
+            echo "Production already matches main: $main_sha"
+            exit 0
+          fi
+
+          existing="$(jq -r --arg sha "$main_sha" '[.workflow_runs[] | select(.head_sha==$sha and (.status=="queued" or .status=="in_progress"))] | length' <<<"$runs_json")"
+          if [ "$existing" -gt 0 ]; then
+            echo "drift=false" >> "$GITHUB_OUTPUT"
+            echo "A production deployment for current main is already queued/running: $main_sha"
+            exit 0
+          fi
+
+          echo "drift=true" >> "$GITHUB_OUTPUT"
+          echo "::notice::Production drift detected. main=$main_sha deployed=${deployed_sha:-none}"
+
+      - name: "Dispatch Cloudflare production deployment"
+        if: steps.drift.outputs.drift == 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MAIN_SHA: ${{ steps.drift.outputs.main_sha }}
+        run: |
+          set -euo pipefail
+          api="https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/cloudflare-production-deploy.yml/dispatches"
+          payload='{"ref":"main"}'
+          curl -fsS -X POST             -H "Authorization: Bearer $GH_TOKEN"             -H "Accept: application/vnd.github+json"             -H "X-GitHub-Api-Version: 2022-11-28"             -H "Content-Type: application/json"             --data "$payload"             "$api"
+          echo "Dispatched production deploy for main SHA: $MAIN_SHA"
+
+      - name: "Reconciliation summary"
+        shell: bash
+        run: |
+          echo "### Production drift reconciliation" >> "$GITHUB_STEP_SUMMARY"
+          echo "- main: \`${{ steps.drift.outputs.main_sha }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- latest successful deploy: \`${{ steps.drift.outputs.deployed_sha || 'none' }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- deploy dispatched: \`${{ steps.drift.outputs.drift }}\`" >> "$GITHUB_STEP_SUMMARY"
