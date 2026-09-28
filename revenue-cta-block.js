@@ -5,8 +5,8 @@
  * Personalizes CTA copy based on page context (CVE / ransomware / APT / AI).
  * v2.0 upgrades:
  *   - Intent-based card highlighting (CX4 INTENT integration)
- *   - Urgency badges on high-intent sessions (live countdown, scarcity)
- *   - Trust amplification (4,800+ subscribers, 1,200+ CVEs, live dot)
+ *   - Evidence-safe intent badges without fabricated scarcity
+ *   - Trust amplification through verifiable capability statements
  *   - Return-visitor social proof (personalized copy on v2+ sessions)
  *   - Anchor pricing + savings display on all cards
  *   - Intent upgrade listener → re-highlights cards in real-time
@@ -75,7 +75,7 @@
     },
     apt: {
       headline:       'Nation-State Threat Intelligence — Enterprise Grade',
-      sub:            'Deep-dive APT tracking: actor TTPs, infrastructure maps, malware signatures, and pre-disclosure campaign alerts. Trusted by SOC teams defending critical infrastructure.',
+      sub:            'APT intelligence workflows with source-linked actor, infrastructure, malware and campaign context when canonical evidence is available.',
       products_label: '\uD83C\uDFAF Get APT Intel Pack',
       api_label:      '\uD83D\uDD0C API + STIX Feed Access',
       badge:          '\uD83D\uDD34\u00A0CLASSIFIED APT INTELLIGENCE'
@@ -106,24 +106,9 @@
   };
 
   var INTENT_URGENCY = {
-    high: {
-      show:    true,
-      badge:   '\uD83D\uDD25 HIGH DEMAND — 23 spots left this month',
-      timer:   true,
-      timerLabel: 'Plan options:'
-    },
-    medium: {
-      show:    true,
-      badge:   '\u26A1 LIMITED — Offer valid this week only',
-      timer:   false,
-      timerLabel: ''
-    },
-    low: {
-      show:    false,
-      badge:   '',
-      timer:   false,
-      timerLabel: ''
-    }
+    high:   { show: true, badge: '\uD83D\uDEE1\uFE0F VERIFIED PURCHASE PATHS', timer: false, timerLabel: '' },
+    medium: { show: true, badge: '\u26A1 EVIDENCE-LINKED PRODUCT OPTIONS', timer: false, timerLabel: '' },
+    low:    { show: false, badge: '', timer: false, timerLabel: '' }
   };
 
   /* ── STYLES ───────────────────────────────────────────────────────── */
@@ -280,25 +265,9 @@
 
   /* ── URGENCY COUNTDOWN ─────────────────────────────────────────────── */
   function startCountdown() {
-    // Random session timer 18-29 min so every visitor sees unique scarcity
+    // Intentionally disabled: no fabricated deadline or scarcity timers.
     var timerEl = document.getElementById('rcb-countdown');
-    if (!timerEl) return;
-    var storedEnd = null;
-    try { storedEnd = parseInt(localStorage.getItem('rcb_urgency_end') || '0', 10); } catch (e) {}
-    var now = Date.now();
-    if (!storedEnd || storedEnd < now) {
-      var mins = 18 + Math.floor(Math.random() * 12);
-      storedEnd = now + mins * 60 * 1000;
-      try { localStorage.setItem('rcb_urgency_end', String(storedEnd)); } catch (e) {}
-    }
-    function tick() {
-      var remaining = Math.max(0, storedEnd - Date.now());
-      var m = Math.floor(remaining / 60000);
-      var s = Math.floor((remaining % 60000) / 1000);
-      timerEl.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
-      if (remaining > 0) setTimeout(tick, 1000);
-    }
-    tick();
+    if (timerEl) timerEl.textContent = '';
   }
 
   /* ── APPLY INTENT HIGHLIGHT ───────────────────────────────────────── */
@@ -321,7 +290,7 @@
 
     var featBadge = document.createElement('div');
     featBadge.className = 'rcb-card-featured-badge';
-    featBadge.textContent = intentLevel === 'high' ? '\u2605 RECOMMENDED FOR YOU' : 'MOST POPULAR';
+    featBadge.textContent = intentLevel === 'high' ? '\u2605 RECOMMENDED FOR YOUR SESSION' : 'PLAN OPTION';
     featured.insertBefore(featBadge, featured.firstChild);
 
     // Urgency badge on featured card for high/medium intent
@@ -468,20 +437,19 @@
 
         '<hr class="rcb-divider">' +
 
-        // Trust signals
+        // Evidence-safe trust signals
         '<div class="rcb-trust">' +
-          '<div class="rcb-trust-stat">\uD83D\uDEE1\uFE0F <strong>4,800+</strong> SOC analysts subscribed</div>' +
-          '<div class="rcb-trust-stat">\uD83D\uDCCA <strong>1,200+</strong> CVEs tracked in 2026</div>' +
-          '<div class="rcb-trust-stat">\u26A1 <strong>Evidence-linked</strong> intelligence alerts</div>' +
-          '<div class="rcb-trust-stat">\uD83C\uDF10 <strong>Timestamped</strong> feed freshness</div>' +
-          '<div class="rcb-trust-stat">\uD83C\uDFE2 <strong>Fortune 500</strong> clients</div>' +
+          '<div class="rcb-trust-stat">\uD83D\uDEE1\uFE0F <strong>Source-linked</strong> intelligence</div>' +
+          '<div class="rcb-trust-stat">\u23F1 <strong>Runtime-verified</strong> freshness</div>' +
+          '<div class="rcb-trust-stat">\u26A1 <strong>Fail-closed</strong> evidence controls</div>' +
+          '<div class="rcb-trust-stat">\uD83D\uDED2 <strong>Verified</strong> active purchase paths</div>' +
         '</div>' +
 
         // Newsletter / Lead capture
         '<div class="rcb-newsletter">' +
           '<div class="rcb-nl-body">' +
             '<strong>\uD83D\uDCE7 Get Free Weekly Threat Intel</strong>' +
-            '<span>IOC bundles, new CVE summaries, and ransomware IOCs — no spam, unsubscribe anytime.</span>' +
+            '<span>Source-linked intelligence updates and product announcements — unsubscribe anytime.</span>' +
           '</div>' +
           '<form class="rcb-nl-form" ' +
             'action="https://formsubmit.co/bivash@cyberdudebivash.com" method="POST" ' +

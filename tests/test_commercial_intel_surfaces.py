@@ -464,3 +464,40 @@ def test_primary_commercial_surfaces_do_not_promise_unimplemented_timed_trial():
         text = path.read_text(encoding="utf-8-sig")
         assert "Start 7-Day Free Trial" not in text
         assert "48hr pre-disclosure" not in text.lower()
+
+
+def test_commercial_truth_engines_do_not_emit_synthetic_counters_or_scarcity():
+    conversion = Path("conversion-engine.js").read_text(encoding="utf-8")
+    revenue = Path("revenue-cta-block.js").read_text(encoding="utf-8")
+    aim = Path("ai-monetization-engine.js").read_text(encoding="utf-8")
+    products = Path("products.html").read_text(encoding="utf-8")
+    api = Path("api.html").read_text(encoding="utf-8")
+
+    for text in [conversion, revenue]:
+        for forbidden in [
+            "4,800+",
+            "1,200+ CVEs tracked",
+            "80+ countries",
+            "23 spots left this month",
+            "Offer valid this week only",
+        ]:
+            assert forbidden not in text
+
+    boot = aim.split("function boot()", 1)[1].split("// Public API", 1)[0]
+    assert "DYNPRICE.injectPricingBadges()" not in boot
+    assert "COUNTDOWN.startAll()" not in boot
+    assert "SCARCITY.refreshAll()" not in boot
+    assert "SOCIAL_PROOF.init()" not in boot
+    assert "BUNDLE_ENGINE.injectBundlePrompt()" not in boot
+
+    for forbidden in ["MOST POPULAR", "BEST SELLER", "Save $742", "60% OFF", "47+"]:
+        assert forbidden not in products
+    assert "Browse Certified Intelligence" in products
+    assert "Compare Subscription Plans" in products
+    assert "Unverified standalone bundles have been withdrawn from direct sale" in products
+
+    assert "1,230+" not in api
+    assert "Real-time (10 min)" not in api
+    assert "Real-time CVE feed (0-delay)" not in api
+    assert "Zero manual triage" not in api
+    assert "under 30 minutes" not in api
