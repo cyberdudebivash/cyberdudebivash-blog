@@ -275,6 +275,15 @@ jobs:
 
           fetch_page "/" "$tmp/home.html"
           grep -Fq 'LIVE HYBRID SOC 2 + CTI OPERATIONS' "$tmp/home.html" || { echo "::error::Live Hybrid SOC 2 + CTI command center missing"; exit 1; }
+          grep -Fq 'CYBERDUDEBIVASH' "$tmp/home.html" || { echo "::error::Homepage enterprise brand missing"; exit 1; }
+          grep -Fq 'SENTINEL APEX SOC 2 &amp; CTI PLATFORM' "$tmp/home.html" || { echo "::error::Homepage platform identity missing"; exit 1; }
+          grep -Fq 'Enterprise Security Intelligence' "$tmp/home.html" || { echo "::error::Homepage enterprise positioning missing"; exit 1; }
+          grep -Fq 'id="cdb-edge-state"' "$tmp/home.html" || { echo "::error::Production-edge trust state missing"; exit 1; }
+          grep -Fq 'id="cdb-hero-total"' "$tmp/home.html" || { echo "::error::Hero published-intel metric missing"; exit 1; }
+          grep -Fq 'id="cdb-hero-kev"' "$tmp/home.html" || { echo "::error::Hero KEV metric missing"; exit 1; }
+          grep -Fq 'id="cdb-hero-sources"' "$tmp/home.html" || { echo "::error::Hero source metric missing"; exit 1; }
+          grep -Fq 'id="cdb-hero-freshness"' "$tmp/home.html" || { echo "::error::Hero freshness metric missing"; exit 1; }
+          grep -Fq 'id="cdb-hero-assurance"' "$tmp/home.html" || { echo "::error::Hero assurance metric missing"; exit 1; }
           grep -Fq 'Security Intelligence Command Center' "$tmp/home.html" || { echo "::error::Homepage operational hierarchy missing"; exit 1; }
           grep -Fq 'ALIGNED · NOT CERTIFIED' "$tmp/home.html" || { echo "::error::Homepage SOC 2 truth boundary missing"; exit 1; }
           grep -Fq 'id="cdb-integrity-state"' "$tmp/home.html" || { echo "::error::Homepage intelligence integrity control missing"; exit 1; }
@@ -294,6 +303,10 @@ jobs:
           grep -Fq "a.cti_controls.source_bound_evidence?'SOURCE-BOUND':'VERIFY'" "$tmp/apex-command-center.js" || { echo "::error::Command center source-bound assurance derivation missing"; exit 1; }
           grep -Fq 'stats.cisaKev' "$tmp/apex-command-center.js" || { echo "::error::Command center KEV runtime binding missing"; exit 1; }
           grep -Fq 'stats.exploited' "$tmp/apex-command-center.js" || { echo "::error::Command center exploitation runtime binding missing"; exit 1; }
+          grep -Fq "setText('cdb-hero-total'" "$tmp/apex-command-center.js" || { echo "::error::Hero published-intel runtime binding missing"; exit 1; }
+          grep -Fq "setText('cdb-hero-kev'" "$tmp/apex-command-center.js" || { echo "::error::Hero KEV runtime binding missing"; exit 1; }
+          grep -Fq "setText('cdb-hero-sources'" "$tmp/apex-command-center.js" || { echo "::error::Hero source runtime binding missing"; exit 1; }
+          grep -Fq "setText('cdb-hero-assurance'" "$tmp/apex-command-center.js" || { echo "::error::Hero assurance runtime binding missing"; exit 1; }
 
           ! grep -Fq 'Most Exploited CVEs This Week' "$tmp/home.html" || { echo "::error::Static exploited-this-week panel remains"; exit 1; }
           ! grep -Fq '67 Victims' "$tmp/home.html" || { echo "::error::Static victim-count assertion remains"; exit 1; }
