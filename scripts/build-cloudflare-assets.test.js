@@ -138,7 +138,7 @@ describe('build-cloudflare-assets', () => {
     const mustExist = [
       'index.html', 'customer-assurance.html', 'service-status.html', 'customer-incident-response.html', 'enterprise-onboarding.html', 'cti-delivery-acceptance.html', 'leads.html', 'robots.txt', 'rss.xml', 'sitemap.xml',
       'search-index.json', 'live-intel.json', 'api/intel/customer-assurance.json', 'api/intel/service-assurance.json', 'api/intel/customer-incident-response.json', 'api/intel/cti-delivery-acceptance.json',
-      'apex-v13.css', 'apex-command-center.css', 'apex-command-center.js', 'analytics-engine.js', 'banner-orchestrator.js',
+      'apex-v13.css', 'apex-command-center.css', 'responsive-platform.css', 'apex-command-center.js', 'analytics-engine.js', 'banner-orchestrator.js',
       'soc-cti-console.css', 'soc-triage-workspace.js', 'soc-taxonomy-pivots.js',
       'soc-hybrid-workspace.js', 'soc-evidence-drawer.js',
     ];
@@ -201,7 +201,7 @@ describe('_headers cascade safety', () => {
   test('no header name is set by more than one matching block, for representative real paths', () => {
     const samplePaths = [
       '/', '/index.html', '/about.html', '/posts/some-post.html',
-      '/cve/CVE-2026-00000.html', '/apex-v13.css', '/mobile-first.css',
+      '/cve/CVE-2026-00000.html', '/apex-v13.css', '/mobile-first.css', '/responsive-platform.css',
       '/analytics-engine.js', '/banner-orchestrator.js', '/rss.xml',
       '/sitemap.xml', '/robots.txt', '/api/intel/cve/CVE-2026-1.json',
       '/api/intel/products/example.json', '/favicon.ico', '/og-image.png',
