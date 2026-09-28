@@ -599,6 +599,32 @@ def test_cloudflare_release_fail_closes_on_soc2_cti_customer_assurance():
     ]:
         assert required in workflow
 
+def test_mobile_panorama_keeps_complete_dashboard_reachable():
+    responsive = Path("responsive-platform.css").read_text(encoding="utf-8")
+    assert "overflow-x:clip" not in responsive
+    for required in [
+        "html,body{",
+        "overflow-x:auto!important",
+        ".mobile-nav-drawer a:not(.nav-cta)",
+        "display:flex!important",
+        ".cdb-kpis{",
+        "overflow-x:auto!important",
+        ".cdb-workflow{",
+        ".cdb-feed-row{",
+        "min-width:640px!important",
+        ".cdb-workarea{",
+        "min-width:930px!important",
+        ".cdb-hero-metrics{",
+        "scroll-snap-type:x proximity",
+        ".hero-actions .btn-secondary{display:inline-flex!important}",
+        "#apex-daily-digest{display:block!important}",
+        ".cdb-hero-visual{display:block!important}",
+        "touch-action:pan-x pan-y!important",
+        "scrollbar-color:var(--rp-scroll-thumb)",
+    ]:
+        assert required in responsive
+
+
 def test_customer_surfaces_are_mobile_tablet_ready():
     responsive = Path("responsive-platform.css").read_text(encoding="utf-8")
     for required in [
@@ -626,7 +652,7 @@ def test_customer_surfaces_are_mobile_tablet_ready():
     for surface in surfaces:
         html = Path(surface).read_text(encoding="utf-8-sig")
         assert "viewport-fit=cover" in html, surface
-        assert "/responsive-platform.css?v=20260928-mobile1" in html, surface
+        assert "/responsive-platform.css?v=20260928-mobile2" in html, surface
 
 
 def test_homepage_command_center_suppresses_conversion_overlays():
