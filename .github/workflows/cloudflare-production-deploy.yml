@@ -219,3 +219,46 @@ jobs:
 
           echo "PRODUCTION_DEPLOYMENT_VERIFIED_SHA=$GITHUB_SHA"
           echo "Hybrid SOC + CTI PRO console is live on all three customer surfaces."
+
+      - name: "Certify revenue-critical customer journeys"
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://blog.cyberdudebivash.in"
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+
+          fetch_page() {
+            local route="$1"
+            local file="$2"
+            local code
+            code="$(curl -sS -L --max-time 25 -H 'Cache-Control: no-cache' -o "$file" -w '%{http_code}' "$base$route?release_sha=$GITHUB_SHA")"
+            test "$code" = "200" || { echo "::error::$route returned HTTP $code"; exit 1; }
+          }
+
+          fetch_page "/breaking/" "$tmp/breaking.html"
+          grep -Fq 'Breaking Cyber Incidents' "$tmp/breaking.html" || { echo "::error::Breaking queue is not live"; exit 1; }
+
+          fetch_page "/leads.html" "$tmp/leads.html"
+          grep -Fq 'Get Free Intelligence Sample' "$tmp/leads.html" || { echo "::error::Lead funnel is missing"; exit 1; }
+          grep -Fq "/api/v1/newsletter" "$tmp/leads.html" || { echo "::error::Lead capture endpoint is not wired"; exit 1; }
+          grep -Fq 'SA-2026-0001' "$tmp/leads.html" || { echo "::error::Sample intelligence package is missing"; exit 1; }
+
+          fetch_page "/api-dashboard.html" "$tmp/api-dashboard.html"
+          grep -Fq 'your key is issued immediately on this page' "$tmp/api-dashboard.html" || { echo "::error::API onboarding disclosure is missing"; exit 1; }
+          grep -Fq 'href="/terms.html"' "$tmp/api-dashboard.html" || { echo "::error::Terms link is not canonical"; exit 1; }
+          grep -Fq 'Authentication required: enter your API key' "$tmp/api-dashboard.html" || { echo "::error::Authenticated-tab guidance is missing"; exit 1; }
+
+          fetch_page "/products.html" "$tmp/products.html"
+          grep -Fq 'Unverified standalone bundles have been withdrawn from direct sale' "$tmp/products.html" || { echo "::error::Unverified catalog items are still exposed for direct sale"; exit 1; }
+          grep -Fq '/intelligence-store.html' "$tmp/products.html" || { echo "::error::Certified intelligence purchase path is missing"; exit 1; }
+
+          code="$(curl -sS -L --max-time 20 -o "$tmp/engine.js" -w '%{http_code}' "$base/auto-intel-engine.js?release_sha=$GITHUB_SHA")"
+          test "$code" = "200"
+          grep -Fq 'function contextualUrl(base, item, intent)' "$tmp/engine.js" || { echo "::error::Commercial CTA context preservation is missing"; exit 1; }
+          grep -Fq "u.searchParams.set('entity_id'" "$tmp/engine.js" || { echo "::error::Selected intelligence context is not preserved"; exit 1; }
+
+          ! grep -Fiq 'Start 7-Day Free Trial' "$tmp/api-dashboard.html"
+          ! grep -Fiq 'before public disclosure' "$tmp/leads.html"
+
+          echo "Revenue-critical customer journeys certified on $GITHUB_SHA"
