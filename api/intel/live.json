@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-28T21:22:47.226Z",
+  "generated": "2026-09-28T22:27:33.152Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,11 +7,11 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 5540,
+  "total_published": 5548,
   "s2n_stats": {
-    "passed": 101,
-    "suppressed": 4,
-    "avg_qs": 0.492
+    "passed": 103,
+    "suppressed": 5,
+    "avg_qs": 0.494
   },
   "items": [
     {
@@ -318,6 +318,49 @@
       }
     },
     {
+      "id": "CVE-2026-97023",
+      "title": "CVE-2026-97023 - Flatpak: flatpak: arbitrary file deletion in root context via path traversal in deploy directory export",
+      "description": "CVE-2026-97023 - Flatpak: flatpak: arbitrary file deletion in root context via path traversal in deploy directory export/bin",
+      "cvss": 7.8,
+      "final_ps": 46,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-28",
+      "last_seen": "2026-09-28",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-97023"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-97023"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=46 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
       "id": "CVE-2026-86439",
       "title": "Knowns Unrestricted Path Traversal leading to out-of-bounds arbitrary .md file read, write, and deletion in MCP Docs + M",
       "description": "Overview\n\nVerified. Multiple Unrestricted Path Traversal vulnerabilities exist in the Knowns MCP docs and memory tools, allowing arbitrary file read, write, and deletion operations outside the project sandbox. The storage layer functions (Get, Create, Update, Rename, Delete) in b... [Full analysis a",
@@ -483,7 +526,50 @@
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
           "data_confidence=0.70",
-          "recency=2d (score=0.65)",
+          "recency=3d (score=0.65)",
+          "QS=0.458"
+        ],
+        "priority": [
+          "base_ps=44 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-100369",
+      "title": "CliInvoke: Argument Injection in Extensibility Runner Factory",
+      "description": "Impact\nAn argument-injection vulnerability exists in the CliInvoke\npackage's runner factory: RunnerProcessFactory on the 2.x line and\nRunnerConfigurationFactory on the 3.x line.\n\nThe factory joins the runner arguments, the caller's target, and the\ncaller's arguments into a single... [Full analysis a",
+      "cvss": 8.4,
+      "final_ps": 44,
+      "quality_score": 0.458,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-25",
+      "last_seen": "2026-09-25",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-100369"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-j73w-8hfr-4gc9"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=3d (score=0.65)",
           "QS=0.458"
         ],
         "priority": [
@@ -526,7 +612,7 @@
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
           "data_confidence=0.70",
-          "recency=2d (score=0.65)",
+          "recency=3d (score=0.65)",
           "QS=0.458"
         ],
         "priority": [
@@ -2219,7 +2305,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2026-60206",
@@ -2261,7 +2349,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2026-49952",
@@ -4260,9 +4350,9 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-68497",
-      "title": "jackson-databind: Duration XMLGregorianCalendar Unbounded Number Parse DoS",
-      "description": "### Summary\n`jackson-databind` 3.2.1 deserializes a JSON **string** bound to a `javax.xml.datatype.Duration` or `javax.xml.datatype.XMLGregorianCalendar` field by passing the raw string verbatim to `DatatypeFactory.newDuration(value)` / `newXMLGregorianCalendar(value)`. Per the XML-Schema lexical gr",
+      "id": "CVE-2026-84292",
+      "title": "fast-uri vulnerable to authority injection via an unvalidated port in serialize",
+      "description": "### Impact `fast-uri` serializes the `port` component of a URI without validating it. When recomposing the authority, `fast-uri` escapes the userinfo and host components but concatenates the port verbatim, so a `port` value that is not a sequence of digits can inject authority delimiters. For exampl",
       "cvss": 7.5,
       "final_ps": 21,
       "quality_score": 0.523,
@@ -4278,19 +4368,19 @@
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "maven",
-      "product": "tools.jackson.core:jackson-databind",
+      "vendor": "npm",
+      "product": "fast-uri",
       "due_date": null,
       "cves": [
-        "CVE-2026-68497",
-        "CVE-2026-68497"
+        "CVE-2026-84292",
+        "CVE-2026-84292"
       ],
-      "ioc_count": 0,
+      "ioc_count": 1,
       "refs": [
-        "https://github.com/advisories/GHSA-q4xh-88c3-wmh7",
-        "https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-q4xh-88c3-wmh7",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-68497",
-        "https://github.com/FasterXML/jackson-databind/pull/6127"
+        "https://github.com/advisories/GHSA-qw65-cvwx-89v3",
+        "https://github.com/fastify/fast-uri/security/advisories/GHSA-qw65-cvwx-89v3",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-84292",
+        "https://github.com/fastify/fast-uri/commit/820e8478dd7da3d09f187bfaf35d50b71f67b8b4"
       ],
       "explanation": {
         "quality": [
@@ -4301,96 +4391,6 @@
         ],
         "priority": [
           "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-97023",
-      "title": "CVE-2026-97023 - Flatpak: flatpak: arbitrary file deletion in root context via path traversal in deploy directory export",
-      "description": "CVE-2026-97023 - Flatpak: flatpak: arbitrary file deletion in root context via path traversal in deploy directory export/bin",
-      "cvss": 7.8,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-28",
-      "last_seen": "2026-09-28",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-97023"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-97023"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-100369",
-      "title": "CliInvoke: Argument Injection in Extensibility Runner Factory",
-      "description": "Impact\nAn argument-injection vulnerability exists in the CliInvoke\npackage's runner factory: RunnerProcessFactory on the 2.x line and\nRunnerConfigurationFactory on the 3.x line.\n\nThe factory joins the runner arguments, the caller's target, and the\ncaller's arguments into a single... [Full analysis a",
-      "cvss": 8.4,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-25",
-      "last_seen": "2026-09-25",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-100369"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-j73w-8hfr-4gc9"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
         ],
         "suppression": null,
         "merge": null

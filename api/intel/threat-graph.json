@@ -1,15 +1,15 @@
 {
-  "generated": "2026-09-28T21:22:47.123Z",
+  "generated": "2026-09-28T22:27:33.049Z",
   "version": "1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX v4.0",
   "stats": {
-    "total_nodes": 14753,
+    "total_nodes": 14758,
     "actors": 8,
-    "cves": 6520,
-    "campaigns": 1446,
+    "cves": 6523,
+    "campaigns": 1448,
     "malware": 0,
     "iocs": 909,
-    "edges": 4168
+    "edges": 4170
   },
   "nodes": {
     "actor:lockbit": {
@@ -276749,13 +276749,13 @@
       "attributes": {
         "cvss": 9.8,
         "threat_level": "MEDIUM",
-        "priority_score": 62,
+        "priority_score": 59,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
         "vendor": "",
         "product": "",
-        "published": "2026-09-28",
+        "published": "2026-09-27",
         "type": "ZERO_DAY"
       },
       "connections": []
@@ -277625,6 +277625,100 @@
       "connections": [
         {
           "target": "CVE-2026-68497",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "CVE-2026-84292": {
+      "id": "CVE-2026-84292",
+      "type": "CVE",
+      "name": "fast-uri vulnerable to authority injection via an unvalidated port in serialize",
+      "attributes": {
+        "cvss": 7.5,
+        "threat_level": "MEDIUM",
+        "priority_score": 62,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "fast-uri",
+        "published": "2026-09-28",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-84394": {
+      "id": "CVE-2026-84394",
+      "type": "CVE",
+      "name": "fast-uri vulnerable to host confusion via an unclosed bracket in the URI authority",
+      "attributes": {
+        "cvss": 7.5,
+        "threat_level": "MEDIUM",
+        "priority_score": 61,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "fast-uri",
+        "published": "2026-09-28",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-86950": {
+      "id": "CVE-2026-86950",
+      "type": "CVE",
+      "name": "Apple Emergency Patch for iOS 26/macOS26/macOS15 (CVE-2026-86950), (Mon, Sep 28th)",
+      "attributes": {
+        "cvss": 0,
+        "threat_level": "LOW",
+        "priority_score": 6,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "SANS ISC",
+        "product": "Threat Intelligence",
+        "published": "2026-09-28",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "campaign:cve-2026-84292": {
+      "id": "campaign:cve-2026-84292",
+      "type": "Campaign",
+      "name": "npm fast-uri Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-28",
+        "last_seen": "2026-09-28",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-84292 | 1 shared IOC(s) across items"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-84292",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-84394": {
+      "id": "campaign:cve-2026-84394",
+      "type": "Campaign",
+      "name": "npm fast-uri Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-28",
+        "last_seen": "2026-09-28",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-84394"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-84394",
           "relationship": "includes",
           "confidence": 1
         }
@@ -315315,6 +315409,24 @@
       "id": "campaign:cve-2026-68497→includes→CVE-2026-68497",
       "source": "campaign:cve-2026-68497",
       "target": "CVE-2026-68497",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-28",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-84292→includes→CVE-2026-84292",
+      "source": "campaign:cve-2026-84292",
+      "target": "CVE-2026-84292",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-28",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-84394→includes→CVE-2026-84394",
+      "source": "campaign:cve-2026-84394",
+      "target": "CVE-2026-84394",
       "relationship": "includes",
       "confidence": 1,
       "first_seen": "2026-09-28",
