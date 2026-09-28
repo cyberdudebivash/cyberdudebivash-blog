@@ -15,6 +15,7 @@ on:
       - 'hunts.html'
       - 'products.html'
       - 'pricing.html'
+      - 'customer-assurance.html'
       - 'soc-cti-console.css'
       - 'soc-triage-workspace.js'
       - 'soc-taxonomy-pivots.js'
@@ -81,6 +82,8 @@ jobs:
           test -s dist-public/ai-security/index.html
           test -s dist-public/breaking/index.html
           test -s dist-public/leads.html
+          test -s dist-public/customer-assurance.html
+          test -s dist-public/api/intel/customer-assurance.json
           test -s dist-public/soc-cti-console.css
           test -s dist-public/soc-triage-workspace.js
           test -s dist-public/soc-taxonomy-pivots.js
@@ -220,6 +223,51 @@ jobs:
 
           echo "PRODUCTION_DEPLOYMENT_VERIFIED_SHA=$GITHUB_SHA"
           echo "Hybrid SOC + CTI PRO console is live on all three customer surfaces."
+
+      - name: "Certify SOC 2 + CTI customer assurance"
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://blog.cyberdudebivash.in"
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+
+          fetch_page() {
+            local route="$1"
+            local file="$2"
+            local code=""
+            for attempt in 1 2 3 4 5 6; do
+              code="$(curl -sS -L --max-time 25 -H 'Cache-Control: no-cache' -o "$file" -w '%{http_code}' "$base$route?release_sha=$GITHUB_SHA" || true)"
+              if [ "$code" = "200" ]; then
+                break
+              fi
+              echo "Waiting for assurance propagation: $route attempt $attempt status=$code"
+              sleep 10
+            done
+            test "$code" = "200" || { echo "::error::$route returned HTTP $code"; exit 1; }
+          }
+
+          fetch_page "/customer-assurance.html" "$tmp/assurance.html"
+          grep -Fq 'SOC 2-aligned operational evidence; not SOC 2 certified.' "$tmp/assurance.html" || { echo "::error::SOC 2 truth boundary missing"; exit 1; }
+          grep -Fq 'CTI integrity controls' "$tmp/assurance.html" || { echo "::error::CTI integrity controls missing"; exit 1; }
+          grep -Fq '/security-disclosure.html' "$tmp/assurance.html" || { echo "::error::Security disclosure path missing"; exit 1; }
+          grep -Fq '/.well-known/security.txt' "$tmp/assurance.html" || { echo "::error::security.txt path missing"; exit 1; }
+          grep -Fq '/privacy.html' "$tmp/assurance.html" || { echo "::error::Privacy boundary missing"; exit 1; }
+          grep -Fq '/terms.html' "$tmp/assurance.html" || { echo "::error::Terms boundary missing"; exit 1; }
+          ! grep -Fiq 'SOC 2 Type II certified' "$tmp/assurance.html" || { echo "::error::Unsupported SOC 2 certification claim detected"; exit 1; }
+
+          fetch_page "/api/intel/customer-assurance.json" "$tmp/assurance.json"
+          jq -e '.soc2_certified == false' "$tmp/assurance.json" >/dev/null || { echo "::error::Machine-readable SOC 2 status is not fail-closed"; exit 1; }
+          jq -e '.soc2_attestation_published == false' "$tmp/assurance.json" >/dev/null || { echo "::error::Machine-readable attestation status is not fail-closed"; exit 1; }
+          jq -e '.cti_controls.source_bound_evidence == true and .cti_controls.runtime_derived_freshness == true and .cti_controls.synthetic_customer_activity_metrics == false' "$tmp/assurance.json" >/dev/null || { echo "::error::CTI assurance controls are incomplete"; exit 1; }
+
+          fetch_page "/enterprise.html" "$tmp/enterprise.html"
+          grep -Fq '/customer-assurance.html' "$tmp/enterprise.html" || { echo "::error::Enterprise assurance path missing"; exit 1; }
+
+          fetch_page "/intelligence.html" "$tmp/intelligence.html"
+          grep -Fq '/customer-assurance.html' "$tmp/intelligence.html" || { echo "::error::CTI assurance path missing"; exit 1; }
+
+          echo "CTI customer assurance certified on $GITHUB_SHA"
 
       - name: "Certify revenue-critical customer journeys"
         shell: bash
