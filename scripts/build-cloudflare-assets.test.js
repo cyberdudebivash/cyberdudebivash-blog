@@ -4,6 +4,7 @@ const { test, describe, after } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const { resolveRoute } = require('../workers/lib/route-table');
 const { build, countFiles, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure } = require('./build-cloudflare-assets');
 
 // Mirrors Cloudflare's own documented splat semantics for a _headers
@@ -170,6 +171,54 @@ describe('build-cloudflare-assets', () => {
       assert.match(html, /\/customer-experience\.js\?v=20260928-cx1/, rel + ' missing customer experience JS');
       assert.match(html, /name=["']viewport["']/i, rel + ' missing viewport metadata');
     }
+  });
+
+  test('all internal links in public HTML resolve to a built asset or Worker route', () => {
+    const files = new Set(outputFiles);
+    const offenders = [];
+    const publicOrigin = 'https://blog.cyberdudebivash.in';
+
+    function existsAsPublicPath(requestPath) {
+      const route = resolveRoute(requestPath);
+      if (route) {
+        if (route.type === 'blocked') return false;
+        if (route.type === 'handler' || route.type === 'redirect') return true;
+        if (route.type === 'asset') return files.has(route.path.replace(/^\//, ''));
+      }
+
+      const rel = requestPath.replace(/^\//, '');
+      if (!rel) return files.has('index.html');
+      if (files.has(rel)) return true;
+      if (files.has(rel + '.html')) return true;
+      if (files.has(path.posix.join(rel, 'index.html'))) return true;
+      return false;
+    }
+
+    for (const rel of outputFiles.filter(f => f.endsWith('.html'))) {
+      const html = fs.readFileSync(path.join(OUT, rel), 'utf8');
+      const hrefs = [...html.matchAll(/\bhref\s*=\s*["']([^"']+)["']/gi)].map(m => m[1].trim());
+      for (const raw of hrefs) {
+        if (!raw || raw.startsWith('#') || /^(?:mailto|tel|data|blob):/i.test(raw) || raw.startsWith('//')) continue;
+
+        let requestPath = null;
+        if (/^https?:\/\//i.test(raw)) {
+          let url;
+          try { url = new URL(raw); } catch { offenders.push(rel + ' -> malformed URL: ' + raw); continue; }
+          if (url.origin !== publicOrigin) continue;
+          requestPath = url.pathname;
+        } else if (raw.startsWith('/')) {
+          requestPath = raw.split(/[?#]/, 1)[0];
+        } else {
+          const clean = raw.split(/[?#]/, 1)[0];
+          if (!clean) continue;
+          requestPath = '/' + path.posix.normalize(path.posix.join(path.posix.dirname(rel), clean));
+        }
+
+        if (!existsAsPublicPath(requestPath)) offenders.push(rel + ' -> ' + raw);
+      }
+    }
+
+    assert.deepEqual(offenders, [], 'unresolved internal links:\n' + offenders.slice(0, 100).join('\n'));
   });
 
   test('no public HTML artifact contains dead-link URL patterns', () => {
