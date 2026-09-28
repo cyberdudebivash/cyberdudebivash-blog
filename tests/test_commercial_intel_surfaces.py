@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """P0 commercial intelligence surface integrity gate."""
 from pathlib import Path
+import json
 
 SURFACES = [
     Path("malware/index.html"),
@@ -654,4 +655,128 @@ def test_homepage_release_gate_waits_for_current_release_markers_not_just_http_2
     assert 'ready=1' in homepage_gate
     assert 'test "$ready" -eq 1' in homepage_gate
     assert 'if [ "$code" = "200" ]; then break; fi' not in homepage_gate
+
+def test_full_soc2_cti_customer_release_package_contract():
+    assurance = Path("customer-assurance.html").read_text(encoding="utf-8-sig")
+    service = Path("service-status.html").read_text(encoding="utf-8-sig")
+    onboarding = Path("enterprise-onboarding.html").read_text(encoding="utf-8-sig")
+    acceptance = Path("cti-delivery-acceptance.html").read_text(encoding="utf-8-sig")
+    dashboard = Path("api-dashboard.html").read_text(encoding="utf-8-sig")
+    enterprise = Path("enterprise.html").read_text(encoding="utf-8-sig")
+
+    for required in [
+        "/service-status.html",
+        "/enterprise-onboarding.html",
+        "/cti-delivery-acceptance.html",
+        "GET /api/v1/customer/assurance?download=1",
+    ]:
+        assert required in assurance
+
+    for required in [
+        "Availability without invented percentages.",
+        "Historical uptime percentages are not fabricated",
+        "Marketing copy is not an SLA.",
+        "security@cyberdudebivash.in",
+        "contact@cyberdudebivash.in",
+        "ALIGNED · NOT CERTIFIED",
+    ]:
+        assert required in service
+
+    for required in [
+        "From security review to accepted CTI delivery.",
+        "Security & vendor-risk review",
+        "Access provisioning",
+        "CTI integration validation",
+        "Delivery acceptance",
+        "GET /api/v1/customer/assurance",
+    ]:
+        assert required in onboarding
+
+    for criterion in [f"A{i}" for i in range(1, 11)]:
+        assert criterion in acceptance
+    assert "No silent acceptance." in acceptance
+    assert "CUSTOMER VERIFY" in acceptance
+
+    assert "Download Assurance JSON" in dashboard
+    assert "/api/v1/customer/assurance?download=1" in dashboard
+    assert "sessionKey" in dashboard
+    assert "localStorage.setItem" not in dashboard
+    assert "sessionStorage.setItem" not in dashboard
+
+    for forbidden in [
+        "99.9% SLA UPTIME",
+        "99.9% uptime SLA",
+        "Sub-100ms latency",
+        "Low FP guarantee",
+        "4-hour emergency response SLA",
+        "24–72 hours before public disclosure",
+        "Pre-disclosure CVE access",
+        "Early CVE disclosure access",
+        "4-hour emergency SLA",
+        "FORTUNE 500 READY",
+        "SLA-backed CVE data",
+        "SLA guarantees",
+    ]:
+        assert forbidden.lower() not in enterprise.lower()
+
+
+def test_machine_readable_service_and_acceptance_truth_boundaries():
+    service = json.loads(Path("api/intel/service-assurance.json").read_text(encoding="utf-8"))
+    acceptance = json.loads(Path("api/intel/cti-delivery-acceptance.json").read_text(encoding="utf-8"))
+    assurance = json.loads(Path("api/intel/customer-assurance.json").read_text(encoding="utf-8"))
+
+    assert service["historical_uptime_percentage"] is None
+    assert service["historical_uptime_claimed"] is False
+    assert service["contractual_sla"]["status"] == "CUSTOMER_SPECIFIC_IF_EXECUTED"
+    assert acceptance["automatic_acceptance"] is False
+    assert len(acceptance["criteria"]) == 10
+    assert {c["id"] for c in acceptance["criteria"]} == {f"A{i}" for i in range(1, 11)}
+    assert assurance["soc2_certified"] is False
+    assert assurance["soc2_attestation_published"] is False
+    assert assurance["customer_resources"]["authenticated_customer_evidence"] == "/api/v1/customer/assurance"
+    assert assurance["customer_resources"]["service_assurance"] == "/service-status.html"
+    assert assurance["customer_resources"]["enterprise_onboarding"] == "/enterprise-onboarding.html"
+    assert assurance["customer_resources"]["cti_delivery_acceptance"] == "/cti-delivery-acceptance.html"
+
+
+def test_authenticated_customer_assurance_export_is_scoped_and_fail_closed():
+    handler = Path("api/v1/customer/assurance.js").read_text(encoding="utf-8")
+    route_table = Path("workers/lib/route-table.js").read_text(encoding="utf-8")
+    router = Path("workers/lib/router.js").read_text(encoding="utf-8")
+
+    for required in [
+        "authenticate(req, res)",
+        "globalIpRateLimit",
+        "Cache-Control",
+        "no-store",
+        "soc2_certified: false",
+        "soc2_attestation_published: false",
+        "historical_uptime_percentage: null",
+        "Content-Disposition",
+        "customer_scope",
+    ]:
+        assert required in handler
+    assert "user.keyHash" not in handler
+    assert "api_key" not in handler.lower()
+    assert "'api/v1/customer/assurance'" in route_table
+    assert "'api/v1/customer/assurance': () => require('../../api/v1/customer/assurance')" in router
+
+
+def test_cloudflare_release_certifies_complete_customer_release_package():
+    workflow = Path(".github/workflows/cloudflare-production-deploy.yml").read_text(encoding="utf-8")
+    for required in [
+        "dist-public/service-status.html",
+        "dist-public/enterprise-onboarding.html",
+        "dist-public/cti-delivery-acceptance.html",
+        "dist-public/api/intel/service-assurance.json",
+        "dist-public/api/intel/cti-delivery-acceptance.json",
+        'fetch_page "/service-status.html"',
+        'fetch_page "/enterprise-onboarding.html"',
+        'fetch_page "/cti-delivery-acceptance.html"',
+        'test "$code" = "401"',
+        "Download Assurance JSON",
+        "CUSTOMER_SPECIFIC_IF_EXECUTED",
+        ".automatic_acceptance == false",
+    ]:
+        assert required in workflow
 
