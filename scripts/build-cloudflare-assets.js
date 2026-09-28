@@ -35,7 +35,7 @@ const PUBLIC_ROOT_FILES = [
   'live-feed-widget.js', 'monetization.js', 'payment-engine.js',
   'payment-flow.js', 'revenue-conversion-v19.js', 'revenue-cta-block.js',
   'security-engine.js', 'seo-engine.js', 'ux-controller.js',
-  'soc-cti-console.css', 'soc-triage-workspace.js', 'soc-hybrid-workspace.js', 'soc-evidence-drawer.js',
+  'soc-cti-console.css', 'soc-triage-workspace.js', 'soc-taxonomy-pivots.js', 'soc-hybrid-workspace.js', 'soc-evidence-drawer.js',
   'apple-touch-icon.png', 'brand-logo.svg', 'favicon.ico', 'favicon.svg',
   'icon-192.png', 'icon-512.png', 'og-image.png', 'site.webmanifest',
   'robots.txt', 'rss.xml', 'sitemap.xml',

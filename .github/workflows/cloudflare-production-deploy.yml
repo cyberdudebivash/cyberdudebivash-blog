@@ -9,6 +9,7 @@ on:
       - 'ai-security/**'
       - 'soc-cti-console.css'
       - 'soc-triage-workspace.js'
+      - 'soc-taxonomy-pivots.js'
       - 'soc-hybrid-workspace.js'
       - 'soc-evidence-drawer.js'
       - 'auto-intel-engine.js'
@@ -68,6 +69,7 @@ jobs:
           test -s dist-public/ai-security/index.html
           test -s dist-public/soc-cti-console.css
           test -s dist-public/soc-triage-workspace.js
+          test -s dist-public/soc-taxonomy-pivots.js
           test -s dist-public/soc-hybrid-workspace.js
           test -s dist-public/soc-evidence-drawer.js
 
@@ -197,7 +199,7 @@ jobs:
           ! grep -Fiq '67+ victims this month' "$tmp/malware.html"
           ! grep -Fiq '73% of enterprise AI deployments vulnerable' "$tmp/ai-security.html"
 
-          for asset in soc-cti-console.css soc-triage-workspace.js soc-hybrid-workspace.js soc-evidence-drawer.js; do
+          for asset in soc-cti-console.css soc-triage-workspace.js soc-taxonomy-pivots.js soc-hybrid-workspace.js soc-evidence-drawer.js; do
             code="$(curl -sS -L --max-time 20 -o /dev/null -w '%{http_code}' "$base/$asset?release_sha=$GITHUB_SHA")"
             test "$code" = "200" || { echo "::error::$asset returned HTTP $code"; exit 1; }
           done
