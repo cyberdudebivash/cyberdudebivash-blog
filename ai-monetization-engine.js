@@ -399,7 +399,7 @@
           strip.innerHTML = `
             <span style="font-size:.82rem;color:#94a3b8;font-weight:500">\u26A1 You're clearly invested in threat intelligence.</span>
             <strong style="font-size:.85rem;color:${CFG.CYAN}">SOC Pro \u2014 $${final}/mo</strong>${discount > 0 ? `<span style="font-size:.72rem;color:#22c55e;font-weight:700"> ${Math.round(discount*100)}% off \u00B7 ${code}</span>` : ''}
-            <a href="${CFG.pricingUrl}" onclick="if(window.trackEvent)window.trackEvent('engagement_high_soc_click',{discount:${discount}})" style="background:linear-gradient(135deg,${CFG.CYAN},#00d4ff);color:#000;font-weight:800;font-size:.78rem;padding:.45rem .95rem;border-radius:7px;text-decoration:none;white-space:nowrap">Start 7-Day Free Trial \u2192</a>
+            <a href="${CFG.pricingUrl}" onclick="if(window.trackEvent)window.trackEvent('engagement_high_soc_click',{discount:${discount}})" style="background:linear-gradient(135deg,${CFG.CYAN},#00d4ff);color:#000;font-weight:800;font-size:.78rem;padding:.45rem .95rem;border-radius:7px;text-decoration:none;white-space:nowrap">View Plans \u2192</a>
             <button onclick="document.getElementById('aim-high-intent-strip').remove();if(window.trackEvent)window.trackEvent('engagement_high_dismissed',{})" style="background:none;border:none;color:#475569;cursor:pointer;font-size:.85rem">\u2715</button>`;
         }
         document.body.appendChild(strip);
@@ -933,7 +933,7 @@
           👋 You've visited <strong style="color:${CFG.CYAN}">${p.rawVisits} times</strong> — upgrade to SOC Pro and stop missing critical intel.
         </span>
         <span style="font-size:.78rem;color:${CFG.CYAN};font-weight:700">$${final}/mo ${discount > 0 ? `(${Math.round(discount*100)}% off · <strong>${code}</strong>)` : ''}</span>
-        <a href="${CFG.pricingUrl}" onclick="window.AIM?.trackUpgradeClick()" style="background:linear-gradient(135deg,${CFG.CYAN},#00d4ff);color:#000;font-weight:800;font-size:.75rem;padding:.35rem .85rem;border-radius:6px;text-decoration:none;white-space:nowrap">Start 7-Day Free Trial →</a>
+        <a href="${CFG.pricingUrl}" onclick="window.AIM?.trackUpgradeClick()" style="background:linear-gradient(135deg,${CFG.CYAN},#00d4ff);color:#000;font-weight:800;font-size:.75rem;padding:.35rem .85rem;border-radius:6px;text-decoration:none;white-space:nowrap">View Plans →</a>
         <button onclick="document.getElementById('aim-upgrade-strip').remove()" style="background:none;border:none;color:#475569;cursor:pointer;font-size:.85rem;margin-left:.25rem">✕</button>`;
       document.body.appendChild(strip);
       requestAnimationFrame(() => requestAnimationFrame(() => { strip.style.transform = 'translateY(0)'; }));
