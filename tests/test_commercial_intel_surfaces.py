@@ -698,6 +698,27 @@ def test_homepage_exposes_runtime_derived_cti_metrics_and_control_evidence():
     ]:
         assert required in runtime
 
+def test_homepage_release_certifies_major_customer_routes():
+    workflow = Path(".github/workflows/cloudflare-production-deploy.yml").read_text(encoding="utf-8")
+    for required in [
+        'customer_route_check() {',
+        'customer_route_check "/intel/" "Live Threat Intelligence Feed"',
+        'customer_route_check "/hunts.html" "Threat Hunting Workspace"',
+        'customer_route_check "/detections/" "Traceable Detection Pack"',
+        'customer_route_check "/customer-assurance.html" "Operational assurance for enterprise CTI customers."',
+        'customer_route_check "/api-dashboard.html" "SENTINEL APEX API Dashboard"',
+        'customer_route_check "/service-status.html" "Availability without invented percentages."',
+        'customer_route_check "/enterprise-onboarding.html" "From security review to accepted CTI delivery."',
+        'customer_route_check "/customer-incident-response.html" "Customer Incident"',
+        'customer_route_check "/cti-delivery-acceptance.html" "Acceptance is evidence, not assumption."',
+        'customer_route_check "/products.html" "Premium Intelligence Reports"',
+        'customer_route_check "/pricing.html" "Security Intelligence That Actually Protects"',
+        'customer_route_check "/enterprise.html" "Threat Intelligence Built for Enterprise Security Teams"',
+        'customer_route_check "/search.html" "cybersecurity reports"',
+    ]:
+        assert required in workflow
+
+
 def test_homepage_command_center_meets_enterprise_visibility_floor():
     html = Path("index.html").read_text(encoding="utf-8-sig")
     css = Path("apex-command-center.css").read_text(encoding="utf-8")
