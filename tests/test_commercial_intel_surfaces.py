@@ -580,6 +580,8 @@ def test_homepage_is_soc2_cti_customer_command_center_and_not_static_incident_ma
         'id="homepage-feed-state">VERIFYING',
         'id="homepage-priority-runtime">VERIFYING',
         "Open Hybrid SOC + CTI operational workspace",
+        "PRIORITY INTELLIGENCE",
+        "Review customer control and evidence posture",
         "Evidence-Bound · Runtime Verified",
     ]:
         assert required in html
