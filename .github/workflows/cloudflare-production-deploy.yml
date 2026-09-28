@@ -269,7 +269,7 @@ jobs:
           grep -Fq 'LIVE HYBRID SOC 2 + CTI OPERATIONS' "$tmp/home.html" || { echo "::error::Live Hybrid SOC 2 + CTI command center missing"; exit 1; }
           grep -Fq 'Security Intelligence Command Center' "$tmp/home.html" || { echo "::error::Homepage operational hierarchy missing"; exit 1; }
           grep -Fq 'ALIGNED · NOT CERTIFIED' "$tmp/home.html" || { echo "::error::Homepage SOC 2 truth boundary missing"; exit 1; }
-          grep -Fq 'SOURCE-BOUND' "$tmp/home.html" || { echo "::error::Homepage intelligence integrity state missing"; exit 1; }
+          grep -Fq 'id="cdb-integrity-state"' "$tmp/home.html" || { echo "::error::Homepage intelligence integrity control missing"; exit 1; }
           grep -Fq 'Synthetic Customer Telemetry' "$tmp/home.html" || { echo "::error::Homepage synthetic telemetry disclosure missing"; exit 1; }
           grep -Fq 'id="cdb-kev"' "$tmp/home.html" || { echo "::error::Homepage CISA KEV runtime metric missing"; exit 1; }
           grep -Fq 'id="cdb-freshness"' "$tmp/home.html" || { echo "::error::Homepage runtime freshness state missing"; exit 1; }
@@ -283,6 +283,7 @@ jobs:
           fetch_page "/apex-command-center.js" "$tmp/apex-command-center.js"
           grep -Fq "fetchJson('/live-intel.json')" "$tmp/apex-command-center.js" || { echo "::error::Command center is not bound to first-party live intelligence"; exit 1; }
           grep -Fq "fetchJson('/api/intel/customer-assurance.json')" "$tmp/apex-command-center.js" || { echo "::error::Command center customer assurance binding missing"; exit 1; }
+          grep -Fq "a.cti_controls.source_bound_evidence?'SOURCE-BOUND':'VERIFY'" "$tmp/apex-command-center.js" || { echo "::error::Command center source-bound assurance derivation missing"; exit 1; }
           grep -Fq 'stats.cisaKev' "$tmp/apex-command-center.js" || { echo "::error::Command center KEV runtime binding missing"; exit 1; }
           grep -Fq 'stats.exploited' "$tmp/apex-command-center.js" || { echo "::error::Command center exploitation runtime binding missing"; exit 1; }
 
