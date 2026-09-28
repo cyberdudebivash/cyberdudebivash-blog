@@ -79,12 +79,12 @@
     abPrice:   ['anchor', 'direct', 'savings'],
     abUrgency: ['exploited', 'critical', 'advisory'],
 
-    /* Trust stats (update periodically) */
+    /* Trust posture — capability statements only; no synthetic counters. */
     trust: {
-      subscribers: '4,800+',
-      cves:        '1,200+',
-      updateMin:   '10',
-      countries:   '80+'
+      evidence:    'Source-linked',
+      freshness:   'Runtime-verified',
+      delivery:    'Cloudflare',
+      controls:    'Fail-closed'
     }
   };
 
@@ -469,7 +469,7 @@
       soc_analyst: {
         badge:    '\uD83D\uDEE1\uFE0F DETECTION ENGINEERING',
         headline: 'Deploy-Ready Sigma & YARA Rules — April 2026',
-        sub:      '1,200+ production detection rules mapped to MITRE ATT&CK. Drop into Splunk, Elastic, or Sentinel in under 60 seconds.',
+        sub:      'Detection content is released only when the referenced artifact is verified deliverable and mapped to supported telemetry.',
         cta:      'Browse Detection Packs \u2192',
         url:      '/products.html'
       },
@@ -1208,10 +1208,10 @@
       var strip = el('div', { id: 'cx4-trust-strip' });
       strip.innerHTML =
         '<div class="ts-live"><div class="ts-dot"></div>LIVE INTEL</div>' +
-        '<div class="ts-stat"><strong>' + T.subscribers + '</strong> security professionals</div>' +
-        '<div class="ts-stat"><strong>' + T.cves + '</strong> vulnerabilities tracked</div>' +
-        '<div class="ts-stat">Updated every <strong>' + T.updateMin + '</strong> minutes</div>' +
-        '<div class="ts-stat"><strong>' + T.countries + '</strong> countries covered</div>';
+        '<div class="ts-stat"><strong>' + T.evidence + '</strong> intelligence</div>' +
+        '<div class="ts-stat"><strong>' + T.freshness + '</strong> freshness</div>' +
+        '<div class="ts-stat"><strong>' + T.delivery + '</strong> production edge</div>' +
+        '<div class="ts-stat"><strong>' + T.controls + '</strong> evidence controls</div>';
 
       if (after.nextSibling) {
         after.parentNode.insertBefore(strip, after.nextSibling);
