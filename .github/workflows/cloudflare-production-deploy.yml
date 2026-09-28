@@ -301,7 +301,38 @@ jobs:
           ! grep -Fq '3B Users at Risk' "$tmp/home.html" || { echo "::error::Static exposure-count assertion remains"; exit 1; }
           ! grep -Fq 'Nation-State APT Tracking in Real Time' "$tmp/home.html" || { echo "::error::Unsupported real-time APT claim remains"; exit 1; }
 
-          echo "SOC 2 + CTI homepage command center certified on $GITHUB_SHA"
+          customer_route_check() {
+            local route="$1"
+            local marker="$2"
+            local code=""
+            local file="$tmp/customer-route.html"
+            for attempt in 1 2 3 4 5 6; do
+              code="$(curl -sS -L --max-time 25 -H 'Cache-Control: no-cache' -o "$file" -w '%{http_code}' "$base$route?release_sha=$GITHUB_SHA" || true)"
+              if [ "$code" = "200" ] && grep -Fq "$marker" "$file"; then
+                return 0
+              fi
+              echo "Waiting for customer route: $route attempt $attempt status=$code"
+              sleep 10
+            done
+            echo "::error::Customer route $route failed marker '$marker' with HTTP $code"
+            exit 1
+          }
+
+          customer_route_check "/intel/" "Live Threat Intelligence Feed"
+          customer_route_check "/hunts.html" "Threat Hunting Workspace"
+          customer_route_check "/detections/" "Traceable Detection Pack"
+          customer_route_check "/customer-assurance.html" "Operational assurance for enterprise CTI customers."
+          customer_route_check "/api-dashboard.html" "SENTINEL APEX API Dashboard"
+          customer_route_check "/service-status.html" "Availability without invented percentages."
+          customer_route_check "/enterprise-onboarding.html" "From security review to accepted CTI delivery."
+          customer_route_check "/customer-incident-response.html" "Customer Incident"
+          customer_route_check "/cti-delivery-acceptance.html" "Acceptance is evidence, not assumption."
+          customer_route_check "/products.html" "Premium Intelligence Reports"
+          customer_route_check "/pricing.html" "Security Intelligence That Actually Protects"
+          customer_route_check "/enterprise.html" "Threat Intelligence Built for Enterprise Security Teams"
+          customer_route_check "/search.html" "cybersecurity reports"
+
+                    echo "SOC 2 + CTI homepage command center certified on $GITHUB_SHA"
 
       - name: "Certify SOC 2 + CTI customer assurance"
         shell: bash
