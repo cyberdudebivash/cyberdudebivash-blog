@@ -719,12 +719,57 @@ def test_homepage_release_certifies_major_customer_routes():
         assert required in workflow
 
 
+def test_homepage_exposes_premium_soc2_cti_brand_and_live_hero():
+    html = Path("index.html").read_text(encoding="utf-8-sig")
+    css = Path("apex-command-center.css").read_text(encoding="utf-8")
+    runtime = Path("apex-command-center.js").read_text(encoding="utf-8")
+    for required in [
+        "CYBERDUDEBIVASH SENTINEL APEX SOC 2 & CTI PLATFORM",
+        "SENTINEL APEX SOC 2 &amp; CTI PLATFORM",
+        "Enterprise Security Intelligence",
+        "SOC 2 Assurance",
+        "CTI Operations",
+        'id="cdb-edge-state"',
+        'class="cdb-hero"',
+        'class="cdb-hero-visual"',
+        'id="cdb-hero-total"',
+        'id="cdb-hero-kev"',
+        'id="cdb-hero-sources"',
+        'id="cdb-hero-freshness"',
+        'id="cdb-hero-assurance"',
+        "SOC 2-ALIGNED",
+        "Not certified",
+    ]:
+        assert required in html
+    for required in [
+        ".cdb-brand-lockup",
+        ".cdb-platform-name",
+        ".cdb-trust-strip",
+        ".cdb-hero-brand",
+        ".cdb-hero-company",
+        ".cdb-hero-platform",
+        ".cdb-hero-visual",
+        ".cdb-orbit",
+        ".cdb-hero-metric",
+    ]:
+        assert required in css
+    for required in [
+        "setText('cdb-hero-total'",
+        "setText('cdb-hero-kev'",
+        "setText('cdb-hero-sources'",
+        "setText('cdb-hero-freshness'",
+        "setText('cdb-hero-assurance'",
+        "PRODUCTION EDGE · VERIFIED",
+    ]:
+        assert required in runtime
+
+
 def test_homepage_command_center_meets_enterprise_visibility_floor():
     html = Path("index.html").read_text(encoding="utf-8-sig")
     css = Path("apex-command-center.css").read_text(encoding="utf-8")
     assert "Hybrid SOC 2 + CTI Enterprise Security Intelligence Command Center" in html
-    assert "/apex-command-center.css?v=20260928-visibility1" in html
-    assert "/apex-command-center.js?v=20260928-visibility1" in html
+    assert "/apex-command-center.css?v=20260928-brandhero1" in html
+    assert "/apex-command-center.js?v=20260928-brandhero1" in html
     for required in [
         "#main-header nav a{",
         "font-size:13px!important",
