@@ -342,13 +342,30 @@
     return '<div class="defensive-block"><div class="defensive-hdr">OPERATIONAL ACTION</div><p class="analyst-text">Validate affected assets, cited evidence, exploitation state and detection maturity before containment, blocking or deployment decisions.</p></div>';
   }
 
+  function contextualUrl(base, item, intent) {
+    try {
+      var u = new URL(base, window.location.origin);
+      var entityId = item.recordId || (item.cveIds && item.cveIds[0]) || '';
+      var entityType = /^CVE-/i.test(entityId) ? 'cve' : (item.postContext === 'ransomware' ? 'malware' : item.postContext || 'intel');
+      if (entityId) {
+        u.searchParams.set('entity_type', entityType);
+        u.searchParams.set('entity_id', entityId);
+      }
+      if (item.title) u.searchParams.set('title', item.title.slice(0, 180));
+      if (intent) u.searchParams.set('intent', intent);
+      return u.origin === window.location.origin ? (u.pathname + u.search + u.hash) : u.href;
+    } catch (e) {
+      return base;
+    }
+  }
+
   function generateContextCTA(item) {
     var ctx = item.postContext || 'general';
     var cp  = CONTEXT_PRODUCTS[ctx] || CONTEXT_PRODUCTS.general;
     var titleEnc = escHTML(item.title).replace(/'/g, "\\'");
     return `<div class="ctx-cta-row">
-  <a class="ctx-btn-primary" href="${cp.primary.url}" onclick="if(window.trackEvent)window.trackEvent('intel_cta_primary',{ctx:'${ctx}'})">${cp.primary.cta}</a>
-  <a class="ctx-btn-secondary" href="${cp.secondary.url}" onclick="if(window.trackEvent)window.trackEvent('intel_cta_secondary',{ctx:'${ctx}'})">${cp.secondary.cta}</a>
+  <a class="ctx-btn-primary" href="${contextualUrl(cp.primary.url,item,'detection-pack')}" onclick="if(window.trackEvent)window.trackEvent('intel_cta_primary',{ctx:'${ctx}'})">${cp.primary.cta}</a>
+  <a class="ctx-btn-secondary" href="${contextualUrl(cp.secondary.url,item,'api')}" onclick="if(window.trackEvent)window.trackEvent('intel_cta_secondary',{ctx:'${ctx}'})">${cp.secondary.cta}</a>
   <button class="ctx-share-btn" onclick="sharePost('${titleEnc}','${item.link}')">↗ Share</button>
 </div>`;
   }
