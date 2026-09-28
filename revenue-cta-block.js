@@ -75,7 +75,7 @@
     },
     apt: {
       headline:       'Nation-State Threat Intelligence — Enterprise Grade',
-      sub:            'Deep-dive APT tracking: actor TTPs, infrastructure maps, malware signatures, and pre-disclosure campaign alerts. Trusted by SOC teams defending critical infrastructure.',
+      sub:            'APT intelligence workflows with source-linked actor, infrastructure, malware and campaign context when canonical evidence is available.',
       products_label: '\uD83C\uDFAF Get APT Intel Pack',
       api_label:      '\uD83D\uDD0C API + STIX Feed Access',
       badge:          '\uD83D\uDD34\u00A0CLASSIFIED APT INTELLIGENCE'
@@ -481,7 +481,7 @@
         '<div class="rcb-newsletter">' +
           '<div class="rcb-nl-body">' +
             '<strong>\uD83D\uDCE7 Get Free Weekly Threat Intel</strong>' +
-            '<span>IOC bundles, new CVE summaries, and ransomware IOCs — no spam, unsubscribe anytime.</span>' +
+            '<span>Source-linked intelligence updates and product announcements — unsubscribe anytime.</span>' +
           '</div>' +
           '<form class="rcb-nl-form" ' +
             'action="https://formsubmit.co/bivash@cyberdudebivash.com" method="POST" ' +
