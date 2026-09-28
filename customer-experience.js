@@ -2,9 +2,13 @@
 (function(){
   function q(sel,root){return Array.from((root||document).querySelectorAll(sel));}
   function text(el){return String((el&&el.textContent)||'').replace(/\s+/g,' ').trim();}
+  function labelFor(el){
+    if(!el||!el.id)return null;
+    return q('label').find(function(label){return label.htmlFor===el.id;})||null;
+  }
   function hasName(el){
     if(el.getAttribute('aria-label')||el.getAttribute('aria-labelledby')) return true;
-    if(el.id && document.querySelector('label[for="'+CSS.escape(el.id)+'"]')) return true;
+    if(labelFor(el)) return true;
     return !!el.closest('label');
   }
   function deriveName(el){
@@ -59,7 +63,7 @@
       if(!hasName(el)){var n=deriveName(el);if(n)el.setAttribute('aria-label',n);}
       if(el.required){
         el.setAttribute('aria-required','true');
-        var lab=el.id&&document.querySelector('label[for="'+CSS.escape(el.id)+'"]');
+        var lab=labelFor(el);
         if(lab)lab.classList.add('cx-required');
       }
       if(el.type!=='hidden'&&!el.hasAttribute('autocomplete')){
@@ -232,7 +236,22 @@
     clearTimeout(resizeTimer);
     resizeTimer=setTimeout(enhanceTables,140);
   }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',enhance,{once:true});else enhance();
+  var mutationTimer;
+  function observeDynamicUi(){
+    if(!window.MutationObserver||!document.body)return;
+    var observer=new MutationObserver(function(records){
+      var relevant=records.some(function(r){return r.addedNodes&&r.addedNodes.length;});
+      if(!relevant)return;
+      clearTimeout(mutationTimer);
+      mutationTimer=setTimeout(enhance,120);
+    });
+    observer.observe(document.body,{childList:true,subtree:true});
+  }
+  function boot(){
+    enhance();
+    observeDynamicUi();
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
   window.addEventListener('resize',onResize,{passive:true});
   window.addEventListener('orientationchange',onResize,{passive:true});
 })();
