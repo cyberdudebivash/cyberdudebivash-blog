@@ -63,6 +63,7 @@ const ASSET_REWRITES = [
   [/^\/intel\/?$/, '/intel/index.html'],
   [/^\/malware\/?$/, '/malware/index.html'],
   [/^\/ai-security\/?$/, '/ai-security/index.html'],
+  [/^\/breaking\/?$/, '/breaking/index.html'],
 ];
 
 const REDIRECTS = [
