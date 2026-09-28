@@ -377,3 +377,5 @@ def test_taxonomy_pivot_runtime_filters_rendered_intelligence_only():
     assert "data-triage-search" in pivots
     assert "No current match in rendered feed" in pivots
     assert "new MutationObserver(refresh)" in pivots
+    assert "group.split(/\\s+/)" in pivots
+    assert "group.split(/s+/)" not in pivots
