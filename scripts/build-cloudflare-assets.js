@@ -130,10 +130,23 @@ function validatePublicHtmlStructure(html, sourcePath = 'public HTML') {
   return text;
 }
 
+function hasUndefinedMetadataArtifacts(html) {
+  const text = String(html);
+  return (
+    /\/cve\/undefined\.html/i.test(text) ||
+    /\/api\/intel\/cve\/undefined(?:\.json)?/i.test(text) ||
+    /<link\b[^>]*rel=["']canonical["'][^>]*href=["'][^"']*\/undefined(?:\.html)?["']/i.test(text) ||
+    /<meta\b[^>]*(?:name|property)=["'](?:og:url|canonical|twitter:url)["'][^>]*content=["'][^"']*\/undefined(?:\.html)?["']/i.test(text) ||
+    /<meta\b[^>]*(?:name|property)=["'][^"']+["'][^>]*content=["']\s*(?:undefined|null)\s*["']/i.test(text) ||
+    /<title>\s*(?:undefined|null)?\s*—/i.test(text) ||
+    /"(?:id|@id|url)"\s*:\s*"[^"]*\/undefined(?:\.html|\.json)?"/i.test(text)
+  );
+}
+
 function repairLegacyCveHtml(src, html) {
   const rel = path.relative(ROOT, src).replace(/\\/g, '/');
   const match = rel.match(/^cve\/(CVE-\d{4}-\d+)\.html$/i);
-  if (!match || !(/\/cve\/undefined\.html|\bundefined\b|<title>\s*—/i.test(html))) return html;
+  if (!match || !hasUndefinedMetadataArtifacts(html)) return html;
 
   const id = match[1].toUpperCase();
   const jsonPath = path.join(ROOT, 'api', 'intel', 'cve', id + '.json');
@@ -152,7 +165,7 @@ function repairLegacyCveHtml(src, html) {
   // executes a public-asset build.
   const { renderPage: renderCvePage } = require('../generate-cve-pages');
   const repaired = renderCvePage(data);
-  if (/\/cve\/undefined\.html|\bundefined\b|<title>\s*—/i.test(repaired)) {
+  if (hasUndefinedMetadataArtifacts(repaired)) {
     throw new Error('CVE repair still contains undefined metadata: ' + rel);
   }
   return repaired;
@@ -216,4 +229,4 @@ if (require.main === module) {
   console.log(`dist-public/ built: ${countFiles(out)} files`);
 }
 
-module.exports = { build, countFiles, PUBLIC_DIRS, PUBLIC_ROOT_FILES, ROOT, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure, repairLegacyCveHtml, CX_CSS, CX_JS };
+module.exports = { build, countFiles, PUBLIC_DIRS, PUBLIC_ROOT_FILES, ROOT, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure, hasUndefinedMetadataArtifacts, repairLegacyCveHtml, CX_CSS, CX_JS };
