@@ -265,6 +265,14 @@ jobs:
             test "$ready" -eq 1 || { echo "::error::$route never exposed the current SOC 2 + CTI release markers"; exit 1; }
           }
 
+          fetch_asset() {
+            local route="$1"
+            local file="$2"
+            local code=""
+            code="$(curl -sS -L --max-time 25 -H 'Cache-Control: no-cache' -o "$file" -w '%{http_code}' "$base$route?release_sha=$GITHUB_SHA" || true)"
+            test "$code" = "200" || { echo "::error::$route returned HTTP $code"; exit 1; }
+          }
+
           fetch_page "/" "$tmp/home.html"
           grep -Fq 'LIVE HYBRID SOC 2 + CTI OPERATIONS' "$tmp/home.html" || { echo "::error::Live Hybrid SOC 2 + CTI command center missing"; exit 1; }
           grep -Fq 'Security Intelligence Command Center' "$tmp/home.html" || { echo "::error::Homepage operational hierarchy missing"; exit 1; }
@@ -279,8 +287,8 @@ jobs:
           grep -Fq '/apex-command-center.css' "$tmp/home.html" || { echo "::error::Homepage command-center stylesheet missing"; exit 1; }
           grep -Fq '/apex-command-center.js' "$tmp/home.html" || { echo "::error::Homepage command-center runtime missing"; exit 1; }
 
-          fetch_page "/apex-command-center.css" "$tmp/apex-command-center.css"
-          fetch_page "/apex-command-center.js" "$tmp/apex-command-center.js"
+          fetch_asset "/apex-command-center.css" "$tmp/apex-command-center.css"
+          fetch_asset "/apex-command-center.js" "$tmp/apex-command-center.js"
           grep -Fq "fetchJson('/live-intel.json')" "$tmp/apex-command-center.js" || { echo "::error::Command center is not bound to first-party live intelligence"; exit 1; }
           grep -Fq "fetchJson('/api/intel/customer-assurance.json')" "$tmp/apex-command-center.js" || { echo "::error::Command center customer assurance binding missing"; exit 1; }
           grep -Fq "a.cti_controls.source_bound_evidence?'SOURCE-BOUND':'VERIFY'" "$tmp/apex-command-center.js" || { echo "::error::Command center source-bound assurance derivation missing"; exit 1; }

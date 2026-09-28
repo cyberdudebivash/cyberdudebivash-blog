@@ -708,6 +708,11 @@ def test_homepage_release_gate_waits_for_current_release_markers_not_just_http_2
     assert 'ready=1' in homepage_gate
     assert 'test "$ready" -eq 1' in homepage_gate
     assert 'if [ "$code" = "200" ]; then break; fi' not in homepage_gate
+    assert 'fetch_asset() {' in homepage_gate
+    assert 'fetch_asset "/apex-command-center.css"' in homepage_gate
+    assert 'fetch_asset "/apex-command-center.js"' in homepage_gate
+    assert 'fetch_page "/apex-command-center.css"' not in homepage_gate
+    assert 'fetch_page "/apex-command-center.js"' not in homepage_gate
 
 def test_full_soc2_cti_customer_release_package_contract():
     assurance = Path("customer-assurance.html").read_text(encoding="utf-8-sig")
