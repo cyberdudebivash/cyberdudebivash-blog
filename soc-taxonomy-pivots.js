@@ -10,7 +10,7 @@ function matches(card,query){
   var groups=String(query||'').toLowerCase().split('|').map(function(x){return x.trim();}).filter(Boolean);
   if(!groups.length)return false;
   return groups.some(function(group){
-    return group.split(/s+/).filter(Boolean).every(function(token){return text.indexOf(token)>=0;});
+    return group.split(/\s+/).filter(Boolean).every(function(token){return text.indexOf(token)>=0;});
   });
 }
 function updatePivot(el){
