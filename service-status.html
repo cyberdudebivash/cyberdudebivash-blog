@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Service Assurance & Availability — SENTINEL APEX</title>
+<meta name="description" content="Live service assurance, availability evidence, incident contacts, and contractual SLA boundary for CYBERDUDEBIVASH SENTINEL APEX.">
+<link rel="canonical" href="https://blog.cyberdudebivash.in/service-status.html">
+<style>
+:root{--bg:#071018;--p:#0b1721;--b:#203645;--c:#00ffe0;--t:#eaf4fb;--m:#94a8b6;--ok:#67f5b5;--w:#ffd166;--bad:#ff6b81}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0,rgba(0,255,224,.08),transparent 35rem),var(--bg);color:var(--t);font-family:Inter,system-ui,sans-serif}.shell{max-width:1080px;margin:auto;padding:28px 18px 64px}a{color:var(--c)}nav{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:1px solid var(--b);padding-bottom:20px}.brand{font-weight:900;text-decoration:none}.links{display:flex;gap:14px;flex-wrap:wrap}.links a{color:var(--m);text-decoration:none;font-size:13px}.hero{padding:54px 0 26px}.k{font:800 11px ui-monospace,monospace;letter-spacing:.14em;color:var(--c)}h1{font-size:clamp(34px,7vw,64px);line-height:1;margin:12px 0}p{color:#b8cad6}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.card{background:linear-gradient(145deg,#0e1d29,var(--p));border:1px solid var(--b);border-radius:14px;padding:18px}.label{font:800 10px ui-monospace,monospace;letter-spacing:.12em;color:var(--m);text-transform:uppercase}.value{font-size:20px;font-weight:900;margin:8px 0}.ok{color:var(--ok)}.warn{color:var(--w)}.bad{color:var(--bad)}section{margin-top:34px}h2{font-size:22px}.row{display:grid;grid-template-columns:190px 1fr;gap:18px;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.07)}.row:last-child{border-bottom:0}.row b{color:#fff}.row div{color:#b8cad6}.truth{border-color:rgba(255,209,102,.4)}.stamp{font-size:12px;color:var(--m)}@media(max-width:760px){.grid{grid-template-columns:1fr}.row{grid-template-columns:1fr;gap:5px}}
+</style>
+</head><body><main class="shell">
+<nav><a class="brand" href="/">CYBERDUDEBIVASH SENTINEL APEX</a><div class="links"><a href="/customer-assurance.html">Assurance</a><a href="/enterprise-onboarding.html">Onboarding</a><a href="/cti-delivery-acceptance.html">Delivery Acceptance</a><a href="/security-disclosure.html">Security</a></div></nav>
+<section class="hero"><div class="k">SERVICE ASSURANCE · CURRENT-STATE EVIDENCE</div><h1>Availability without invented percentages.</h1><p>This page reports current first-party service evidence and the contractual boundary for enterprise customers. Historical uptime percentages are not fabricated from sparse checks. Contractual SLA terms apply only when explicitly executed with a customer.</p></section>
+<div class="grid">
+  <article class="card"><div class="label">Platform Reachability</div><div class="value" id="runtime">VERIFYING</div><p id="runtime-note">Checking the production assurance surface.</p></article>
+  <article class="card"><div class="label">CTI Feed Freshness</div><div class="value" id="freshness">VERIFYING</div><p id="freshness-note">Reading the first-party pipeline timestamp.</p></article>
+  <article class="card"><div class="label">SOC 2 Status</div><div class="value warn">ALIGNED · NOT CERTIFIED</div><p>No Type I/II auditor attestation is represented as published.</p></article>
+</div>
+<section><h2>Availability evidence model</h2><div class="card">
+<div class="row"><b>Current service evidence</b><div>Browser-side checks use first-party production assets and timestamps. A failed check is shown as degraded rather than replaced with a static green indicator.</div></div>
+<div class="row"><b>Historical uptime</b><div>No public percentage is asserted by this page unless backed by an independently maintained measurement history.</div></div>
+<div class="row"><b>Contractual SLA</b><div>Enterprise SLA targets, credits, support windows, and exclusions are customer-specific contractual terms. Marketing copy is not an SLA.</div></div>
+<div class="row"><b>Release assurance</b><div>Production deploys are gated by exact-commit checkout, dependency/security checks, allowlisted assets, smoke tests, and live customer-journey certification.</div></div>
+</div></section>
+<section><h2>Incident and security escalation</h2><div class="card">
+<div class="row"><b>Security vulnerability</b><div><a href="mailto:security@cyberdudebivash.in">security@cyberdudebivash.in</a> · <a href="/security-disclosure.html">responsible disclosure process</a> · <a href="/.well-known/security.txt">security.txt</a></div></div>
+<div class="row"><b>Customer service incident</b><div><a href="mailto:contact@cyberdudebivash.in?subject=SENTINEL%20APEX%20Production%20Incident">contact@cyberdudebivash.in</a>. Include tenant/API tier, affected endpoint, UTC timestamp, request ID if available, and business impact. Never send API keys by email.</div></div>
+<div class="row"><b>Enterprise escalation</b><div>Contract-specific escalation channels and response objectives override public support guidance only where explicitly agreed.</div></div>
+</div></section>
+<section><div class="card truth"><b>Assurance boundary.</b><p>SOC 2-aligned operational evidence is provided to support due diligence. CYBERDUDEBIVASH does not claim SOC 2 certification or a published auditor attestation on this page.</p><div class="stamp" id="checked">Runtime verification not yet executed.</div></div></section>
+</main>
+<script>
+(async function(){
+ var runtime=document.getElementById('runtime'),rn=document.getElementById('runtime-note'),fr=document.getElementById('freshness'),fn=document.getElementById('freshness-note'),checked=document.getElementById('checked');
+ try{
+   var values=await Promise.all([
+     fetch('/api/intel/customer-assurance.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('assurance');return r.json();}),
+     fetch('/live-intel.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('feed');return r.json();})
+   ]);
+   var assurance=values[0],feed=values[1];
+   runtime.textContent=assurance&&assurance.soc2_certified===false?'AVAILABLE':'DEGRADED';runtime.className='value '+(runtime.textContent==='AVAILABLE'?'ok':'bad');
+   rn.textContent='Customer assurance endpoint reachable; non-certification boundary verified.';
+   var stamp=feed.generatedAt||feed.lastUpdated||(feed.metadata&&feed.metadata.lastPipelineRun);
+   var ms=stamp?Date.now()-Date.parse(stamp):NaN;
+   if(Number.isFinite(ms)&&ms>=0){var m=Math.floor(ms/60000),h=Math.floor(m/60);fr.textContent=h?(h+'h '+(m%60)+'m'):(m+'m');fr.className='value '+(m<=360?'ok':'warn');fn.textContent='Age since first-party pipeline timestamp: '+new Date(stamp).toISOString();}
+   else{fr.textContent='UNKNOWN';fr.className='value warn';fn.textContent='Pipeline timestamp unavailable or invalid.';}
+   checked.textContent='Current-state verification executed at '+new Date().toISOString();
+ }catch(e){runtime.textContent='DEGRADED';runtime.className='value bad';rn.textContent='One or more first-party verification checks failed.';fr.textContent='UNAVAILABLE';fr.className='value bad';fn.textContent='Freshness could not be verified.';checked.textContent='Verification failed at '+new Date().toISOString();}
+})();
+</script></body></html>
