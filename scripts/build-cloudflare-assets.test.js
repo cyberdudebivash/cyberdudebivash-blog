@@ -172,11 +172,13 @@ describe('build-cloudflare-assets', () => {
     }
   });
 
-  test('critical operational pages contain no placeholder hash links', () => {
-    for (const rel of ['workbench.html','api-dashboard.html','threat-intelligence.html','index.html','hunts.html','intel/index.html']) {
+  test('no public HTML artifact contains placeholder hash links', () => {
+    const offenders = [];
+    for (const rel of outputFiles.filter(f => f.endsWith('.html'))) {
       const html = fs.readFileSync(path.join(OUT, rel), 'utf8');
-      assert.doesNotMatch(html, /href=["']#["']/i, rel + ' still contains href="#"');
+      if (/href=["']#["']/i.test(html)) offenders.push(rel);
     }
+    assert.deepEqual(offenders, [], 'public pages still containing href="#":\n' + offenders.join('\n'));
   });
 
   test('SOC 2 customer-release surfaces do not publish unconditional response-time guarantees', () => {
