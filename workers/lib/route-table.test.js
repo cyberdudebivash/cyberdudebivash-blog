@@ -34,6 +34,7 @@ describe('resolveRoute — root and dashboard index aliases', () => {
     ['/intel', '/intel/index.html'], ['/intel/', '/intel/index.html'],
     ['/malware', '/malware/index.html'], ['/malware/', '/malware/index.html'],
     ['/ai-security', '/ai-security/index.html'], ['/ai-security/', '/ai-security/index.html'],
+    ['/breaking', '/breaking/index.html'], ['/breaking/', '/breaking/index.html'],
   ]) {
     test(`${requestPath} resolves to ${assetPath}`, () => assert.deepEqual(resolveRoute(requestPath), { type: 'asset', path: assetPath }));
   }
