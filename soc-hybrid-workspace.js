@@ -27,7 +27,10 @@ function syncActionTargets(root,card){
  if(supported){
   var base='/dossier.html?type='+encodeURIComponent(ctx.type)+'&id='+encodeURIComponent(ctx.id);
   setActionHref(root,'investigate',base+'&focus=overview',true);
-  setActionHref(root,'hunt',base+'&focus=attack',true);
+  var title=card&&card.querySelector('.post-title');
+  var hunt='/hunts.html?entity_type='+encodeURIComponent(ctx.type)+'&entity_id='+encodeURIComponent(ctx.id);
+  if(title&&title.textContent.trim())hunt+='&title='+encodeURIComponent('Hunt: '+title.textContent.trim());
+  setActionHref(root,'hunt',hunt,true);
   setActionHref(root,'detect',base+'&focus=detections',true);
   setActionHref(root,'watch',base+'&focus=watch',true);
   setActionHref(root,'export',base+'&focus=export',true);
