@@ -253,6 +253,12 @@ jobs:
           grep -Fq 'SOURCE-BOUND' "$tmp/home.html" || { echo "::error::Homepage intelligence integrity state missing"; exit 1; }
           grep -Fq 'Synthetic Telemetry' "$tmp/home.html" || { echo "::error::Homepage synthetic telemetry disclosure missing"; exit 1; }
           grep -Fq '/customer-assurance.html' "$tmp/home.html" || { echo "::error::Homepage assurance navigation missing"; exit 1; }
+          grep -Fq 'Evidence-Bound Analyst Queues' "$tmp/home.html" || { echo "::error::Evidence-bound analyst queues missing"; exit 1; }
+          grep -Fq 'No synthetic victim counters' "$tmp/home.html" || { echo "::error::Homepage synthetic victim-counter policy missing"; exit 1; }
+          ! grep -Fq 'Most Exploited CVEs This Week' "$tmp/home.html" || { echo "::error::Static exploited-this-week panel remains"; exit 1; }
+          ! grep -Fq '67 Victims' "$tmp/home.html" || { echo "::error::Static victim-count assertion remains"; exit 1; }
+          ! grep -Fq '$4.2B Demanded' "$tmp/home.html" || { echo "::error::Unsupported ransomware commercial metric remains"; exit 1; }
+          ! grep -Fq '3B Users at Risk' "$tmp/home.html" || { echo "::error::Static exposure-count assertion remains"; exit 1; }
           ! grep -Fq 'Qilin/LockBit 4.0 Active — 67 Victims April' "$tmp/home.html" || { echo "::error::Stale hardcoded incident assertion remains on homepage"; exit 1; }
           ! grep -Fq 'Nation-State APT Tracking in Real Time' "$tmp/home.html" || { echo "::error::Unsupported real-time APT claim remains"; exit 1; }
 
