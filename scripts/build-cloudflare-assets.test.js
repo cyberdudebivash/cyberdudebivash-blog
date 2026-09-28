@@ -136,8 +136,8 @@ describe('build-cloudflare-assets', () => {
 
   test('expected public artifacts are present', () => {
     const mustExist = [
-      'index.html', 'customer-assurance.html', 'service-status.html', 'enterprise-onboarding.html', 'cti-delivery-acceptance.html', 'leads.html', 'robots.txt', 'rss.xml', 'sitemap.xml',
-      'search-index.json', 'live-intel.json', 'api/intel/customer-assurance.json', 'api/intel/service-assurance.json', 'api/intel/cti-delivery-acceptance.json',
+      'index.html', 'customer-assurance.html', 'service-status.html', 'customer-incident-response.html', 'enterprise-onboarding.html', 'cti-delivery-acceptance.html', 'leads.html', 'robots.txt', 'rss.xml', 'sitemap.xml',
+      'search-index.json', 'live-intel.json', 'api/intel/customer-assurance.json', 'api/intel/service-assurance.json', 'api/intel/customer-incident-response.json', 'api/intel/cti-delivery-acceptance.json',
       'apex-v13.css', 'analytics-engine.js', 'banner-orchestrator.js',
       'soc-cti-console.css', 'soc-triage-workspace.js', 'soc-taxonomy-pivots.js',
       'soc-hybrid-workspace.js', 'soc-evidence-drawer.js',
@@ -148,6 +148,17 @@ describe('build-cloudflare-assets', () => {
     assert.ok(outputFiles.includes('breaking/index.html'), 'expected breaking/index.html in dist-public/');
     assert.ok(outputFiles.some(f => f.startsWith('posts/') && f.endsWith('.html')), 'expected at least one posts/*.html');
     assert.ok(outputFiles.some(f => f.startsWith('api/intel/') && f.endsWith('.json')), 'expected at least one api/intel/*.json');
+  });
+
+  test('SOC 2 customer-release surfaces do not publish unconditional response-time guarantees', () => {
+    const contact = fs.readFileSync(path.join(OUT, 'contact.html'), 'utf8');
+    assert.doesNotMatch(contact, /24\s+(?:business\s+)?hours?/i, 'contact page must not invent a public response-time SLA');
+    assert.doesNotMatch(contact, /response[^.]{0,80}guarantee/i, 'contact page must not publish an unsupported response guarantee');
+
+    const incident = fs.readFileSync(path.join(OUT, 'customer-incident-response.html'), 'utf8');
+    assert.match(incident, /No public response-time guarantee is created by this page/i);
+    assert.match(incident, /security@cyberdudebivash\.in/);
+    assert.match(incident, /contact@cyberdudebivash\.in/);
   });
 
   test('_headers is written to the build output and matches the exported constant', () => {

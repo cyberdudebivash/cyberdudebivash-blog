@@ -52,6 +52,8 @@ function packageFor(user) {
       customer_production_contact: 'contact@cyberdudebivash.in',
       security_disclosure: PUBLIC_BASE + '/security-disclosure.html',
       security_txt: PUBLIC_BASE + '/.well-known/security.txt',
+      customer_incident_response: PUBLIC_BASE + '/customer-incident-response.html',
+      incident_response_profile: PUBLIC_BASE + '/api/intel/customer-incident-response.json',
       credential_handling: 'Do not transmit API keys or secrets by email or support ticket.'
     },
     resources: {
@@ -59,6 +61,7 @@ function packageFor(user) {
       service_assurance: PUBLIC_BASE + '/service-status.html',
       enterprise_onboarding: PUBLIC_BASE + '/enterprise-onboarding.html',
       delivery_acceptance: PUBLIC_BASE + '/cti-delivery-acceptance.html',
+      customer_incident_response: PUBLIC_BASE + '/customer-incident-response.html',
       machine_readable_assurance: PUBLIC_BASE + '/api/intel/customer-assurance.json',
       service_assurance_json: PUBLIC_BASE + '/api/intel/service-assurance.json',
       customer_api_dashboard: PUBLIC_BASE + '/api-dashboard.html'

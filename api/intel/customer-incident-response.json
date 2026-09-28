@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "service": "CYBERDUDEBIVASH SENTINEL APEX",
+  "scope": "Customer production incident and security escalation workflow",
+  "contractual_response_time_public_default": null,
+  "security_channel": "security@cyberdudebivash.in",
+  "customer_production_channel": "contact@cyberdudebivash.in",
+  "secret_handling": "Never transmit API keys, bearer tokens, passwords, or secrets in email or support evidence.",
+  "severity": [
+    {
+      "id": "SEV-1",
+      "name": "critical",
+      "basis": "confirmed_or_strongly_evidenced_compromise_cross_tenant_exposure_or_widespread_critical_unavailability"
+    },
+    {
+      "id": "SEV-2",
+      "name": "high",
+      "basis": "major_customer_degradation_authenticated_api_failure_significant_delivery_disruption_or_security_control_failure"
+    },
+    {
+      "id": "SEV-3",
+      "name": "standard",
+      "basis": "limited_degradation_isolated_integration_or_data_quality_issue"
+    }
+  ],
+  "lifecycle": [
+    "intake",
+    "triage",
+    "containment",
+    "remediation",
+    "verification",
+    "closure"
+  ],
+  "minimum_evidence": [
+    "authorized_contact",
+    "affected_service_or_endpoint",
+    "first_observed_utc",
+    "last_observed_utc_if_known",
+    "request_or_correlation_id_if_available",
+    "sanitized_error_or_logs",
+    "expected_vs_actual_behavior",
+    "business_impact"
+  ],
+  "resources": {
+    "customer_incident_response": "/customer-incident-response.html",
+    "service_assurance": "/service-status.html",
+    "customer_assurance": "/customer-assurance.html",
+    "security_disclosure": "/security-disclosure.html",
+    "security_txt": "/.well-known/security.txt"
+  },
+  "contractual_note": "Response objectives, service credits, support hours, notification duties, and customer-specific escalation commitments apply only where explicitly executed."
+}

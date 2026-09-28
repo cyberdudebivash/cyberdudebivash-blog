@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Customer Incident & Security Escalation — SENTINEL APEX</title>
+<meta name="description" content="Customer-facing production incident and security escalation workflow for CYBERDUDEBIVASH SENTINEL APEX, including severity, evidence, communication, and contractual boundaries.">
+<link rel="canonical" href="https://blog.cyberdudebivash.in/customer-incident-response.html">
+<style>
+:root{--bg:#071018;--p:#0b1721;--b:#203645;--c:#00ffe0;--t:#eaf4fb;--m:#95a9b8;--ok:#67f5b5;--w:#ffd166;--bad:#ff6b81}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0,rgba(0,255,224,.08),transparent 34rem),var(--bg);color:var(--t);font-family:Inter,system-ui,sans-serif;line-height:1.6}.s{max-width:1100px;margin:auto;padding:28px 18px 64px}a{color:var(--c)}nav{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-bottom:20px;border-bottom:1px solid var(--b)}.brand{font-weight:900;text-decoration:none}.links{display:flex;gap:14px;flex-wrap:wrap}.links a{color:var(--m);text-decoration:none;font-size:13px}.hero{padding:54px 0 26px}.ey{font:800 11px ui-monospace,monospace;letter-spacing:.14em;color:var(--c)}h1{font-size:clamp(34px,7vw,62px);line-height:1.02;margin:12px 0}.lead{max-width:860px;color:#bfd0da}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.card{background:linear-gradient(145deg,#0e1d29,var(--p));border:1px solid var(--b);border-radius:14px;padding:18px}.row{display:grid;grid-template-columns:170px 1fr;gap:18px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.07)}.row:last-child{border-bottom:0}.row div{color:#b6c8d3}.tag{font:800 11px ui-monospace,monospace;color:var(--c)}.warn{border-color:rgba(255,209,102,.4)}.critical{color:var(--bad)}.high{color:var(--w)}.normal{color:var(--ok)}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}@media(max-width:760px){.grid{grid-template-columns:1fr}.row{grid-template-columns:1fr;gap:5px}}
+</style>
+</head><body><main class="s">
+<nav><a class="brand" href="/">CYBERDUDEBIVASH SENTINEL APEX</a><div class="links"><a href="/customer-assurance.html">Assurance</a><a href="/service-status.html">Service</a><a href="/enterprise-onboarding.html">Onboarding</a><a href="/cti-delivery-acceptance.html">Acceptance</a></div></nav>
+
+<section class="hero"><div class="ey">CUSTOMER INCIDENT RESPONSE · SOC 2-ALIGNED OPERATING EVIDENCE</div><h1>One escalation path. Explicit evidence. No invented SLA.</h1><p class="lead">This workflow separates security vulnerability disclosure from customer production incidents, defines the minimum evidence required for triage, and records the communication boundary for enterprise customers. It is operational guidance, not a contractual response-time commitment.</p></section>
+
+<section><h2>Report through the correct channel</h2><div class="grid">
+<article class="card"><div class="tag">SECURITY VULNERABILITY</div><h3>security@cyberdudebivash.in</h3><p>Use for suspected vulnerabilities, unauthorized access, credential exposure, security-control bypass, or responsible disclosure. Follow <a href="/security-disclosure.html">Security Disclosure</a> and <a href="/.well-known/security.txt">security.txt</a>.</p></article>
+<article class="card"><div class="tag">CUSTOMER PRODUCTION INCIDENT</div><h3>contact@cyberdudebivash.in</h3><p>Use for customer-facing service degradation, API delivery failure, integration failure, entitlement/access issue, or CTI delivery disruption. Do not send API keys, bearer tokens, passwords, or other secrets.</p></article>
+</div></section>
+
+<section><h2>Minimum incident evidence</h2><div class="card">
+<div class="row"><b>Identity & scope</b><div>Organization, authorized contact, customer tier/tenant identifier where applicable, affected product or endpoint.</div></div>
+<div class="row"><b>Time</b><div>First observed UTC timestamp, last observed UTC timestamp, and whether the condition is ongoing.</div></div>
+<div class="row"><b>Technical evidence</b><div>Request ID/correlation ID if available, HTTP status/error code, sanitized logs, affected integration, expected behavior, actual behavior.</div></div>
+<div class="row"><b>Business impact</b><div>Describe operational effect without exaggeration: blocked ingestion, stale feed, failed download, unavailable endpoint, or other measurable impact.</div></div>
+<div class="row"><b>Secret handling</b><div>Redact credentials and sensitive tokens. If a credential may have been exposed, rotate/revoke it through the approved customer process rather than attaching it to the incident.</div></div>
+</div></section>
+
+<section><h2>Severity used for triage</h2><div class="card">
+<div class="row"><b class="critical">SEV-1 · Critical</b><div>Confirmed or strongly evidenced compromise, active unauthorized access, material cross-tenant exposure, or widespread production unavailability affecting critical customer use.</div></div>
+<div class="row"><b class="high">SEV-2 · High</b><div>Major customer-impacting degradation, repeated authenticated API failure, significant CTI delivery disruption, or security control failure without evidence of broad compromise.</div></div>
+<div class="row"><b class="normal">SEV-3 · Standard</b><div>Limited degradation, isolated integration defect, non-critical data-quality issue, documentation mismatch, or recoverable customer workflow problem.</div></div>
+<div class="row"><b>Classification rule</b><div>Severity is based on evidence and impact. A customer may state perceived urgency, but final operational classification should not be inferred from subject-line wording alone.</div></div>
+</div></section>
+
+<section><h2>Lifecycle and evidence trail</h2><div class="card">
+<div class="row"><b>1 · Intake</b><div>Capture reporter, timestamp, scope, sanitized evidence, affected service, and requested contact path.</div></div>
+<div class="row"><b>2 · Triage</b><div>Validate reproducibility/current state, classify security-vs-service ownership, assign severity, and identify containment or customer workaround if supported by evidence.</div></div>
+<div class="row"><b>3 · Containment</b><div>Apply the minimum safe change needed to stop active impact. Emergency action must preserve an auditable change record.</div></div>
+<div class="row"><b>4 · Remediation</b><div>Implement the production fix, regression coverage, security validation, and release certification appropriate to the affected path.</div></div>
+<div class="row"><b>5 · Verification</b><div>Verify the exact production surface, customer journey, and any affected machine-readable artifact or API endpoint.</div></div>
+<div class="row"><b>6 · Closure</b><div>Record verified resolution, residual risk/limitations, customer-visible outcome, and follow-up actions. Material incidents should produce a concise incident review when appropriate.</div></div>
+</div></section>
+
+<section><h2>Customer communication boundary</h2><div class="card warn">
+<p><b>No public response-time guarantee is created by this page.</b> Response objectives, escalation windows, service credits, support hours, notification duties, regulatory obligations, and customer-specific communication requirements apply only where explicitly executed in contract or order terms.</p>
+<p>Current-state availability evidence is published at <a href="/service-status.html">Service Assurance</a>. Machine-readable incident guidance is available at <a href="/api/intel/customer-incident-response.json">/api/intel/customer-incident-response.json</a>.</p>
+</div></section>
+</main></body></html>
