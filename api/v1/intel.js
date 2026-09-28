@@ -90,6 +90,11 @@ function publicDashboardItems(section, limit) {
     items = items.filter(i =>
       /\bai\b|llm|gpt|artificial intelligence|machine learning|prompt injection|copilot|chatgpt|claude|gemini/i
         .test(String(i.title || '') + ' ' + String(i.description || i.desc || '')));
+  } else if (section === 'breaking') {
+    items = items.filter(i => {
+      const sev = cvssSeverity(i.cvss, i.threat_level);
+      return i.exploited === true || i.cisa_kev === true || i.cisaKev === true || sev === 'CRITICAL';
+    });
   }
   items = items.slice(0, limit);
   return {
@@ -163,7 +168,7 @@ module.exports = async (req, res) => {
       return apiError(res, 405, 'METHOD_NOT_ALLOWED', 'GET required for dashboard feed');
     }
     const sectionRaw = String(req.query.section || 'intel').toLowerCase().trim().replace(/-/g, '_');
-    const section = ['intel', 'malware', 'ai_security'].includes(sectionRaw) ? sectionRaw : 'intel';
+    const section = ['intel', 'malware', 'ai_security', 'breaking'].includes(sectionRaw) ? sectionRaw : 'intel';
     const limit = Math.min(25, Math.max(1, parseInt(req.query.limit || '25', 10) || 25));
     try {
       const data = publicDashboardItems(section, limit);
