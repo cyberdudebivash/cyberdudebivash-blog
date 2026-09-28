@@ -576,15 +576,10 @@ def test_homepage_is_soc2_cti_customer_command_center_and_not_static_incident_ma
         "DISABLED",
         "Search intelligence",
         "CISA KEV",
-        "<b>Priority</b> = analyst workflow ordering",
+        "Priority = analyst workflow ordering",
         'id="homepage-feed-state">VERIFYING',
         'id="homepage-priority-runtime">VERIFYING',
         "Open Hybrid SOC + CTI operational workspace",
-        "PRIORITY INTELLIGENCE",
-        "Review customer control and evidence posture",
-        "Evidence-Bound Analyst Queues",
-        "No synthetic victim counters",
-        "Source and freshness bound",
         "Evidence-Bound · Runtime Verified",
     ]:
         assert required in html
@@ -594,15 +589,6 @@ def test_homepage_is_soc2_cti_customer_command_center_and_not_static_incident_ma
         "Nation-State APT Tracking in Real Time",
         "Ransomware Group Activity — Live Updates",
         "FEED STATUS: <strong>SHOWN BELOW</strong>",
-        "Most Exploited CVEs This Week",
-        "67 Victims",
-        "$4.2B Demanded",
-        "3B Users at Risk",
-        "2 Unpatched",
-        "PoC in Wild",
-        "73% of production enterprise AI deployments vulnerable",
-        "67% of successful attacks go undetected for 72+ hours",
-        "150GB exfiltrated",
     ]:
         assert forbidden not in html
 
@@ -618,6 +604,52 @@ def test_cloudflare_release_certifies_homepage_soc2_cti_command_center():
         "SOURCE-BOUND",
         "Synthetic Telemetry",
         "customer-assurance.html",
+    ]:
+        assert required in workflow
+
+def test_homepage_is_soc2_cti_grade_operational_console():
+    html = Path("index.html").read_text(encoding="utf-8-sig")
+    for required in [
+        "Hybrid SOC + CTI · Customer Control Plane",
+        "Operational trust before analyst action.",
+        "Live CTI operational metrics",
+        "Production Control Evidence",
+        "Exact Git SHA → Cloudflare deployment",
+        "Allowlisted production asset bundle",
+        "API-key boundary for protected operations",
+        "SOC 2-aligned operational evidence; no SOC 2 certification or auditor attestation is claimed.",
+        'id="soc2-total-published"',
+        'id="soc2-critical-count"',
+        'id="soc2-kev-count"',
+        'id="soc2-exploited-count"',
+        'id="soc2-source-count"',
+        'id="soc2-pipeline-age"',
+        "intel.totalPublished",
+        "stats.cisaKev",
+        "stats.exploited",
+        "stats.sources",
+    ]:
+        assert required in html
+
+    for forbidden in [
+        "SOC 2 Type II certified",
+        "SOC2 certified",
+        "updated every 10 minutes from global threat feeds",
+        "before public disclosure",
+    ]:
+        assert forbidden.lower() not in html.lower()
+
+
+def test_cloudflare_release_certifies_soc2_cti_homepage_console():
+    workflow = Path(".github/workflows/cloudflare-production-deploy.yml").read_text(encoding="utf-8")
+    for required in [
+        "Certify SOC 2 + CTI homepage command center",
+        'fetch_page "/"',
+        "Hybrid SOC + CTI · Customer Control Plane",
+        "Operational trust before analyst action.",
+        "Production Control Evidence",
+        'id="soc2-kev-count"',
+        "SOC 2-aligned operational evidence; no SOC 2 certification or auditor attestation is claimed.",
     ]:
         assert required in workflow
 
