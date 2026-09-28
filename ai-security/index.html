@@ -135,11 +135,11 @@ a{color:inherit;text-decoration:none;}
     <div class="soc-workspace-context"><strong>Selected:</strong> <span data-selected-record>No intelligence record selected. Select a rendered record before operational actions.</span><br><span data-selected-evidence>Canonical evidence requires a ReportX report ID. Authentication is required for claim-level evidence.</span></div>
     <div class="soc-workspace-actions" aria-label="Selected intelligence actions">
       <a href="#soc-evidence-drawer" data-requires-selection data-requires-report-id>Validate Evidence</a>
-      <a href="/api-dashboard.html" data-soc-action="investigate" data-requires-selection>Investigate</a>
-      <a href="/api-dashboard.html" data-soc-action="hunt" data-requires-selection>Hunt</a>
-      <a href="/api-dashboard.html" data-soc-action="detect" data-requires-selection>Detection Content</a>
-      <a href="/api-dashboard.html" data-soc-action="watch" data-requires-selection>Watch</a>
-      <a href="/api.html" data-soc-action="export" data-requires-selection>Export / API</a>
+      <a href="/dossier.html" data-soc-action="investigate" data-requires-selection>Investigate</a>
+      <a href="/dossier.html" data-soc-action="hunt" data-requires-selection>Hunt</a>
+      <a href="/dossier.html" data-soc-action="detect" data-requires-selection>Detection Content</a>
+      <a href="/dossier.html" data-soc-action="watch" data-requires-selection>Watch</a>
+      <a href="/dossier.html" data-soc-action="export" data-requires-selection>Export / API</a>
     </div>
   </div>
   <aside class="soc-workspace-panel">
@@ -158,16 +158,16 @@ a{color:inherit;text-decoration:none;}
       <div class="page-title"><span class="live-dot"></span> AI Security & LLM Threat Intelligence</div>
       <div class="page-subtitle">Evidence-bound AI security intelligence covering prompt injection, AI supply-chain risk, adversarial ML, model abuse, and autonomous-agent threats.</div>
       <div class="owasp-grid">
-        <div class="owasp-item"><span class="owasp-id">LLM01</span><span class="owasp-name">Prompt Injection</span></div>
-        <div class="owasp-item"><span class="owasp-id">LLM02</span><span class="owasp-name">Insecure Output</span></div>
-        <div class="owasp-item"><span class="owasp-id">LLM03</span><span class="owasp-name">Training Poison</span></div>
-        <div class="owasp-item"><span class="owasp-id">LLM04</span><span class="owasp-name">Model Denial</span></div>
-        <div class="owasp-item"><span class="owasp-id">LLM05</span><span class="owasp-name">Supply Chain</span></div>
-        <div class="owasp-item"><span class="owasp-id">LLM06</span><span class="owasp-name">Data Disclosure</span></div>
-        <div class="owasp-item"><span class="owasp-id">LLM07</span><span class="owasp-name">Plugin Flaws</span></div>
-        <div class="owasp-item"><span class="owasp-id">LLM08</span><span class="owasp-name">Agency Risks</span></div>
-        <div class="owasp-item"><span class="owasp-id">LLM09</span><span class="owasp-name">Overreliance</span></div>
-        <div class="owasp-item"><span class="owasp-id">LLM10</span><span class="owasp-name">Model Theft</span></div>
+        <div class="owasp-item" data-intel-pivot data-filter-query="prompt injection"><span class="owasp-id">LLM01</span><span class="owasp-name">Prompt Injection</span><span data-pivot-state>Waiting for current feed</span></div>
+        <div class="owasp-item" data-intel-pivot data-filter-query="insecure output|output handling"><span class="owasp-id">LLM02</span><span class="owasp-name">Insecure Output</span><span data-pivot-state>Waiting for current feed</span></div>
+        <div class="owasp-item" data-intel-pivot data-filter-query="training poison|model poisoning"><span class="owasp-id">LLM03</span><span class="owasp-name">Training Poison</span><span data-pivot-state>Waiting for current feed</span></div>
+        <div class="owasp-item" data-intel-pivot data-filter-query="denial of service|resource exhaustion"><span class="owasp-id">LLM04</span><span class="owasp-name">Model Denial</span><span data-pivot-state>Waiting for current feed</span></div>
+        <div class="owasp-item" data-intel-pivot data-filter-query="supply chain"><span class="owasp-id">LLM05</span><span class="owasp-name">Supply Chain</span><span data-pivot-state>Waiting for current feed</span></div>
+        <div class="owasp-item" data-intel-pivot data-filter-query="data disclosure|sensitive information"><span class="owasp-id">LLM06</span><span class="owasp-name">Data Disclosure</span><span data-pivot-state>Waiting for current feed</span></div>
+        <div class="owasp-item" data-intel-pivot data-filter-query="plugin|tool"><span class="owasp-id">LLM07</span><span class="owasp-name">Plugin Flaws</span><span data-pivot-state>Waiting for current feed</span></div>
+        <div class="owasp-item" data-intel-pivot data-filter-query="agent|agency"><span class="owasp-id">LLM08</span><span class="owasp-name">Agency Risks</span><span data-pivot-state>Waiting for current feed</span></div>
+        <div class="owasp-item" data-intel-pivot data-filter-query="overreliance"><span class="owasp-id">LLM09</span><span class="owasp-name">Overreliance</span><span data-pivot-state>Waiting for current feed</span></div>
+        <div class="owasp-item" data-intel-pivot data-filter-query="model theft"><span class="owasp-id">LLM10</span><span class="owasp-name">Model Theft</span><span data-pivot-state>Waiting for current feed</span></div>
       </div>
     </div>
 
@@ -184,12 +184,12 @@ a{color:inherit;text-decoration:none;}
     <div class="sidebar-card">
       <div class="sidebar-head">AI Security Analysis Taxonomy</div>
       <div class="sidebar-body">
-        <div class="ai-risk-item"><div class="risk-title">Prompt Injection via Tool Calls</div><span class="risk-level">ANALYSIS CATEGORY</span></div>
-        <div class="ai-risk-item"><div class="risk-title">Indirect Injection (RAG poisoning)</div><span class="risk-level">ANALYSIS CATEGORY</span></div>
-        <div class="ai-risk-item"><div class="risk-title">Jailbreak via Roleplay</div><span class="risk-level">ANALYSIS CATEGORY</span></div>
-        <div class="ai-risk-item"><div class="risk-title">Model Inversion Attacks</div><span class="risk-level">ANALYSIS CATEGORY</span></div>
-        <div class="ai-risk-item"><div class="risk-title">LLM Agent Privilege Escalation</div><span class="risk-level">ANALYSIS CATEGORY</span></div>
-        <div class="ai-risk-item"><div class="risk-title">Adversarial Input Evasion</div><span class="risk-level">ANALYSIS CATEGORY</span></div>
+        <div class="ai-risk-item" data-intel-pivot data-filter-query="prompt injection|tool call"><div class="risk-title">Prompt Injection via Tool Calls</div><span class="risk-level">LIVE FEED PIVOT</span><span data-pivot-state>Waiting for current feed</span></div>
+        <div class="ai-risk-item" data-intel-pivot data-filter-query="rag poisoning|indirect injection"><div class="risk-title">Indirect Injection (RAG poisoning)</div><span class="risk-level">LIVE FEED PIVOT</span><span data-pivot-state>Waiting for current feed</span></div>
+        <div class="ai-risk-item" data-intel-pivot data-filter-query="jailbreak|roleplay"><div class="risk-title">Jailbreak via Roleplay</div><span class="risk-level">LIVE FEED PIVOT</span><span data-pivot-state>Waiting for current feed</span></div>
+        <div class="ai-risk-item" data-intel-pivot data-filter-query="model inversion"><div class="risk-title">Model Inversion Attacks</div><span class="risk-level">LIVE FEED PIVOT</span><span data-pivot-state>Waiting for current feed</span></div>
+        <div class="ai-risk-item" data-intel-pivot data-filter-query="agent privilege escalation|llm agent"><div class="risk-title">LLM Agent Privilege Escalation</div><span class="risk-level">LIVE FEED PIVOT</span><span data-pivot-state>Waiting for current feed</span></div>
+        <div class="ai-risk-item" data-intel-pivot data-filter-query="adversarial input|evasion"><div class="risk-title">Adversarial Input Evasion</div><span class="risk-level">LIVE FEED PIVOT</span><span data-pivot-state>Waiting for current feed</span></div>
       </div>
     </div>
     <div class="upgrade-card">
@@ -214,6 +214,7 @@ a{color:inherit;text-decoration:none;}
 </div>
 <script src="/security-engine.js"></script>
 <script src="/soc-triage-workspace.js"></script>
+<script src="/soc-taxonomy-pivots.js"></script>
 <script src="/soc-hybrid-workspace.js"></script>\n<script src="/soc-evidence-drawer.js"></script>\n<script src="/auto-intel-engine.js"></script>
 <script src="/monetization.js" defer></script>
 <script src="/analytics-engine.js" defer></script>
