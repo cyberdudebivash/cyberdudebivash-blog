@@ -95,15 +95,15 @@ const CX_JS = '/customer-experience.js?v=20260928-cx2';
 
 function injectCustomerExperience(html) {
   let out = String(html);
-  out = out.replace(/<html(?![^>]*\\blang=)([^>]*)>/i, '<html lang="en"$1>');
-  if (!/<meta\\s+charset=/i.test(out)) {
+  out = out.replace(/<html(?![^>]*\blang=)([^>]*)>/i, '<html lang="en"$1>');
+  if (!/<meta\s+charset=/i.test(out)) {
     out = out.replace(/<head([^>]*)>/i, '<head$1>\n<meta charset="utf-8">');
   }
   if (!/name=["']viewport["']/i.test(out)) {
     out = out.replace(/<head([^>]*)>/i, '<head$1>\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">');
   } else {
     out = out.replace(
-      /<meta\\s+name=["']viewport["']\\s+content=["'][^"']*["']\\s*\\/?>(?![\\s\\S]*name=["']viewport["'])/i,
+      /<meta\s+name=["']viewport["']\s+content=["'][^"']*["']\s*\/?>/i,
       '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">'
     );
   }
