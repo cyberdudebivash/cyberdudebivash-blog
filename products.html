@@ -502,6 +502,19 @@
   <button class="filter-tab" onclick="filterProducts('automation', this)">Automation</button>
 </div>
 
+<section style="max-width:1200px;margin:28px auto 0;padding:0 20px">
+  <div style="background:#08131d;border:1px solid rgba(0,255,224,.28);border-radius:14px;padding:20px">
+    <div style="font-size:11px;font-weight:900;letter-spacing:.14em;color:#00ffe0;margin-bottom:7px">ACTIVE PURCHASE PATHS</div>
+    <div style="font-size:20px;font-weight:900;margin-bottom:7px">Buy only what is currently verified deliverable.</div>
+    <p style="color:#94a3b8;line-height:1.6;margin:0 0 14px">Certified premium intelligence reports and recurring SOC/API subscriptions have active commerce paths. Legacy standalone bundles remain inquiry-only until their exact downloadable artifacts pass deliverability verification; the platform will not accept payment for an unverified artifact.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a class="btn-buy-gold" href="/intelligence-store.html">Browse Certified Intelligence →</a>
+      <a class="btn-buy" href="/pricing.html">View SOC/API Plans →</a>
+      <a class="btn-outline" href="/leads.html?intent=product-evaluation">Request Product Guidance →</a>
+    </div>
+  </div>
+</section>
+
 <!-- PRODUCTS GRID -->
 <section class="products-section">
   <div class="section-title">🔥 MOST POPULAR</div>
@@ -1016,17 +1029,14 @@ async function submitCheckout() {
   }
 }
 
-/* ── Post-checkout banner (checkout-flow success_url / cancel_url redirect) ── */
+/* Legacy standalone checkout is intentionally inactive.
+   Premium certified reports and subscriptions have separate active commerce paths. */
 (function () {
   const params = new URLSearchParams(window.location.search);
   const status = params.get('checkout');
   const banner = document.getElementById('checkoutBanner');
   if (!banner || !status) return;
-  if (status === 'success') {
-    banner.innerHTML = '<section class="checkout-banner success"><div class="cb-inner">✅ Payment received — thank you! Your deliverable will be emailed to you shortly (typically within a few hours).</div></section>';
-  } else if (status === 'cancelled') {
-    banner.innerHTML = '<section class="checkout-banner cancelled"><div class="cb-inner">⚠️ Checkout was cancelled — no charge was made. You can try again anytime.</div></section>';
-  }
+  banner.innerHTML = '<section class="checkout-banner cancelled"><div class="cb-inner">Standalone legacy checkout is no longer an active payment path. No purchase is inferred from this URL. Use Certified Intelligence or Subscription Plans above.</div></section>';
 })();
 </script>
 <script src="/ai-monetization-engine.js" defer></script>
