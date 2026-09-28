@@ -290,7 +290,7 @@
 
     var featBadge = document.createElement('div');
     featBadge.className = 'rcb-card-featured-badge';
-    featBadge.textContent = intentLevel === 'high' ? '\u2605 RECOMMENDED FOR YOU' : 'MOST POPULAR';
+    featBadge.textContent = intentLevel === 'high' ? '\u2605 RECOMMENDED FOR YOUR SESSION' : 'PLAN OPTION';
     featured.insertBefore(featBadge, featured.firstChild);
 
     // Urgency badge on featured card for high/medium intent
