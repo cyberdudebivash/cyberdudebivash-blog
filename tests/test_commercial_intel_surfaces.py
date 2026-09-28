@@ -564,3 +564,46 @@ def test_cloudflare_release_fail_closes_on_soc2_cti_customer_assurance():
     ]:
         assert required in workflow
 
+def test_homepage_is_soc2_cti_customer_command_center_and_not_static_incident_marketing():
+    html = Path("index.html").read_text(encoding="utf-8-sig")
+    for required in [
+        "Hybrid SOC + CTI · Customer Control Plane",
+        "Operational trust before analyst action.",
+        "/customer-assurance.html",
+        "ALIGNED · NOT CERTIFIED",
+        "SOURCE-BOUND",
+        "Synthetic Telemetry",
+        "DISABLED",
+        "Search intelligence",
+        "CISA KEV",
+        "<b>Priority</b> = analyst workflow ordering",
+        'id="homepage-feed-state">VERIFYING',
+        'id="homepage-priority-runtime">VERIFYING',
+        "Open Hybrid SOC + CTI operational workspace",
+        "Evidence-Bound · Runtime Verified",
+    ]:
+        assert required in html
+
+    for forbidden in [
+        "Qilin/LockBit 4.0 Active — 67 Victims April",
+        "Nation-State APT Tracking in Real Time",
+        "Ransomware Group Activity — Live Updates",
+        "FEED STATUS: <strong>SHOWN BELOW</strong>",
+    ]:
+        assert forbidden not in html
+
+
+def test_cloudflare_release_certifies_homepage_soc2_cti_command_center():
+    workflow = Path(".github/workflows/cloudflare-production-deploy.yml").read_text(encoding="utf-8")
+    for required in [
+        "'index.html'",
+        'fetch_page "/"',
+        "Hybrid SOC + CTI · Customer Control Plane",
+        "Operational trust before analyst action.",
+        "ALIGNED · NOT CERTIFIED",
+        "SOURCE-BOUND",
+        "Synthetic Telemetry",
+        "customer-assurance.html",
+    ]:
+        assert required in workflow
+

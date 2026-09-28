@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
     paths:
+      - 'index.html'
       - 'intel/**'
       - 'malware/**'
       - 'ai-security/**'
@@ -223,6 +224,39 @@ jobs:
 
           echo "PRODUCTION_DEPLOYMENT_VERIFIED_SHA=$GITHUB_SHA"
           echo "Hybrid SOC + CTI PRO console is live on all three customer surfaces."
+
+      - name: "Certify SOC 2 + CTI homepage command center"
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://blog.cyberdudebivash.in"
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+
+          fetch_page() {
+            local route="$1"
+            local file="$2"
+            local code=""
+            for attempt in 1 2 3 4 5 6; do
+              code="$(curl -sS -L --max-time 25 -H 'Cache-Control: no-cache' -o "$file" -w '%{http_code}' "$base$route?release_sha=$GITHUB_SHA" || true)"
+              if [ "$code" = "200" ]; then break; fi
+              echo "Waiting for homepage propagation: $route attempt $attempt status=$code"
+              sleep 10
+            done
+            test "$code" = "200" || { echo "::error::$route returned HTTP $code"; exit 1; }
+          }
+
+          fetch_page "/" "$tmp/home.html"
+          grep -Fq 'Hybrid SOC + CTI · Customer Control Plane' "$tmp/home.html" || { echo "::error::Homepage SOC + CTI command center missing"; exit 1; }
+          grep -Fq 'Operational trust before analyst action.' "$tmp/home.html" || { echo "::error::Homepage operational hierarchy missing"; exit 1; }
+          grep -Fq 'ALIGNED · NOT CERTIFIED' "$tmp/home.html" || { echo "::error::Homepage SOC 2 truth boundary missing"; exit 1; }
+          grep -Fq 'SOURCE-BOUND' "$tmp/home.html" || { echo "::error::Homepage intelligence integrity state missing"; exit 1; }
+          grep -Fq 'Synthetic Telemetry' "$tmp/home.html" || { echo "::error::Homepage synthetic telemetry disclosure missing"; exit 1; }
+          grep -Fq '/customer-assurance.html' "$tmp/home.html" || { echo "::error::Homepage assurance navigation missing"; exit 1; }
+          ! grep -Fq 'Qilin/LockBit 4.0 Active — 67 Victims April' "$tmp/home.html" || { echo "::error::Stale hardcoded incident assertion remains on homepage"; exit 1; }
+          ! grep -Fq 'Nation-State APT Tracking in Real Time' "$tmp/home.html" || { echo "::error::Unsupported real-time APT claim remains"; exit 1; }
+
+          echo "SOC 2 + CTI homepage command center certified on $GITHUB_SHA"
 
       - name: "Certify SOC 2 + CTI customer assurance"
         shell: bash
