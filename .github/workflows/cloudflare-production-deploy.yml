@@ -252,6 +252,11 @@ jobs:
           grep -Fq 'ALIGNED · NOT CERTIFIED' "$tmp/home.html" || { echo "::error::Homepage SOC 2 truth boundary missing"; exit 1; }
           grep -Fq 'SOURCE-BOUND' "$tmp/home.html" || { echo "::error::Homepage intelligence integrity state missing"; exit 1; }
           grep -Fq 'Synthetic Telemetry' "$tmp/home.html" || { echo "::error::Homepage synthetic telemetry disclosure missing"; exit 1; }
+          grep -Fq 'Live CTI operational metrics' "$tmp/home.html" || { echo "::error::Homepage live CTI metrics missing"; exit 1; }
+          grep -Fq 'Production Control Evidence' "$tmp/home.html" || { echo "::error::Homepage production control evidence missing"; exit 1; }
+          grep -Fq 'id="soc2-kev-count"' "$tmp/home.html" || { echo "::error::Homepage CISA KEV runtime metric missing"; exit 1; }
+          grep -Fq 'id="soc2-pipeline-age"' "$tmp/home.html" || { echo "::error::Homepage runtime-derived freshness missing"; exit 1; }
+          grep -Fq 'Exact Git SHA → Cloudflare deployment' "$tmp/home.html" || { echo "::error::Homepage deployment integrity evidence missing"; exit 1; }
           grep -Fq '/customer-assurance.html' "$tmp/home.html" || { echo "::error::Homepage assurance navigation missing"; exit 1; }
           grep -Fq 'Evidence-Bound Analyst Queues' "$tmp/home.html" || { echo "::error::Evidence-bound analyst queues missing"; exit 1; }
           grep -Fq 'No synthetic victim counters' "$tmp/home.html" || { echo "::error::Homepage synthetic victim-counter policy missing"; exit 1; }
