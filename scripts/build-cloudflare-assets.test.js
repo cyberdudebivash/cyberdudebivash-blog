@@ -4,7 +4,7 @@ const { test, describe, after } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { build, countFiles, OUT, HEADERS_FILE_CONTENT } = require('./build-cloudflare-assets');
+const { build, countFiles, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure } = require('./build-cloudflare-assets');
 
 // Mirrors Cloudflare's own documented splat semantics for a _headers
 // pattern: "a splat pattern -- signified by an asterisk (*) -- will
@@ -95,6 +95,17 @@ function walk(dir) {
   }
   return out;
 }
+
+test('customer experience injector handles valid HTML and malformed public HTML is rejected', () => {
+  const valid = '<!doctype html><html><head><title>x</title></head><body><main>x</main></body></html>';
+  const injected = injectCustomerExperience(valid);
+  assert.match(injected, /customer-experience\.css\?v=20260928-cx1/);
+  assert.match(injected, /customer-experience\.js\?v=20260928-cx1/);
+  assert.throws(
+    () => validatePublicHtmlStructure('<html><head><style>truncated', 'broken.html'),
+    /Malformed public HTML: broken\.html/
+  );
+});
 
 describe('build-cloudflare-assets', () => {
   let outputFiles;
