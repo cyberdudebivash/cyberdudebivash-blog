@@ -2,51 +2,27 @@
   "platform": "CYBERDUDEBIVASH SENTINEL APEX — AI Security Intelligence Division",
   "endpoint": "/api/intel/ai-security.json",
   "doctrine": "Sentinel-APEX/prompts/ai-security-master-prompt.md",
-  "generated": "2026-09-28T13:41:11.042Z",
+  "generated": "2026-09-28T20:30:15.781Z",
   "disclaimer": "Evidence-graded AI security intelligence. Confidence and evidence labels attached per item. Community leads are corroborated before publication.",
   "stats": {
-    "published": 16,
+    "published": 17,
     "p1": 2,
-    "leadsHeld": 2,
+    "leadsHeld": 4,
     "analystReports": 0,
     "sourcesOk": 5,
     "sourcesTotal": 6,
     "sourceHealth": [
       {
-        "name": "r/MachineLearning",
-        "key": "reddit_ml",
+        "name": "r/netsec",
+        "key": "reddit_ns",
         "tier": 3,
         "status": "degraded",
         "items": 0,
         "error": "HTTP 429"
       },
       {
-        "name": "r/netsec",
-        "key": "reddit_ns",
-        "tier": 3,
-        "status": "ok",
-        "items": 25,
-        "error": null
-      },
-      {
         "name": "NVD (prompt injection)",
         "key": "nvd_pi",
-        "tier": 1,
-        "status": "ok",
-        "items": 40,
-        "error": null
-      },
-      {
-        "name": "GitHub Security Advisories",
-        "key": "ghsa",
-        "tier": 1,
-        "status": "ok",
-        "items": 60,
-        "error": null
-      },
-      {
-        "name": "NVD (AI/LLM keyword)",
-        "key": "nvd_ai",
         "tier": 1,
         "status": "ok",
         "items": 40,
@@ -59,9 +35,33 @@
         "status": "ok",
         "items": 30,
         "error": null
+      },
+      {
+        "name": "NVD (AI/LLM keyword)",
+        "key": "nvd_ai",
+        "tier": 1,
+        "status": "ok",
+        "items": 40,
+        "error": null
+      },
+      {
+        "name": "r/MachineLearning",
+        "key": "reddit_ml",
+        "tier": 3,
+        "status": "ok",
+        "items": 25,
+        "error": null
+      },
+      {
+        "name": "GitHub Security Advisories",
+        "key": "ghsa",
+        "tier": 1,
+        "status": "ok",
+        "items": 60,
+        "error": null
       }
     ],
-    "runtimeMs": 1769
+    "runtimeMs": 1322
   },
   "frameworks": {
     "owasp_llm_top10": {
@@ -88,7 +88,7 @@
       "AML.T0057": "LLM Data Leakage"
     }
   },
-  "count": 16,
+  "count": 17,
   "items": [
     {
       "id": "24523da833a2c9ae",
@@ -435,6 +435,62 @@
       "detection": {
         "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
         "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
+      },
+      "has_analyst_report": false
+    },
+    {
+      "id": "d2cefd7a4ee020c4",
+      "title": "code-ollama: `grep_search` Command Injection via Unescaped `$()` Shell Substitution (CWE-78)",
+      "url": "https://github.com/advisories/GHSA-456v-xq2p-r4cj",
+      "source": "GitHub Security Advisories",
+      "tier": 1,
+      "published": "2026-09-28T13:59:43Z",
+      "cve": null,
+      "severity": "high",
+      "cvss": null,
+      "evidence_label": "VERIFIED_ADVISORY",
+      "categories": [
+        {
+          "id": "infra",
+          "label": "AI Infrastructure / Inference Server"
+        }
+      ],
+      "owasp_llm": [
+        {
+          "id": "LLM05",
+          "name": "Supply Chain Vulnerabilities"
+        }
+      ],
+      "mitre_atlas": [
+        {
+          "id": "AML.T0010",
+          "name": "ML Supply Chain Compromise"
+        }
+      ],
+      "agent_risk": {
+        "flags": {
+          "agentic": false,
+          "mcp": false,
+          "rag": false,
+          "tool_use": false,
+          "supply_chain": false
+        },
+        "level": "standard"
+      },
+      "enterprise_impact": {
+        "score": 28,
+        "priority": "P3"
+      },
+      "confidence": {
+        "source": "HIGH",
+        "evidence": "MODERATE",
+        "overall": "HIGH",
+        "rationale": "Authoritative source (GitHub Security Advisories)."
+      },
+      "corroboration": 1,
+      "detection": {
+        "detect": "Expose-check inference servers (Triton/vLLM/Ollama/MLflow/Ray) for unauthenticated management endpoints.",
+        "hunt": "Shodan/asset-inventory sweep for AI infra bound to 0.0.0.0 without auth."
       },
       "has_analyst_report": false
     },
