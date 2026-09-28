@@ -605,8 +605,90 @@ function renderActions(actions) {
   return actions.map(a => `<div class="action-item"><span class="action-check">✓</span><div><div>${esc(a.action)}</div><div class="rel-meta">${esc(a.rationale)}</div></div></div>`).join('');
 }
 
+let currentDossierContext = { type: null, id: null };
+
+function downloadBlob(filename, content, mime) {
+  const blob = content instanceof Blob ? content : new Blob([content], { type: mime || 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+async function downloadCurrentDossier() {
+  const ctx = currentDossierContext;
+  const status = document.getElementById('export-status');
+  if (!sessionKey || !ctx.type || !ctx.id) return;
+  try {
+    const res = await fetch(`${API}/api/v1/intel?action=dossier&type=${encodeURIComponent(ctx.type)}&id=${encodeURIComponent(ctx.id)}`, {
+      headers: { 'X-API-Key': sessionKey },
+    });
+    const body = await res.json();
+    if (!res.ok || !body.success) throw new Error((body.error && body.error.message) || 'Dossier export failed.');
+    downloadBlob(`sentinel-apex-${ctx.type}-${ctx.id}.json`, JSON.stringify(body.dossier, null, 2), 'application/json');
+    if (status) status.textContent = 'Dossier JSON exported from the authenticated canonical response.';
+  } catch (e) {
+    if (status) status.textContent = e.message;
+  }
+}
+
+async function downloadCurrentDetectionPack() {
+  const ctx = currentDossierContext;
+  const status = document.getElementById('export-status');
+  if (!sessionKey || !ctx.type || !ctx.id) return;
+  try {
+    const res = await fetch(`${API}/api/v1/intel?action=detection-pack&type=${encodeURIComponent(ctx.type)}&id=${encodeURIComponent(ctx.id)}`, {
+      headers: { 'X-API-Key': sessionKey },
+    });
+    const body = await res.json();
+    if (!res.ok || !body.success) throw new Error((body.error && body.error.message) || 'Detection pack is not available for this record.');
+    downloadBlob(`sentinel-apex-detection-pack-${ctx.id}.json`, JSON.stringify(body, null, 2), 'application/json');
+    if (status) status.textContent = 'Detection pack exported from the authenticated detection API.';
+  } catch (e) {
+    if (status) status.textContent = e.message;
+  }
+}
+
+async function copyCurrentApiCommand() {
+  const ctx = currentDossierContext;
+  const status = document.getElementById('export-status');
+  if (!ctx.type || !ctx.id) return;
+  const cmd = `curl -H "X-API-Key: YOUR_SENTINEL_KEY" "${API}/api/v1/intel?action=dossier&type=${encodeURIComponent(ctx.type)}&id=${encodeURIComponent(ctx.id)}"`;
+  try {
+    await navigator.clipboard.writeText(cmd);
+    if (status) status.textContent = 'API request copied to clipboard.';
+  } catch (e) {
+    if (status) status.textContent = 'Copy failed. Use the API Reference for the same dossier endpoint.';
+  }
+}
+
+function applyWorkflowFocus() {
+  const params = new URLSearchParams(window.location.search);
+  const focus = params.get('focus');
+  const target = {
+    overview: 'dossier-overview',
+    investigate: 'dossier-overview',
+    hunt: 'dossier-attack',
+    attack: 'dossier-attack',
+    detections: 'dossier-detections',
+    watch: 'watch-btn-container',
+    export: 'dossier-export',
+    evidence: 'dossier-evidence',
+  }[focus];
+  if (!target) return;
+  window.setTimeout(() => {
+    const el = document.getElementById(target);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
+
 function renderDossier(d, type) {
   clearStatus();
+  currentDossierContext = { type, id: d.entity_id };
   const isCve = d.entity_type === 'cve';
   const sev = isCve ? d.risk.threat_level : d.risk.severity;
 
@@ -631,7 +713,7 @@ function renderDossier(d, type) {
   `;
 
   document.getElementById('dossier-root').innerHTML = `
-    <div class="card">
+    <div class="card" id="dossier-overview">
       <div class="entity-header">
         <h2 class="entity-id">${esc(d.entity_id)}</h2>
         <span class="badge ${sevClass(sev)}">${esc(sev || 'UNKNOWN')}</span>
@@ -644,55 +726,66 @@ function renderDossier(d, type) {
       <div class="stat-grid">${riskStats}</div>
       <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
         <a href="${API}/api/v1/intel?action=graph" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">View Threat Graph ↗</a>
-        <span id="watch-btn-container"></span>
+        <span id="watch-btn-container" data-workflow-anchor="watch"></span>
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" id="dossier-relationships">
       <h3 class="card-title">Relationships <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--apex-muted)">campaigns: ${d.relationships.counts.campaigns} · actors: ${d.relationships.counts.actors} · CVEs: ${d.relationships.counts.cves}</span></h3>
       <div class="rel-section"><h4>Related Campaigns</h4>${renderRelationshipList(d.relationships.related_campaigns, 'campaign')}</div>
       <div class="rel-section"><h4>Threat Actors</h4>${renderRelationshipList(d.relationships.related_actors, 'actor')}</div>
       <div class="rel-section"><h4>Related CVEs</h4>${renderRelationshipList(d.relationships.related_cves, 'CVE')}</div>
     </div>
 
-    <div class="card">
+    <div class="card" id="dossier-evidence">
       <h3 class="card-title">Evidence</h3>
       ${renderEvidence(d.evidence)}
     </div>
 
-    <div class="card">
+    <div class="card" id="dossier-timeline">
       <h3 class="card-title">Timeline</h3>
       ${renderTimeline(d.timeline)}
     </div>
 
-    <div class="card">
+    <div class="card" id="dossier-attack">
       <h3 class="card-title">ATT&amp;CK Context</h3>
       ${renderTechniques(d.attack_context)}
     </div>
 
-    <div class="card">
+    <div class="card" id="dossier-detections">
       <h3 class="card-title">Detection Coverage</h3>
       <div id="detections-root">${d.detections.available || (d.detections.coverage && d.detections.coverage.observed_techniques)
         ? '<div class="loading"><div class="spinner"></div>Loading detection coverage…</div>'
         : `<div class="empty-state">${esc(d.detections.note || 'No detection artifact currently available for this record.')}</div>`}</div>
     </div>
 
-    <div class="card">
+    <div class="card" id="dossier-defense">
       <h3 class="card-title">Your Defense Coverage</h3>
       <div id="defense-coverage-root"><div class="loading"><div class="spinner"></div>Loading your environment-specific coverage…</div></div>
     </div>
 
-    <div class="card">
+    <div class="card" id="dossier-reports">
       <h3 class="card-title">Related Reports</h3>
       ${renderReports(d.reports)}
     </div>
 
-    <div class="card">
+    <div class="card" id="dossier-actions">
       <h3 class="card-title">Analyst Actions</h3>
       ${renderActions(d.analyst_actions)}
     </div>
 
-    <div class="card">
+    <div class="card" id="dossier-export">
+      <h3 class="card-title">Export &amp; Integrations</h3>
+      <p class="rel-meta" style="margin-bottom:12px">Exports are generated from this authenticated dossier context. No placeholder or synthetic artifact is produced.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="downloadCurrentDossier()">Download Dossier JSON</button>
+        <button class="btn btn-secondary" onclick="downloadCurrentDetectionPack()">Download Detection Pack JSON</button>
+        <button class="btn btn-secondary" onclick="copyCurrentApiCommand()">Copy API Request</button>
+      </div>
+      <div id="export-status" class="rel-meta" style="margin-top:10px"></div>
+    </div>
+
+    <div class="card" id="dossier-quality">
       <h3 class="card-title">Data Quality</h3>
       <div class="stat-grid">
         <div class="stat-box"><div class="stat-val">${esc(d.data_quality.evidence_coverage)}</div><div class="stat-lbl">Evidence Coverage</div></div>
@@ -703,6 +796,7 @@ function renderDossier(d, type) {
       <div class="rel-meta" style="margin-top:12px">Generated ${esc(d.generated_at)}${d.data_updated_at ? ' · canonical data updated ' + esc(d.data_updated_at) : ''}</div>
     </div>
   `;
+  applyWorkflowFocus();
 }
 
 // Deep-link support: ?type=cve&id=CVE-2024-12345 (from a search-result "Open Dossier" pivot).
@@ -716,7 +810,7 @@ function renderDossier(d, type) {
   }
   if (id) document.getElementById('lookup-id').value = id;
   if (type && id) {
-    showStatus('<div class="alert alert-info">Enter your API key above, then press Open Dossier to load this record.</div>');
+    showStatus('<div class="alert alert-info">Enter your API key above, then press Open Dossier to continue this selected workflow.</div>');
   }
 })();
 </script>
