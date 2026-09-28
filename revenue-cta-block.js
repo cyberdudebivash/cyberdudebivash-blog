@@ -425,7 +425,7 @@
             '<div class="rcb-card-icon">\uD83C\uDFE2</div>' +
             '<div class="rcb-card-title">Enterprise Platform</div>' +
             '<div class="rcb-card-sub">' +
-              'White-label feeds, SLA-backed data, dedicated analyst support, and custom detection engineering.' +
+              'White-label delivery options, source-bound data, dedicated analyst support, and contract-scoped detection engineering.' +
             '</div>' +
             '<div class="rcb-card-price">Custom pricing</div>' +
             '<a href="' + LINKS.enterprise + '" class="rcb-card-btn outline" data-track="rcb_enterprise_click">' +
