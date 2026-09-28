@@ -89,6 +89,7 @@ const DIRECT_API_HANDLERS = new Set([
   'api/v1/analysis/findings',
   'api/v1/billing/gumroad-webhook',
   'api/v1/billing/razorpay-webhook',
+  'api/v1/customer/assurance',
   'api/v1/customer/dashboard',
   'api/v1/customer/download',
   'api/v1/detections/rules',
