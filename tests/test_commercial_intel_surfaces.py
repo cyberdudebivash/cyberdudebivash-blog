@@ -65,6 +65,40 @@ def main():
             failures.append(f"{surface}: hybrid SOC/CTI console missing")
         if "no certification claim" not in page.lower():
             failures.append(f"{surface}: SOC 2 non-certification disclosure missing")
+    # P0 full SOC 2 / CTI customer-release package: these checks execute in
+    # the production workflow's direct python invocation, not only under pytest.
+    required_release_files = [
+        Path("customer-assurance.html"),
+        Path("service-status.html"),
+        Path("enterprise-onboarding.html"),
+        Path("cti-delivery-acceptance.html"),
+        Path("api/intel/customer-assurance.json"),
+        Path("api/intel/service-assurance.json"),
+        Path("api/intel/cti-delivery-acceptance.json"),
+        Path("api/v1/customer/assurance.js"),
+    ]
+    for release_file in required_release_files:
+        if not release_file.exists():
+            failures.append(f"{release_file}: required customer-release artifact missing")
+
+    enterprise = Path("enterprise.html").read_text(encoding="utf-8-sig")
+    for forbidden in [
+        "99.9% SLA UPTIME", "99.9% uptime SLA", "Sub-100ms latency",
+        "Low FP guarantee", "4-hour emergency response SLA",
+        "24–72 hours before public disclosure", "Pre-disclosure CVE access",
+        "Early CVE disclosure access", "4-hour emergency SLA",
+        "FORTUNE 500 READY", "SLA-backed CVE data", "SLA guarantees",
+    ]:
+        if forbidden.lower() in enterprise.lower():
+            failures.append(f"enterprise.html: unsupported assurance/commercial claim remains: {forbidden}")
+
+    service = json.loads(Path("api/intel/service-assurance.json").read_text(encoding="utf-8"))
+    acceptance = json.loads(Path("api/intel/cti-delivery-acceptance.json").read_text(encoding="utf-8"))
+    if service.get("historical_uptime_percentage") is not None or service.get("historical_uptime_claimed") is not False:
+        failures.append("api/intel/service-assurance.json: historical uptime must fail closed without measured history")
+    if acceptance.get("automatic_acceptance") is not False or len(acceptance.get("criteria", [])) != 10:
+        failures.append("api/intel/cti-delivery-acceptance.json: acceptance contract must require 10 explicit customer criteria")
+
     if failures:
         raise SystemExit("\n".join(failures))
     print("commercial-intel-surface-integrity: PASS")
