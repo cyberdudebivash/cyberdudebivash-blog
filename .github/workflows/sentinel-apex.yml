@@ -1,5 +1,9 @@
 name: "⚡ SENTINEL APEX v5.0 — High-Frequency Global Intel Pipeline"
 on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/sentinel-apex.yml'
   schedule:
     # Runs every 30 min, offset to :03/:33. GitHub Actions documents that
     # scheduled (cron) triggers can be delayed or dropped during periods of
@@ -40,15 +44,15 @@ jobs:
 
     steps:
       - name: "Checkout repository"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 1
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "Setup Node.js"
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: "Pre-flight: verify engine"
         run: |
