@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-28T08:26:38.529Z",
+  "generated": "2026-09-28T15:23:17.374Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -8,8 +8,54 @@
   "endpoint": "/api/intel/raw.json",
   "description": "Raw unfiltered S2N feed — all items including suppressed. Enterprise tier.",
   "note": "Access requires Enterprise API key. Includes suppression_reason and full IOC data.",
-  "count": 102,
+  "count": 105,
   "items": [
+    {
+      "id": "GHSA-6c1310c76d983b04",
+      "title": "code-ollama: `grep_search` Command Injection via Unescaped `$()` Shell Substitution (CWE-78)",
+      "description": "## `grep_search` Command Injection via Unescaped `$()` Shell Substitution (CWE-78) ### Summary The `grep_search` tool in `code-ollama` constructs a shell command string by interpolating attacker-controlled `pattern` and `path` arguments, then executes it via `child_process.exec()`. The sanitization ",
+      "cvss": 7.8,
+      "final_ps": 59,
+      "quality_score": 0.548,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-28",
+      "last_seen": "2026-09-28",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "code-ollama",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-456v-xq2p-r4cj",
+        "https://github.com/ai-action/code-ollama/security/advisories/GHSA-456v-xq2p-r4cj",
+        "https://github.com/advisories/GHSA-456v-xq2p-r4cj"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.547"
+        ],
+        "priority": [
+          "base_ps=59 (no boosts)"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "iocs": []
+    },
     {
       "id": "CVE-2026-50522",
       "title": "Critical SharePoint RCE CVE-2026-50522 Under Active Exploitation After Public PoC",
@@ -429,6 +475,188 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-100368",
+      "title": "CliInvoke.Specializations has command injection in PowerShell and Cmd shell wrappers",
+      "description": "Impact\nAn OS command injection vulnerability exists in the PowerShell and Cmd shell wrappers provided by the CliInvoke.Specializations package (the PowershellProcessInvoker/CmdProcessInvoker invokers, and the UsePowerShell/UseCmd middleware in v3 pre-release versions).\n\nThe wrapp... [Full analysis a",
+      "cvss": 8.4,
+      "final_ps": 44,
+      "quality_score": 0.458,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-25",
+      "last_seen": "2026-09-25",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-100368"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-wrvw-254r-wpmv"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=2d (score=0.65)",
+          "QS=0.458"
+        ],
+        "priority": [
+          "base_ps=44 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-100369",
+      "title": "CliInvoke: Argument Injection in Extensibility Runner Factory",
+      "description": "Impact\nAn argument-injection vulnerability exists in the CliInvoke\npackage's runner factory: RunnerProcessFactory on the 2.x line and\nRunnerConfigurationFactory on the 3.x line.\n\nThe factory joins the runner arguments, the caller's target, and the\ncaller's arguments into a single... [Full analysis a",
+      "cvss": 8.4,
+      "final_ps": 44,
+      "quality_score": 0.458,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-25",
+      "last_seen": "2026-09-25",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-100369"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-j73w-8hfr-4gc9"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=2d (score=0.65)",
+          "QS=0.458"
+        ],
+        "priority": [
+          "base_ps=44 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-57443",
+      "title": "SCBE-AETHERMOORE Unauthenticated AetherBrowser Ops API Exposes Operator Email Digests",
+      "description": "Summary\n\nThe AetherBrowser API server (scripts/aetherbrowser/api_server.py) exposes the POST /api/ops/check-email endpoint without any authentication. Any remote attacker can call this endpoint and trigger execution of the email_reader.py subprocess, which connects to configured ... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 42,
+      "quality_score": 0.458,
+      "threat_level": "LOW",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-25",
+      "last_seen": "2026-09-25",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-57443"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-q986-4x7x-gx39"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=2d (score=0.65)",
+          "QS=0.458"
+        ],
+        "priority": [
+          "base_ps=42 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "KREBSONSECURITY-dbfccb4427ccdaa7",
+      "title": "Dutch Police Arrest ‘Reformed’ Hacker in Shiny Hunters Investigation",
+      "description": "Authorities in the Netherlands have arrested a 23-year-old convicted cybercriminal on suspicion of aiding in data thefts and extortions by the prolific hacker group ShinyHunters. In the days immediately following the suspect's arrest, remaining ShinyHunters members dramatically escalated their attac",
+      "cvss": 0,
+      "final_ps": 42,
+      "quality_score": 0.415,
+      "threat_level": "LOW",
+      "type": "RANSOMWARE",
+      "source": "krebsonsecurity",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "krebsonsecurity"
+      ],
+      "first_seen": "2026-09-28",
+      "last_seen": "2026-09-28",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": true,
+      "vendor": "KrebsOnSecurity",
+      "product": "Threat Intelligence",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://krebsonsecurity.com/2026/09/dutch-police-arrest-reformed-hacker-in-shiny-hunters-investigation/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.70 (krebsonsecurity)",
+          "data_confidence=0.65",
+          "recency=0d (score=1.00)",
+          "QS=0.415"
+        ],
+        "priority": [
+          "+10 ransomware_confirmed"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "iocs": []
+    },
+    {
       "id": "CVE-2026-54121",
       "title": "PoC exploit released for critical AD CS domain-takeover flaw (CVE-2026-54121)",
       "description": "",
@@ -608,52 +836,6 @@
       },
       "suppressed": true,
       "suppression_reason": "Single-source item with no CVE IDs or IOCs",
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-61823",
-      "title": "code16 Sharp vulnerable to stored XSS via iframe srcdoc Attribute",
-      "description": "Impact\nA Stored Cross-Site Scripting (XSS) vulnerability exists in the rich text editor due to improper sanitization of the srcdoc attribute on <iframe> elements.\n\nWhile the underlying Symfony HtmlSanitizer correctly HTML-encodes special characters inside the attribute value (e.g... [Full analysis a",
-      "cvss": 7.3,
-      "final_ps": 41,
-      "quality_score": 0.458,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-25",
-      "last_seen": "2026-09-25",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61823"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-qxg3-46rw-79j8"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=2d (score=0.65)",
-          "QS=0.458"
-        ],
-        "priority": [
-          "base_ps=41 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
       "iocs": []
     },
     {
@@ -1479,50 +1661,6 @@
       },
       "suppressed": false,
       "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "SENTINELAPEX-a29b7472faa5",
-      "title": "Exploit.in Database Reveals the Roots of Today’s Ransomware Ecosystem",
-      "description": "Exploit.in data shows how a 2005 cybercrime forum helped shape today&#8217;s ransomware ecosystem, with users and practices surviving for decades. Ransomnews researcher Dancho Danchev dug up a database dump of Exploit.in covering its first three years, from February 2005 to May 2... [Full analysis a",
-      "cvss": 0,
-      "final_ps": 40,
-      "quality_score": 0.378,
-      "threat_level": "LOW",
-      "type": "RANSOMWARE",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-26",
-      "last_seen": "2026-09-26",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": true,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://securityaffairs.com/199800/cyber-crime/exploit-in-database-reveals-the-roots-of-todays-ransomware-ecosystem.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.35",
-          "recency=1d (score=0.85)",
-          "QS=0.378"
-        ],
-        "priority": [
-          "+10 ransomware_confirmed"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
       "iocs": []
     },
     {
@@ -3201,6 +3339,52 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-93539",
+      "title": "CVE-2026-93539 Unauthenticated GitRepo Spec Mutation via Fleet Git Webhook Receiver",
+      "description": "",
+      "cvss": 9.1,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-28",
+      "last_seen": "2026-09-28",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-93539"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://vulners.com/cve/CVE-2026-93539?utm_source=rss&utm_medium=rss&utm_campaign=rss"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
       "id": "CVE-2026-101065",
       "title": "CVE-2026-101065 - Obot Quickstart Docker Deployment Unauthenticated Admin Access",
       "description": "",
@@ -4311,10 +4495,10 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-86439",
-      "title": "Knowns Unrestricted Path Traversal leading to out-of-bounds arbitrary .md file read, write, and deletion in MCP Docs + M",
+      "id": "CVE-2026-57440",
+      "title": "Mediawiki EmbedVideo Extension has stored XSS via malformed src url with $wgEmbedVideoRequireConsent disabled",
       "description": "",
-      "cvss": 8.8,
+      "cvss": 7.5,
       "final_ps": 18,
       "quality_score": 0.438,
       "threat_level": "LOW",
@@ -4333,57 +4517,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-86439"
+        "CVE-2026-57440"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-9gfj-28hw-jchp"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-61825",
-      "title": "code16/sharp has a stored XSS via data-html-content Sanitizer Bypass",
-      "description": "",
-      "cvss": 8.7,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-25",
-      "last_seen": "2026-09-25",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61825"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-vj3q-vp3g-j9c8"
+        "https://github.com/advisories/GHSA-v65j-hff3-753c"
       ],
       "explanation": {
         "quality": [
@@ -4495,10 +4633,10 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-100368",
-      "title": "CliInvoke.Specializations has command injection in PowerShell and Cmd shell wrappers",
+      "id": "CVE-2026-61823",
+      "title": "code16 Sharp vulnerable to stored XSS via iframe srcdoc Attribute",
       "description": "",
-      "cvss": 8.4,
+      "cvss": 7.3,
       "final_ps": 18,
       "quality_score": 0.438,
       "threat_level": "LOW",
@@ -4517,11 +4655,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-100368"
+        "CVE-2026-61823"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-wrvw-254r-wpmv"
+        "https://github.com/advisories/GHSA-qxg3-46rw-79j8"
       ],
       "explanation": {
         "quality": [
@@ -4541,10 +4679,10 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-100369",
-      "title": "CliInvoke: Argument Injection in Extensibility Runner Factory",
+      "id": "CVE-2026-86439",
+      "title": "Knowns Unrestricted Path Traversal leading to out-of-bounds arbitrary .md file read, write, and deletion in MCP Docs + M",
       "description": "",
-      "cvss": 8.4,
+      "cvss": 8.8,
       "final_ps": 18,
       "quality_score": 0.438,
       "threat_level": "LOW",
@@ -4563,11 +4701,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-100369"
+        "CVE-2026-86439"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-j73w-8hfr-4gc9"
+        "https://github.com/advisories/GHSA-9gfj-28hw-jchp"
       ],
       "explanation": {
         "quality": [
@@ -4587,21 +4725,21 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-57443",
-      "title": "SCBE-AETHERMOORE Unauthenticated AetherBrowser Ops API Exposes Operator Email Digests",
+      "id": "CVE-2026-101067",
+      "title": "CVE-2026-101067 - dbgate save-uploaded-file Endpoint files.js saveUploadedFile path traversal",
       "description": "",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
+      "cvss": 6.5,
+      "final_ps": 16,
+      "quality_score": 0.398,
       "threat_level": "LOW",
-      "type": "AI_SECURITY",
+      "type": "CVE_REPORT",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-09-25",
-      "last_seen": "2026-09-25",
+      "first_seen": "2026-09-28",
+      "last_seen": "2026-09-28",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -4609,21 +4747,21 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-57443"
+        "CVE-2026-101067"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-q986-4x7x-gx39"
+        "https://cvefeed.io/vuln/detail/CVE-2026-101067"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
+          "data_confidence=0.25",
           "recency=0d (score=1.00)",
-          "QS=0.438"
+          "QS=0.398"
         ],
         "priority": [
-          "base_ps=18 (no boosts)"
+          "base_ps=16 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4633,21 +4771,21 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-57440",
-      "title": "Mediawiki EmbedVideo Extension has stored XSS via malformed src url with $wgEmbedVideoRequireConsent disabled",
+      "id": "CVE-2026-101068",
+      "title": "CVE-2026-101068 - dbgate Create Connection Endpoint zipJsonLinesData.js zipJsonLinesData path traversal",
       "description": "",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
+      "cvss": 6.5,
+      "final_ps": 16,
+      "quality_score": 0.398,
       "threat_level": "LOW",
-      "type": "NEWS_REPORT",
+      "type": "CVE_REPORT",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-09-25",
-      "last_seen": "2026-09-25",
+      "first_seen": "2026-09-28",
+      "last_seen": "2026-09-28",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -4655,21 +4793,21 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-57440"
+        "CVE-2026-101068"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-v65j-hff3-753c"
+        "https://cvefeed.io/vuln/detail/CVE-2026-101068"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
+          "data_confidence=0.25",
           "recency=0d (score=1.00)",
-          "QS=0.438"
+          "QS=0.398"
         ],
         "priority": [
-          "base_ps=18 (no boosts)"
+          "base_ps=16 (no boosts)"
         ],
         "suppression": null,
         "merge": null

@@ -1,15 +1,15 @@
 {
-  "generated": "2026-09-28T08:26:38.425Z",
+  "generated": "2026-09-28T15:23:17.266Z",
   "version": "1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX v4.0",
   "stats": {
-    "total_nodes": 14737,
+    "total_nodes": 14743,
     "actors": 8,
-    "cves": 6510,
-    "campaigns": 1444,
+    "cves": 6513,
+    "campaigns": 1445,
     "malware": 0,
     "iocs": 909,
-    "edges": 4163
+    "edges": 4167
   },
   "nodes": {
     "actor:lockbit": {
@@ -1095,6 +1095,11 @@
           "target": "BLEEPINGCOMPUTER-aebbf454a9b78757",
           "relationship": "exploits",
           "confidence": 0.85
+        },
+        {
+          "target": "KREBSONSECURITY-dbfccb4427ccdaa7",
+          "relationship": "exploits",
+          "confidence": 0.85
         }
       ],
       "attributes": {
@@ -1808,6 +1813,11 @@
           "target": "BLEEPINGCOMPUTER-aebbf454a9b78757",
           "relationship": "exploits",
           "confidence": 0.85
+        },
+        {
+          "target": "KREBSONSECURITY-dbfccb4427ccdaa7",
+          "relationship": "exploits",
+          "confidence": 0.85
         }
       ],
       "attributes": {
@@ -1903,6 +1913,11 @@
         },
         {
           "target": "SENTINELAPEX-11a807a2ac3c",
+          "relationship": "exploits",
+          "confidence": 0.85
+        },
+        {
+          "target": "KREBSONSECURITY-dbfccb4427ccdaa7",
           "relationship": "exploits",
           "confidence": 0.85
         }
@@ -48350,13 +48365,13 @@
       "attributes": {
         "cvss": 9.8,
         "threat_level": "MEDIUM",
-        "priority_score": 49,
+        "priority_score": 50,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
         "vendor": "",
         "product": "",
-        "published": "2026-09-26",
+        "published": "2026-09-28",
         "type": "CVE_REPORT"
       },
       "connections": []
@@ -272168,18 +272183,18 @@
     "CVE-2026-65660": {
       "id": "CVE-2026-65660",
       "type": "CVE",
-      "name": "U.S. CISA adds Microsoft SharePoint and Mikrotik RouterOS flaws to its Known Exploited Vulnerabilities catalog",
+      "name": "CISA Warns of Microsoft SharePoint Code Injection Vulnerability Exploited in Attacks",
       "attributes": {
         "cvss": 6.5,
         "threat_level": "LOW",
-        "priority_score": 36,
+        "priority_score": 38,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
         "vendor": "",
         "product": "",
-        "published": "2026-09-25",
-        "type": "CLOUD_SECURITY"
+        "published": "2026-09-28",
+        "type": "CVE_REPORT"
       },
       "connections": []
     },
@@ -276733,9 +276748,9 @@
       "name": "Citrix confirms two NetScaler RCE zero-days exploited in attacks",
       "attributes": {
         "cvss": 9.8,
-        "threat_level": "MEDIUM",
-        "priority_score": 56,
-        "exploited": false,
+        "threat_level": "CRITICAL",
+        "priority_score": 85,
+        "exploited": true,
         "cisa_kev": false,
         "ransomware": false,
         "vendor": "",
@@ -277308,16 +277323,126 @@
       "type": "Campaign",
       "name": "Multi-Vendor Platform Exploitation Campaign",
       "attributes": {
-        "severity": "MEDIUM",
+        "severity": "CRITICAL",
         "item_count": 1,
-        "first_seen": "2026-09-27",
-        "last_seen": "2026-09-27",
+        "first_seen": "2026-09-28",
+        "last_seen": "2026-09-28",
         "confidence": 0.9,
-        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | 2 related CVEs: CVE-2026-88771, CVE-2026-88772"
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | 2 related CVEs: CVE-2026-88771, CVE-2026-88772 | 1 item(s) confirmed exploited in the wild"
       },
       "connections": [
         {
           "target": "CVE-2026-88771",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "GHSA-6c1310c76d983b04": {
+      "id": "GHSA-6c1310c76d983b04",
+      "type": "Intel",
+      "name": "code-ollama: `grep_search` Command Injection via Unescaped `$()` Shell Substitution (CWE-78)",
+      "attributes": {
+        "cvss": 7.8,
+        "threat_level": "MEDIUM",
+        "priority_score": 62,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "code-ollama",
+        "published": "2026-09-28",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-93539": {
+      "id": "CVE-2026-93539",
+      "type": "CVE",
+      "name": "CVE-2026-93539 Unauthenticated GitRepo Spec Mutation via Fleet Git Webhook Receiver",
+      "attributes": {
+        "cvss": 9.1,
+        "threat_level": "MEDIUM",
+        "priority_score": 49,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "",
+        "product": "",
+        "published": "2026-09-28",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-101067": {
+      "id": "CVE-2026-101067",
+      "type": "CVE",
+      "name": "CVE-2026-101067 - dbgate save-uploaded-file Endpoint files.js saveUploadedFile path traversal",
+      "attributes": {
+        "cvss": 6.5,
+        "threat_level": "LOW",
+        "priority_score": 38,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "",
+        "product": "",
+        "published": "2026-09-28",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-101068": {
+      "id": "CVE-2026-101068",
+      "type": "CVE",
+      "name": "CVE-2026-101068 - dbgate Create Connection Endpoint zipJsonLinesData.js zipJsonLinesData path traversal",
+      "attributes": {
+        "cvss": 6.5,
+        "threat_level": "LOW",
+        "priority_score": 38,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "",
+        "product": "",
+        "published": "2026-09-28",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "KREBSONSECURITY-dbfccb4427ccdaa7": {
+      "id": "KREBSONSECURITY-dbfccb4427ccdaa7",
+      "type": "Intel",
+      "name": "Dutch Police Arrest ‘Reformed’ Hacker in Shiny Hunters Investigation",
+      "attributes": {
+        "cvss": 0,
+        "threat_level": "LOW",
+        "priority_score": 26,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": true,
+        "vendor": "KrebsOnSecurity",
+        "product": "Threat Intelligence",
+        "published": "2026-09-28",
+        "type": "RANSOMWARE"
+      },
+      "connections": []
+    },
+    "campaign:cluster-8eb33279": {
+      "id": "campaign:cluster-8eb33279",
+      "type": "Campaign",
+      "name": "npm code-ollama Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-28",
+        "last_seen": "2026-09-28",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900"
+      },
+      "connections": [
+        {
+          "target": "GHSA-6c1310c76d983b04",
           "relationship": "includes",
           "confidence": 1
         }
@@ -314963,6 +315088,42 @@
       "id": "campaign:cve-2026-88771→includes→CVE-2026-88771",
       "source": "campaign:cve-2026-88771",
       "target": "CVE-2026-88771",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-28",
+      "sources": []
+    },
+    {
+      "id": "actor:shinyhunters→exploits→KREBSONSECURITY-dbfccb4427ccdaa7",
+      "source": "actor:shinyhunters",
+      "target": "KREBSONSECURITY-dbfccb4427ccdaa7",
+      "relationship": "exploits",
+      "confidence": 0.85,
+      "first_seen": "2026-09-28",
+      "sources": []
+    },
+    {
+      "id": "actor:cl0p→exploits→KREBSONSECURITY-dbfccb4427ccdaa7",
+      "source": "actor:cl0p",
+      "target": "KREBSONSECURITY-dbfccb4427ccdaa7",
+      "relationship": "exploits",
+      "confidence": 0.85,
+      "first_seen": "2026-09-28",
+      "sources": []
+    },
+    {
+      "id": "actor:russia-nexus-ransomware→exploits→KREBSONSECURITY-dbfccb4427ccdaa7",
+      "source": "actor:russia-nexus-ransomware",
+      "target": "KREBSONSECURITY-dbfccb4427ccdaa7",
+      "relationship": "exploits",
+      "confidence": 0.85,
+      "first_seen": "2026-09-28",
+      "sources": []
+    },
+    {
+      "id": "campaign:cluster-8eb33279→includes→GHSA-6c1310c76d983b04",
+      "source": "campaign:cluster-8eb33279",
+      "target": "GHSA-6c1310c76d983b04",
       "relationship": "includes",
       "confidence": 1,
       "first_seen": "2026-09-28",
