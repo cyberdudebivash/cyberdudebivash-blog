@@ -367,6 +367,10 @@ jobs:
           fetch_page "/api-dashboard.html" "$tmp/api-dashboard-assurance.html"
           grep -Fq 'Download Assurance JSON' "$tmp/api-dashboard-assurance.html" || { echo "::error::Customer dashboard assurance export control missing"; exit 1; }
           grep -Fq '/api/v1/customer/assurance?download=1' "$tmp/api-dashboard-assurance.html" || { echo "::error::Customer dashboard assurance export endpoint missing"; exit 1; }
+          grep -Fq 'Operational intelligence feed with runtime timestamps' "$tmp/api-dashboard-assurance.html" || { echo "::error::Customer dashboard runtime freshness language missing"; exit 1; }
+          grep -Fq 'Contract-defined SLA where explicitly executed' "$tmp/api-dashboard-assurance.html" || { echo "::error::Customer dashboard SLA contract boundary missing"; exit 1; }
+          ! grep -Fq 'Real-time intel feed' "$tmp/api-dashboard-assurance.html" || { echo "::error::Unsupported real-time feed claim remains on customer dashboard"; exit 1; }
+          ! grep -Fq 'SLA guarantee' "$tmp/api-dashboard-assurance.html" || { echo "::error::Unscoped SLA guarantee remains on customer dashboard"; exit 1; }
 
           ! grep -Fiq '99.9% SLA UPTIME' "$tmp/enterprise.html" || { echo "::error::Unsupported enterprise uptime SLA remains"; exit 1; }
           ! grep -Fiq 'Sub-100ms latency' "$tmp/enterprise.html" || { echo "::error::Unsupported enterprise latency claim remains"; exit 1; }
