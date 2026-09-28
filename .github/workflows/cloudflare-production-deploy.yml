@@ -250,9 +250,11 @@ jobs:
             for attempt in 1 2 3 4 5 6; do
               code="$(curl -sS -L --max-time 25 -H 'Cache-Control: no-cache' -o "$file" -w '%{http_code}' "$base$route?release_sha=$GITHUB_SHA" || true)"
               if [ "$code" = "200" ] \
-                && grep -Fq 'Live CTI operational metrics' "$file" \
-                && grep -Fq 'id="soc2-kev-count"' "$file" \
-                && grep -Fq 'id="soc2-pipeline-age"' "$file"; then
+                && grep -Fq 'LIVE HYBRID SOC 2 + CTI OPERATIONS' "$file" \
+                && grep -Fq 'id="cdb-kev"' "$file" \
+                && grep -Fq 'id="cdb-freshness"' "$file" \
+                && grep -Fq '/apex-command-center.css' "$file" \
+                && grep -Fq '/apex-command-center.js' "$file"; then
                 ready=1
                 break
               fi
@@ -264,24 +266,30 @@ jobs:
           }
 
           fetch_page "/" "$tmp/home.html"
-          grep -Fq 'Hybrid SOC + CTI · Customer Control Plane' "$tmp/home.html" || { echo "::error::Homepage SOC + CTI command center missing"; exit 1; }
-          grep -Fq 'Operational trust before analyst action.' "$tmp/home.html" || { echo "::error::Homepage operational hierarchy missing"; exit 1; }
+          grep -Fq 'LIVE HYBRID SOC 2 + CTI OPERATIONS' "$tmp/home.html" || { echo "::error::Live Hybrid SOC 2 + CTI command center missing"; exit 1; }
+          grep -Fq 'Security Intelligence Command Center' "$tmp/home.html" || { echo "::error::Homepage operational hierarchy missing"; exit 1; }
           grep -Fq 'ALIGNED · NOT CERTIFIED' "$tmp/home.html" || { echo "::error::Homepage SOC 2 truth boundary missing"; exit 1; }
           grep -Fq 'SOURCE-BOUND' "$tmp/home.html" || { echo "::error::Homepage intelligence integrity state missing"; exit 1; }
-          grep -Fq 'Synthetic Telemetry' "$tmp/home.html" || { echo "::error::Homepage synthetic telemetry disclosure missing"; exit 1; }
-          grep -Fq 'Live CTI operational metrics' "$tmp/home.html" || { echo "::error::Homepage live CTI metrics missing"; exit 1; }
-          grep -Fq 'Production Control Evidence' "$tmp/home.html" || { echo "::error::Homepage production control evidence missing"; exit 1; }
-          grep -Fq 'id="soc2-kev-count"' "$tmp/home.html" || { echo "::error::Homepage CISA KEV runtime metric missing"; exit 1; }
-          grep -Fq 'id="soc2-pipeline-age"' "$tmp/home.html" || { echo "::error::Homepage runtime-derived freshness missing"; exit 1; }
-          grep -Fq 'Exact Git SHA → Cloudflare deployment' "$tmp/home.html" || { echo "::error::Homepage deployment integrity evidence missing"; exit 1; }
+          grep -Fq 'Synthetic Customer Telemetry' "$tmp/home.html" || { echo "::error::Homepage synthetic telemetry disclosure missing"; exit 1; }
+          grep -Fq 'id="cdb-kev"' "$tmp/home.html" || { echo "::error::Homepage CISA KEV runtime metric missing"; exit 1; }
+          grep -Fq 'id="cdb-freshness"' "$tmp/home.html" || { echo "::error::Homepage runtime freshness state missing"; exit 1; }
+          grep -Fq 'id="cdbSignalCanvas"' "$tmp/home.html" || { echo "::error::Homepage live signal fabric missing"; exit 1; }
+          grep -Fq 'No synthetic incident queue is displayed.' "$tmp/home.html" || { echo "::error::Homepage synthetic incident guard missing"; exit 1; }
           grep -Fq '/customer-assurance.html' "$tmp/home.html" || { echo "::error::Homepage assurance navigation missing"; exit 1; }
-          grep -Fq 'Evidence-Bound Analyst Queues' "$tmp/home.html" || { echo "::error::Evidence-bound analyst queues missing"; exit 1; }
-          grep -Fq 'No synthetic victim counters' "$tmp/home.html" || { echo "::error::Homepage synthetic victim-counter policy missing"; exit 1; }
+          grep -Fq '/apex-command-center.css' "$tmp/home.html" || { echo "::error::Homepage command-center stylesheet missing"; exit 1; }
+          grep -Fq '/apex-command-center.js' "$tmp/home.html" || { echo "::error::Homepage command-center runtime missing"; exit 1; }
+
+          fetch_page "/apex-command-center.css" "$tmp/apex-command-center.css"
+          fetch_page "/apex-command-center.js" "$tmp/apex-command-center.js"
+          grep -Fq "fetchJson('/live-intel.json')" "$tmp/apex-command-center.js" || { echo "::error::Command center is not bound to first-party live intelligence"; exit 1; }
+          grep -Fq "fetchJson('/api/intel/customer-assurance.json')" "$tmp/apex-command-center.js" || { echo "::error::Command center customer assurance binding missing"; exit 1; }
+          grep -Fq 'stats.cisaKev' "$tmp/apex-command-center.js" || { echo "::error::Command center KEV runtime binding missing"; exit 1; }
+          grep -Fq 'stats.exploited' "$tmp/apex-command-center.js" || { echo "::error::Command center exploitation runtime binding missing"; exit 1; }
+
           ! grep -Fq 'Most Exploited CVEs This Week' "$tmp/home.html" || { echo "::error::Static exploited-this-week panel remains"; exit 1; }
           ! grep -Fq '67 Victims' "$tmp/home.html" || { echo "::error::Static victim-count assertion remains"; exit 1; }
           ! grep -Fq '$4.2B Demanded' "$tmp/home.html" || { echo "::error::Unsupported ransomware commercial metric remains"; exit 1; }
           ! grep -Fq '3B Users at Risk' "$tmp/home.html" || { echo "::error::Static exposure-count assertion remains"; exit 1; }
-          ! grep -Fq 'Qilin/LockBit 4.0 Active — 67 Victims April' "$tmp/home.html" || { echo "::error::Stale hardcoded incident assertion remains on homepage"; exit 1; }
           ! grep -Fq 'Nation-State APT Tracking in Real Time' "$tmp/home.html" || { echo "::error::Unsupported real-time APT claim remains"; exit 1; }
 
           echo "SOC 2 + CTI homepage command center certified on $GITHUB_SHA"

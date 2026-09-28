@@ -601,28 +601,38 @@ def test_cloudflare_release_fail_closes_on_soc2_cti_customer_assurance():
 
 def test_homepage_is_soc2_cti_customer_command_center_and_not_static_incident_marketing():
     html = Path("index.html").read_text(encoding="utf-8-sig")
+    css = Path("apex-command-center.css").read_text(encoding="utf-8")
+    runtime = Path("apex-command-center.js").read_text(encoding="utf-8")
     for required in [
-        "Hybrid SOC + CTI · Customer Control Plane",
-        "Operational trust before analyst action.",
+        "LIVE HYBRID SOC 2 + CTI OPERATIONS",
+        "Enterprise <em>Security Intelligence Command Center</em>",
         "/customer-assurance.html",
         "ALIGNED · NOT CERTIFIED",
         "SOURCE-BOUND",
-        "Synthetic Telemetry",
-        "DISABLED",
-        "Search intelligence",
+        "Synthetic Customer Telemetry",
+        "Search cyber threat intelligence",
         "CISA KEV",
-        "<b>Priority</b> = analyst workflow ordering",
-        'id="homepage-feed-state">VERIFYING',
-        'id="homepage-priority-runtime">VERIFYING',
-        "Open Hybrid SOC + CTI operational workspace",
-        "PRIORITY INTELLIGENCE",
-        "Review customer control and evidence posture",
-        "Evidence-Bound Analyst Queues",
-        "No synthetic victim counters",
-        "Source and freshness bound",
-        "Evidence-Bound · Runtime Verified",
+        'id="cdb-live-command-center"',
+        'id="cdbSignalCanvas"',
+        "No synthetic incident queue is displayed.",
+        "Abstract topology generated from the current priority feed.",
+        "ASSURANCE BOUNDARY",
+        "SOC 2 Type I or Type II certification",
     ]:
         assert required in html
+    for required in [
+        "fetchJson('/live-intel.json')",
+        "fetchJson('/api/intel/customer-assurance.json')",
+        "fetchJson('/api/intel/service-assurance.json')",
+        "fetchJson('/api/intel/cti-delivery-acceptance.json')",
+        "stats.cisaKev",
+        "stats.exploited",
+        "stats.ransomware",
+        "stats.sources",
+    ]:
+        assert required in runtime
+    assert ".cdb-grid" in css
+    assert ".cdb-fabric" in css
 
     for forbidden in [
         "Qilin/LockBit 4.0 Active — 67 Victims April",
@@ -647,45 +657,53 @@ def test_cloudflare_release_certifies_homepage_soc2_cti_command_center():
     for required in [
         "'index.html'",
         'fetch_page "/"',
-        "Hybrid SOC + CTI · Customer Control Plane",
-        "Operational trust before analyst action.",
+        "LIVE HYBRID SOC 2 + CTI OPERATIONS",
+        "Security Intelligence Command Center",
         "ALIGNED · NOT CERTIFIED",
         "SOURCE-BOUND",
-        "Synthetic Telemetry",
+        "Synthetic Customer Telemetry",
         "customer-assurance.html",
+        "apex-command-center.js",
+        "apex-command-center.css",
     ]:
         assert required in workflow
 
 
 def test_homepage_exposes_runtime_derived_cti_metrics_and_control_evidence():
     html = Path("index.html").read_text(encoding="utf-8-sig")
+    runtime = Path("apex-command-center.js").read_text(encoding="utf-8")
     for required in [
-        "Live CTI operational metrics",
-        "Production Control Evidence",
-        "Exact Git SHA → Cloudflare deployment",
-        "Allowlisted production asset bundle",
-        "API-key boundary for protected operations",
-        'id="soc2-total-published"',
-        'id="soc2-critical-count"',
-        'id="soc2-kev-count"',
-        'id="soc2-exploited-count"',
-        'id="soc2-source-count"',
-        'id="soc2-pipeline-age"',
-        "intel.totalPublished",
-        "stats.cisaKev",
-        "stats.exploited",
-        "stats.sources",
-        "SOC 2-aligned controls support due diligence but do not replace an independent auditor attestation.",
+        'id="cdb-total"',
+        'id="cdb-critical"',
+        'id="cdb-kev"',
+        'id="cdb-exploited"',
+        'id="cdb-ransomware"',
+        'id="cdb-sources"',
+        'id="cdb-freshness"',
+        "API-key boundary: protected operations",
+        "Production assets: allowlisted",
+        "No synthetic incident queue is displayed.",
+        "SOC 2 Type I or Type II certification",
     ]:
         assert required in html
+    for required in [
+        "feed.totalPublished",
+        "stats.critical",
+        "stats.cisaKev",
+        "stats.exploited",
+        "stats.ransomware",
+        "stats.sources",
+        "feedStamp(feed)",
+    ]:
+        assert required in runtime
 
 def test_homepage_release_gate_waits_for_current_release_markers_not_just_http_200():
     workflow = Path(".github/workflows/cloudflare-production-deploy.yml").read_text(encoding="utf-8")
     homepage_gate = workflow.split('name: "Certify SOC 2 + CTI homepage command center"', 1)[1].split('name: "Certify SOC 2 + CTI customer assurance"', 1)[0]
     assert 'local ready=0' in homepage_gate
-    assert "grep -Fq 'Live CTI operational metrics' \"$file\"" in homepage_gate
-    assert 'grep -Fq \'id="soc2-kev-count"\' "$file"' in homepage_gate
-    assert 'grep -Fq \'id="soc2-pipeline-age"\' "$file"' in homepage_gate
+    assert "grep -Fq 'LIVE HYBRID SOC 2 + CTI OPERATIONS' \"$file\"" in homepage_gate
+    assert 'grep -Fq \'id="cdb-kev"\' "$file"' in homepage_gate
+    assert 'grep -Fq \'id="cdb-freshness"\' "$file"' in homepage_gate
     assert 'ready=1' in homepage_gate
     assert 'test "$ready" -eq 1' in homepage_gate
     assert 'if [ "$code" = "200" ]; then break; fi' not in homepage_gate

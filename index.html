@@ -1886,6 +1886,7 @@ input:focus, textarea:focus {
 </style>
 <!-- MOBILE-FIRST DESIGN SYSTEM — Loads LAST to correctly override all other CSS on mobile -->
 <link rel="stylesheet" href="/mobile-first.css?v=20260705">
+<link rel="stylesheet" href="/apex-command-center.css?v=20260928">
 </head>
 <body>
 <a href="#main-content" class="skip-link">Skip to operational dashboard</a>
@@ -1903,21 +1904,19 @@ input:focus, textarea:focus {
     <span class="mobile-nav-logo">CYBERDUDE<span style="color:#fff">BIVASH</span></span>
     <button onclick="closeMobileNav()" style="background:rgba(0,255,224,0.08);border:1px solid rgba(0,255,224,0.2);color:var(--apex-cyan);width:32px;height:32px;border-radius:6px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;">✕</button>
   </div>
-  <a href="#reports">📋 Reports</a>
-  <a href="/research">📊 Research</a>
-  <a href="/detections">🛡️ Detections</a>
-  <a href="intelligence.html">🛡️ Intelligence Hub</a>
-  <a href="https://intel.cyberdudebivash.com" target="_blank">🌐 Intel Platform</a>
-  <a href="https://cyberdudebivash.in" target="_blank">🤖 AI Hub</a>
-  <a href="/products.html">📦 Products</a>
-  <a href="/pricing.html">💰 Pricing</a>
-  <a href="/api.html">🔌 API Docs</a>
-  <a href="https://tools.cyberdudebivash.com" target="_blank">🔧 Tools</a>
+  <a href="#main-content">Command Center</a>
+  <a href="/intel/">Live Intelligence</a>
+  <a href="/hunts.html">Threat Hunting</a>
+  <a href="/detections/">Detection Engineering</a>
+  <a href="/customer-assurance.html">SOC 2 Assurance</a>
+  <a href="/service-status.html">Service Evidence</a>
+  <a href="/enterprise-onboarding.html">Enterprise Onboarding</a>
+  <a href="/customer-incident-response.html">Incident Escalation</a>
   <div class="mobile-nav-sep"></div>
-  <a href="/contact.html">Enterprise</a>
-  <a href="/customer-assurance.html">Customer Assurance</a>
-  <a href="/api-dashboard.html" class="nav-cta-mobile">⚡ Get API Key — Free</a>
-  <a href="mailto:bivash@cyberdudebivash.com" style="font-size:13px;color:#4b5563;justify-content:center;padding:8px">✉️ bivash@cyberdudebivash.com</a>
+  <a href="/products.html">Products</a>
+  <a href="/pricing.html">Pricing</a>
+  <a href="/enterprise.html">Enterprise</a>
+  <a href="/api-dashboard.html" class="nav-cta-mobile">Customer API</a>
 </nav>
 
 <header id="main-header">
@@ -1928,21 +1927,19 @@ input:focus, textarea:focus {
       <span class="logo">CYBERDUDE<span>BIVASH</span></span>
     </a>
     <nav role="navigation" aria-label="Main navigation">
-      <a href="#reports">Reports</a>
-      <a href="/research">Research</a>
-      <a href="/detections">Detections</a>
-      <a href="intelligence.html">Intel Hub</a>
-      <a href="/intelligence/">Intelligence Reports</a>
-      <a href="https://intel.cyberdudebivash.com" target="_blank">Platform</a>
-      <a href="https://cyberdudebivash.in" target="_blank">AI Hub</a>
+      <a href="#main-content" class="nav-active">Command Center</a>
+      <a href="/intel/">Intelligence</a>
+      <a href="/hunts.html">Hunt</a>
+      <a href="/detections/">Detections</a>
+      <a href="/customer-assurance.html">SOC 2 Assurance</a>
+      <a href="/service-status.html">Service Evidence</a>
       <div class="nav-sep"></div>
-      <a href="/search.html" aria-label="Search" title="Search">🔍</a>
       <a href="/products.html">Products</a>
       <a href="/pricing.html">Pricing</a>
-      <a href="/api.html">API</a>
-      <a href="/customer-assurance.html">Assurance</a>
+      <a href="/enterprise.html">Enterprise</a>
+      <a href="/search.html" aria-label="Search intelligence" title="Search intelligence">Search</a>
       <div class="nav-sep"></div>
-      <a href="/api-dashboard.html" class="nav-cta">⚡ Get API Key</a>
+      <a href="/api-dashboard.html" class="nav-cta">Customer API</a>
     </nav>
     <!-- Hamburger (mobile only) -->
     <button class="nav-hamburger" id="navHamburger" aria-label="Open menu" aria-expanded="false" onclick="toggleMobileNav()">
@@ -1989,201 +1986,121 @@ input:focus, textarea:focus {
     <span class="apex-status-pill green-pill"><span class="spill-dot"></span>Updated <strong id="sb-time">--:--:-- UTC</strong></span>
   </div>
 </div>
-<!-- HERO -->
-<div class="hero">
-  <!-- Decorative orbital rings -->
-  <div class="hero-orbital"></div>
-  <div class="hero-orbital hero-orbital-2"></div>
-
-  <div class="hero-content">
-  <div class="hero-terminal">
-    <span class="hero-terminal-text" id="heroTerminal"></span><span class="cursor">&#9608;</span>
-  </div>
-  <div class="hero-label" id="hero-label-bar">
-    <span class="hero-label-dot"></span>
-    <span class="hero-label-static">⚡ SENTINEL APEX v4.0</span>
-    <span class="hero-label-sep">—</span>
-    <div class="hero-label-rotate" id="hero-label-rotate">
-      <span class="active" data-color="cyan">AI-Powered Threat Intelligence Platform</span>
-      <span data-color="red">Source-Attributed Vulnerability Alerts</span>
-      <span data-color="orange">Official CISA KEV Catalog Ingestion</span>
-      <span data-color="purple">Evidence-Bound APT &amp; Campaign Intelligence</span>
-      <span data-color="cyan">Sigma &amp; YARA Reference Drafts — Validate Before Deployment</span>
-      <span data-color="yellow">Ransomware Intelligence — Source &amp; Freshness Bound</span>
-      <span data-color="green">Enterprise API — Free Tier Available Now</span>
-      <span data-color="red">OWASP LLM Top 10 — AI Security Coverage</span>
-      <span data-color="purple">MITRE ATT&amp;CK Detection Engineering Hub</span>
-    </div>
-  </div>
-  <h1>
-    <span class="cyan">Analyst-Grade</span> AI-Powered<br>
-    Cybersecurity Intelligence<br>
-    <span class="red">Evidence-Bound · Runtime Verified</span>
-  </h1>
-  <p class="hero-desc">
-    CYBERDUDEBIVASH SENTINEL APEX ingests the official <span id="kevCount" style="color:var(--apex-cyan);font-weight:800">CISA KEV</span>
-    catalog and public security sources &mdash; producing source-attributed CVE summaries,
-    evidence labels, reference detections, and response guidance with explicit limitations.
-  </p>
-  <!-- HERO CTAs — tri-button layout -->
-  <div class="hero-actions">
-    <a href="/api-dashboard.html" class="btn-primary">
-      <span>🔑</span> Get Free API Key
-    </a>
-    <a href="#reports" class="btn-secondary">
-      <span>📋</span> View Intel Reports
-    </a>
-    <a href="/pricing.html" class="btn-api">
-      <span>⚡</span> SOC Pro — $18/mo
-    </a>
-  </div>
-  <!-- SOCIAL PROOF STRIP -->
-  <div class="hero-trust-strip">
-    <span class="hero-trust-item">
-      <span class="hero-trust-dot blink" style="background:var(--apex-green)"></span>
-      <span style="color:#6b7280">Feed</span> &nbsp;<strong>Source timestamp shown</strong>
-    </span>
-    <span class="hero-trust-sep">&#9679;</span>
-    <span class="hero-trust-item">
-      &#128218; <strong>Public</strong> intelligence archive
-    </span>
-    <span class="hero-trust-sep">&#9679;</span>
-    <span class="hero-trust-item">&#128269; Source links and evidence boundaries</span>
-    <span class="hero-trust-sep">&#9679;</span>
-    <span class="hero-trust-item">&#128272; Free API — No credit card</span>
-  </div>
-  <!-- Evidence policy summary; current intelligence is rendered from the feed below. -->
-  <div id="apex-daily-digest" style="background:rgba(255,0,64,0.05);border:1px solid rgba(255,0,64,0.25);border-radius:12px;padding:18px 24px;text-align:left;margin-top:28px;">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-      <span style="width:8px;height:8px;border-radius:50%;background:#ff0040;box-shadow:0 0 10px rgba(255,0,64,0.7);animation:blink 1s infinite;display:inline-block;flex-shrink:0;"></span>
-      <span style="font-size:10px;font-weight:900;color:#ff4d6d;letter-spacing:2px;text-transform:uppercase;">INTELLIGENCE EVIDENCE POLICY</span>
-      <span id="digest-date" style="font-size:10px;color:#475569;margin-left:auto;white-space:nowrap;"></span>
-    </div>
-    <div class="digest-row">
-      <span class="digest-badge dbadge-zd">CVSS</span>
-      <span class="digest-text">Shown only when a numeric score exists in an ingested source; severity labels are not converted into fake scores.</span>
-    </div>
-    <div class="digest-row">
-      <span class="digest-badge dbadge-kev">CISA KEV</span>
-      <span class="digest-text">Structured KEV records confirm in-the-wild exploitation; news stories mentioning KEV are not relabeled as catalog records.</span>
-    </div>
-    <div class="digest-row">
-      <span class="digest-badge dbadge-apt">DETECTIONS</span>
-      <span class="digest-text">Machine-generated rules are reference drafts, not production-validated or false-positive-tested detections.</span>
-    </div>
-    <div class="digest-row">
-      <span class="digest-badge dbadge-rsm">FRESHNESS</span>
-      <span class="digest-text">Feed status uses the pipeline source timestamp. Stale or unavailable data is labeled explicitly.</span>
-    </div>
-  </div>
-  <div class="hero-live-stats">
-    <div class="hls-item">
-      <span class="hls-dot" style="background:#ff0040"></span>
-      <span id="cisaToday">Loading...</span> new CISA KEV today
-    </div>
-    <div class="hls-item">
-      <span class="hls-dot" style="background:#ff8c00"></span>
-      <span id="kevTotal">Loading...</span> total KEV entries
-    </div>
-    <div class="hls-item">
-      <span class="hls-dot blink" style="background:#00ff88"></span>
-      Public-feed availability checked in the intelligence panel
-    </div>
-  </div>
-  </div><!-- /hero-content -->
-</div>
-
-<!-- P0 SOC 2 + CTI CUSTOMER COMMAND CENTER -->
-<section class="soc2-cti-command" id="main-content" aria-labelledby="soc2-cti-title" tabindex="-1">
-  <div class="soc2-cti-inner">
-    <div class="soc2-cti-head">
-      <div>
-        <div class="soc2-cti-kicker">Hybrid SOC + CTI · Customer Control Plane</div>
-        <h2 class="soc2-cti-title" id="soc2-cti-title">Operational trust before analyst action.</h2>
-        <p class="soc2-cti-sub">Runtime health, evidence posture, customer assurance, and analyst workflow are surfaced together so SOC teams can distinguish verified operational state from marketing copy.</p>
+<!-- LIVE OPERATIONS COMMAND CENTER — primary homepage surface -->
+<section class="cdb-ops" id="main-content" tabindex="-1" aria-labelledby="cdb-command-title">
+  <div class="cdb-shell" id="cdb-live-command-center">
+    <div class="cdb-topline">
+      <div class="cdb-product">
+        <div class="cdb-product-mark" aria-hidden="true">◆</div>
+        <div>
+          <div class="cdb-eyebrow">SENTINEL APEX · LIVE HYBRID SOC 2 + CTI OPERATIONS</div>
+          <h2 class="cdb-title" id="cdb-command-title">Enterprise <em>Security Intelligence Command Center</em></h2>
+        </div>
       </div>
-      <div class="soc2-cti-head-actions">
-        <a class="soc2-cti-link" href="/customer-assurance.html">Customer Assurance</a>
-        <a class="soc2-cti-link" href="/intel/">Open CTI Console</a>
-        <a class="soc2-cti-link" href="/api-dashboard.html">Customer API</a>
+      <div class="cdb-runtime" aria-label="Live production state">
+        <span class="cdb-pill" id="cdb-runtime-pill"><span class="cdb-dot"></span><span id="cdb-runtime-text">VERIFYING PRODUCTION</span></span>
+        <span class="cdb-pill"><span class="cdb-dot"></span><span id="cdb-freshness">CHECKING FRESHNESS</span></span>
+        <span class="cdb-pill"><span class="cdb-dot"></span><span id="cdb-evidence-count">VERIFYING ASSURANCE</span></span>
       </div>
     </div>
 
-    <form class="soc2-cti-search" action="/search.html" method="get" role="search" aria-label="Search threat intelligence">
-      <label for="soc2-home-search">Search intelligence</label>
-      <div>
-        <input id="soc2-home-search" name="q" type="search" placeholder="CVE, vendor, actor, malware, IOC..." autocomplete="off">
-        <button type="submit">Search CTI</button>
+    <div class="cdb-actions" aria-label="Primary customer operations">
+      <a class="cdb-btn primary" href="/intel/">Open Live Intelligence</a>
+      <a class="cdb-btn" href="/hunts.html">Threat Hunting</a>
+      <a class="cdb-btn" href="/detections/">Detection Engineering</a>
+      <a class="cdb-btn" href="/customer-assurance.html">Customer Assurance</a>
+      <a class="cdb-btn" href="/api-dashboard.html">Authenticated API</a>
+      <button class="cdb-btn" type="button" id="cdb-refresh">Refresh Live State</button>
+    </div>
+
+    <div class="cdb-grid">
+      <div class="cdb-stack">
+        <section class="cdb-panel" aria-labelledby="cdb-ops-overview">
+          <div class="cdb-panel-head">
+            <div class="cdb-panel-title" id="cdb-ops-overview">Security Intelligence Operations Overview</div>
+            <div class="cdb-panel-meta" id="cdb-runtime-detail">Loading first-party production evidence</div>
+          </div>
+          <div class="cdb-panel-body">
+            <div class="cdb-kpis" aria-label="Live first-party CTI metrics">
+              <article class="cdb-kpi" style="--tone:#21e6ff"><span class="cdb-kpi-label">Published Intel</span><strong class="cdb-kpi-value" id="cdb-total">—</strong><span class="cdb-kpi-note" id="cdb-total-note">Loading corpus</span></article>
+              <article class="cdb-kpi" style="--tone:#ff496a"><span class="cdb-kpi-label">Critical</span><strong class="cdb-kpi-value" id="cdb-critical">—</strong><span class="cdb-kpi-note" id="cdb-critical-note">Loading severity</span></article>
+              <article class="cdb-kpi" style="--tone:#ff9b54"><span class="cdb-kpi-label">CISA KEV</span><strong class="cdb-kpi-value" id="cdb-kev">—</strong><span class="cdb-kpi-note" id="cdb-kev-note">Loading exploitation catalog</span></article>
+              <article class="cdb-kpi" style="--tone:#ffc857"><span class="cdb-kpi-label">Exploited</span><strong class="cdb-kpi-value" id="cdb-exploited">—</strong><span class="cdb-kpi-note" id="cdb-exploited-note">Loading evidence</span></article>
+              <article class="cdb-kpi" style="--tone:#a879ff"><span class="cdb-kpi-label">Ransomware</span><strong class="cdb-kpi-value" id="cdb-ransomware">—</strong><span class="cdb-kpi-note" id="cdb-ransomware-note">Loading associations</span></article>
+              <article class="cdb-kpi" style="--tone:#55ef9d"><span class="cdb-kpi-label">Sources</span><strong class="cdb-kpi-value" id="cdb-sources">—</strong><span class="cdb-kpi-note" id="cdb-sources-note">Loading provenance</span></article>
+            </div>
+
+            <div class="cdb-workarea">
+              <div class="cdb-fabric" aria-label="Live intelligence signal fabric">
+                <canvas id="cdbSignalCanvas" aria-hidden="true"></canvas>
+                <div class="cdb-fabric-overlay">
+                  <span class="cdb-fabric-label">Live Intelligence Signal Fabric</span>
+                  <span class="cdb-fabric-note">Abstract topology generated from the current priority feed. It visualizes signal relationships and severity only; it is not a geographic attribution map.</span>
+                </div>
+              </div>
+              <div class="cdb-feed" aria-label="SOC and CTI analyst priority queue" id="cdb-triage-feed">
+                <div class="cdb-feed-row"><span class="cdb-sev low">LOAD</span><span><span class="cdb-feed-title">Loading first-party priority intelligence</span><span class="cdb-feed-sub">No synthetic incident queue is displayed.</span></span><span class="cdb-feed-time">—</span></div>
+              </div>
+            </div>
+
+            <div class="cdb-workflow" aria-label="Operational analyst workflow">
+              <a class="cdb-step" href="/intel/"><span class="cdb-step-num">01 · TRIAGE</span><strong>Prioritize Intelligence</strong><span>Source-bound records ordered for analyst review.</span></a>
+              <a class="cdb-step" href="/dossier.html"><span class="cdb-step-num">02 · INVESTIGATE</span><strong>Evidence Context</strong><span>Pivot into entity and evidence-linked context.</span></a>
+              <a class="cdb-step" href="/hunts.html"><span class="cdb-step-num">03 · HUNT</span><strong>Threat Hunting</strong><span>Move intelligence into hunting workflows.</span></a>
+              <a class="cdb-step" href="/detections/"><span class="cdb-step-num">04 · DETECT</span><strong>Detection Content</strong><span>Review mapped detection engineering content.</span></a>
+              <a class="cdb-step" href="/api-dashboard.html"><span class="cdb-step-num">05 · WATCH / API</span><strong>Customer Operations</strong><span>Use authenticated customer access and API controls.</span></a>
+              <a class="cdb-step" href="/customer-assurance.html"><span class="cdb-step-num">06 · EVIDENCE</span><strong>Assurance Review</strong><span>Inspect control evidence and assurance boundaries.</span></a>
+            </div>
+          </div>
+        </section>
       </div>
-    </form>
-    <div class="soc2-cti-legend" aria-label="Triage semantics">
-      <span><b>CRITICAL/HIGH/MEDIUM/LOW</b> = technical severity when sourced</span>
-      <span><b>CISA KEV</b> = catalog-confirmed known exploitation</span>
-      <span><b>Priority</b> = analyst workflow ordering, not a substitute for CVSS</span>
+
+      <aside class="cdb-stack" aria-label="Assurance and customer operations">
+        <section class="cdb-panel">
+          <div class="cdb-panel-head">
+            <div class="cdb-panel-title">Compliance & Customer Assurance</div>
+            <div class="cdb-panel-meta">Truth-bound production state</div>
+          </div>
+          <div class="cdb-panel-body">
+            <div class="cdb-assurance">
+              <div class="cdb-assurance-row"><div class="cdb-assurance-top"><span class="cdb-assurance-name">SOC 2 Posture</span><span class="cdb-assurance-state warn" id="cdb-soc2-state">VERIFY</span></div><div class="cdb-assurance-desc">Operational control evidence only. No Type I/II auditor attestation is claimed.</div></div>
+              <div class="cdb-assurance-row"><div class="cdb-assurance-top"><span class="cdb-assurance-name">Intelligence Integrity</span><span class="cdb-assurance-state" id="cdb-integrity-state">VERIFY</span></div><div class="cdb-assurance-desc">Source identity, evidence context, freshness, and limitations are preserved where available.</div></div>
+              <div class="cdb-assurance-row"><div class="cdb-assurance-top"><span class="cdb-assurance-name">Synthetic Customer Telemetry</span><span class="cdb-assurance-state" id="cdb-synthetic-state">VERIFY</span></div><div class="cdb-assurance-desc">Customer, viewer, incident, adoption, and scarcity metrics are not fabricated.</div></div>
+              <div class="cdb-assurance-row"><div class="cdb-assurance-top"><span class="cdb-assurance-name">Contractual SLA</span><span class="cdb-assurance-state warn" id="cdb-sla-state">VERIFY</span></div><div class="cdb-assurance-desc">Response objectives and SLA obligations apply only where explicitly executed with a customer.</div></div>
+              <div class="cdb-assurance-row"><div class="cdb-assurance-top"><span class="cdb-assurance-name">CTI Delivery Acceptance</span><span class="cdb-assurance-state" id="cdb-accept-state">VERIFY</span></div><div class="cdb-assurance-desc">Acceptance remains an explicit customer-owned technical decision; it is never inferred from payment.</div></div>
+            </div>
+            <div class="cdb-statusline">
+              <span class="cdb-statusitem">Feed timestamp: <strong id="cdb-feed-time">verifying</strong></span>
+              <span class="cdb-statusitem">API-key boundary: protected operations</span>
+              <span class="cdb-statusitem">Production assets: allowlisted</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="cdb-panel">
+          <div class="cdb-panel-head">
+            <div class="cdb-panel-title">Operational Search & Customer Entry</div>
+            <div class="cdb-panel-meta">Real actions only</div>
+          </div>
+          <div class="cdb-panel-body">
+            <form class="cdb-search" action="/search.html" method="get" role="search" aria-label="Search cyber threat intelligence">
+              <input name="q" type="search" required autocomplete="off" placeholder="Search CVE, vendor, malware, actor, IOC…" aria-label="Search intelligence">
+              <button type="submit">SEARCH CTI</button>
+            </form>
+            <div class="cdb-quick">
+              <a href="/service-status.html">Service Evidence</a>
+              <a href="/enterprise-onboarding.html">Enterprise Onboarding</a>
+              <a href="/customer-incident-response.html">Incident Escalation</a>
+              <a href="/cti-delivery-acceptance.html">Delivery Acceptance</a>
+              <a href="/api/intel/customer-assurance.json">Assurance JSON</a>
+              <a href="/enterprise.html">Enterprise Review</a>
+            </div>
+          </div>
+        </section>
+      </aside>
     </div>
 
-    <div class="soc2-cti-grid" aria-label="Operational assurance status">
-      <article class="soc2-cti-card" id="soc2-home-runtime-card">
-        <span class="soc2-cti-label">Production Runtime</span>
-        <strong class="soc2-cti-value cyan" id="soc2-home-runtime">VERIFYING</strong>
-        <span class="soc2-cti-meta" id="soc2-home-runtime-meta">Checking first-party intelligence availability.</span>
-      </article>
-      <article class="soc2-cti-card" id="soc2-home-assurance-card">
-        <span class="soc2-cti-label">SOC 2 Posture</span>
-        <strong class="soc2-cti-value warn" id="soc2-home-assurance">ALIGNED · NOT CERTIFIED</strong>
-        <span class="soc2-cti-meta">Operational evidence model with explicit non-certification boundary.</span>
-      </article>
-      <article class="soc2-cti-card" data-state="ok">
-        <span class="soc2-cti-label">Intelligence Integrity</span>
-        <strong class="soc2-cti-value ok">SOURCE-BOUND</strong>
-        <span class="soc2-cti-meta">Evidence, provenance, freshness, and limitations preserved where available.</span>
-      </article>
-      <article class="soc2-cti-card" data-state="ok">
-        <span class="soc2-cti-label">Synthetic Telemetry</span>
-        <strong class="soc2-cti-value ok">DISABLED</strong>
-        <span class="soc2-cti-meta">No fabricated customer activity, viewer counts, or false SOC operational metrics.</span>
-      </article>
-    </div>
-
-    <div class="soc2-cti-livegrid" aria-label="Live CTI operational metrics">
-      <article class="soc2-live-stat"><span class="soc2-live-k">Published Intel</span><strong class="soc2-live-v" id="soc2-total-published">—</strong><span class="soc2-live-m">First-party published corpus</span></article>
-      <article class="soc2-live-stat" data-tone="critical"><span class="soc2-live-k">Critical</span><strong class="soc2-live-v" id="soc2-critical-count">—</strong><span class="soc2-live-m">Current feed records labelled critical</span></article>
-      <article class="soc2-live-stat" data-tone="kev"><span class="soc2-live-k">CISA KEV</span><strong class="soc2-live-v" id="soc2-kev-count">—</strong><span class="soc2-live-m">Catalog-confirmed known exploitation</span></article>
-      <article class="soc2-live-stat" data-tone="exploit"><span class="soc2-live-k">Exploited</span><strong class="soc2-live-v" id="soc2-exploited-count">—</strong><span class="soc2-live-m">Records carrying exploitation evidence</span></article>
-      <article class="soc2-live-stat" data-tone="source"><span class="soc2-live-k">Sources</span><strong class="soc2-live-v" id="soc2-source-count">—</strong><span class="soc2-live-m">Attributed pipeline sources</span></article>
-      <article class="soc2-live-stat" data-tone="fresh"><span class="soc2-live-k">Pipeline Age</span><strong class="soc2-live-v" id="soc2-pipeline-age">VERIFYING</strong><span class="soc2-live-m" id="soc2-pipeline-time">Runtime-derived freshness</span></article>
-    </div>
-
-    <div class="soc2-cti-controlbar">
-      <div class="soc2-control-panel" aria-label="Production control evidence">
-        <div class="soc2-control-title">Production Control Evidence <span>Fail-closed release</span></div>
-        <div class="soc2-control-row"><span class="soc2-control-name">Change integrity</span><span class="soc2-control-evidence">Exact Git SHA → Cloudflare deployment</span><span class="soc2-control-state">ENFORCED</span></div>
-        <div class="soc2-control-row"><span class="soc2-control-name">Public exposure</span><span class="soc2-control-evidence">Allowlisted production asset bundle</span><span class="soc2-control-state">ENFORCED</span></div>
-        <div class="soc2-control-row"><span class="soc2-control-name">Customer access</span><span class="soc2-control-evidence">API-key boundary for protected operations</span><span class="soc2-control-state">ENFORCED</span></div>
-        <div class="soc2-control-row"><span class="soc2-control-name">SOC 2 status</span><span class="soc2-control-evidence">Operational evidence model only</span><span class="soc2-control-state warn">NOT CERTIFIED</span></div>
-      </div>
-      <div class="soc2-control-panel soc2-assurance-summary" aria-label="Customer assurance summary">
-        <div class="soc2-control-title">Customer Assurance <span>Truth boundary</span></div>
-        <p><strong>Source provenance:</strong> source identity and evidence context are retained where available.</p>
-        <p><strong>Freshness:</strong> derived from first-party pipeline timestamps; no fixed-latency promise is inferred.</p>
-        <p><strong>Telemetry:</strong> synthetic viewer, customer, incident, or adoption metrics are prohibited.</p>
-        <p><strong>Compliance:</strong> SOC 2-aligned controls support due diligence but do not replace an independent auditor attestation.</p>
-      </div>
-    </div>
-
-    <div class="soc2-cti-workflow" aria-label="SOC and CTI workflow">
-      <a class="soc2-cti-step" href="/intel/"><strong>01 · Triage</strong><span>Prioritize source-bound intelligence.</span></a>
-      <a class="soc2-cti-step" href="/dossier.html"><strong>02 · Investigate</strong><span>Open evidence-linked entity context.</span></a>
-      <a class="soc2-cti-step" href="/hunts.html"><strong>03 · Hunt</strong><span>Move intelligence into hunting workflow.</span></a>
-      <a class="soc2-cti-step" href="/detections/"><strong>04 · Detect</strong><span>Review mapped detection content.</span></a>
-      <a class="soc2-cti-step" href="/api-dashboard.html"><strong>05 · Watch / API</strong><span>Authenticate for customer operations.</span></a>
-      <a class="soc2-cti-step" href="/customer-assurance.html"><strong>06 · Evidence</strong><span>Review assurance and control boundary.</span></a>
-    </div>
-
-    <div class="soc2-cti-truth">
-      <strong>Assurance boundary:</strong>
-      <span>SOC 2-aligned operational evidence; no SOC 2 certification or auditor attestation is claimed.</span>
-    </div>
+    <div class="cdb-truth"><strong>ASSURANCE BOUNDARY</strong><span>SENTINEL APEX exposes SOC 2-aligned operational evidence and customer assurance controls. It does not claim SOC 2 Type I or Type II certification. Live CTI metrics above are derived from first-party production data; no synthetic SOC incident or customer-adoption counters are used.</span></div>
   </div>
 </section>
 
@@ -2523,110 +2440,7 @@ input:focus, textarea:focus {
     <span class="apex-status-pill green-pill"><span class="spill-dot"></span>Updated <strong id="sb-time">--:--:-- UTC</strong></span>
   </div>
 </div>
-<!-- HERO -->
-<div class="hero">
-  <!-- Decorative orbital rings -->
-  <div class="hero-orbital"></div>
-  <div class="hero-orbital hero-orbital-2"></div>
-
-  <div class="hero-content">
-  <div class="hero-terminal">
-    <span class="hero-terminal-text" id="heroTerminal"></span><span class="cursor">&#9608;</span>
-  </div>
-  <div class="hero-label" id="hero-label-bar">
-    <span class="hero-label-dot"></span>
-    <span class="hero-label-static">⚡ SENTINEL APEX v4.0</span>
-    <span class="hero-label-sep">—</span>
-    <div class="hero-label-rotate" id="hero-label-rotate">
-      <span class="active" data-color="cyan">AI-Powered Threat Intelligence Platform</span>
-      <span data-color="red">Source-Attributed Vulnerability Alerts</span>
-      <span data-color="orange">Official CISA KEV Catalog Ingestion</span>
-      <span data-color="purple">Evidence-Bound APT &amp; Campaign Intelligence</span>
-      <span data-color="cyan">Sigma &amp; YARA Reference Drafts — Validate Before Deployment</span>
-      <span data-color="yellow">Ransomware Intelligence — Source &amp; Freshness Bound</span>
-      <span data-color="green">Enterprise API — Free Tier Available Now</span>
-      <span data-color="red">OWASP LLM Top 10 — AI Security Coverage</span>
-      <span data-color="purple">MITRE ATT&amp;CK Detection Engineering Hub</span>
-    </div>
-  </div>
-  <h1>
-    <span class="cyan">Analyst-Grade</span> AI-Powered<br>
-    Cybersecurity Intelligence<br>
-    <span class="red">Evidence-Bound · Runtime Verified</span>
-  </h1>
-  <p class="hero-desc">
-    CYBERDUDEBIVASH SENTINEL APEX ingests the official <span id="kevCount" style="color:var(--apex-cyan);font-weight:800">CISA KEV</span>
-    catalog and public security sources &mdash; producing source-attributed CVE summaries,
-    evidence labels, reference detections, and response guidance with explicit limitations.
-  </p>
-  <!-- HERO CTAs — tri-button layout -->
-  <div class="hero-actions">
-    <a href="/api-dashboard.html" class="btn-primary">
-      <span>🔑</span> Get Free API Key
-    </a>
-    <a href="#reports" class="btn-secondary">
-      <span>📋</span> View Intel Reports
-    </a>
-    <a href="/pricing.html" class="btn-api">
-      <span>⚡</span> SOC Pro — $18/mo
-    </a>
-  </div>
-  <!-- SOCIAL PROOF STRIP -->
-  <div class="hero-trust-strip">
-    <span class="hero-trust-item">
-      <span class="hero-trust-dot blink" style="background:var(--apex-green)"></span>
-      <span style="color:#6b7280">Feed</span> &nbsp;<strong>Source timestamp shown</strong>
-    </span>
-    <span class="hero-trust-sep">&#9679;</span>
-    <span class="hero-trust-item">
-      &#128218; <strong>Public</strong> intelligence archive
-    </span>
-    <span class="hero-trust-sep">&#9679;</span>
-    <span class="hero-trust-item">&#128269; Source links and evidence boundaries</span>
-    <span class="hero-trust-sep">&#9679;</span>
-    <span class="hero-trust-item">&#128272; Free API — No credit card</span>
-  </div>
-  <!-- Evidence policy summary; current intelligence is rendered from the feed below. -->
-  <div id="apex-daily-digest" style="background:rgba(255,0,64,0.05);border:1px solid rgba(255,0,64,0.25);border-radius:12px;padding:18px 24px;text-align:left;margin-top:28px;">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-      <span style="width:8px;height:8px;border-radius:50%;background:#ff0040;box-shadow:0 0 10px rgba(255,0,64,0.7);animation:blink 1s infinite;display:inline-block;flex-shrink:0;"></span>
-      <span style="font-size:10px;font-weight:900;color:#ff4d6d;letter-spacing:2px;text-transform:uppercase;">INTELLIGENCE EVIDENCE POLICY</span>
-      <span id="digest-date" style="font-size:10px;color:#475569;margin-left:auto;white-space:nowrap;"></span>
-    </div>
-    <div class="digest-row">
-      <span class="digest-badge dbadge-zd">CVSS</span>
-      <span class="digest-text">Shown only when a numeric score exists in an ingested source; severity labels are not converted into fake scores.</span>
-    </div>
-    <div class="digest-row">
-      <span class="digest-badge dbadge-kev">CISA KEV</span>
-      <span class="digest-text">Structured KEV records confirm in-the-wild exploitation; news stories mentioning KEV are not relabeled as catalog records.</span>
-    </div>
-    <div class="digest-row">
-      <span class="digest-badge dbadge-apt">DETECTIONS</span>
-      <span class="digest-text">Machine-generated rules are reference drafts, not production-validated or false-positive-tested detections.</span>
-    </div>
-    <div class="digest-row">
-      <span class="digest-badge dbadge-rsm">FRESHNESS</span>
-      <span class="digest-text">Feed status uses the pipeline source timestamp. Stale or unavailable data is labeled explicitly.</span>
-    </div>
-  </div>
-  <div class="hero-live-stats">
-    <div class="hls-item">
-      <span class="hls-dot" style="background:#ff0040"></span>
-      <span id="cisaToday">Loading...</span> new CISA KEV today
-    </div>
-    <div class="hls-item">
-      <span class="hls-dot" style="background:#ff8c00"></span>
-      <span id="kevTotal">Loading...</span> total KEV entries
-    </div>
-    <div class="hls-item">
-      <span class="hls-dot blink" style="background:#00ff88"></span>
-      Public-feed availability checked in the intelligence panel
-    </div>
-  </div>
-  </div><!-- /hero-content -->
-</div>
-
+<!-- Legacy promotional hero removed: live command center is the primary homepage surface. -->
 <!-- VERIFIABLE TRUST CONTROLS -->
 <div class="stats-bar">
   <div class="stats-inner">
@@ -4030,7 +3844,7 @@ function typeTerminal() {
     setTimeout(() => { tl++; tc = 0; termEl.textContent = ''; typeTerminal(); }, 1800);
   }
 }
-typeTerminal();
+if (termEl) typeTerminal();
 
 // =============================================
 // 2B. HERO LABEL ROTATING TAGLINES
@@ -4326,5 +4140,6 @@ document.addEventListener('keydown', function(e) {
 })();
 
 </script>
+<script src="/apex-command-center.js?v=20260928" defer></script>
 </body>
 </html>
