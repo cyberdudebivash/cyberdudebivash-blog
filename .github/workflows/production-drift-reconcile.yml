@@ -1,6 +1,16 @@
 name: "🧭 SENTINEL APEX — Production Drift Reconciler"
 
 on:
+  workflow_run:
+    workflows:
+      - "⚡ SENTINEL APEX v5.0 — High-Frequency Global Intel Pipeline"
+      - "🧠 SENTINEL APEX — AI Security Intelligence Pipeline"
+      - "🛰 SENTINEL APEX — Auto CVE Page Generator"
+      - "🛰 SENTINEL APEX — Auto RSS Generator"
+      - "🛰 SENTINEL APEX — Intelligence Hub Generator"
+      - "⚡ CYBERDUDEBIVASH® — Blogger Syndication Engine"
+    types: [completed]
+    branches: [main]
   schedule:
     - cron: "*/30 * * * *"
   workflow_dispatch:
@@ -16,6 +26,7 @@ concurrency:
 jobs:
   reconcile:
     name: "Reconcile main with Cloudflare production"
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
