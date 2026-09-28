@@ -150,6 +150,17 @@ describe('build-cloudflare-assets', () => {
     assert.ok(outputFiles.some(f => f.startsWith('api/intel/') && f.endsWith('.json')), 'expected at least one api/intel/*.json');
   });
 
+  test('SOC 2 customer-release surfaces do not publish unconditional response-time guarantees', () => {
+    const contact = fs.readFileSync(path.join(OUT, 'contact.html'), 'utf8');
+    assert.doesNotMatch(contact, /24\s+(?:business\s+)?hours?/i, 'contact page must not invent a public response-time SLA');
+    assert.doesNotMatch(contact, /response[^.]{0,80}guarantee/i, 'contact page must not publish an unsupported response guarantee');
+
+    const incident = fs.readFileSync(path.join(OUT, 'customer-incident-response.html'), 'utf8');
+    assert.match(incident, /No public response-time guarantee is created by this page/i);
+    assert.match(incident, /security@cyberdudebivash\.in/);
+    assert.match(incident, /contact@cyberdudebivash\.in/);
+  });
+
   test('_headers is written to the build output and matches the exported constant', () => {
     assert.ok(outputFiles.includes('_headers'), 'expected _headers in dist-public/');
     const onDisk = fs.readFileSync(path.join(OUT, '_headers'), 'utf8');
