@@ -375,7 +375,92 @@ def test_taxonomy_pivot_runtime_filters_rendered_intelligence_only():
     assert "feed.querySelectorAll('.intel-post')" in pivots
     assert "data-filter-query" in pivots
     assert "data-triage-search" in pivots
-    assert "No current match in rendered feed" in pivots
+    assert "0 matches in the current first-party feed" in pivots
+    assert "this does not assert absence in your environment" in pivots
     assert "new MutationObserver(refresh)" in pivots
     assert "group.split(/\\s+/)" in pivots
     assert "group.split(/s+/)" not in pivots
+
+
+def test_revenue_sample_funnel_is_real_first_party_and_published():
+    html = Path("leads.html").read_text(encoding="utf-8")
+    build = Path("scripts/build-cloudflare-assets.js").read_text(encoding="utf-8")
+    for required in [
+        "/api/v1/newsletter",
+        "free_sample_report",
+        "SA-2026-0001",
+        "SA-2026-0002",
+        "SA-2026-0003",
+        "/privacy.html",
+        "/terms.html",
+    ]:
+        assert required in html
+    assert "'leads.html'" in build
+    assert "formsubmit.co" not in html.lower()
+
+
+def test_legacy_product_checkout_stays_fail_closed_and_routes_to_sellable_offers():
+    html = Path("products.html").read_text(encoding="utf-8")
+    assert "create-product-checkout" not in html
+    assert "/intelligence-store.html" in html
+    assert "/pricing.html" in html
+    assert "legacy_product_interest" in html
+    assert "exact artifact is verified deliverable" in html
+    assert "Register SKU Interest" in html
+
+
+def test_commercial_ctas_preserve_selected_intelligence_context():
+    engine = Path("auto-intel-engine.js").read_text(encoding="utf-8")
+    for required in [
+        "function contextualUrl(base, item, intent)",
+        "u.searchParams.set('entity_type'",
+        "u.searchParams.set('entity_id'",
+        "u.searchParams.set('title'",
+        "u.searchParams.set('intent'",
+        "contextualUrl(cp.primary.url,item,'detection-pack')",
+        "contextualUrl(cp.secondary.url,item,'api')",
+    ]:
+        assert required in engine
+
+
+def test_api_onboarding_is_explicit_and_terms_are_not_circular():
+    html = Path("api-dashboard.html").read_text(encoding="utf-8")
+    assert 'href="/terms.html"' in html
+    assert 'href="/privacy.html"' in html
+    assert "your key is issued immediately on this page" in html
+    assert "function unlockWatchlists()" in html
+    assert "Authentication required: enter your API key" in html
+    assert 'id="watchlist-private" class="hidden"' in html
+
+
+def test_dashboard_severity_uses_cvss_semantics_separate_from_priority():
+    api = Path("api/v1/intel.js").read_text(encoding="utf-8")
+    assert "function cvssSeverity(cvss, fallback)" in api
+    assert "if (n >= 9) return 'CRITICAL'" in api
+    assert "if (n >= 7) return 'HIGH'" in api
+    assert "severity: cvssSeverity(i.cvss, i.threat_level)" in api
+    assert "priority: String(i.threat_level || 'NOT_ASSESSED').toUpperCase()" in api
+
+
+def test_priority_queue_is_first_party_and_worker_routable():
+    api = Path("api/v1/intel.js").read_text(encoding="utf-8")
+    routes = Path("workers/lib/route-table.js").read_text(encoding="utf-8")
+    assert "'breaking'" in api
+    assert "i.exploited === true" in api
+    assert "sev === 'CRITICAL'" in api
+    assert "/breaking/index.html" in routes
+
+
+def test_primary_commercial_surfaces_do_not_promise_unimplemented_timed_trial():
+    for path in [
+        Path("api.html"),
+        Path("revenue-cta-block.js"),
+        Path("conversion-engine.js"),
+        Path("ai-monetization-engine.js"),
+        Path("ux-controller.js"),
+        Path("intelligence.html"),
+        Path("enterprise.html"),
+    ]:
+        text = path.read_text(encoding="utf-8-sig")
+        assert "Start 7-Day Free Trial" not in text
+        assert "48hr pre-disclosure" not in text.lower()

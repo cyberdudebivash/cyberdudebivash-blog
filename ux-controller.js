@@ -396,7 +396,7 @@
       urgency: 'Sigma + YARA rules — deploy to SIEM in minutes'
     },
     high: {
-      text:    '\u26A1 Start SOC Pro Free Trial \u2192',
+      text:    '\u26A1 View SOC Pro Plans \u2192',
       href:    '/pricing.html',
       cls:     'intent-high',
       urgency: '\uD83D\uDD25 23 spots left at $18/mo — normally $49'

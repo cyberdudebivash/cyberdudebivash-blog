@@ -476,8 +476,8 @@
       security_pro: {
         badge:    '\u26A1 SOC PRO MEMBERSHIP',
         headline: 'SOC Pro — Evidence-Linked Intel + Full IOC Access',
-        sub:      'Get critical CVE reports before NVD publication. Full IOC bundles, SIEM rules, and ransomware tracking. $18/month.',
-        cta:      'Start 7-Day Free Trial \u2192',
+        sub:      'Get source-linked critical CVE reports. Full IOC bundles, SIEM rules, and ransomware tracking. $18/month.',
+        cta:      'View Plans \u2192',
         url:      '/pricing.html'
       }
     };
@@ -1099,7 +1099,7 @@
           icon: '\u26A1',
           title: 'SOC Pro — Full Platform Access at $18/mo',
           sub:   'Evidence-linked CVE intelligence, complete IOC bundles, SIEM rules, ransomware tracker, and API access.',
-          cta:   'Start Free Trial \u2192',
+          cta:   'View Plans \u2192',
           url:   '/pricing.html',
           track: 'ctx_prod_gen_2'
         }

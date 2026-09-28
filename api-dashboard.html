@@ -128,7 +128,10 @@ footer{background:var(--apex-surface);border-top:1px solid var(--apex-border);pa
           </select>
         </div>
         <button class="btn btn-primary" onclick="registerKey()" id="reg-btn" style="width:100%">⚡ Generate My API Key</button>
-        <p style="font-size:12px;color:var(--apex-muted);margin-top:12px;text-align:center">By registering, you agree to our <a href="#" style="color:var(--apex-cyan)">Terms of Service</a>. No credit card required for Free tier.</p>
+        <div class="alert alert-info" style="font-size:12px;line-height:1.6;margin-top:12px">
+          <strong>What happens next:</strong> your key is issued immediately on this page after successful registration. Copy it once and store it in your password manager or secrets vault. No password account is created and the key is never persisted in browser storage.
+        </div>
+        <p style="font-size:12px;color:var(--apex-muted);margin-top:12px;text-align:center">By registering, you agree to our <a href="/terms.html" style="color:var(--apex-cyan)">Terms of Service</a> and <a href="/privacy.html" style="color:var(--apex-cyan)">Privacy Policy</a>. No credit card required for Free tier.</p>
       </div>
 
       <div id="key-result" class="card hidden">
@@ -214,6 +217,16 @@ const data = await res.json();</div>
 
 <!-- WATCHLISTS PANEL -->
 <div id="panel-watchlists" class="panel wrap">
+  <div class="card" id="watchlist-access-card">
+    <div class="card-title">🔐 Unlock Watchlists</div>
+    <p style="font-size:13px;color:var(--apex-muted);margin-bottom:14px">Watchlists are customer-scoped and require your SENTINEL APEX API key. The key is kept in memory for this page load only.</p>
+    <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap">
+      <div class="form-group" style="flex:1;min-width:260px;margin:0"><label for="wl-key">API Key</label><input id="wl-key" type="password" placeholder="sentinel_..."></div>
+      <button class="btn btn-primary" onclick="unlockWatchlists()">Load My Watchlists</button>
+    </div>
+    <div id="wl-auth-status" style="font-size:12px;color:var(--apex-muted);margin-top:10px">Enter your key to load tenant-scoped watchlists and delivery state.</div>
+  </div>
+  <div id="watchlist-private" class="hidden">
   <div class="card">
     <div class="card-title">📡 Create Watchlist</div>
     <div id="wl-create-alert" class="hidden"></div>
@@ -284,6 +297,7 @@ const data = await res.json();</div>
     <p style="font-size:13px;color:var(--apex-muted);margin-bottom:14px">Deliveries that exhausted every retry. Fix the underlying issue (e.g. your endpoint's uptime) before retrying, or it will likely dead-letter again.</p>
     <div id="notify-dead-letters" style="color:var(--apex-muted);font-size:13px">Loading…</div>
   </div>
+</div>
 </div>
 
 <!-- DOCS PANEL -->
@@ -517,7 +531,37 @@ function switchTab(id) {
   // greet the user with an intrusive alert() if that key has since been
   // revoked -- fail quietly back to signed-out instead.
   if(id==='dashboard'&&sessionKey) loadDashboard(true);
-  if(id==='watchlists'&&sessionKey) loadWatchlistsPanel();
+  if(id==='watchlists'){
+    var privatePanel=document.getElementById('watchlist-private');
+    var accessCard=document.getElementById('watchlist-access-card');
+    if(sessionKey){
+      if(privatePanel) privatePanel.classList.remove('hidden');
+      if(accessCard) accessCard.classList.add('hidden');
+      loadWatchlistsPanel();
+    }else{
+      if(privatePanel) privatePanel.classList.add('hidden');
+      if(accessCard) accessCard.classList.remove('hidden');
+      var status=document.getElementById('wl-auth-status');
+      if(status) status.textContent='Authentication required: enter your API key to load customer-scoped watchlists.';
+    }
+  }
+}
+
+function unlockWatchlists() {
+  const input=document.getElementById('wl-key');
+  const status=document.getElementById('wl-auth-status');
+  const key=input&&input.value.trim();
+  if(!key||!key.startsWith('sentinel_')){
+    if(status){status.style.color='var(--apex-red)';status.textContent='Enter a valid SENTINEL APEX API key (sentinel_…).';}
+    return;
+  }
+  persistKey(key);
+  if(status){status.style.color='var(--apex-green)';status.textContent='Key accepted for this page session. Loading watchlists…';}
+  const privatePanel=document.getElementById('watchlist-private');
+  const accessCard=document.getElementById('watchlist-access-card');
+  if(privatePanel) privatePanel.classList.remove('hidden');
+  if(accessCard) accessCard.classList.add('hidden');
+  loadWatchlistsPanel();
 }
 
 async function registerKey() {

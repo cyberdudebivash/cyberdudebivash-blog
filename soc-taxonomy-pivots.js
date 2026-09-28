@@ -17,7 +17,7 @@ function updatePivot(el){
   var query=el.getAttribute('data-filter-query')||'';
   var count=cards().filter(function(card){return matches(card,query);}).length;
   var state=el.querySelector('[data-pivot-state]');
-  if(state)state.textContent=count?count+' current matching record'+(count===1?'':'s'):'No current match in rendered feed';
+  if(state)state.textContent=count?count+' current matching record'+(count===1?'':'s'):'0 matches in the current first-party feed — this does not assert absence in your environment';
   el.setAttribute('data-match-count',String(count));
 }
 function applyPivot(el){

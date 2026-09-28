@@ -136,7 +136,7 @@ describe('build-cloudflare-assets', () => {
 
   test('expected public artifacts are present', () => {
     const mustExist = [
-      'index.html', 'robots.txt', 'rss.xml', 'sitemap.xml',
+      'index.html', 'leads.html', 'robots.txt', 'rss.xml', 'sitemap.xml',
       'search-index.json', 'live-intel.json',
       'apex-v13.css', 'analytics-engine.js', 'banner-orchestrator.js',
       'soc-cti-console.css', 'soc-triage-workspace.js', 'soc-taxonomy-pivots.js',
@@ -145,6 +145,7 @@ describe('build-cloudflare-assets', () => {
     for (const f of mustExist) {
       assert.ok(outputFiles.includes(f), `expected ${f} in dist-public/ but it was missing`);
     }
+    assert.ok(outputFiles.includes('breaking/index.html'), 'expected breaking/index.html in dist-public/');
     assert.ok(outputFiles.some(f => f.startsWith('posts/') && f.endsWith('.html')), 'expected at least one posts/*.html');
     assert.ok(outputFiles.some(f => f.startsWith('api/intel/') && f.endsWith('.json')), 'expected at least one api/intel/*.json');
   });
