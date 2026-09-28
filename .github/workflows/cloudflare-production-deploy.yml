@@ -295,7 +295,7 @@ jobs:
           grep -Fq '/customer-assurance.html' "$tmp/home.html" || { echo "::error::Homepage assurance navigation missing"; exit 1; }
           grep -Fq '/apex-command-center.css' "$tmp/home.html" || { echo "::error::Homepage command-center stylesheet missing"; exit 1; }
           grep -Fq '/apex-command-center.js' "$tmp/home.html" || { echo "::error::Homepage command-center runtime missing"; exit 1; }
-          grep -Fq '/responsive-platform.css?v=20260928-mobile1' "$tmp/home.html" || { echo "::error::Homepage responsive production layer missing"; exit 1; }
+          grep -Fq '/responsive-platform.css?v=20260928-mobile2' "$tmp/home.html" || { echo "::error::Homepage responsive production layer missing"; exit 1; }
           grep -Fq 'viewport-fit=cover' "$tmp/home.html" || { echo "::error::Homepage safe-area viewport configuration missing"; exit 1; }
 
           fetch_asset "/apex-command-center.css" "$tmp/apex-command-center.css"
@@ -306,6 +306,11 @@ jobs:
           grep -Fq '@media (max-width:480px)' "$tmp/responsive-platform.css" || { echo "::error::Small-phone breakpoint missing"; exit 1; }
           grep -Fq 'env(safe-area-inset-bottom' "$tmp/responsive-platform.css" || { echo "::error::Safe-area handling missing"; exit 1; }
           grep -Fq '.mobile-nav-drawer' "$tmp/responsive-platform.css" || { echo "::error::Responsive mobile navigation hardening missing"; exit 1; }
+          grep -Fq 'overflow-x:auto!important' "$tmp/responsive-platform.css" || { echo "::error::Horizontal panoramic access missing"; exit 1; }
+          grep -Fq '.mobile-nav-drawer a:not(.nav-cta)' "$tmp/responsive-platform.css" || { echo "::error::Mobile drawer link visibility guard missing"; exit 1; }
+          grep -Fq 'min-width:930px!important' "$tmp/responsive-platform.css" || { echo "::error::SOC/CTI workspace pan width missing"; exit 1; }
+          grep -Fq 'scroll-snap-type:x proximity' "$tmp/responsive-platform.css" || { echo "::error::Touch swipe lane behavior missing"; exit 1; }
+          if grep -Fq 'overflow-x:clip' "$tmp/responsive-platform.css"; then echo "::error::Responsive CSS still clips horizontal customer content"; exit 1; fi
           grep -Fq "fetchJson('/live-intel.json')" "$tmp/apex-command-center.js" || { echo "::error::Command center is not bound to first-party live intelligence"; exit 1; }
           grep -Fq "fetchJson('/api/intel/customer-assurance.json')" "$tmp/apex-command-center.js" || { echo "::error::Command center customer assurance binding missing"; exit 1; }
           grep -Fq "a.cti_controls.source_bound_evidence?'SOURCE-BOUND':'VERIFY'" "$tmp/apex-command-center.js" || { echo "::error::Command center source-bound assurance derivation missing"; exit 1; }
