@@ -237,13 +237,21 @@ jobs:
             local route="$1"
             local file="$2"
             local code=""
+            local ready=0
             for attempt in 1 2 3 4 5 6; do
               code="$(curl -sS -L --max-time 25 -H 'Cache-Control: no-cache' -o "$file" -w '%{http_code}' "$base$route?release_sha=$GITHUB_SHA" || true)"
-              if [ "$code" = "200" ]; then break; fi
-              echo "Waiting for homepage propagation: $route attempt $attempt status=$code"
+              if [ "$code" = "200" ] \
+                && grep -Fq 'Live CTI operational metrics' "$file" \
+                && grep -Fq 'id="soc2-kev-count"' "$file" \
+                && grep -Fq 'id="soc2-pipeline-age"' "$file"; then
+                ready=1
+                break
+              fi
+              echo "Waiting for homepage release propagation: $route attempt $attempt status=$code"
               sleep 10
             done
             test "$code" = "200" || { echo "::error::$route returned HTTP $code"; exit 1; }
+            test "$ready" -eq 1 || { echo "::error::$route never exposed the current SOC 2 + CTI release markers"; exit 1; }
           }
 
           fetch_page "/" "$tmp/home.html"
