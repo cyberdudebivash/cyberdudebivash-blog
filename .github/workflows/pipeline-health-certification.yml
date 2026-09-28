@@ -1,6 +1,10 @@
 name: "🏥 SENTINEL APEX Pipeline Health Certification v1.0"
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/pipeline-health-certification.yml'
   schedule:
     # Every 30 minutes — independent validation of pipeline health.
     # Minutes :19/:49 (was :00/:30) so this doesn't stack with the other 8
@@ -33,14 +37,14 @@ jobs:
 
     steps:
       - name: "Checkout repository"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 1
 
       - name: "Setup Node.js"
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: "20"
+          node-version: "24"
 
       # No dependency install step: every CATEGORY check below uses only
       # Node's built-in `fs`/`require()` of local JSON files -- no installed
