@@ -582,6 +582,9 @@ def test_homepage_is_soc2_cti_customer_command_center_and_not_static_incident_ma
         "Open Hybrid SOC + CTI operational workspace",
         "PRIORITY INTELLIGENCE",
         "Review customer control and evidence posture",
+        "Evidence-Bound Analyst Queues",
+        "No synthetic victim counters",
+        "Source and freshness bound",
         "Evidence-Bound · Runtime Verified",
     ]:
         assert required in html
@@ -591,6 +594,15 @@ def test_homepage_is_soc2_cti_customer_command_center_and_not_static_incident_ma
         "Nation-State APT Tracking in Real Time",
         "Ransomware Group Activity — Live Updates",
         "FEED STATUS: <strong>SHOWN BELOW</strong>",
+        "Most Exploited CVEs This Week",
+        "67 Victims",
+        "$4.2B Demanded",
+        "3B Users at Risk",
+        "2 Unpatched",
+        "PoC in Wild",
+        "73% of production enterprise AI deployments vulnerable",
+        "67% of successful attacks go undetected for 72+ hours",
+        "150GB exfiltrated",
     ]:
         assert forbidden not in html
 
