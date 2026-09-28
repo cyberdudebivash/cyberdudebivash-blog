@@ -559,7 +559,7 @@ def test_cloudflare_release_fail_closes_on_soc2_cti_customer_assurance():
         'fetch_page "/customer-assurance.html"',
         "SOC 2-aligned operational evidence; not SOC 2 certified.",
         'fetch_page "/api/intel/customer-assurance.json"',
-        '"soc2_certified": false',
+        ".soc2_certified == false",
         "CTI customer assurance certified",
     ]:
         assert required in workflow
