@@ -106,8 +106,8 @@ function walk(dir) {
 test('customer experience injector handles valid HTML and malformed public HTML is rejected', () => {
   const valid = '<!doctype html><html><head><title>x</title></head><body><main>x</main></body></html>';
   const injected = injectCustomerExperience(valid);
-  assert.match(injected, /customer-experience\.css\?v=20260928-cx1/);
-  assert.match(injected, /customer-experience\.js\?v=20260928-cx1/);
+  assert.match(injected, /customer-experience\.css\?v=20260928-cx2/);
+  assert.match(injected, /customer-experience\.js\?v=20260928-cx2/);
   assert.throws(
     () => validatePublicHtmlStructure('<html><head><style>truncated', 'broken.html'),
     /Malformed public HTML: broken\.html/
@@ -173,9 +173,12 @@ describe('build-cloudflare-assets', () => {
     assert.ok(htmlFiles.length > 100, 'expected a substantial number of public HTML pages');
     for (const rel of htmlFiles) {
       const html = fs.readFileSync(path.join(OUT, rel), 'utf8');
-      assert.match(html, /\/customer-experience\.css\?v=20260928-cx1/, rel + ' missing customer experience CSS');
-      assert.match(html, /\/customer-experience\.js\?v=20260928-cx1/, rel + ' missing customer experience JS');
+      assert.match(html, /\/customer-experience\.css\?v=20260928-cx2/, rel + ' missing customer experience CSS');
+      assert.match(html, /\/customer-experience\.js\?v=20260928-cx2/, rel + ' missing customer experience JS');
       assert.match(html, /name=["']viewport["']/i, rel + ' missing viewport metadata');
+      assert.match(html, /viewport-fit=cover/i, rel + ' missing safe-area viewport support');
+      assert.match(html, /<html[^>]+lang=["']en["']/i, rel + ' missing document language');
+      assert.match(html, /<meta\s+charset=["']?utf-8["']?/i, rel + ' missing UTF-8 declaration');
     }
   });
 
@@ -226,6 +229,19 @@ describe('build-cloudflare-assets', () => {
     }
 
     assert.deepEqual(offenders, [], 'unresolved internal links:\n' + offenders.slice(0, 100).join('\n'));
+  });
+
+  test('public forms and interactive controls avoid broken static patterns', () => {
+    const offenders = [];
+    for (const rel of outputFiles.filter(f => f.endsWith('.html'))) {
+      const html = fs.readFileSync(path.join(OUT, rel), 'utf8');
+      const markup = staticMarkupOnly(html);
+      if (/<form\b[^>]*\baction\s*=\s*["']\s*javascript:/i.test(markup)) offenders.push(rel + ': javascript form action');
+      if (/<button\b[^>]*\bdisabled\b[^>]*>\s*<\/button>/i.test(markup)) offenders.push(rel + ': empty disabled button');
+      if (/<a\b[^>]*\bhref\s*=\s*["']\s*javascript:/i.test(markup)) offenders.push(rel + ': javascript link');
+      if (/<input\b[^>]*type=["'](?:submit|button)["'][^>]*value=["']\s*["']/i.test(markup)) offenders.push(rel + ': empty input button label');
+    }
+    assert.deepEqual(offenders, [], 'public controls contain broken static patterns:\n' + offenders.slice(0, 100).join('\n'));
   });
 
   test('no public HTML artifact contains dead-link URL patterns', () => {
