@@ -644,3 +644,14 @@ def test_homepage_exposes_runtime_derived_cti_metrics_and_control_evidence():
     ]:
         assert required in html
 
+def test_homepage_release_gate_waits_for_current_release_markers_not_just_http_200():
+    workflow = Path(".github/workflows/cloudflare-production-deploy.yml").read_text(encoding="utf-8")
+    homepage_gate = workflow.split('name: "Certify SOC 2 + CTI homepage command center"', 1)[1].split('name: "Certify SOC 2 + CTI customer assurance"', 1)[0]
+    assert 'local ready=0' in homepage_gate
+    assert "grep -Fq 'Live CTI operational metrics' \"$file\"" in homepage_gate
+    assert 'grep -Fq \'id="soc2-kev-count"\' "$file"' in homepage_gate
+    assert 'grep -Fq \'id="soc2-pipeline-age"\' "$file"' in homepage_gate
+    assert 'ready=1' in homepage_gate
+    assert 'test "$ready" -eq 1' in homepage_gate
+    assert 'if [ "$code" = "200" ]; then break; fi' not in homepage_gate
+
