@@ -698,6 +698,50 @@ def test_homepage_exposes_runtime_derived_cti_metrics_and_control_evidence():
     ]:
         assert required in runtime
 
+def test_homepage_release_certifies_major_customer_routes():
+    workflow = Path(".github/workflows/cloudflare-production-deploy.yml").read_text(encoding="utf-8")
+    for required in [
+        'customer_route_check() {',
+        'customer_route_check "/intel/" "Live Threat Intelligence Feed"',
+        'customer_route_check "/hunts.html" "Threat Hunting Workspace"',
+        'customer_route_check "/detections/" "Traceable Detection Pack"',
+        'customer_route_check "/customer-assurance.html" "Operational assurance for enterprise CTI customers."',
+        'customer_route_check "/api-dashboard.html" "SENTINEL APEX API Dashboard"',
+        'customer_route_check "/service-status.html" "Availability without invented percentages."',
+        'customer_route_check "/enterprise-onboarding.html" "From security review to accepted CTI delivery."',
+        'customer_route_check "/customer-incident-response.html" "Customer Incident"',
+        'customer_route_check "/cti-delivery-acceptance.html" "Acceptance is evidence, not assumption."',
+        'customer_route_check "/products.html" "Premium Intelligence Reports"',
+        'customer_route_check "/pricing.html" "Security Intelligence That Actually Protects"',
+        'customer_route_check "/enterprise.html" "Threat Intelligence Built for Enterprise Security Teams"',
+        'customer_route_check "/search.html" "cybersecurity reports"',
+    ]:
+        assert required in workflow
+
+
+def test_homepage_command_center_meets_enterprise_visibility_floor():
+    html = Path("index.html").read_text(encoding="utf-8-sig")
+    css = Path("apex-command-center.css").read_text(encoding="utf-8")
+    assert "Hybrid SOC 2 + CTI Enterprise Security Intelligence Command Center" in html
+    assert "/apex-command-center.css?v=20260928-visibility1" in html
+    assert "/apex-command-center.js?v=20260928-visibility1" in html
+    for required in [
+        "#main-header nav a{",
+        "font-size:13px!important",
+        "min-height:48px",
+        ".cdb-panel-title{font-size:13.5px",
+        ".cdb-kpi-value{margin:11px 0 8px;font-size:32px",
+        ".cdb-feed-title{font-size:13px",
+        ".cdb-assurance-desc{font-size:11.8px",
+        ".cdb-search input{",
+        "height:50px",
+        ".cdb-quick a{",
+        "min-height:46px",
+        "a:focus-visible,button:focus-visible,input:focus-visible",
+    ]:
+        assert required in css
+
+
 def test_homepage_release_gate_waits_for_current_release_markers_not_just_http_200():
     workflow = Path(".github/workflows/cloudflare-production-deploy.yml").read_text(encoding="utf-8")
     homepage_gate = workflow.split('name: "Certify SOC 2 + CTI homepage command center"', 1)[1].split('name: "Certify SOC 2 + CTI customer assurance"', 1)[0]
