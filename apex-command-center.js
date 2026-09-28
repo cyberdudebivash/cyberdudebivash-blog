@@ -7,9 +7,17 @@
   var $=function(id){return document.getElementById(id);};
   var fmt=new Intl.NumberFormat('en-US');
   var state={feed:null,assurance:null,service:null,acceptance:null};
+  var fabricRaf=null;
 
   function safeText(v,fallback){return (v===0||v)?String(v):fallback;}
   function escapeText(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]);});}
+  function safeHref(v,fallback){
+    try{
+      var u=new URL(String(v||''),window.location.origin);
+      if(u.protocol!=='https:'&&u.protocol!=='http:')return fallback;
+      return u.href;
+    }catch(e){return fallback;}
+  }
   function age(iso){
     var t=Date.parse(iso||''); if(!Number.isFinite(t)) return {label:'UNKNOWN',minutes:null,iso:null};
     var mins=Math.max(0,Math.floor((Date.now()-t)/60000));
@@ -38,7 +46,7 @@
     if(box){
       if(!top.length){box.innerHTML='<div class="cdb-feed-row"><div></div><div><div class="cdb-feed-title">No current records available</div><div class="cdb-feed-sub">Feed returned no intelligence rows.</div></div></div>';}
       else box.innerHTML=top.map(function(it){
-        var sev=normalizeSeverity(it),cls=sev.toLowerCase(),href=it.link||('/search.html?q='+encodeURIComponent(it.id||it.title||'')),when=it._addedAt||it.pubDate||'';
+        var sev=normalizeSeverity(it),cls=sev.toLowerCase(),fallback='/search.html?q='+encodeURIComponent(it.id||it.title||''),href=safeHref(it.link,fallback),when=it._addedAt||it.pubDate||'';
         var a=age(when),flags=[];if(it.cisaKev)flags.push('CISA KEV');if(it.exploited)flags.push('EXPLOITED');if(it.ransomware)flags.push('RANSOMWARE');if(Number(it.iocCount)>0)flags.push(it.iocCount+' IOC');
         return '<a class="cdb-feed-row" href="'+escapeText(href)+'"><span class="cdb-sev '+cls+'">'+sev+'</span><span><span class="cdb-feed-title">'+escapeText(it.title||it.id||'Intelligence record')+'</span><span class="cdb-feed-sub">'+escapeText([it.id,it.source].concat(flags).filter(Boolean).join(' · '))+'</span></span><span class="cdb-feed-time">'+escapeText(a.iso?a.label:String(when||''))+'</span></a>';
       }).join('');
@@ -76,7 +84,8 @@
       return {x:w*.5+Math.cos(ang)*w*(.18+.17*(i%3)/2),y:h*.5+Math.sin(ang)*h*(.20+.15*((i+1)%3)/2),r:3+5*p,sev:normalizeSeverity(it),phase:i*.9};
     });
     nodes.unshift({x:w*.5,y:h*.5,r:8,sev:'CORE',phase:0});
-    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches,raf;
+    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(fabricRaf){cancelAnimationFrame(fabricRaf);fabricRaf=null;}
     function frame(ts){
       ctx.clearRect(0,0,w,h);
       var grd=ctx.createRadialGradient(w*.5,h*.5,10,w*.5,h*.5,Math.max(w,h)*.48);grd.addColorStop(0,'rgba(33,230,255,.07)');grd.addColorStop(1,'rgba(3,9,15,0)');ctx.fillStyle=grd;ctx.fillRect(0,0,w,h);
@@ -87,9 +96,9 @@
         ctx.beginPath();ctx.arc(n.x,n.y,n.r+5+Math.max(0,pulse),0,Math.PI*2);ctx.fillStyle='rgba('+color+',.08)';ctx.fill();
         ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);ctx.fillStyle='rgba('+color+',.88)';ctx.fill();
       });
-      if(!reduce)raf=requestAnimationFrame(frame);
+      if(!reduce)fabricRaf=requestAnimationFrame(frame);
     }
-    if(raf)cancelAnimationFrame(raf);frame(0);
+    frame(0);
   }
   function fetchJson(url){return fetch(url,{cache:'no-store',headers:{'Accept':'application/json'}}).then(function(r){if(!r.ok)throw new Error(url+' '+r.status);return r.json();});}
   Promise.allSettled([
