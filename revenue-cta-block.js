@@ -5,8 +5,8 @@
  * Personalizes CTA copy based on page context (CVE / ransomware / APT / AI).
  * v2.0 upgrades:
  *   - Intent-based card highlighting (CX4 INTENT integration)
- *   - Urgency badges on high-intent sessions (live countdown, scarcity)
- *   - Trust amplification (4,800+ subscribers, 1,200+ CVEs, live dot)
+ *   - Evidence-safe intent badges without fabricated scarcity
+ *   - Trust amplification through verifiable capability statements
  *   - Return-visitor social proof (personalized copy on v2+ sessions)
  *   - Anchor pricing + savings display on all cards
  *   - Intent upgrade listener → re-highlights cards in real-time
