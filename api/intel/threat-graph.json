@@ -1,15 +1,15 @@
 {
-  "generated": "2026-09-29T20:11:36.319Z",
+  "generated": "2026-09-29T23:55:00.688Z",
   "version": "1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX v4.0",
   "stats": {
-    "total_nodes": 14794,
+    "total_nodes": 14815,
     "actors": 8,
-    "cves": 6546,
-    "campaigns": 1453,
+    "cves": 6554,
+    "campaigns": 1463,
     "malware": 0,
-    "iocs": 910,
-    "edges": 4179
+    "iocs": 911,
+    "edges": 4192
   },
   "nodes": {
     "actor:lockbit": {
@@ -17215,7 +17215,7 @@
       "attributes": {
         "ioc_type": "domain",
         "confidence": 0.75,
-        "first_seen": "2026-07-25"
+        "first_seen": "2026-09-29"
       },
       "connections": []
     },
@@ -126615,7 +126615,7 @@
       "attributes": {
         "ioc_type": "domain",
         "confidence": 0.75,
-        "first_seen": "2026-08-31"
+        "first_seen": "2026-09-29"
       },
       "connections": []
     },
@@ -277669,12 +277669,12 @@
     "CVE-2026-86950": {
       "id": "CVE-2026-86950",
       "type": "CVE",
-      "name": "Critical: Critical Apple Zero-Day Vulnerability Actively Exploited in Attacks (CVE-2026-86950)",
+      "name": "Apple Patches CoreGraphics Zero-Day Linked to Sophisticated Targeted Attacks",
       "attributes": {
         "cvss": 0,
         "threat_level": "LOW",
-        "priority_score": 36,
-        "exploited": true,
+        "priority_score": 23,
+        "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
         "vendor": "",
@@ -278396,6 +278396,414 @@
         "type": "CVE_REPORT"
       },
       "connections": []
+    },
+    "CVE-2026-102272": {
+      "id": "CVE-2026-102272",
+      "type": "CVE",
+      "name": "PyJWT BOM Bypass",
+      "attributes": {
+        "cvss": 7.4,
+        "threat_level": "HIGH",
+        "priority_score": 68,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "pip",
+        "product": "PyJWT",
+        "published": "2026-09-29",
+        "type": "CVE_REPORT"
+      },
+      "connections": [
+        {
+          "target": "ioc:domain:www.google.com",
+          "relationship": "linked_to",
+          "confidence": 0.75
+        }
+      ]
+    },
+    "ioc:domain:www.google.com": {
+      "id": "ioc:domain:www.google.com",
+      "type": "IOC",
+      "name": "www.google.com",
+      "attributes": {
+        "ioc_type": "domain",
+        "confidence": 0.75,
+        "first_seen": "2026-09-29"
+      },
+      "connections": []
+    },
+    "CVE-2026-102599": {
+      "id": "CVE-2026-102599",
+      "type": "CVE",
+      "name": "Socket.IO: Engine.IO Protocol Revision Mismatch DoS",
+      "attributes": {
+        "cvss": 7.5,
+        "threat_level": "MEDIUM",
+        "priority_score": 63,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "engine.io",
+        "published": "2026-09-29",
+        "type": "CVE_REPORT"
+      },
+      "connections": [
+        {
+          "target": "ioc:domain:engine.io",
+          "relationship": "linked_to",
+          "confidence": 0.75
+        },
+        {
+          "target": "ioc:domain:socket.io",
+          "relationship": "linked_to",
+          "confidence": 0.75
+        }
+      ]
+    },
+    "CVE-2026-102278": {
+      "id": "CVE-2026-102278",
+      "type": "CVE",
+      "name": "brace-expansion: DoS via uncontrolled recursion on nested brace groups causing stack exhaustion",
+      "attributes": {
+        "cvss": 7.5,
+        "threat_level": "MEDIUM",
+        "priority_score": 61,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "brace-expansion",
+        "published": "2026-09-29",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-102276": {
+      "id": "CVE-2026-102276",
+      "type": "CVE",
+      "name": "brace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustion",
+      "attributes": {
+        "cvss": 7.5,
+        "threat_level": "MEDIUM",
+        "priority_score": 61,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "brace-expansion",
+        "published": "2026-09-29",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "GHSA-60595dcca94df8f1": {
+      "id": "GHSA-60595dcca94df8f1",
+      "type": "Intel",
+      "name": "Nodemailer: Quadratic backtracking in the addressparser free-text fallback allows remote denial of service",
+      "attributes": {
+        "cvss": 7.5,
+        "threat_level": "MEDIUM",
+        "priority_score": 61,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "nodemailer",
+        "published": "2026-09-29",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "GHSA-1ac66f3767923e1d": {
+      "id": "GHSA-1ac66f3767923e1d",
+      "type": "Intel",
+      "name": "adm-zip: Unhandled error event in async DEFLATE decompression crashes Node.js process (DoS)",
+      "attributes": {
+        "cvss": 7.5,
+        "threat_level": "MEDIUM",
+        "priority_score": 61,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "adm-zip",
+        "published": "2026-09-29",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-102266": {
+      "id": "CVE-2026-102266",
+      "type": "CVE",
+      "name": "PyJWT: PyJWK accepts empty HMAC keys, bypassing PyJWT's empty-key validation",
+      "attributes": {
+        "cvss": 7.4,
+        "threat_level": "MEDIUM",
+        "priority_score": 60,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "pip",
+        "product": "PyJWT",
+        "published": "2026-09-29",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-102273": {
+      "id": "CVE-2026-102273",
+      "type": "CVE",
+      "name": "PyJWT accepts public JWK containers as HMAC secrets",
+      "attributes": {
+        "cvss": 7.4,
+        "threat_level": "MEDIUM",
+        "priority_score": 60,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "pip",
+        "product": "PyJWT",
+        "published": "2026-09-29",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-102267": {
+      "id": "CVE-2026-102267",
+      "type": "CVE",
+      "name": "PyJWT: PyJWKClient follows redirects when fetching JWKS",
+      "attributes": {
+        "cvss": 7.4,
+        "threat_level": "MEDIUM",
+        "priority_score": 60,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "pip",
+        "product": "PyJWT",
+        "published": "2026-09-29",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-102271": {
+      "id": "CVE-2026-102271",
+      "type": "CVE",
+      "name": "PyJWT: Public keys in DER form are accepted as HMAC secrets, bypassing the CVE-2022-29217 guard",
+      "attributes": {
+        "cvss": 7.4,
+        "threat_level": "MEDIUM",
+        "priority_score": 60,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "pip",
+        "product": "pyjwt",
+        "published": "2026-09-29",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "campaign:cve-2026-102272": {
+      "id": "campaign:cve-2026-102272",
+      "type": "Campaign",
+      "name": "pip PyJWT Exploitation Campaign",
+      "attributes": {
+        "severity": "HIGH",
+        "item_count": 1,
+        "first_seen": "2026-09-29",
+        "last_seen": "2026-09-29",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-102272 | 2 shared IOC(s) across items"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-102272",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-102599": {
+      "id": "campaign:cve-2026-102599",
+      "type": "Campaign",
+      "name": "npm engine.io Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-29",
+        "last_seen": "2026-09-29",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-102599 | 2 shared IOC(s) across items"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-102599",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-102278": {
+      "id": "campaign:cve-2026-102278",
+      "type": "Campaign",
+      "name": "npm brace-expansion Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-29",
+        "last_seen": "2026-09-29",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-102278"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-102278",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-102276": {
+      "id": "campaign:cve-2026-102276",
+      "type": "Campaign",
+      "name": "npm brace-expansion Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-29",
+        "last_seen": "2026-09-29",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-102276"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-102276",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cluster-a112e9ed": {
+      "id": "campaign:cluster-a112e9ed",
+      "type": "Campaign",
+      "name": "npm nodemailer Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-29",
+        "last_seen": "2026-09-29",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900"
+      },
+      "connections": [
+        {
+          "target": "GHSA-60595dcca94df8f1",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cluster-46c61e36": {
+      "id": "campaign:cluster-46c61e36",
+      "type": "Campaign",
+      "name": "npm adm-zip Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-29",
+        "last_seen": "2026-09-29",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900"
+      },
+      "connections": [
+        {
+          "target": "GHSA-1ac66f3767923e1d",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-102266": {
+      "id": "campaign:cve-2026-102266",
+      "type": "Campaign",
+      "name": "pip PyJWT Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-29",
+        "last_seen": "2026-09-29",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-102266"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-102266",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-102273": {
+      "id": "campaign:cve-2026-102273",
+      "type": "Campaign",
+      "name": "pip PyJWT Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-29",
+        "last_seen": "2026-09-29",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-102273"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-102273",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-102267": {
+      "id": "campaign:cve-2026-102267",
+      "type": "Campaign",
+      "name": "pip PyJWT Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-29",
+        "last_seen": "2026-09-29",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-102267"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-102267",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-102271": {
+      "id": "campaign:cve-2026-102271",
+      "type": "Campaign",
+      "name": "pip pyjwt Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-29",
+        "last_seen": "2026-09-29",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-102271"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-102271",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
     }
   },
   "edges": [
@@ -316187,6 +316595,123 @@
       "sources": [
         "shared campaign: campaign:cve-2026-102676-and-cve-2026-102674"
       ]
+    },
+    {
+      "id": "CVE-2026-102272→linked_to→ioc:domain:www.google.com",
+      "source": "CVE-2026-102272",
+      "target": "ioc:domain:www.google.com",
+      "relationship": "linked_to",
+      "confidence": 0.75,
+      "first_seen": "2026-09-29",
+      "sources": []
+    },
+    {
+      "id": "CVE-2026-102599→linked_to→ioc:domain:engine.io",
+      "source": "CVE-2026-102599",
+      "target": "ioc:domain:engine.io",
+      "relationship": "linked_to",
+      "confidence": 0.75,
+      "first_seen": "2026-09-29",
+      "sources": []
+    },
+    {
+      "id": "CVE-2026-102599→linked_to→ioc:domain:socket.io",
+      "source": "CVE-2026-102599",
+      "target": "ioc:domain:socket.io",
+      "relationship": "linked_to",
+      "confidence": 0.75,
+      "first_seen": "2026-09-29",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-102272→includes→CVE-2026-102272",
+      "source": "campaign:cve-2026-102272",
+      "target": "CVE-2026-102272",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-29",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-102599→includes→CVE-2026-102599",
+      "source": "campaign:cve-2026-102599",
+      "target": "CVE-2026-102599",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-29",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-102278→includes→CVE-2026-102278",
+      "source": "campaign:cve-2026-102278",
+      "target": "CVE-2026-102278",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-29",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-102276→includes→CVE-2026-102276",
+      "source": "campaign:cve-2026-102276",
+      "target": "CVE-2026-102276",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-29",
+      "sources": []
+    },
+    {
+      "id": "campaign:cluster-a112e9ed→includes→GHSA-60595dcca94df8f1",
+      "source": "campaign:cluster-a112e9ed",
+      "target": "GHSA-60595dcca94df8f1",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-29",
+      "sources": []
+    },
+    {
+      "id": "campaign:cluster-46c61e36→includes→GHSA-1ac66f3767923e1d",
+      "source": "campaign:cluster-46c61e36",
+      "target": "GHSA-1ac66f3767923e1d",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-29",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-102266→includes→CVE-2026-102266",
+      "source": "campaign:cve-2026-102266",
+      "target": "CVE-2026-102266",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-29",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-102273→includes→CVE-2026-102273",
+      "source": "campaign:cve-2026-102273",
+      "target": "CVE-2026-102273",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-29",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-102267→includes→CVE-2026-102267",
+      "source": "campaign:cve-2026-102267",
+      "target": "CVE-2026-102267",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-29",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-102271→includes→CVE-2026-102271",
+      "source": "campaign:cve-2026-102271",
+      "target": "CVE-2026-102271",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-29",
+      "sources": []
     }
   ]
 }
