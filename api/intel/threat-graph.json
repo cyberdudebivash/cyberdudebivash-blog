@@ -1,15 +1,15 @@
 {
-  "generated": "2026-09-29T15:31:37.506Z",
+  "generated": "2026-09-29T19:38:10.764Z",
   "version": "1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX v4.0",
   "stats": {
-    "total_nodes": 14777,
+    "total_nodes": 14793,
     "actors": 8,
-    "cves": 6537,
-    "campaigns": 1448,
+    "cves": 6545,
+    "campaigns": 1453,
     "malware": 0,
-    "iocs": 909,
-    "edges": 4170
+    "iocs": 910,
+    "edges": 4179
   },
   "nodes": {
     "actor:lockbit": {
@@ -276131,18 +276131,18 @@
     "CVE-2026-88772": {
       "id": "CVE-2026-88772",
       "type": "CVE",
-      "name": "Here We Go Again (Citrix NetScaler DTLS Preauth Memory Overflow CVE-2026-88772) - watchTowr Labs",
+      "name": "Hackers exploit Citrix NetScaler zero-day to deploy web shells",
       "attributes": {
         "cvss": 0,
         "threat_level": "LOW",
-        "priority_score": 6,
+        "priority_score": 16,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
-        "vendor": "reddit_cyber",
-        "product": "Threat Intelligence",
+        "vendor": "",
+        "product": "",
         "published": "2026-09-29",
-        "type": "CVE_REPORT"
+        "type": "ZERO_DAY"
       },
       "connections": []
     },
@@ -276745,18 +276745,18 @@
     "CVE-2026-88771": {
       "id": "CVE-2026-88771",
       "type": "CVE",
-      "name": "Citrix confirms two NetScaler RCE zero-days exploited in attacks",
+      "name": "U.S. CISA adds Citrix NetScaler flaws to its Known Exploited Vulnerabilities catalog",
       "attributes": {
         "cvss": 9.8,
         "threat_level": "MEDIUM",
-        "priority_score": 57,
+        "priority_score": 49,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
         "vendor": "",
         "product": "",
-        "published": "2026-09-27",
-        "type": "ZERO_DAY"
+        "published": "2026-09-28",
+        "type": "CLOUD_SECURITY"
       },
       "connections": []
     },
@@ -277929,7 +277929,7 @@
       "attributes": {
         "cvss": 0,
         "threat_level": "LOW",
-        "priority_score": 26,
+        "priority_score": 24,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": true,
@@ -278065,6 +278065,319 @@
         "type": "RANSOMWARE"
       },
       "connections": []
+    },
+    "GHSA-b10aeb3a46041ceb": {
+      "id": "GHSA-b10aeb3a46041ceb",
+      "type": "Intel",
+      "name": "adm-zip: Decompression-bomb protection (fix for CVE-2026-39244) can be bypassed by declaring uncompressed size as 0",
+      "attributes": {
+        "cvss": 7.5,
+        "threat_level": "HIGH",
+        "priority_score": 67,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "adm-zip",
+        "published": "2026-09-29",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-102676": {
+      "id": "CVE-2026-102676",
+      "type": "CVE",
+      "name": "Electron: <webview> can enable Node.js integration in Web Workers despite embedder restrictions",
+      "attributes": {
+        "cvss": 8.3,
+        "threat_level": "HIGH",
+        "priority_score": 65,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "electron",
+        "published": "2026-09-29",
+        "type": "CVE_REPORT"
+      },
+      "connections": [
+        {
+          "target": "ioc:domain:electronjs.org",
+          "relationship": "linked_to",
+          "confidence": 0.75
+        }
+      ]
+    },
+    "ioc:domain:electronjs.org": {
+      "id": "ioc:domain:electronjs.org",
+      "type": "IOC",
+      "name": "electronjs.org",
+      "attributes": {
+        "ioc_type": "domain",
+        "confidence": 0.75,
+        "first_seen": "2026-09-29"
+      },
+      "connections": []
+    },
+    "CVE-2026-102674": {
+      "id": "CVE-2026-102674",
+      "type": "CVE",
+      "name": "Electron: Windows opened from a sandboxed top-level document do not inherit its sandbox restrictions",
+      "attributes": {
+        "cvss": 8.2,
+        "threat_level": "MEDIUM",
+        "priority_score": 64,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "electron",
+        "published": "2026-09-29",
+        "type": "CVE_REPORT"
+      },
+      "connections": [
+        {
+          "target": "ioc:domain:electronjs.org",
+          "relationship": "linked_to",
+          "confidence": 0.75
+        },
+        {
+          "target": "CVE-2026-102676",
+          "relationship": "co_occurs_with",
+          "confidence": 0.7
+        }
+      ]
+    },
+    "CVE-2026-102673": {
+      "id": "CVE-2026-102673",
+      "type": "CVE",
+      "name": "Electron drops inherited HTML sandbox restrictions for popups opened through OpenURLFromTab",
+      "attributes": {
+        "cvss": 8.2,
+        "threat_level": "MEDIUM",
+        "priority_score": 63,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "electron",
+        "published": "2026-09-29",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "GHSA-69bff70a8b6486d0": {
+      "id": "GHSA-69bff70a8b6486d0",
+      "type": "Intel",
+      "name": "joi: Quadratic regular-expression backtracking in `Joi.string().isoDate()`",
+      "attributes": {
+        "cvss": 7.5,
+        "threat_level": "MEDIUM",
+        "priority_score": 61,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "joi",
+        "published": "2026-09-29",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-102675": {
+      "id": "CVE-2026-102675",
+      "type": "CVE",
+      "name": "Electron: File and HTTP protocol handlers allow cross-origin reads without corsEnabled",
+      "attributes": {
+        "cvss": 7.4,
+        "threat_level": "MEDIUM",
+        "priority_score": 60,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "electron",
+        "published": "2026-09-29",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-19534": {
+      "id": "CVE-2026-19534",
+      "type": "CVE",
+      "name": "undici vulnerable to Denial of Service via unrequested WebSocket subprotocol",
+      "attributes": {
+        "cvss": 7.5,
+        "threat_level": "MEDIUM",
+        "priority_score": 56,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "undici",
+        "published": "2026-09-29",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-84961": {
+      "id": "CVE-2026-84961",
+      "type": "CVE",
+      "name": "undici vulnerable to TLS certificate validation bypass via dropped connect options in BalancedPool",
+      "attributes": {
+        "cvss": 7.4,
+        "threat_level": "MEDIUM",
+        "priority_score": 55,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "undici",
+        "published": "2026-09-29",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-85152": {
+      "id": "CVE-2026-85152",
+      "type": "CVE",
+      "name": "undici vulnerable to cross-origin cache poisoning via missing origin isolation in interceptors",
+      "attributes": {
+        "cvss": 7.4,
+        "threat_level": "MEDIUM",
+        "priority_score": 55,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "undici",
+        "published": "2026-09-29",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-102282": {
+      "id": "CVE-2026-102282",
+      "type": "CVE",
+      "name": "adm-zip extraction preserves SUID/SGID bits from untrusted ZIPs -> local privilege escalation",
+      "attributes": {
+        "cvss": 7.1,
+        "threat_level": "MEDIUM",
+        "priority_score": 54,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "adm-zip",
+        "published": "2026-09-29",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "campaign:cve-2026-102676-and-cve-2026-102674": {
+      "id": "campaign:cve-2026-102676-and-cve-2026-102674",
+      "type": "Campaign",
+      "name": "npm electron Exploitation Campaign",
+      "attributes": {
+        "severity": "HIGH",
+        "item_count": 2,
+        "first_seen": "2026-09-29",
+        "last_seen": "2026-09-29",
+        "confidence": 0.83,
+        "reasoning": "2 intel item(s) clustered with composite confidence 0.830 | 2 related CVEs: CVE-2026-102676, CVE-2026-102674 | 1 shared IOC(s) across items"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-102676",
+          "relationship": "includes",
+          "confidence": 1
+        },
+        {
+          "target": "CVE-2026-102674",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cluster-f6cf24a7": {
+      "id": "campaign:cluster-f6cf24a7",
+      "type": "Campaign",
+      "name": "npm adm-zip Exploitation Campaign",
+      "attributes": {
+        "severity": "HIGH",
+        "item_count": 1,
+        "first_seen": "2026-09-29",
+        "last_seen": "2026-09-29",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900"
+      },
+      "connections": [
+        {
+          "target": "GHSA-b10aeb3a46041ceb",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-102673": {
+      "id": "campaign:cve-2026-102673",
+      "type": "Campaign",
+      "name": "npm electron Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-29",
+        "last_seen": "2026-09-29",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-102673"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-102673",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cluster-abb2a78a": {
+      "id": "campaign:cluster-abb2a78a",
+      "type": "Campaign",
+      "name": "npm joi Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-29",
+        "last_seen": "2026-09-29",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900"
+      },
+      "connections": [
+        {
+          "target": "GHSA-69bff70a8b6486d0",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-102675": {
+      "id": "campaign:cve-2026-102675",
+      "type": "Campaign",
+      "name": "npm electron Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-29",
+        "last_seen": "2026-09-29",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-102675"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-102675",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
     }
   },
   "edges": [
@@ -315773,6 +316086,89 @@
       "confidence": 1,
       "first_seen": "2026-09-28",
       "sources": []
+    },
+    {
+      "id": "CVE-2026-102676→linked_to→ioc:domain:electronjs.org",
+      "source": "CVE-2026-102676",
+      "target": "ioc:domain:electronjs.org",
+      "relationship": "linked_to",
+      "confidence": 0.75,
+      "first_seen": "2026-09-29",
+      "sources": []
+    },
+    {
+      "id": "CVE-2026-102674→linked_to→ioc:domain:electronjs.org",
+      "source": "CVE-2026-102674",
+      "target": "ioc:domain:electronjs.org",
+      "relationship": "linked_to",
+      "confidence": 0.75,
+      "first_seen": "2026-09-29",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-102676-and-cve-2026-102674→includes→CVE-2026-102676",
+      "source": "campaign:cve-2026-102676-and-cve-2026-102674",
+      "target": "CVE-2026-102676",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-29",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-102676-and-cve-2026-102674→includes→CVE-2026-102674",
+      "source": "campaign:cve-2026-102676-and-cve-2026-102674",
+      "target": "CVE-2026-102674",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-29",
+      "sources": []
+    },
+    {
+      "id": "campaign:cluster-f6cf24a7→includes→GHSA-b10aeb3a46041ceb",
+      "source": "campaign:cluster-f6cf24a7",
+      "target": "GHSA-b10aeb3a46041ceb",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-29",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-102673→includes→CVE-2026-102673",
+      "source": "campaign:cve-2026-102673",
+      "target": "CVE-2026-102673",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-29",
+      "sources": []
+    },
+    {
+      "id": "campaign:cluster-abb2a78a→includes→GHSA-69bff70a8b6486d0",
+      "source": "campaign:cluster-abb2a78a",
+      "target": "GHSA-69bff70a8b6486d0",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-29",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-102675→includes→CVE-2026-102675",
+      "source": "campaign:cve-2026-102675",
+      "target": "CVE-2026-102675",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-29",
+      "sources": []
+    },
+    {
+      "id": "CVE-2026-102674→co_occurs_with→CVE-2026-102676",
+      "source": "CVE-2026-102674",
+      "target": "CVE-2026-102676",
+      "relationship": "co_occurs_with",
+      "confidence": 0.7,
+      "first_seen": "2026-09-29",
+      "sources": [
+        "shared campaign: campaign:cve-2026-102676-and-cve-2026-102674"
+      ]
     }
   ]
 }

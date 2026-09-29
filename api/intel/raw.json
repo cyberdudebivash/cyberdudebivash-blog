@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-29T15:31:37.617Z",
+  "generated": "2026-09-29T19:38:10.869Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -8,8 +8,149 @@
   "endpoint": "/api/intel/raw.json",
   "description": "Raw unfiltered S2N feed — all items including suppressed. Enterprise tier.",
   "note": "Access requires Enterprise API key. Includes suppression_reason and full IOC data.",
-  "count": 103,
+  "count": 105,
   "items": [
+    {
+      "id": "CVE-2026-48842",
+      "title": "Roundcube SQL injection CVE-2026-48842 is now being exploited in the wild",
+      "description": "Roundcube SQL injection CVE-2026-48842 is now being exploited in the wild, putting unpatched webmail servers at risk of database compromise. A Roundcube Webmail vulnerability, tracked as CVE-2026-48842 (CVSS score of 8.1) and patched four months ago, is now being exploited in the... [Full analysis a",
+      "cvss": 8.1,
+      "final_ps": 80,
+      "quality_score": 0.538,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-28",
+      "last_seen": "2026-09-28",
+      "exploited": true,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-48842"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://securityaffairs.com/199882/security/roundcube-sql-injection-cve-2026-48842-is-now-being-exploited-in-the-wild.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=1d (score=0.85)",
+          "QS=0.537"
+        ],
+        "priority": [
+          "+8 exploited_in_wild",
+          "+7 zero_day"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "GHSA-b10aeb3a46041ceb",
+      "title": "adm-zip: Decompression-bomb protection (fix for CVE-2026-39244) can be bypassed by declaring uncompressed size as 0",
+      "description": "**Affected package:** adm-zip (npm)\n**Affected version:** 0.6.0 ## Summary The fix shipped for CVE-2026-39244 (`methods/inflater.js`) caps zlib's decompression output via `maxOutputLength: expectedLength`, where `expectedLength` is read directly from the ZIP entry's attacker-controlled \"uncompressed",
+      "cvss": 7.5,
+      "final_ps": 65,
+      "quality_score": 0.548,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-29",
+      "last_seen": "2026-09-29",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "adm-zip",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-rcw4-f5rp-g42v",
+        "https://github.com/cthackers/adm-zip/security/advisories/GHSA-rcw4-f5rp-g42v",
+        "https://github.com/cthackers/adm-zip/commit/491600683dacb6cb9fe0718a0eeb9cb5eb49afa6",
+        "https://github.com/cthackers/adm-zip/releases/tag/v0.6.1"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.547"
+        ],
+        "priority": [
+          "+3 supply_chain"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "iocs": []
+    },
+    {
+      "id": "GHSA-69bff70a8b6486d0",
+      "title": "joi: Quadratic regular-expression backtracking in `Joi.string().isoDate()`",
+      "description": "### Impact\nAny application that validates a user-supplied string with `Joi.string().isoDate()` can be stalled by a single request. One of the regular expressions the rule runs over the input was unanchored, so a valid ISO date followed by a long run of fractional-second digits made the regex engine ",
+      "cvss": 7.5,
+      "final_ps": 59,
+      "quality_score": 0.548,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-29",
+      "last_seen": "2026-09-29",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "joi",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-6h2x-m376-mqjq",
+        "https://github.com/hapijs/joi/security/advisories/GHSA-6h2x-m376-mqjq",
+        "https://github.com/hapijs/joi/pull/3143",
+        "https://github.com/hapijs/joi/pull/3145"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.547"
+        ],
+        "priority": [
+          "base_ps=59 (no boosts)"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "iocs": []
+    },
     {
       "id": "CVE-2026-50522",
       "title": "Critical SharePoint RCE CVE-2026-50522 Under Active Exploitation After Public PoC",
@@ -1436,6 +1577,50 @@
       "iocs": []
     },
     {
+      "id": "SENTINELAPEX-b02cc8dd0ddb",
+      "title": "Japan's Keio confirms ransomware attack disrupted business systems",
+      "description": "Keio Corporation (Keio), a major private railway operator in Japan, said its network was hit by a ransomware attack over the weekend, disrupting  some of its business systems. [...]",
+      "cvss": 0,
+      "final_ps": 40,
+      "quality_score": 0.378,
+      "threat_level": "LOW",
+      "type": "RANSOMWARE",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-28",
+      "last_seen": "2026-09-28",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": true,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.bleepingcomputer.com/news/security/japans-keio-confirms-ransomware-attack-disrupted-business-systems/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.35",
+          "recency=1d (score=0.85)",
+          "QS=0.378"
+        ],
+        "priority": [
+          "+10 ransomware_confirmed"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "iocs": []
+    },
+    {
       "id": "SENTINELAPEX-3eee7f34a9b4",
       "title": "JadePuffer agentic AI attacks target Azure, destroy cloud resources",
       "description": "The JadePuffer ransomware operator is targeting Azure tenants with agent-driven attacks that conduct reconnaissance, steal credentials, and destroy core components. [...]",
@@ -2680,97 +2865,6 @@
       },
       "suppressed": false,
       "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-102507",
-      "title": "CVE-2026-102507 - Sliver 1.7.7 Denial of Service via PE Parser Slice Bounds in Operator RPC",
-      "description": "CVE-2026-102507 - Sliver 1.7.7 Denial of Service via PE Parser Slice Bounds in Operator RPC",
-      "cvss": 5.7,
-      "final_ps": 39,
-      "quality_score": 0.453,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-29",
-      "last_seen": "2026-09-29",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-102507"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-102507"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.50",
-          "recency=0d (score=1.00)",
-          "QS=0.453"
-        ],
-        "priority": [
-          "base_ps=39 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "SENTINELAPEX-b02cc8dd0ddb",
-      "title": "Japan's Keio confirms ransomware attack disrupted business systems",
-      "description": "Japan's Keio confirms ransomware attack disrupted business systems",
-      "cvss": 0,
-      "final_ps": 39,
-      "quality_score": 0.343,
-      "threat_level": "LOW",
-      "type": "RANSOMWARE",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-28",
-      "last_seen": "2026-09-28",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": true,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.bleepingcomputer.com/news/security/japans-keio-confirms-ransomware-attack-disrupted-business-systems/",
-        "https://intel.cyberdudebivash.com/reports/2026/09/intel--157e2e006cfc19c156acac27.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.10",
-          "recency=0d (score=1.00)",
-          "QS=0.343"
-        ],
-        "priority": [
-          "+10 ransomware_confirmed"
-        ],
-        "suppression": "Quality score below minimum threshold (QS < 0.35)",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Quality score below minimum threshold (QS < 0.35)",
       "iocs": []
     },
     {
@@ -4355,103 +4449,10 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-48842",
-      "title": "Roundcube SQL injection CVE-2026-48842 is now being exploited in the wild",
+      "id": "CVE-2026-102676",
+      "title": "Electron: <webview> can enable Node.js integration in Web Workers despite embedder restrictions",
       "description": "",
-      "cvss": null,
-      "final_ps": 25,
-      "quality_score": 0.428,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-28",
-      "last_seen": "2026-09-28",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-48842"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://securityaffairs.com/199882/security/roundcube-sql-injection-cve-2026-48842-is-now-being-exploited-in-the-wild.html",
-        "https://intel.cyberdudebivash.com/reports/2026/09/intel--5936e16f66c71c813a10a02e.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.10",
-          "recency=0d (score=1.00)",
-          "QS=0.427"
-        ],
-        "priority": [
-          "+8 exploited_in_wild"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-100888",
-      "title": "CVE-2026-100888 - Trusted Domain Project OpenDKIM DKIM Signature Header Selection dkim-canon.c dkim_canon_selecthdrs out",
-      "description": "",
-      "cvss": 7.3,
-      "final_ps": 22,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-28",
-      "last_seen": "2026-09-28",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-100888"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-100888"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+4 critical_infra"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-84292",
-      "title": "fast-uri vulnerable to authority injection via an unvalidated port in serialize",
-      "description": "",
-      "cvss": 7.5,
+      "cvss": 8.3,
       "final_ps": 21,
       "quality_score": 0.523,
       "threat_level": "LOW",
@@ -4461,24 +4462,24 @@
       "merged_sources": [
         "github_advisories"
       ],
-      "first_seen": "2026-09-28",
-      "last_seen": "2026-09-28",
+      "first_seen": "2026-09-29",
+      "last_seen": "2026-09-29",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "npm",
-      "product": "fast-uri",
+      "product": "electron",
       "due_date": null,
       "cves": [
-        "CVE-2026-84292",
-        "CVE-2026-84292"
+        "CVE-2026-102676",
+        "CVE-2026-102676"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-qw65-cvwx-89v3",
-        "https://github.com/fastify/fast-uri/security/advisories/GHSA-qw65-cvwx-89v3",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-84292",
-        "https://github.com/fastify/fast-uri/commit/820e8478dd7da3d09f187bfaf35d50b71f67b8b4"
+        "https://github.com/advisories/GHSA-9qh4-3jw8-366w",
+        "https://github.com/electron/electron/security/advisories/GHSA-9qh4-3jw8-366w",
+        "https://github.com/electron/electron/commit/6462a2e1dc4e6adffd3b7d9b9be1474c45dcbbe2",
+        "https://github.com/electron/electron/commit/9a675aef8822bae4088567822969f900b3a37671"
       ],
       "explanation": {
         "quality": [
@@ -4498,43 +4499,47 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-95520",
-      "title": "CVE-2026-95520 - Rpm: rpm: integer overflow in iterreadarchivenext() leads to heap-based buffer overflow when parsing un",
+      "id": "CVE-2026-102674",
+      "title": "Electron: Windows opened from a sandboxed top-level document do not inherit its sandbox restrictions",
       "description": "",
-      "cvss": 7.1,
-      "final_ps": 18,
-      "quality_score": 0.438,
+      "cvss": 8.2,
+      "final_ps": 21,
+      "quality_score": 0.523,
       "threat_level": "LOW",
       "type": "CVE_REPORT",
-      "source": "sentinel_apex",
+      "source": "github_advisories",
       "sources_confirmed": 1,
       "merged_sources": [
-        "sentinel_apex"
+        "github_advisories"
       ],
       "first_seen": "2026-09-29",
       "last_seen": "2026-09-29",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "",
-      "product": "",
+      "vendor": "npm",
+      "product": "electron",
       "due_date": null,
       "cves": [
-        "CVE-2026-95520"
+        "CVE-2026-102674",
+        "CVE-2026-102674"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-95520"
+        "https://github.com/advisories/GHSA-gr2m-v5gq-v685",
+        "https://github.com/electron/electron/security/advisories/GHSA-gr2m-v5gq-v685",
+        "https://github.com/electron/electron/commit/29fc130569f970e91e355383821a4af0f25724a2",
+        "https://github.com/electron/electron/commit/3ecf3e74f4be6e2360644679b0b4698742be0e1d"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
           "recency=0d (score=1.00)",
-          "QS=0.438"
+          "QS=0.523"
         ],
         "priority": [
-          "base_ps=18 (no boosts)"
+          "base_ps=21 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4544,43 +4549,47 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-86950",
-      "title": "Apple Emergency Patch for iOS 26, macOS26, macOS15 (CVE-2026-86950), (Mon, Sep 28th)",
+      "id": "CVE-2026-102673",
+      "title": "Electron drops inherited HTML sandbox restrictions for popups opened through OpenURLFromTab",
       "description": "",
-      "cvss": 8.8,
-      "final_ps": 18,
-      "quality_score": 0.438,
+      "cvss": 8.2,
+      "final_ps": 21,
+      "quality_score": 0.523,
       "threat_level": "LOW",
       "type": "CVE_REPORT",
-      "source": "sentinel_apex",
+      "source": "github_advisories",
       "sources_confirmed": 1,
       "merged_sources": [
-        "sentinel_apex"
+        "github_advisories"
       ],
-      "first_seen": "2026-09-28",
-      "last_seen": "2026-09-28",
+      "first_seen": "2026-09-29",
+      "last_seen": "2026-09-29",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "",
-      "product": "",
+      "vendor": "npm",
+      "product": "electron",
       "due_date": null,
       "cves": [
-        "CVE-2026-86950"
+        "CVE-2026-102673",
+        "CVE-2026-102673"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://isc.sans.edu/diary/rss/33376"
+        "https://github.com/advisories/GHSA-hq2x-r82h-9wj4",
+        "https://github.com/electron/electron/security/advisories/GHSA-hq2x-r82h-9wj4",
+        "https://github.com/electron/electron/pull/52133",
+        "https://github.com/electron/electron/commit/7ea14d5f55ecb11a30447701ddca16b3feee0bba"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
           "recency=0d (score=1.00)",
-          "QS=0.438"
+          "QS=0.523"
         ],
         "priority": [
-          "base_ps=18 (no boosts)"
+          "base_ps=21 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4590,89 +4599,47 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-101188",
-      "title": "CVE-2026-101188 - Netcore POWER13 ubus routerd.passwd_set password recovery",
-      "description": "",
-      "cvss": 8.3,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-28",
-      "last_seen": "2026-09-28",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-101188"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-101188"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-102334",
-      "title": "CVE-2026-102334 - Nginx Proxy Manager through 2.16.0 Missing Brute-Force Protection",
+      "id": "CVE-2026-102675",
+      "title": "Electron: File and HTTP protocol handlers allow cross-origin reads without corsEnabled",
       "description": "",
       "cvss": 7.4,
-      "final_ps": 18,
-      "quality_score": 0.438,
+      "final_ps": 21,
+      "quality_score": 0.523,
       "threat_level": "LOW",
       "type": "CVE_REPORT",
-      "source": "sentinel_apex",
+      "source": "github_advisories",
       "sources_confirmed": 1,
       "merged_sources": [
-        "sentinel_apex"
+        "github_advisories"
       ],
-      "first_seen": "2026-09-28",
-      "last_seen": "2026-09-28",
+      "first_seen": "2026-09-29",
+      "last_seen": "2026-09-29",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "",
-      "product": "",
+      "vendor": "npm",
+      "product": "electron",
       "due_date": null,
       "cves": [
-        "CVE-2026-102334"
+        "CVE-2026-102675",
+        "CVE-2026-102675"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-102334"
+        "https://github.com/advisories/GHSA-j84w-jfhq-vhvj",
+        "https://github.com/electron/electron/security/advisories/GHSA-j84w-jfhq-vhvj",
+        "https://github.com/electron/electron/commit/4d2784cc8592471ee2276235b8c2a03efddf937d",
+        "https://github.com/electron/electron/commit/80178e4631cb2f6a5e42f8e793b2ae9624e78a0d"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
           "recency=0d (score=1.00)",
-          "QS=0.438"
+          "QS=0.523"
         ],
         "priority": [
-          "base_ps=18 (no boosts)"
+          "base_ps=21 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4682,43 +4649,193 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-102335",
-      "title": "CVE-2026-102335 - Nginx Proxy Manager through 2.16.0 Improper Authorization via advanced_config",
+      "id": "CVE-2026-19534",
+      "title": "undici vulnerable to Denial of Service via unrequested WebSocket subprotocol",
       "description": "",
-      "cvss": 7.1,
-      "final_ps": 18,
-      "quality_score": 0.438,
+      "cvss": 7.5,
+      "final_ps": 21,
+      "quality_score": 0.523,
       "threat_level": "LOW",
       "type": "CVE_REPORT",
-      "source": "sentinel_apex",
+      "source": "github_advisories",
       "sources_confirmed": 1,
       "merged_sources": [
-        "sentinel_apex"
+        "github_advisories"
       ],
-      "first_seen": "2026-09-28",
-      "last_seen": "2026-09-28",
+      "first_seen": "2026-09-29",
+      "last_seen": "2026-09-29",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "",
-      "product": "",
+      "vendor": "npm",
+      "product": "undici",
       "due_date": null,
       "cves": [
-        "CVE-2026-102335"
+        "CVE-2026-19534"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-102335"
+        "https://github.com/advisories/GHSA-rfgv-xxqx-mfg5",
+        "https://github.com/nodejs/undici/security/advisories/GHSA-rfgv-xxqx-mfg5",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-19534",
+        "https://github.com/nodejs/undici/commit/2af0faf88b906d3127a360c3ac75164c0f95e5a5"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
           "recency=0d (score=1.00)",
-          "QS=0.438"
+          "QS=0.523"
         ],
         "priority": [
-          "base_ps=18 (no boosts)"
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-84961",
+      "title": "undici vulnerable to TLS certificate validation bypass via dropped connect options in BalancedPool",
+      "description": "",
+      "cvss": 7.4,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-29",
+      "last_seen": "2026-09-29",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "undici",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-84961"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-w293-vg96-wgc3",
+        "https://github.com/nodejs/undici/security/advisories/GHSA-w293-vg96-wgc3",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-84961",
+        "https://github.com/nodejs/undici/commit/8f5868fbdbc8f1146dfc1bcd1f2d117790141390"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-85152",
+      "title": "undici vulnerable to cross-origin cache poisoning via missing origin isolation in interceptors",
+      "description": "",
+      "cvss": 7.4,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-29",
+      "last_seen": "2026-09-29",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "undici",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-85152"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-vp8m-p9jh-q5pm",
+        "https://github.com/nodejs/undici/security/advisories/GHSA-vp8m-p9jh-q5pm",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-85152",
+        "https://github.com/nodejs/undici/commit/caf6194d3dae989b731ed87ab85f182befe5eb80"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-102282",
+      "title": "adm-zip extraction preserves SUID/SGID bits from untrusted ZIPs -> local privilege escalation",
+      "description": "",
+      "cvss": 7.1,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-29",
+      "last_seen": "2026-09-29",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "adm-zip",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-102282"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-j5f4-cc29-5x44",
+        "https://github.com/cthackers/adm-zip/security/advisories/GHSA-j5f4-cc29-5x44",
+        "https://github.com/cthackers/adm-zip/commit/6a63c339b83c52915483efacda517660a7a7bf87",
+        "https://github.com/cthackers/adm-zip/releases/tag/v0.6.1"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
         ],
         "suppression": null,
         "merge": null
