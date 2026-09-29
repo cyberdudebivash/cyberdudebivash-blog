@@ -1,8 +1,46 @@
 {
-  "generated": "2026-09-29T13:01:11.025Z",
+  "generated": "2026-09-29T22:21:11.152Z",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
   "count": 200,
   "items": [
+    {
+      "slug": "cve-2026-102674-npm-electron",
+      "title": "Electron: Windows opened from a sandboxed top-level document do not inherit its sandbox restrictions",
+      "url": "/posts/cve-2026-102674-npm-electron.html",
+      "generated": "2026-09-29T19:38:10.982Z",
+      "severity": "HIGH",
+      "cves": [
+        "CVE-2026-102674",
+        "CVE-2026-102674"
+      ],
+      "mitreAttack": [],
+      "sigma": [],
+      "kql": [],
+      "splunk": [],
+      "osquery": [],
+      "suricata": [
+        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain electronjs.org\"; dns.query; content:\"electronjs.org\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)"
+      ]
+    },
+    {
+      "slug": "cve-2026-102676-npm-electron",
+      "title": "Electron: <webview> can enable Node.js integration in Web Workers despite embedder restrictions",
+      "url": "/posts/cve-2026-102676-npm-electron.html",
+      "generated": "2026-09-29T19:38:10.977Z",
+      "severity": "HIGH",
+      "cves": [
+        "CVE-2026-102676",
+        "CVE-2026-102676"
+      ],
+      "mitreAttack": [],
+      "sigma": [],
+      "kql": [],
+      "splunk": [],
+      "osquery": [],
+      "suricata": [
+        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain electronjs.org\"; dns.query; content:\"electronjs.org\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)"
+      ]
+    },
     {
       "slug": "cve-2026-84292-npm-fast-uri",
       "title": "fast-uri vulnerable to authority injection via an unvalidated port in serialize",
@@ -4202,53 +4240,6 @@
       "suricata": [
         "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://isc.sans.edu/podcastdetail/10006,\"; http.host; content:\"isc.sans.edu\"; nocase; http.uri; content:\"/podcastdetail/10006,\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
         "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://isc.sans.edu\"; http.host; content:\"isc.sans.edu\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)"
-      ]
-    },
-    {
-      "slug": "axon-body-camera-3-of-4-hardware-reverse-cracking-output-vid",
-      "title": "AXON Body camera 3 of 4 hardware reverse cracking output video！",
-      "url": "/posts/axon-body-camera-3-of-4-hardware-reverse-cracking-output-vid.html",
-      "generated": "2026-07-14T01:02:04.862Z",
-      "severity": "MEDIUM",
-      "cves": [],
-      "mitreAttack": [],
-      "sigma": [],
-      "kql": [],
-      "splunk": [],
-      "osquery": [],
-      "suricata": [
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/user/Thomas980130&quot;&gt;\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/user/Thomas980130&quot\\;&gt\\;\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://b23.tv/gtjjcQo&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\"; http.host; content:\"b23.tv\"; nocase; http.uri; content:\"/gtjjcQo&quot\\;&gt\\;[link]&lt\\;/a&gt\\;&lt\\;/span&gt\\;\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/netsec/comments/1uvtu8l/axon_body_camera_3_of_4_hardware_reverse_cracking/&\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/netsec/comments/1uvtu8l/axon_body_camera_3_of_4_hardware_reverse_cracking/&\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)"
-      ]
-    },
-    {
-      "slug": "exportheft-11-quot-ai-chat-exporter-quot-chrome-extension",
-      "title": "ExporTheft: 11 &quot;AI Chat Exporter&quot; Chrome extensions upload full chat content on PDF export, while the store listing says &quot;No uploads to external servers&quot;",
-      "url": "/posts/exportheft-11-quot-ai-chat-exporter-quot-chrome-extension.html",
-      "generated": "2026-07-13T23:25:05.959Z",
-      "severity": "MEDIUM",
-      "cves": [],
-      "mitreAttack": [
-        {
-          "id": "T1071",
-          "name": "Application Layer Protocol",
-          "tactic": "command-and-control",
-          "confidence": "MEDIUM"
-        }
-      ],
-      "sigma": [],
-      "kql": [],
-      "splunk": [],
-      "osquery": [],
-      "suricata": [
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://malext.io/reports/ExporTheft/&quot;&gt;https://malext.io/reports/ExporTheft/&lt;/a&gt;&lt;/p\"; http.host; content:\"malext.io\"; nocase; http.uri; content:\"/reports/ExporTheft/&quot\\;&gt\\;https\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/user/Huge-Skirt-6990&quot;&gt;\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/user/Huge-Skirt-6990&quot\\;&gt\\;\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://malext.io/reports/ExporTheft/&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\"; http.host; content:\"malext.io\"; nocase; http.uri; content:\"/reports/ExporTheft/&quot\\;&gt\\;[link]&lt\\;/a&gt\\;&lt\\;/span&gt\\;\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/netsec/comments/1uvrnbg/exportheft_11_ai_chat_exporter_chrome_extensions/&q\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/netsec/comments/1uvrnbg/exportheft_11_ai_chat_exporter_chrome_extensions/&q\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain malext.io\"; dns.query; content:\"malext.io\"; nocase; classtype:trojan-activity; sid:9000005; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000006; rev:1;)"
       ]
     }
   ]
