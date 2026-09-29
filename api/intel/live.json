@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-29T19:38:10.869Z",
+  "generated": "2026-09-29T20:11:36.428Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,52 +7,152 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 5569,
+  "total_published": 5579,
   "s2n_stats": {
-    "passed": 98,
+    "passed": 100,
     "suppressed": 7,
-    "avg_qs": 0.502
+    "avg_qs": 0.499
   },
   "items": [
     {
-      "id": "CVE-2026-48842",
-      "title": "Roundcube SQL injection CVE-2026-48842 is now being exploited in the wild",
-      "description": "Roundcube SQL injection CVE-2026-48842 is now being exploited in the wild, putting unpatched webmail servers at risk of database compromise. A Roundcube Webmail vulnerability, tracked as CVE-2026-48842 (CVSS score of 8.1) and patched four months ago, is now being exploited in the... [Full analysis a",
-      "cvss": 8.1,
-      "final_ps": 80,
-      "quality_score": 0.538,
-      "threat_level": "HIGH",
+      "id": "CVE-2026-19534",
+      "title": "undici vulnerable to Denial of Service via unrequested WebSocket subprotocol",
+      "description": "### Impact The undici WebSocket client throws an uncaught `TypeError` during the opening handshake when a server's `101` response includes a `Sec-WebSocket-Protocol` header that the client never requested. The throw occurs in a `queueMicrotask` callback with no surrounding `try`/`catch`, so it propa",
+      "cvss": 7.5,
+      "final_ps": 54,
+      "quality_score": 0.52,
+      "threat_level": "MEDIUM",
       "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
+      "source": "github_advisories",
+      "sources_confirmed": 2,
       "merged_sources": [
+        "github_advisories",
         "sentinel_apex"
       ],
-      "first_seen": "2026-09-28",
-      "last_seen": "2026-09-28",
-      "exploited": true,
+      "first_seen": "2026-09-29",
+      "last_seen": "2026-09-29",
+      "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "",
-      "product": "",
+      "vendor": "npm",
+      "product": "undici",
       "due_date": null,
       "cves": [
-        "CVE-2026-48842"
+        "CVE-2026-19534"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://securityaffairs.com/199882/security/roundcube-sql-injection-cve-2026-48842-is-now-being-exploited-in-the-wild.html"
+        "https://github.com/advisories/GHSA-rfgv-xxqx-mfg5",
+        "https://github.com/nodejs/undici/security/advisories/GHSA-rfgv-xxqx-mfg5",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-19534",
+        "https://github.com/nodejs/undici/commit/2af0faf88b906d3127a360c3ac75164c0f95e5a5"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=1d (score=0.85)",
-          "QS=0.537"
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "multi_source=2 sources",
+          "recency=999d (score=0.05)",
+          "QS=0.520"
         ],
         "priority": [
-          "+8 exploited_in_wild",
-          "+7 zero_day"
+          "base_ps=54 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-84961",
+      "title": "undici vulnerable to TLS certificate validation bypass via dropped connect options in BalancedPool",
+      "description": "### Impact undici's `BalancedPool` passes its constructor options through a JSON-based deep clone (`JSON.parse(JSON.stringify(...))`) before forwarding them to each per-upstream `Pool`. JSON cannot represent functions, so a caller-supplied `connect` or `tls` option containing a `checkServerIdentity`",
+      "cvss": 7.4,
+      "final_ps": 54,
+      "quality_score": 0.52,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 2,
+      "merged_sources": [
+        "github_advisories",
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-29",
+      "last_seen": "2026-09-29",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "undici",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-84961"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-w293-vg96-wgc3",
+        "https://github.com/nodejs/undici/security/advisories/GHSA-w293-vg96-wgc3",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-84961",
+        "https://github.com/nodejs/undici/commit/8f5868fbdbc8f1146dfc1bcd1f2d117790141390"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "multi_source=2 sources",
+          "recency=999d (score=0.05)",
+          "QS=0.520"
+        ],
+        "priority": [
+          "base_ps=54 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-85152",
+      "title": "undici vulnerable to cross-origin cache poisoning via missing origin isolation in interceptors",
+      "description": "## Impact When `interceptors.cache()` or `interceptors.deduplicate()` is used with a dispatcher that does not carry a single authoritative origin, or when a request supplies its own `origin`, undici builds the cache and deduplication keys without the actual destination origin. If a cache store or in",
+      "cvss": 7.4,
+      "final_ps": 54,
+      "quality_score": 0.52,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 2,
+      "merged_sources": [
+        "github_advisories",
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-29",
+      "last_seen": "2026-09-29",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "undici",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-85152"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-vp8m-p9jh-q5pm",
+        "https://github.com/nodejs/undici/security/advisories/GHSA-vp8m-p9jh-q5pm",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-85152",
+        "https://github.com/nodejs/undici/commit/caf6194d3dae989b731ed87ab85f182befe5eb80"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "multi_source=2 sources",
+          "recency=999d (score=0.05)",
+          "QS=0.520"
+        ],
+        "priority": [
+          "base_ps=54 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -2217,7 +2317,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2026-15409",
@@ -2261,7 +2363,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2024-24919",
@@ -3031,6 +3135,51 @@
         ],
         "priority": [
           "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-48842",
+      "title": "Roundcube SQL injection CVE-2026-48842 is now being exploited in the wild",
+      "description": "Roundcube SQL injection CVE-2026-48842 is now being exploited in the wild, putting unpatched webmail servers at risk of database compromise. A Roundcube Webmail vulnerability, tracked as CVE-2026-48842 (CVSS score of 8.1) and patched four months ago, is now being exploited in the... [Full analysis a",
+      "cvss": 8.1,
+      "final_ps": 28,
+      "quality_score": 0.497,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-28",
+      "last_seen": "2026-09-28",
+      "exploited": true,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-48842"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://securityaffairs.com/199882/security/roundcube-sql-injection-cve-2026-48842-is-now-being-exploited-in-the-wild.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.497"
+        ],
+        "priority": [
+          "+8 exploited_in_wild"
         ],
         "suppression": null,
         "merge": null
@@ -4080,6 +4229,102 @@
       "suppression_reason": null
     },
     {
+      "id": "CVE-2026-86950",
+      "title": "Apple Patches CoreGraphics Zero-Day Linked to Sophisticated Targeted Attacks",
+      "description": "Apple Patches CoreGraphics Zero-Day Linked to Sophisticated Targeted Attacks",
+      "cvss": null,
+      "final_ps": 26,
+      "quality_score": 0.368,
+      "threat_level": "LOW",
+      "type": "ZERO_DAY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-29",
+      "last_seen": "2026-09-29",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-86950"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://securityaffairs.com/200001/hacking/apple-patches-coregraphics-zero-day-linked-to-sophisticated-targeted-attacks.html",
+        "https://intel.cyberdudebivash.com/reports/2026/09/intel--20c0d941697a0f1d381aeb98.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.10",
+          "recency=0d (score=1.00)",
+          "QS=0.368"
+        ],
+        "priority": [
+          "+7 zero_day",
+          "+4 critical_infra"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-102282",
+      "title": "adm-zip extraction preserves SUID/SGID bits from untrusted ZIPs -> local privilege escalation",
+      "description": "## Summary adm-zip applies the Unix permission bits stored in a zip entry directly to the extracted file via `fs.chmodSync()` when `keepOriginalPermission=true` is passed to `extractAllTo()`/`extractEntryTo()` — and it never filters the setuid/setgid/sticky bits out of those bits. A zip crafted by a",
+      "cvss": 7.1,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 2,
+      "merged_sources": [
+        "github_advisories",
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-29",
+      "last_seen": "2026-09-29",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "adm-zip",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-102282"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-j5f4-cc29-5x44",
+        "https://github.com/cthackers/adm-zip/security/advisories/GHSA-j5f4-cc29-5x44",
+        "https://github.com/cthackers/adm-zip/commit/6a63c339b83c52915483efacda517660a7a7bf87",
+        "https://github.com/cthackers/adm-zip/releases/tag/v0.6.1"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
       "id": "CVE-2026-102676",
       "title": "Electron: <webview> can enable Node.js integration in Web Workers despite embedder restrictions",
       "description": "### Impact A ` ` could enable Node.js integration in its Web Workers even when its embedder had Node.js integration disabled, giving guest content more privilege than the embedder allowed. Apps are only affected if they enable the ` ` tag and the embedder is unsandboxed. Apps that do not use ` `, or",
@@ -4160,251 +4405,6 @@
         "https://github.com/electron/electron/security/advisories/GHSA-gr2m-v5gq-v685",
         "https://github.com/electron/electron/commit/29fc130569f970e91e355383821a4af0f25724a2",
         "https://github.com/electron/electron/commit/3ecf3e74f4be6e2360644679b0b4698742be0e1d"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-102673",
-      "title": "Electron drops inherited HTML sandbox restrictions for popups opened through OpenURLFromTab",
-      "description": "### Impact Popups opened from a sandboxed iframe through a link (for example `target=\"_blank\"` or a middle-click) did not inherit the iframe's HTML `sandbox` restrictions. Content that was meant to run sandboxed could open a popup with the embedding app's full origin, gaining access to that origin's",
-      "cvss": 8.2,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-09-29",
-      "last_seen": "2026-09-29",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "npm",
-      "product": "electron",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-102673",
-        "CVE-2026-102673"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-hq2x-r82h-9wj4",
-        "https://github.com/electron/electron/security/advisories/GHSA-hq2x-r82h-9wj4",
-        "https://github.com/electron/electron/pull/52133",
-        "https://github.com/electron/electron/commit/7ea14d5f55ecb11a30447701ddca16b3feee0bba"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-102675",
-      "title": "Electron: File and HTTP protocol handlers allow cross-origin reads without corsEnabled",
-      "description": "### Impact Responses served through `protocol.registerFileProtocol` or `protocol.registerHttpProtocol` for a custom scheme registered with `supportFetchAPI: true` but without `corsEnabled: true` could be read cross-origin by web content. This completes the fix for CVE-2026-70604. Apps are only affec",
-      "cvss": 7.4,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-09-29",
-      "last_seen": "2026-09-29",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "npm",
-      "product": "electron",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-102675",
-        "CVE-2026-102675"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-j84w-jfhq-vhvj",
-        "https://github.com/electron/electron/security/advisories/GHSA-j84w-jfhq-vhvj",
-        "https://github.com/electron/electron/commit/4d2784cc8592471ee2276235b8c2a03efddf937d",
-        "https://github.com/electron/electron/commit/80178e4631cb2f6a5e42f8e793b2ae9624e78a0d"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-19534",
-      "title": "undici vulnerable to Denial of Service via unrequested WebSocket subprotocol",
-      "description": "### Impact The undici WebSocket client throws an uncaught `TypeError` during the opening handshake when a server's `101` response includes a `Sec-WebSocket-Protocol` header that the client never requested. The throw occurs in a `queueMicrotask` callback with no surrounding `try`/`catch`, so it propa",
-      "cvss": 7.5,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 2,
-      "merged_sources": [
-        "github_advisories",
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-29",
-      "last_seen": "2026-09-29",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "npm",
-      "product": "undici",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-19534"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-rfgv-xxqx-mfg5",
-        "https://github.com/nodejs/undici/security/advisories/GHSA-rfgv-xxqx-mfg5",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-19534",
-        "https://github.com/nodejs/undici/commit/2af0faf88b906d3127a360c3ac75164c0f95e5a5"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-84961",
-      "title": "undici vulnerable to TLS certificate validation bypass via dropped connect options in BalancedPool",
-      "description": "### Impact undici's `BalancedPool` passes its constructor options through a JSON-based deep clone (`JSON.parse(JSON.stringify(...))`) before forwarding them to each per-upstream `Pool`. JSON cannot represent functions, so a caller-supplied `connect` or `tls` option containing a `checkServerIdentity`",
-      "cvss": 7.4,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 2,
-      "merged_sources": [
-        "github_advisories",
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-29",
-      "last_seen": "2026-09-29",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "npm",
-      "product": "undici",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-84961"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-w293-vg96-wgc3",
-        "https://github.com/nodejs/undici/security/advisories/GHSA-w293-vg96-wgc3",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-84961",
-        "https://github.com/nodejs/undici/commit/8f5868fbdbc8f1146dfc1bcd1f2d117790141390"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-85152",
-      "title": "undici vulnerable to cross-origin cache poisoning via missing origin isolation in interceptors",
-      "description": "## Impact When `interceptors.cache()` or `interceptors.deduplicate()` is used with a dispatcher that does not carry a single authoritative origin, or when a request supplies its own `origin`, undici builds the cache and deduplication keys without the actual destination origin. If a cache store or in",
-      "cvss": 7.4,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 2,
-      "merged_sources": [
-        "github_advisories",
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-29",
-      "last_seen": "2026-09-29",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "npm",
-      "product": "undici",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-85152"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-vp8m-p9jh-q5pm",
-        "https://github.com/nodejs/undici/security/advisories/GHSA-vp8m-p9jh-q5pm",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-85152",
-        "https://github.com/nodejs/undici/commit/caf6194d3dae989b731ed87ab85f182befe5eb80"
       ],
       "explanation": {
         "quality": [
