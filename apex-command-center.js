@@ -5,6 +5,9 @@
   if(!root) return;
 
   var $=function(id){return document.getElementById(id);};
+  // Shared state model (runtime-state.js): HEALTHY/DEGRADED/STALE/UNAVAILABLE,
+  // thresholds aligned with the CI freshness monitor, fetch timeouts.
+  var RS=window.SentinelRuntimeState||null;
   var fmt=new Intl.NumberFormat('en-US');
   var state={feed:null,assurance:null,service:null,acceptance:null};
   var fabricRaf=null;
@@ -24,16 +27,25 @@
     var label=mins<60?mins+'m':mins<1440?Math.floor(mins/60)+'h '+(mins%60)+'m':Math.floor(mins/1440)+'d '+Math.floor((mins%1440)/60)+'h';
     return {label:label,minutes:mins,iso:new Date(t).toISOString()};
   }
-  function setRuntime(kind,label,meta){
+  function setRuntime(kind,label,meta,reachable){
     var pill=$('cdb-runtime-pill'),txt=$('cdb-runtime-text'),detail=$('cdb-runtime-detail');
     if(pill) pill.dataset.state=kind;if(txt)txt.textContent=label;if(detail)detail.textContent=meta||'';
-    var edge=$('cdb-edge-state');if(edge){edge.dataset.state=kind;edge.innerHTML='<span class="cdb-dot"></span>'+escapeText(kind==='live'?'PRODUCTION EDGE · VERIFIED':kind==='bad'?'PRODUCTION EDGE · UNAVAILABLE':'PRODUCTION EDGE · VERIFY');}
+    // Edge reachability is independent of freshness: a reachable edge serving
+    // a stale feed is VERIFIED reachable, and the feed state says STALE.
+    var edgeKind=reachable===true?'live':reachable===false?'bad':'warn';
+    var edge=$('cdb-edge-state');if(edge){edge.dataset.state=edgeKind;edge.innerHTML='<span class="cdb-dot"></span>'+escapeText(reachable===true?'PRODUCTION EDGE · VERIFIED':reachable===false?'PRODUCTION EDGE · UNAVAILABLE':'PRODUCTION EDGE · CHECKING');}
+  }
+  function applyFeedState(cls){
+    var label=cls.state+(cls.ageMinutes!=null&&RS?' · FEED AGE '+RS.formatAge(cls.ageMinutes):'');
+    setRuntime(RS?RS.toneFor(cls.state):(cls.state==='UNAVAILABLE'?'bad':'warn'),label,cls.reason,cls.reachable);
+    setText('homepage-feed-state',cls.state);
+    setText('homepage-priority-runtime',cls.state);
   }
   function setKpi(id,value,note){
     var v=$(id),n=$(id+'-note');if(v)v.textContent=value;if(n)n.textContent=note||'';
   }
   function setText(id,value){var el=$(id);if(el)el.textContent=value;}
-  function feedStamp(feed){return feed.generatedAt||feed.lastUpdated||(feed.metadata&&feed.metadata.lastPipelineRun)||(feed.metadata&&feed.metadata.generatedAt)||null;}
+  function feedStamp(feed){return RS?RS.feedTimestamp(feed):(feed.generatedAt||feed.lastUpdated||(feed.metadata&&feed.metadata.lastPipelineRun)||(feed.metadata&&feed.metadata.generatedAt)||null);}
   function normalizeSeverity(item){
     var s=String(item.threatLevel||'').toUpperCase();
     if(['CRITICAL','HIGH','MEDIUM','LOW'].indexOf(s)>=0)return s;
@@ -71,9 +83,7 @@
     setText('cdb-hero-freshness',fresh.label);
     setText('cdb-hero-freshness-note',fresh.iso?'Feed timestamp verified':'Timestamp unavailable');
     var timeEl=$('cdb-feed-time');if(timeEl)timeEl.textContent=fresh.iso||'timestamp unavailable';
-    if(fresh.minutes==null)setRuntime('warn','FEED TIMESTAMP UNKNOWN','First-party feed reachable; freshness timestamp unavailable.');
-    else if(fresh.minutes<=360)setRuntime('live','PRODUCTION DATA LIVE','First-party feed age '+fresh.label+'.');
-    else setRuntime('warn','PRODUCTION DATA STALE','First-party feed age '+fresh.label+'; freshness review required.');
+    applyFeedState(RS?RS.classifyFeed({ok:true,feed:feed}):{state:'DEGRADED',reachable:true,ageMinutes:null,reason:'Feed reachable; runtime classifier unavailable, so freshness is not established.'});
   }
   function renderAssurance(a,s,acc){
     var soc=$('cdb-soc2-state');if(soc)soc.textContent=a&&a.soc2_certified===false?'ALIGNED · NOT CERTIFIED':'VERIFY';
@@ -108,11 +118,19 @@
     }
     frame(0);
   }
-  function fetchJson(url){return fetch(url,{cache:'no-store',headers:{'Accept':'application/json'}}).then(function(r){if(!r.ok)throw new Error(url+' '+r.status);return r.json();});}
+  function fetchJson(url){
+    if(RS)return RS.fetchJson(url);
+    // Classifier not loaded: still never hang in CHECKING.
+    return Promise.race([
+      fetch(url,{cache:'no-store',headers:{'Accept':'application/json'}}).then(function(r){if(!r.ok)throw new Error('http '+r.status);return r.json();}),
+      new Promise(function(_,reject){setTimeout(function(){reject(new Error('timeout'));},8000);})
+    ]);
+  }
   Promise.allSettled([
     fetchJson('/live-intel.json'),fetchJson('/api/intel/customer-assurance.json'),fetchJson('/api/intel/service-assurance.json'),fetchJson('/api/intel/cti-delivery-acceptance.json')
   ]).then(function(results){
-    if(results[0].status==='fulfilled'){state.feed=results[0].value;renderMetrics(state.feed);renderFeed(state.feed);}else setRuntime('bad','DATA UNAVAILABLE','First-party live-intel.json could not be verified.');
+    if(results[0].status==='fulfilled'){state.feed=results[0].value;renderMetrics(state.feed);renderFeed(state.feed);}
+    else{var why=results[0].reason&&results[0].reason.message;applyFeedState(RS?RS.classifyFeed({ok:false,error:why}):{state:'UNAVAILABLE',reachable:false,ageMinutes:null,reason:'First-party feed could not be retrieved.'});}
     if(results[1].status==='fulfilled')state.assurance=results[1].value;
     if(results[2].status==='fulfilled')state.service=results[2].value;
     if(results[3].status==='fulfilled')state.acceptance=results[3].value;
