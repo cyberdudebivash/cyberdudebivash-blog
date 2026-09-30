@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-30T11:00:35.417Z",
+  "generated": "2026-09-30T15:17:07.714Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -9,9 +9,9 @@
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
   "total_published": 5615,
   "s2n_stats": {
-    "passed": 100,
-    "suppressed": 5,
-    "avg_qs": 0.492
+    "passed": 99,
+    "suppressed": 7,
+    "avg_qs": 0.494
   },
   "items": [
     {
@@ -4304,11 +4304,57 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-100306",
-      "title": "CVE-2026-100306 - TDuck survey form through 6.0 Write Password Bypass via Client-Side Enforcement",
-      "description": "CVE-2026-100306 - TDuck survey form through 6.0 Write Password Bypass via Client-Side Enforcement",
-      "cvss": 9.8,
-      "final_ps": 28,
+      "id": "GHSA-152655e6815b2f12",
+      "title": "@nestjs/platform-fastify: Path-scoped middleware bypass via absolute-form request targets",
+      "description": "| Field | Value |\n| --- | --- |\n| Ecosystem | npm |\n| Package | `@nestjs/platform-fastify` |\n| Affected versions | `>= 12.0.0, res.end('blocked by auth middleware')) .forRoutes({ path: 'users', method: RequestMethod.GET }); }\n}\n``` `supertest` and `light-my-request` always emit origin-form targets, ",
+      "cvss": 7.4,
+      "final_ps": 20,
+      "quality_score": 0.493,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "@nestjs/platform-fastify",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 1,
+      "refs": [
+        "https://github.com/advisories/GHSA-9c5c-9qcx-q35q",
+        "https://github.com/fastify/middie/security/advisories/GHSA-hx87-8wv7-pjv8",
+        "https://github.com/nestjs/nest/security/advisories/GHSA-9c5c-9qcx-q35q",
+        "https://github.com/nestjs/nest/pull/17737"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=20 (no boosts)"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs"
+    },
+    {
+      "id": "CVE-2026-84782",
+      "title": "OpenSSL Fixes High-Severity Flaw That Can Leak Server Memory in Plaintext",
+      "description": "OpenSSL has released security updates for a high-severity vulnerability that could expose heap memory as plaintext during Datagram Transport Layer Security (DTLS) handshakes. Tracked as CVE-2026-84782, the flaw stems from an out-of-bounds read in DTLS handshake retransmission log... [Full analysis a",
+      "cvss": 8.2,
+      "final_ps": 18,
       "quality_score": 0.438,
       "threat_level": "MEDIUM",
       "type": "CVE_REPORT",
@@ -4317,8 +4363,8 @@
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-09-25",
-      "last_seen": "2026-09-25",
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -4326,11 +4372,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-100306"
+        "CVE-2026-84782"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-100306"
+        "https://cybersecuritynews.com/openssl-leak-server-memory/"
       ],
       "explanation": {
         "quality": [
@@ -4340,54 +4386,7 @@
           "QS=0.438"
         ],
         "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-86950",
-      "title": "Apple Patches CoreGraphics Zero-Day Linked to Sophisticated Targeted Attacks",
-      "description": "Apple Patches CoreGraphics Zero-Day Linked to Sophisticated Targeted Attacks",
-      "cvss": null,
-      "final_ps": 26,
-      "quality_score": 0.368,
-      "threat_level": "LOW",
-      "type": "ZERO_DAY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-29",
-      "last_seen": "2026-09-29",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-86950"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://securityaffairs.com/200001/hacking/apple-patches-coregraphics-zero-day-linked-to-sophisticated-targeted-attacks.html",
-        "https://intel.cyberdudebivash.com/reports/2026/09/intel--20c0d941697a0f1d381aeb98.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.10",
-          "recency=0d (score=1.00)",
-          "QS=0.368"
-        ],
-        "priority": [
-          "+7 zero_day",
-          "+4 critical_infra"
+          "base_ps=18 (no boosts)"
         ],
         "suppression": null,
         "merge": null

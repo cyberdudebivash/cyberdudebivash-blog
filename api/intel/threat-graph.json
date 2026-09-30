@@ -1,15 +1,15 @@
 {
-  "generated": "2026-09-30T11:00:35.310Z",
+  "generated": "2026-09-30T15:17:07.614Z",
   "version": "1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX v4.0",
   "stats": {
-    "total_nodes": 14844,
+    "total_nodes": 14848,
     "actors": 8,
     "cves": 6580,
-    "campaigns": 1464,
+    "campaigns": 1466,
     "malware": 0,
     "iocs": 911,
-    "edges": 4193
+    "edges": 4195
   },
   "nodes": {
     "actor:lockbit": {
@@ -276749,13 +276749,13 @@
       "attributes": {
         "cvss": 9.8,
         "threat_level": "MEDIUM",
-        "priority_score": 47,
+        "priority_score": 50,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
         "vendor": "",
         "product": "",
-        "published": "2026-09-28",
+        "published": "2026-09-30",
         "type": "CLOUD_SECURITY"
       },
       "connections": []
@@ -279328,6 +279328,82 @@
         "type": "RANSOMWARE"
       },
       "connections": []
+    },
+    "GHSA-152655e6815b2f12": {
+      "id": "GHSA-152655e6815b2f12",
+      "type": "Intel",
+      "name": "@nestjs/platform-fastify: Path-scoped middleware bypass via absolute-form request targets",
+      "attributes": {
+        "cvss": 7.4,
+        "threat_level": "HIGH",
+        "priority_score": 67,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "@nestjs/platform-fastify",
+        "published": "2026-09-30",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "GHSA-4a7aa5b0fc6715c8": {
+      "id": "GHSA-4a7aa5b0fc6715c8",
+      "type": "Intel",
+      "name": "Nodemailer addressparser: O(n^2) on comment-joined addresses enables a remote DoS (reachable via mailparser)",
+      "attributes": {
+        "cvss": 7.5,
+        "threat_level": "MEDIUM",
+        "priority_score": 61,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "nodemailer",
+        "published": "2026-09-30",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "campaign:cluster-6a278892": {
+      "id": "campaign:cluster-6a278892",
+      "type": "Campaign",
+      "name": "npm @nestjs/platform-fastify Exploitation Campaign",
+      "attributes": {
+        "severity": "HIGH",
+        "item_count": 1,
+        "first_seen": "2026-09-30",
+        "last_seen": "2026-09-30",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | 1 shared IOC(s) across items"
+      },
+      "connections": [
+        {
+          "target": "GHSA-152655e6815b2f12",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cluster-21241925": {
+      "id": "campaign:cluster-21241925",
+      "type": "Campaign",
+      "name": "npm nodemailer Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-09-30",
+        "last_seen": "2026-09-30",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900"
+      },
+      "connections": [
+        {
+          "target": "GHSA-4a7aa5b0fc6715c8",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
     }
   },
   "edges": [
@@ -317241,6 +317317,24 @@
       "id": "campaign:cve-2026-102281→includes→CVE-2026-102281",
       "source": "campaign:cve-2026-102281",
       "target": "CVE-2026-102281",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-30",
+      "sources": []
+    },
+    {
+      "id": "campaign:cluster-6a278892→includes→GHSA-152655e6815b2f12",
+      "source": "campaign:cluster-6a278892",
+      "target": "GHSA-152655e6815b2f12",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-09-30",
+      "sources": []
+    },
+    {
+      "id": "campaign:cluster-21241925→includes→GHSA-4a7aa5b0fc6715c8",
+      "source": "campaign:cluster-21241925",
+      "target": "GHSA-4a7aa5b0fc6715c8",
       "relationship": "includes",
       "confidence": 1,
       "first_seen": "2026-09-30",
