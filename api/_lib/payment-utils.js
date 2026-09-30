@@ -36,7 +36,7 @@ const PLANS = {
     currency:    'INR',
     period:      'month',
     rateLimit:   100000,
-    description: 'Sentinel Team tier — 100,000 API calls/day, 5 seats, STIX 2.1 export, SIEM export (Splunk/Sentinel/Elastic), priority Slack/Discord',
+    description: 'Sentinel Team tier — 100,000 API calls/day, all Pro capabilities, STIX 2.1 export, SIEM rule export (Splunk SPL / Microsoft Sentinel KQL), live Microsoft Sentinel connector, priority Slack/Discord',
     upiNote:     'Transfer ₹20,699 to the UPI ID below. Include your intent ID in remarks.',
   },
   enterprise: {

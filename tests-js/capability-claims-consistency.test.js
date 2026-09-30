@@ -39,3 +39,37 @@ test('fetch-live-intel.js\'s generated templates do not claim TAXII support', ()
   const src = readFile('fetch-live-intel.js');
   assert.ok(!/TAXII/i.test(src), 'fetch-live-intel.js still mentions TAXII in a template string');
 });
+
+// Paid-plan offer integrity (gap register ICF-P0-005). The Sentinel Team /
+// Enterprise offer advertised capabilities with no implementation: team seats
+// (one API key per account exists), Elastic SIEM export (only Splunk SPL and
+// Sentinel KQL rule formats plus the live Microsoft Sentinel connector
+// exist), per-tier response latency (one Worker serves every tier), "no rate
+// limit" on a 100,000/day plan, and "priority data freshness" (one pipeline).
+const OFFER_SURFACES = [
+  'pricing.html', 'faq.html', 'api-dashboard.html', 'api.html',
+  'revenue-conversion-v19.js', 'api/_lib/payment-utils.js',
+];
+const UNDELIVERED_OFFER_CLAIMS = [
+  /\b\d+\s+(?:team\s+)?seats\b/i,
+  /Unlimited team seats/i,
+  /Splunk\s*\/\s*Sentinel\s*\/\s*Elastic/i,
+  /Response latency/i,
+  /no rate limit/i,
+  /Priority data freshness/i,
+];
+for (const file of OFFER_SURFACES) {
+  test(`${file} does not sell plan capabilities that no code delivers`, () => {
+    const text = readFile(file);
+    for (const re of UNDELIVERED_OFFER_CLAIMS) assert.doesNotMatch(text, re, `${file}: ${re}`);
+  });
+}
+
+test('the SIEM export formats the offer names are real detection-download formats', () => {
+  const intel = readFile('api/v1/intel.js');
+  assert.match(intel, /format=sigma\|kql\|splunk/);
+  const taxonomy = require('../api/_lib/siem-connector-taxonomy');
+  const liveDeployable = Object.entries(taxonomy.KNOWN_PLATFORMS)
+    .filter(([, p]) => p.capabilities.deploy_supported && !p.is_sandbox).map(([id]) => id);
+  assert.ok(liveDeployable.length >= 1, 'offer names a live connector; at least one non-sandbox platform must be deployable');
+});

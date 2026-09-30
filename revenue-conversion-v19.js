@@ -30,7 +30,7 @@
     },
     team: {
       label: 'Sentinel Team', amount: 20699, currency: 'INR',
-      features: ['100,000 API calls/day', '5 team seats', 'STIX 2.1 bundle export', 'SIEM export (Splunk/Sentinel/Elastic)', 'All Pro capabilities'],
+      features: ['100,000 API calls/day', 'STIX 2.1 bundle export', 'SIEM rule export (Splunk SPL / Sentinel KQL)', 'Live Microsoft Sentinel connector', 'All Pro capabilities'],
     },
     enterprise: {
       label: 'Enterprise Apex', amount: 82999, currency: 'INR',
