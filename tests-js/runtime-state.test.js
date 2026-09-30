@@ -148,6 +148,12 @@ describe('consumer pages', () => {
     assert.doesNotMatch(fs.readFileSync(path.join(ROOT, 'apex-command-center.js'), 'utf8'), /PRODUCTION DATA LIVE/);
   });
 
+  test('homepage does not pull intelligence through third-party CORS proxies or CSP-blocked origins', () => {
+    const scripts = (index.match(/<script\b(?![^>]*\bsrc=)[^>]*>[\s\S]*?<\/script>/gi) || []).join('\n');
+    assert.doesNotMatch(scripts, /fetch\([^)]*(?:allorigins|corsproxy|thingproxy)/i);
+    assert.doesNotMatch(scripts, /fetch\(CISA_URL/);
+  });
+
   test('status page reachability is derived from responses, not from a SOC 2 flag', () => {
     assert.doesNotMatch(status, /soc2_certified===false\?'AVAILABLE'/);
     assert.match(status, /Promise\.allSettled\(\[RS\.fetchJson\('\/api\/intel\/customer-assurance\.json'\),RS\.fetchJson\('\/live-intel\.json'\)\]\)/);

@@ -3870,48 +3870,15 @@ if (termEl) typeTerminal();
 })();
 
 // =============================================
-// 3. CISA KEV LIVE COUNT FETCH (multi-proxy CORS chain)
+// 3. CISA KEV LIVE COUNT FETCH — retired 2026-09-30
 // =============================================
-async function updateKEVCounts() {
-  const CISA_URL = 'https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json';
-  let data = null;
-
-  // Try direct first
-  try {
-    const res = await fetch(CISA_URL, { signal: AbortSignal.timeout ? AbortSignal.timeout(8000) : undefined });
-    if (res.ok) data = await res.json();
-  } catch(e) {}
-
-  // Try proxy fallback
-  if (!data) {
-    try {
-      const r2 = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(CISA_URL), { signal: AbortSignal.timeout ? AbortSignal.timeout(10000) : undefined });
-      if (r2.ok) data = await r2.json();
-    } catch(e) {}
-  }
-
-  if (data && data.vulnerabilities) {
-    const total = data.vulnerabilities.length;
-    const recent = data.vulnerabilities.filter(v => {
-      const d = new Date(v.dateAdded);
-      return (Date.now() - d) < 86400000;
-    }).length;
-    const kevEl = document.getElementById('kevCount');
-    if (kevEl) kevEl.textContent = total.toLocaleString();
-    const todayEl = document.getElementById('cisaToday');
-    if (todayEl) todayEl.textContent = recent;
-    const totalEl = document.getElementById('kevTotal');
-    if (totalEl) totalEl.textContent = total.toLocaleString();
-  } else {
-    const todayEl = document.getElementById('cisaToday');
-    const totalEl = document.getElementById('kevTotal');
-    if (todayEl) todayEl.textContent = 'Unavailable';
-    if (totalEl) totalEl.textContent = 'Unavailable';
-  }
-}
-
-updateKEVCounts();
-setInterval(updateKEVCounts, 15 * 60 * 1000);
+// This block downloaded the full CISA KEV catalog (~1.3 MB) on every view and
+// every 15 min: first directly from cisa.gov (always refused by this page's
+// own CSP connect-src, logging a console error), then through the third-party
+// api.allorigins.win proxy, only to write into #kevCount / #cisaToday /
+// #kevTotal, none of which exist in this page. KEV state shown on the homepage
+// comes from the first-party pipeline feed (live-intel.json stats.cisaKev via
+// apex-command-center.js), which preserves provenance.
 
 // =============================================
 // 4. DIGEST DATE
