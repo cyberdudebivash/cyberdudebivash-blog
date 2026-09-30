@@ -1,8 +1,55 @@
 {
-  "generated": "2026-09-29T22:21:11.152Z",
+  "generated": "2026-09-30T05:39:41.220Z",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
   "count": 200,
   "items": [
+    {
+      "slug": "cve-2026-102599-npm-engine-io",
+      "title": "Socket.IO: Engine.IO Protocol Revision Mismatch DoS",
+      "url": "/posts/cve-2026-102599-npm-engine-io.html",
+      "generated": "2026-09-29T23:55:01.591Z",
+      "severity": "HIGH",
+      "cves": [
+        "CVE-2026-102599",
+        "CVE-2026-102599"
+      ],
+      "mitreAttack": [
+        {
+          "id": "T1498",
+          "name": "Network Denial of Service",
+          "tactic": "impact",
+          "confidence": "HIGH"
+        }
+      ],
+      "sigma": [],
+      "kql": [],
+      "splunk": [],
+      "osquery": [],
+      "suricata": [
+        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain engine.io\"; dns.query; content:\"engine.io\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
+        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain socket.io\"; dns.query; content:\"socket.io\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)"
+      ]
+    },
+    {
+      "slug": "cve-2026-102272-pip-pyjwt",
+      "title": "PyJWT BOM Bypass",
+      "url": "/posts/cve-2026-102272-pip-pyjwt.html",
+      "generated": "2026-09-29T23:55:01.587Z",
+      "severity": "HIGH",
+      "cves": [
+        "CVE-2026-102272",
+        "CVE-2026-102272"
+      ],
+      "mitreAttack": [],
+      "sigma": [],
+      "kql": [],
+      "splunk": [],
+      "osquery": [],
+      "suricata": [
+        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.google.com/url?q=https://github.com/jpadilla/pyjwt&source=gmail&ust=1781794518474000&sa=\"; http.host; content:\"www.google.com\"; nocase; http.uri; content:\"/url?q=https\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
+        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.google.com\"; dns.query; content:\"www.google.com\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)"
+      ]
+    },
     {
       "slug": "cve-2026-102674-npm-electron",
       "title": "Electron: Windows opened from a sandboxed top-level document do not inherit its sandbox restrictions",
@@ -4204,42 +4251,6 @@
         "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/user/TorrensUni&quot;&gt;\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/user/TorrensUni&quot\\;&gt\\;\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
         "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://research.torrens.edu.au/en/publications/enhancing-iiot-security-using-digital-twins-in-indus\"; http.host; content:\"research.torrens.edu.au\"; nocase; http.uri; content:\"/en/publications/enhancing-iiot-security-using-digital-twins-in-indus\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)",
         "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000005; rev:1;)"
-      ]
-    },
-    {
-      "slug": "enhancing-iiot-security-using-digital-twins-in-industry",
-      "title": "Enhancing IIoT Security Using Digital Twins in Industry",
-      "url": "/posts/enhancing-iiot-security-using-digital-twins-in-industry.html",
-      "generated": "2026-07-14T06:02:09.989Z",
-      "severity": "MEDIUM",
-      "cves": [],
-      "mitreAttack": [],
-      "sigma": [],
-      "kql": [],
-      "splunk": [],
-      "osquery": [],
-      "suricata": [
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/user/TorrensUni&quot;&gt;\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/user/TorrensUni&quot\\;&gt\\;\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://research.torrens.edu.au/en/publications/enhancing-iiot-security-using-digital-twins-in-indus\"; http.host; content:\"research.torrens.edu.au\"; nocase; http.uri; content:\"/en/publications/enhancing-iiot-security-using-digital-twins-in-indus\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/netsec/comments/1uvzmuz/enhancing_iiot_security_using_digital_twins_in/&quo\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/netsec/comments/1uvzmuz/enhancing_iiot_security_using_digital_twins_in/&quo\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)"
-      ]
-    },
-    {
-      "slug": "isc-stormcast-for-tuesday-july-14th-2026-https-isc-sans",
-      "title": "ISC Stormcast For Tuesday, July 14th, 2026 https://isc.sans.edu/podcastdetail/10006, (Tue, Jul 14th)",
-      "url": "/posts/isc-stormcast-for-tuesday-july-14th-2026-https-isc-sans.html",
-      "generated": "2026-07-14T02:31:50.176Z",
-      "severity": "MEDIUM",
-      "cves": [],
-      "mitreAttack": [],
-      "sigma": [],
-      "kql": [],
-      "splunk": [],
-      "osquery": [],
-      "suricata": [
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://isc.sans.edu/podcastdetail/10006,\"; http.host; content:\"isc.sans.edu\"; nocase; http.uri; content:\"/podcastdetail/10006,\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://isc.sans.edu\"; http.host; content:\"isc.sans.edu\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)"
       ]
     }
   ]
