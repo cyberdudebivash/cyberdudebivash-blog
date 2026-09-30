@@ -171,11 +171,70 @@ function repairLegacyCveHtml(src, html) {
   return repaired;
 }
 
+// Legacy commercial copy (gap register ICF-P0-003). Posts rendered by the
+// retired v4.0 template still carry marketing claims that the current
+// generator (fetch-live-intel.js) no longer emits and that no system can
+// substantiate: a 10,000+ subscriber/reader count, a "48hr pre-disclosure"
+// offer with no implementation, and "FP-validated" YARA packs. Each legacy
+// literal maps to the exact wording the current generator emits for the same
+// slot, so old and new posts converge on one canonical copy. Exact literals
+// only: intelligence content is never rewritten, and source files keep their
+// git history as the provenance record. Only the public build is corrected.
+const LEGACY_COMMERCIAL_COPY = Object.freeze([
+  ['Read by 10,000+ security professionals worldwide · Unsubscribe at any time',
+    'Consent-based subscription · Unsubscribe at any time'],
+  ['10,000+ security professionals &#xB7; Unsubscribe anytime',
+    'Consent-based subscription &#xB7; Unsubscribe at any time'],
+  ['Join 10,000+ SOC analysts receiving daily threat intelligence, detection rules &amp; CVE alerts. Free. No spam. Unsubscribe anytime.',
+    'Receive source-attributed CVE alerts and practical response guidance. Free. No spam. Unsubscribe anytime.'],
+  ['Join 10,000+ SOC analysts receiving daily threat intelligence &amp; detection rules. Free.',
+    'Receive source-attributed CVE alerts and practical response guidance. Free.'],
+  ['48hr pre-disclosure. Compiled Sigma/YARA packs. Enriched IOC feeds. Custom advisories. Deploy-ready SIEM queries.',
+    'Source-attributed alerts, reference detection drafts, enriched IOC feeds, and response guidance. Validate detections in your environment before deployment.'],
+  ['48hr pre-disclosure · Enriched IOC feeds · Custom advisories · White-label reports · Dedicated analyst · MSSP licensing',
+    'Source review · Custom advisories · Detection assessment · API and MSSP licensing discussions'],
+  ['48hr pre-disclosure · IOC feeds · Custom advisories · White-label reports · Dedicated analyst · MSSP licensing',
+    'Source review · Custom advisories · Detection assessment · API and MSSP licensing discussions'],
+  ['Pre-disclosure intel, enriched IOC bundles, deploy-ready SIEM packs, and dedicated analyst support — before threats become headlines.',
+    'Request a scoped intelligence briefing, evidence review, custom IOC ingestion assessment, or detection-engineering engagement.'],
+  ['Deploy to endpoint detection platforms. Enterprise subscribers receive tuned, FP-validated YARA rule packs.',
+    'Not false-positive validated. Confirm that strings identify malicious behavior rather than the vulnerability name or normal product artifacts.'],
+]);
+
+// Claims no public page may carry without a telemetry/commercial evidence
+// contract. Enforced over the real corpus by build-cloudflare-assets.test.js;
+// deliberately not a build blocker, because every intel-pipeline commit
+// deploys and a source article quoting similar words must not stall fresh
+// intelligence.
+const UNSUPPORTED_PUBLIC_CLAIMS = Object.freeze([
+  // Audience nouns only: "subscribers"/"users" are excluded because breach
+  // reporting legitimately quotes e.g. "1,000,000+ subscribers affected".
+  ['audience-size claim', /\b\d{1,3}(?:,\d{3})+\+\s+(?:security professionals|SOC analysts)\b/i],
+  ['SOC-team adoption count', /\b\d[\d,]*\+\s+SOC teams\b/i],
+  // The commercial offer only; threat terminology ("pre-disclosure
+  // exploitation", "pre-disclosure window") is legitimate intelligence.
+  ['pre-disclosure offer', /\b48[- ]?h(?:ou)?r\s+pre-disclosure\b|\bpre-disclosure\s+(?:(?:threat|CVE|browser vulnerability)\s+)?(?:intel(?:ligence)?|feeds?|reports?)\b/i],
+  ['false-positive validation claim', /\bFP-validated\b/i],
+]);
+
+function neutralizeLegacyCommercialCopy(html) {
+  let out = String(html);
+  for (const [legacy, canonical] of LEGACY_COMMERCIAL_COPY) {
+    if (out.includes(legacy)) out = out.split(legacy).join(canonical);
+  }
+  return out;
+}
+
+function findUnsupportedPublicClaims(html) {
+  const text = String(html);
+  return UNSUPPORTED_PUBLIC_CLAIMS.filter(([, re]) => re.test(text)).map(([label]) => label);
+}
+
 function copyFileForPublicBuild(src, dest) {
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   if (src.toLowerCase().endsWith('.html')) {
     const sourceHtml = fs.readFileSync(src, 'utf8');
-    const repairedHtml = repairLegacyCveHtml(src, sourceHtml);
+    const repairedHtml = neutralizeLegacyCommercialCopy(repairLegacyCveHtml(src, sourceHtml));
     const html = validatePublicHtmlStructure(repairedHtml, path.relative(ROOT, src));
     fs.writeFileSync(dest, injectCustomerExperience(html));
   } else {
@@ -229,4 +288,4 @@ if (require.main === module) {
   console.log(`dist-public/ built: ${countFiles(out)} files`);
 }
 
-module.exports = { build, countFiles, PUBLIC_DIRS, PUBLIC_ROOT_FILES, ROOT, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure, hasUndefinedMetadataArtifacts, repairLegacyCveHtml, CX_CSS, CX_JS };
+module.exports = { build, countFiles, PUBLIC_DIRS, PUBLIC_ROOT_FILES, ROOT, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure, hasUndefinedMetadataArtifacts, repairLegacyCveHtml, CX_CSS, CX_JS, LEGACY_COMMERCIAL_COPY, UNSUPPORTED_PUBLIC_CLAIMS, neutralizeLegacyCommercialCopy, findUnsupportedPublicClaims };

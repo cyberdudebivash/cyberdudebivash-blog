@@ -11,7 +11,7 @@ function staticMarkupOnly(html) {
     .replace(/<script\b[\s\S]*?<\/script>/gi, '')
     .replace(/<style\b[\s\S]*?<\/style>/gi, '');
 }
-const { build, countFiles, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure, hasUndefinedMetadataArtifacts } = require('./build-cloudflare-assets');
+const { build, countFiles, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure, hasUndefinedMetadataArtifacts, LEGACY_COMMERCIAL_COPY, neutralizeLegacyCommercialCopy, findUnsupportedPublicClaims } = require('./build-cloudflare-assets');
 
 // Mirrors Cloudflare's own documented splat semantics for a _headers
 // pattern: "a splat pattern -- signified by an asterisk (*) -- will
@@ -127,6 +127,24 @@ test('customer experience injector handles valid HTML and malformed public HTML 
     () => validatePublicHtmlStructure('<html><head><style>truncated', 'broken.html'),
     /Malformed public HTML: broken\.html/
   );
+});
+
+test('legacy commercial copy converges on the current generator wording and never touches intelligence text', () => {
+  const generator = fs.readFileSync(path.join(__dirname, '..', 'fetch-live-intel.js'), 'utf8');
+  for (const [legacy, canonical] of LEGACY_COMMERCIAL_COPY) {
+    // Single source of truth: every replacement is verbatim current-generator copy.
+    assert.ok(generator.includes(canonical.replace(/&#xB7;/g, '\u00b7')), 'not current generator copy: ' + canonical);
+    assert.notDeepEqual(findUnsupportedPublicClaims(legacy), [], 'legacy literal should be recognised as unsupported: ' + legacy);
+    const once = neutralizeLegacyCommercialCopy('<p>' + legacy + '</p>');
+    assert.deepEqual(findUnsupportedPublicClaims(once), []);
+    assert.equal(neutralizeLegacyCommercialCopy(once), once, 'neutralization must be idempotent');
+  }
+  const intelligence = '<p>The actor leaked 10,000+ records and 1,000,000+ subscribers were affected; CVSS 9.8. Google confirmed pre-disclosure exploitation during a three-month pre-disclosure window. No pre-disclosure access is claimed.</p>';
+  assert.equal(neutralizeLegacyCommercialCopy(intelligence), intelligence);
+  assert.deepEqual(findUnsupportedPublicClaims(intelligence), []);
+  assert.deepEqual(findUnsupportedPublicClaims('<p>trusted by 500+ SOC teams</p>'), ['SOC-team adoption count']);
+  assert.deepEqual(findUnsupportedPublicClaims('<a>SOC Pro — 48hr Pre-Disclosure + IOC Feeds</a>'), ['pre-disclosure offer']);
+  assert.deepEqual(findUnsupportedPublicClaims('<p>Get pre-disclosure threat intelligence</p>'), ['pre-disclosure offer']);
 });
 
 describe('build-cloudflare-assets', () => {
@@ -275,6 +293,15 @@ test('legitimate content containing prohibited words as substrings is not flagge
       if (/href=["']javascript:/i.test(markup)) offenders.push(rel + ': javascript href');
     }
     assert.deepEqual(offenders, [], 'public pages still containing dead-link patterns:\n' + offenders.join('\n'));
+  });
+
+  test('no public HTML carries an unsupported audience, adoption, pre-disclosure or FP-validation claim', () => {
+    const offenders = [];
+    for (const rel of outputFiles.filter(f => f.endsWith('.html'))) {
+      const found = findUnsupportedPublicClaims(fs.readFileSync(path.join(OUT, rel), 'utf8'));
+      if (found.length) offenders.push(rel + ': ' + found.join(', '));
+    }
+    assert.deepEqual(offenders.slice(0, 20), [], offenders.length + ' public pages carry unsupported claims');
   });
 
   test('built CVE pages contain no historical undefined metadata artifacts', () => {
