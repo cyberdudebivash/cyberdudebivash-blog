@@ -87,16 +87,21 @@ module.exports = async (req, res) => {
 
         const email = normalizeEmail(order.email);
         const tier  = (PLANS[order.planType] || {}).tier || order.planType;
-        await redis.setex(dupKey, SUBMISSION_TTL_SECONDS, '1');
-        await redis.hmset(`payment:rzp:order:${orderId}`, {
-          status: 'paid', paymentId, verifiedAt: now(),
-        });
-        await redis.expire(`payment:rzp:order:${orderId}`, SUBMISSION_TTL_SECONDS);
+        // Grant first, then mark processed. upgradeUserTier() is an
+        // idempotent overwrite, so a Razorpay retry after a partial failure
+        // re-applies the same tier harmlessly. Marking first would make every
+        // retry short-circuit on the replay markers above: a captured payment
+        // with no entitlement and no automatic recovery.
         await upgradeUserTier(email, tier, {
           transactionId: paymentId,
           gateway: 'razorpay_webhook',
           orderId,
         });
+        await redis.hmset(`payment:rzp:order:${orderId}`, {
+          status: 'paid', paymentId, verifiedAt: now(),
+        });
+        await redis.expire(`payment:rzp:order:${orderId}`, SUBMISSION_TTL_SECONDS);
+        await redis.setex(dupKey, SUBMISSION_TTL_SECONDS, '1');
         await auditLog('RAZORPAY_WEBHOOK_PAYMENT_CAPTURED', {
           email, planType: order.planType, orderId, paymentId, amount: order.amount,
         });
