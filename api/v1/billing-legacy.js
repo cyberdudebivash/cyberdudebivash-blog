@@ -588,17 +588,20 @@ async function handleVerifyRazorpayPayment(req, res) {
 
   try {
     const tier = (PLANS[planType] || {}).tier || planType;
-    await redis.setex(dupKey, SUBMISSION_TTL_SECONDS, '1');
-    await redis.hmset(`payment:rzp:order:${orderId}`, {
-      status: 'paid', paymentId, verifiedAt: now(),
-    });
-    await redis.expire(`payment:rzp:order:${orderId}`, SUBMISSION_TTL_SECONDS);
-
+    // Grant before marking processed (see razorpay-webhook.js): a failure
+    // between the two must leave the payment retryable, never "already
+    // processed" with no tier applied. upgradeUserTier() is idempotent.
     const result = await upgradeUserTier(email, tier, {
       transactionId: paymentId,
       gateway:       'razorpay',
       orderId,
     });
+
+    await redis.hmset(`payment:rzp:order:${orderId}`, {
+      status: 'paid', paymentId, verifiedAt: now(),
+    });
+    await redis.expire(`payment:rzp:order:${orderId}`, SUBMISSION_TTL_SECONDS);
+    await redis.setex(dupKey, SUBMISSION_TTL_SECONDS, '1');
 
     /* ── W4-P0-003: Bridge — provision APEX API key in Cloudflare KV ─
      * This call carries no auth today beyond being reachable — anyone who

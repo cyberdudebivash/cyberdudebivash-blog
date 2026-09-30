@@ -488,7 +488,12 @@ async function fetchNVD(state) {
       const cpe    = cve.configurations?.[0]?.nodes?.[0]?.cpeMatch?.[0]?.criteria||'';
       const vendor  = (cpe.match(/cpe:2\.3:[aoh]:([^:]+):/)||[])[1]?.replace(/_/g,' ')||'Unknown Vendor';
       const product = (cpe.match(/cpe:2\.3:[aoh]:[^:]+:([^:]+):/)||[])[1]?.replace(/_/g,' ')||desc.split(/\s+/).slice(0,3).join(' ')||'Unknown Product';
-      const iocs = extractIOCs(desc, []);
+      // Vulnerability advisories describe affected products, fix commits and
+      // docs, not attacker infrastructure: regex hits here (vendor domains,
+      // commit SHAs, 169.254.169.254, version strings) are not IOCs. Only
+      // structured indicator feeds (urlhaus, threatfox, malwarebazaar, otx)
+      // contribute indicators. Gap register ICF-P0-009.
+      const iocs = [];
       const sevLabel = cvss >= 9.0 ? 'Critical Vulnerability' : 'High Severity Vulnerability';
       return { source:'nvd', type:'CVE_REPORT', id, title:`${id} — ${vendor} ${product} CVSS ${cvss} ${sevLabel}`,
         desc, cvss, vector, cweId, refs, pubDate, vendor, product, exploited:false, cisaKev:false, ransomware:false,
@@ -609,7 +614,12 @@ async function fetchGitHubAdvisories(state) {
       const cves = (a.cve_id?[a.cve_id]:[]).concat((a.identifiers||[]).filter(i=>i.type==='CVE').map(i=>i.value));
       const primaryId = cves[0]||('GHSA-'+md5(a.ghsa_id||a.url));
       const desc = stripHtml(a.description||a.summary||'').slice(0,800);
-      const iocs = extractIOCs(desc, []);
+      // Vulnerability advisories describe affected products, fix commits and
+      // docs, not attacker infrastructure: regex hits here (vendor domains,
+      // commit SHAs, 169.254.169.254, version strings) are not IOCs. Only
+      // structured indicator feeds (urlhaus, threatfox, malwarebazaar, otx)
+      // contribute indicators. Gap register ICF-P0-009.
+      const iocs = [];
       return { source:'github_advisories', type:'CVE_REPORT', id:primaryId,
         title:a.summary||`${primaryId} — GitHub Security Advisory`,
         desc, cvss, vector:a.cvss?.vector_string||'', cweId:(a.cwes||[])[0]?.cwe_id||'',

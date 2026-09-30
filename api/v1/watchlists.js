@@ -31,6 +31,7 @@ const sec = require('../_lib/security');
 const { authenticate, successResponse, apiError } = require('../_lib/middleware');
 const { parseBody } = require('../_lib/payment-utils');
 const store = require('../_lib/watchlist-store');
+const { tierAtLeast } = require('../_lib/tier-entitlements');
 const { getEventsByIds } = require('../_lib/change-engine');
 
 const VALID_ACTIONS = 'list, create, get, update, delete, list-entities, add-entity, remove-entity, feed, entitlements';
@@ -228,7 +229,7 @@ async function handleFeed(req, res) {
   // full canonical state (Phase 68's "one global event" design), so
   // gating happens here, once, at delivery, not by re-running detection
   // per tier.
-  const tierAllowsRelationships = user.tier === 'pro' || user.tier === 'enterprise';
+  const tierAllowsRelationships = tierAtLeast(user.tier, 'pro');
   const RELATIONSHIP_CHANGE_TYPES = new Set([
     'CVE_NEW_CAMPAIGN_ASSOCIATION', 'CVE_NEW_ACTOR_ASSOCIATION',
     'CAMPAIGN_NEW_ACTOR', 'CAMPAIGN_NEW_CVE',

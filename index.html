@@ -1927,7 +1927,7 @@ input:focus, textarea:focus {
     <span class="cdb-trust-item"><span class="cdb-trust-icon" aria-hidden="true">◇</span><strong>Runtime-verified</strong><span> freshness</span></span>
     <span class="cdb-trust-item"><span class="cdb-trust-icon" aria-hidden="true">⬡</span><strong>SOC 2-aligned</strong><span> controls</span></span>
     <span class="cdb-trust-item"><span class="cdb-trust-icon" aria-hidden="true">▣</span><strong>Fail-closed</strong><span> evidence pipeline</span></span>
-    <span class="cdb-trust-edge" id="cdb-edge-state"><span class="cdb-dot"></span>VERIFYING PRODUCTION EDGE</span>
+    <span class="cdb-trust-edge" id="cdb-edge-state"><span class="cdb-dot"></span>CHECKING PRODUCTION EDGE</span>
   </div>
 </div>
 
@@ -1988,13 +1988,13 @@ input:focus, textarea:focus {
       <a href="/intel/" class="lcab-threat"><span class="lcab-tbadge kev">CTI</span><span class="lcab-ttext">Open Hybrid SOC + CTI operational workspace</span></a>
       <a href="/customer-assurance.html" class="lcab-threat"><span class="lcab-tbadge apt">ASSURANCE</span><span class="lcab-ttext">Review customer control and evidence posture</span></a>
     </div>
-    <span class="lcab-time">Runtime: <strong id="homepage-priority-runtime">VERIFYING</strong></span>
+    <span class="lcab-time">Runtime: <strong id="homepage-priority-runtime">CHECKING</strong></span>
   </div>
 </div>
 <!-- APEX THREAT STATUS BAR -->
 <div class="apex-status-bar">
   <div class="apex-status-inner">
-    <span class="apex-status-pill red-pill"><span class="spill-dot"></span>FEED: <strong id="homepage-feed-state">VERIFYING</strong></span>
+    <span class="apex-status-pill red-pill"><span class="spill-dot"></span>FEED: <strong id="homepage-feed-state">CHECKING</strong></span>
     <span class="apex-status-pill orange-pill"><span class="spill-dot"></span><strong>CISA KEV</strong> Structured Source</span>
     <span class="apex-status-pill red-pill"><span class="spill-dot"></span><strong>Evidence</strong> Status Shown Per Item</span>
     <span class="apex-status-pill purple-pill"><span class="spill-dot"></span>SOURCES: <strong>ATTRIBUTED</strong></span>
@@ -2031,9 +2031,9 @@ input:focus, textarea:focus {
         </div>
 
         <div class="cdb-runtime cdb-hero-runtime" aria-label="Live production state">
-          <span class="cdb-pill" id="cdb-runtime-pill"><span class="cdb-dot"></span><span id="cdb-runtime-text">VERIFYING PRODUCTION</span></span>
+          <span class="cdb-pill" id="cdb-runtime-pill"><span class="cdb-dot"></span><span id="cdb-runtime-text">CHECKING PRODUCTION</span></span>
           <span class="cdb-pill"><span class="cdb-dot"></span><span id="cdb-freshness">CHECKING FRESHNESS</span></span>
-          <span class="cdb-pill"><span class="cdb-dot"></span><span id="cdb-evidence-count">VERIFYING ASSURANCE</span></span>
+          <span class="cdb-pill"><span class="cdb-dot"></span><span id="cdb-evidence-count">CHECKING ASSURANCE</span></span>
           <button class="cdb-btn cdb-refresh-btn" type="button" id="cdb-refresh">Refresh Live State</button>
         </div>
       </div>
@@ -2109,7 +2109,7 @@ input:focus, textarea:focus {
           </div>
           <div class="cdb-panel-body">
             <div class="cdb-assurance">
-              <div class="cdb-assurance-row"><div class="cdb-assurance-top"><span class="cdb-assurance-name">SOC 2 Posture</span><span class="cdb-assurance-state warn" id="cdb-soc2-state">VERIFY</span></div><div class="cdb-assurance-desc">Operational control evidence only. No Type I/II auditor attestation is claimed.</div></div>
+              <div class="cdb-assurance-row"><div class="cdb-assurance-top"><span class="cdb-assurance-name">SOC 2 Posture</span><span class="cdb-assurance-state warn" id="cdb-soc2-state">ALIGNED · NOT CERTIFIED</span></div><div class="cdb-assurance-desc">Operational control evidence only. No Type I/II auditor attestation is claimed.</div></div>
               <div class="cdb-assurance-row"><div class="cdb-assurance-top"><span class="cdb-assurance-name">Intelligence Integrity</span><span class="cdb-assurance-state" id="cdb-integrity-state">VERIFY</span></div><div class="cdb-assurance-desc">Source identity, evidence context, freshness, and limitations are preserved where available.</div></div>
               <div class="cdb-assurance-row"><div class="cdb-assurance-top"><span class="cdb-assurance-name">Synthetic Customer Telemetry</span><span class="cdb-assurance-state" id="cdb-synthetic-state">VERIFY</span></div><div class="cdb-assurance-desc">Customer, viewer, incident, adoption, and scarcity metrics are not fabricated.</div></div>
               <div class="cdb-assurance-row"><div class="cdb-assurance-top"><span class="cdb-assurance-name">Contractual SLA</span><span class="cdb-assurance-state warn" id="cdb-sla-state">VERIFY</span></div><div class="cdb-assurance-desc">Response objectives and SLA obligations apply only where explicitly executed with a customer.</div></div>
@@ -3870,48 +3870,15 @@ if (termEl) typeTerminal();
 })();
 
 // =============================================
-// 3. CISA KEV LIVE COUNT FETCH (multi-proxy CORS chain)
+// 3. CISA KEV LIVE COUNT FETCH — retired 2026-09-30
 // =============================================
-async function updateKEVCounts() {
-  const CISA_URL = 'https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json';
-  let data = null;
-
-  // Try direct first
-  try {
-    const res = await fetch(CISA_URL, { signal: AbortSignal.timeout ? AbortSignal.timeout(8000) : undefined });
-    if (res.ok) data = await res.json();
-  } catch(e) {}
-
-  // Try proxy fallback
-  if (!data) {
-    try {
-      const r2 = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(CISA_URL), { signal: AbortSignal.timeout ? AbortSignal.timeout(10000) : undefined });
-      if (r2.ok) data = await r2.json();
-    } catch(e) {}
-  }
-
-  if (data && data.vulnerabilities) {
-    const total = data.vulnerabilities.length;
-    const recent = data.vulnerabilities.filter(v => {
-      const d = new Date(v.dateAdded);
-      return (Date.now() - d) < 86400000;
-    }).length;
-    const kevEl = document.getElementById('kevCount');
-    if (kevEl) kevEl.textContent = total.toLocaleString();
-    const todayEl = document.getElementById('cisaToday');
-    if (todayEl) todayEl.textContent = recent;
-    const totalEl = document.getElementById('kevTotal');
-    if (totalEl) totalEl.textContent = total.toLocaleString();
-  } else {
-    const todayEl = document.getElementById('cisaToday');
-    const totalEl = document.getElementById('kevTotal');
-    if (todayEl) todayEl.textContent = 'Unavailable';
-    if (totalEl) totalEl.textContent = 'Unavailable';
-  }
-}
-
-updateKEVCounts();
-setInterval(updateKEVCounts, 15 * 60 * 1000);
+// This block downloaded the full CISA KEV catalog (~1.3 MB) on every view and
+// every 15 min: first directly from cisa.gov (always refused by this page's
+// own CSP connect-src, logging a console error), then through the third-party
+// api.allorigins.win proxy, only to write into #kevCount / #cisaToday /
+// #kevTotal, none of which exist in this page. KEV state shown on the homepage
+// comes from the first-party pipeline feed (live-intel.json stats.cisaKev via
+// apex-command-center.js), which preserves provenance.
 
 // =============================================
 // 4. DIGEST DATE
@@ -3971,71 +3938,12 @@ document.addEventListener('keydown', function(e) {
 })();
 </script>
 
-<script>
-(function(){
-  var runtime=document.getElementById('soc2-home-runtime');
-  var runtimeMeta=document.getElementById('soc2-home-runtime-meta');
-  var runtimeCard=document.getElementById('soc2-home-runtime-card');
-  var assurance=document.getElementById('soc2-home-assurance');
-  var assuranceCard=document.getElementById('soc2-home-assurance-card');
-
-  function setRuntime(ok,message){
-    if(!runtime||!runtimeMeta||!runtimeCard)return;
-    runtime.textContent=ok?'AVAILABLE':'DEGRADED';
-    runtime.className='soc2-cti-value '+(ok?'ok':'warn');
-    runtimeMeta.textContent=message;
-    runtimeCard.setAttribute('data-state',ok?'ok':'warn');
-  }
-
-  Promise.allSettled([
-    fetch('/live-intel.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('intel');return r.json();}),
-    fetch('/api/intel/customer-assurance.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('assurance');return r.json();})
-  ]).then(function(results){
-    var intelOk=results[0].status==='fulfilled';
-    var assuranceOk=results[1].status==='fulfilled';
-    var checked=new Date().toISOString().replace('T',' ').slice(0,19)+'Z';
-    setRuntime(intelOk,'First-party intelligence '+(intelOk?'reachable':'unavailable')+' · checked '+checked);
-    var feedState=document.getElementById('homepage-feed-state');
-    var priorityRuntime=document.getElementById('homepage-priority-runtime');
-    if(feedState) feedState.textContent=intelOk?'AVAILABLE':'DEGRADED';
-    if(priorityRuntime) priorityRuntime.textContent=intelOk?'AVAILABLE':'DEGRADED';
-    if(intelOk && results[0].value){
-      var intel=results[0].value;
-      var stats=intel.stats||{};
-      function put(id,value){var el=document.getElementById(id);if(el)el.textContent=value;}
-      put('soc2-total-published',Number.isFinite(Number(intel.totalPublished))?Number(intel.totalPublished).toLocaleString():'—');
-      put('soc2-critical-count',Number.isFinite(Number(stats.critical))?Number(stats.critical).toLocaleString():'—');
-      put('soc2-kev-count',Number.isFinite(Number(stats.cisaKev))?Number(stats.cisaKev).toLocaleString():'—');
-      put('soc2-exploited-count',Number.isFinite(Number(stats.exploited))?Number(stats.exploited).toLocaleString():'—');
-      put('soc2-source-count',Number.isFinite(Number(stats.sources))?Number(stats.sources).toLocaleString():'—');
-      var stamp=intel.generatedAt||intel.lastUpdated||(intel.metadata&&intel.metadata.lastPipelineRun);
-      var ageEl=document.getElementById('soc2-pipeline-age');
-      var timeEl=document.getElementById('soc2-pipeline-time');
-      if(stamp&&ageEl&&timeEl){
-        var ms=Date.now()-Date.parse(stamp);
-        if(Number.isFinite(ms)&&ms>=0){
-          var mins=Math.floor(ms/60000);
-          var hours=Math.floor(mins/60);
-          ageEl.textContent=hours>0?(hours+'h '+(mins%60)+'m'):(mins+'m');
-          timeEl.textContent='Generated '+new Date(stamp).toISOString().replace('T',' ').slice(0,19)+'Z';
-        }else{
-          ageEl.textContent='UNKNOWN';
-          timeEl.textContent='Pipeline timestamp could not be evaluated';
-        }
-      }
-    }
-    if(assurance&&assuranceCard){
-      if(assuranceOk && results[1].value && results[1].value.soc2_certified===false){
-        assurance.textContent='ALIGNED · NOT CERTIFIED';
-        assuranceCard.setAttribute('data-state','warn');
-      } else {
-        assurance.textContent='VERIFY ASSURANCE';
-        assuranceCard.setAttribute('data-state','warn');
-      }
-    }
-  }).catch(function(){setRuntime(false,'Runtime verification unavailable.');});
-})();
-</script>
+<!-- Runtime state for #homepage-feed-state / #homepage-priority-runtime is
+     set by apex-command-center.js from the shared runtime-state.js model
+     (HEALTHY / DEGRADED / STALE / UNAVAILABLE, fetch timeouts, thresholds
+     aligned with scripts/check-intel-freshness.js). The previous inline
+     block here duplicated the live-intel.json and customer-assurance.json
+     fetches and wrote to soc2-home-* elements no longer in this page. -->
 
 <script src="/security-engine.js" defer></script>
 <script src="/ai-monetization-engine.js" defer></script>
@@ -4096,6 +4004,7 @@ document.addEventListener('keydown', function(e) {
 })();
 
 </script>
+<script src="/runtime-state.js?v=20260930-rs1" defer></script>
 <script src="/apex-command-center.js?v=20260928-brandhero1" defer></script>
 </body>
 </html>

@@ -13,8 +13,8 @@
 <nav><a class="brand" href="/">CYBERDUDEBIVASH SENTINEL APEX</a><div class="links"><a href="/customer-assurance.html">Assurance</a><a href="/enterprise-onboarding.html">Onboarding</a><a href="/cti-delivery-acceptance.html">Delivery Acceptance</a><a href="/customer-incident-response.html">Incident Response</a><a href="/security-disclosure.html">Security</a></div></nav>
 <section class="hero"><div class="k">SERVICE ASSURANCE · CURRENT-STATE EVIDENCE</div><h1>Availability without invented percentages.</h1><p>This page reports current first-party service evidence and the contractual boundary for enterprise customers. Historical uptime percentages are not fabricated from sparse checks. Contractual SLA terms apply only when explicitly executed with a customer.</p></section>
 <div class="grid">
-  <article class="card"><div class="label">Platform Reachability</div><div class="value" id="runtime">VERIFYING</div><p id="runtime-note">Checking the production assurance surface.</p></article>
-  <article class="card"><div class="label">CTI Feed Freshness</div><div class="value" id="freshness">VERIFYING</div><p id="freshness-note">Reading the first-party pipeline timestamp.</p></article>
+  <article class="card"><div class="label">Platform Reachability</div><div class="value" id="runtime">CHECKING</div><p id="runtime-note">Checking the production assurance surface.</p></article>
+  <article class="card"><div class="label">CTI Feed Freshness</div><div class="value" id="freshness">CHECKING</div><p id="freshness-note">Reading the first-party pipeline timestamp.</p></article>
   <article class="card"><div class="label">SOC 2 Status</div><div class="value warn">ALIGNED · NOT CERTIFIED</div><p>No Type I/II auditor attestation is represented as published.</p></article>
 </div>
 <section><h2>Availability evidence model</h2><div class="card">
@@ -30,22 +30,23 @@
 </div></section>
 <section><div class="card truth"><b>Assurance boundary.</b><p>SOC 2-aligned operational evidence is provided to support due diligence. CYBERDUDEBIVASH does not claim SOC 2 certification or a published auditor attestation on this page.</p><div class="stamp" id="checked">Runtime verification not yet executed.</div></div></section>
 </main>
+<script src="/runtime-state.js?v=20260930-rs1"></script>
 <script>
-(async function(){
+(function(){
+ var RS=window.SentinelRuntimeState;
  var runtime=document.getElementById('runtime'),rn=document.getElementById('runtime-note'),fr=document.getElementById('freshness'),fn=document.getElementById('freshness-note'),checked=document.getElementById('checked');
- try{
-   var values=await Promise.all([
-     fetch('/api/intel/customer-assurance.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('assurance');return r.json();}),
-     fetch('/live-intel.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('feed');return r.json();})
-   ]);
-   var assurance=values[0],feed=values[1];
-   runtime.textContent=assurance&&assurance.soc2_certified===false?'AVAILABLE':'DEGRADED';runtime.className='value '+(runtime.textContent==='AVAILABLE'?'ok':'bad');
-   rn.textContent='Customer assurance endpoint reachable; non-certification boundary verified.';
-   var stamp=feed.generatedAt||feed.lastUpdated||(feed.metadata&&feed.metadata.lastPipelineRun);
-   var ms=stamp?Date.now()-Date.parse(stamp):NaN;
-   if(Number.isFinite(ms)&&ms>=0){var m=Math.floor(ms/60000),h=Math.floor(m/60);fr.textContent=h?(h+'h '+(m%60)+'m'):(m+'m');fr.className='value '+(m<=360?'ok':'warn');fn.textContent='Age since first-party pipeline timestamp: '+new Date(stamp).toISOString();}
-   else{fr.textContent='UNKNOWN';fr.className='value warn';fn.textContent='Pipeline timestamp unavailable or invalid.';}
-   checked.textContent='Current-state verification executed at '+new Date().toISOString();
- }catch(e){runtime.textContent='DEGRADED';runtime.className='value bad';rn.textContent='One or more first-party verification checks failed.';fr.textContent='UNAVAILABLE';fr.className='value bad';fn.textContent='Freshness could not be verified.';checked.textContent='Verification failed at '+new Date().toISOString();}
+ var CLS={HEALTHY:'ok',DEGRADED:'warn',STALE:'warn',UNAVAILABLE:'bad',CHECKING:'warn'};
+ function show(el,note,state,text){el.textContent=state;el.className='value '+(CLS[state]||'warn');note.textContent=text;}
+ if(!RS){show(runtime,rn,'UNAVAILABLE','Runtime state model could not be loaded; reachability not verified.');show(fr,fn,'UNAVAILABLE','Freshness could not be verified.');checked.textContent='Verification not executed.';return;}
+ Promise.allSettled([RS.fetchJson('/api/intel/customer-assurance.json'),RS.fetchJson('/live-intel.json')]).then(function(r){
+   var assuranceOk=r[0].status==='fulfilled',feedOk=r[1].status==='fulfilled';
+   // Reachability: both first-party surfaces answered with valid JSON before the deadline.
+   var reach=assuranceOk&&feedOk?'HEALTHY':(assuranceOk||feedOk)?'DEGRADED':'UNAVAILABLE';
+   var boundary=assuranceOk&&r[0].value&&r[0].value.soc2_certified===false?' Non-certification boundary verified.':'';
+   show(runtime,rn,reach,(reach==='HEALTHY'?'Customer assurance endpoint and first-party feed reachable.':reach==='DEGRADED'?'One first-party surface did not respond: '+(assuranceOk?'feed':'assurance endpoint')+'.':'No first-party surface responded before the deadline.')+boundary);
+   var cls=RS.classifyFeed(feedOk?{ok:true,feed:r[1].value}:{ok:false,error:r[1].reason&&r[1].reason.message});
+   show(fr,fn,cls.state,(cls.ageMinutes!=null?'Age '+RS.formatAge(cls.ageMinutes)+'. ':'')+cls.reason);
+   checked.textContent='Current-state verification executed at '+new Date().toISOString()+' (HEALTHY \u2264 '+RS.THRESHOLDS.healthyMaxMinutes+' min, STALE > '+RS.THRESHOLDS.staleAfterMinutes+' min since pipeline completion).';
+ });
 })();
 </script></body></html>

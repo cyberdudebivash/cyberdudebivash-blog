@@ -17,6 +17,7 @@
 const sec = require('../../_lib/security');
 const { authenticate, apiError } = require('../../_lib/middleware');
 const { getSearchIndex } = require('../../_lib/intel');
+const { tierAtLeast } = require('../../_lib/tier-entitlements');
 
 const MAX_LIMIT = 100;
 const MAX_OFFSET = 100000;
@@ -50,7 +51,7 @@ module.exports = async (req, res) => {
 
   const user = await authenticate(req, res);
   if (!user) return;
-  if (user.tier !== 'pro' && user.tier !== 'enterprise') {
+  if (!tierAtLeast(user.tier, 'pro')) {
     return apiError(res, 403, 'TIER_RESTRICTED', 'IOC search requires Pro or Enterprise plan.');
   }
 

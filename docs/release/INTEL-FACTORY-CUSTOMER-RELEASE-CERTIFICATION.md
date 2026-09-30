@@ -1,0 +1,112 @@
+# Intel Factory — Customer Release Certification
+
+**Release candidate:** branch `claude/amazing-thompson-h8ukxi` (PR cyberdudebivash/cyberdudebivash-blog#310), 7 code commits on top of `main` @ `5c8ba3dd`
+**Certified:** 2026-09-30 UTC, repository gates only.
+**Production state:** **CONDITIONAL.** The repository release gate passes. Nothing here is deployed until the PR merges
+and `cloudflare-production-deploy.yml` succeeds. The CTI surface needs Blogger operator actions, and live
+verification is pending.
+
+Rule applied: PASS requires executed evidence. Code that merely looks correct is not PASS.
+
+## SECURITY — PASS (repository) / BLOCKED (CTI PGP)
+- Live headers verified (HSTS preload, CSP, `frame-ancestors 'none'`, nosniff, XFO, Referrer-/Permissions-Policy); API `default-src 'none'`, `no-store`.
+- Auth enforced on every probed protected route (401); internal files 404.
+- Authorization defect fixed with a fail-closed canonical tier module; recurrence guard test.
+- No secrets added (diff reviewed).
+- Open: third-party CORS proxies on 3 pages (ICF-P1-004); dev-dependency advisories (ICF-P2-001); CTI placeholder PGP (ICF-P0-001, BLOCKED).
+- Evidence: `docs/audits/INTEL-FACTORY-SECURITY-AUDIT.md`.
+
+## INTELLIGENCE QUALITY — PASS for corrected classes / FAIL remaining
+- PASS: CVSS for 123 CVEs verified against the NVD CVE API 2.0 (0 unresolved) and applied on every serving/publishing path; build gate fails on 343 records without it.
+- PASS: KEV flag reconciled from provenance; joined refs split.
+- PASS: advisory pseudo-IOC extraction stopped at source; legacy record IOCs withheld (build gate: 458 records fail without it).
+- FAIL (open): paid IOC feed empty (ICF-P0-010); graph/search pseudo-IOC nodes (ICF-P0-009 remainder); Tier D claim semantics; fixed-value confidence (ICF-P1-002).
+- Evidence: `docs/audits/INTELLIGENCE-QUALITY-AUDIT.md`.
+
+## PIPELINE — PASS (unchanged behaviour, verified)
+- Blog feed fresh at audit (pipeline completion 2026-09-30T16:47Z). The only generator change is that advisory sources contribute no IOCs.
+- `fetch-live-intel.js` loads; the tests covering the generator pass (`tests/evidence-integrity-regression.test.js` within `test:ci`).
+
+## API — PASS
+- `test:ci`: 2,797 passed (60 skipped, pre-existing).
+- Team entitlements verified through real handlers (13 tests). CVSS/IOC correction through real `getIntel`/`getCVEDetail` (16 tests).
+- Response shapes preserved. The only additive fields are `cvss_status`, `cvss_source`, `cvss_vector`, `ioc_status`, `ioc_withheld_count` and `kev_status_basis`, and they appear only on corrected records.
+
+## UX — PASS
+- Runtime states: CHECKING → HEALTHY / DEGRADED / STALE / UNAVAILABLE within 8 s. Real `apex-command-center.js` tested in a VM against a hanging network and a stale feed.
+- Headless Chromium on the built bundle with the production CSP: homepage and status page reached HEALTHY; no "VERIFYING"; **0 first-party console errors** (previously 2 per homepage view).
+
+## MOBILE — PASS (sampled)
+- Chromium at 390 / 768 / 1440 px: no page-level horizontal overflow on `/` and `/service-status.html` (scrollWidth ≤ innerWidth).
+- Not certified here: every route at 320/360/412 px (not executed this tranche).
+
+## SEO — PASS (blog) / BLOCKED (CTI)
+- Blog: sitemap 9,502 URLs, all resolve to built assets; robots correct; canonical/metadata unchanged by this release. Only the 85 posts with a correction notice changed, and their titles/canonicals are unchanged.
+- CTI: indexability sound; the cliff is consistent with templated near-duplicates (median 69% 6-gram containment); recovery needs Blogger access. See `docs/audits/CTI-SEO-RECOVERY.md`.
+
+## COMMERCIAL — PASS for corrected claims / FAIL remaining
+- PASS: Team tier delivers ≥ Pro plus STIX. Offer copy no longer sells seats, Elastic export, per-tier latency, "no rate limit" or priority freshness. Unsupported audience/pre-disclosure/FP-validation claims were removed from 4,131+ pages (build gate).
+- FAIL (open): IOC feed content; Premium store catalog 500 (BLOCKED, operator); digest/Slack claims (BLOCKED, operator confirm).
+- Capability matrix: `docs/audits/COMMERCIAL-READINESS-AUDIT.md`.
+
+## PAYMENTS — PASS (repository)
+- Grant-before-mark ordering in both Razorpay paths. Real-handler tests: a retry after a failed grant delivers the tier, and replay protection holds.
+- Not executed: a live Razorpay test-mode transaction (no credentials in this environment). Manual UPI policy decision: BLOCKED (ICF-P1-001).
+
+## OBSERVABILITY — FAIL (gap recorded)
+- No request IDs on API responses/logs (ICF-P2-007). Existing: Worker observability enabled (`wrangler.jsonc`), payment audit log in Redis, GA4 events.
+
+## DEPLOYMENT — PASS (dry run) / NOT EXECUTED (production)
+- `npm ci` ✓ · `check:cloudflare` 15/15 ✓ · `test:ci` ✓ · `build:cloudflare` 16,125 files ✓ · `wrangler deploy --dry-run` ✓ (20,532 KiB / gzip 3,300 KiB; bindings DB, PREMIUM_REPORTS, ASSETS) · deploy node:test gate 126/126 ✓ · `test_commercial_intel_surfaces.py` PASS · pytest 811 ✓ · tests-js 245 ✓ · Sentinel-APEX node suites 170 ✓.
+- No production mutation was performed from this environment.
+- Rollback: record the current Worker version ID before merge; on failure, restore it via Cloudflare deployment controls and `git revert` the merge (see `ROLLBACK-RUNBOOK.md`). There are no data migrations, D1 schema changes or new bindings in this release.
+
+## LIVE VERIFICATION — BLOCKED (pending merge + deploy)
+Post-deploy checks (all read-only):
+1. `curl -s https://blog.cyberdudebivash.in/api/intel/live.json | jq '.items[] | select(.id=="CVE-2026-32202") | {cvss, cvss_source, cisa_kev}'` → `4.3`, NVD source, `true`.
+2. `curl -s https://blog.cyberdudebivash.in/posts/cve-2026-86218.html | grep -c data-cvss-correction` → `1`.
+3. `curl -s https://blog.cyberdudebivash.in/ | grep -c VERIFYING` → `0`; `curl -s https://blog.cyberdudebivash.in/runtime-state.js -o /dev/null -w '%{http_code}'` → `200`.
+4. `curl -s https://blog.cyberdudebivash.in/pricing.html | grep -cE '5 team seats|Response latency|Splunk / Sentinel / Elastic'` → `0`.
+5. `curl -s https://blog.cyberdudebivash.in/posts/0din-clean-github-repos-can-trick-ai-agents-into-reverse-sh.html | grep -cE '10,000\+|48hr pre-disclosure|FP-validated'` → `0`.
+6. Team-tier canary key: `GET /api/v1/intel?action=iocs&format=stix` → 200 with `stix.type == "bundle"`.
+7. `python3 scripts/audit_live_cti_home.py` → exit 0 only after the Blogger theme restore (ICF-P0-001).
+
+---
+
+## Change log
+
+| Commit | Files | Change | Tests |
+|---|---|---|---|
+| f00ba7e7 | `api/_lib/tier-entitlements.js` (new), `intel.js`, `threat-graph.js`, `enrichment-pipeline.js`, `intelligence-dossier.js`, `siem-connector-store.js`, `middleware.js`, `api/v1/intel.js`, `api/v1/ioc/[id].js`, `api/v1/ioc/search.js`, `api/v1/watchlists.js` | Team ≥ Pro on all gates; STIX for Team | `tier-entitlements.test.js` (13) |
+| 1be01fb9 | `api/v1/billing/razorpay-webhook.js`, `api/v1/billing-legacy.js` | Grant before replay/paid markers | `razorpay-entitlement-ordering.test.js` (4) |
+| dd41a15f | `scripts/build-cloudflare-assets.js` (+test), `intelligence.html`, `owasp-llm-top10.html`, `contact.html`, `pricing.html`, 10 posts | Remove unsupported audience / pre-disclosure / FP-validation claims | build corpus gate + unit |
+| 107d7369 | `runtime-state.js` (new), `apex-command-center.js`, `index.html`, `service-status.html`, build allowlist | Deterministic runtime states with deadlines | `tests-js/runtime-state.test.js` |
+| 5c46154a | `index.html`, test | Retire dead KEV proxy loop | runtime-state suite (+1) |
+| 29cbe3b7 | `pricing.html`, `faq.html`, `api-dashboard.html`, `api.html`, `revenue-conversion-v19.js`, `api/_lib/payment-utils.js`, test | Offer copy matches enforced capability | `capability-claims-consistency.test.js` (+7) |
+| d933ac37 | `scripts/verify-cvss-provenance.js` (new), `data/cvss-corrections.json` (new), `api/_lib/cvss-corrections.js` (new), `intel.js`, `search-index.js`, `generate-cve-pages.js`, `fetch-live-intel.js`, build script (+test) | NVD-verified CVSS; KEV/ref reconciliation; pseudo-IOC withholding | `cvss-corrections.test.js` (16) + 3 build gates |
+| (docs) | `docs/audits/*` (6), `docs/release/*`, `scripts/measure_cti_template_similarity.py`, `tests/test_measure_cti_template_similarity.py` | Audit deliverables; CTI similarity KPI tool | pytest (2) |
+
+Negative controls were executed for every new test group and are recorded in the commit messages.
+
+## Remaining blockers (external only)
+
+| Blocked operation | Reason | Prerequisite work completed | Operator action | Post-action validation |
+|---|---|---|---|---|
+| CTI homepage trust fixes + Blogspot identity (ICF-P0-001) | Blogger theme has no API | Candidate generator, certifier, live audit, tests | Dashboard backup → `prepare_blogger_production_theme.py` → review → restore | `python3 scripts/audit_live_cti_home.py` exit 0 |
+| CTI legacy quarantine (ICF-P0-008) | Blogger OAuth secrets in GitHub Actions only | Auditor, similarity KPI tool, recovery plan | Run `blogger-legacy-quality.yml` | Auditor report; similarity median of indexed posts < 0.40 |
+| Premium store (ICF-P1-008) | D1 migration + R2 need authenticated Cloudflare operator | Commerce code + fail-closed checkout | Apply migration 0008; create/bind R2; upload certified artefacts | catalog → 200 |
+| Manual UPI policy (ICF-P1-001) | Business decision | Evidence documented | Retire flow or amend policy | Pricing/API consistent with decision |
+| Production deploy of this PR | Merge authority | Full release gate green | Merge PR #310; confirm deploy workflow success; record Worker version ID | Live verification steps 1–6 above |
+
+## Executive status
+
+- **Production state:** CONDITIONAL (repository ready; deploy + CTI operator actions pending)
+- **P0 discovered:** 10 · **P0 fixed on branch:** 7 (ICF-P0-009 at record level) · **P0 remaining:** 3 (P0-001 and P0-008 BLOCKED on external access; P0-010 open) plus the graph/search part of P0-009
+- **Tests:** Jest 2,797 passed / 0 failed; node:test 126 + 245 + 170 + 15 passed / 0 failed; pytest 811 passed / 0 failed
+- **Security:** authorization and payment-state defects fixed; remaining risks are CORS proxies, dev dependencies and the CTI PGP placeholder
+- **Intelligence:** feed fresh; CVSS provenance established for the anomalous cohort; pseudo-IOCs stopped; IOC feed empty
+- **Customer experience:** deterministic runtime state; 0 console errors on homepage
+- **Commercial:** Team tier now sellable as described; offer copy truthful; IOC feed and premium store are the next revenue blockers
+- **SEO:** blog sound; CTI cliff evidence and measurable recovery plan documented; execution blocked on Blogger
+- **Deployment:** branch `claude/amazing-thompson-h8ukxi`, PR #310 (draft); not deployed
+- **Next highest-value action:** persistent structured-feed IOC store (ICF-P0-010), which unlocks Pro, Team and STIX value
