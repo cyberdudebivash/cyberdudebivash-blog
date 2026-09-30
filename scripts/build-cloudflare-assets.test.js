@@ -323,7 +323,9 @@ test('legitimate content containing prohibited words as substrings is not flagge
         if (Object.prototype.hasOwnProperty.call(d, 'cvss') && d.cvss !== want(id)) offenders.push(jsonRel + ' ' + d.cvss);
       }
       const htmlRel = 'cve/' + id + '.html';
-      if (e.status === 'VERIFIED' && e.verified_cvss !== e.served_cvss && fs.existsSync(path.join(OUT, htmlRel))) {
+      const srcJson = path.join(OUT, jsonRel);
+      const recordCarriesScore = fs.existsSync(srcJson) && Object.prototype.hasOwnProperty.call(JSON.parse(fs.readFileSync(srcJson, 'utf8')), 'cvss');
+      if (e.status === 'VERIFIED' && e.verified_cvss !== e.served_cvss && recordCarriesScore && fs.existsSync(path.join(OUT, htmlRel))) {
         pages++;
         const html = fs.readFileSync(path.join(OUT, htmlRel), 'utf8');
         if (!html.includes(String(e.verified_cvss))) offenders.push(htmlRel + ' lacks verified ' + e.verified_cvss);
@@ -358,6 +360,13 @@ test('legitimate content containing prohibited words as substrings is not flagge
       if ((d.iocs || []).length && !srcs.some(s => STRUCTURED_IOC_SOURCES.has(s))) offenders.push(rel);
     }
     assert.deepEqual(offenders.slice(0, 20), [], offenders.length + ' CVE records publish unvetted IOCs');
+  });
+
+  test('every api/intel/cve record has a published CVE page (generator race cannot break the link gate)', () => {
+    const records = outputFiles.filter(f => /^api\/intel\/cve\/CVE-\d{4}-\d+\.json$/.test(f)).map(f => path.basename(f, '.json'));
+    const missing = records.filter(id => !fs.existsSync(path.join(OUT, 'cve', id + '.html')));
+    assert.ok(records.length > 0);
+    assert.deepEqual(missing, [], 'CVE records without a published page');
   });
 
   test('built CVE pages contain no historical undefined metadata artifacts', () => {

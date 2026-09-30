@@ -160,6 +160,14 @@ function repairLegacyCveHtml(src, html) {
     if (!malformed) return html;
     throw new Error('Legacy malformed CVE page has no repair source: ' + rel);
   }
+  return renderCvePageFromJson(id, jsonPath, rel);
+}
+
+// Single render path for a CVE page from its intel record: the same
+// generate-cve-pages.js renderPage() the scheduled generator uses, with the
+// NVD CVSS ledger and legacy-record reconciliation applied.
+function renderCvePageFromJson(id, jsonPath, label) {
+  const corrections = require('../api/_lib/cvss-corrections');
   const data = corrections.applyRecordCorrections(JSON.parse(fs.readFileSync(jsonPath, 'utf8')));
   data.id = id;
   if ((!Array.isArray(data.refs) || !data.refs.length) && /^https?:\/\//i.test(data.report_url || '')) data.refs = [data.report_url];
@@ -171,11 +179,35 @@ function repairLegacyCveHtml(src, html) {
   // fixture copies this builder without the root generator module and never
   // executes a public-asset build.
   const { renderPage: renderCvePage } = require('../generate-cve-pages');
-  const repaired = renderCvePage(data);
-  if (hasUndefinedMetadataArtifacts(repaired)) {
-    throw new Error('CVE repair still contains undefined metadata: ' + rel);
+  const rendered = renderCvePage(data);
+  if (hasUndefinedMetadataArtifacts(rendered)) {
+    throw new Error('CVE render still contains undefined metadata: ' + label);
   }
-  return repaired;
+  return rendered;
+}
+
+// Deploy-race fix: generate-intelligence-hub.js (vendor/actor pages) and
+// fetch-live-intel.js link to /cve/<id>.html as soon as api/intel/cve/<id>.json
+// exists, while cve/<id>.html is written by the separate 6-hourly cve-pages
+// workflow. Between those runs the internal-link gate failed and blocked every
+// production deploy (runs #98/#99, 2026-09-30). The build renders the missing
+// pages from the same records, so the public bundle is always link-complete.
+function synthesizeMissingCvePages(outDir) {
+  const intelDir = path.join(ROOT, 'api', 'intel', 'cve');
+  if (!fs.existsSync(intelDir)) return [];
+  const created = [];
+  for (const name of fs.readdirSync(intelDir).sort()) {
+    const m = name.match(/^(CVE-\d{4}-\d+)\.json$/i);
+    if (!m) continue;
+    const id = m[1].toUpperCase();
+    const dest = path.join(outDir, 'cve', id + '.html');
+    if (fs.existsSync(dest)) continue;
+    const html = validatePublicHtmlStructure(renderCvePageFromJson(id, path.join(intelDir, name), 'api/intel/cve/' + name), 'api/intel/cve/' + name);
+    fs.mkdirSync(path.dirname(dest), { recursive: true });
+    fs.writeFileSync(dest, injectCustomerExperience(html));
+    created.push('cve/' + id + '.html');
+  }
+  return created;
 }
 
 // Legacy commercial copy (gap register ICF-P0-003). Posts rendered by the
@@ -336,6 +368,7 @@ function build() {
   if (fs.existsSync(apiIntelSrc)) {
     copyDir(apiIntelSrc, path.join(OUT, 'api', 'intel'), name => name.endsWith('.json'));
   }
+  synthesizeMissingCvePages(OUT);
 
   fs.writeFileSync(path.join(OUT, '_headers'), HEADERS_FILE_CONTENT);
   return OUT;
@@ -346,4 +379,4 @@ if (require.main === module) {
   console.log(`dist-public/ built: ${countFiles(out)} files`);
 }
 
-module.exports = { build, countFiles, PUBLIC_DIRS, PUBLIC_ROOT_FILES, ROOT, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure, hasUndefinedMetadataArtifacts, repairLegacyCveHtml, CX_CSS, CX_JS, LEGACY_COMMERCIAL_COPY, UNSUPPORTED_PUBLIC_CLAIMS, neutralizeLegacyCommercialCopy, findUnsupportedPublicClaims, correctPublicIntelJson, applyLegacyCvssCorrection };
+module.exports = { build, countFiles, PUBLIC_DIRS, PUBLIC_ROOT_FILES, ROOT, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure, hasUndefinedMetadataArtifacts, repairLegacyCveHtml, CX_CSS, CX_JS, LEGACY_COMMERCIAL_COPY, UNSUPPORTED_PUBLIC_CLAIMS, neutralizeLegacyCommercialCopy, findUnsupportedPublicClaims, correctPublicIntelJson, applyLegacyCvssCorrection, synthesizeMissingCvePages, renderCvePageFromJson };
