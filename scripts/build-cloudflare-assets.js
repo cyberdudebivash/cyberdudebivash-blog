@@ -146,14 +146,21 @@ function hasUndefinedMetadataArtifacts(html) {
 function repairLegacyCveHtml(src, html) {
   const rel = path.relative(ROOT, src).replace(/\\/g, '/');
   const match = rel.match(/^cve\/(CVE-\d{4}-\d+)\.html$/i);
-  if (!match || !hasUndefinedMetadataArtifacts(html)) return html;
-
+  if (!match) return html;
   const id = match[1].toUpperCase();
+  // Pages whose CVSS is in the NVD-verified ledger are re-rendered from the
+  // corrected record (ICF-P0-006); generate-cve-pages.js skips existing pages.
+  const corrections = require('../api/_lib/cvss-corrections');
+  const cvssCorrected = !!corrections.correctionFor(id);
+  const malformed = hasUndefinedMetadataArtifacts(html);
+  if (!malformed && !cvssCorrected) return html;
+
   const jsonPath = path.join(ROOT, 'api', 'intel', 'cve', id + '.json');
   if (!fs.existsSync(jsonPath)) {
+    if (!malformed) return html;
     throw new Error('Legacy malformed CVE page has no repair source: ' + rel);
   }
-  const data = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+  const data = corrections.applyRecordCorrections(JSON.parse(fs.readFileSync(jsonPath, 'utf8')));
   data.id = id;
   if ((!Array.isArray(data.refs) || !data.refs.length) && /^https?:\/\//i.test(data.report_url || '')) data.refs = [data.report_url];
   if (!data.title) data.title = id + ' Intelligence Record';
@@ -234,12 +241,63 @@ function copyFileForPublicBuild(src, dest) {
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   if (src.toLowerCase().endsWith('.html')) {
     const sourceHtml = fs.readFileSync(src, 'utf8');
-    const repairedHtml = neutralizeLegacyCommercialCopy(repairLegacyCveHtml(src, sourceHtml));
+    const repairedHtml = applyLegacyCvssCorrection(src, neutralizeLegacyCommercialCopy(repairLegacyCveHtml(src, sourceHtml)));
     const html = validatePublicHtmlStructure(repairedHtml, path.relative(ROOT, src));
     fs.writeFileSync(dest, injectCustomerExperience(html));
+  } else if (src.toLowerCase().endsWith('.json')) {
+    fs.writeFileSync(dest, correctPublicIntelJson(fs.readFileSync(src, 'utf8')));
   } else {
     fs.copyFileSync(src, dest);
   }
+}
+
+// Legacy posts whose primary CVE is in the NVD-verified ledger and that
+// display the unsupported served score get a visible, dated correction notice
+// citing the NVD evidence, and their two structured score widgets are
+// corrected. Narrative text is left as the historical record (legacy policy:
+// correct publicly, never silently rewrite). ICF-P0-006.
+function applyLegacyCvssCorrection(src, html) {
+  const rel = path.relative(ROOT, src).replace(/\\/g, '/');
+  if (!/^posts\/[^/]+\.html$/i.test(rel)) return html;
+  const idMatch = html.match(/Report ID: SENTINEL-(CVE-\d{4}-\d+)/) || html.match(/ticker-item">⚡ (CVE-\d{4}-\d+)/);
+  if (!idMatch) return html;
+  const corrections = require('../api/_lib/cvss-corrections');
+  const entry = corrections.correctionFor(idMatch[1]);
+  if (!entry || typeof entry.served_cvss !== 'number' || html.includes('data-cvss-correction=')) return html;
+  const served = String(entry.served_cvss);
+  const sv = '<div class="sv">' + served + '</div>';
+  const vscore = '<div class="vscore">' + served + '</div>';
+  if (!html.includes(sv) && !html.includes(vscore) && !html.includes('CVSS ' + served)) return html;
+  const verified = entry.status === 'VERIFIED' && typeof entry.verified_cvss === 'number';
+  if (verified && entry.verified_cvss === entry.served_cvss) return html;
+  const shown = verified ? String(entry.verified_cvss) : 'N/A';
+  const evidence = verified
+    ? 'The NVD CVE API lists <strong>CVSS ' + shown + '</strong> (' + entry.evidence.metric.replace('cvssMetricV', 'v').replace(/^v(\d)(\d)$/, 'v$1.$2') + ', ' + entry.evidence.source + ').'
+    : 'No CVSS score is published for this CVE by NVD or the CNA, so no score is asserted.';
+  const notice = '<div class="alert alert-info" role="note" data-cvss-correction="' + entry.status + '"><span class="aico">ℹ️</span><div class="abody"><div class="atitle">CVSS correction — ' + String(entry.checked_at || '').slice(0, 10) + '</div><p>This report originally displayed CVSS ' + served + ', which does not match the authoritative score. ' + evidence + ' References to CVSS ' + served + ' below are retained as the historical record; use the verified score. <a href="https://nvd.nist.gov/vuln/detail/' + entry.id + '" target="_blank" rel="noopener">NVD — ' + entry.id + '</a></p></div></div>';
+  let out = html.split(sv).join('<div class="sv">' + shown + '</div>').split(vscore).join('<div class="vscore">' + shown + '</div>');
+  const h1End = out.search(/<h1 class="rh1">[\s\S]*?<\/h1>/);
+  if (h1End >= 0) {
+    const close = out.indexOf('</h1>', h1End) + 5;
+    out = out.slice(0, close) + '\n    ' + notice + out.slice(close);
+  } else if (out.includes('<article>')) {
+    out = out.replace('<article>', '<article>\n    ' + notice);
+  }
+  return out;
+}
+
+// Public intel JSON carries CVSS scores; records listed in the NVD-verified
+// ledger (data/cvss-corrections.json) are corrected before publication (gap
+// register ICF-P0-006). Files that cannot contain a ledger id are copied
+// byte-for-byte. Lazy require for the same fixture-isolation reason as
+// repairLegacyCveHtml().
+function correctPublicIntelJson(text) {
+  const corrections = require('../api/_lib/cvss-corrections');
+  if (!corrections.needsCorrection(text)) return text;
+  let parsed;
+  try { parsed = JSON.parse(text); } catch (_) { return text; }
+  const { doc, changed } = corrections.applyToDocument(parsed);
+  return changed ? JSON.stringify(doc, null, 2) + '\n' : text;
 }
 
 function copyDir(src, dest, filter) {
@@ -288,4 +346,4 @@ if (require.main === module) {
   console.log(`dist-public/ built: ${countFiles(out)} files`);
 }
 
-module.exports = { build, countFiles, PUBLIC_DIRS, PUBLIC_ROOT_FILES, ROOT, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure, hasUndefinedMetadataArtifacts, repairLegacyCveHtml, CX_CSS, CX_JS, LEGACY_COMMERCIAL_COPY, UNSUPPORTED_PUBLIC_CLAIMS, neutralizeLegacyCommercialCopy, findUnsupportedPublicClaims };
+module.exports = { build, countFiles, PUBLIC_DIRS, PUBLIC_ROOT_FILES, ROOT, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure, hasUndefinedMetadataArtifacts, repairLegacyCveHtml, CX_CSS, CX_JS, LEGACY_COMMERCIAL_COPY, UNSUPPORTED_PUBLIC_CLAIMS, neutralizeLegacyCommercialCopy, findUnsupportedPublicClaims, correctPublicIntelJson, applyLegacyCvssCorrection };

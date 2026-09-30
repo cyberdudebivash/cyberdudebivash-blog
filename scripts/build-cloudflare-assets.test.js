@@ -304,6 +304,62 @@ test('legitimate content containing prohibited words as substrings is not flagge
     assert.deepEqual(offenders.slice(0, 20), [], offenders.length + ' public pages carry unsupported claims');
   });
 
+  test('published intel JSON and CVE pages carry NVD-verified CVSS for every ledger CVE (ICF-P0-006)', () => {
+    const corrections = require('../api/_lib/cvss-corrections');
+    const byId = new Map(corrections.LEDGER.entries.map(e => [e.id, e]));
+    const want = id => (byId.get(id).status === 'VERIFIED' ? byId.get(id).verified_cvss : null);
+    const offenders = [];
+    for (const rel of ['api/intel/live.json', 'api/intel/top-threats.json', 'api/intel/raw.json', 'live-intel.json']) {
+      for (const it of JSON.parse(fs.readFileSync(path.join(OUT, rel), 'utf8')).items || []) {
+        if (byId.has(it.id) && Object.prototype.hasOwnProperty.call(it, 'cvss') && it.cvss !== want(it.id)) offenders.push(rel + ' ' + it.id + ' ' + it.cvss);
+        if (it.source === 'cisa_kev' && it.cisa_kev === false) offenders.push(rel + ' ' + it.id + ' KEV-sourced but cisa_kev=false');
+      }
+    }
+    let pages = 0;
+    for (const [id, e] of byId) {
+      const jsonRel = 'api/intel/cve/' + id + '.json';
+      if (fs.existsSync(path.join(OUT, jsonRel))) {
+        const d = JSON.parse(fs.readFileSync(path.join(OUT, jsonRel), 'utf8'));
+        if (Object.prototype.hasOwnProperty.call(d, 'cvss') && d.cvss !== want(id)) offenders.push(jsonRel + ' ' + d.cvss);
+      }
+      const htmlRel = 'cve/' + id + '.html';
+      if (e.status === 'VERIFIED' && e.verified_cvss !== e.served_cvss && fs.existsSync(path.join(OUT, htmlRel))) {
+        pages++;
+        const html = fs.readFileSync(path.join(OUT, htmlRel), 'utf8');
+        if (!html.includes(String(e.verified_cvss))) offenders.push(htmlRel + ' lacks verified ' + e.verified_cvss);
+      }
+    }
+    assert.ok(pages > 0, 'expected at least one re-rendered ledger CVE page');
+    assert.deepEqual(offenders.slice(0, 20), [], offenders.length + ' published records disagree with the NVD ledger');
+  });
+
+  test('legacy posts showing an unsupported ledger score carry a dated correction notice', () => {
+    const corrections = require('../api/_lib/cvss-corrections');
+    let noticed = 0;
+    const missing = [];
+    for (const rel of outputFiles.filter(f => /^posts\/[^/]+\.html$/.test(f))) {
+      const html = fs.readFileSync(path.join(OUT, rel), 'utf8');
+      const m = html.match(/Report ID: SENTINEL-(CVE-\d{4}-\d+)/);
+      const e = m && corrections.correctionFor(m[1]);
+      if (!e || e.verified_cvss === e.served_cvss) continue;
+      if (html.includes('data-cvss-correction=')) noticed++;
+      else if (html.includes('<div class="sv">' + e.served_cvss + '</div>')) missing.push(rel);
+    }
+    assert.ok(noticed > 0, 'expected correction notices on affected legacy posts');
+    assert.deepEqual(missing, [], 'posts still presenting the unsupported score without a correction notice');
+  });
+
+  test('published CVE detail JSON carries no unvetted advisory-derived IOCs (ICF-P0-009)', () => {
+    const { STRUCTURED_IOC_SOURCES } = require('../api/_lib/cvss-corrections');
+    const offenders = [];
+    for (const rel of outputFiles.filter(f => /^api\/intel\/cve\/CVE-[^/]+\.json$/.test(f))) {
+      const d = JSON.parse(fs.readFileSync(path.join(OUT, rel), 'utf8'));
+      const srcs = [].concat(d.sources || [], d.source || []);
+      if ((d.iocs || []).length && !srcs.some(s => STRUCTURED_IOC_SOURCES.has(s))) offenders.push(rel);
+    }
+    assert.deepEqual(offenders.slice(0, 20), [], offenders.length + ' CVE records publish unvetted IOCs');
+  });
+
   test('built CVE pages contain no historical undefined metadata artifacts', () => {
     const offenders = [];
     for (const rel of outputFiles.filter(f => /^cve\/CVE-\d{4}-\d+\.html$/i.test(f))) {

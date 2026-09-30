@@ -32,6 +32,7 @@
 'use strict';
 
 const { loadGraph, getNode, getNeighbors, getTopActors } = require('./threat-graph');
+const { correctedScore } = require('./cvss-corrections');
 
 const SEARCH_SCHEMA_VERSION = '1.0';
 const SUPPORTED_TYPES = ['cve', 'campaign', 'actor', 'ioc', 'report'];
@@ -75,7 +76,7 @@ function buildCveDoc(node, reportsById) {
     report_refs: reportRefs,
     vendor:      a.vendor || null,
     product:     a.product || null,
-    cvss:        typeof a.cvss === 'number' ? a.cvss : null,
+    cvss:        correctedScore(node.id, a.cvss),
     priority_score: typeof a.priority_score === 'number' ? a.priority_score : null,
     detail_url:  `/api/v1/intel?action=cve&id=${encodeURIComponent(node.id)}`,
     // Phase 24 (Intelligence Dossiers v1): CVE is one of the two dossier-
