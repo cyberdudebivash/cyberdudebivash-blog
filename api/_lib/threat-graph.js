@@ -18,6 +18,7 @@
 'use strict';
 const fs = require('fs');
 const { isCloudflareWorkers } = require('./runtime-env');
+const { tierAtLeast } = require('./tier-entitlements');
 
 // Workers has no filesystem — GRAPH_PATH (__dirname-based) throws
 // ReferenceError there (confirmed via a real `wrangler dev` run, same
@@ -637,7 +638,7 @@ function buildGraphFromIntel(intelItems) {
 ═══════════════════════════════════════════════════════════════════════ */
 function getGraphForTier(graph, tier) {
   const allNodes = Object.values(graph.nodes || {});
-  const limit    = tier === 'enterprise' ? 999 : tier === 'pro' ? 300 : 60;
+  const limit    = tier === 'enterprise' ? 999 : tierAtLeast(tier, 'pro') ? 300 : 60;
 
   const filtered = (tier === 'free' || tier === 'starter')
     ? allNodes.filter(n => n.type === 'ThreatActor' ||

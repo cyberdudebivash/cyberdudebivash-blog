@@ -25,6 +25,7 @@ const crypto = require('crypto');
 const d1 = require('./d1');
 const connectorCrypto = require('./connector-crypto');
 const taxonomy = require('./siem-connector-taxonomy');
+const { tierAtLeast } = require('./tier-entitlements');
 
 const MAX_NAME_LENGTH = 100;
 const AUDIT_LOG_MAX_ENTRIES = 10000; // matches defense_profile_audit_log's own bound
@@ -58,7 +59,7 @@ async function auditConnectorAction(action, data = {}) {
 // api/v1/intel.js's `action=detection-pack` already established for
 // gating an advanced capability behind those two tiers.
 function getSiemConnectorEntitlements(tier) {
-  const paidTier = tier === 'pro' || tier === 'enterprise';
+  const paidTier = tierAtLeast(tier, 'pro');
   return {
     enabled: true,
     sandbox_connectors: { enabled: true, max: 3 },
@@ -206,8 +207,8 @@ async function createConnector(ownerId, tier, { platform, name, target_config, c
   if (!platformDef.capabilities.deploy_supported) {
     return { error: 'PLATFORM_NOT_IMPLEMENTED', message: platformDef.not_implemented_reason || `Platform "${platformId}" is not yet implemented.` };
   }
-  if (platformRequiresPaidTier(platformId) && tier !== 'pro' && tier !== 'enterprise') {
-    return { error: 'TIER_RESTRICTED', message: 'Connecting a live SIEM requires the Pro or Enterprise plan. The Sandbox / Test Connector is available on every plan.' };
+  if (platformRequiresPaidTier(platformId) && !tierAtLeast(tier, 'pro')) {
+    return { error: 'TIER_RESTRICTED', message: 'Connecting a live SIEM requires the Pro, Team or Enterprise plan. The Sandbox / Test Connector is available on every plan.' };
   }
 
   const nameResult = validateName(name);

@@ -16,7 +16,9 @@ const RATE_LIMITS = {
   enterprise: 999999,
 };
 
-const TIERS = ['free', 'starter', 'pro', 'team', 'enterprise'];
+// Canonical ordering lives in ./tier-entitlements; re-exported below so
+// existing `middleware.TIERS` consumers keep working unchanged.
+const { TIERS } = require('./tier-entitlements');
 
 /* P0 Revenue Conversion v19 — conversion metadata only. This does not alter
  * entitlement order or limits. It turns a real quota-exhaustion event into a

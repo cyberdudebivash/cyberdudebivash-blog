@@ -25,6 +25,7 @@
 'use strict';
 
 const { getNeighbors } = require('./threat-graph');
+const { tierAtLeast } = require('./tier-entitlements');
 const detectionIntelligence = require('./detection-intelligence');
 
 const DOSSIER_SCHEMA_VERSION = '1.0';
@@ -295,7 +296,7 @@ function buildCveDossier({ graph, cveId, cveItem, enrichment, reportsIndexData, 
   // empty relationships here, matching action=cve's own contract exactly;
   // it must never gain fuller relationship access through this endpoint
   // than it already has through the existing one.
-  const tierAllowsRelationships = tier === 'pro' || tier === 'enterprise';
+  const tierAllowsRelationships = tierAtLeast(tier, 'pro');
   const related = (tierAllowsRelationships && graph) ? {
     related_campaigns: relatedFromEdges(getNeighbors(graph, cveId, 'includes')).items,
     related_actors:    relatedFromEdges(getNeighbors(graph, cveId, 'exploits')).items,
@@ -465,7 +466,7 @@ function buildCampaignDossier({ graph, campaign, reportsIndexData, tier }) {
   // established pattern for every other cross-entity relationship in
   // this codebase (action=cve/actor's related_* fields), not left
   // ungated by default.
-  const tierAllowsRelationships = tier === 'pro' || tier === 'enterprise';
+  const tierAllowsRelationships = tierAtLeast(tier, 'pro');
   const relatedCampaigns = (tierAllowsRelationships && graph)
     ? relatedFromEdges(getNeighbors(graph, campaignId, 'co_occurs_with'), 20)
     : { items: [], total: 0 };

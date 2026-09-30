@@ -6,6 +6,7 @@
 
 const sec = require('../../_lib/security');
 const { authenticate, apiError } = require('../../_lib/middleware');
+const { tierAtLeast } = require('../../_lib/tier-entitlements');
 const { getSearchIndex, getIocDetailAPI } = require('../../_lib/intel');
 
 function markDeprecated(res) {
@@ -30,7 +31,7 @@ module.exports = async (req, res) => {
 
   const user = await authenticate(req, res);
   if (!user) return;
-  if (user.tier !== 'pro' && user.tier !== 'enterprise') {
+  if (!tierAtLeast(user.tier, 'pro')) {
     return apiError(res, 403, 'TIER_RESTRICTED', 'IOC detail requires Pro or Enterprise plan.');
   }
 

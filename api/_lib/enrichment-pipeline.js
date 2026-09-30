@@ -62,6 +62,7 @@ const {
   computeDataConfidence,
   computeNormalizedScore,
 } = require('./threat-scorer');
+const { dataProfile } = require('./tier-entitlements');
 
 /* ═══════════════════════════════════════════════════════════════════════
    STEP 1: VALIDATE + EXTRACT
@@ -690,8 +691,9 @@ function filterForEnterprise(item) {
  */
 function applyTierGating(items, tier) {
   if (!items) return [];
-  const filter = tier === 'enterprise' ? filterForEnterprise
-               : tier === 'pro'        ? filterForPro
+  const profile = dataProfile(tier);
+  const filter = profile === 'enterprise' ? filterForEnterprise
+               : profile === 'pro'        ? filterForPro
                :                        filterForFree;
   return items.map(filter);
 }

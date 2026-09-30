@@ -45,6 +45,7 @@ const detectionIntelligence = require('../_lib/detection-intelligence');
 const defenseProfileStore = require('../_lib/defense-profile-store');
 const defenseCompatibility = require('../_lib/defense-compatibility');
 const sec = require('../_lib/security');
+const { tierAtLeast } = require('../_lib/tier-entitlements');
 const reportsIndex = require('../intel/reports-index.json');
 
 function safeHttps(raw) {
@@ -273,9 +274,9 @@ module.exports = async (req, res) => {
 
       /* ── GET ?action=iocs ──────────────────────────────────── */
       case 'iocs': {
-        if (user.tier !== 'pro' && user.tier !== 'enterprise') {
+        if (!tierAtLeast(user.tier, 'pro')) {
           return apiError(res, 403, 'TIER_RESTRICTED',
-            'IOC feed requires Pro or Enterprise plan. Upgrade at https://blog.cyberdudebivash.in/pricing.html',
+            'IOC feed requires Pro, Team or Enterprise plan. Upgrade at https://blog.cyberdudebivash.in/pricing.html',
             { 'X-Upgrade-URL': 'https://blog.cyberdudebivash.in/pricing.html' });
         }
         const raw   = getIntel('iocs', user.tier, {});
@@ -301,9 +302,9 @@ module.exports = async (req, res) => {
         const offset = (page - 1) * limit;
         const paged  = items.slice(offset, offset + limit);
 
-        // Enterprise STIX 2.1 export
+        // STIX 2.1 export — sold on Sentinel Team and Enterprise Apex.
         let stixBundle = null;
-        if (user.tier === 'enterprise' && req.query.format === 'stix') {
+        if (tierAtLeast(user.tier, 'team') && req.query.format === 'stix') {
           stixBundle = buildSTIXBundle(paged);
         }
 
@@ -475,9 +476,9 @@ module.exports = async (req, res) => {
 
       /* ── GET ?action=ioc&id=ioc:... — PRO+ only ───────────────── */
       case 'ioc': {
-        if (user.tier !== 'pro' && user.tier !== 'enterprise') {
+        if (!tierAtLeast(user.tier, 'pro')) {
           return apiError(res, 403, 'TIER_RESTRICTED',
-            'IOC detail requires Pro or Enterprise plan. Upgrade at https://blog.cyberdudebivash.in/pricing.html',
+            'IOC detail requires Pro, Team or Enterprise plan. Upgrade at https://blog.cyberdudebivash.in/pricing.html',
             { 'X-Upgrade-URL': 'https://blog.cyberdudebivash.in/pricing.html' });
         }
         const id = String(req.query.id || '').trim().toLowerCase();
@@ -678,9 +679,9 @@ module.exports = async (req, res) => {
 
       /* ── GET ?action=detection-pack&type=cve|campaign&id=... — PRO+ only ─ */
       case 'detection-pack': {
-        if (user.tier !== 'pro' && user.tier !== 'enterprise') {
+        if (!tierAtLeast(user.tier, 'pro')) {
           return apiError(res, 403, 'TIER_RESTRICTED',
-            'Detection packs require Pro or Enterprise plan. Upgrade at https://blog.cyberdudebivash.in/pricing.html',
+            'Detection packs require Pro, Team or Enterprise plan. Upgrade at https://blog.cyberdudebivash.in/pricing.html',
             { 'X-Upgrade-URL': 'https://blog.cyberdudebivash.in/pricing.html' });
         }
         const type = String(req.query.type || '').trim().toLowerCase();
