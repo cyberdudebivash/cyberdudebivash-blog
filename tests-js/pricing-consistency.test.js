@@ -1,13 +1,11 @@
 'use strict';
-// Regression test for the SOC Pro pricing-integrity incident: pricing.html and
-// payment-flow.js displayed ₹1,499/$18 while the backend (api/_lib/payment-
-// utils.js) charged ₹4,099 — four independent hardcoded copies of the same
-// price had drifted apart. The checkout UI now fetches its price from the
-// canonical GET /api/v1/billing?action=plans endpoint at runtime (see
-// docs/PRICING.md), which structurally prevents that specific drift. This
-// test guards the remaining hardcoded copies: the client-side fallback
-// constants (only used if that fetch fails) and the wider marketing surface
-// that still hardcodes prices in prose/UI strings.
+// Pricing integrity. Since 2026-10-01 plans are sold only on the
+// CYBERDUDEBIVASH SENTINEL APEX platform checkout, which owns plan prices
+// (intel.cyberdudebivash.com/api/pricing; see docs/PRICING.md). This suite
+// guards: (1) the legacy blog PLANS record that still verifies in-flight
+// orders, (2) that no blog surface hardcodes a plan price, (3) that every
+// plan CTA goes to the platform checkout with one plan mapping, and (4) that
+// intel-plans.js only ever shows a price it read from the platform.
 const test = require('node:test');
 const assert = require('node:assert');
 const fs = require('fs');
@@ -70,112 +68,9 @@ test('tier prices increase monotonically with tier (Starter < Pro < Team < Enter
   assert.ok(PLANS.team.amount < PLANS.enterprise.amount, 'Team must be cheaper than Enterprise');
 });
 
-/* ─── Client-side fallback constants must agree with the backend ─────── */
-/* These only render if GET action=plans fails, but a wrong fallback is a
-   silent reintroduction of the exact bug this test exists to catch. */
-
 function readFile(relPath) {
   return fs.readFileSync(path.join(ROOT, relPath), 'utf8');
 }
-
-test('payment-flow.js fallback PLANS.pro matches the backend amount', () => {
-  const src = readFile('payment-flow.js');
-  const m = src.match(/pro:\s*\{[^}]*amount:\s*(\d+)/);
-  assert.ok(m, 'could not find fallback pro.amount in payment-flow.js');
-  assert.strictEqual(Number(m[1]), PLANS.pro.amount);
-});
-
-test('pricing.html fallback PLANS.pro matches the backend amount', () => {
-  const src = readFile('pricing.html');
-  const m = src.match(/pro:\s*\{[^}]*amount:\s*(\d+)/);
-  assert.ok(m, 'could not find fallback pro.amount in pricing.html');
-  assert.strictEqual(Number(m[1]), PLANS.pro.amount);
-});
-
-test('payment-flow.js fallback PLANS.starter matches the backend amount', () => {
-  const src = readFile('payment-flow.js');
-  const m = src.match(/starter:\s*\{[^}]*amount:\s*(\d+)/);
-  assert.ok(m, 'could not find fallback starter.amount in payment-flow.js');
-  assert.strictEqual(Number(m[1]), PLANS.starter.amount);
-});
-
-test('pricing.html fallback PLANS.starter matches the backend amount', () => {
-  const src = readFile('pricing.html');
-  const m = src.match(/starter:\s*\{[^}]*amount:\s*(\d+)/);
-  assert.ok(m, 'could not find fallback starter.amount in pricing.html');
-  assert.strictEqual(Number(m[1]), PLANS.starter.amount);
-});
-
-test('payment-flow.js fallback PLANS.team matches the backend amount', () => {
-  const src = readFile('payment-flow.js');
-  const m = src.match(/team:\s*\{[^}]*amount:\s*(\d+)/);
-  assert.ok(m, 'could not find fallback team.amount in payment-flow.js');
-  assert.strictEqual(Number(m[1]), PLANS.team.amount);
-});
-
-test('pricing.html fallback PLANS.team matches the backend amount', () => {
-  const src = readFile('pricing.html');
-  const m = src.match(/team:\s*\{[^}]*amount:\s*(\d+)/);
-  assert.ok(m, 'could not find fallback team.amount in pricing.html');
-  assert.strictEqual(Number(m[1]), PLANS.team.amount);
-});
-
-test('payment-flow.js fallback PLANS.enterprise matches the backend amount', () => {
-  const src = readFile('payment-flow.js');
-  const m = src.match(/enterprise:\s*\{[^}]*amount:\s*(\d+)/);
-  assert.ok(m, 'could not find fallback enterprise.amount in payment-flow.js');
-  assert.strictEqual(Number(m[1]), PLANS.enterprise.amount);
-});
-
-test('pricing.html fallback PLANS.enterprise matches the backend amount', () => {
-  const src = readFile('pricing.html');
-  const m = src.match(/enterprise:\s*\{[^}]*amount:\s*(\d+)/);
-  assert.ok(m, 'could not find fallback enterprise.amount in pricing.html');
-  assert.strictEqual(Number(m[1]), PLANS.enterprise.amount);
-});
-
-test('pricing.html\'s Starter plan-price card shows the canonical INR/USD amounts', () => {
-  const src = readFile('pricing.html');
-  // Scoped to the "API Starter" plan-name *card* element specifically, not
-  // just the bare text -- the Free tier's identical plan-price markup
-  // (data-inr="0") comes first in the document and would otherwise
-  // false-match, and so (since 2026-07-29) does the page's own meta
-  // description/OG/twitter/JSON-LD tags, which now mention "API Starter"
-  // by name in the <head>, well before this card.
-  const idx = src.indexOf('<div class="plan-name">API Starter</div>');
-  assert.ok(idx !== -1, 'could not find the API Starter plan-name card in pricing.html');
-  const section = src.slice(idx, idx + 400);
-  const m = section.match(/class="plan-price" data-inr="([\d,]+)" data-usd="(\d+)"/);
-  assert.ok(m, 'could not find the Starter plan-price card in pricing.html');
-  assert.strictEqual(Number(m[1].replace(/,/g, '')), PLANS.starter.amount);
-});
-
-test('pricing.html\'s Sentinel Team plan-price card shows the canonical INR/USD amounts', () => {
-  const src = readFile('pricing.html');
-  const idx = src.indexOf('<div class="plan-name">Sentinel Team</div>');
-  assert.ok(idx !== -1, 'could not find the Sentinel Team plan-name card in pricing.html');
-  const section = src.slice(idx, idx + 400);
-  const m = section.match(/class="plan-price" data-inr="([\d,]+)" data-usd="(\d+)"/);
-  assert.ok(m, 'could not find the Sentinel Team plan-price card in pricing.html');
-  assert.strictEqual(Number(m[1].replace(/,/g, '')), PLANS.team.amount);
-});
-
-test('pricing.html\'s Enterprise Apex plan-price card shows the canonical INR/USD amounts', () => {
-  const src = readFile('pricing.html');
-  const idx = src.indexOf('<div class="plan-name">Enterprise Apex</div>');
-  assert.ok(idx !== -1, 'could not find the Enterprise Apex plan-name card in pricing.html');
-  const section = src.slice(idx, idx + 400);
-  const m = section.match(/class="plan-price" data-inr="([\d,]+)" data-usd="(\d+)"/);
-  assert.ok(m, 'could not find the Enterprise Apex plan-price card in pricing.html');
-  assert.strictEqual(Number(m[1].replace(/,/g, '')), PLANS.enterprise.amount);
-});
-
-test('api-dashboard.html\'s Starter tier-price card shows the canonical amount', () => {
-  const src = readFile('api-dashboard.html');
-  const m = src.match(/class="tier-price">₹([\d,]+)</);
-  assert.ok(m, 'could not find the Starter tier-price card in api-dashboard.html');
-  assert.strictEqual(Number(m[1].replace(/,/g, '')), PLANS.starter.amount);
-});
 
 /* ─── No stale price should remain in the wider marketing surface ────── */
 /* The 2026-07-17 incident: SOC Pro was reduced from $49/₹4,099 to $18/
@@ -232,34 +127,125 @@ for (const { file, divClass } of BARE_ENTERPRISE_TIER_NAME_LOCATIONS) {
   });
 }
 
-/* ─── api.html's SOC Professional card: a second, undetected copy of the ─
-   same $49 incident ────────────────────────────────────────────────────── */
-/* The 2026-07-17 remediation (docs/PRICING.md) explicitly lists api.html's
-   Schema.org structured data as fixed, but its separate, human-visible
-   pricing card further down the page was never touched: it showed $49/mo
-   (undetected because the stale-price regex above requires "$49" within 40
-   chars of "SOC Pro", but this card renders the price as split markup,
-   `<sup>$</sup>49`, breaking the literal "$49" substring match entirely),
-   a fabricated "$470/yr (save 20%)" annual option that no backend code
-   supports at any price, and a 5,000/day limit belonging to the Starter
-   tier, not the 25,000/day SOC Professional actually gets. */
-
-test('api.html\'s SOC Professional card shows the canonical $18/mo price, not the stale $49', () => {
-  const src = readFile('api.html');
-  const m = src.match(/SOC Professional<\/div>\s*<div class="plan-price"><sup>\$<\/sup>(\d+)<\/div>/);
-  assert.ok(m, 'could not find the SOC Professional price card in api.html');
-  // $18 is docs/PRICING.md's documented USD equivalent of the canonical
-  // PLANS.pro.amount (₹1,499), independently pinned by the test above.
-  assert.strictEqual(Number(m[1]), 18, 'expected the canonical $18/mo display price');
-});
-
 test('api.html does not advertise annual billing (no backend support exists for it anywhere in api/)', () => {
   const src = readFile('api.html');
   assert.ok(!/\$470\/yr|save 20%/i.test(src), 'api.html still advertises an unimplemented annual-billing discount');
 });
 
-test('api.html\'s SOC Professional card shows the canonical 25,000/day limit, not Starter\'s 5,000/day', () => {
-  const src = readFile('api.html');
-  const section = src.slice(src.indexOf('SOC Professional'), src.indexOf('SOC Professional') + 600);
-  assert.ok(section.includes('25,000 / day'), 'expected 25,000 / day in the SOC Professional plan-limits block');
+/* ─── Plans are sold on the Sentinel APEX platform (2026-10-01) ──────── */
+
+const vm = require('vm');
+const { INTEL_PLAN_FOR, intelUpgradeUrl } = require(path.join(ROOT, 'api', '_lib', 'payment-utils.js'));
+const { neutralizeLegacyCommercialCopy, RETIRED_PLAN_PRICE_COPY } = require(path.join(ROOT, 'scripts', 'build-cloudflare-assets.js'));
+
+// Every customer-facing source that used to quote a blog plan price, plus the
+// post generator. Generated posts are covered by the build-time rewrite test.
+const PLAN_PRICE_SURFACES = [
+  'pricing.html', 'api.html', 'api-dashboard.html', 'faq.html', 'contact.html', 'index.html',
+  'enterprise.html', 'intelligence.html', 'buy.html', 'payment-flow.js', 'intel-plans.js',
+  'ux-controller.js', 'revenue-cta-block.js', 'conversion-engine.js', 'monetization.js',
+  'ai-monetization-engine.js', 'auto-intel-engine.js', 'seo-engine.js', 'fetch-live-intel.js',
+];
+const HARDCODED_PLAN_PRICE = /₹\s?(?:999|1,499|20,699|82,999|4,100|41,600|83,300)\b|\$(?:12|18|49|249|299|499|999)\s*(?:\/|per\s)\s*(?:mo|month)|<sup>\$<\/sup>\s*(?:18|249)\b|>\$(?:18|299)</;
+
+for (const file of PLAN_PRICE_SURFACES) {
+  test(`${file} hardcodes no plan price (prices come from the Sentinel APEX platform)`, () => {
+    const m = readFile(file).match(HARDCODED_PLAN_PRICE);
+    assert.ok(!m, `${file} hardcodes a plan price: "${m && m[0]}"`);
+  });
+}
+
+test('pricing, API and dashboard pages show live platform prices for all three plans', () => {
+  for (const file of ['pricing.html', 'api.html', 'api-dashboard.html']) {
+    const src = readFile(file);
+    for (const tier of ['PRO', 'ENTERPRISE', 'MSSP']) {
+      assert.ok(src.includes(`data-intel-price="${tier}"`), `${file} lacks a live ${tier} price slot`);
+    }
+    assert.ok(src.includes('/intel-plans.js'), `${file} must load intel-plans.js`);
+  }
+});
+
+test('every plan CTA on the pricing page goes to the platform checkout; none starts a blog checkout', () => {
+  const src = readFile('pricing.html');
+  assert.doesNotMatch(src, /create-razorpay-order|checkout\.razorpay\.com|PaymentFlow\.payInstant|id="modalOverlay"/);
+  for (const plan of ['pro', 'enterprise', 'mssp']) {
+    assert.ok(src.includes(`data-intel-plan="${plan}"`), `missing ${plan} CTA`);
+    assert.ok(src.includes(`href="https://intel.cyberdudebivash.com/upgrade.html?plan=${plan}&amp;utm_source=blog`), `${plan} CTA must link to the platform checkout without JavaScript`);
+  }
+  assert.doesNotMatch(src, /API Starter|Sentinel Team|Enterprise Apex/, 'retired blog plans must not be offered');
+});
+
+test('payment-flow.js keeps its public API but only forwards to the platform checkout', () => {
+  const src = readFile('payment-flow.js');
+  assert.doesNotMatch(src, /create-razorpay-order|verify-razorpay-payment|checkout\.razorpay\.com/);
+  assert.match(src, /startUpgrade/);
+  assert.match(src, /intel\.cyberdudebivash\.com\/upgrade\.html/);
+});
+
+test('browser plan mapping (intel-plans.js) equals the server mapping (payment-utils.js)', () => {
+  const m = readFile('intel-plans.js').match(/var PLAN_FOR = (\{[^}]+\});/);
+  assert.ok(m, 'PLAN_FOR not found in intel-plans.js');
+  assert.deepStrictEqual(JSON.parse(JSON.stringify(vm.runInNewContext(`(${m[1]})`))), INTEL_PLAN_FOR);
+  assert.strictEqual(new URL(intelUpgradeUrl('team', 'x')).searchParams.get('plan'), 'enterprise');
+  assert.strictEqual(new URL(intelUpgradeUrl('unknown', 'x')).searchParams.has('plan'), false, 'unknown plans must not default to a paid plan');
+});
+
+/* Run intel-plans.js against a tiny DOM stub and a stubbed platform pricing
+   response: prices appear only from a well-formed INR/paise document. */
+function runIntelPlans(pricingDoc) {
+  const els = ['PRO', 'ENTERPRISE', 'MSSP'].flatMap(tier => [
+    { attrs: { 'data-intel-price': tier }, textContent: 'See price', setAttribute(k, v) { this.attrs[k] = v; }, getAttribute(k) { return this.attrs[k] ?? null; } },
+    { attrs: { 'data-intel-price': tier, 'data-intel-period': 'annual', 'data-intel-currency': 'usd' }, textContent: 'See price', setAttribute(k, v) { this.attrs[k] = v; }, getAttribute(k) { return this.attrs[k] ?? null; } },
+  ]);
+  const document = {
+    readyState: 'complete',
+    querySelector: sel => (sel === '[data-intel-price]' ? els[0] : null),
+    querySelectorAll: sel => (sel === '[data-intel-price]' ? els : []),
+    addEventListener() {},
+  };
+  const window = { location: { href: '' } };
+  const fetch = () => Promise.resolve({ ok: true, json: () => Promise.resolve(pricingDoc) });
+  vm.runInNewContext(readFile('intel-plans.js'), { window, document, fetch, URLSearchParams, Promise, Math });
+  return { els, window, settle: () => window.IntelCheckout.pricing().then(() => new Promise(r => setImmediate(r))) };
+}
+
+test('intel-plans.js fills prices from the platform pricing document', async () => {
+  const doc = { currency: 'INR', unit: 'paise', tiers: {
+    PRO: { monthly: 410000, annual: 4100000, usd_monthly: 49, usd_annual: 490 },
+    ENTERPRISE: { monthly: 4160000, annual: 41600000, usd_monthly: 499, usd_annual: 4990 },
+    MSSP: { monthly: 8330000, annual: 83300000, usd_monthly: 999, usd_annual: 9990 },
+  } };
+  const { els, settle } = runIntelPlans(doc);
+  await settle();
+  assert.deepStrictEqual(els.map(e => e.textContent), ['₹4,100', '$490', '₹41,600', '$4,990', '₹83,300', '$9,990']);
+});
+
+test('intel-plans.js leaves placeholders when the platform document is not INR/paise', async () => {
+  const { els, settle } = runIntelPlans({ currency: 'USD', unit: 'cents', tiers: { PRO: { monthly: 1 } } });
+  await settle();
+  assert.ok(els.every(e => e.textContent === 'See price'));
+});
+
+test('intel-plans.js checkout URL maps retired blog plans and never defaults to a paid plan', () => {
+  const { window } = runIntelPlans(null);
+  const u = new URL(window.IntelCheckout.url('starter', 'pricing-card'));
+  assert.strictEqual(u.origin + u.pathname, 'https://intel.cyberdudebivash.com/upgrade.html');
+  assert.strictEqual(u.searchParams.get('plan'), 'pro');
+  assert.strictEqual(u.searchParams.get('utm_source'), 'blog');
+  assert.strictEqual(new URL(window.IntelCheckout.url('bogus')).searchParams.has('plan'), false);
+});
+
+test('generated posts lose retired plan prices at build time', () => {
+  const html = '<a href="/pricing.html" class="btn-p">⚡ SOC Pro — $18/mo</a> IOC bundles — $18/mo. <span class="plan-tag">$18/mo</span>';
+  const out = neutralizeLegacyCommercialCopy(html);
+  assert.doesNotMatch(out, /\$18/);
+  assert.match(out, /PRO Defense/);
+  for (const [legacy] of RETIRED_PLAN_PRICE_COPY) {
+    const once = neutralizeLegacyCommercialCopy(`<p>${legacy}</p>`);
+    assert.doesNotMatch(once, HARDCODED_PLAN_PRICE, legacy);
+    assert.doesNotMatch(once, /\$18/, legacy);
+    assert.strictEqual(neutralizeLegacyCommercialCopy(once), once, 'rewrite must be idempotent');
+  }
+  const intel = '<p>LockBit demanded $18/month from victims in a subscription scheme.</p>';
+  assert.strictEqual(neutralizeLegacyCommercialCopy(intel), intel, 'intelligence text is never rewritten');
 });

@@ -43,15 +43,15 @@ describe('P0 Revenue Conversion v19', () => {
     assert.equal(middleware.nextPaidTier('enterprise'), null);
   });
 
-  test('API upgrade URL goes straight to checkout with measurable attribution', () => {
+  test('API upgrade URL goes straight to the Sentinel APEX platform checkout with measurable attribution', () => {
     const url = new URL(middleware.upgradeCheckoutUrl('starter'));
-    assert.equal(url.origin + url.pathname, 'https://blog.cyberdudebivash.in/buy.html');
+    assert.equal(url.origin + url.pathname, 'https://intel.cyberdudebivash.com/upgrade.html');
     assert.equal(url.searchParams.get('plan'), 'pro');
-    assert.equal(url.searchParams.get('checkout'), '1');
     assert.equal(url.searchParams.get('utm_source'), 'api_rate_limit');
     assert.equal(url.searchParams.get('utm_medium'), 'api');
     assert.equal(url.searchParams.get('utm_campaign'), 'p0_revenue_conversion_v19');
-    assert.equal(new URL(middleware.upgradeCheckoutUrl('pro')).searchParams.get('plan'), 'team');
+    assert.equal(new URL(middleware.upgradeCheckoutUrl('free')).searchParams.get('plan'), 'pro');
+    assert.equal(new URL(middleware.upgradeCheckoutUrl('pro')).searchParams.get('plan'), 'enterprise');
     assert.equal(new URL(middleware.upgradeCheckoutUrl('team')).searchParams.get('plan'), 'enterprise');
     assert.equal(middleware.upgradeCheckoutUrl('enterprise'), null);
   });
@@ -61,15 +61,15 @@ describe('P0 Revenue Conversion v19', () => {
     assert.ok(assets.PUBLIC_ROOT_FILES.includes('revenue-conversion-v19.js'));
   });
 
-  test('buy page is focused on payment and deliberately excludes overlay conversion engines', () => {
+  test('buy page forwards old checkout links to the platform checkout and excludes overlay engines', () => {
     const html = fs.readFileSync(path.join(__dirname, '..', 'buy.html'), 'utf8');
-    assert.ok(html.includes('/payment-flow.js'));
-    assert.ok(html.includes('/revenue-conversion-v19.js'));
+    assert.ok(html.includes('/intel-plans.js'));
+    assert.ok(html.includes('IntelCheckout.go(plan'));
+    assert.ok(html.includes('href="https://intel.cyberdudebivash.com/upgrade.html?plan=pro'));
     assert.ok(html.includes('G-XTGLNMNNC7'));
+    assert.equal(html.includes('/payment-flow.js'), false);
     assert.equal(html.includes('/conversion-engine.js'), false);
     assert.equal(html.includes('/monetization.js'), false);
-    assert.ok(html.includes('No account yet:'));
-    assert.ok(html.includes('never implies that a threat claim is more certain because it is paid'));
   });
 
   test('revenue controller source never handles customer identity or payment credentials', () => {

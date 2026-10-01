@@ -1,8 +1,20 @@
 # Razorpay Production Activation Runbook
 
-**Status (2026-10-01):** code ready; secrets **not configured**.
-- Live `POST /api/v1/billing?action=create-razorpay-order` returns `503 RAZORPAY_UNAVAILABLE`.
-- Until activation, the only purchase path is email to bivash@cyberdudebivash.com.
+**Status (2026-10-01):** secrets configured on the Worker (live keys), verified live.
+
+**Scope change (owner decision 2026-10-01):** API **plans** are sold only on the
+CYBERDUDEBIVASH SENTINEL APEX platform checkout
+(`https://intel.cyberdudebivash.com/upgrade.html`), which has its own Razorpay
+integration and webhook. On the blog, Razorpay now serves **premium
+intelligence reports** only:
+
+- `billing?action=create-razorpay-order` and `action=create-subscription`
+  return `410 PLAN_CHECKOUT_MOVED` with `checkout_url`.
+- `action=verify-razorpay-payment` and the webhook still complete plan
+  orders created before the switch.
+- The blog webhook below is still required, for premium-report payments and
+  refunds (a full refund revokes the report entitlement). Razorpay accounts
+  can hold several webhooks, so it coexists with the platform's own webhook.
 
 No secret values appear in this document or anywhere in the repository.
 

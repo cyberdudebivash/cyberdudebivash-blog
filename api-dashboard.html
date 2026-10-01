@@ -76,6 +76,7 @@ footer{background:var(--apex-surface);border-top:1px solid var(--apex-border);pa
 @media(max-width:600px){.hero{padding:40px 16px 24px}.wrap{padding:24px 16px}.nlinks a:not(.ncta):not(#signout-link){display:none}#who{display:none}}
 </style>
 <script src="/payment-flow.js"></script>
+<script src="/intel-plans.js" defer></script>
   <!-- Google Analytics 4 — CYBERDUDEBIVASH SENTINEL APEX -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XTGLNMNNC7"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-XTGLNMNNC7",{page_path:window.location.pathname,cookie_flags:"SameSite=None;Secure"});</script>
@@ -218,11 +219,11 @@ const data = await res.json();</div>
     <div class="card" id="dash-upgrade-card" style="background:linear-gradient(135deg,#0a1428,#111827);border-color:rgba(0,255,224,.15)">
       <div class="card-title" style="color:var(--apex-cyan)">🚀 Upgrade Your Plan</div>
       <div style="display:flex;gap:12px;flex-wrap:wrap">
-        <button class="btn btn-primary" onclick="ApexPaymentFlow.startUpgrade('pro')">⚡ Upgrade to Pro — ₹1,499/mo</button>
-        <button class="btn" style="background:rgba(0,255,136,.15);border:1px solid rgba(0,255,136,.4);color:#00ff88" onclick="ApexPaymentFlow.startUpgrade('team')">🛡️ Sentinel Team — ₹20,699/mo</button>
-        <button class="btn" style="background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.4);color:#a855f7" onclick="window.location.href='/enterprise.html'">🏢 Enterprise Apex — Contact Sales</button>
+        <a class="btn btn-primary" data-intel-plan="pro" data-intel-medium="dashboard-upgrade" href="https://intel.cyberdudebivash.com/upgrade.html?plan=pro&amp;utm_source=blog&amp;utm_medium=dashboard-upgrade&amp;utm_campaign=plan-checkout">⚡ PRO Defense — <span data-intel-price="PRO">see price</span>/mo</a>
+        <a class="btn" style="background:rgba(0,255,136,.15);border:1px solid rgba(0,255,136,.4);color:#00ff88" data-intel-plan="enterprise" data-intel-medium="dashboard-upgrade" href="https://intel.cyberdudebivash.com/upgrade.html?plan=enterprise&amp;utm_source=blog&amp;utm_medium=dashboard-upgrade&amp;utm_campaign=plan-checkout">🛡️ Enterprise SOC — <span data-intel-price="ENTERPRISE">see price</span>/mo</a>
+        <a class="btn" style="background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.4);color:#a855f7" data-intel-plan="mssp" data-intel-medium="dashboard-upgrade" href="https://intel.cyberdudebivash.com/upgrade.html?plan=mssp&amp;utm_source=blog&amp;utm_medium=dashboard-upgrade&amp;utm_campaign=plan-checkout">🏢 MSSP / White-Label — <span data-intel-price="MSSP">see price</span>/mo</a>
       </div>
-      <p style="font-size:13px;color:var(--apex-muted);margin-top:12px">Pro includes: 5,000 req/day · Full IOC access · MITRE mapping · Sigma/YARA rules · Pay via UPI or bank transfer</p>
+      <p style="font-size:13px;color:var(--apex-muted);margin-top:12px">Paid plans are purchased and managed on the CYBERDUDEBIVASH SENTINEL APEX platform, which shows the exact amount before you pay. Prices shown are read live from the platform. A plan you already bought on this site keeps working on your current key.</p>
     </div>
   </div>
 </div>
@@ -412,7 +413,7 @@ X-API-Key: sentinel_your_key_here</div>
       <div class="tier-price">$0<span>/month</span></div>
       <ul class="tier-features">
         <li>100 API requests/day</li>
-        <li>Live threat feed access</li>
+        <li>Operational intelligence feed with runtime timestamps</li>
         <li>Top threats endpoint</li>
         <li>CVE lookup (summary)</li>
         <li>Basic search (5 results)</li>
@@ -424,77 +425,44 @@ X-API-Key: sentinel_your_key_here</div>
       </ul>
       <button class="btn btn-secondary" onclick="switchTab('register')" style="width:100%">Get Free Key →</button>
     </div>
-    <div class="tier-card">
-      <span class="badge bdg-starter" style="margin-bottom:12px">STARTER</span>
-      <div class="tier-name">API Starter</div>
-      <div class="tier-price">₹999<span>/month</span></div>
-      <ul class="tier-features">
-        <li>5,000 API requests/day</li>
-        <li>Live threat feed access</li>
-        <li>Weekly intel digest email</li>
-        <li>Full search (unrestricted)</li>
-        <li>CVE lookup (summary)</li>
-        <li class="locked">Full IOC dataset</li>
-        <li class="locked">Sigma/YARA detection rules</li>
-        <li class="locked">MITRE ATT&CK mapping</li>
-        <li class="locked">Attack chain analysis</li>
-        <li class="locked">Business impact data</li>
-      </ul>
-      <button class="btn btn-primary" onclick="ApexPaymentFlow.startUpgrade('starter')" style="width:100%">🚀 Upgrade to Starter →</button>
-    </div>
+    <!-- Paid plans: sold on the Sentinel APEX platform (owner decision 2026-10-01).
+         Prices come from intel.cyberdudebivash.com/api/pricing via intel-plans.js. -->
     <div class="tier-card featured">
       <span class="badge bdg-pro" style="margin-bottom:12px">PRO</span>
-      <div class="tier-name">SOC Pro</div>
-      <div class="tier-price">₹1,499<span>/month</span></div>
+      <div class="tier-name">PRO Defense</div>
+      <div class="tier-price"><span data-intel-price="PRO" style="font-size:inherit;color:inherit">See price</span><span>/month</span></div>
       <ul class="tier-features">
-        <li>25,000 API requests/day</li>
-        <li>Full IOC dataset (50/item)</li>
-        <li>Sigma & YARA rules included</li>
-        <li>Full MITRE ATT&CK mapping</li>
-        <li>Attack chain analysis</li>
-        <li>Business impact data</li>
-        <li>Full search (50 results)</li>
-        <li>Priority email support</li>
-        <li>Pay via UPI or bank transfer</li>
-        <li class="locked">STIX 2.1 export</li>
+        <li>120 requests/min</li>
+        <li>Full IOC arrays</li>
+        <li>STIX 2.1 bundles</li>
+        <li>Threat alerts</li>
+        <li>10 API keys</li>
       </ul>
-      <button class="btn btn-primary" onclick="ApexPaymentFlow.startUpgrade('pro')" style="width:100%">⚡ Upgrade to Pro →</button>
+      <a class="btn btn-primary" data-intel-plan="pro" data-intel-medium="dashboard-plans" href="https://intel.cyberdudebivash.com/upgrade.html?plan=pro&amp;utm_source=blog&amp;utm_medium=dashboard-plans&amp;utm_campaign=plan-checkout" style="width:100%;display:block;text-align:center">⚡ Get PRO Defense →</a>
     </div>
     <div class="tier-card">
-      <span class="badge bdg-team" style="margin-bottom:12px">TEAM</span>
-      <div class="tier-name">Sentinel Team</div>
-      <div class="tier-price" style="color:#00ff88">₹20,699<span>/month</span></div>
+      <span class="badge bdg-team" style="margin-bottom:12px">ENTERPRISE</span>
+      <div class="tier-name">Enterprise SOC</div>
+      <div class="tier-price" style="color:#00ff88"><span data-intel-price="ENTERPRISE" style="font-size:inherit;color:inherit">See price</span><span>/month</span></div>
       <ul class="tier-features">
-        <li>100,000 API requests/day</li>
-        <li>Single account API key (multi-seat access not yet available)</li>
-        <li>STIX 2.1 bundle export</li>
-        <li>SIEM rule export (Splunk SPL / Sentinel KQL)</li>
-        <li>Sigma & YARA rules included</li>
-        <li>Full MITRE ATT&CK mapping</li>
-        <li>Full search (unlimited results)</li>
-        <li>Priority Slack/Discord channel</li>
-        <li>Pay via UPI or bank transfer</li>
-        <li class="locked">Dedicated analyst option / contract-defined SLA</li>
-      </ul>
-      <button class="btn" style="background:rgba(0,255,136,.15);border:1px solid rgba(0,255,136,.4);color:#00ff88;width:100%" onclick="ApexPaymentFlow.startUpgrade('team')">🛡️ Upgrade to Team →</button>
-    </div>
-    <div class="tier-card">
-      <span class="badge bdg-ent" style="margin-bottom:12px">ENTERPRISE APEX</span>
-      <div class="tier-name">Enterprise Apex</div>
-      <div class="tier-price" style="color:#a855f7">₹82,999<span>/month starting</span></div>
-      <ul class="tier-features">
-        <li>Unlimited API requests</li>
-        <li>All Sentinel Team features included</li>
-        <li>Multi-seat access not yet available</li>
-        <li>Operational intelligence feed with runtime timestamps</li>
-        <li>Bulk data export</li>
-        <li>Custom advisory reports</li>
-        <li>White-label licensing</li>
-        <li>Dedicated analyst support</li>
+        <li>600 requests/min</li>
+        <li>SIEM push: Splunk / Microsoft Sentinel / QRadar</li>
+        <li>Webhooks</li>
         <li>Contract-defined SLA where explicitly executed</li>
-        <li>MSSP licensing available</li>
+        <li>50 API keys</li>
       </ul>
-      <button class="btn" style="background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.4);color:#a855f7;width:100%" onclick="window.location.href='/enterprise.html'">🏢 Contact Sales →</button>
+      <a class="btn" data-intel-plan="enterprise" data-intel-medium="dashboard-plans" href="https://intel.cyberdudebivash.com/upgrade.html?plan=enterprise&amp;utm_source=blog&amp;utm_medium=dashboard-plans&amp;utm_campaign=plan-checkout" style="background:rgba(0,255,136,.15);border:1px solid rgba(0,255,136,.4);color:#00ff88;width:100%;display:block;text-align:center">🛡️ Get Enterprise SOC →</a>
+    </div>
+    <div class="tier-card">
+      <span class="badge bdg-ent" style="margin-bottom:12px">MSSP</span>
+      <div class="tier-name">MSSP / White-Label</div>
+      <div class="tier-price" style="color:#a855f7"><span data-intel-price="MSSP" style="font-size:inherit;color:inherit">See price</span><span>/month</span></div>
+      <ul class="tier-features">
+        <li>Multi-tenant</li>
+        <li>White-label</li>
+        <li>Dedicated analyst option / contract-defined SLA</li>
+      </ul>
+      <a class="btn" data-intel-plan="mssp" data-intel-medium="dashboard-plans" href="https://intel.cyberdudebivash.com/upgrade.html?plan=mssp&amp;utm_source=blog&amp;utm_medium=dashboard-plans&amp;utm_campaign=plan-checkout" style="background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.4);color:#a855f7;width:100%;display:block;text-align:center">🏢 Get MSSP / White-Label →</a>
     </div>
   </div>
 </div>

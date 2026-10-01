@@ -296,7 +296,7 @@
           <div class="roi-line"><span>Avg. Breach Cost (your sector)</span><span id="r-breach">-</span></div>
           <div class="roi-line"><span>Expected incidents prevented/yr</span><span id="r-incidents">-</span></div>
           <div class="roi-line"><span>Cost avoided (breach prevention)</span><span id="r-avoided">-</span></div>
-          <div class="roi-line"><span>CYBERDUDEBIVASH SENTINEL APEX Enterprise cost</span><span id="r-cost">$3,588/yr</span></div>
+          <div class="roi-line"><span>CYBERDUDEBIVASH SENTINEL APEX Enterprise cost</span><span id="r-cost">—</span></div>
           <div class="roi-line"><span>MTTD reduction (estimated)</span><span id="r-mttd">-</span></div>
           <div class="roi-line total"><span>Estimated Annual ROI</span><span id="r-roi">-</span></div>
           <div style="margin-top:1rem;">
@@ -317,36 +317,35 @@
     </div>
     <div class="pricing-grid">
       <div class="tier-card">
-        <div class="tier-name">SOC Pro</div>
-        <div class="tier-price">$18<span style="font-size:1rem;color:var(--muted)">/mo</span></div>
-        <div class="tier-period">Per user · billed monthly</div>
-        <div class="tier-desc">For individual analysts and small teams needing premium intel access.</div>
+        <div class="tier-name">PRO Defense</div>
+        <div class="tier-price"><span data-intel-price="PRO" data-intel-currency="usd">See price</span><span style="font-size:1rem;color:var(--muted)">/mo</span></div>
+        <div class="tier-period">Billed on the Sentinel APEX platform</div>
+        <div class="tier-desc">For analysts and small teams that need full IOC data.</div>
         <ul class="tier-features">
-          <li>Unlimited API requests</li><li>Full IOC database</li><li>Sigma + YARA packs</li>
-          <li>Weekly threat briefings</li><li>Email support · terms shown in plan/contract</li>
+          <li>120 requests/min</li><li>Full IOC arrays</li><li>STIX 2.1 bundles</li>
+          <li>Threat alerts</li><li>10 API keys</li>
         </ul>
-        <a href="/pricing.html" class="tier-cta tier-cta-outline">View Plans</a>
+        <a href="https://intel.cyberdudebivash.com/upgrade.html?plan=pro&amp;utm_source=blog&amp;utm_medium=enterprise-page&amp;utm_campaign=plan-checkout" data-intel-plan="pro" data-intel-medium="enterprise-page" class="tier-cta tier-cta-outline">Get PRO Defense</a>
       </div>
       <div class="tier-card featured">
         <div class="tier-badge">⭐ MOST POPULAR</div>
-        <div class="tier-name">Enterprise Managed</div>
-        <div class="tier-price">$299<span style="font-size:1rem;color:var(--muted)">/mo</span></div>
-        <div class="tier-period">Up to 25 users · billed annually</div>
-        <div class="tier-desc">Complete intelligence stack for enterprise SOC teams.</div>
+        <div class="tier-name">Enterprise SOC</div>
+        <div class="tier-price"><span data-intel-price="ENTERPRISE" data-intel-currency="usd">See price</span><span style="font-size:1rem;color:var(--muted)">/mo</span></div>
+        <div class="tier-period">Billed on the Sentinel APEX platform</div>
+        <div class="tier-desc">Production SOC intelligence with SIEM push.</div>
         <ul class="tier-features">
-          <li>Everything in SOC Pro</li><li>Dedicated analyst support</li><li>White-label feeds (10 clients)</li>
-          <li>Custom SIEM integrations</li><li>Priority vulnerability alerts</li><li>Contract-defined support SLA</li>
-          <li>STIX 2.1 delivery</li>
+          <li>600 requests/min</li><li>SIEM push: Splunk / Microsoft Sentinel / QRadar</li><li>Webhooks</li>
+          <li>Contract-defined support SLA</li><li>50 API keys</li>
         </ul>
-        <a href="#contact" class="tier-cta tier-cta-primary">Get Enterprise Proposal</a>
+        <a href="https://intel.cyberdudebivash.com/upgrade.html?plan=enterprise&amp;utm_source=blog&amp;utm_medium=enterprise-page&amp;utm_campaign=plan-checkout" data-intel-plan="enterprise" data-intel-medium="enterprise-page" class="tier-cta tier-cta-primary">Get Enterprise SOC</a>
       </div>
       <div class="tier-card">
-        <div class="tier-name">Enterprise Managed+</div>
+        <div class="tier-name">MSSP &amp; Custom</div>
         <div class="tier-price" style="font-size:1.8rem">Custom</div>
-        <div class="tier-period">Unlimited users · custom terms</div>
+        <div class="tier-period">MSSP / White-Label plan or custom terms</div>
         <div class="tier-desc">For MSSPs, government agencies, and large-scale deployments.</div>
         <ul class="tier-features">
-          <li>Everything in Enterprise Managed</li><li>Unlimited white-label clients</li><li>Contract-defined rule development terms</li>
+          <li>Multi-tenant, white-label</li><li>Unlimited white-label clients</li><li>Contract-defined rule development terms</li>
           <li>On-site analyst deployment</li><li>Government/MSSP pricing</li><li>NDR/XDR integration support</li>
           <li>Air-gap deployment option</li>
         </ul>
@@ -480,6 +479,7 @@
   <p>© 2026 CyberDudeBivash — CYBERDUDEBIVASH SENTINEL APEX. Enterprise Threat Intelligence. · <a href="/about.html">About</a> · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a> </p>
 </footer>
 
+<script src="/intel-plans.js" defer></script>
 <script src="/monetization.js" defer></script>
 <script src="/conversion-engine.js?v=20260705" defer></script>
 <script src="/seo-engine.js" defer></script>
@@ -497,19 +497,28 @@ function calcROI() {
   const rate     = incidentRate[sector] || 0.5;
   const prevented= Math.round(rate * (emp / 500) * 1.4 * 10) / 10;
   const avoided  = Math.round(breach * prevented * 0.35);
-  const cost     = 3588; // $299/mo annual
+  // Annual Enterprise SOC price from the Sentinel APEX platform (intel-plans.js);
+  // the estimate is not shown until the real price is known.
+  const cost     = window.__enterpriseAnnualUsd || 0;
   const mttdNew  = Math.round(mttd * 0.25);
-  const roi      = Math.round(((avoided - cost) / cost) * 100);
+  const roi      = cost ? Math.round(((avoided - cost) / cost) * 100) : null;
 
   const fmt = n => '$' + n.toLocaleString();
   document.getElementById('r-breach').textContent    = fmt(breach);
   document.getElementById('r-incidents').textContent = prevented + '/yr';
   document.getElementById('r-avoided').textContent   = fmt(avoided);
-  document.getElementById('r-cost').textContent      = fmt(cost) + '/yr';
+  document.getElementById('r-cost').textContent      = cost ? fmt(cost) + '/yr' : '—';
   document.getElementById('r-mttd').textContent      = mttd + 'd → ' + mttdNew + 'd';
-  document.getElementById('r-roi').textContent       = roi + 'x';
+  document.getElementById('r-roi').textContent       = roi === null ? '—' : roi + 'x';
 }
 calcROI();
+document.addEventListener('DOMContentLoaded', function () {
+  if (!window.IntelCheckout) return;
+  window.IntelCheckout.pricing().then(function (data) {
+    const t = data && data.tiers && data.tiers.ENTERPRISE;
+    if (t && typeof t.usd_annual === 'number' && t.usd_annual > 0) { window.__enterpriseAnnualUsd = t.usd_annual; calcROI(); }
+  });
+});
 </script>
 <script src="/ai-monetization-engine.js" defer></script>
 <script src="/analytics-engine.js" defer></script>
