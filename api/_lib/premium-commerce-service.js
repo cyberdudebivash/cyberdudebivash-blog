@@ -60,6 +60,7 @@ function publicCatalogShape(row) {
     currency: row.currency,
     artifact_filename: row.artifact_filename,
     artifact_size_bytes: Number(row.artifact_size_bytes),
+    artifact_sha256: row.artifact_sha256, // lets buyers verify the delivered bytes
     published_at: row.published_at,
     updated_at: row.updated_at,
     certification: 'PREMIUM_CERTIFIED',

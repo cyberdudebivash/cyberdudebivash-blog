@@ -13,6 +13,16 @@
  *   PREMIUM_ANALYST_KEY=... node scripts/publish-premium-reports.js --publish
  *       [--base https://blog.cyberdudebivash.in] [--only <sku>]
  *
+ * Versioned reissue (manifest schema 2): an entry may name the product it
+ * `supersedes`. Sequence per product, never reordered:
+ *   local certification (human review bound to the exact artifact hash, and
+ *   the hash pinned in the manifest) -> skip if the live product already
+ *   serves this hash -> publish-certified (R2 put + verify, then catalog
+ *   row) -> confirm the new product is live with the expected hash -> only
+ *   then retire the superseded product. Customers never see a catalog entry
+ *   without a verified artifact, and the old one disappears only after the
+ *   new one is live.
+ *
  * Fails closed: a product is only sent if the export plus its human review
  * record certify locally with the same certifier the server runs. The
  * analyst key is read from the environment and never printed.
@@ -55,6 +65,13 @@ function prepareProduct(product, manifest, root = ROOT) {
   const reportxExport = { ...exported, bundle: { ...exported.bundle, review } };
   const certification = evaluatePremiumCertification(reportxExport);
   if (!certification.certified) return { sku: product.sku, ok: false, reasons: certification.reasons, certification };
+  // Schema 2 pins: the export must be exactly the artifact the manifest names.
+  if (product.report_id && certification.reportId !== product.report_id) {
+    return { sku: product.sku, ok: false, reasons: ['REPORT_ID_MISMATCH'], certification };
+  }
+  if (product.artifact_sha256 && certification.artifactSha256 !== product.artifact_sha256) {
+    return { sku: product.sku, ok: false, reasons: ['ARTIFACT_HASH_NOT_PINNED'], certification };
+  }
 
   return {
     sku: product.sku,
@@ -71,6 +88,7 @@ function prepareProduct(product, manifest, root = ROOT) {
       currency: manifest.currency,
       filename: product.filename || product.slug,
     },
+    supersedes: product.supersedes || null,
   };
 }
 
@@ -84,21 +102,51 @@ function prepareAll(manifest, root = ROOT) {
   });
 }
 
-async function publish(prepared, { base, key, fetchImpl = fetch }) {
-  const res = await fetchImpl(`${base}/api/v1/premium-intelligence?action=publish-certified`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'X-Analyst-Key': key },
-    body: JSON.stringify(prepared.body),
-  });
+async function liveDetail(base, slug, fetchImpl) {
+  const res = await fetchImpl(`${base}/api/v1/premium-intelligence?action=detail&slug=${encodeURIComponent(slug)}`);
   const json = await res.json().catch(() => ({}));
-  if (!res.ok || !json.success) {
-    const err = json.error || {};
-    throw new Error(`publish failed for ${prepared.sku}: HTTP ${res.status} ${err.code || ''} ${err.message || ''}`.trim());
+  return res.ok && json.success ? json.data.report : null;
+}
+
+async function publish(prepared, { base, key, fetchImpl = fetch }) {
+  const sha = prepared.certification && prepared.certification.artifactSha256;
+  const current = await liveDetail(base, prepared.body.slug, fetchImpl);
+  let report = current;
+  if (current && sha && current.artifact_sha256 === sha) {
+    report = { ...current, unchanged: true }; // same bytes already live: no R2 write
+  } else {
+    const res = await fetchImpl(`${base}/api/v1/premium-intelligence?action=publish-certified`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Analyst-Key': key },
+      body: JSON.stringify(prepared.body),
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok || !json.success) {
+      const err = json.error || {};
+      throw new Error(`publish failed for ${prepared.sku}: HTTP ${res.status} ${err.code || ''} ${err.message || ''}`.trim());
+    }
+    report = await liveDetail(base, prepared.body.slug, fetchImpl);
+    if (!report) throw new Error(`published ${prepared.sku} but detail lookup failed`);
   }
-  const detail = await fetchImpl(`${base}/api/v1/premium-intelligence?action=detail&slug=${encodeURIComponent(prepared.body.slug)}`);
-  const d = await detail.json().catch(() => ({}));
-  if (!detail.ok || !d.success) throw new Error(`published ${prepared.sku} but detail lookup failed: HTTP ${detail.status}`);
-  return d.data.report;
+  if (sha && report.artifact_sha256 && report.artifact_sha256 !== sha) {
+    throw new Error(`live ${prepared.sku} serves ${report.artifact_sha256}, expected ${sha}; superseded product left untouched`);
+  }
+
+  const old = prepared.supersedes;
+  if (old && old.report_id && old.report_id !== report.report_id) {
+    const res = await fetchImpl(`${base}/api/v1/premium-intelligence?action=set-status`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Analyst-Key': key },
+      body: JSON.stringify({ report_id: old.report_id, status: 'RETIRED' }),
+    });
+    const json = await res.json().catch(() => ({}));
+    // 404 = already retired/never published; anything else is a real failure.
+    if (!(res.ok && json.success) && res.status !== 404) {
+      throw new Error(`v2 of ${prepared.sku} is live but retiring ${old.report_id} failed: HTTP ${res.status}`);
+    }
+    report = { ...report, retired: old.report_id };
+  }
+  return report;
 }
 
 async function main() {
@@ -124,7 +172,7 @@ async function main() {
   if (!/^https:\/\//.test(base)) { console.error('--base must be https.'); process.exit(1); }
   for (const p of prepared) {
     const report = await publish(p, { base, key });
-    console.log(`PUBLISHED ${p.sku} -> ${report.slug} (${report.status || 'SELLABLE'})`);
+    console.log(`${report.unchanged ? 'UNCHANGED' : 'PUBLISHED'} ${p.sku} -> ${report.slug} sha256=${report.artifact_sha256 || '?'}${report.retired ? ` (retired ${report.retired})` : ''}`);
   }
 }
 
@@ -132,4 +180,4 @@ if (require.main === module) {
   main().catch(e => { console.error(String(e.message || e)); process.exit(1); });
 }
 
-module.exports = { loadManifest, prepareProduct, prepareAll, publish, MANIFEST };
+module.exports = { loadManifest, prepareProduct, prepareAll, publish, liveDetail, MANIFEST };

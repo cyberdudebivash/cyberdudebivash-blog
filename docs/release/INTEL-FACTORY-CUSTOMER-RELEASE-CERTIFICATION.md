@@ -1,5 +1,41 @@
 # Intel Factory — Customer Release Certification
 
+## Tranche 5 (2026-10-01): deploy-trigger reliability, #318 live, premium reissue v2
+
+### #318 in production: **PASS**
+
+| Field | Value |
+|---|---|
+| Merge | `aea98b00161c32b71ec9eefadb00c9e816d45d37` (13:28 UTC) |
+| Deployed by | `cloudflare-production-deploy.yml` run #130 (pipeline dispatch for `bf3caf66`, a descendant of `aea98b00`), 13:30:52 UTC. The merge itself triggered no deploy: this is the trigger gap fixed in this tranche. |
+| Worker version | `f919bee8-8fa9-4cf5-9eb4-6f9dc6d6b39b` |
+| Rollback version | `5db520de-214b-4bea-9a65-3bed1237e312` |
+| Source/deploy alignment | Deployed script read back from the Cloudflare API: contains `foreign_platform_webhook_ignored`, `CYBERDUDEBIVASH_INTEL_FACTORY` and `PERMANENT_PREMIUM_CODES`; the old `recoveredFrom` is gone. |
+
+| Live check | Result |
+|---|---|
+| Webhook unsigned / forged signature / GET | 400 / 400 / 405 (no side effect) |
+| Plan order / manual UPI | 410 / 410 |
+| Premium catalog | 4 |
+| Download without a key / invalid key / direct R2 path | 401 / 401 / 404 |
+| Signed premium, foreign and unknown events | **BLOCKED** in production (needs the webhook secret, i.e. the Razorpay Dashboard webhook). Proven by `premium-webhook-integrity.test.js` with real HMAC and SQL. |
+
+### This tranche (repository)
+
+- **Deploy triggers:**
+  - the push filter now covers every production runtime input (305), derived from the esbuild Worker graph plus the build allowlist (`scripts/deploy-trigger-inputs.js`);
+  - enforced by `tests-js/deploy-triggers.test.js`, 5/5 negative controls detected;
+  - docs-only changes do not deploy.
+- **Provenance:** `wrangler deploy --tag git-<sha> --message "commit … run …"` plus a step summary.
+- **Premium reissue v2:** four customer-facing editions rebuilt from the same evidence.
+  - 23/23 gate ×4;
+  - 0 internal terms;
+  - hashes pinned;
+  - publisher sequence: publish, confirm, retire v1.
+  - **Pending human review**; v1 is still on sale.
+- **Previews:** `premium-previews.json` plus the store's "What's inside" (no paid content).
+- **Purchase-path tests:** browser closes after paying, callback before the webhook, webhook before the callback, cross-account claim; 26 webhook-integrity tests total.
+
 ## Tranche 4 (2026-10-01): plan cutover live + premium-report payment integrity
 
 ### #317 in production: **PASS**
