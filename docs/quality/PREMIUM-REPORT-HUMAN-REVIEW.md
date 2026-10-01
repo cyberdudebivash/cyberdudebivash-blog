@@ -4,6 +4,8 @@ A premium report is sellable only after a **named human** approves the exact art
 
 > **Status 2026-10-01 (second review): all four v2 artifacts FAIL editorial review. Do not sign an approval for these bytes.** See "Review record 2026-10-01" below. The publisher now also enforces an editorial gate (`scripts/premium-editorial-gate.js`), so it refuses these artifacts even with an approval.
 
+> **Ray v3.0 (refreshed edition) is READY FOR HUMAN REVIEW** — see "Ray v3.0 review" at the end. It passes every automated gate; it still needs a named human approval before it can be published.
+
 ## What changed from v1 (identical evidence, customer-facing presentation)
 
 `reportx-canary/premium_reissue_v2.py` rebuilds each report from its original module. The evidence graph, claims, sources, metrics, detection logic and hypotheses are all unchanged; nothing was re-researched or invented. It then applies one explicit rewrite table:
@@ -128,3 +130,62 @@ python3 cli.py reportx-review request-changes ../../reportx-canary/exports/v2/se
 ```
 
 A `REQUEST_CHANGES` or `REJECT` record is refused by the certifier (`REVIEW_NOT_APPROVED`), so writing one can never publish anything.
+
+## Ray v3.0 review (refreshed edition, evidence cut-off 2026-10-01)
+
+**Artifact:** `reportx-canary/exports/v3/sentinel-apex-vuln-cve-2025-62593-ray-v3-export.json`
+- `bundle.rendered_text`: 43,661 bytes, about 5,980 words.
+- Reviewer pack: `…-REVIEWER-PACK.md`, diffed against v1.
+- Built by `reportx-canary/cve_2025_62593_ray_v3.py`; export with `premium_ray_v3.py`.
+
+| report_id | artifact SHA-256 to approve |
+|---|---|
+| `sentinel-apex-vuln-cve-2025-62593-ray-v3` | `036b02d8688d398c2195e7d18e00764e8da10ac34a39304e37a501c4764dd362` |
+
+### What was re-researched (not re-rendered)
+
+| v2 defect | v3 resolution | Primary source (archived 2026-10-01) |
+|---|---|---|
+| EPSS 0.369% "notably low" | EPSS trajectory: 0.00369 (08-17), 0.01015 (08-18), 0.16888 (08-24), 0.27290 (09-24), **0.62459 / p99.17 (09-25 to 10-01)**; no cause is attributed | FIRST EPSS API, 5 raw responses |
+| SSVC automatable=no | **automatable=yes** (NVD revision 2026-08-18) | NVD JSON |
+| KEV forensic triage omitted | forensicTriage: Yes, plus BOD 26-04 forensic triage steps (collect before patching) | KEV extraction (catalog 2026.09.30); CISA guidance (excerpt fingerprint, HTTP 403) |
+| Sigma rule excluded 127.0.0.1 | Rule 1 keys on what the fix rejects (browser User-Agent or any `Sec-Fetch-*` header). Rule 2 (DRAFT) flags a non-local `Host` (DNS rebinding). Rule 3 flags ShadowRay out-of-band reconnaissance on Ray nodes. All three parse in pySigma 1.5.1, with UUID ids. | Ray commit 70e7c72; WHATWG Fetch (`Sec-` and `Host` are forbidden headers); Oligo |
+| "Ray typically runs on a workstation" (unsourced) | Default bind `127.0.0.1:8265` is from source; a second path covers `--dashboard-host 0.0.0.0` dashboards | Ray 2.52.0 `ray_constants.py` |
+| Indicators deferred to Bitsight | 36 RondoDox addresses, the RondoDox User-Agent, and 20 ShadowRay 2.0 indicators. Each is defanged and dated, with blocking confidence. | Bitsight (2026-03-11), Oligo (2025-11-18) |
+| T1190 for the browser path | T1189 for the browser path; T1190 for exposed dashboards (MITRE C0045); post-exploitation techniques from C0045 | MITRE ATT&CK |
+| Two thin recommendations | Six prioritised actions, including `RAY_AUTH_MODE=token` (disabled by default) and credential rotation | Ray 2.52.0 source; Oligo |
+| Internal terms and dangling references | None (editorial gate: 0 findings) | — |
+
+### Automated pre-checks (all PASS)
+
+- 23-control gate: **23/23**, as of 2026-10-01.
+- Editorial gate: 0 internal terms; Sigma fields valid for their log source; evidence age 0 days.
+- pySigma 1.5.1: rule and condition parse for all three rules (the negative control with an undefined selection is rejected).
+- Deterministic rebuild from the archived raw sources: `tests/reportx_canary/test_ray_v3_edition.py` (fails if any archived byte changes).
+- Publisher, tested with a temp-file approval: `detail → publish-certified → detail → set-status RETIRED (cve-2025-62593-ray-canary)`.
+
+### For the reviewer to judge (not automatable)
+
+- **Key judgement 5.** "Patching alone does not secure a network-reachable dashboard." It rests on the fix diff, which only denies browser requests, and on `RAY_AUTH_MODE` being opt-in. Confirm you accept this as an analyst assessment.
+- **Rule 1** uses `cs-sec-fetch-*` field names, which depend on the log pipeline. The report says so; confirm the wording is clear enough for a buyer.
+- **The indicators are 7–16 months old.** They are marked LOW confidence for blocking and recommended for retrospective hunting only.
+- **The 30-day release window ends 2026-10-31** (`max_evidence_age_days`). After that the publisher refuses this artifact, and EPSS/KEV must be refreshed.
+
+### Approve (human step)
+
+From `Sentinel-APEX/engine`:
+
+```bash
+python3 cli.py reportx-review approve ../../reportx-canary/exports/v3/sentinel-apex-vuln-cve-2025-62593-ray-v3-export.json \
+  --reviewer "<Full Name>" --role "LEAD ANALYST" \
+  --out ../../reportx-canary/exports/v3/sentinel-apex-vuln-cve-2025-62593-ray-v3-REVIEW-RECORD.json
+```
+
+Then, from the repository root:
+
+```bash
+node scripts/publish-premium-reports.js --only PIR-VULN-CVE-2025-62593-RAY             # dry run: CERTIFIED
+PREMIUM_ANALYST_KEY=<analyst key> node scripts/publish-premium-reports.js --only PIR-VULN-CVE-2025-62593-RAY --publish
+```
+
+The publisher stores the v3 artifact in R2 and verifies it, writes the catalog row, and confirms the live SHA-256. Only then does it retire v1 Ray. Existing v1 buyers keep their entitlement.

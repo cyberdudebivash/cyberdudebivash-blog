@@ -1,6 +1,6 @@
 # Premium Report Reissue Certification (v2, 2026-10-01)
 
-**Status: v2 REVIEWED — 0/4 APPROVED. Nothing published; v1 unchanged.**
+**Status: v2 REVIEWED — 0/4 APPROVED. Ray v3.0 READY FOR HUMAN REVIEW. Nothing published; v1 unchanged.**
 
 ## Release certification (human editorial review, 2026-10-01)
 
@@ -13,7 +13,13 @@
 
 Hashes verified: local candidate = manifest pin for all four. R2/D1/customer hashes do not apply, since nothing was uploaded and nothing was activated.
 
-**Result: 4/4 reviewed, 0/4 approved, 0/4 published.** No R2 write, no catalog change; v1 stays active (fail-closed per the reissue rule).
+**Ray v3.0 (refreshed edition, added later on 2026-10-01).** It replaces the failed Ray v2 in the manifest; v2 is now `history` with status `WITHDRAWN_FAILED_REVIEW`.
+
+| SKU | New title | Version | Review | Evidence | Editorial | Commercial | Artifact SHA-256 | Size | R2 object key | Publication state |
+|---|---|---:|---|---|---|---|---|---:|---|---|
+| PIR-VULN-CVE-2025-62593-RAY | Sentinel APEX Vulnerability Intelligence Assessment — CVE-2025-62593 (Ray) | 3.0 | **PENDING** (all automated gates PASS) | PASS (re-retrieved 2026-10-01) | PASS (editorial gate 0 findings) | PASS vs the free page | `036b02d8688d398c2195e7d18e00764e8da10ac34a39304e37a501c4764dd362` | 43,661 B | `premium-reports/sentinel-apex-vuln-cve-2025-62593-ray-v3/036b02d8….md` (not uploaded) | **READY FOR HUMAN REVIEW**; v1 on sale |
+
+**Result: 4/4 v2 reviewed, 0/4 approved, 0/4 published. Ray v3: ready for review.** No R2 write, no catalog change; v1 stays active (fail-closed per the reissue rule).
 
 Detailed findings are in `docs/quality/PREMIUM-REPORT-HUMAN-REVIEW.md` → "Review record 2026-10-01". The commercial test is in `docs/audits/PREMIUM-REPORT-COMMERCIAL-CERTIFICATION.md`.
 

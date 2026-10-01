@@ -13,8 +13,9 @@
  *   DETECTION_FIELD_LOGSOURCE_MISMATCH  a Sigma rule keys on a field its
  *                                 logsource category does not carry, so that
  *                                 selection can never match
- *   EVIDENCE_CUTOFF_MISSING / EVIDENCE_STALE  the evidence cut-off is absent,
- *                                 or older than the release window
+ *   EVIDENCE_CUTOFF_MISSING / EVIDENCE_STALE / EVIDENCE_CUTOFF_IN_FUTURE
+ *                                 the evidence cut-off is absent, older than the
+ *                                 release window, or later than today
  *
  * Pure functions, no I/O. Used by scripts/publish-premium-reports.js and the
  * catalog tests; reportx-canary/premium_reissue_v2.py mirrors INTERNAL_COPY.
@@ -103,7 +104,8 @@ function editorialFindings(text, { now = new Date(), maxEvidenceAgeDays = DEFAUL
     const ageDays = Math.floor((now.getTime() - Date.parse(`${cutoff}T00:00:00Z`)) / DAY_MS);
     details.evidence_cutoff = cutoff;
     details.evidence_age_days = ageDays;
-    if (!(ageDays <= maxEvidenceAgeDays)) reasons.push('EVIDENCE_STALE');
+    if (ageDays < 0) reasons.push('EVIDENCE_CUTOFF_IN_FUTURE');
+    else if (!(ageDays <= maxEvidenceAgeDays)) reasons.push('EVIDENCE_STALE');
   }
   return { ok: reasons.length === 0, reasons, details };
 }

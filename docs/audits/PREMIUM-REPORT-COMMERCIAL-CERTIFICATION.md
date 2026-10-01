@@ -1,6 +1,6 @@
 # Premium Report Commercial Certification (2026-10-01)
 
-**Result: 0 of 4 v2 reports are CUSTOMER READY. 4 v1 reports remain on sale and fail the same review.**
+**Result: 0 of 4 v2 reports are CUSTOMER READY. Ray v3.0 passes every automated gate and awaits human review. 4 v1 reports remain on sale and fail the same review.**
 
 A paid report must give a SOC analyst, CTI analyst, detection engineer or CISO materially more than the free sources it is built from. If it is mostly reformatted free content, it is `NOT_FOR_SALE`. The gate is not lowered to keep the catalog at four products.
 
@@ -8,7 +8,7 @@ A paid report must give a SOC analyst, CTI analyst, detection engineer or CISO m
 
 | Report | Free alternative a buyer already has | What the paid report adds | Materially more value? |
 |---|---|---|---|
-| CVE-2025-62593 (Ray) | Blog post `posts/cve-2025-62593-ray-project-ray.html`: one source (KEV), "CVSS 0", generic attack path. NVD and KEV pages. | Reconciles the CNA (9.4) and NVD (8.8) scores; root cause and exploit prerequisites; analysis of the RondoDox pre-disclosure attempt and its payload flaw; hypotheses and gaps | **YES**, but blocked by an outdated core judgement (EPSS) and a rule that misses the documented path. **Refresh, then re-review.** |
+| CVE-2025-62593 (Ray) | Blog post `posts/cve-2025-62593-ray-project-ray.html`: one source (KEV), "CVSS 0", generic attack path. NVD and KEV pages. | Reconciles the CNA (9.4) and NVD (8.8) scores; root cause and exploit prerequisites; analysis of the RondoDox pre-disclosure attempt and its payload flaw; hypotheses and gaps | **YES.** v2 was blocked by an outdated core judgement and a rule that missed the documented path. **v3.0 resolves both and adds what the free sources lack:** an exposure-path analysis showing patching alone leaves reachable dashboards open, three rules built from the vendor fix, 57 dated indicators, and six prioritised actions. Awaiting human review. |
 | DragonForce / Vermont XCenter | Blackpoint Cyber's public 30-page profile; Group-IB blog; ransomware.live victim and group pages (including the infostealer counts) | A condensed synthesis of those sources; the victim claim is one leak-site line | **NO**: condensed public sources. Detection half non-functional. |
 | Qilin / Spoonful of Comfort | MITRE ATT&CK S1242/G1050/G1036; Wikipedia; the aggregator post | A restatement of those pages; a vssadmin rule that public Sigma rule sets already cover | **NO** |
 | MedusaLocker / Bija Industrie | CISA/FBI advisory AA22-181A (free, with full indicator tables) | A summary of a 2022 advisory, **withholding** the indicators the advisory itself publishes | **NO**: less than the free source |
@@ -19,7 +19,7 @@ The three ransomware reports share a structural weakness: a single unconfirmed l
 
 | SKU | Human Review | v2 Published | Payment | Webhook | Download | Refund | Customer Ready |
 |---|---|---|---|---|---|---|---|
-| PIR-VULN-CVE-2025-62593-RAY | FAIL (request changes) | NO | BLOCKED (no controlled purchase) | BLOCKED (Razorpay Dashboard) | PASS in tests; live 401 unauthenticated | BLOCKED | **NO** |
+| PIR-VULN-CVE-2025-62593-RAY (v3.0) | PENDING (automated gates PASS) | NO | BLOCKED (no controlled purchase) | BLOCKED (Razorpay Dashboard) | PASS in tests; live 401 unauthenticated | BLOCKED | **NO** |
 | PIR-RANSOMWARE-DRAGONFORCE-VERMONT-XCENTER | FAIL | NO | BLOCKED | BLOCKED | PASS in tests; live 401 | BLOCKED | **NO** (NOT_FOR_SALE) |
 | PIR-RANSOMWARE-QILIN-SPOONFUL-OF-COMFORT | FAIL | NO | BLOCKED | BLOCKED | PASS in tests; live 401 | BLOCKED | **NO** (NOT_FOR_SALE) |
 | PIR-RANSOMWARE-MEDUSALOCKER-BIJA-INDUSTRIE | FAIL | NO | BLOCKED | BLOCKED | PASS in tests; live 401 | BLOCKED | **NO** (NOT_FOR_SALE) |

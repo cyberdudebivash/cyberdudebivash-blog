@@ -1,5 +1,17 @@
 # Intel Factory — Customer Release Certification
 
+## Tranche 7 (2026-10-01): Ray v3.0 refreshed edition
+
+| Item | Result |
+|---|---|
+| Re-research | 18 sources retrieved and archived on 2026-10-01 (`reportx-canary/raw-sources/*20261001*`, Ray commit and source, Oligo, MITRE C0045/T1189, WHATWG Fetch) |
+| Material changes found | EPSS 0.00369 → 0.62459 (p99.17); CISA SSVC automatable no → yes; KEV forensicTriage: Yes |
+| Detection | 3 Sigma rules (2 SYNTAX_VALIDATED by pySigma 1.5.1, 1 DRAFT) built from fix commit 70e7c72; the loopback-excluding rule is gone |
+| Gates | 23/23; editorial gate 0 findings; deterministic rebuild test; publisher end-to-end test (publish, confirm, retire v1 Ray) |
+| Artifact | `036b02d8688d398c2195e7d18e00764e8da10ac34a39304e37a501c4764dd362`, 43,661 B |
+| State | **READY FOR HUMAN REVIEW.** Not published; the release window closes 2026-10-31 |
+| Cost | No Cloudflare change. Publishing adds about 43.7 KB of report plus about 117 KB of evidence JSON to the existing R2 bucket |
+
 ## Tranche 6 (2026-10-01): premium commercial review, payment certification, main protection
 
 ### #320 in production: **PASS**
