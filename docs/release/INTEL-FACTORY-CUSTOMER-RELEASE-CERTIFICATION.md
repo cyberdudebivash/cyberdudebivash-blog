@@ -20,6 +20,25 @@
 | Download without a key / invalid key / direct R2 path | 401 / 401 / 404 |
 | Signed premium, foreign and unknown events | **BLOCKED** in production (needs the webhook secret, i.e. the Razorpay Dashboard webhook). Proven by `premium-webhook-integrity.test.js` with real HMAC and SQL. |
 
+### #319 in production: **PASS** (first deploy fired by the merge itself)
+
+| Field | Value |
+|---|---|
+| Merge | `c7892d0e25e0470bdb9ec09d2576995fe0dd2cbb` |
+| Deployed by | `cloudflare-production-deploy.yml` run #131 (`36872892127`), **event `push`**, started 2 s after the merge |
+| Worker version | `2036f315-2ffc-4722-b037-150f8be5b5c2`, created 14:00:59 UTC |
+| Provenance (read back from the Cloudflare versions API) | tag `git-c7892d0e25e0`; message `commit c7892d0e25e0470bdb9ec09d2576995fe0dd2cbb run 36872892127/1 event push` |
+| Rollback version | `f919bee8-8fa9-4cf5-9eb4-6f9dc6d6b39b` (#318) |
+| Later deploys | Pipeline dispatches `5a944116…` (`git-f81724309293`) and `d6116f41…` (`git-0ec7ac59dca7`) carry the same provenance, so every version now names its commit |
+
+| Live check | Result |
+|---|---|
+| `/premium-previews.json` | 200; 8 entries (4 v2 + 4 v1) |
+| Store "What's inside" | The served `intelligence-store.html` loads the previews |
+| Webhook unsigned / forged signature | 400 / 400 |
+| Premium catalog | 4 (v1, until human review of v2); `Cache-Control: no-store` |
+| Catalog `artifact_sha256` | **FAIL, fixed in the follow-up PR.** `listSellableReports` never selected the column, so the list response dropped the field (detail used `SELECT *`). Fixed in `premium-commerce-store.js`; regression test added on real SQLite (fails without the fix). |
+
 ### This tranche (repository)
 
 - **Deploy triggers:**

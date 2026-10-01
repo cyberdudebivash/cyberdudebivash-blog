@@ -63,7 +63,7 @@ async function listSellableReports({ reportType = '', limit = 50 } = {}) {
   if (reportType) {
     return d1.query(`
       SELECT report_id, slug, title, report_type, summary, price_minor, currency,
-             artifact_filename, artifact_size_bytes, published_at, updated_at
+             artifact_filename, artifact_size_bytes, artifact_sha256, published_at, updated_at
       FROM premium_report_catalog
       WHERE status='SELLABLE' AND certification_state='PREMIUM_CERTIFIED' AND report_type=?
       ORDER BY published_at DESC
@@ -72,7 +72,7 @@ async function listSellableReports({ reportType = '', limit = 50 } = {}) {
   }
   return d1.query(`
     SELECT report_id, slug, title, report_type, summary, price_minor, currency,
-           artifact_filename, artifact_size_bytes, published_at, updated_at
+           artifact_filename, artifact_size_bytes, artifact_sha256, published_at, updated_at
     FROM premium_report_catalog
     WHERE status='SELLABLE' AND certification_state='PREMIUM_CERTIFIED'
     ORDER BY published_at DESC
