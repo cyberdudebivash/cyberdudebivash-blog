@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "description": "Allowlist of IOC sources for the SENTINEL APEX evidence-only IOC pipeline (api/_lib/ioc-engine). Only sources listed and enabled here can contribute customer-facing indicators. Every source publishes structured indicator records with an explicit indicator field and type; nothing is regex-extracted from prose. See docs/intelligence/IOC-SOURCE-POLICY.md.",
+  "publication_threshold": "MEDIUM",
+  "feed_cap": 600,
+  "sources": [
+    {
+      "id": "threatfox",
+      "name": "abuse.ch ThreatFox",
+      "tier": "B",
+      "enabled": true,
+      "url": "https://threatfox.abuse.ch/export/json/recent/",
+      "format": "threatfox_recent_json",
+      "record_url_template": "https://threatfox.abuse.ch/ioc/{id}/",
+      "license": "CC0 (abuse.ch terms of service)",
+      "terms_url": "https://abuse.ch/terms-of-use/",
+      "timeout_ms": 30000,
+      "max_bytes": 25000000,
+      "per_source_cap": 300,
+      "min_source_confidence": 75
+    },
+    {
+      "id": "urlhaus",
+      "name": "abuse.ch URLhaus",
+      "tier": "B",
+      "enabled": true,
+      "url": "https://urlhaus.abuse.ch/downloads/json_recent/",
+      "format": "urlhaus_recent_json",
+      "record_url_template": "https://urlhaus.abuse.ch/url/{id}/",
+      "license": "CC0 (abuse.ch terms of service)",
+      "terms_url": "https://abuse.ch/terms-of-use/",
+      "timeout_ms": 30000,
+      "max_bytes": 25000000,
+      "per_source_cap": 200,
+      "online_only": true
+    },
+    {
+      "id": "feodotracker",
+      "name": "abuse.ch Feodo Tracker",
+      "tier": "B",
+      "enabled": true,
+      "url": "https://feodotracker.abuse.ch/downloads/ipblocklist.json",
+      "format": "feodo_ipblocklist_json",
+      "record_url_template": "https://feodotracker.abuse.ch/browse/host/{id}/",
+      "license": "CC0 (abuse.ch terms of service)",
+      "terms_url": "https://abuse.ch/terms-of-use/",
+      "timeout_ms": 20000,
+      "max_bytes": 5000000,
+      "per_source_cap": 200
+    },
+    {
+      "id": "malwarebazaar",
+      "name": "abuse.ch MalwareBazaar",
+      "tier": "B",
+      "enabled": true,
+      "url": "https://bazaar.abuse.ch/export/csv/recent/",
+      "format": "malwarebazaar_recent_csv",
+      "record_url_template": "https://bazaar.abuse.ch/sample/{id}/",
+      "license": "CC0 (abuse.ch terms of service)",
+      "terms_url": "https://abuse.ch/terms-of-use/",
+      "timeout_ms": 30000,
+      "max_bytes": 15000000,
+      "per_source_cap": 150,
+      "require_signature": true
+    }
+  ]
+}

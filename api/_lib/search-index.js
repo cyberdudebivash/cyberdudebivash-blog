@@ -160,7 +160,7 @@ function buildIocDoc(node) {
     severity:    null,
     confidence:  typeof a.confidence === 'number' ? a.confidence : (a.confidence || null),
     first_seen:  a.first_seen || null,
-    last_seen:   a.first_seen || null,
+    last_seen:   a.last_seen || a.first_seen || null,
     updated_at:  null,
     tags:        a.ioc_type ? [a.ioc_type] : [],
     techniques:  [],

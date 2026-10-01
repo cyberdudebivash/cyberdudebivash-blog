@@ -342,6 +342,23 @@ function copyDir(src, dest, filter) {
   }
 }
 
+// The public static copy of the threat graph must not carry IOC nodes that
+// lack evidence-engine provenance (legacy regex-derived values such as
+// 169.254.169.254 and vendor domains; ICF-P0-009). Reuses the same serving
+// projection the API applies, with an empty feed: unproven IOC nodes and
+// their edges are removed and no paid feed values are added to a public file.
+function stripUnprovenGraphIocs(outDir) {
+  const file = path.join(outDir, 'api', 'intel', 'threat-graph.json');
+  if (!fs.existsSync(file)) return 0;
+  const { projectGraph } = require('../api/_lib/ioc-engine/feed');
+  const graph = JSON.parse(fs.readFileSync(file, 'utf8'));
+  const before = Object.values(graph.nodes || {}).filter(n => n && n.type === 'IOC').length;
+  const projected = projectGraph(graph, { items: [] });
+  const after = Object.values(projected.nodes || {}).filter(n => n && n.type === 'IOC').length;
+  if (before !== after) fs.writeFileSync(file, JSON.stringify(projected, null, 2) + '\n');
+  return before - after;
+}
+
 function countFiles(dir) {
   let n = 0;
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -369,6 +386,7 @@ function build() {
     copyDir(apiIntelSrc, path.join(OUT, 'api', 'intel'), name => name.endsWith('.json'));
   }
   synthesizeMissingCvePages(OUT);
+  stripUnprovenGraphIocs(OUT);
 
   fs.writeFileSync(path.join(OUT, '_headers'), HEADERS_FILE_CONTENT);
   return OUT;
@@ -379,4 +397,4 @@ if (require.main === module) {
   console.log(`dist-public/ built: ${countFiles(out)} files`);
 }
 
-module.exports = { build, countFiles, PUBLIC_DIRS, PUBLIC_ROOT_FILES, ROOT, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure, hasUndefinedMetadataArtifacts, repairLegacyCveHtml, CX_CSS, CX_JS, LEGACY_COMMERCIAL_COPY, UNSUPPORTED_PUBLIC_CLAIMS, neutralizeLegacyCommercialCopy, findUnsupportedPublicClaims, correctPublicIntelJson, applyLegacyCvssCorrection, synthesizeMissingCvePages, renderCvePageFromJson };
+module.exports = { build, countFiles, PUBLIC_DIRS, PUBLIC_ROOT_FILES, ROOT, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure, hasUndefinedMetadataArtifacts, repairLegacyCveHtml, CX_CSS, CX_JS, LEGACY_COMMERCIAL_COPY, UNSUPPORTED_PUBLIC_CLAIMS, neutralizeLegacyCommercialCopy, findUnsupportedPublicClaims, correctPublicIntelJson, applyLegacyCvssCorrection, synthesizeMissingCvePages, renderCvePageFromJson, stripUnprovenGraphIocs };

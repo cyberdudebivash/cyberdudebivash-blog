@@ -240,7 +240,7 @@
     <div class="endpoint-card">
       <div class="ep-method">GET</div>
       <div class="ep-path">/api/v1/intel/iocs</div>
-      <div class="ep-desc">Structured IOC feed: malicious IPs, domains, URLs, file hashes (MD5/SHA256/SHA1). Extracted and correlated from 12 authoritative sources. Enterprise: STIX 2.1 export.</div>
+      <div class="ep-desc">Structured IOC feed: IPs, domains, URLs and file hashes curated from abuse.ch ThreatFox, URLhaus, Feodo Tracker and MalwareBazaar, each with a source record link, confidence basis and expiry. Team and Enterprise: STIX 2.1 export.</div>
       <div class="ep-tags">
         <span class="ep-tag">IPs</span><span class="ep-tag">Domains</span><span class="ep-tag">Hashes</span>
         <span class="ep-tier pro">⚡ Pro+</span>
@@ -285,7 +285,7 @@
     <div class="endpoint-card">
       <div class="ep-method get" style="background:rgba(167,139,250,0.15);color:#a78bfa;border-color:rgba(167,139,250,0.3);">STIX</div>
       <div class="ep-path">/api/v1/intel/iocs?format=stix</div>
-      <div class="ep-desc">Full IOC export as STIX 2.1 bundle with indicator objects and MITRE ATT&amp;CK pattern syntax. Ready for OpenCTI ingestion.</div>
+      <div class="ep-desc">IOC export as a STIX 2.1 bundle: indicator objects with STIX patterns, stable IDs, TLP marking and source references. Team and Enterprise.</div>
       <div class="ep-tags">
         <span class="ep-tag">STIX 2.1</span>
         <span class="ep-tier ent">🔐 Enterprise</span>
@@ -409,7 +409,7 @@ req = urllib.request.<span class="c-func">Request</span>(
         <li>YARA rules API (all malware families)</li>
         <li>SIEM query bundles (Splunk SPL / Sentinel KQL)</li>
         <li>STIX 2.1 bundle export</li>
-        <li>Bulk IOC export (CSV/JSON)</li>
+        <li>Bulk IOC export (JSON, 200 per page)</li>
         <li>Priority Slack/Discord channel</li>
         <li class="locked">Dedicated analyst support (Enterprise)</li>
       </ul>
@@ -434,7 +434,6 @@ req = urllib.request.<span class="c-func">Request</span>(
         <li>Webhook-based real-time alerts</li>
         <li>White-label intelligence feeds</li>
         <li>Dedicated threat analyst support</li>
-        <li>Custom IOC tagging + reporting</li>
         <li>MSSP multi-tenant access</li>
         <li>On-premise data export (STIX 2.1)</li>
       </ul>
