@@ -343,3 +343,45 @@ describe('checkout unavailable', () => {
     expect(orders()).toHaveLength(0);
   });
 });
+
+describe('purchase-path acceptance', () => {
+  const checkoutSig = (orderId, paymentId) => crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET).update(`${orderId}|${paymentId}`).digest('hex');
+
+  test('browser closes right after paying: the webhook alone grants access, then the buyer can download', async () => {
+    const orderId = await checkout();
+    // No checkout callback ever arrives (tab closed). Razorpay sends its events.
+    expect((await deliver(paymentEvent('payment.captured', captured(orderId)))).statusCode).toBe(200);
+    expect((await deliver(paymentEvent('order.paid', captured(orderId)))).statusCode).toBe(200);
+    expect(ents()).toHaveLength(1);
+    expect(order().state).toBe('ENTITLED');
+    const got = await service.downloadReport({ user: BUYER, reportId: REPORT });
+    expect(got.bytes.byteLength).toBe(ARTIFACT.length);
+  });
+
+  test('callback first, webhook later: one entitlement, the late webhook is a no-op', async () => {
+    const orderId = await checkout();
+    razorpay.fetchPayment.mockResolvedValueOnce(captured(orderId));
+    const v = await service.verifyCheckout({ user: BUYER, razorpayOrderId: orderId, razorpayPaymentId: 'pay_PWI000001', razorpaySignature: checkoutSig(orderId, 'pay_PWI000001') });
+    expect(v).toMatchObject({ state: 'ENTITLED', entitlement: 'ACTIVE' });
+    expect((await deliver(paymentEvent('payment.captured', captured(orderId)))).statusCode).toBe(200);
+    expect(ents()).toHaveLength(1);
+    expect(logged('premium_entitlement_granted')).toHaveLength(1);
+  });
+
+  test('webhook first, buyer returns later: the callback confirms the existing entitlement without a second grant', async () => {
+    const orderId = await checkout();
+    await deliver(paymentEvent('payment.captured', captured(orderId)));
+    razorpay.fetchPayment.mockResolvedValueOnce(captured(orderId));
+    const v = await service.verifyCheckout({ user: BUYER, razorpayOrderId: orderId, razorpayPaymentId: 'pay_PWI000001', razorpaySignature: checkoutSig(orderId, 'pay_PWI000001') });
+    expect(v).toMatchObject({ state: 'ENTITLED', entitlement: 'ACTIVE' });
+    expect(ents()).toHaveLength(1);
+    expect(logged('premium_entitlement_granted')).toHaveLength(1);
+  });
+
+  test('another customer cannot complete or claim someone else\'s order through the callback', async () => {
+    const orderId = await checkout();
+    await expect(service.verifyCheckout({ user: OTHER, razorpayOrderId: orderId, razorpayPaymentId: 'pay_PWI000001', razorpaySignature: checkoutSig(orderId, 'pay_PWI000001') }))
+      .rejects.toMatchObject({ code: 'ORDER_NOT_FOUND' });
+    expect(ents()).toHaveLength(0);
+  });
+});

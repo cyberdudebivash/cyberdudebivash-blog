@@ -1,0 +1,1136 @@
+{
+  "bundle": {
+    "report_id": "sentinel-apex-ransomware-medusalocker-bija-industrie",
+    "is_premium_tier": true,
+    "sources": [
+      {
+        "source_id": "s-ransomwarelive-bija",
+        "url": "https://www.ransomware.live/id/QmlqYSBJbmR1c3RyaWVAbWVkdXNhbG9ja2Vy",
+        "publisher": "ransomware.live (leak-site tracker)",
+        "source_type": "LEAK_SITE_AGGREGATOR",
+        "source_role": "PRIMARY_EVENT_SOURCE",
+        "retrieved_at": "2026-08-17T00:00:00Z",
+        "source_date": "2026-08-16T15:20:00Z",
+        "temporal_precision": "EXACT_TIMESTAMP",
+        "content_sha256": "b37b7e1766140aa30654eaff721ec4b8cab1051bead83ea2f87606a894f64880",
+        "reliability": "MODERATE",
+        "independence_group": "medusalocker-bija-leak-post",
+        "accessibility": "PUBLIC",
+        "notes": "Indexes MedusaLocker's own Tor leak-site post. Country France confirmed via the page's own flags/FR.svg reference. Claim text: 'Organization with 693 emails extracted.' Domain bija-industrie.com. DNS/WHOIS fingerprinting: MX records at mx-mibc-fr-08.mailinblack.com and mx2/mx3.mail.ovh.net, WHOIS abuse contact abuse@ovh.net, SPF v=spf1 include:mx.ovh.com, Mailinblack (email-security SaaS) detected.",
+        "etag": null,
+        "last_modified": null,
+        "excerpt_fingerprint_sha256": null,
+        "fingerprint_fallback_reason": null
+      },
+      {
+        "source_id": "s-bija-own-site",
+        "url": "https://bija-industrie.com",
+        "publisher": "BIJA Industrie (the company's own site)",
+        "source_type": "VICTIM_STATEMENT",
+        "source_role": "CORROBORATION",
+        "retrieved_at": "2026-08-17T00:00:00Z",
+        "source_date": null,
+        "temporal_precision": "UNKNOWN",
+        "content_sha256": "505c5e0e427ad0718f14de91638e2d84ee14189ec2dbd34673651c53cb122628",
+        "reliability": "HIGH",
+        "independence_group": "bija-own-site",
+        "accessibility": "PUBLIC",
+        "notes": "Company's own self-description (French): design, manufacture, and distribution of specialized tools for aerospace and industrial sectors; 20+ years of aerospace experience; serves civil AND military aviation programs; three brands (BIJA Industrie, MMI, MRO Integral Solutions).",
+        "etag": null,
+        "last_modified": null,
+        "excerpt_fingerprint_sha256": null,
+        "fingerprint_fallback_reason": null
+      },
+      {
+        "source_id": "s-ic3-medusalocker-advisory",
+        "url": "https://www.ic3.gov/CSA/2022/220630.pdf",
+        "publisher": "FBI / CISA / Dept. of the Treasury / FinCEN (Joint Cybersecurity Advisory AA22-181A, via the ic3.gov mirror -- cisa.gov itself returned HTTP 403 Access Denied on both the HTML advisory and its own PDF, consistent with the blocking behavior documented elsewhere in this canary set)",
+        "source_type": "PRIMARY_TECHNICAL_ADVISORY",
+        "source_role": "ACTOR_CONTEXT",
+        "retrieved_at": "2026-08-17T00:00:00Z",
+        "source_date": "2022-06-30",
+        "temporal_precision": "DATE_ONLY",
+        "content_sha256": "049a1e4e586e28b8c6619625014fe3aaff946b492a5a780c952ed4ab41df8760",
+        "reliability": "HIGH",
+        "independence_group": "medusalocker-cisa-ic3-advisory-aa22-181a",
+        "accessibility": "PUBLIC",
+        "notes": "Product ID AA22-181A, 'StopRansomware: MedusaLocker', TLP:WHITE, 11 pages. Primary government joint advisory: initial access via RDP (T1133, 'most often') and phishing/spam (T1566, 'frequently'); PowerShell invoke-ReflectivePEInjection execution (T1059.001); safe-mode reboot for defense evasion (T1562.009); AES-256/RSA-2048 encryption (T1486); svhost.exe/svhostt.exe persistence via a 15-minute scheduled task; shadow-copy/backup deletion (T1490); 55-60% affiliate / remainder-developer RaaS split; historical (2019-2022 vintage, advisory's own words: 'several years old') generic IOCs; a named mitigations list.",
+        "etag": null,
+        "last_modified": null,
+        "excerpt_fingerprint_sha256": null,
+        "fingerprint_fallback_reason": null
+      },
+      {
+        "source_id": "s-ransomwarelive-medusalocker-group",
+        "url": "https://www.ransomware.live/group/medusalocker",
+        "publisher": "ransomware.live (leak-site tracker, group aggregate page)",
+        "source_type": "LEAK_SITE_AGGREGATOR",
+        "source_role": "STATISTICAL_SOURCE",
+        "retrieved_at": "2026-08-17T00:00:00Z",
+        "source_date": "2026-08-17",
+        "temporal_precision": "DATE_ONLY",
+        "content_sha256": "4f5340469772b14920a045a4cec08855d2704b81d15bb5c4b294dc080b485ac2",
+        "reliability": "MODERATE",
+        "independence_group": "medusalocker-bija-leak-post",
+        "accessibility": "PUBLIC",
+        "notes": "The tracker's own current (2026-08-17) aggregate stats for MedusaLocker: 83 total tracked victims, first tracked victim's est. attack date 2021-11-03, 19 countries hit, average 83.1-day delay between est. attack date and leak-site claim, 37.0% of tracked victims show a domain overlap with infostealer-malware logs, last-seen 2026-08-16 (Bija Industrie is the group's own most recently tracked victim at retrieval time). Same aggregator/tool as the Bija-specific claim, hence the SAME independence_group -- not treated as a second independent source for the leak-site claim itself, only as the tracker's own dataset stats.",
+        "etag": null,
+        "last_modified": null,
+        "excerpt_fingerprint_sha256": null,
+        "fingerprint_fallback_reason": null
+      },
+      {
+        "source_id": "s-cybersecuritydive-medusalocker",
+        "url": "https://www.cybersecuritydive.com/news/fbi-cisa-medusalocker-ransomware/626483/",
+        "publisher": "Cybersecurity Dive",
+        "source_type": "JOURNALISM",
+        "source_role": "ACTOR_CONTEXT",
+        "retrieved_at": "2026-08-17T00:00:00Z",
+        "source_date": "2022-07-01",
+        "temporal_precision": "DATE_ONLY",
+        "content_sha256": "d9ca6aa5f4c80f3c912a53b22aa4c1f31999a6c1f3558c71b34b40f03a937edc",
+        "reliability": "MODERATE",
+        "independence_group": "cybersecuritydive-medusalocker-2022",
+        "accessibility": "PUBLIC",
+        "notes": "Independent secondary journalism on the SAME AA22-181A advisory (different publisher, different independence_group than the IC3 mirror -- genuine cross-source corroboration for the RaaS split fact). Also states, citing a Cybereason report not independently verified this session: MedusaLocker 'first emerged in late 2019 ... targeting companies across industries'; and in its own words: 'The group was particularly active in the healthcare space, where many organizations were attacked in connection to the COVID-19 pandemic.'",
+        "etag": null,
+        "last_modified": null,
+        "excerpt_fingerprint_sha256": null,
+        "fingerprint_fallback_reason": null
+      }
+    ],
+    "evidence": [
+      {
+        "evidence_id": "e-claim-post-bija",
+        "source_id": "s-ransomwarelive-bija",
+        "excerpt": "Bija Industrie bija-industrie.com Group Medusalocker Discovered 2026-08-16 15:20 UTC Est. attack date 2026-08-16 ... Description: Organization with 693 emails extracted. Domain: bija-industrie.com.",
+        "locator": ""
+      },
+      {
+        "evidence_id": "e-infra-fingerprint-bija",
+        "source_id": "s-ransomwarelive-bija",
+        "excerpt": "WHOIS Emails abuse@ovh.net. MX Records mx-mibc-fr-08.mailinblack.com. mx2.mail.ovh.net. mx3.mail.ovh.net. TXT Records v=spf1 include:mx.ovh.com ~all. Cloud / SaaS Services Detected: Mailinblack. Country flag reference: flags/FR.svg.",
+        "locator": ""
+      },
+      {
+        "evidence_id": "e-bija-self-description",
+        "source_id": "s-bija-own-site",
+        "excerpt": "'conception, la fabrication et la distribution d'outils et d'outillages specifiques pour les secteurs aeronautiques et industriels' (design, manufacturing, and distribution of specialized tools for aerospace and industrial sectors); 20+ years of aerospace experience; serves civil and military aviation programs; three brands (BIJA Industrie, MMI, MRO Integral Solutions).",
+        "locator": ""
+      },
+      {
+        "evidence_id": "e-medusalocker-initial-access",
+        "source_id": "s-ic3-medusalocker-advisory",
+        "excerpt": "MedusaLocker ransomware actors most often gain access to victim devices through vulnerable Remote Desktop Protocol (RDP) configurations [T1133]. Actors also frequently use email phishing and spam email campaigns -- directly attaching the ransomware to the email -- as initial intrusion vectors [T1566].",
+        "locator": ""
+      },
+      {
+        "evidence_id": "e-medusalocker-execution-propagation",
+        "source_id": "s-ic3-medusalocker-advisory",
+        "excerpt": "MedusaLocker ransomware uses a batch file to execute PowerShell script invoke-ReflectivePEInjection [T1059.001]. This script propagates MedusaLocker throughout the network by editing the EnableLinkedConnections value within the infected machine's registry, which then allows the infected machine to detect attached hosts and networks via ICMP and to detect shared storage via SMB Protocol.",
+        "locator": ""
+      },
+      {
+        "evidence_id": "e-medusalocker-defense-evasion",
+        "source_id": "s-ic3-medusalocker-advisory",
+        "excerpt": "Restarts the LanmanWorkstation service, which allows registry edits to take effect. Kills the processes of well-known security, accounting, and forensic software. Restarts the machine in safe mode to avoid detection by security software [T1562.009].",
+        "locator": ""
+      },
+      {
+        "evidence_id": "e-medusalocker-encryption-impact",
+        "source_id": "s-ic3-medusalocker-advisory",
+        "excerpt": "Encrypts victim files with the AES-256 encryption algorithm; the resulting key is then encrypted with an RSA-2048 public key [T1486]. Runs every 60 seconds, encrypting all files except those critical to the functionality of the victim's machine and those that have the designated encrypted file extension.",
+        "locator": ""
+      },
+      {
+        "evidence_id": "e-medusalocker-persistence",
+        "source_id": "s-ic3-medusalocker-advisory",
+        "excerpt": "Establishes persistence by copying an executable (svhost.exe or svhostt.exe) to the %APPDATA%\\Roaming directory and scheduling a task to run the ransomware every 15 minutes.",
+        "locator": ""
+      },
+      {
+        "evidence_id": "e-medusalocker-recovery-inhibition",
+        "source_id": "s-ic3-medusalocker-advisory",
+        "excerpt": "Attempts to prevent standard recovery techniques by deleting local backups, disabling startup recovery options, and deleting shadow copies [T1490].",
+        "locator": ""
+      },
+      {
+        "evidence_id": "e-medusalocker-raas-split-ic3",
+        "source_id": "s-ic3-medusalocker-advisory",
+        "excerpt": "MedusaLocker appears to operate as a Ransomware-as-a-Service (RaaS) model based on the observed split of ransom payments ... consistently split between the affiliate, who receives 55 to 60 percent of the ransom, and the developer, who receives the remainder.",
+        "locator": ""
+      },
+      {
+        "evidence_id": "e-medusalocker-raas-split-csd",
+        "source_id": "s-cybersecuritydive-medusalocker",
+        "excerpt": "MedusaLocker operates under the ransomware as a service model, splitting payments with affiliates who typically get 55% to 60% of the proceeds.",
+        "locator": ""
+      },
+      {
+        "evidence_id": "e-medusalocker-origin-csd",
+        "source_id": "s-cybersecuritydive-medusalocker",
+        "excerpt": "A report from Cybereason said the MedusaLocker first emerged in late 2019, targeting companies across industries.",
+        "locator": ""
+      },
+      {
+        "evidence_id": "e-medusalocker-healthcare-covid-csd",
+        "source_id": "s-cybersecuritydive-medusalocker",
+        "excerpt": "The group was particularly active in the healthcare space, where many organizations were attacked in connection to the COVID-19 pandemic.",
+        "locator": ""
+      },
+      {
+        "evidence_id": "e-medusalocker-historical-iocs",
+        "source_id": "s-ic3-medusalocker-advisory",
+        "excerpt": "Disclaimer: Many of these observed IP addresses are several years old and have been historically linked to MedusaLocker ransomware. We recommend these IP addresses be investigated or vetted by organizations prior to taking action, such as blocking. Ransom note file names observed include how_to_recover_data.html, instructions.html, READINSTRUCTION.html, and recovery_instructions.html, placed into every folder containing an encrypted file.",
+        "locator": ""
+      },
+      {
+        "evidence_id": "e-medusalocker-mitigations",
+        "source_id": "s-ic3-medusalocker-advisory",
+        "excerpt": "Implement a recovery plan that maintains and retains multiple copies of sensitive or proprietary data ... in a physically separate, segmented, and secure location. Implement network segmentation and maintain offline backups of data. Install, regularly update, and enable real-time detection for antivirus software on all hosts. Install updates for operating systems, software, and firmware as soon as possible. Audit user accounts with administrative privileges and configure access controls according to the principle of least privilege.",
+        "locator": ""
+      },
+      {
+        "evidence_id": "e-medusalocker-current-scale",
+        "source_id": "s-ransomwarelive-medusalocker-group",
+        "excerpt": "Victims 83. First Victim (est. attack date) 2021-11-03. Discovery Date 2022-11-15. Last Seen 2026-08-16. Avg Delay 83.1 days. Infostealer 37.0% victims with domain. Countries 19 hit.",
+        "locator": ""
+      }
+    ],
+    "claims": [
+      {
+        "claim_id": "c-leak-site-claim-bija",
+        "claim_type": "VICTIM_IDENTITY",
+        "text": "A group calling itself MedusaLocker listed 'Bija Industrie' (bija-industrie.com), a France-based organization, on its extortion leak site on 2026-08-16 (15:20 UTC), claiming 693 emails were extracted.",
+        "scope": "",
+        "status": "REPORTED",
+        "confidence": "MEDIUM",
+        "evidence_refs": [
+          "e-claim-post-bija"
+        ],
+        "source_refs": [
+          "s-ransomwarelive-bija"
+        ],
+        "corroboration_state": "SINGLE_SOURCE",
+        "source_independence": false,
+        "observed_vs_context": "OBSERVED",
+        "temporal_scope": null,
+        "applicability": "",
+        "contradictions": [],
+        "analyst_notes": "Single-source leak-site claim per Section 10 policy -- establishes the claim was made, not that 693 emails (or any data) were actually extracted. Country France is independently corroborated by the WHOIS/MX DNS fingerprint (OVH, a French host) and by Bija's own site, not asserted from the leak claim alone."
+      },
+      {
+        "claim_id": "c-victim-business-description-bija",
+        "claim_type": "VICTIM_IDENTITY",
+        "text": "Bija Industrie is a French manufacturer of specialized tooling for the aerospace and industrial sectors, with 20+ years of aerospace experience serving both civil and military aviation programs across three brands, per its own site.",
+        "scope": "",
+        "status": "REPORTED",
+        "confidence": "HIGH",
+        "evidence_refs": [
+          "e-bija-self-description"
+        ],
+        "source_refs": [
+          "s-bija-own-site"
+        ],
+        "corroboration_state": "SINGLE_SOURCE",
+        "source_independence": false,
+        "observed_vs_context": "OBSERVED",
+        "temporal_scope": null,
+        "applicability": "",
+        "contradictions": [],
+        "analyst_notes": "REPORTED rather than CONFIRMED: VICTIM_IDENTITY is a high-impact claim type (Section 10), and this rests on a single source -- the entity's own site is credible (HIGH confidence retained) but has not been independently corroborated by a second source, so it stays capped at REPORTED regardless of how directly it states the fact. Recorded for defense-industrial-base context only -- no claim in this report asserts that military-program-specific or any other specific data was actually exfiltrated; the leak-site claim itself states only an email count."
+      },
+      {
+        "claim_id": "c-compromise-occurred-bija",
+        "claim_type": "DATA_THEFT",
+        "text": "Whether an actual compromise or data theft occurred at Bija Industrie.",
+        "scope": "",
+        "status": "UNKNOWN",
+        "confidence": "LOW",
+        "evidence_refs": [],
+        "source_refs": [],
+        "corroboration_state": "UNCORROBORATED",
+        "source_independence": false,
+        "observed_vs_context": "OBSERVED",
+        "temporal_scope": null,
+        "applicability": "",
+        "contradictions": [],
+        "analyst_notes": "No independent confirmation, victim statement, regulator filing, or data sample was located in any of the five sources reviewed this session -- including for the aerospace/military-adjacent context noted above. Represented as UNKNOWN, not guessed."
+      },
+      {
+        "claim_id": "c-infra-fingerprint-bija",
+        "claim_type": "TTP_OBSERVED",
+        "text": "Passive DNS/WHOIS fingerprinting shows Bija Industrie's mail infrastructure resolves through Mailinblack (email-security SaaS) and OVH (French hosting provider), with a standard SPF record and a WHOIS abuse contact at OVH.",
+        "scope": "",
+        "status": "REPORTED",
+        "confidence": "MEDIUM",
+        "evidence_refs": [
+          "e-infra-fingerprint-bija"
+        ],
+        "source_refs": [
+          "s-ransomwarelive-bija"
+        ],
+        "corroboration_state": "SINGLE_SOURCE",
+        "source_independence": false,
+        "observed_vs_context": "OBSERVED",
+        "temporal_scope": null,
+        "applicability": "",
+        "contradictions": [],
+        "analyst_notes": "Infrastructure fingerprinting only -- not evidence of the incident's initial-access vector."
+      },
+      {
+        "claim_id": "c-victim-ack-bija",
+        "claim_type": "VICTIM_IDENTITY",
+        "text": "Victim acknowledgement of the incident.",
+        "scope": "",
+        "status": "NOT_ASSESSED",
+        "confidence": "LOW",
+        "evidence_refs": [
+          "e-claim-post-bija"
+        ],
+        "source_refs": [
+          "s-ransomwarelive-bija"
+        ],
+        "corroboration_state": "SINGLE_SOURCE",
+        "source_independence": false,
+        "observed_vs_context": "OBSERVED",
+        "temporal_scope": null,
+        "applicability": "",
+        "contradictions": [],
+        "analyst_notes": ""
+      },
+      {
+        "claim_id": "c-medusalocker-origin",
+        "claim_type": "TTP_HISTORICAL",
+        "text": "Per a Cybereason report cited by Cybersecurity Dive, MedusaLocker first emerged in late 2019, targeting companies across industries.",
+        "scope": "",
+        "status": "REPORTED",
+        "confidence": "MEDIUM",
+        "evidence_refs": [
+          "e-medusalocker-origin-csd"
+        ],
+        "source_refs": [
+          "s-cybersecuritydive-medusalocker"
+        ],
+        "corroboration_state": "SINGLE_SOURCE",
+        "source_independence": false,
+        "observed_vs_context": "CONTEXT",
+        "temporal_scope": null,
+        "applicability": "",
+        "contradictions": [],
+        "analyst_notes": "REPORTED rather than CONFIRMED: rests on Cybersecurity Dive's own citation of a third-party Cybereason report this session did not independently fetch -- consistent with this fixture set's established practice for citation chains (cf. Moonstone Sleet in the Qilin canary)."
+      },
+      {
+        "claim_id": "c-medusalocker-healthcare-covid",
+        "claim_type": "TTP_HISTORICAL",
+        "text": "Cybersecurity Dive reports that MedusaLocker 'was particularly active in the healthcare space, where many organizations were attacked in connection to the COVID-19 pandemic.'",
+        "scope": "",
+        "status": "REPORTED",
+        "confidence": "MEDIUM",
+        "evidence_refs": [
+          "e-medusalocker-healthcare-covid-csd"
+        ],
+        "source_refs": [
+          "s-cybersecuritydive-medusalocker"
+        ],
+        "corroboration_state": "SINGLE_SOURCE",
+        "source_independence": false,
+        "observed_vs_context": "CONTEXT",
+        "temporal_scope": null,
+        "applicability": "",
+        "contradictions": [],
+        "analyst_notes": ""
+      },
+      {
+        "claim_id": "c-medusalocker-initial-access",
+        "claim_type": "TTP_HISTORICAL",
+        "text": "Per the CISA/FBI/Treasury/FinCEN joint advisory (AA22-181A), MedusaLocker actors most often gain initial access through vulnerable RDP configurations (T1133), and frequently also use email phishing and spam campaigns that directly attach the ransomware (T1566).",
+        "scope": "",
+        "status": "CONFIRMED",
+        "confidence": "HIGH",
+        "evidence_refs": [
+          "e-medusalocker-initial-access"
+        ],
+        "source_refs": [
+          "s-ic3-medusalocker-advisory"
+        ],
+        "corroboration_state": "SINGLE_SOURCE",
+        "source_independence": false,
+        "observed_vs_context": "CONTEXT",
+        "temporal_scope": null,
+        "applicability": "",
+        "contradictions": [],
+        "analyst_notes": "Primary government advisory, directly quoted -- treated as CONFIRMED/HIGH consistent with this fixture set's established practice for official primary technical-advisory sources."
+      },
+      {
+        "claim_id": "c-medusalocker-execution-propagation",
+        "claim_type": "TTP_HISTORICAL",
+        "text": "MedusaLocker's documented execution and lateral-propagation mechanism (T1059.001) uses a batch file to run a PowerShell invoke-ReflectivePEInjection script, which edits the infected machine's EnableLinkedConnections registry value to enable host/network detection via ICMP and shared-storage detection via SMB.",
+        "scope": "",
+        "status": "CONFIRMED",
+        "confidence": "HIGH",
+        "evidence_refs": [
+          "e-medusalocker-execution-propagation"
+        ],
+        "source_refs": [
+          "s-ic3-medusalocker-advisory"
+        ],
+        "corroboration_state": "SINGLE_SOURCE",
+        "source_independence": false,
+        "observed_vs_context": "CONTEXT",
+        "temporal_scope": null,
+        "applicability": "",
+        "contradictions": [],
+        "analyst_notes": ""
+      },
+      {
+        "claim_id": "c-medusalocker-defense-evasion",
+        "claim_type": "TTP_HISTORICAL",
+        "text": "MedusaLocker's documented defense-evasion behavior (T1562.009) includes restarting the LanmanWorkstation service, killing known security/accounting/forensic-software processes, and restarting the infected machine in Windows Safe Mode to avoid endpoint defenses.",
+        "scope": "",
+        "status": "CONFIRMED",
+        "confidence": "HIGH",
+        "evidence_refs": [
+          "e-medusalocker-defense-evasion"
+        ],
+        "source_refs": [
+          "s-ic3-medusalocker-advisory"
+        ],
+        "corroboration_state": "SINGLE_SOURCE",
+        "source_independence": false,
+        "observed_vs_context": "CONTEXT",
+        "temporal_scope": null,
+        "applicability": "",
+        "contradictions": [],
+        "analyst_notes": ""
+      },
+      {
+        "claim_id": "c-medusalocker-encryption-impact",
+        "claim_type": "TTP_HISTORICAL",
+        "text": "MedusaLocker's documented impact-stage capability (T1486) encrypts victim files with AES-256, protects the resulting key with RSA-2048, and re-runs every 60 seconds to catch files excluded from the first pass.",
+        "scope": "",
+        "status": "CONFIRMED",
+        "confidence": "HIGH",
+        "evidence_refs": [
+          "e-medusalocker-encryption-impact"
+        ],
+        "source_refs": [
+          "s-ic3-medusalocker-advisory"
+        ],
+        "corroboration_state": "SINGLE_SOURCE",
+        "source_independence": false,
+        "observed_vs_context": "CONTEXT",
+        "temporal_scope": null,
+        "applicability": "",
+        "contradictions": [],
+        "analyst_notes": ""
+      },
+      {
+        "claim_id": "c-medusalocker-persistence",
+        "claim_type": "TTP_HISTORICAL",
+        "text": "MedusaLocker establishes persistence by copying an executable named svhost.exe or svhostt.exe into %APPDATA%\\Roaming and scheduling a task to re-run it every 15 minutes.",
+        "scope": "",
+        "status": "CONFIRMED",
+        "confidence": "HIGH",
+        "evidence_refs": [
+          "e-medusalocker-persistence"
+        ],
+        "source_refs": [
+          "s-ic3-medusalocker-advisory"
+        ],
+        "corroboration_state": "SINGLE_SOURCE",
+        "source_independence": false,
+        "observed_vs_context": "CONTEXT",
+        "temporal_scope": null,
+        "applicability": "",
+        "contradictions": [],
+        "analyst_notes": ""
+      },
+      {
+        "claim_id": "c-medusalocker-recovery-inhibition",
+        "claim_type": "TTP_HISTORICAL",
+        "text": "MedusaLocker's documented recovery-inhibition behavior (T1490) deletes local backups, disables startup recovery options, and deletes volume shadow copies.",
+        "scope": "",
+        "status": "CONFIRMED",
+        "confidence": "HIGH",
+        "evidence_refs": [
+          "e-medusalocker-recovery-inhibition"
+        ],
+        "source_refs": [
+          "s-ic3-medusalocker-advisory"
+        ],
+        "corroboration_state": "SINGLE_SOURCE",
+        "source_independence": false,
+        "observed_vs_context": "CONTEXT",
+        "temporal_scope": null,
+        "applicability": "",
+        "contradictions": [],
+        "analyst_notes": ""
+      },
+      {
+        "claim_id": "c-medusalocker-raas-split",
+        "claim_type": "TTP_HISTORICAL",
+        "text": "MedusaLocker operates a Ransomware-as-a-Service model in which affiliates typically receive 55-60% of the ransom, with the remainder retained by the developer -- independently reported by both the primary CISA/FBI/Treasury/FinCEN advisory and Cybersecurity Dive's own independent reporting on it.",
+        "scope": "",
+        "status": "CONFIRMED",
+        "confidence": "HIGH",
+        "evidence_refs": [
+          "e-medusalocker-raas-split-ic3",
+          "e-medusalocker-raas-split-csd"
+        ],
+        "source_refs": [
+          "s-ic3-medusalocker-advisory",
+          "s-cybersecuritydive-medusalocker"
+        ],
+        "corroboration_state": "MULTI_SOURCE_INDEPENDENT",
+        "source_independence": true,
+        "observed_vs_context": "CONTEXT",
+        "temporal_scope": null,
+        "applicability": "",
+        "contradictions": [],
+        "analyst_notes": "MULTI_SOURCE_INDEPENDENT: two publishers in two different independence groups state the same figure -- the strongest-corroborated actor-context claim in this report."
+      },
+      {
+        "claim_id": "c-medusalocker-historical-iocs",
+        "claim_type": "TTP_HISTORICAL",
+        "text": "The CISA/FBI/Treasury/FinCEN advisory publishes historical (2019-2022 vintage, explicitly labeled by the advisory itself as 'several years old') generic indicators for MedusaLocker, including encrypted-file extensions, ransom-note filenames such as how_to_recover_data.html and READINSTRUCTION.html, Bitcoin wallets, email addresses, and Tor addresses -- with an explicit caution to vet historical IP indicators before acting on them.",
+        "scope": "",
+        "status": "CONFIRMED",
+        "confidence": "HIGH",
+        "evidence_refs": [
+          "e-medusalocker-historical-iocs"
+        ],
+        "source_refs": [
+          "s-ic3-medusalocker-advisory"
+        ],
+        "corroboration_state": "SINGLE_SOURCE",
+        "source_independence": false,
+        "observed_vs_context": "CONTEXT",
+        "temporal_scope": null,
+        "applicability": "",
+        "contradictions": [],
+        "analyst_notes": "Generic, historical, actor-level indicators only -- none of these specific artifacts is claimed, by any source reviewed, to have been observed at Bija Industrie. No incident-specific IOC exists in this report."
+      },
+      {
+        "claim_id": "c-medusalocker-mitigations",
+        "claim_type": "TTP_HISTORICAL",
+        "text": "The CISA/FBI/Treasury/FinCEN advisory recommends a segmented, offline backup and recovery plan, network segmentation, up-to-date antivirus with real-time detection, prompt OS/software/firmware patching, and least-privilege administrative account auditing.",
+        "scope": "",
+        "status": "CONFIRMED",
+        "confidence": "HIGH",
+        "evidence_refs": [
+          "e-medusalocker-mitigations"
+        ],
+        "source_refs": [
+          "s-ic3-medusalocker-advisory"
+        ],
+        "corroboration_state": "SINGLE_SOURCE",
+        "source_independence": false,
+        "observed_vs_context": "CONTEXT",
+        "temporal_scope": null,
+        "applicability": "",
+        "contradictions": [],
+        "analyst_notes": ""
+      },
+      {
+        "claim_id": "c-medusalocker-current-scale",
+        "claim_type": "TTP_HISTORICAL",
+        "text": "ransomware.live's own current tracking shows 83 total MedusaLocker victims listed since its earliest tracked victim (est. attack date 2021-11-03), spanning 19 countries, with an average 83.1-day delay between estimated attack date and leak-site claim, and 37.0% of tracked victims showing a domain overlap with infostealer-malware logs.",
+        "scope": "",
+        "status": "REPORTED",
+        "confidence": "MEDIUM",
+        "evidence_refs": [
+          "e-medusalocker-current-scale"
+        ],
+        "source_refs": [
+          "s-ransomwarelive-medusalocker-group"
+        ],
+        "corroboration_state": "SINGLE_SOURCE",
+        "source_independence": false,
+        "observed_vs_context": "CONTEXT",
+        "temporal_scope": null,
+        "applicability": "",
+        "contradictions": [],
+        "analyst_notes": "REPORTED/MEDIUM, consistent with this aggregator's Reliability.MODERATE tier used elsewhere in this report -- a tracker's own dataset count is more directly verifiable than a relayed extortion claim, but the underlying collection methodology (which victims it discovers, and how completely) was not independently audited this session."
+      }
+    ],
+    "rendered_text": "# Sentinel APEX Ransomware Intelligence Report -- MedusaLocker Claim Against 'Bija Industrie'\n\n**CYBERDUDEBIVASH SENTINEL APEX INTEL FACTORY** \u00b7 Premium Intelligence Report \u00b7 Version 2.0\n\nEvidence cut-off: 2026-08-17 \u00b7 Detection maturity: SYNTAX_VALIDATED (rule syntax checked; not lab-tested or deployment-validated -- validate in your environment before production use)\n\n**Classification:** TLP:CLEAR \u2014 public leak-site claim and open-source actor intelligence\n\n## Executive Summary\n\nOn 2026-08-16, a group identifying itself as MedusaLocker listed 'Bija Industrie', a France-based manufacturer of specialized aerospace and industrial tooling, on its Tor extortion leak site, claiming 693 emails were extracted. This is a single-source claim; no independent confirmation, victim statement, regulator filing, or data sample has been located. Real, directly-sourced actor context -- drawn primarily from the 2022 CISA/FBI/Treasury/FinCEN joint advisory AA22-181A and independently corroborated in part by Cybersecurity Dive's own reporting on it -- shows MedusaLocker operating as a Ransomware-as-a-Service platform active since at least 2019, with a documented 55-60% affiliate revenue split and a well-characterized RDP/phishing initial-access, PowerShell-propagation, safe-mode-evasion, and shadow-copy-deletion attack chain. ransomware.live's own current tracking shows 83 total MedusaLocker victims across 19 countries, with Bija Industrie its most recently listed. Bija's own site states it serves both civil and military aviation programs; that fact is recorded here for defense-industrial-base relevance only -- no source reviewed describes the content or sensitivity of the claimed 693 emails, and this report does not assert any specific data, military-related or otherwise, was actually exfiltrated.\n\n## Scope and Methodology\n\nThis report synthesizes five independently retrieved sources, each archived at retrieval and identified in Appendix A by the SHA-256 of its retrieved content: the leak-site tracker ransomware.live (both the Bija-specific victim page and its MedusaLocker group aggregate-statistics page), the victim's own site (bija-industrie.com), the IC3.gov mirror of CISA/FBI/Treasury/FinCEN Joint Cybersecurity Advisory AA22-181A (cisa.gov itself returned HTTP 403 Access Denied on both the advisory page and its own PDF -- documented honestly rather than substituted with paraphrase), and Cybersecurity Dive's independent journalism on that same advisory. Every claim in this report traces to at least one of these five sources via an explicit evidence_refs/source_refs chain, visible in the Sources & Evidence Ledger appendix below. No claim in this report is drawn from model memory or generic industry knowledge about ransomware conventions in general. Victim-specific observations (this incident only) are kept structurally and narratively separate from actor-historical context (what is known about MedusaLocker in general) throughout. MITRE ATT&CK tracks an unrelated ransomware operation named 'Medusa' (S1244/G1051) -- a different group from MedusaLocker despite the similar name; that page is never cited here.\n\n## Victim Claim Record\n\nClaim posted 2026-08-16 15:20 UTC on MedusaLocker's Tor leak site. Country: France, confirmed via the tracker's own country-flag reference and independently consistent with the victim domain's DNS/WHOIS fingerprint (OVH, a French hosting provider; Mailinblack, a French email-security SaaS). Per the company's own site, Bija Industrie designs and manufactures specialized tooling for the aerospace and industrial sectors, with over 20 years of aerospace experience serving both civil and military aviation programs across three brands. This business-description context is recorded for defense-industrial-base relevance only -- the leak-site claim itself describes only an email count ('693 emails extracted'), with no category, sensitivity, or content description given by any source reviewed, and whether any compromise actually occurred, military-program-related or otherwise, is UNKNOWN on current evidence; this report does not assert it did. Separately, passive DNS/WHOIS fingerprinting confirms the organization's mail infrastructure and a standard SPF configuration -- infrastructure fingerprinting only, not evidence of the initial-access vector.\n\n## Actor Overview: MedusaLocker (RaaS Family)\n\nMedusaLocker is a Ransomware-as-a-Service operation that, per a Cybereason report cited by Cybersecurity Dive, first emerged in late 2019 targeting companies across industries, and was particularly active against the healthcare sector during the COVID-19 pandemic. The primary CISA/FBI/Treasury/FinCEN advisory (AA22-181A, published 2022-06-30) documents actors most often gaining initial access through vulnerable RDP configurations, with phishing and spam email campaigns -- directly attaching the ransomware -- as a frequently-used secondary vector. The group operates a RaaS affiliate model in which affiliates typically retain 55-60% of each ransom payment, with the developer retaining the remainder -- a figure independently reported by both the primary advisory and Cybersecurity Dive's own separate coverage of it, the strongest-corroborated actor-context fact in this report.\n\n## Documented Attack Chain\n\nThe primary advisory documents a specific, repeatable attack chain, quoted directly here. **Execution and propagation (T1059.001):** a batch file runs a PowerShell invoke-ReflectivePEInjection script that edits the EnableLinkedConnections registry value, enabling host/network detection via ICMP and shared-storage detection via SMB. **Defense evasion (T1562.009):** the LanmanWorkstation service is restarted to let the registry edit take effect, known security/accounting/forensic-software processes are killed, and the machine is rebooted into Windows Safe Mode to avoid endpoint defenses. **Impact (T1486):** files are encrypted with AES-256, with the resulting key itself protected by RSA-2048, re-running every 60 seconds. **Persistence:** an executable named svhost.exe or svhostt.exe is copied into %APPDATA%\\Roaming with a scheduled task re-running it every 15 minutes. **Recovery inhibition (T1490):** local backups are deleted, startup recovery options disabled, and volume shadow copies removed. All of this is documented actor CAPABILITY -- no TTP specific to the Bija Industrie incident has been observed by any source reviewed.\n\n## Current Tracked Scale (2026 Snapshot)\n\nransomware.live's own current aggregate tracking shows 83 total MedusaLocker victims listed since its earliest tracked victim (estimated attack date 2021-11-03), spanning 19 countries, with an average 83.1-day delay between estimated attack date and leak-site claim. 37.0% of tracked victims show a domain-level overlap with known infostealer-malware logs -- suggestive, in aggregate, of a credential-theft-adjacent access pathway across the tracked population, though this is not evidence of any specific victim's initial-access vector, including Bija Industrie's. At the time of this report, Bija Industrie is the group's own most recently listed victim.\n\n## Historical Indicators (Generic, Not Incident-Specific)\n\nThe primary advisory publishes generic MedusaLocker indicators dated 2019-2022 -- encrypted-file extensions, ransom-note filenames (e.g. how_to_recover_data.html, READINSTRUCTION.html), Bitcoin wallets, email addresses, and Tor addresses -- with the advisory's own explicit caution that historical IP indicators are 'several years old' and should be vetted before any blocking action. None of these specific artifacts is claimed by any source reviewed to have been observed at Bija Industrie; this report contains no incident-specific IOC.\n\n## Detection\n\nA Sigma detection concept is provided at SYNTAX_VALIDATED maturity only -- neither lab testing nor any deployment validation has been performed for this assessment -- targeting two of MedusaLocker's own documented, quotable indicators: svhost.exe/svhostt.exe persistence in %APPDATA%\\Roaming, and the invoke-ReflectivePEInjection/EnableLinkedConnections registry-propagation pattern. A match does not by itself confirm MedusaLocker attribution (see the rule's own falsepositives field, including the common 'svhost' masquerade risk). Full rule body:\n\n```yaml\ntitle: MedusaLocker svhost/svhostt Persistence and EnableLinkedConnections Registry Propagation\nid: sentinel-apex-medusalocker-svhost-persistence\nstatus: experimental\ndescription: >\n  Detects two command-line/registry indicators documented by CISA/FBI/\n  Treasury/FinCEN advisory AA22-181A for the MedusaLocker ransomware\n  family: persistence via an executable named svhost.exe or svhostt.exe\n  copied into %APPDATA%\\Roaming with a 15-minute recurring scheduled\n  task, and the invoke-ReflectivePEInjection PowerShell script's edit of\n  the EnableLinkedConnections registry value used for network\n  propagation. Either indicator alone is a strong ransomware\n  precursor/impact-stage signal; this rule does not by itself confirm\n  MedusaLocker attribution for any specific incident.\nreferences:\n  - https://www.ic3.gov/CSA/2022/220630.pdf\n  - https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-181a\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection_svhost_persistence:\n    Image|endswith:\n      - '\\svhost.exe'\n      - '\\svhostt.exe'\n    CommandLine|contains: 'AppData\\Roaming'\n  selection_registry_propagation:\n    CommandLine|contains|all:\n      - 'invoke-ReflectivePEInjection'\n      - 'EnableLinkedConnections'\n  condition: selection_svhost_persistence or selection_registry_propagation\nfalsepositives:\n  - Legitimate 'svhost' naming is a common OS-process masquerade target; verify full path and hash before response\n  - Legitimate administrative scripts that modify EnableLinkedConnections for UAC-related remote administration purposes\nlevel: high\n```\n\n## Hunting\n\nGiven the documented, specific persistence naming convention, a defensible hunting hypothesis is to search endpoint process-creation and scheduled-task telemetry for svhost.exe or svhostt.exe executing from %APPDATA%\\Roaming rather than a genuine Windows system path, and for any scheduled task with a roughly 15-minute recurrence tied to such a binary. Separately, given the advisory's documentation of RDP as MedusaLocker's dominant initial-access vector, hunting teams should prioritize reviewing external-facing RDP authentication logs for brute-force patterns ahead of reviewing email-gateway telemetry for spearphishing delivery -- while still covering both, since the advisory documents phishing as a real, if secondary, vector. This report does not include incident-specific IOCs for Bija Industrie -- none were located by any source reviewed.\n\n## Forecast\n\nMEDIUM confidence that MedusaLocker-branded activity will continue at or above its documented multi-year pace (83 tracked victims across 19 countries) over the next 90 days, continuing to rely predominantly on RDP exposure and phishing/spam as initial-access vectors -- tempered by the inherent unpredictability of law-enforcement disruption events and by this report's actor-context sources being predominantly a single 2022 advisory refreshed only by current tracker counts, not a fresh 2026 technical reassessment. See the structured forecast record (supporting observations, assumptions, alternative scenarios, and indicators to watch) in this bundle's `forecasts` field.\n\n## Alternative Hypotheses\n\nTwo genuinely open analytic questions are weighed explicitly rather than resolved by assumption. **First**, whether the leak-site listing reflects a genuine, currently-undisclosed compromise (**H1**, consistent with MedusaLocker's persistent multi-year operating cadence and the real infrastructure fingerprinting captured for this domain) versus an unconfirmed or overstated claim (**H2**, consistent with the total absence of a proof sample, independent confirmation, or victim acknowledgement). **Second**, if a compromise did occur, which of MedusaLocker's two documented initial-access vectors -- RDP (**H1**, the advisory's own 'most often' vector) or phishing/spam (**H2**, its documented 'frequently' secondary vector) -- hunting and forensic review should prioritize first, given that no incident-specific initial-access evidence exists for this victim either way.\n\n## Regulatory Considerations\n\nGDPR (EU) / France (CNIL) is assessed NOT_ASSESSED: whether the claimed 693 emails include personal data of identifiable individuals is not established by any source reviewed, and whether any compromise occurred at all remains UNKNOWN. The NIS2 Directive (EU) is assessed NOT_ASSESSED: Bija Industrie's specific sector/entity-size classification against NIS2's essential/important-entity thresholds is not established by any source reviewed. HIPAA is assessed NOT_APPLICABLE: Bija Industrie is a France-based manufacturer with no established US healthcare nexus. PCI-DSS is assessed NOT_ASSESSED: no source reviewed describes the organization's payment-processing footprint.\n\n## Generic Defensive Readiness\n\nStandard ransomware readiness guidance -- a segmented offline backup and recovery plan, RDP hardening and MFA, network segmentation, behavioral detection for mass encryption and unexpected Safe Mode reboots, shadow-copy/backup-tampering monitoring, and a tested IR plan with a defined leak-site-monitoring process -- is provided as general hardening grounded in MedusaLocker's own documented attack chain and the advisory's own mitigations list, not as evidence any specific technique was used against this victim.\n\n## Intelligence Gaps\n\nSeven gaps are explicitly unresolved by any source reviewed for this report: victim acknowledgement is unavailable; no incident-specific IOCs were observed; no proof sample of the claimed extracted emails exists; no independent confirmation of the leak-site claim was located; no initial-access or incident-specific TTP evidence was found; whether any of MedusaLocker's documented general TTPs were used in this specific incident is unestablished; whether the claimed 693 emails include personal data or defense-industrial-base-sensitive content is unestablished; and which specific MedusaLocker affiliate is responsible for this claim is unestablished.\n\n## Technical Recommendations\n\n1. Disable or restrict internet-facing RDP and enforce MFA on all remote-access accounts -- the direct countermeasure to MedusaLocker's documented primary initial-access vector (evidence: c-medusalocker-initial-access).\n2. Maintain a segmented, offline, tested backup and recovery plan, and monitor for shadow-copy deletion and backup-service tampering -- the direct countermeasure to MedusaLocker's documented recovery-inhibition behavior (evidence: c-medusalocker-recovery-inhibition).\n3. Deploy monitoring for MedusaLocker's specific documented persistence pattern (svhost.exe/svhostt.exe in %APPDATA%\\Roaming with a 15-minute scheduled task) via the detection rule above (evidence: c-medusalocker-persistence).\n4. Train users to recognize and report phishing/spam attempts -- the direct countermeasure to MedusaLocker's documented secondary initial-access vector (evidence: c-medusalocker-initial-access).\n\n## Appendix A: Sources & Evidence Ledger\n\nEvery source registered in this report's evidence graph, its retrieval/integrity metadata, and every captured excerpt tied to it -- the complete evidentiary basis for every claim above.\n\n### s-ransomwarelive-bija \u2014 ransomware.live (leak-site tracker)\n\n- URL: https://www.ransomware.live/id/QmlqYSBJbmR1c3RyaWVAbWVkdXNhbG9ja2Vy\n- Type: LEAK_SITE_AGGREGATOR\n- Reliability: MODERATE\n- Retrieved: 2026-08-17T00:00:00Z\n- SHA-256 of retrieved content: `b37b7e1766140aa30654eaff721ec4b8cab1051bead83ea2f87606a894f64880`\n\n> Bija Industrie bija-industrie.com Group Medusalocker Discovered 2026-08-16 15:20 UTC Est. attack date 2026-08-16 ... Description: Organization with 693 emails extracted. Domain: bija-industrie.com.\n\n> WHOIS Emails abuse@ovh.net. MX Records mx-mibc-fr-08.mailinblack.com. mx2.mail.ovh.net. mx3.mail.ovh.net. TXT Records v=spf1 include:mx.ovh.com ~all. Cloud / SaaS Services Detected: Mailinblack. Country flag reference: flags/FR.svg.\n\n### s-bija-own-site \u2014 BIJA Industrie (the company's own site)\n\n- URL: https://bija-industrie.com\n- Type: VICTIM_STATEMENT\n- Reliability: HIGH\n- Retrieved: 2026-08-17T00:00:00Z\n- SHA-256 of retrieved content: `505c5e0e427ad0718f14de91638e2d84ee14189ec2dbd34673651c53cb122628`\n\n> 'conception, la fabrication et la distribution d'outils et d'outillages specifiques pour les secteurs aeronautiques et industriels' (design, manufacturing, and distribution of specialized tools for aerospace and industrial sectors); 20+ years of aerospace experience; serves civil and military aviation programs; three brands (BIJA Industrie, MMI, MRO Integral Solutions).\n\n### s-ic3-medusalocker-advisory \u2014 FBI / CISA / Dept. of the Treasury / FinCEN (Joint Cybersecurity Advisory AA22-181A, via the ic3.gov mirror -- cisa.gov itself returned HTTP 403 Access Denied on both the HTML advisory and its own PDF, consistent with the blocking behavior observed for other government sources in this report series)\n\n- URL: https://www.ic3.gov/CSA/2022/220630.pdf\n- Type: PRIMARY_TECHNICAL_ADVISORY\n- Reliability: HIGH\n- Retrieved: 2026-08-17T00:00:00Z\n- SHA-256 of retrieved content: `049a1e4e586e28b8c6619625014fe3aaff946b492a5a780c952ed4ab41df8760`\n\n> MedusaLocker ransomware actors most often gain access to victim devices through vulnerable Remote Desktop Protocol (RDP) configurations [T1133]. Actors also frequently use email phishing and spam email campaigns -- directly attaching the ransomware to the email -- as initial intrusion vectors [T1566].\n\n> MedusaLocker ransomware uses a batch file to execute PowerShell script invoke-ReflectivePEInjection [T1059.001]. This script propagates MedusaLocker throughout the network by editing the EnableLinkedConnections value within the infected machine's registry, which then allows the infected machine to detect attached hosts and networks via ICMP and to detect shared storage via SMB Protocol.\n\n> Restarts the LanmanWorkstation service, which allows registry edits to take effect. Kills the processes of well-known security, accounting, and forensic software. Restarts the machine in safe mode to avoid detection by security software [T1562.009].\n\n> Encrypts victim files with the AES-256 encryption algorithm; the resulting key is then encrypted with an RSA-2048 public key [T1486]. Runs every 60 seconds, encrypting all files except those critical to the functionality of the victim's machine and those that have the designated encrypted file extension.\n\n> Establishes persistence by copying an executable (svhost.exe or svhostt.exe) to the %APPDATA%\\Roaming directory and scheduling a task to run the ransomware every 15 minutes.\n\n> Attempts to prevent standard recovery techniques by deleting local backups, disabling startup recovery options, and deleting shadow copies [T1490].\n\n> MedusaLocker appears to operate as a Ransomware-as-a-Service (RaaS) model based on the observed split of ransom payments ... consistently split between the affiliate, who receives 55 to 60 percent of the ransom, and the developer, who receives the remainder.\n\n> Disclaimer: Many of these observed IP addresses are several years old and have been historically linked to MedusaLocker ransomware. We recommend these IP addresses be investigated or vetted by organizations prior to taking action, such as blocking. Ransom note file names observed include how_to_recover_data.html, instructions.html, READINSTRUCTION.html, and recovery_instructions.html, placed into every folder containing an encrypted file.\n\n> Implement a recovery plan that maintains and retains multiple copies of sensitive or proprietary data ... in a physically separate, segmented, and secure location. Implement network segmentation and maintain offline backups of data. Install, regularly update, and enable real-time detection for antivirus software on all hosts. Install updates for operating systems, software, and firmware as soon as possible. Audit user accounts with administrative privileges and configure access controls according to the principle of least privilege.\n\n### s-ransomwarelive-medusalocker-group \u2014 ransomware.live (leak-site tracker, group aggregate page)\n\n- URL: https://www.ransomware.live/group/medusalocker\n- Type: LEAK_SITE_AGGREGATOR\n- Reliability: MODERATE\n- Retrieved: 2026-08-17T00:00:00Z\n- SHA-256 of retrieved content: `4f5340469772b14920a045a4cec08855d2704b81d15bb5c4b294dc080b485ac2`\n\n> Victims 83. First Victim (est. attack date) 2021-11-03. Discovery Date 2022-11-15. Last Seen 2026-08-16. Avg Delay 83.1 days. Infostealer 37.0% victims with domain. Countries 19 hit.\n\n### s-cybersecuritydive-medusalocker \u2014 Cybersecurity Dive\n\n- URL: https://www.cybersecuritydive.com/news/fbi-cisa-medusalocker-ransomware/626483/\n- Type: JOURNALISM\n- Reliability: MODERATE\n- Retrieved: 2026-08-17T00:00:00Z\n- SHA-256 of retrieved content: `d9ca6aa5f4c80f3c912a53b22aa4c1f31999a6c1f3558c71b34b40f03a937edc`\n\n> MedusaLocker operates under the ransomware as a service model, splitting payments with affiliates who typically get 55% to 60% of the proceeds.\n\n> A report from Cybereason said the MedusaLocker first emerged in late 2019, targeting companies across industries.\n\n> The group was particularly active in the healthcare space, where many organizations were attacked in connection to the COVID-19 pandemic.\n\n",
+    "dimension_tags": {
+      "victim_confirmation": [
+        "c-leak-site-claim-bija",
+        "c-victim-ack-bija",
+        "c-compromise-occurred-bija"
+      ]
+    },
+    "claim_sections": {},
+    "detection_rules": [
+      {
+        "rule_id": "sentinel-apex-medusalocker-svhost-persistence",
+        "technique_id": "T1053.005",
+        "format": "sigma",
+        "validation_state": "SYNTAX_VALIDATED",
+        "body": "title: MedusaLocker svhost/svhostt Persistence and EnableLinkedConnections Registry Propagation\nid: sentinel-apex-medusalocker-svhost-persistence\nstatus: experimental\ndescription: >\n  Detects two command-line/registry indicators documented by CISA/FBI/\n  Treasury/FinCEN advisory AA22-181A for the MedusaLocker ransomware\n  family: persistence via an executable named svhost.exe or svhostt.exe\n  copied into %APPDATA%\\Roaming with a 15-minute recurring scheduled\n  task, and the invoke-ReflectivePEInjection PowerShell script's edit of\n  the EnableLinkedConnections registry value used for network\n  propagation. Either indicator alone is a strong ransomware\n  precursor/impact-stage signal; this rule does not by itself confirm\n  MedusaLocker attribution for any specific incident.\nreferences:\n  - https://www.ic3.gov/CSA/2022/220630.pdf\n  - https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-181a\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection_svhost_persistence:\n    Image|endswith:\n      - '\\svhost.exe'\n      - '\\svhostt.exe'\n    CommandLine|contains: 'AppData\\Roaming'\n  selection_registry_propagation:\n    CommandLine|contains|all:\n      - 'invoke-ReflectivePEInjection'\n      - 'EnableLinkedConnections'\n  condition: selection_svhost_persistence or selection_registry_propagation\nfalsepositives:\n  - Legitimate 'svhost' naming is a common OS-process masquerade target; verify full path and hash before response\n  - Legitimate administrative scripts that modify EnableLinkedConnections for UAC-related remote administration purposes\nlevel: high\n"
+      }
+    ],
+    "metrics": [
+      {
+        "metric_id": "m-medusalocker-total-victims",
+        "name": "MedusaLocker total tracked victims",
+        "value": 83,
+        "unit": "victims",
+        "scope": "All MedusaLocker leak-site victims tracked by ransomware.live",
+        "source": "ransomware.live (group aggregate page)",
+        "source_url": "https://www.ransomware.live/group/medusalocker",
+        "publication_year": 2026,
+        "retrieved_at": "2026-08-17T00:00:00Z",
+        "valid_until": null,
+        "review_after": "2026-11-17",
+        "sample_scope": "",
+        "notes": "A live, continuously-updated tracker count as of retrieval, not a fixed historical figure -- review_after is set at 3 months given the underlying dataset changes daily."
+      },
+      {
+        "metric_id": "m-medusalocker-countries",
+        "name": "MedusaLocker countries hit",
+        "value": 19,
+        "unit": "countries",
+        "scope": "All MedusaLocker leak-site victims tracked by ransomware.live",
+        "source": "ransomware.live (group aggregate page)",
+        "source_url": "https://www.ransomware.live/group/medusalocker",
+        "publication_year": 2026,
+        "retrieved_at": "2026-08-17T00:00:00Z",
+        "valid_until": null,
+        "review_after": "2026-11-17",
+        "sample_scope": "",
+        "notes": ""
+      },
+      {
+        "metric_id": "m-medusalocker-avg-dwell",
+        "name": "MedusaLocker average attack-to-claim delay",
+        "value": 83.1,
+        "unit": "days",
+        "scope": "All MedusaLocker leak-site victims tracked by ransomware.live",
+        "source": "ransomware.live (group aggregate page)",
+        "source_url": "https://www.ransomware.live/group/medusalocker",
+        "publication_year": 2026,
+        "retrieved_at": "2026-08-17T00:00:00Z",
+        "valid_until": null,
+        "review_after": "2026-11-17",
+        "sample_scope": "",
+        "notes": ""
+      },
+      {
+        "metric_id": "m-medusalocker-infostealer-overlap",
+        "name": "MedusaLocker victims with infostealer-log domain overlap",
+        "value": 37.0,
+        "unit": "percent",
+        "scope": "All MedusaLocker leak-site victims tracked by ransomware.live",
+        "source": "ransomware.live (group aggregate page)",
+        "source_url": "https://www.ransomware.live/group/medusalocker",
+        "publication_year": 2026,
+        "retrieved_at": "2026-08-17T00:00:00Z",
+        "valid_until": null,
+        "review_after": "2026-11-17",
+        "sample_scope": "",
+        "notes": "Domain-level overlap with known infostealer-malware logs -- suggestive of a credential-theft-adjacent access pathway across the tracked victim population in aggregate; not evidence of any specific victim's initial-access vector, including Bija Industrie's."
+      },
+      {
+        "metric_id": "m-medusalocker-raas-affiliate-share",
+        "name": "MedusaLocker RaaS affiliate revenue share",
+        "value": 57.5,
+        "unit": "percent (midpoint of the independently-corroborated 55-60% range)",
+        "scope": "MedusaLocker RaaS ransom-payment split, per the 2022 CISA/FBI/Treasury/FinCEN advisory",
+        "source": "CISA/FBI/Treasury/FinCEN Joint Cybersecurity Advisory AA22-181A, corroborated by Cybersecurity Dive",
+        "source_url": "https://www.ic3.gov/CSA/2022/220630.pdf",
+        "publication_year": 2022,
+        "retrieved_at": "2026-08-17T00:00:00Z",
+        "valid_until": null,
+        "review_after": "2027-06-30",
+        "sample_scope": "",
+        "notes": "The original figure is a range (55-60%), not a point estimate; this registry entry stores the midpoint for a single comparable value while the claim text preserves the full range."
+      }
+    ],
+    "cited_metric_ids": [
+      "m-medusalocker-total-victims",
+      "m-medusalocker-countries",
+      "m-medusalocker-avg-dwell",
+      "m-medusalocker-infostealer-overlap",
+      "m-medusalocker-raas-affiliate-share"
+    ],
+    "rendered_metric_ids": [
+      "m-medusalocker-total-victims",
+      "m-medusalocker-countries",
+      "m-medusalocker-avg-dwell",
+      "m-medusalocker-infostealer-overlap",
+      "m-medusalocker-raas-affiliate-share"
+    ],
+    "regulatory_applicabilities": [
+      {
+        "jurisdiction": "",
+        "victim_geography": null,
+        "operations_geography": null,
+        "data_subject_geography": null,
+        "sector": null,
+        "entity_classification": null,
+        "incident_facts_claim_ids": [],
+        "regulation": "GDPR (EU) / France (CNIL)",
+        "applicability_state": "NOT_ASSESSED",
+        "basis": "Whether the '693 emails extracted' claim, if accurate, includes personal data of identifiable individuals is not established by any source reviewed, and whether any compromise occurred at all remains UNKNOWN (c-compromise-occurred-bija) -- GDPR notification-obligation applicability cannot be determined from current evidence.",
+        "confidence": ""
+      },
+      {
+        "jurisdiction": "",
+        "victim_geography": null,
+        "operations_geography": null,
+        "data_subject_geography": null,
+        "sector": null,
+        "entity_classification": null,
+        "incident_facts_claim_ids": [],
+        "regulation": "NIS2 Directive (EU)",
+        "applicability_state": "NOT_ASSESSED",
+        "basis": "Bija Industrie's specific sector/entity-size classification against NIS2's essential/important-entity thresholds is not established by any source reviewed -- the company's own site describes an aerospace/industrial-tooling manufacturing business, but NIS2 applicability turns on regulatory thresholds this report cannot verify from the sources located.",
+        "confidence": ""
+      },
+      {
+        "jurisdiction": "US/HIPAA",
+        "victim_geography": "France",
+        "operations_geography": "France",
+        "data_subject_geography": null,
+        "sector": "Manufacturing",
+        "entity_classification": null,
+        "incident_facts_claim_ids": [
+          "c-victim-business-description-bija"
+        ],
+        "regulation": "HIPAA",
+        "applicability_state": "NOT_APPLICABLE",
+        "basis": "Bija Industrie is a France-based aerospace/industrial-tooling manufacturer with no source reviewed establishing a US healthcare nexus or business-associate relationship -- HIPAA does not apply.",
+        "confidence": ""
+      },
+      {
+        "jurisdiction": "",
+        "victim_geography": null,
+        "operations_geography": null,
+        "data_subject_geography": null,
+        "sector": null,
+        "entity_classification": null,
+        "incident_facts_claim_ids": [],
+        "regulation": "PCI-DSS",
+        "applicability_state": "NOT_ASSESSED",
+        "basis": "No source reviewed describes Bija Industrie's payment-processing footprint; PCI-DSS is a contractual/industry framework whose applicability depends on deployment-specific cardholder-data-environment facts this report does not have.",
+        "confidence": ""
+      }
+    ],
+    "forecasts": [
+      {
+        "withheld": false,
+        "judgment": "MedusaLocker-branded ransomware activity will likely continue at or above its documented multi-year pace (83 tracked victims across 19 countries as of this report), continuing to rely predominantly on RDP exposure and phishing/spam as initial-access vectors, with no evidence reviewed this session of a law-enforcement disruption event against the group's infrastructure.",
+        "time_horizon": "90 days from 2026-08-17",
+        "supporting_observation_claim_ids": [
+          "c-medusalocker-current-scale",
+          "c-medusalocker-raas-split",
+          "c-medusalocker-initial-access"
+        ],
+        "historical_baseline_claim_ids": [
+          "c-medusalocker-origin"
+        ],
+        "assumptions": [
+          "MedusaLocker's RaaS affiliate program continues operating at a pace comparable to its documented 2021-2026 tracked history, with no law-enforcement takedown occurring within the forecast window."
+        ],
+        "counter_evidence_claim_ids": [],
+        "alternative_scenarios": [
+          "Law-enforcement action against MedusaLocker's affiliate infrastructure or leak site (as has occurred against other major RaaS brands) disrupts the group's operating cadence within the forecast window."
+        ],
+        "indicators_to_watch": [
+          "New named victims added to MedusaLocker's leak site at a rate consistent with or exceeding the tracked average of roughly one victim every 3-4 weeks implied by 83 victims since 2021-11-03",
+          "Any updated CISA/FBI advisory or IC3 alert revising MedusaLocker's documented TTPs or RaaS economics",
+          "Law-enforcement seizure notices or takedown announcements targeting MedusaLocker infrastructure"
+        ],
+        "confidence": "MEDIUM",
+        "confidence_rationale": "Supported by a multi-year (2021-2026), 83-victim tracked operating history and a stable, twice-independently-corroborated RaaS economic model, but tempered by the inherent unpredictability of law-enforcement disruption events and by the fact that this report's own actor-context sources are predominantly a single 2022 advisory refreshed only by current tracker aggregate counts, not a fresh 2026 technical reassessment of the group's tooling.",
+        "what_would_change_assessment": [
+          "A confirmed law-enforcement takedown of MedusaLocker's infrastructure, or a published 2026 technical report documenting materially changed tooling/TTPs, would change this assessment materially in either direction."
+        ]
+      }
+    ],
+    "hypothesis_sets": [
+      {
+        "question": "Does the 'Bija Industrie' leak-site listing reflect a genuine, technically successful compromise, or could it be an unconfirmed or exaggerated extortion claim?",
+        "applicable": true,
+        "hypotheses": [
+          {
+            "hypothesis_id": "h1",
+            "label": "H1: Genuine compromise, currently undisclosed",
+            "statement": "Consistent with MedusaLocker's persistent, multi-year operating cadence (83 tracked victims across 19 countries) and the real, if generic, infrastructure fingerprinting captured for this specific domain, the claim could reflect an actual compromise Bija Industrie has not yet acknowledged publicly.",
+            "supporting_evidence_claim_ids": [
+              "c-leak-site-claim-bija",
+              "c-infra-fingerprint-bija",
+              "c-medusalocker-current-scale"
+            ],
+            "contradicting_evidence_claim_ids": [],
+            "confidence": "MEDIUM",
+            "collection_requirement": ""
+          },
+          {
+            "hypothesis_id": "h2",
+            "label": "H2: Unconfirmed or overstated claim",
+            "statement": "The claim has not been technically substantiated by any source reviewed -- no proof sample, no independent confirmation (a second, independent write-up of this specific victim was sought but was not accessible this session), and no victim acknowledgement were located.",
+            "supporting_evidence_claim_ids": [
+              "c-compromise-occurred-bija",
+              "c-victim-ack-bija"
+            ],
+            "contradicting_evidence_claim_ids": [],
+            "confidence": "MEDIUM",
+            "collection_requirement": ""
+          }
+        ]
+      },
+      {
+        "question": "If a compromise did occur, which of MedusaLocker's two documented initial-access vectors -- RDP exploitation (the advisory's primary, 'most often' vector) or phishing/spam (its secondary, 'frequently' vector) -- should hunting and forensic review prioritize first?",
+        "applicable": true,
+        "hypotheses": [
+          {
+            "hypothesis_id": "h1",
+            "label": "H1: RDP-based access (T1133)",
+            "statement": "The advisory's own language ranks vulnerable RDP configurations as the vector MedusaLocker actors 'most often' use, making it the statistically likelier starting point for any forensic review absent incident-specific evidence.",
+            "supporting_evidence_claim_ids": [
+              "c-medusalocker-initial-access"
+            ],
+            "contradicting_evidence_claim_ids": [],
+            "confidence": "LOW",
+            "collection_requirement": ""
+          },
+          {
+            "hypothesis_id": "h2",
+            "label": "H2: Phishing/spam-based access (T1566)",
+            "statement": "The same advisory documents phishing and spam campaigns, with the ransomware directly attached, as a 'frequently' used secondary vector -- a real, evidenced alternative that a review limited to RDP alone would miss.",
+            "supporting_evidence_claim_ids": [
+              "c-medusalocker-initial-access"
+            ],
+            "contradicting_evidence_claim_ids": [],
+            "confidence": "LOW",
+            "collection_requirement": ""
+          }
+        ]
+      }
+    ],
+    "intelligence_gaps": [
+      {
+        "description": "Victim acknowledgement unavailable.",
+        "category": "KNOWN_UNKNOWN",
+        "what_would_confirm_or_refute": "A public victim statement or regulator filing acknowledging the incident."
+      },
+      {
+        "description": "No incident-specific IOCs observed.",
+        "category": "COLLECTION_GAP",
+        "what_would_confirm_or_refute": "Network/host indicators tied specifically to this incident."
+      },
+      {
+        "description": "No proof sample of claimed stolen data.",
+        "category": "COLLECTION_GAP",
+        "what_would_confirm_or_refute": "A verifiable sample from the claimed leak."
+      },
+      {
+        "description": "No independent confirmation of the leak-site claim.",
+        "category": "PRIORITY_INTELLIGENCE_REQUIREMENT",
+        "what_would_confirm_or_refute": "A second, independent source corroborating the claim."
+      },
+      {
+        "description": "Whether any of the documented general MedusaLocker TTPs above (RDP/phishing initial access, PowerShell-based propagation, safe-mode defense evasion, AES-256/RSA-2048 encryption, svhost.exe/svhostt.exe persistence, shadow-copy deletion) were actually used in this specific incident is not established by any source reviewed -- this is documented actor CAPABILITY, not incident-specific evidence.",
+        "category": "COLLECTION_GAP",
+        "what_would_confirm_or_refute": "Incident-specific forensic artifacts, EDR telemetry, or a confirmed intrusion-vector statement from Bija Industrie or an engaged incident-response firm."
+      },
+      {
+        "description": "Whether the '693 emails extracted' claim, if accurate, includes personal data of identifiable individuals (GDPR-relevant) or any defense-industrial-base-sensitive content is not established by any source reviewed -- the leak-site claim itself describes only a count, with no category, sensitivity, or content description given.",
+        "category": "KNOWN_UNKNOWN",
+        "what_would_confirm_or_refute": "A verified sample or victim/regulator statement describing the actual content and sensitivity of the claimed dataset."
+      },
+      {
+        "description": "Which specific MedusaLocker RaaS affiliate is responsible for this claim is not established by any source reviewed.",
+        "category": "KNOWN_UNKNOWN",
+        "what_would_confirm_or_refute": "CTI vendor attribution research specific to this claim, or law-enforcement/vendor telemetry tying a specific known affiliate cluster to this incident."
+      }
+    ],
+    "threat_products": [
+      {
+        "product_id": "medusalocker-bija-industrie-premium-canary",
+        "threat_type": "RANSOMWARE_VICTIM_CLAIM",
+        "victim_observation": {
+          "group_named_by_source": "MedusaLocker",
+          "victim_name": "Bija Industrie",
+          "victim_domain": "bija-industrie.com",
+          "country": "France",
+          "sector": "Manufacturing -- specialized aerospace and industrial tooling (per the victim's own site; serves civil and military aviation programs)",
+          "claim_date": "2026-08-16T15:20:00Z",
+          "claim_temporal_precision": "EXACT_TIMESTAMP",
+          "leak_site_claim_status": "REPORTED",
+          "claimed_data_description": "'693 emails extracted' per the leak-site post; no further category, sensitivity, or content description given by any source reviewed.",
+          "sample_proof_status": "UNKNOWN",
+          "independent_confirmation": "NOT_ASSESSED",
+          "victim_acknowledgement": "NOT_ASSESSED",
+          "regulator_disclosure": "NOT_ASSESSED",
+          "source_claim_ids": [
+            "c-leak-site-claim-bija",
+            "c-victim-business-description-bija",
+            "c-victim-ack-bija"
+          ],
+          "observed_incident_ioc_claim_ids": [],
+          "observed_incident_ttp_claim_ids": [
+            "c-infra-fingerprint-bija"
+          ]
+        },
+        "actor_context": {
+          "actor_aliases": [],
+          "raas_model_claim_ids": [
+            "c-medusalocker-raas-split"
+          ],
+          "historical_ttp_claim_ids": [
+            "c-medusalocker-initial-access",
+            "c-medusalocker-execution-propagation",
+            "c-medusalocker-defense-evasion",
+            "c-medusalocker-encryption-impact",
+            "c-medusalocker-persistence",
+            "c-medusalocker-recovery-inhibition"
+          ],
+          "historical_tooling_claim_ids": [
+            "c-medusalocker-historical-iocs"
+          ],
+          "initial_access_history_claim_ids": [
+            "c-medusalocker-initial-access"
+          ],
+          "infrastructure_claim_ids": [
+            "c-medusalocker-historical-iocs"
+          ],
+          "affiliate_behavior_claim_ids": [
+            "c-medusalocker-raas-split"
+          ],
+          "victimology_claim_ids": [
+            "c-medusalocker-current-scale",
+            "c-medusalocker-healthcare-covid"
+          ],
+          "sectors": [
+            "Healthcare (historically, per 2022 CISA advisory reporting and Cybersecurity Dive)"
+          ],
+          "geographies": [],
+          "campaign_history_claim_ids": [
+            "c-medusalocker-origin",
+            "c-medusalocker-current-scale"
+          ]
+        },
+        "generic_readiness": {
+          "immutable_backups": "Maintain a segmented, offline, tested backup and recovery plan -- the direct countermeasure to MedusaLocker's documented local-backup deletion and shadow-copy removal.",
+          "identity_hardening": "Disable or restrict internet-facing RDP; enforce MFA on all remote-access and privileged accounts -- the direct countermeasure to MedusaLocker's documented primary initial-access vector.",
+          "segmentation": "Implement network segmentation to limit lateral movement and to contain the SMB/ICMP host-and-share discovery MedusaLocker's own propagation script performs.",
+          "mass_encryption_detection": "Deploy behavioral detection for mass file-modification/encryption activity and for unexpected Safe Mode reboots on production hosts.",
+          "recovery_inhibition_coverage": "Monitor for shadow-copy deletion, backup-service tampering, and startup-recovery-option changes (T1490).",
+          "ir_preparation": "Maintain a tested incident response plan with ransomware-specific playbooks, including a defined leak-site-monitoring process for unconfirmed extortion claims.",
+          "label": "GENERIC_DEFENSIVE_READINESS"
+        },
+        "cisa_kev_state": "NOT_APPLICABLE",
+        "cvss_state": "NOT_APPLICABLE",
+        "patch_state": "NOT_APPLICABLE",
+        "exploit_cve_status": "NOT_APPLICABLE",
+        "linked_vulnerabilities": []
+      }
+    ],
+    "review": null,
+    "depth_assessment": {
+      "rendered_word_count": 2700,
+      "material_claim_count": 16,
+      "distinct_evidence_backed_sections": 16,
+      "template_repetition_findings": [],
+      "has_padding_signal": false
+    },
+    "technical_recommendation_count": 4,
+    "technical_recommendations_with_evidence_basis": 4
+  },
+  "commercial_readiness": {
+    "controls": [
+      {
+        "control_id": "source_provenance",
+        "name": "Source provenance",
+        "status": "PASS",
+        "evidence": "5 sources registered, 0 incomplete.",
+        "failures": [],
+        "warnings": []
+      },
+      {
+        "control_id": "evidence_hash",
+        "name": "Evidence hash",
+        "status": "PASS",
+        "evidence": "5/5 hashable sources carry a full content_sha256; 0/5 use the reasoned excerpt-fingerprint fallback.",
+        "failures": [],
+        "warnings": []
+      },
+      {
+        "control_id": "automated_review_disclosure",
+        "name": "Automated-review disclosure",
+        "status": "PASS",
+        "evidence": "No review on file; resolved state PREMIUM_READY_PENDING_HUMAN correctly withholds PREMIUM_CERTIFIED.",
+        "failures": [],
+        "warnings": []
+      },
+      {
+        "control_id": "source_specific_facts",
+        "name": "Source-specific facts",
+        "status": "PASS",
+        "evidence": "5 incident-specific claims checked.",
+        "failures": [],
+        "warnings": []
+      },
+      {
+        "control_id": "cross_source_corroboration",
+        "name": "Cross-source corroboration",
+        "status": "PASS",
+        "evidence": "17 claims checked against the corroboration policy.",
+        "failures": [],
+        "warnings": []
+      },
+      {
+        "control_id": "threat_type_schema_correctness",
+        "name": "Threat-type schema correctness",
+        "status": "PASS",
+        "evidence": "1 threat products checked for cross-schema contamination.",
+        "failures": [],
+        "warnings": []
+      },
+      {
+        "control_id": "cross_section_consistency",
+        "name": "Cross-section consistency",
+        "status": "PASS",
+        "evidence": "0 contradictions found.",
+        "failures": [],
+        "warnings": []
+      },
+      {
+        "control_id": "actor_specific_analysis",
+        "name": "Actor-specific analysis",
+        "status": "PASS",
+        "evidence": "12 actor-context claims checked.",
+        "failures": [],
+        "warnings": []
+      },
+      {
+        "control_id": "victim_specific_analysis",
+        "name": "Victim-specific analysis",
+        "status": "PASS",
+        "evidence": "Victim-impact claims checked against the claim-support matrix.",
+        "failures": [],
+        "warnings": []
+      },
+      {
+        "control_id": "current_statistics",
+        "name": "Current statistics",
+        "status": "PASS",
+        "evidence": "5 quantitative claims checked.",
+        "failures": [],
+        "warnings": []
+      },
+      {
+        "control_id": "regulatory_specificity",
+        "name": "Regulatory specificity",
+        "status": "PASS",
+        "evidence": "4 regulatory determinations checked.",
+        "failures": [],
+        "warnings": []
+      },
+      {
+        "control_id": "technical_recommendations",
+        "name": "Technical recommendations",
+        "status": "PASS",
+        "evidence": "4/4 recommendations carry an evidence_basis.",
+        "failures": [],
+        "warnings": []
+      },
+      {
+        "control_id": "detection_evidence_discipline",
+        "name": "Detection evidence discipline",
+        "status": "PASS",
+        "evidence": "1 detection rules checked for state-promotion language, governed-withholding discipline, and ATT&CK citation justification.",
+        "failures": [],
+        "warnings": []
+      },
+      {
+        "control_id": "temporal_integrity",
+        "name": "Temporal integrity",
+        "status": "PASS",
+        "evidence": "5 sources checked for fabricated timestamp precision.",
+        "failures": [],
+        "warnings": []
+      },
+      {
+        "control_id": "grammar_synthesis_qa",
+        "name": "Grammar/synthesis QA",
+        "status": "PASS",
+        "evidence": "1 QA findings, 0 critical.",
+        "failures": [],
+        "warnings": []
+      },
+      {
+        "control_id": "forecast_methodology",
+        "name": "Forecast methodology",
+        "status": "PASS",
+        "evidence": "1 forecast items checked.",
+        "failures": [],
+        "warnings": []
+      },
+      {
+        "control_id": "evidence_ledger",
+        "name": "Evidence ledger",
+        "status": "PASS",
+        "evidence": "17 claims in the ledger.",
+        "failures": [],
+        "warnings": []
+      },
+      {
+        "control_id": "alternative_hypotheses",
+        "name": "Alternative hypotheses",
+        "status": "PASS",
+        "evidence": "2 hypothesis sets checked.",
+        "failures": [],
+        "warnings": []
+      },
+      {
+        "control_id": "intelligence_gaps",
+        "name": "Intelligence gaps",
+        "status": "PASS",
+        "evidence": "7 gaps declared.",
+        "failures": [],
+        "warnings": []
+      },
+      {
+        "control_id": "report_specific_bibliography",
+        "name": "Report-specific bibliography",
+        "status": "PASS",
+        "evidence": "5 cited sources, 0 orphaned.",
+        "failures": [],
+        "warnings": []
+      },
+      {
+        "control_id": "human_analyst_certification_governance",
+        "name": "Human analyst certification governance",
+        "status": "PASS",
+        "evidence": "Resolved certification state: PREMIUM_READY_PENDING_HUMAN.",
+        "failures": [],
+        "warnings": []
+      },
+      {
+        "control_id": "premium_depth",
+        "name": "30-40 page premium depth",
+        "status": "PASS",
+        "evidence": "2700 words, 16 material claims, 16 evidence-backed sections.",
+        "failures": [],
+        "warnings": []
+      },
+      {
+        "control_id": "fortune_500_commercial_deliverable",
+        "name": "Fortune-500 commercial deliverable",
+        "status": "PASS",
+        "evidence": "22/22 controls PASS, 0 BLOCKED (not yet attempted).",
+        "failures": [],
+        "warnings": []
+      }
+    ],
+    "pass_count": 23,
+    "total_count": 23,
+    "verdict": "COMMERCIAL-READY"
+  }
+}

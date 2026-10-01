@@ -28,7 +28,7 @@ const PUBLIC_ROOT_FILES = [
   'detection-quality.html', 'review-queue.html',
   'hunts.html', 'deployments.html', 'dossier.html', 'defense-profile.html', 'workbench.html',
   // Premium Intelligence Commerce Engine v1.
-  'intelligence-store.html', 'customer-library.html',
+  'intelligence-store.html', 'customer-library.html', 'premium-previews.json',
   'apex-v12.css', 'apex-v13.css', 'mobile-first.css', 'apex-command-center.css', 'responsive-platform.css', 'customer-experience.css',
   'ai-monetization-engine.js', 'analytics-engine.js', 'auto-intel-engine.js',
   'banner-orchestrator.js', 'conversion-engine.js', 'email-engine.js',
