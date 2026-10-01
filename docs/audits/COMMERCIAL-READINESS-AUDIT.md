@@ -3,6 +3,23 @@
 **Date:** 2026-09-30 UTC · Revenue figures: **none asserted**; no transaction records were accessed. Every
 capability below was verified in code (file cited) and, where possible, against live production.
 
+## 0. Update — 2026-10-01 (revenue activation tranche)
+
+No revenue is asserted. No captured transaction exists: Razorpay is not configured in production.
+
+| Capability | Implemented | Live | Sellable | Blocker |
+|---|---|---|---|---|
+| IOC API (`action=iocs`) | Yes. Evidence-only engine; 600 indicators balanced by type | Yes. 2026-10-01 09:01Z feed: url 224, ipv4 136, domain 120, sha256 120; status healthy | **No self-serve purchase** | Razorpay secrets not set; email-only purchase |
+| STIX 2.1 (Team+) | Yes. OASIS `stix2` strict parse | Yes (code path). Team-key canary not executed: no customer key | No self-serve purchase | Same as above |
+| Premium reports | Yes. Human-certified ReportX publication, Razorpay checkout, entitlement-gated R2 download, refund revocation | Store API live (catalog 200, **0 listed**); 4 certified products ready in `config/premium-catalog.json` at INR 1,999 each | **No.** 0 listed | (1) Run `scripts/publish-premium-reports.js --publish` with `ANALYST_KEYS` configured; (2) Razorpay secrets |
+| Razorpay | Yes. Order at server price; signature check; server-side capture/amount/currency confirmation (added this tranche); grant-before-mark; idempotent webhook; expired-order recovery; refund recording | **No.** Checkout returns `503 RAZORPAY_UNAVAILABLE` | — | `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` (runbook: `docs/runbooks/RAZORPAY-PRODUCTION-ACTIVATION.md`) |
+| Watchlists | Yes (D1) | API live (unauthenticated → 401); D1 tables exist since 2026-10-01 | Included in paid tiers | No customer usage observed; no end-to-end paid test |
+| SIEM connectors | Yes (D1); deployments to customer SIEMs need customer credentials | API live (unauthenticated → 401) | Included in paid tiers | No live connector tested; no end-to-end paid test |
+| Manual UPI | Retired (410) | Retired | No | — (by design) |
+| Team seats | **Not implemented**; one account key | Seat claims removed from `api.html` and `pricing.html` (tests guard) | n/a | — |
+
+**Revenue state:** EMAIL-ONLY. Every self-serve path is blocked on the three Razorpay secrets.
+
 ## 1. Executive summary
 
 The self-serve ladder (Free → Starter → Pro → Team → Enterprise) is enforced by real daily quotas and response
