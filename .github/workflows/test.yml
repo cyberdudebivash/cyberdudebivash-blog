@@ -16,21 +16,11 @@ on:
       - 'package-lock.json'
       - '.github/workflows/test.yml'
       - '.github/workflows/freshness-check.yml'
+  # No path filter on PRs: these jobs are the required status checks for
+  # main (docs/runbooks/MAIN-BRANCH-PROTECTION.md). A required check that a
+  # path filter skips never reports, and the PR can never merge.
   pull_request:
     branches: [main, develop]
-    paths:
-      - 'lib/**'
-      - 'api/**'
-      - 'scripts/check-intel-freshness.js'
-      - 'scripts/__tests__/**'
-      - 'tests/**/*.js'
-      - 'tests/**/*.ts'
-      - 'jest.config.js'
-      - 'jest.setup.ts'
-      - 'package.json'
-      - 'package-lock.json'
-      - '.github/workflows/test.yml'
-      - '.github/workflows/freshness-check.yml'
   workflow_dispatch:
 
 permissions:

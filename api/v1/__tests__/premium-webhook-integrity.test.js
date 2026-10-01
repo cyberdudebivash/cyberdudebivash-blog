@@ -332,6 +332,21 @@ describe('artifact delivery', () => {
   });
 });
 
+describe('payment claim race guard (real SQL)', () => {
+  // Two captures racing for one order (payment.captured and order.paid, or a
+  // second payment attempt): the conditional UPDATE lets exactly one payment
+  // claim the order and never lets a later one overwrite it.
+  test('first payment claims the order; a second payment cannot re-claim or overwrite it', async () => {
+    const store = require('../../_lib/premium-commerce-store');
+    await checkout();
+    const [order] = orders();
+    expect(await store.claimVerifiedPayment({ orderId: order.order_id, paymentId: 'pay_RACE_A' })).toBe(1);
+    expect(await store.claimVerifiedPayment({ orderId: order.order_id, paymentId: 'pay_RACE_B' })).toBe(0);
+    expect(await store.claimVerifiedPayment({ orderId: order.order_id, paymentId: 'pay_RACE_A' })).toBe(0);
+    expect(orders()[0]).toMatchObject({ state: 'PAYMENT_VERIFIED', razorpay_payment_id: 'pay_RACE_A' });
+  });
+});
+
 describe('public catalog', () => {
   test('list and detail both expose the pinned artifact SHA-256 (real D1 query)', async () => {
     const list = await service.listCatalog();

@@ -219,6 +219,16 @@ describe('canonical evidence retrieval', () => {
     spy.mockRestore();
   });
 
+  test('fails closed when stored evidence certifies a different artifact than the one purchased', async () => {
+    const sha=require('crypto').createHash('sha256').update(exportJson,'utf8').digest('hex');
+    store.getEntitlement.mockResolvedValue({owner_id:'usr_1',report_id:'RPT-1',artifact_key:report.artifact_key,artifact_sha256:report.artifact_sha256,artifact_size_bytes:42});
+    storage.headCertifiedArtifact.mockResolvedValue({ok:true,size:42});
+    storage.headCanonicalEvidence.mockResolvedValue({ok:true,size:Buffer.byteLength(exportJson),evidenceSha256:sha});
+    storage.getCanonicalEvidence.mockResolvedValue({arrayBuffer:async()=>Uint8Array.from(Buffer.from(exportJson)).buffer});
+    cert.evaluatePremiumCertification.mockReturnValue({certified:true,reportId:'RPT-1',artifactSha256:'e'.repeat(64)});
+    await expect(service.getEvidenceContract({user,reportId:'RPT-1'})).rejects.toMatchObject({code:'EVIDENCE_CERTIFICATION_INVALID'});
+  });
+
   test('fails closed when no active entitlement exists', async () => {
     store.getEntitlement.mockResolvedValue(null);
     await expect(service.getEvidenceContract({user,reportId:'RPT-1'})).rejects.toMatchObject({code:'ENTITLEMENT_NOT_FOUND'});
