@@ -7,6 +7,18 @@ const storage = require('./premium-report-storage');
 const { evaluatePremiumCertification } = require('./premium-report-certification');
 const { loadReportXBundle } = require('./reportx-adapter');
 
+// Ownership contract written into every premium Razorpay order's notes, so
+// the shared Razorpay account (also used by the Sentinel APEX platform) can
+// attribute the order in the dashboard and in reconciliation. Derived from the
+// server-side catalog row, never from client input. Webhook fulfilment itself
+// keys on the D1 order row created below, which is the authoritative record.
+const ORDER_PLATFORM = 'CYBERDUDEBIVASH_INTEL_FACTORY';
+const ORDER_PRODUCT_TYPE = 'PREMIUM_REPORT';
+
+function logCommerceEvent(evt, fields) {
+  console.log(JSON.stringify({ evt, ...fields })); // PII-free: ids only
+}
+
 function allowedCurrencies() {
   const raw = String(process.env.PREMIUM_COMMERCE_CURRENCIES || 'INR');
   return new Set(raw.split(',').map(v => v.trim().toUpperCase()).filter(v => /^[A-Z]{3}$/.test(v)));
@@ -153,13 +165,17 @@ async function assertSellableArtifact(report) {
 
 async function createCheckout({ user, reportId }) {
   if (!user || !user.userId) throw Object.assign(new Error('Authenticated customer required'), { code: 'UNAUTHORIZED' });
-  if (!razorpay.configured()) throw Object.assign(new Error('Razorpay checkout is not configured'), { code: 'PAYMENT_GATEWAY_UNAVAILABLE' });
+  if (!razorpay.configured()) throw Object.assign(new Error('Online purchase temporarily unavailable. Contact bivash@cyberdudebivash.com'), { code: 'PAYMENT_GATEWAY_UNAVAILABLE' });
   const report = await store.getCatalogReport(reportId);
   await assertSellableArtifact(report);
 
   const receipt = `pir_${crypto.randomUUID().replace(/-/g, '').slice(0, 28)}`;
   const rzpOrder = await razorpay.createOrder(Number(report.price_minor), report.currency, receipt, {
-    commerce: 'premium_intelligence',
+    platform: ORDER_PLATFORM,
+    product_type: ORDER_PRODUCT_TYPE,
+    sku: report.report_id,
+    artifact_sha256: report.artifact_sha256,
+    commerce: 'premium_intelligence', // kept for orders/tools created before the contract
     report_id: report.report_id,
   });
 
@@ -169,6 +185,7 @@ async function createCheckout({ user, reportId }) {
     report,
     razorpayOrderId: rzpOrder.id,
   });
+  logCommerceEvent('premium_order_created', { order: order.order_id, report: report.report_id, amount_minor: Number(order.amount_minor), currency: order.currency });
 
   return {
     order_id: order.order_id,
@@ -223,6 +240,7 @@ async function completeEntitlement(order, paymentId) {
 
   await store.grantEntitlement({ ownerId: order.owner_id, reportId: order.report_id, orderId: order.order_id });
   await store.markOrderEntitled(order.order_id);
+  logCommerceEvent('premium_entitlement_granted', { order: order.order_id, report: order.report_id });
   return store.getOrderByInternalId(order.order_id);
 }
 
@@ -238,6 +256,7 @@ async function verifyCheckout({ user, razorpayOrderId, razorpayPaymentId, razorp
   if (String(payment.id || '') !== String(razorpayPaymentId)) throw Object.assign(new Error('Payment ID mismatch'), { code: 'PAYMENT_ID_MISMATCH' });
   validateCapturedPayment(payment, order);
   const completed = await completeEntitlement(order, razorpayPaymentId);
+  logCommerceEvent('premium_payment_verified', { order: completed.order_id, report: completed.report_id, via: 'checkout_callback' });
   return { order_id: completed.order_id, report_id: completed.report_id, state: completed.state, entitlement: 'ACTIVE' };
 }
 
@@ -295,6 +314,7 @@ async function downloadReport({ user, reportId }) {
   if (bytes.byteLength !== Number(entitlement.artifact_size_bytes)) throw Object.assign(new Error('Purchased artifact size changed'), { code: 'ARTIFACT_INTEGRITY_ERROR' });
 
   await store.recordDownload({ ownerId: user.userId, reportId, orderId: entitlement.order_id });
+  logCommerceEvent('premium_report_downloaded', { order: entitlement.order_id, report: reportId });
   return {
     bytes,
     filename: entitlement.artifact_filename,
@@ -343,6 +363,8 @@ async function getEvidenceContract({ user, reportId }) {
 }
 
 module.exports = {
+  ORDER_PLATFORM,
+  ORDER_PRODUCT_TYPE,
   allowedCurrencies,
   validateMoney,
   publishCertifiedReport,

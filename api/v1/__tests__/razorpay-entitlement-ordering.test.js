@@ -20,6 +20,11 @@ jest.mock('../../_lib/payment-utils', () => {
   const actual = jest.requireActual('../../_lib/payment-utils');
   return { ...actual, upgradeUserTier: jest.fn(), auditLog: jest.fn(async () => {}) };
 });
+// Plan-order tests: the premium (D1) store reports "not a premium order".
+jest.mock('../../_lib/premium-commerce-service', () => ({
+  processWebhookPayment: jest.fn(async () => ({ handled: false })),
+  processWebhookRefund: jest.fn(async () => ({ handled: false })),
+}));
 jest.mock('../../_lib/security', () => {
   const actual = jest.requireActual('../../_lib/security');
   return {

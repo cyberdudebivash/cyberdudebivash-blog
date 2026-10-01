@@ -155,6 +155,15 @@ for (const file of PLAN_PRICE_SURFACES) {
   });
 }
 
+// Fabricated urgency/discount copy removed on 2026-10-01 must never return.
+const RETIRED_OFFER_COPY = /\d+\s+spots\s+left|Save\s+63%|\$49\s*(?:→|->|&rarr;)\s*\$18|normally\s+\$49|class="rcb-orig"/i;
+for (const file of PLAN_PRICE_SURFACES.concat(['intelligence-store.html', 'products.html'])) {
+  test(`${file} carries no retired urgency or discount offer copy`, () => {
+    const m = readFile(file).match(RETIRED_OFFER_COPY);
+    assert.ok(!m, `${file} reintroduces retired offer copy: "${m && m[0]}"`);
+  });
+}
+
 test('pricing, API and dashboard pages show live platform prices for all three plans', () => {
   for (const file of ['pricing.html', 'api.html', 'api-dashboard.html']) {
     const src = readFile(file);
