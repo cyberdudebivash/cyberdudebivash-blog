@@ -1,11 +1,84 @@
 # Premium Report Commercial Certification (2026-10-01)
 
+**Result: 0 of 4 v2 reports are CUSTOMER READY. 4 v1 reports remain on sale and fail the same review.**
+
+A paid report must give a SOC analyst, CTI analyst, detection engineer or CISO materially more than the free sources it is built from. If it is mostly reformatted free content, it is `NOT_FOR_SALE`. The gate is not lowered to keep the catalog at four products.
+
+## Commercial value test (INR 1,999 each)
+
+| Report | Free alternative a buyer already has | What the paid report adds | Materially more value? |
+|---|---|---|---|
+| CVE-2025-62593 (Ray) | Blog post `posts/cve-2025-62593-ray-project-ray.html`: one source (KEV), "CVSS 0", generic attack path. NVD and KEV pages. | Reconciles the CNA (9.4) and NVD (8.8) scores; root cause and exploit prerequisites; analysis of the RondoDox pre-disclosure attempt and its payload flaw; hypotheses and gaps | **YES**, but blocked by an outdated core judgement (EPSS) and a rule that misses the documented path. **Refresh, then re-review.** |
+| DragonForce / Vermont XCenter | Blackpoint Cyber's public 30-page profile; Group-IB blog; ransomware.live victim and group pages (including the infostealer counts) | A condensed synthesis of those sources; the victim claim is one leak-site line | **NO**: condensed public sources. Detection half non-functional. |
+| Qilin / Spoonful of Comfort | MITRE ATT&CK S1242/G1050/G1036; Wikipedia; the aggregator post | A restatement of those pages; a vssadmin rule that public Sigma rule sets already cover | **NO** |
+| MedusaLocker / Bija Industrie | CISA/FBI advisory AA22-181A (free, with full indicator tables) | A summary of a 2022 advisory, **withholding** the indicators the advisory itself publishes | **NO**: less than the free source |
+
+The three ransomware reports share a structural weakness: a single unconfirmed leak-site claim gives nothing incident-specific (no sample, no IOCs, no TTPs). The only content left is actor background that is already public. This format should not be sold at INR 1,999. Formats that can clear the bar are listed under "Next" below.
+
+## Commercial release matrix
+
+| SKU | Human Review | v2 Published | Payment | Webhook | Download | Refund | Customer Ready |
+|---|---|---|---|---|---|---|---|
+| PIR-VULN-CVE-2025-62593-RAY | FAIL (request changes) | NO | BLOCKED (no controlled purchase) | BLOCKED (Razorpay Dashboard) | PASS in tests; live 401 unauthenticated | BLOCKED | **NO** |
+| PIR-RANSOMWARE-DRAGONFORCE-VERMONT-XCENTER | FAIL | NO | BLOCKED | BLOCKED | PASS in tests; live 401 | BLOCKED | **NO** (NOT_FOR_SALE) |
+| PIR-RANSOMWARE-QILIN-SPOONFUL-OF-COMFORT | FAIL | NO | BLOCKED | BLOCKED | PASS in tests; live 401 | BLOCKED | **NO** (NOT_FOR_SALE) |
+| PIR-RANSOMWARE-MEDUSALOCKER-BIJA-INDUSTRIE | FAIL | NO | BLOCKED | BLOCKED | PASS in tests; live 401 | BLOCKED | **NO** (NOT_FOR_SALE) |
+
+"PASS in tests" means the end-to-end suite on a real SQLite D1 with real HMAC: `api/v1/__tests__/premium-webhook-integrity.test.js`, 28 tests. It covers:
+- browser close;
+- callback before or after the webhook;
+- duplicate events;
+- the race guard;
+- cross-account denial;
+- full and partial refunds;
+- no R2 read after revocation.
+
+That is not provider evidence. Live provider evidence needs the operator steps in `docs/runbooks/BLOG-RAZORPAY-WEBHOOK.md`.
+
+## Owner decision required: the v1 products on sale
+
+All four v1 products are human-approved (2026-08-18), and existing entitlements remain valid. Today's review finds:
+
+- **Ray v1** states a materially outdated judgement ("EPSS notably low", now p99.17). Its rule filters out the DNS-rebinding requests it claims to detect. **Recommendation: pause now.** A buyer would act on a wrong risk signal.
+- **All v1:** "Premium Intelligence Canary" headings and a customer-visible `…-canary` `report_id`. **Recommendation: pause until replaced.**
+
+Pausing is reversible, hides the product from the catalog, and keeps existing buyers' access. It requires the analyst key, which is held by the operator, never committed, and never printed:
+
+```bash
+# PAUSED hides the product; SELLABLE restores it. Existing entitlements are unaffected.
+for id in cve-2025-62593-ray-canary dragonforce-vermont-xcenter-premium-canary \
+          qilin-spoonful-of-comfort-premium-canary medusalocker-bija-industrie-premium-canary; do
+  curl -sS -X POST "https://blog.cyberdudebivash.in/api/v1/premium-intelligence?action=set-status" \
+    -H "Content-Type: application/json" -H "X-Analyst-Key: $PREMIUM_ANALYST_KEY" \
+    -d "{\"report_id\":\"$id\",\"status\":\"PAUSED\"}"; echo
+done
+```
+
+After pausing, `intelligence-store.html` shows its empty-catalog state. Commercial impact: the store is pre-revenue. The live system shows no captured blog premium order: 0 captured overlap orders at cutover, and the controlled purchase has not been run. Pausing therefore forgoes no realised revenue and removes a trust risk.
+
+## Next: a sellable product line
+
+| Candidate | Why it clears the bar | Cost |
+|---|---|---|
+| **Ray v3: refreshed edition** | Live EPSS/KEV (forensic triage); corrected detection with separate remote-exposure and DNS-rebinding (Host header ≠ loopback) logic, each with explicit maturity; version-check and `--dashboard-host` hardening steps; RondoDox indicators pulled from source with dates. | Existing pipeline: generate → human review → publish |
+| Exploited-CVE assessments (KEV additions) | Vulnerability reports carry first-party analysis (score reconciliation, prerequisites, detection) that free pages lack. Ray is the template. | Same |
+| Actor dossiers built on several confirmed incidents, not one leak claim | Can carry sourced, dated IOCs and validated hunts | Same |
+
+All three reuse the existing Worker, D1, R2 and publisher. No new infrastructure, and no scheduled regeneration: paid reports stay generate → human review → publish.
+
+---
+
+## History: Tranche 4 certification (earlier on 2026-10-01), superseded
+
+Kept as the production evidence record. Its value assessment ("goes well beyond the free material") is **superseded** by the full-text review above. Its catalog, R2 and purchase-path facts were current at the time.
+
+
 **Sources:**
 - Production D1 `premium_report_catalog` and R2 `sentinel-apex-premium-reports`, read through the Cloudflare API;
 - `config/premium-catalog.json`;
 - the rendered artifacts, re-certified locally with `evaluatePremiumCertification`.
 
-## Catalog integrity (production)
+### Catalog integrity (production)
 
 | SKU / report_id | Price | Status | Artifact (R2 key suffix) | SHA-256 (prefix) | Size (D1 = R2) | Content type | Evidence object | Reviewer |
 |---|---:|---|---|---|---:|---|---|---|
@@ -18,7 +91,7 @@ All four rendered artifacts and their canonical evidence objects exist in the pr
 - **Price:** 199900 paise (₹1,999), INR.
 - **Orders and entitlements:** D1 holds 0 orders and 0 entitlements; no sales yet.
 
-## Value audit (each report against the free public article)
+### Value audit (each report against the free public article)
 
 | Report | Words | Sections | ATT&CK refs | Detection | Sources | Free public article on the blog |
 |---|---:|---:|---:|---|---:|---|
@@ -46,7 +119,7 @@ All four rendered artifacts and their canonical evidence objects exist in the pr
 
 **Assessment:** the content is analyst-grade and sourced, and it goes well beyond the free material (three of the four topics have no public article at all).
 
-## Known defect: release labelling (owner accepted, sale continues)
+### Known defect: release labelling (owner accepted, sale continues)
 
 Each delivered artifact is titled "… — **Premium Intelligence Canary**". The text also carries pipeline wording:
 - "this session";
@@ -63,7 +136,7 @@ The owner decided on 2026-10-01 to **keep all four on sale as is**. The fix is a
 
 **Market-fit note:** three reports concern single-source leak-site claims against small organisations. Their buyer value rests mainly on the actor analysis and the detection/hunting content rather than the victim claim.
 
-## Purchase path
+### Purchase path
 
 | Step | Endpoint / control | Status |
 |---|---|---|
