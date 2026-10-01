@@ -97,12 +97,33 @@ Applied on operator instruction to D1 `sentinel-apex-core` (`dfdbdd96-9054-46d6-
 
 **Rollback:** `npx wrangler d1 time-travel restore sentinel-apex-core --bookmark 00000102-00000000-000050f7-b2f049371a8c4a367199b147c780928a`.
 
+### Manual UPI / bank transfer retired (2026-10-01, operator decision): **DONE in repository, pending deploy**
+
+The operator chose to retire the flow immediately, knowing Razorpay is **not** configured in production. Live `create-razorpay-order` returns 503 `RAZORPAY_UNAVAILABLE`, so until the Razorpay secrets are set the only purchase path is email to bivash@cyberdudebivash.com.
+
+| Surface | Change |
+|---|---|
+| `POST /api/v1/billing?action=create-intent` | **410 `MANUAL_PAYMENT_RETIRED`**. No intent, UPI ID or bank details are issued and nothing is written to Redis. The action stays routed, so clients get an explicit answer rather than `INVALID_ACTION`. |
+| `submit-payment`, `status`, admin review | Unchanged and marked deprecated. Intents issued before retirement (24 h TTL) can still be submitted and reviewed, so nobody who already paid is stranded. Remove them once the admin pending queue is empty. |
+| `create-razorpay-order` unavailable message | No longer redirects to the manual flow; points to email. |
+| `pricing.html` and `payment-flow.js` (used by `buy.html` and `api-dashboard.html`) | Step 1 goes straight to online checkout. The UPI QR, UPI ID, bank details and "I've Paid — Submit UTR" are replaced by a retirement notice. |
+| `faq.html` (including FAQPage JSON-LD), `buy.html`, pricing FAQ | The copy no longer offers manual UPI/bank transfer. It explains the retirement and how earlier payments are handled. |
+
+**Evidence**
+- `api/v1/__tests__/manual-payment-retirement.test.js`: 13 tests through the real router. Negative controls: restoring any of the 5 changed files fails the suite.
+- Headless Chromium on the built `pricing.html` and `buy.html` with the production-equivalent 503: no `create-intent` request, the retirement notice is shown, the "Online checkout unavailable — email to purchase" toast appears, and there are 0 page errors.
+- Full Jest CI: 2,883 passed.
+
+**Operator follow-ups**
+1. Set Worker secrets `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET` and `RAZORPAY_WEBHOOK_SECRET` to restore self-serve purchases.
+2. Clear any pending manual submissions in the admin queue, then remove the deprecated `submit-payment` path.
+
 ### Operator decisions required (not executed; no production mutation from this environment)
 
 | Item | Evidence | Exact operator action | Validation |
 |---|---|---|---|
 | **Premium store / D1 (ICF-P1-008)** — migrations DONE 2026-10-01 (see above); catalog content and R2 artefacts still pending | Production D1 `sentinel-apex-core` (bound as `DB` in `wrangler.jsonc`, `migrations_dir: ./migrations`) contains no application tables, only `_cf_KV` (verified via the authenticated Cloudflare API, Phase A). Migrations `0001`–`0008` were never applied. This also disables watchlists, notifications, SIEM connectors, hunting and detection performance. R2 `sentinel-apex-premium-reports` exists and is empty. | 1. Review `migrations/0001…0008_*.sql`. 2. `npx wrangler d1 migrations list sentinel-apex-core --remote`. 3. `npx wrangler d1 migrations apply sentinel-apex-core --remote`. 4. Upload certified artefacts to the existing R2 bucket. No new database or bucket is needed. | `GET /api/v1/premium-intelligence?action=catalog` → 200; `wrangler d1 execute sentinel-apex-core --remote --command "SELECT name FROM sqlite_master WHERE type='table'"` lists the migration tables |
-| **Manual UPI (ICF-P1-001)** | `OPERATIONS.md` L73 says: "Do not enable manual payment fallback". Yet the `pricing.html` UPI QR/UTR flow and `api/v1/billing-legacy.js` `create-intent`/`submit-payment` are live. | Decide one: **(a)** retire the manual UPI path (remove the UI and disable the two actions; deploy), or **(b)** amend `OPERATIONS.md` to authorise it with a manual-review SLA. The financial behaviour was not changed here. | Pricing UI and API behaviour match the written policy |
+| **Manual UPI (ICF-P1-001)** — RETIRED 2026-10-01 (see above) | `OPERATIONS.md` L73 says: "Do not enable manual payment fallback". Yet the `pricing.html` UPI QR/UTR flow and `api/v1/billing-legacy.js` `create-intent`/`submit-payment` are live. | Decide one: **(a)** retire the manual UPI path (remove the UI and disable the two actions; deploy), or **(b)** amend `OPERATIONS.md` to authorise it with a manual-review SLA. The financial behaviour was not changed here. | Pricing UI and API behaviour match the written policy |
 | **Legal entity name** | The repository uses "CYBERDUDEBIVASH PRIVATE LIMITED" (16,502 occurrences) and "CyberDudeBivash Pvt. Ltd." (199 occurrences, mostly `vendor/`, `posts/` and root pages). No CIN or registration document is present to decide which is correct. | Confirm the exact registered name (as on the MCA/ROC certificate). Legal representations were left unchanged. | A single canonical name across footer, terms and invoices |
 
 ---
