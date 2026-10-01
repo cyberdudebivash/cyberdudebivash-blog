@@ -14,8 +14,8 @@
     <copyright>Copyright 2026 CyberDudeBivash. All rights reserved.</copyright>
     <managingEditor>bivash@cyberdudebivash.com (CyberDudeBivash)</managingEditor>
     <webMaster>bivash@cyberdudebivash.com (CyberDudeBivash)</webMaster>
-    <lastBuildDate>Thu, 01 Oct 2026 00:44:23 GMT</lastBuildDate>
-    <pubDate>Wed, 30 Sep 2026 12:00:00 +0000</pubDate>
+    <lastBuildDate>Thu, 01 Oct 2026 05:48:35 GMT</lastBuildDate>
+    <pubDate>Thu, 01 Oct 2026 12:00:00 +0000</pubDate>
     <ttl>60</ttl>
     <category>Cybersecurity</category>
     <category>Threat Intelligence</category>
@@ -32,182 +32,236 @@
     </image>
 
     <item>
-    <title><![CDATA[fastify vulnerable to header validation bypass via incomplete schema case normalization]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-84428-npm-fastify.html</link>
-    <description><![CDATA[Score 67/100 HIGH — CVSS 7.5 — ### Impact Fastify lowercases header-schema property names before compiling the schema, because Node.js stores request header names in lowercase. That normalization was incomplete: it lowercased only top-level `properties` keys and the root `required` array, and did not lowercase the JSON Schema Dra. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Thu, 01 Oct 2026 00:44:23 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-84428-npm-fastify.html</guid>
+    <title><![CDATA[CopyEscape Docker Flaw Lets Malicious Containers Overwrite Host Files and Gain Root Access]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-17106.html</link>
+    <description><![CDATA[Score 44/100 LOW — CVSS 7.8 — A Docker flaw, CVE-2026-17106 (dubbed CopyEscape), lets malicious containers write files outside the docker cp destination, potentially enabling code execution and root-level compromise. The issue affects Docker’s archive extraction handling in moby/go-archive. When users copy fi... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Thu, 01 Oct 2026 05:48:35 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-17106.html</guid>
     <category>Threat Intelligence</category>
-    <category>CVE_REPORT</category>
+    <category>CLOUD_SECURITY</category>
   </item>
   <item>
-    <title><![CDATA[fastify vulnerable to request body replacement via an async validation result collision]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-84504-npm-fastify.html</link>
-    <description><![CDATA[Score 63/100 MEDIUM — CVSS 8.1 — ### Impact Fastify runs a route's validator and, for a result shaped like `{ value, error }`, unwraps it: an `error` becomes a validation failure and `value` replaces the request part. This convention is intended for synchronous custom compilers (for example Joi). A JSON Schema `$async` validator, h. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Thu, 01 Oct 2026 00:44:23 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-84504-npm-fastify.html</guid>
-    <category>Threat Intelligence</category>
-    <category>CVE_REPORT</category>
-  </item>
-  <item>
-    <title><![CDATA[tornado: CurlAsyncHTTPClient enforces no response-size limit — decompression bomb drives unbounded memory accumulation to OOM]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/tornado-curlasynchttpclient-enforces-no-response-size-limit.html</link>
-    <description><![CDATA[Score 61/100 MEDIUM — CVSS 7.5 — An unbounded memory accumulation (decompression bomb) in `tornado.curl_httpclient.CurlAsyncHTTPClient` — the client-side sibling gap of CVE-2026-49855 — verified end-to-end on the 2026-08-15 master snapshot (`6.6.dev1`) and present unchanged in the latest release tag `v6.5.8` and on master (checked . Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Thu, 01 Oct 2026 00:44:23 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/tornado-curlasynchttpclient-enforces-no-response-size-limit.html</guid>
-    <category>Threat Intelligence</category>
-    <category>CVE_REPORT</category>
-  </item>
-  <item>
-    <title><![CDATA[fastify vulnerable to request validation bypass via skipped boolean false schemas]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-84469-npm-fastify.html</link>
-    <description><![CDATA[Score 61/100 MEDIUM — CVSS 7.5 — ### Impact Fastify decided whether to validate a request part by checking its schema for JavaScript truthiness. JSON Schema Draft 7 defines the boolean `false` as a valid schema that rejects every instance, but because `false` is falsy, a route that set `body`, `querystring`, `params`, or `headers` . Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Thu, 01 Oct 2026 00:44:23 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-84469-npm-fastify.html</guid>
-    <category>Threat Intelligence</category>
-    <category>CVE_REPORT</category>
-  </item>
-  <item>
-    <title><![CDATA[Axios: Node HTTP adapter prototype-pollution gadget allows request socket hijack via inherited createConnection]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-101905.html</link>
-    <description><![CDATA[Score 51/100 MEDIUM — CVSS 9.8 — Summary
-
-Axios' Node HTTP adapter can act as a read-side prototype-pollution gadget for Node's sensitive createConnection request option. The adapter creates a null-prototype options object, but Node's HTTP client can copy or normalize request options into ordinary objects before... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Thu, 01 Oct 2026 00:44:23 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-101905.html</guid>
-    <category>Threat Intelligence</category>
-    <category>NEWS_REPORT</category>
-  </item>
-  <item>
-    <title><![CDATA[Axios: Header Injection via Inherited headers After Minimal Interceptor]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-101904.html</link>
-    <description><![CDATA[Score 51/100 MEDIUM — CVSS 9.8 — Summary
-
-Axios request interceptors may return a replacement config object. If an interceptor returns a plain object without an own headers property, dispatchRequest() later evaluates config.headers and can resolve an inherited Object.prototype.headers value. In a process where a... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Thu, 01 Oct 2026 00:44:23 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-101904.html</guid>
-    <category>Threat Intelligence</category>
-    <category>NEWS_REPORT</category>
-  </item>
-  <item>
-    <title><![CDATA[Serialize JavaScript: Cross-site scripting (XSS) via unescaped </script> in serialized function bodies]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-97711.html</link>
-    <description><![CDATA[Score 51/100 MEDIUM — CVSS 9.8 — Impact
-
-serialize-javascript escapes its output so it is safe to embed inside a
-
-into the output, terminating the script element early so the remainder is
-parsed as HTML.
-
-SCRIPT_CLOSE_REGEXP used ]*> as its first alternative. The
-character class excludes only >, so a single matc... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Thu, 01 Oct 2026 00:44:23 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-97711.html</guid>
-    <category>Threat Intelligence</category>
-    <category>NEWS_REPORT</category>
-  </item>
-  <item>
-    <title><![CDATA[Axios: maxRedirects: 0 is not enforced by the fetch adapter, allowing redirect-based SSRF]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-101907.html</link>
-    <description><![CDATA[Score 51/100 MEDIUM — CVSS 9.8 — Summary
-
-Axios exposes maxRedirects to limit redirect following, and maxRedirects: 0 is used by applications as a redirect-based SSRF guard. The Node HTTP adapter enforces this option. The fetch adapter does not read it and does not set a Fetch API redirect mode, so the runtime d... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Thu, 01 Oct 2026 00:44:23 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-101907.html</guid>
-    <category>Threat Intelligence</category>
-    <category>NEWS_REPORT</category>
-  </item>
-  <item>
-    <title><![CDATA[Axios: Fetch Adapter Header Injection via Inherited FormData getHeaders]]></title>
+    <title>Axios: Fetch Adapter Header Injection via Inherited FormData getHeaders</title>
     <link>https://blog.cyberdudebivash.in/posts/cve-2026-101900.html</link>
-    <description><![CDATA[Score 51/100 MEDIUM — CVSS 9.8 — Summary
-
-Axios contains a guard in the Node HTTP adapter to avoid using an inherited Object.prototype.getHeaders as a FormData header source. The fetch adapter calls the shared resolveConfig() helper before dispatch, and that helper lacks the same guard. If another vulnerability ... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Thu, 01 Oct 2026 00:44:23 GMT</pubDate>
     <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-101900.html</guid>
-    <category>Threat Intelligence</category>
-    <category>NEWS_REPORT</category>
+    <pubDate>Thu, 01 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-101900 (CVSS 9.8) — Summary Axios contains a guard in the Node HTTP adapter to avoid using an inherited Object.prototype.getHeaders as a FormData. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-101900 (CVSS 9.8) — Summary Axios contains a guard in the Node HTTP adapter to avoid using an inherited Object.prototype.getHeaders as a FormData. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-101900.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
   </item>
+
   <item>
-    <title><![CDATA[CVE-2026-88920: Apache WSS4J: SAML Sender-Vouches Authentication Bypass]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-88920.html</link>
-    <description><![CDATA[Score 49/100 MEDIUM — CVSS 9.1 — Posted by Colm O hEigeartaigh on Sep 30 Severity: important
-
-Affected versions:
-
-- Apache WSS4J (org.apache.wss4j:wss4j-ws-security-dom) 4.0.0 before 4.0.2
-- Apache WSS4J (org.apache.wss4j:wss4j-ws-security-dom) 3.0.0 before 3.0.6
-- Apache WSS4J (org.apache.wss4j:wss4j-ws-securit... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Thu, 01 Oct 2026 00:44:23 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-88920.html</guid>
-    <category>Threat Intelligence</category>
-    <category>CVE_REPORT</category>
+    <title>Axios: Header Injection via Inherited headers After Minimal Interceptor</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-101904.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-101904.html</guid>
+    <pubDate>Thu, 01 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-101904 (CVSS 9.8) — Summary Axios request interceptors may return a replacement config object. If an interceptor returns a plain object without an own. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-101904 (CVSS 9.8) — Summary Axios request interceptors may return a replacement config object. If an interceptor returns a plain object without an own. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-101904.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
   </item>
+
   <item>
-    <title><![CDATA[CVE-2026-47541 - NVIDIA vGPU Virtual GPU Manager Out-of-Bounds Write Vulnerability]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-47541.html</link>
-    <description><![CDATA[Score 44/100 LOW — CVSS 7.8 — CVE ID : CVE-2026-47541
-
- Published : Sept. 30, 2026, 3:54 p.m. | 10 minutes ago
-
- Description : NVIDIA vGPU Virtual GPU Manager for Linux contains a vulnerability in the kernel mode layer where an attacker could cause an out-of-bounds write. A successful exploit of this vulnerab... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Thu, 01 Oct 2026 00:44:23 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-47541.html</guid>
-    <category>Threat Intelligence</category>
-    <category>AI_SECURITY</category>
+    <title>Axios: Node HTTP adapter prototype-pollution gadget allows request socket hijack via inherited createConnection</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-101905.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-101905.html</guid>
+    <pubDate>Thu, 01 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-101905 (CVSS 9.8) — Summary Axios&#39; Node HTTP adapter can act as a read-side prototype-pollution gadget for Node&#39;s sensitive createConnection request. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-101905 (CVSS 9.8) — Summary Axios&#39; Node HTTP adapter can act as a read-side prototype-pollution gadget for Node&#39;s sensitive createConnection request. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-101905.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
   </item>
+
   <item>
-    <title><![CDATA[CVE-2026-47536 - NVIDIA vGPU Manager Out-of-Bounds Read Vulnerability]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-47536.html</link>
-    <description><![CDATA[Score 44/100 LOW — CVSS 7.8 — CVE ID : CVE-2026-47536
-
- Published : Sept. 30, 2026, 3:54 p.m. | 10 minutes ago
-
- Description : NVIDIA vGPU Virtual GPU Manager for Linux contains a vulnerability in the kernel mode layer where an attacker could cause an out-of-bounds read. A successful exploit of this vulnerabi... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Thu, 01 Oct 2026 00:44:23 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-47536.html</guid>
-    <category>Threat Intelligence</category>
-    <category>AI_SECURITY</category>
+    <title>Axios: maxRedirects: 0 is not enforced by the fetch adapter, allowing redirect-based SSRF</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-101907.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-101907.html</guid>
+    <pubDate>Thu, 01 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-101907 (CVSS 9.8) — Summary Axios exposes maxRedirects to limit redirect following, and maxRedirects: 0 is used by applications as a redirect-based. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-101907 (CVSS 9.8) — Summary Axios exposes maxRedirects to limit redirect following, and maxRedirects: 0 is used by applications as a redirect-based. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-101907.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
   </item>
+
   <item>
-    <title><![CDATA[CVE-2026-47519 - NVIDIA vGPU Manager Out-of-Bounds Read Vulnerability]]></title>
+    <title>CVE-2026-47519 - NVIDIA vGPU Manager Out-of-Bounds Read Vulnerability</title>
     <link>https://blog.cyberdudebivash.in/posts/cve-2026-47519.html</link>
-    <description><![CDATA[Score 44/100 LOW — CVSS 7.8 — CVE ID : CVE-2026-47519
-
- Published : Sept. 30, 2026, 3:54 p.m. | 10 minutes ago
-
- Description : NVIDIA vGPU Virtual GPU Manager for Linux contains a vulnerability in the kernel mode layer where an attacker could cause an out-of-bounds read. A successful exploit of this vulnerabi... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Thu, 01 Oct 2026 00:44:23 GMT</pubDate>
     <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-47519.html</guid>
-    <category>Threat Intelligence</category>
-    <category>AI_SECURITY</category>
+    <pubDate>Thu, 01 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-47519 (CVSS 7.8) — CVE ID : CVE-2026-47519 Published : Sept. 30, 2026, 3:54 p.m. | 10 minutes ago Description : NVIDIA vGPU Virtual GPU Manager for. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-47519 (CVSS 7.8) — CVE ID : CVE-2026-47519 Published : Sept. 30, 2026, 3:54 p.m. | 10 minutes ago Description : NVIDIA vGPU Virtual GPU Manager for. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-47519.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
   </item>
+
   <item>
-    <title><![CDATA[CVE-2026-47521 - NVIDIA vGPU Manager Out-of-Bounds Read Vulnerability]]></title>
+    <title>CVE-2026-47521 - NVIDIA vGPU Manager Out-of-Bounds Read Vulnerability</title>
     <link>https://blog.cyberdudebivash.in/posts/cve-2026-47521.html</link>
-    <description><![CDATA[Score 44/100 LOW — CVSS 7.8 — CVE ID : CVE-2026-47521
-
- Published : Sept. 30, 2026, 3:54 p.m. | 10 minutes ago
-
- Description : NVIDIA vGPU Virtual GPU Manager for Linux contains a vulnerability in the kernel mode layer where an attacker could cause an out-of-bounds read. A successful exploit of this vulnerabi... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Thu, 01 Oct 2026 00:44:23 GMT</pubDate>
     <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-47521.html</guid>
-    <category>Threat Intelligence</category>
-    <category>AI_SECURITY</category>
+    <pubDate>Thu, 01 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-47521 (CVSS 7.8) — CVE ID : CVE-2026-47521 Published : Sept. 30, 2026, 3:54 p.m. | 10 minutes ago Description : NVIDIA vGPU Virtual GPU Manager for. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-47521 (CVSS 7.8) — CVE ID : CVE-2026-47521 Published : Sept. 30, 2026, 3:54 p.m. | 10 minutes ago Description : NVIDIA vGPU Virtual GPU Manager for. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-47521.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
   </item>
+
   <item>
-    <title><![CDATA[CVE-2026-47574 - NVIDIA vGPU Manager Resource Isolation Vulnerability]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-47574.html</link>
-    <description><![CDATA[Score 44/100 LOW — CVSS 7.8 — CVE ID : CVE-2026-47574
-
- Published : Sept. 30, 2026, 3:54 p.m. | 10 minutes ago
-
- Description : NVIDIA vGPU Virtual GPU Manager for Linux contains a vulnerability where an attacker could cause incorrect resource transfer between spheres. A successful exploit of this vulnerabilit... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Thu, 01 Oct 2026 00:44:23 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-47574.html</guid>
-    <category>Threat Intelligence</category>
-    <category>AI_SECURITY</category>
+    <title>CVE-2026-47536 - NVIDIA vGPU Manager Out-of-Bounds Read Vulnerability</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-47536.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-47536.html</guid>
+    <pubDate>Thu, 01 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-47536 (CVSS 7.8) — CVE ID : CVE-2026-47536 Published : Sept. 30, 2026, 3:54 p.m. | 10 minutes ago Description : NVIDIA vGPU Virtual GPU Manager for. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-47536 (CVSS 7.8) — CVE ID : CVE-2026-47536 Published : Sept. 30, 2026, 3:54 p.m. | 10 minutes ago Description : NVIDIA vGPU Virtual GPU Manager for. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-47536.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
   </item>
+
+  <item>
+    <title>CVE-2026-47541 - NVIDIA vGPU Virtual GPU Manager Out-of-Bounds Write Vulnerability</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-47541.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-47541.html</guid>
+    <pubDate>Thu, 01 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-47541 (CVSS 7.8) — CVE ID : CVE-2026-47541 Published : Sept. 30, 2026, 3:54 p.m. | 10 minutes ago Description : NVIDIA vGPU Virtual GPU Manager for. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-47541 (CVSS 7.8) — CVE ID : CVE-2026-47541 Published : Sept. 30, 2026, 3:54 p.m. | 10 minutes ago Description : NVIDIA vGPU Virtual GPU Manager for. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-47541.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>CVE-2026-47574 - NVIDIA vGPU Manager Resource Isolation Vulnerability</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-47574.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-47574.html</guid>
+    <pubDate>Thu, 01 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-47574 (CVSS 7.8) — CVE ID : CVE-2026-47574 Published : Sept. 30, 2026, 3:54 p.m. | 10 minutes ago Description : NVIDIA vGPU Virtual GPU Manager for. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-47574 (CVSS 7.8) — CVE ID : CVE-2026-47574 Published : Sept. 30, 2026, 3:54 p.m. | 10 minutes ago Description : NVIDIA vGPU Virtual GPU Manager for. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-47574.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>fastify vulnerable to header validation bypass via incomplete schema case normalization</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-84428-npm-fastify.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-84428-npm-fastify.html</guid>
+    <pubDate>Thu, 01 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-84428 (CVSS 7.5) — Impact Fastify lowercases header-schema property names before compiling the schema, because Node.js stores request header names in. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-84428 (CVSS 7.5) — Impact Fastify lowercases header-schema property names before compiling the schema, because Node.js stores request header names in. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-84428-npm-fastify.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>fastify vulnerable to request validation bypass via skipped boolean false schemas</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-84469-npm-fastify.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-84469-npm-fastify.html</guid>
+    <pubDate>Thu, 01 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-84469 (CVSS 7.5) — Impact Fastify decided whether to validate a request part by checking its schema for JavaScript truthiness. JSON Schema Draft 7. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-84469 (CVSS 7.5) — Impact Fastify decided whether to validate a request part by checking its schema for JavaScript truthiness. JSON Schema Draft 7. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-84469-npm-fastify.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>fastify vulnerable to request body replacement via an async validation result collision</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-84504-npm-fastify.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-84504-npm-fastify.html</guid>
+    <pubDate>Thu, 01 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-84504 (CVSS 8.1) — Impact Fastify runs a route&#39;s validator and, for a result shaped like { value, error }, unwraps it: an error becomes a validation. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-84504 (CVSS 8.1) — Impact Fastify runs a route&#39;s validator and, for a result shaped like { value, error }, unwraps it: an error becomes a validation. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-84504-npm-fastify.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>CVE-2026-88920: Apache WSS4J: SAML Sender-Vouches Authentication Bypass</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-88920.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-88920.html</guid>
+    <pubDate>Thu, 01 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-88920 (CVSS 9.1) — Posted by Colm O hEigeartaigh on Sep 30 Severity: important Affected versions: - Apache WSS4J. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-88920 (CVSS 9.1) — Posted by Colm O hEigeartaigh on Sep 30 Severity: important Affected versions: - Apache WSS4J. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-88920.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>Serialize JavaScript: Cross-site scripting (XSS) via unescaped &amp;lt;/script&amp;gt; in serialized function bodies</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-97711.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-97711.html</guid>
+    <pubDate>Thu, 01 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-97711 (CVSS 9.8) — Impact serialize-javascript escapes its output so it is safe to embed inside a into the output, terminating the script element. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-97711 (CVSS 9.8) — Impact serialize-javascript escapes its output so it is safe to embed inside a into the output, terminating the script element. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-97711.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>GitHub Internal Repository Breach — Consolidated Intelligence</title>
+    <link>https://blog.cyberdudebivash.in/posts/github-confirms-breach-4k-internal-repos-stolen.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/github-confirms-breach-4k-internal-repos-stolen.html</guid>
+    <pubDate>Thu, 01 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[This archived GitHub / TeamPCP intelligence item has been consolidated into the complete SENTINEL APEX GitHub breach report.]]></description>
+    <content:encoded><![CDATA[<p>This archived GitHub / TeamPCP intelligence item has been consolidated into the complete SENTINEL APEX GitHub breach report.</p><p><a href="https://blog.cyberdudebivash.in/posts/github-confirms-breach-4k-internal-repos-stolen.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>Cyber Threat Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>tornado: CurlAsyncHTTPClient enforces no response-size limit — decompression bomb drives unbounded memory accumulation to OOM</title>
+    <link>https://blog.cyberdudebivash.in/posts/tornado-curlasynchttpclient-enforces-no-response-size-limit.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/tornado-curlasynchttpclient-enforces-no-response-size-limit.html</guid>
+    <pubDate>Thu, 01 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[An unbounded memory accumulation (decompression bomb) in tornado.curl_httpclient.CurlAsyncHTTPClient — the client-side sibling gap of CVE-2026-49855 —. Cybersecurity analysis, IOCs, and detection guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>An unbounded memory accumulation (decompression bomb) in tornado.curl_httpclient.CurlAsyncHTTPClient — the client-side sibling gap of CVE-2026-49855 —. Cybersecurity analysis, IOCs, and detection guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/tornado-curlasynchttpclient-enforces-no-response-size-limit.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>Cyber Threat Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
   <item>
     <title>CVE-2026-100507 - WordPress If-So Dynamic Content Personalization plugin &amp;lt;= 1.10.1 - Cross Site Scripting (XSS) vulnerability</title>
     <link>https://blog.cyberdudebivash.in/posts/cve-2026-100507.html</link>
@@ -680,225 +734,6 @@ Affected versions:
     <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
     <category>CVE Analysis</category>
     <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>CVE-2026-94545 (CVSS 9.5) affects Next.js apps using next/og on the Node.js runtime with sharp.</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-94545-reddit-cyber-threat-intelligence.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-94545-reddit-cyber-threat-intelligence.html</guid>
-    <pubDate>Wed, 30 Sep 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-94545 (CVSS 9.5) — A vulnerable OG image endpoint could potentially allow an unauthenticated attacker to achieve remote code execution. Affected:. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-94545 (CVSS 9.5) — A vulnerable OG image endpoint could potentially allow an unauthenticated attacker to achieve remote code execution. Affected:. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-94545-reddit-cyber-threat-intelligence.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>CVE-2026-96886 - Course Booking System &amp;lt; 7.0.9 - Unauthenticated Attendee PII Disclosure via CSV Export</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-96886.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-96886.html</guid>
-    <pubDate>Wed, 30 Sep 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-96886 (CVSS 9.1) — CVE-2026-96886 - Course Booking System &lt; 7.0.9 - Unauthenticated Attendee PII Disclosure via CSV Export. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-96886 (CVSS 9.1) — CVE-2026-96886 - Course Booking System &lt; 7.0.9 - Unauthenticated Attendee PII Disclosure via CSV Export. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-96886.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>CVE-2026-97287 - WordPress Event Tickets plugin &amp;lt;= 5.29.5 - SQL Injection vulnerability</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-97287.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-97287.html</guid>
-    <pubDate>Wed, 30 Sep 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-97287 (CVSS 8.8) — CVE-2026-97287 - WordPress Event Tickets plugin &lt;= 5.29.5 - SQL Injection vulnerability. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-97287 (CVSS 8.8) — CVE-2026-97287 - WordPress Event Tickets plugin &lt;= 5.29.5 - SQL Injection vulnerability. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-97287.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>CVE-2026-97288 - WordPress OAuth Server plugin &amp;lt;= 4.5.1 - Cross Site Scripting (XSS) vulnerability</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-97288.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-97288.html</guid>
-    <pubDate>Wed, 30 Sep 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-97288 (CVSS 6.1) — CVE-2026-97288 - WordPress OAuth Server plugin &lt;= 4.5.1 - Cross Site Scripting (XSS) vulnerability. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-97288 (CVSS 6.1) — CVE-2026-97288 - WordPress OAuth Server plugin &lt;= 4.5.1 - Cross Site Scripting (XSS) vulnerability. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-97288.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>CVE-2026-97289 - WordPress Quiz And Survey Master plugin &amp;lt;= 11.2.6 - Cross Site Scripting (XSS) vulnerability</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-97289.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-97289.html</guid>
-    <pubDate>Wed, 30 Sep 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-97289 (CVSS 6.1) — CVE-2026-97289 - WordPress Quiz And Survey Master plugin &lt;= 11.2.6 - Cross Site Scripting (XSS) vulnerability. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-97289 (CVSS 6.1) — CVE-2026-97289 - WordPress Quiz And Survey Master plugin &lt;= 11.2.6 - Cross Site Scripting (XSS) vulnerability. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-97289.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>CVE-2026-97292 - WordPress YITH WooCommerce Tab Manager plugin &amp;lt;= 2.15.0 - Cross Site Scripting (XSS) vulnerability</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-97292.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-97292.html</guid>
-    <pubDate>Wed, 30 Sep 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-97292 (CVSS 9.8) — CVE-2026-97292 - WordPress YITH WooCommerce Tab Manager plugin &lt;= 2.15.0 - Cross Site Scripting (XSS) vulnerability. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-97292 (CVSS 9.8) — CVE-2026-97292 - WordPress YITH WooCommerce Tab Manager plugin &lt;= 2.15.0 - Cross Site Scripting (XSS) vulnerability. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-97292.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>CVE-2026-97293 - WordPress Media LIbrary Assistant plugin &amp;lt;= 3.41 - SQL Injection vulnerability</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-97293.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-97293.html</guid>
-    <pubDate>Wed, 30 Sep 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-97293 (CVSS 8.8) — CVE-2026-97293 - WordPress Media LIbrary Assistant plugin &lt;= 3.41 - SQL Injection vulnerability. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-97293 (CVSS 8.8) — CVE-2026-97293 - WordPress Media LIbrary Assistant plugin &lt;= 3.41 - SQL Injection vulnerability. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-97293.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>CVE-2026-97298 - WordPress King Addons for Elementor plugin &amp;lt;= 51.1.86 - Cross Site Scripting (XSS) vulnerability</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-97298.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-97298.html</guid>
-    <pubDate>Wed, 30 Sep 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-97298 (CVSS 6.1) — CVE-2026-97298 - WordPress King Addons for Elementor plugin &lt;= 51.1.86 - Cross Site Scripting (XSS) vulnerability. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-97298 (CVSS 6.1) — CVE-2026-97298 - WordPress King Addons for Elementor plugin &lt;= 51.1.86 - Cross Site Scripting (XSS) vulnerability. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-97298.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>CVE-2026-97299 - WordPress Razorpay Payment Links for WooCommerce plugin &amp;lt;= 2.1.5 - Cross Site Request Forgery (CSRF) vulnerability</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-97299.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-97299.html</guid>
-    <pubDate>Wed, 30 Sep 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-97299 (CVSS 9.8) — CVE-2026-97299 - WordPress Razorpay Payment Links for WooCommerce plugin &lt;= 2.1.5 - Cross Site Request Forgery (CSRF). Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-97299 (CVSS 9.8) — CVE-2026-97299 - WordPress Razorpay Payment Links for WooCommerce plugin &lt;= 2.1.5 - Cross Site Request Forgery (CSRF). Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-97299.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>CVE-2026-97301 - WordPress Cool Formkit Lite plugin &amp;lt;= 2.7.8 - Cross Site Scripting (XSS) vulnerability</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-97301.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-97301.html</guid>
-    <pubDate>Wed, 30 Sep 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-97301 (CVSS 6.1) — CVE-2026-97301 - WordPress Cool Formkit Lite plugin &lt;= 2.7.8 - Cross Site Scripting (XSS) vulnerability. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-97301 (CVSS 6.1) — CVE-2026-97301 - WordPress Cool Formkit Lite plugin &lt;= 2.7.8 - Cross Site Scripting (XSS) vulnerability. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-97301.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>CVE-2026-97316 - Broken Link Notifier 1.3.1 - 2.0.0 - Unauthenticated SSRF via Redirect Bypass</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-97316.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-97316.html</guid>
-    <pubDate>Wed, 30 Sep 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-97316 (CVSS 9.1) — CVE-2026-97316 - Broken Link Notifier 1.3.1 - 2.0.0 - Unauthenticated SSRF via Redirect Bypass. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-97316 (CVSS 9.1) — CVE-2026-97316 - Broken Link Notifier 1.3.1 - 2.0.0 - Unauthenticated SSRF via Redirect Bypass. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-97316.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>GitHub Internal Repository Breach — Consolidated Intelligence</title>
-    <link>https://blog.cyberdudebivash.in/posts/github-confirms-breach-4k-internal-repos-stolen.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/github-confirms-breach-4k-internal-repos-stolen.html</guid>
-    <pubDate>Wed, 30 Sep 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[This archived GitHub / TeamPCP intelligence item has been consolidated into the complete SENTINEL APEX GitHub breach report.]]></description>
-    <content:encoded><![CDATA[<p>This archived GitHub / TeamPCP intelligence item has been consolidated into the complete SENTINEL APEX GitHub breach report.</p><p><a href="https://blog.cyberdudebivash.in/posts/github-confirms-breach-4k-internal-repos-stolen.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>Cyber Threat Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>Japanese railway operators Keio Corporation and Tokyo Metro disclose security breaches</title>
-    <link>https://blog.cyberdudebivash.in/posts/japanese-railway-operators-keio-corporation-and-tokyo-metro.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/japanese-railway-operators-keio-corporation-and-tokyo-metro.html</guid>
-    <pubDate>Wed, 30 Sep 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[Keio, a major Japanese railway operator, was hit by ransomware, disrupting business systems and forcing the company to shut down its network. Keio. Cybersecurity analysis, IOCs, and detection guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>Keio, a major Japanese railway operator, was hit by ransomware, disrupting business systems and forcing the company to shut down its network. Keio. Cybersecurity analysis, IOCs, and detection guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/japanese-railway-operators-keio-corporation-and-tokyo-metro.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>Cyber Threat Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>league/commonmark: Quadratic-time denial of service in the GitHub Flavored Markdown Table extension block-start scan</title>
-    <link>https://blog.cyberdudebivash.in/posts/league-commonmark-quadratic-time-denial-of-service-in-the-g.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/league-commonmark-quadratic-time-denial-of-service-in-the-g.html</guid>
-    <pubDate>Wed, 30 Sep 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[Summary league/commonmark&#39;s GitHub Flavored Markdown Table extension registers TableStartParser as a block-start parser. While a paragraph is the active. Cybersecurity analysis, IOCs, and detection guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>Summary league/commonmark&#39;s GitHub Flavored Markdown Table extension registers TableStartParser as a block-start parser. While a paragraph is the active. Cybersecurity analysis, IOCs, and detection guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/league-commonmark-quadratic-time-denial-of-service-in-the-g.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>Cyber Threat Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>@nestjs/platform-fastify: Path-scoped middleware bypass via absolute-form request targets</title>
-    <link>https://blog.cyberdudebivash.in/posts/nestjs-platform-fastify-path-scoped-middleware-bypass-via.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/nestjs-platform-fastify-path-scoped-middleware-bypass-via.html</guid>
-    <pubDate>Wed, 30 Sep 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[| Field | Value | | --- | --- | | Ecosystem | npm | | Package | @nestjs/platform-fastify | | Affected versions | &gt;= 12.0.0, res.end(&#39;blocked by auth. Cybersecurity analysis, IOCs, and detection guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>| Field | Value | | --- | --- | | Ecosystem | npm | | Package | @nestjs/platform-fastify | | Affected versions | &gt;= 12.0.0, res.end(&#39;blocked by auth. Cybersecurity analysis, IOCs, and detection guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/nestjs-platform-fastify-path-scoped-middleware-bypass-via.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>Cyber Threat Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>Nodemailer addressparser: O(n^2) on comment-joined addresses enables a remote DoS (reachable via mailparser)</title>
-    <link>https://blog.cyberdudebivash.in/posts/nodemailer-addressparser-o-n-2-on-comment-joined-addresses.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/nodemailer-addressparser-o-n-2-on-comment-joined-addresses.html</guid>
-    <pubDate>Wed, 30 Sep 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[Summary nodemailer/lib/addressparser parses one shape of address in O(n^2) time. A single ~640 KB address value blocks the Node.js event loop for roughly 7. Cybersecurity analysis, IOCs, and detection guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>Summary nodemailer/lib/addressparser parses one shape of address in O(n^2) time. A single ~640 KB address value blocks the Node.js event loop for roughly 7. Cybersecurity analysis, IOCs, and detection guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/nodemailer-addressparser-o-n-2-on-comment-joined-addresses.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>Cyber Threat Intelligence</category>
     <category>Cybersecurity</category>
     <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
   </item>
