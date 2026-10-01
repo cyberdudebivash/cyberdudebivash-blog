@@ -1,5 +1,46 @@
 # Intel Factory — Customer Release Certification
 
+## Tranche 3 (2026-10-01): #314 live certification + revenue activation readiness
+
+### #314 in production: **PASS**
+
+#314 merged as `726ebb9f` and was deployed by the drift reconciler.
+
+| Check (live, read-only) | Expected | Actual | Result |
+|---|---|---|---|
+| `POST billing?action=create-intent` | 410 `MANUAL_PAYMENT_RETIRED`, no UPI/bank data | 410, message only | PASS |
+| `POST billing?action=create-razorpay-order` | 503 with email fallback, no config details | 503 "Online checkout is temporarily unavailable. Email bivash@cyberdudebivash.com to purchase." | PASS |
+| UPI ID / QR / `create-intent` on pricing, buy, faq, payment-flow, api pages | 0 | 0 | PASS |
+| Premium catalog | 200 | 200, `count: 0` | PASS |
+| IOC rebalance after a post-merge pipeline run (#4175, dispatched 09:00Z) | `type_shares` mix | `generated 09:01:27Z`, healthy, 600: url 224, ipv4 136, domain 120, sha256 120; HIGH 535 / MEDIUM 65; `items: []` | PASS |
+| Razorpay webhook | rejects unsigned / forged | 400 / 400 | PASS |
+
+Before #4175 the live feed was the pre-merge 07:00 build: url 459, ipv4 139, domain 1, sha256 1.
+
+### This tranche (repository; pending merge and deploy)
+
+- **Razorpay:**
+  - server-side payment confirmation before any grant (captured, order, plan amount, currency);
+  - 202 for authorized-but-uncaptured payments;
+  - fail-closed 503 on lookup outage;
+  - webhook amount checks;
+  - expired-order recovery from server-set order notes;
+  - API-plan refunds recorded once;
+  - post-payment screens reflect the real result and point to the API dashboard.
+  - 11/11 mutations detected.
+- **Premium store:**
+  - `config/premium-catalog.json` lists 4 human-approved products (reviewer BIVASH NAYAK, APPROVE, review hash bound to artifact) at INR 1,999 each (operator decision);
+  - `scripts/publish-premium-reports.js` publishes through the production endpoint.
+  - The download entitlement check was previously untested and is now tested (P1 mutation now detected).
+- **Seats:** "Seats: 5 included" (`api.html`) and "Multi-seat SOC access" (`pricing.html`) removed; tests guard.
+- **Cost:**
+  - IOC feed hard limit 600;
+  - live widget polling 60 s → 15 min, paused when hidden;
+  - `cost-guardrails.test.js` added (5/5 mutations detected);
+  - `CLOUDFLARE-COST-GUARDRAILS.md` and `CLOUDFLARE-COST-IMPACT-REVIEW.md`: **ZERO MATERIAL INCREMENT**, no new resources;
+  - Cloudflare plan and usage NOT VERIFIED (token scope).
+- **Pending manual payments:** the Redis review queue is not readable from this environment (no Upstash credentials). Keep `submit-payment` and admin review until the operator confirms the queue is empty.
+
 ## Tranche 2 (2026-10-01): #310 production certification + evidence-only IOC engine
 
 ### Phase A — PR cyberdudebivash/cyberdudebivash-blog#310 in production: **PASS**

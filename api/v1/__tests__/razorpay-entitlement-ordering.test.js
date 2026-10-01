@@ -49,7 +49,7 @@ function mockRes() {
   return res;
 }
 function webhookReq() {
-  const body = { event: 'payment.captured', payload: { payment: { entity: { id: PAYMENT_ID, order_id: ORDER_ID } } } };
+  const body = { event: 'payment.captured', payload: { payment: { entity: { id: PAYMENT_ID, order_id: ORDER_ID, amount: 2069900, currency: 'INR', status: 'captured' } } } };
   const raw = JSON.stringify(body);
   return { method: 'POST', headers: { 'x-razorpay-signature': 'ab'.repeat(32) }, body: raw, __raw: raw, query: {} };
 }
@@ -63,7 +63,8 @@ function verifyReq() {
 
 beforeEach(() => {
   mem.clear();
-  mem.set(`payment:rzp:order:${ORDER_ID}`, { email: EMAIL, planType: 'team', amount: '2069900', currency: 'INR', status: 'created' });
+  // amount is stored in rupees by create-razorpay-order (plan.amount); Razorpay amounts are paise.
+  mem.set(`payment:rzp:order:${ORDER_ID}`, { email: EMAIL, planType: 'team', amount: '20699', currency: 'INR', status: 'created' });
   upgradeUserTier.mockReset();
   upgradeUserTier
     .mockRejectedValueOnce(new Error('transient redis write failure'))
@@ -72,6 +73,7 @@ beforeEach(() => {
   jest.spyOn(razorpay, 'verifyWebhookSignature').mockReturnValue(true);
   jest.spyOn(razorpay, 'verifyPaymentSignature').mockReturnValue(true);
   jest.spyOn(razorpay, 'fetchOrder').mockResolvedValue({ id: ORDER_ID, notes: {} });
+  jest.spyOn(razorpay, 'fetchPayment').mockResolvedValue({ id: PAYMENT_ID, order_id: ORDER_ID, amount: 2069900, currency: 'INR', status: 'captured' });
   global.fetch = jest.fn(async () => ({ ok: false, json: async () => ({}) }));
 });
 

@@ -30,7 +30,7 @@ const {
   MIN_UTR_LENGTH, MAX_UTR_LENGTH,
   INTENT_TTL_SECONDS, SUBMISSION_TTL_SECONDS,
   generateIntentId, sanitize, validateEmail, normalizeEmail, emailKey,
-  now, parseHash, ok, fail, parseBody, auditLog, upgradeUserTier,
+  now, parseHash, ok, fail, parseBody, auditLog, upgradeUserTier, checkPlanPayment,
 } = require('../_lib/payment-utils');
 const sec = require('../_lib/security');
 const { getProduct } = require('../_lib/products-catalog');
@@ -502,6 +502,30 @@ async function handleVerifyRazorpayPayment(req, res) {
   }
   if (order.status === 'paid') {
     return ok(res, { message: 'Payment already verified and applied.', already_processed: true });
+  }
+
+  /* ── Server-side confirmation: the money arrived for this plan ────
+     The signature binds payment to order; this confirms with Razorpay that
+     the payment is for this order at the authoritative plan amount and
+     currency, and is captured. Nothing is granted on any mismatch, and a
+     lookup outage fails closed (retryable) rather than trusting the client. */
+  let paymentState;
+  try {
+    const payment = await razorpay.fetchPayment(paymentId);
+    paymentState = checkPlanPayment(payment, { orderId, planType: order.planType });
+  } catch (e) {
+    if (e && e.code) {
+      await auditLog('RAZORPAY_PAYMENT_REJECTED', { ip, email, orderId, paymentId, code: e.code });
+      return fail(res, 409, e.code, 'Payment could not be confirmed for this plan. Contact bivash@cyberdudebivash.com with your payment ID.');
+    }
+    return fail(res, 503, 'PAYMENT_LOOKUP_UNAVAILABLE', 'Payment confirmation is temporarily unavailable. Your payment is safe — retry in a minute.');
+  }
+  if (paymentState === 'authorized') {
+    return ok(res, {
+      message: 'Payment received and awaiting capture. Your plan activates automatically within a few minutes.',
+      pending_capture: true,
+      verification: { order_id: orderId, payment_id: paymentId, plan_type: planType },
+    }, 202);
   }
 
   try {

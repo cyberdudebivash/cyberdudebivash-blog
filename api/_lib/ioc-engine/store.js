@@ -43,6 +43,10 @@ const AGING_DAYS = Object.freeze({
 const RETAIN_EXPIRED_DAYS = 30;
 const RETAIN_REVOKED_DAYS = 90;
 const STORE_CAP = 2000;
+// Hard ceiling on the published feed (Worker bundle size / cost guardrail,
+// docs/operations/CLOUDFLARE-COST-GUARDRAILS.md). config.feed_cap may lower
+// it; raising it requires changing this constant in review.
+const FEED_CAP_HARD_LIMIT = 600;
 const MAX_OBSERVATIONS = 8;
 const MAX_REVOCATIONS_PUBLISHED = 100;
 
@@ -320,7 +324,8 @@ function buildFeed(store, config, sourceRuns, nowIso) {
     (b.last_seen || '').localeCompare(a.last_seen || '') ||
     a.id.localeCompare(b.id);
   eligible.sort(order);
-  const items = selectBalanced(eligible, Number(config.feed_cap) || 600, config.type_shares).sort(order).map(pick);
+  const cap = Math.min(Number(config.feed_cap) || FEED_CAP_HARD_LIMIT, FEED_CAP_HARD_LIMIT);
+  const items = selectBalanced(eligible, cap, config.type_shares).sort(order).map(pick);
 
   const enabled = config.sources.filter(s => s.enabled);
   const okStates = new Set(['ok', 'not_modified']);
@@ -392,6 +397,8 @@ function validateFeed(feed, config) {
     if (!/^[0-9a-f]{64}$/.test(i.provenance_hash || '')) problems.push(`${where}: provenance_hash`);
   }
   if (feed.items.length > (Number(config.feed_cap) || 600)) problems.push('feed exceeds cap');
+  if (Number(config.feed_cap) > FEED_CAP_HARD_LIMIT) problems.push(`feed_cap ${config.feed_cap} exceeds hard limit ${FEED_CAP_HARD_LIMIT}`);
+  if (feed.items.length > FEED_CAP_HARD_LIMIT) problems.push('feed exceeds hard limit');
   problems.push(...validateTypeShares(config.type_shares));
   return problems;
 }
@@ -434,7 +441,7 @@ function writeJsonAtomic(file, data, pretty = false) {
 }
 
 module.exports = {
-  SCHEMA_VERSION, CONFIDENCE_LEVELS, CONFIDENCE_SCORE, STATUSES, AGING_DAYS, STORE_CAP, STIX_NAMESPACE,
+  SCHEMA_VERSION, CONFIDENCE_LEVELS, CONFIDENCE_SCORE, STATUSES, AGING_DAYS, STORE_CAP, FEED_CAP_HARD_LIMIT, STIX_NAMESPACE,
   emptyStore, indicatorId, indicatorKey, uuidv5, observationLevel, lifecycle, scoreConfidence, recommendedAction,
   mergeCandidates, refreshDerived, selectBalanced, validateTypeShares, buildFeed, validateFeed, buildPublicSummary, readJsonFile, writeJsonAtomic,
 };

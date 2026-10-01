@@ -73,3 +73,16 @@ test('the SIEM export formats the offer names are real detection-download format
     .filter(([, p]) => p.capabilities.deploy_supported && !p.is_sandbox).map(([id]) => id);
   assert.ok(liveDeployable.length >= 1, 'offer names a live connector; at least one non-sandbox platform must be deployable');
 });
+
+// Seats: there is no team-membership or seat model anywhere in the codebase
+// (one API key per account). "5 seats" / "multi-seat access" must never be
+// advertised as included; the truthful "not yet available" notes are allowed.
+const SEAT_PAGES = ['pricing.html', 'api.html', 'api-dashboard.html', 'buy.html', 'faq.html', 'enterprise.html', 'index.html'];
+for (const file of SEAT_PAGES) {
+  test(`${file} does not advertise seats that are not enforced`, () => {
+    const src = readFile(file).replace(/multi-seat access not yet available/gi, '');
+    assert.ok(!/\b\d+\s*(team\s*)?seats?\b/i.test(src), `${file} advertises a seat count`);
+    assert.ok(!/<span>Seats<\/span>/i.test(src), `${file} has a Seats plan row`);
+    assert.ok(!/multi-seat/i.test(src), `${file} advertises multi-seat access`);
+  });
+}

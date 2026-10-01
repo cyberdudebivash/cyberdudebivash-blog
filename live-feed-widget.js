@@ -25,7 +25,9 @@
     CONTAINER_ID:'live-intel-feed',
     CACHE_KEY:   'cbd_lfw_v5',
     CACHE_TTL:   55 * 1000,        // 55s — just under refresh interval
-    REFRESH_MS:  60 * 1000,        // Phase 10: 60s auto-refresh (pipeline now every 5 min)
+    // The intel pipeline publishes every ~1.5-5 h; polling faster only adds
+    // requests (docs/operations/CLOUDFLARE-COST-GUARDRAILS.md).
+    REFRESH_MS:  15 * 60 * 1000,
     MAX_CARDS:   15,               // v5: show more cards
     LOOKBACK_DAYS: 30
   };
@@ -457,6 +459,7 @@
     // Refresh the displayed source state; do not relabel browser fetch time as
     // intelligence publication time.
     setInterval(function(){
+      if (document.hidden) return; // no background polling from hidden tabs
       doFetch(container,true).then(function(){
         var ts=document.getElementById('lfw-label-ts');
         if(ts) ts.textContent=_lastFetchAt?'Feed updated '+timeAgo(_lastFetchAt):'Feed timestamp unavailable';
