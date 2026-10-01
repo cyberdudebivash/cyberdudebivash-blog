@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-01T00:44:23.301Z",
+  "generated": "2026-10-01T05:48:35.038Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -8,55 +8,8 @@
   "endpoint": "/api/intel/raw.json",
   "description": "Raw unfiltered S2N feed — all items including suppressed. Enterprise tier.",
   "note": "Access requires Enterprise API key. Includes suppression_reason and full IOC data.",
-  "count": 105,
+  "count": 101,
   "items": [
-    {
-      "id": "GHSA-058f127a8aead0fe",
-      "title": "tornado: CurlAsyncHTTPClient enforces no response-size limit — decompression bomb drives unbounded memory accumulation t",
-      "description": "An unbounded memory accumulation (decompression bomb) in `tornado.curl_httpclient.CurlAsyncHTTPClient` — the client-side sibling gap of CVE-2026-49855 — verified end-to-end on the 2026-08-15 master snapshot (`6.6.dev1`) and present unchanged in the latest release tag `v6.5.8` and on master (checked ",
-      "cvss": 7.5,
-      "final_ps": 59,
-      "quality_score": 0.548,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-09-30",
-      "last_seen": "2026-09-30",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "pip",
-      "product": "tornado",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-chx6-46f5-w4vp",
-        "https://github.com/tornadoweb/tornado/security/advisories/GHSA-chx6-46f5-w4vp",
-        "https://github.com/tornadoweb/tornado/pull/3719",
-        "https://github.com/tornadoweb/tornado/commit/15f056080d8e456f92cca8ad0c33e5a5480414ac"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=1.00",
-          "recency=0d (score=1.00)",
-          "QS=0.547"
-        ],
-        "priority": [
-          "base_ps=59 (no boosts)"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
-      "iocs": []
-    },
     {
       "id": "CVE-2026-50522",
       "title": "Critical SharePoint RCE CVE-2026-50522 Under Active Exploitation After Public PoC",
@@ -380,98 +333,6 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-91776",
-      "title": "jackson-databind retains every unknown raw type ID",
-      "description": "Summary\n\nWith @JsonTypeInfo(use = Id.NAME, defaultImpl = ...), every distinct unknown\nraw type ID selects the same fallback deserializer but is retained as a\nseparate key in TypeDeserializerBase._deserializers. An attacker who can\nrepeatedly supply new unknown type IDs can grow t... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 46,
-      "quality_score": 0.493,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-30",
-      "last_seen": "2026-09-30",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-91776"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-wv8q-qhhj-9h54"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=0d (score=1.00)",
-          "QS=0.493"
-        ],
-        "priority": [
-          "base_ps=46 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-101916",
-      "title": "@grpc/grpc-js: In certain configurations, getAuthContext can return unauthorized certificates as though they were author",
-      "description": "Impact\nWhen server credentials are created with the requireClientCertificate option set to false, getAuthContext does not distinguish between authorized and unauthorized certificates in its return value. This can create improper authentication vulnerabilities for @grpc/grpc-js us... [Full analysis a",
-      "cvss": 7.4,
-      "final_ps": 45,
-      "quality_score": 0.493,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-30",
-      "last_seen": "2026-09-30",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-101916"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-m9gg-hp2v-232j"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=0d (score=1.00)",
-          "QS=0.493"
-        ],
-        "priority": [
-          "base_ps=45 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
       "id": "CVE-2026-86218",
       "title": "N-able patches critical N-central zero-day exploited in the wild (CVE-2026-86218)",
       "description": "",
@@ -565,53 +426,6 @@
       },
       "suppressed": false,
       "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "GHSA-0eaa8bc89812c8c3",
-      "title": "Tornado: StaticFileHandler follows symlinks outside static root (path traversal)",
-      "description": "### Summary\nStaticFileHandler allows an unauthenticated attacker to read arbitrary files from the server's filesystem by requesting a path that resolves to a symbolic link placed inside the static root directory. Any application that serves user-uploadable content, or whose static directory is popul",
-      "cvss": 0,
-      "final_ps": 43,
-      "quality_score": 0.478,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-09-30",
-      "last_seen": "2026-09-30",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "pip",
-      "product": "tornado",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-c2m8-h5v5-343r",
-        "https://github.com/tornadoweb/tornado/security/advisories/GHSA-c2m8-h5v5-343r",
-        "https://github.com/tornadoweb/tornado/pull/3719",
-        "https://github.com/tornadoweb/tornado/commit/437ab5f76565403b3403438d2e555d11f8128d32"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.65",
-          "recency=0d (score=1.00)",
-          "QS=0.478"
-        ],
-        "priority": [
-          "+3 supply_chain"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
       "iocs": []
     },
     {
@@ -3940,6 +3754,52 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-88772",
+      "title": "Hackers exploit Citrix NetScaler zero-day to deploy web shells",
+      "description": "",
+      "cvss": 8.1,
+      "final_ps": 25,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "ZERO_DAY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-29",
+      "last_seen": "2026-09-29",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-88772"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.bleepingcomputer.com/news/security/hackers-exploit-citrix-netscaler-zero-day-to-deploy-web-shells/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+7 zero_day"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
       "id": "CVE-2026-84428",
       "title": "fastify vulnerable to header validation bypass via incomplete schema case normalization",
       "description": "",
@@ -4231,6 +4091,144 @@
         ],
         "priority": [
           "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-17106",
+      "title": "CopyEscape Docker Flaw Lets Malicious Containers Overwrite Host Files and Gain Root Access",
+      "description": "",
+      "cvss": 7.8,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CLOUD_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-01",
+      "last_seen": "2026-10-01",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-17106"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cybersecuritynews.com/copyescape-docker-flaw/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-91776",
+      "title": "jackson-databind retains every unknown raw type ID",
+      "description": "",
+      "cvss": 7.5,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-91776"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-wv8q-qhhj-9h54"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-101916",
+      "title": "@grpc/grpc-js: In certain configurations, getAuthContext can return unauthorized certificates as though they were author",
+      "description": "",
+      "cvss": 7.4,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-101916"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-m9gg-hp2v-232j"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4645,194 +4643,6 @@
         ],
         "priority": [
           "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-102930",
-      "title": "virtualenv: Downloaded seed wheels (pip/setuptools) are not integrity-checked before use",
-      "description": "",
-      "cvss": 0,
-      "final_ps": 18,
-      "quality_score": 0.453,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-09-30",
-      "last_seen": "2026-09-30",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "pip",
-      "product": "virtualenv",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-102930",
-        "CVE-2026-102930"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-94p9-xgh2-xp45",
-        "https://github.com/pypa/virtualenv/security/advisories/GHSA-94p9-xgh2-xp45",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-102930",
-        "https://github.com/pypa/virtualenv/pull/3251"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.40",
-          "recency=0d (score=1.00)",
-          "QS=0.453"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-47539",
-      "title": "CVE-2026-47539 - NVIDIA vGPU Virtual GPU Manager Integer Conversion Vulnerability",
-      "description": "",
-      "cvss": 6.7,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "AI_SECURITY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-30",
-      "last_seen": "2026-09-30",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-47539"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-47539"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-47544",
-      "title": "CVE-2026-47544 - NVIDIA vGPU Manager Out-of-Bounds Read Vulnerability",
-      "description": "",
-      "cvss": 6.7,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "AI_SECURITY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-30",
-      "last_seen": "2026-09-30",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-47544"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-47544"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-102991",
-      "title": "CVE-2026-102991 - Mako: Path traversal via drive-letter URI on Windows in TemplateLookup",
-      "description": "",
-      "cvss": 6.5,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-30",
-      "last_seen": "2026-09-30",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-102991"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-102991"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
         ],
         "suppression": null,
         "merge": null
