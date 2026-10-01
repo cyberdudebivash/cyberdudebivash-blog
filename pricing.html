@@ -720,7 +720,7 @@
         <span class="plan-price" data-inr="20,699" data-usd="249">20,699</span>
         <span class="plan-period">/month</span>
       </div>
-      <p class="plan-tagline">Multi-seat SOC access with STIX + SIEM export.</p>
+      <p class="plan-tagline">Higher limits with STIX 2.1 + SIEM export on one account key.</p>
       <button class="plan-cta cta-team" onclick="PaymentFlow.startUpgrade('team')">
         Upgrade to Sentinel Team →
       </button>
@@ -1323,11 +1323,30 @@ const PaymentFlow = (() => {
     }
   }
 
-  function _showSuccess() {
+  // Reflects the server's actual verification result: activated, awaiting
+  // capture (webhook completes it), or paid-but-not-yet-registered.
+  function _showSuccess(result) {
     const p = PLANS[state.plan];
     const feats = PLAN_FEATURES[state.plan] || [];
+    const r = result || {};
+    const v = r.verification || {};
+    const dash = ' Open the API Dashboard (/api-dashboard.html) with this email to manage your key.';
+    if (r.pending_capture) {
+      document.getElementById('successTitle').textContent = 'Payment received';
+      document.getElementById('successSub').textContent  = `Your ${p?.name || ''} plan activates automatically within a few minutes, once Razorpay confirms capture.` + dash;
+      goToStep(5);
+      showToast('info', 'Payment received', 'Activation completes automatically within minutes.');
+      return;
+    }
+    if (v.pending_registration) {
+      document.getElementById('successTitle').textContent = 'Payment confirmed';
+      document.getElementById('successSub').textContent  = `Register an API key with ${state.email} and it will carry ${p?.name || 'your plan'} access automatically.` + dash;
+      goToStep(5);
+      showToast('success', 'Payment confirmed', 'Register your API key to start using your plan.');
+      return;
+    }
     document.getElementById('successTitle').textContent = `${p?.name || 'Pro'} Tier Activated!`;
-    document.getElementById('successSub').textContent  = `Your API key now has full ${p?.name} access. No changes needed — same key, more power.`;
+    document.getElementById('successSub').textContent  = `Your API key now has full ${p?.name} access. No changes needed — same key, more power.` + dash;
     const ul = document.getElementById('unlockFeatures');
     ul.innerHTML = '<h4>🔓 Unlocked Features</h4>' +
       feats.map(f => `<div class="unlock-item"><span>✓</span><span>${f}</span></div>`).join('');
@@ -1408,7 +1427,7 @@ const PaymentFlow = (() => {
             });
             if (!verify.ok_flag) throw new Error(verify.error?.message || 'Payment verification failed.');
             try { sessionStorage.removeItem(STORAGE_KEY); } catch (_) {}
-            _showSuccess();
+            _showSuccess(verify.data || verify);
           } catch (e) {
             showToast('error', 'Verification Failed', e.message || 'Contact support with your payment ID.');
           } finally {

@@ -15,7 +15,7 @@ const sec       = require('../../_lib/security');
 const premiumCommerce = require('../../_lib/premium-commerce-service');
 const {
   PLANS, normalizeEmail, parseHash, now, auditLog, upgradeUserTier,
-  SUBMISSION_TTL_SECONDS,
+  SUBMISSION_TTL_SECONDS, checkPlanPayment,
 } = require('../../_lib/payment-utils');
 
 module.exports = async (req, res) => {
@@ -82,8 +82,35 @@ module.exports = async (req, res) => {
         const dup    = await redis.exists(dupKey).catch(() => 0);
         if (dup && parseInt(dup, 10) > 0) break;
 
-        const order = parseHash(await redis.hgetall(`payment:rzp:order:${orderId}`));
-        if (!order || order.status === 'paid') break;
+        let order = parseHash(await redis.hgetall(`payment:rzp:order:${orderId}`));
+        if (order && order.status === 'paid') break;
+        if (!order) {
+          // The local order record expires after 24h (or a write was lost).
+          // Recover from the Razorpay order's own notes, which this backend
+          // set server-side at creation, and only if Razorpay's order amount
+          // and currency equal the authoritative plan price. Otherwise a
+          // captured payment would be acknowledged with no entitlement.
+          const notes = (remoteOrder && remoteOrder.notes) || {};
+          const plan = PLANS[notes.planType];
+          if (notes.platform !== 'CYBERDUDEBIVASH_SENTINEL_APEX' || !plan || !notes.email ||
+              Number(remoteOrder.amount) !== plan.amount * 100 ||
+              String(remoteOrder.currency || '').toUpperCase() !== plan.currency) {
+            await auditLog('RAZORPAY_WEBHOOK_ORDER_UNMATCHED', { orderId, paymentId });
+            break;
+          }
+          order = { email: notes.email, planType: notes.planType, amount: String(plan.amount), recoveredFrom: 'razorpay_order_notes' };
+        }
+
+        // Same server-side confirmation as the checkout callback: correct
+        // order, authoritative plan amount and currency, and captured.
+        let paymentState;
+        try {
+          paymentState = checkPlanPayment(payment, { orderId, planType: order.planType });
+        } catch (err) {
+          await auditLog('RAZORPAY_WEBHOOK_PAYMENT_REJECTED', { orderId, paymentId, code: err.code || 'UNKNOWN' });
+          break; // permanent mismatch: acknowledge so Razorpay stops retrying; never grant
+        }
+        if (paymentState !== 'captured') break; // payment.captured will follow
 
         const email = normalizeEmail(order.email);
         const tier  = (PLANS[order.planType] || {}).tier || order.planType;
@@ -104,6 +131,7 @@ module.exports = async (req, res) => {
         await redis.setex(dupKey, SUBMISSION_TTL_SECONDS, '1');
         await auditLog('RAZORPAY_WEBHOOK_PAYMENT_CAPTURED', {
           email, planType: order.planType, orderId, paymentId, amount: order.amount,
+          ...(order.recoveredFrom ? { recovered_from: order.recoveredFrom } : {}),
         });
         break;
       }
@@ -115,8 +143,21 @@ module.exports = async (req, res) => {
         if (result.handled && result.full_refund) {
           console.log(`[RAZORPAY WEBHOOK] Premium entitlement revoked after full refund: order=${result.order_id} report=${result.report_id}`);
         }
-        // Legacy subscription refunds are outside this new one-time report
-        // commerce store and continue under their existing billing governance.
+        // API-plan refunds: record once (refund ids are unique; Razorpay may
+        // redeliver). Tier changes after a refund are an operator decision
+        // (docs/runbooks/RAZORPAY-PRODUCTION-ACTIVATION.md), so no automatic
+        // revocation here; payment history is never deleted.
+        if (!result.handled && refund.id) {
+          const refundKey = `payment:rzp:refund:seen:${refund.id}`;
+          const seen = await redis.exists(refundKey).catch(() => 0);
+          if (!(seen && parseInt(seen, 10) > 0)) {
+            await auditLog('RAZORPAY_REFUND_RECORDED', {
+              refundId: refund.id, paymentId: refund.payment_id || payment.id || null,
+              amount: refund.amount, currency: refund.currency, status: refund.status,
+            });
+            await redis.setex(refundKey, SUBMISSION_TTL_SECONDS, '1');
+          }
+        }
         break;
       }
 

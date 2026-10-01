@@ -490,7 +490,7 @@
               });
               if (!verify._ok) throw new Error(verify.error?.message || 'Payment verification failed.');
               try { sessionStorage.removeItem(SESSION_KEY); } catch (_) {}
-              _showSuccess();
+              _showSuccess(verify.data || verify);
             } catch (e) {
               _toast('err', 'Verification Failed', e.message || 'Contact support with your payment ID.');
             } finally {
@@ -592,11 +592,30 @@
     el.textContent = { pending_review: '● Pending Review', approved: '✓ Approved', rejected: '✗ Rejected' }[status] || status;
   }
 
-  function _showSuccess() {
+  // Reflects the server's actual verification result: activated, awaiting
+  // capture (webhook completes it), or paid-but-not-yet-registered.
+  function _showSuccess(result) {
     const p     = PLANS[S.plan] || {};
     const feats = FEATURES[S.plan] || [];
+    const r = result || {};
+    const v = r.verification || {};
+    const dash = ' Open the API Dashboard (/api-dashboard.html) with this email to manage your key.';
+    if (r.pending_capture) {
+      _set('pf-ok-title', 'Payment received');
+      _set('pf-ok-sub', `Your ${p.name || ''} plan activates automatically within a few minutes, once Razorpay confirms capture.` + dash);
+      ApexPaymentFlow._go(5);
+      _toast('info', 'Payment received', 'Activation completes automatically within minutes.', 7000);
+      return;
+    }
+    if (v.pending_registration) {
+      _set('pf-ok-title', 'Payment confirmed');
+      _set('pf-ok-sub', `Register an API key with ${S.email} and it will carry ${p.name || 'your plan'} access automatically.` + dash);
+      ApexPaymentFlow._go(5);
+      _toast('info', 'Payment confirmed', 'Register your API key to start using your plan.', 7000);
+      return;
+    }
     _set('pf-ok-title', `${p.name || 'Pro'} Tier Activated!`);
-    _set('pf-ok-sub', `Your API key now has full ${p.name} access. No changes needed — same key, more power.`);
+    _set('pf-ok-sub', `Your API key now has full ${p.name} access. No changes needed — same key, more power.` + dash);
     const ul = _el('pf-unlock');
     if (ul) ul.innerHTML = '<h4>🔓 Unlocked Features</h4>' +
       feats.map(f => `<div class="pf-ul-item"><span>✓</span><span>${_esc(f)}</span></div>`).join('');

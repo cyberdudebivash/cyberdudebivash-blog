@@ -271,6 +271,27 @@ async function parseBody(req) {
   });
 }
 
+/* ─── RAZORPAY PLAN PAYMENT CHECK ───────────────────────────────
+   Server-side confirmation of a plan payment fetched from Razorpay
+   (GET /payments/{id}), applied before any tier is granted. The checkout
+   signature proves the payment belongs to the order; this proves the money
+   actually arrived for the authoritative plan price and currency.
+   Returns 'captured' (grant), 'authorized' (wait: payment.captured webhook
+   completes it), or throws { code } for anything that must never grant. */
+function checkPlanPayment(payment, { orderId, planType }) {
+  const plan = PLANS[planType];
+  const fail = (code, message) => { throw Object.assign(new Error(message), { code }); };
+  if (!plan) fail('PLAN_UNKNOWN', 'Unknown plan for payment');
+  if (!payment || !payment.id) fail('PAYMENT_NOT_FOUND', 'Payment lookup returned no payment');
+  if (String(payment.order_id || '') !== String(orderId)) fail('PAYMENT_ORDER_MISMATCH', 'Payment does not belong to this order');
+  if (Number(payment.amount) !== plan.amount * 100) fail('PAYMENT_AMOUNT_MISMATCH', 'Payment amount does not match the plan price');
+  if (String(payment.currency || '').toUpperCase() !== String(plan.currency).toUpperCase()) fail('PAYMENT_CURRENCY_MISMATCH', 'Payment currency does not match the plan');
+  const status = String(payment.status || '').toLowerCase();
+  if (status === 'captured') return 'captured';
+  if (status === 'authorized') return 'authorized';
+  return fail('PAYMENT_NOT_CAPTURED', `Payment status is ${status || 'unknown'}`);
+}
+
 module.exports = {
   PLANS,
   PAYMENT_INSTRUCTIONS,
@@ -291,6 +312,7 @@ module.exports = {
   checkIpRateLimit,
   auditLog,
   upgradeUserTier,
+  checkPlanPayment,
   cors,
   ok,
   fail,
