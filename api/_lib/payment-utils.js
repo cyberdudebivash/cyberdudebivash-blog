@@ -52,6 +52,10 @@ const PLANS = {
 };
 
 /* ─── PAYMENT INSTRUCTIONS ───────────────────────────────────── */
+// DEPRECATED 2026-10-01: manual UPI/bank transfer is retired and no API
+// response serves these details any more (billing action=create-intent
+// returns 410). Kept exported for backward compatibility of importers;
+// remove together with the manual submit-payment path.
 const PAYMENT_INSTRUCTIONS = {
   upi: {
     method:  'UPI',

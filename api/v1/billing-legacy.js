@@ -1,15 +1,18 @@
 /**
  * SENTINEL APEX — Consolidated Billing Router
  * Single serverless function handling ALL billing/payment endpoints.
- * Payment rails: Razorpay (default -- INR direct checkout, UPI, cards) and
- * manual UPI/bank transfer. Note: the Razorpay webhook is kept separate
+ * Payment rail: Razorpay (INR checkout: cards, UPI, wallets). Manual
+ * UPI/bank transfer was retired on 2026-10-01 (OPERATIONS.md: "Do not
+ * enable manual payment fallback"). Note: the Razorpay webhook is kept separate
  * (api/v1/billing/razorpay-webhook.js) — requires raw body.
  *
  * Routing: /api/v1/billing?action={action}
  *
- *  action=create-intent          POST  Generate payment intent UUID, store in Redis 24h
- *  action=submit-payment         POST  Accept UTR with fraud protection + duplicate guard
- *  action=status                 GET   User self-service payment status check
+ *  action=create-intent          POST  RETIRED 2026-10-01 -> 410 MANUAL_PAYMENT_RETIRED
+ *  action=submit-payment         POST  DEPRECATED: accepts UTRs only for intents created before
+ *                                      retirement (24h TTL); remove after the pending review queue
+ *                                      is empty (see docs/release certification)
+ *  action=status                 GET   Status of a submitted manual payment (kept for in-flight reviews)
  *  action=create-razorpay-order  POST  Create a Razorpay Order for instant checkout
  *  action=verify-razorpay-payment POST Verify checkout.js signature, instant tier upgrade
  *
@@ -23,7 +26,7 @@ const {
   authenticate, apiError, respond, corsHeaders,
 } = require('../_lib/middleware');
 const {
-  PLANS, PAYMENT_INSTRUCTIONS,
+  PLANS,
   MIN_UTR_LENGTH, MAX_UTR_LENGTH,
   INTENT_TTL_SECONDS, SUBMISSION_TTL_SECONDS,
   generateIntentId, sanitize, validateEmail, normalizeEmail, emailKey,
@@ -94,105 +97,20 @@ module.exports = async (req, res) => {
 };
 
 /* ═══════════════════════════════════════════════════════════════
-   POST /api/v1/billing?action=create-intent
-   Generate a payment intent before user transfers money.
-   Body: { email, plan_type: "starter"|"pro"|"team"|"enterprise" }
+   POST /api/v1/billing?action=create-intent  — RETIRED 2026-10-01
+   Manual UPI/bank-transfer intents are no longer issued. The action stays
+   routed (instead of becoming INVALID_ACTION) so existing clients get an
+   explicit, actionable 410. Intents issued before retirement expire within
+   24h and can still be completed via action=submit-payment.
 ═══════════════════════════════════════════════════════════════ */
+const MANUAL_PAYMENT_RETIRED_MESSAGE =
+  'Manual UPI/bank-transfer payments were retired on 2026-10-01. Pay through online checkout ' +
+  '(POST /api/v1/billing?action=create-razorpay-order) or email bivash@cyberdudebivash.com to purchase.';
+
 async function handleCreateIntent(req, res) {
   if (req.method !== 'POST') return fail(res, 405, 'METHOD_NOT_ALLOWED', 'POST required');
-
-  const ip   = sec.getIp(req);
-  const body = await parseBody(req);
-
-  /* Phase 2: field whitelist — reject unexpected fields */
-  const whitelistErr = sec.assertFieldWhitelist(body, FIELDS['create-intent']);
-  if (whitelistErr) return fail(res, 400, 'INVALID_FIELDS', whitelistErr);
-
-  const email    = normalizeEmail(body.email);
-  const planType = sanitize(String(body.plan_type || '').toLowerCase(), 20);
-
-  /* Phase 2: strict input validation */
-  if (!sec.validateEmail(email)) {
-    return fail(res, 400, 'INVALID_EMAIL', 'A valid email address is required.');
-  }
-  if (!sec.validatePlan(planType)) {
-    return fail(res, 400, 'INVALID_PLAN', 'plan_type must be "starter", "pro", "team" or "enterprise"');
-  }
-
-  /* Phase 4: intent creation IP rate limit (5/day/IP) */
-  if (!(await sec.intentIpRateLimit(req, res))) return;
-
-  /* ── Deduplicate: return existing pending intent ──────────── */
-  try {
-    const ref = await redis.get(`payment:intent:ref:${emailKey(email)}:${planType}`);
-    if (ref) {
-      const existRaw = await redis.hgetall(`payment:intent:${ref}`);
-      const existing = parseHash(existRaw);
-      if (existing && existing.status === 'pending_payment') {
-        const plan = PLANS[planType];
-        return ok(res, {
-          message: 'Existing payment intent retrieved.',
-          intent: {
-            intent_id: existing.intentId, email: existing.email,
-            plan_type: existing.planType, amount: parseInt(existing.amount, 10),
-            currency: existing.currency, status: existing.status,
-            created_at: existing.createdAt, expires_in: '24 hours from creation',
-          },
-          payment_instructions: PAYMENT_INSTRUCTIONS,
-          next_step: 'Transfer the exact amount then POST /api/v1/billing?action=submit-payment',
-        });
-      }
-    }
-  } catch (_) { /* create fresh */ }
-
-  /* ── Generate intent ──────────────────────────────────────── */
-  const intentId  = generateIntentId();
-  const plan      = PLANS[planType];
-  const createdAt = now();
-  const ua        = sanitize(req.headers['user-agent'] || 'unknown', 200);
-
-  try {
-    await redis.hmset(`payment:intent:${intentId}`, {
-      intentId, email, planType,
-      amount:    String(plan.amount),
-      currency:  plan.currency,
-      status:    'pending_payment',
-      createdAt, ip, userAgent: ua,
-    });
-    await redis.expire(`payment:intent:${intentId}`, 86400);
-    await redis.set(`payment:intent:ref:${emailKey(email)}:${planType}`, intentId);
-    await redis.expire(`payment:intent:ref:${emailKey(email)}:${planType}`, 86400);
-
-    await auditLog('INTENT_CREATED', { intentId, email, planType, amount: plan.amount, ip });
-
-    return ok(res, {
-      message: 'Payment intent created.',
-      intent: {
-        intent_id: intentId, email, plan_type: planType, plan_label: plan.label,
-        amount: plan.amount, currency: plan.currency, period: plan.period,
-        description: plan.description, status: 'pending_payment',
-        created_at: createdAt, expires_in: '24 hours',
-      },
-      payment_instructions: {
-        upi:  PAYMENT_INSTRUCTIONS.upi,
-        bank: PAYMENT_INSTRUCTIONS.bank,
-        important: [
-          `Transfer exactly ₹${plan.amount} (${plan.currency})`,
-          `Include intent ID "${intentId}" in payment remarks`,
-          'Complete within 24 hours',
-          'After payment, POST /api/v1/billing?action=submit-payment',
-        ],
-      },
-      next_step: {
-        endpoint: 'POST /api/v1/billing?action=submit-payment',
-        payload: { email, intent_id: intentId, transaction_id: '<UTR>', payment_method: 'UPI or BANK' },
-      },
-      support: 'bivash@cyberdudebivash.com',
-    }, 201);
-
-  } catch (e) {
-    return fail(res, 500, 'INTENT_CREATE_FAILED', sec.safeError(e, 'Failed to create payment intent. Please retry.'));
-  }
+  await auditLog('MANUAL_INTENT_REJECTED_RETIRED', { ip: sec.getIp(req) });
+  return fail(res, 410, 'MANUAL_PAYMENT_RETIRED', MANUAL_PAYMENT_RETIRED_MESSAGE);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -260,7 +178,7 @@ async function handleSubmitPayment(req, res) {
     if (!intent) {
       await auditLog('INVALID_INTENT', { ip, email, intentId: intentIdRaw, note: 'not found or expired' });
       return fail(res, 404, 'INTENT_NOT_FOUND',
-        'Payment intent not found or expired (24h TTL). Please create a new one.');
+        'Payment intent not found or expired (24h TTL). ' + MANUAL_PAYMENT_RETIRED_MESSAGE);
     }
   } catch (e) {
     return fail(res, 503, 'SERVICE_UNAVAILABLE', 'Verification service temporarily unavailable. Retry in 30s.');
@@ -280,7 +198,7 @@ async function handleSubmitPayment(req, res) {
   }
   if (intent.status === 'rejected') {
     return fail(res, 409, 'INTENT_REJECTED',
-      'This intent was rejected. Please create a new payment intent.');
+      'This intent was rejected. ' + MANUAL_PAYMENT_RETIRED_MESSAGE);
   }
   if (intent.status !== 'pending_payment') {
     return fail(res, 409, 'INVALID_INTENT_STATUS',
@@ -436,7 +354,7 @@ async function handleCreateRazorpayOrder(req, res) {
 
   if (!razorpay.configured()) {
     return fail(res, 503, 'RAZORPAY_UNAVAILABLE',
-      'Instant checkout is not configured yet. Use manual payment: POST /api/v1/billing?action=create-intent — or contact bivash@cyberdudebivash.com');
+      'Online checkout is temporarily unavailable. Email bivash@cyberdudebivash.com to purchase.');
   }
 
   const ip   = sec.getIp(req);

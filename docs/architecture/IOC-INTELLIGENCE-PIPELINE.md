@@ -24,7 +24,7 @@ scripts/refresh-ioc-intelligence.js   ← sentinel-apex.yml step "Refresh eviden
   │   (structured fields only, validate.js on every value, per-source cap)
   ├─ store.mergeCandidates   dedupe by type|value, multi-source observations kept
   ├─ store.refreshDerived    re-validate, revoke, age, score, provenance_hash, retention
-  ├─ store.buildFeed         ACTIVE/STALE ≥ MEDIUM, cap 600, honest feed_status
+  ├─ store.buildFeed         ACTIVE/STALE ≥ MEDIUM, cap 600 balanced by type_shares, honest feed_status
   ├─ store.validateFeed      publication gate (refuses to write on any problem)
   └─ atomic writes (tmp+rename):
         data/ioc-store.json   persistent store (API-only, never a public asset)
@@ -75,6 +75,12 @@ Trade-off: the feed refreshes on deploy (drift reconciler, at most every 30 min 
 
 - EXPIRED is never published and is purged 30 d later.
 - REVOKED (operator list, or the value fails a current safety rule) is never published, is listed in `revocations[]` and purged after 90 d.
+
+**Feed composition (`type_shares` in `config/ioc-sources.json`).** The 600-slot cap is allocated by type: url 30 %, domain 20 %, sha256 20 %, ipv4 15 %, ipv6 / sha1 / md5 5 % each.
+- Pass 1 gives each type its best records up to its quota.
+- Pass 2 gives unused slots to the best remaining records of any type, so the cap is always filled.
+
+Without this, the freshest type fills the whole cap. On 2026-10-01 that was online URLs: 426 URLs vs 7 hashes, while 157 hashes were eligible. The publication gate refuses unknown types, negative shares, or a sum above 1.
 
 **Detection exposure.** `block` only for ACTIVE, ≥HIGH, non-shared-hosting values. `alert` for MEDIUM or shared hosting. `hunt` for STALE. Nothing low-confidence is auto-block.
 

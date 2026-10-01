@@ -825,11 +825,11 @@
 
   <div class="faq-item">
     <button class="faq-question" onclick="toggleFaq(this)">
-      How does manual payment work?
+      How do I pay?
       <span class="faq-chevron">▼</span>
     </button>
     <div class="faq-answer">
-      <p>Click "Upgrade", enter your email, and you'll receive a unique payment reference ID. Pay via UPI or bank transfer using that reference. Once we verify the payment (typically within 2–4 hours), your API key is automatically upgraded to the new tier.</p>
+      <p>Click "Upgrade", enter your email and pay through secure online checkout (Razorpay). Manual UPI and bank-transfer payments were retired on 1 October 2026. If online checkout is unavailable, email bivash@cyberdudebivash.com to purchase.</p>
     </div>
   </div>
 
@@ -839,17 +839,17 @@
       <span class="faq-chevron">▼</span>
     </button>
     <div class="faq-answer">
-      <p>Most payments are verified within 2–4 business hours during working hours (IST). After verification, your API tier upgrades immediately — no need to re-register or get a new key.</p>
+      <p>Online checkout payments are verified automatically from Razorpay's signed payment confirmation, and your API tier upgrades as soon as verification succeeds — no need to re-register or get a new key.</p>
     </div>
   </div>
 
   <div class="faq-item">
     <button class="faq-question" onclick="toggleFaq(this)">
-      What do I need to include in my payment?
+      I paid by UPI or bank transfer before the change — what happens?
       <span class="faq-chevron">▼</span>
     </button>
     <div class="faq-answer">
-      <p>When paying, use your unique Intent ID (shown in the payment modal) as the payment note/reference. This links your payment to your account. After paying, come back and submit your UTR (transaction reference number) to complete the process.</p>
+      <p>Manual payments submitted before the retirement are still reviewed. If you transferred money but could not submit your UTR, email bivash@cyberdudebivash.com with your Intent ID, UTR and payment proof.</p>
     </div>
   </div>
 
@@ -869,7 +869,7 @@
       <span class="faq-chevron">▼</span>
     </button>
     <div class="faq-answer">
-      <p>We store your email, hashed API key, tier, and usage counters in Redis. We do not store full payment details — only the transaction reference (UTR) you submit and the plan you paid for. Your email is never shared or sold.</p>
+      <p>We store your email, hashed API key, tier, and usage counters in Redis. We do not store card or bank details — only payment references (Razorpay order and payment IDs, or the UTR of an earlier manual payment) and the plan you paid for. Your email is never shared or sold.</p>
     </div>
   </div>
 
@@ -879,7 +879,7 @@
       <span class="faq-chevron">▼</span>
     </button>
     <div class="faq-answer">
-      <p>Payments are rejected only for non-matching UTRs, wrong amounts, or duplicate submissions. If rejected, you'll see the reason in the status tracker. Contact bivash@cyberdudebivash.com with your Intent ID and payment proof for manual resolution.</p>
+      <p>If an online payment cannot be verified, your tier is not changed. Contact bivash@cyberdudebivash.com with your Razorpay payment ID (or, for an earlier manual payment, your Intent ID and UTR) for resolution.</p>
     </div>
   </div>
 
@@ -958,65 +958,11 @@
     <div id="step2" style="display:none">
       <button class="btn-primary" id="btnInstantPay" style="margin-bottom:0.4rem;background:linear-gradient(135deg,#00ffe0,#00b8a3)" onclick="PaymentFlow.payInstant()">⚡ Pay Instantly — Card / UPI / Wallet</button>
       <p style="font-size:0.78rem;color:var(--muted);text-align:center;margin:0 0 1rem">Instant activation via Razorpay — no waiting for manual review.</p>
-      <p style="font-size:0.78rem;color:var(--muted);text-align:center;margin:0 0 0.85rem">— or pay manually via UPI/Bank Transfer —</p>
       <div class="intent-id-callout">
-        <strong>Your Payment Reference (Intent ID)</strong>
-        Use this as the payment note/remark when paying.
-        <div style="margin-top:6px;font-family:monospace;font-size:0.85rem;color:var(--cyan)" id="intentIdDisplay">—</div>
+        <strong>Manual UPI / bank transfer has been retired</strong>
+        Payments are taken through secure online checkout only. If checkout is unavailable, email
+        <a href="mailto:bivash@cyberdudebivash.com?subject=Sentinel%20APEX%20plan%20purchase" style="color:var(--cyan)">bivash@cyberdudebivash.com</a> to purchase.
       </div>
-
-      <div class="pay-tabs">
-        <button class="pay-tab active" id="tabUpi" onclick="PaymentFlow.switchTab('upi')">📱 UPI</button>
-        <button class="pay-tab" id="tabBank" onclick="PaymentFlow.switchTab('bank')">🏦 Bank Transfer</button>
-      </div>
-
-      <!-- UPI Panel -->
-      <div class="pay-panel active" id="panelUpi">
-        <div class="qr-wrapper">
-          <img id="qrCodeImg" src="" alt="UPI QR Code" width="180" height="180">
-        </div>
-        <div class="upi-id-box">
-          <span class="upi-id-val" id="upiIdDisplay">loading...</span>
-          <button class="copy-btn" onclick="copyText(document.getElementById('upiIdDisplay').textContent)">Copy</button>
-        </div>
-        <p style="font-size:0.78rem;color:var(--muted);text-align:center;">
-          Scan QR or copy UPI ID · Add Intent ID as payment note
-        </p>
-      </div>
-
-      <!-- Bank Panel -->
-      <div class="pay-panel" id="panelBank">
-        <div id="bankDetails">
-          <div class="bank-row">
-            <span class="bank-key">Account Name</span>
-            <span class="bank-val" id="bankName">—</span>
-          </div>
-          <div class="bank-row">
-            <span class="bank-key">Account Number</span>
-            <span class="bank-val" id="bankAccount">—</span>
-          </div>
-          <div class="bank-row">
-            <span class="bank-key">IFSC Code</span>
-            <span class="bank-val" id="bankIfsc">—</span>
-          </div>
-          <div class="bank-row">
-            <span class="bank-key">Bank</span>
-            <span class="bank-val" id="bankName2">—</span>
-          </div>
-          <div class="bank-row">
-            <span class="bank-key">Amount</span>
-            <span class="bank-val" id="bankAmount" style="color:var(--cyan);font-weight:700">—</span>
-          </div>
-          <div class="bank-row">
-            <span class="bank-key">Reference Note</span>
-            <span class="bank-val" style="color:var(--gold)" id="bankRef">—</span>
-          </div>
-        </div>
-      </div>
-
-      <button class="btn-primary" style="margin-top:1.25rem" onclick="PaymentFlow.goToStep(3)">
-        I've Paid — Submit UTR →
-      </button>
       <button class="btn-secondary" onclick="PaymentFlow.goToStep(1)">← Back</button>
     </div>
 
@@ -1217,7 +1163,7 @@ const PaymentFlow = (() => {
     saveState();
   }
 
-  /* ── STEP 1: Email submit → create intent ── */
+  /* ── STEP 1: Email submit → online checkout ── */
   async function handleEmailSubmit() {
     const emailEl = document.getElementById('emailInput');
     const email = emailEl.value.trim().toLowerCase();
@@ -1231,71 +1177,12 @@ const PaymentFlow = (() => {
       return;
     }
 
-    const btn = document.getElementById('btnEmailNext');
-    setLoading(btn, true, 'Creating payment intent...');
-
-    try {
-      const res = await apiFetch(`${API_BASE}/billing?action=create-intent`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, plan_type: state.plan }),
-      });
-
-      if (!res.ok_flag) {
-        const code = res.error?.code || '';
-        if (code === 'INTENT_EXISTS') {
-          // Resume existing intent
-          state.email = email;
-          state.intentId = res.existing_intent_id || res.intent_id;
-          populatePaymentDetails(res);
-          goToStep(2);
-          try { localStorage.setItem('apex_email', email); } catch (_) {}
-          return;
-        }
-        throw new Error(res.error?.message || 'Failed to create payment intent');
-      }
-
-      state.email = email;
-      state.intentId = res.intent_id || res.data?.intent_id;
-      populatePaymentDetails(res.data || res);
-      goToStep(2);
-      try { localStorage.setItem('apex_email', email); } catch (_) {}
-
-    } catch (e) {
-      showToast('error', 'Error', e.message || 'Could not create payment intent. Please try again.');
-    } finally {
-      setLoading(btn, false, 'Continue →');
-    }
-  }
-
-  function populatePaymentDetails(data) {
-    const intentId = state.intentId || data.intent_id || data.intent?.intent_id;
-    document.getElementById('intentIdDisplay').textContent = intentId || '—';
-    document.getElementById('bankRef').textContent = intentId || '—';
-
-    // The amount the server actually recorded against this intent is the
-    // only value that's ever correct here — it's what a human reviewer will
-    // check the transferred amount against. The local PLANS cache is a
-    // display-only fallback for the rare case a response omits it.
-    const amount = data.intent?.amount ?? PLANS[state.plan]?.amount;
-
-    // UPI
-    const upi = data.payment_instructions?.upi || data.upi || {};
-    const upiId = upi.upi_id || 'UNAVAILABLE';
-    document.getElementById('upiIdDisplay').textContent = upiId;
-
-    // QR
-    const qrData = upi.upi_link || `upi://pay?pa=${upiId}&pn=CYBERDUDEBIVASH&am=${amount}&cu=INR&tn=${intentId}`;
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(qrData)}&bgcolor=0f1520&color=00ffe0&margin=10`;
-    document.getElementById('qrCodeImg').src = qrUrl;
-
-    // Bank
-    const bank = data.payment_instructions?.bank || data.bank || {};
-    document.getElementById('bankName').textContent    = bank.account_name     || 'CYBERDUDEBIVASH';
-    document.getElementById('bankAccount').textContent = bank.account_number   || 'Contact support';
-    document.getElementById('bankIfsc').textContent    = bank.ifsc             || 'Contact support';
-    document.getElementById('bankName2').textContent   = bank.bank_name        || '—';
-    document.getElementById('bankAmount').textContent  = `₹${amount ?? '—'}`;
+    // Manual payment intents were retired on 2026-10-01; checkout goes
+    // straight to Razorpay, which only needs the email and plan.
+    state.email = email;
+    state.intentId = null;
+    goToStep(2);
+    try { localStorage.setItem('apex_email', email); } catch (_) {}
   }
 
   function switchTab(tab) {
@@ -1474,7 +1361,7 @@ const PaymentFlow = (() => {
   }
 
   async function payInstant() {
-    if (!state.email || !state.intentId) {
+    if (!state.email) {
       showToast('error', 'Error', 'Please complete Step 1 first.');
       return;
     }
@@ -1489,7 +1376,7 @@ const PaymentFlow = (() => {
       });
       if (!res.ok_flag) {
         if (res.error?.code === 'RAZORPAY_UNAVAILABLE') {
-          showToast('warning', 'Instant checkout unavailable', 'Please use UPI/Bank Transfer below.');
+          showToast('warning', 'Online checkout unavailable', 'Please email bivash@cyberdudebivash.com to purchase.');
           return;
         }
         throw new Error(res.error?.message || 'Could not start instant checkout.');
@@ -1534,7 +1421,7 @@ const PaymentFlow = (() => {
       });
       rzp.open();
     } catch (e) {
-      showToast('error', 'Error', e.message || 'Could not start instant checkout. Try UPI/Bank below.');
+      showToast('error', 'Error', e.message || 'Could not start online checkout. Email bivash@cyberdudebivash.com to purchase.');
       setLoading(btn, false, '⚡ Pay Instantly — Card / UPI / Wallet');
     }
   }

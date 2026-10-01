@@ -24,14 +24,14 @@ named in the item. **OPEN** = verified, not remediated in this tranche.
 | ICF-P0-008 | P0 | SEO | CTI search visibility cliff (issue #219): templated near-duplicate corpus + Blogspot identity | BLOCKED |
 | ICF-P0-009 | P0 | Intelligence safety | Advisory text regex hits (vendor domains, commit SHAs, 169.254.169.254, CVE ids) served as IOCs | FIXED (records: Tranche 1; graph, search, public graph: Tranche 2, pending deploy) |
 | ICF-P0-010 | P0 | Commercial / Intelligence | Paid IOC feed (`api/intel/iocs.json`, `action=iocs`) is empty in every available version | FIXED (Tranche 2, pending deploy) |
-| ICF-P1-001 | P1 | Payments / Policy | Manual UPI/UTR payment path live despite OPERATIONS.md "no manual fallback" | BLOCKED |
+| ICF-P1-001 | P1 | Payments / Policy | Manual UPI/UTR payment path live despite OPERATIONS.md "no manual fallback" | FIXED (retired 2026-10-01 on operator decision; in-flight submissions still reviewable) |
 | ICF-P1-002 | P1 | Intelligence | `attestItem()` stamps fixed 0.82/0.95/0.98 confidence and `verified_at = now` | OPEN |
 | ICF-P1-003 | P1 | Intelligence | Legacy records self-contradict (source `cisa_kev`, `cisa_kev:false`) and carry joined refs | FIXED |
 | ICF-P1-004 | P1 | Security | Third-party CORS proxies in CSP and in browser intel fetches | OPEN (homepage path removed) |
 | ICF-P1-005 | P1 | Performance | Homepage downloaded 1.3 MB KEV catalog via proxy every view to write nowhere | FIXED |
 | ICF-P1-006 | P1 | Intelligence | 68% of API items name `sentinel_apex` itself as source (circular provenance) | OPEN |
 | ICF-P1-007 | P1 | Trust | "real-time" wording for a 30-minute batch pipeline on api.html / index.html | OPEN (intelligence.html fixed) |
-| ICF-P1-008 | P1 | Commercial | Premium Intelligence store API returns HTTP 500 live (`action=catalog`) | BLOCKED |
+| ICF-P1-008 | P1 | Commercial | Premium Intelligence store API returns HTTP 500 live (`action=catalog`) | PARTIAL (D1 migrated 2026-10-01, catalog 200; content/R2 pending) |
 | ICF-P2-001 | P2 | Security | npm audit: 6 high (dev tooling), js-yaml direct | OPEN |
 | ICF-P2-002 | P2 | Intelligence | Rolling window lets legacy records persist indefinitely while ranked | OPEN |
 | ICF-P2-003 | P2 | Architecture | 19 versioned automation layers patch `premium_main` in sequence | OPEN |

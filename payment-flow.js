@@ -4,8 +4,9 @@
  * then call: ApexPaymentFlow.startUpgrade('pro') or .startUpgrade('enterprise')
  *
  * Injects its own modal HTML + CSS on first call. No dependencies.
- * API: POST /api/v1/billing?action=create-intent
- *      POST /api/v1/billing?action=submit-payment
+ * API: POST /api/v1/billing?action=create-razorpay-order / verify-razorpay-payment
+ *      (manual create-intent was retired 2026-10-01; submit-payment and the
+ *      status poller remain only for sessions restored from before that date)
  *      GET  /api/v1/billing?action=status
  */
 (function (global) {
@@ -229,28 +230,11 @@
           <div class="pf-step" id="pfs2">
             <button class="pf-btn" id="pf-instant-btn" style="margin-bottom:.4rem;background:linear-gradient(135deg,#00ffe0,#00b8a3)" onclick="ApexPaymentFlow._payInstant()">⚡ Pay Instantly — Card / UPI / Wallet</button>
             <p class="pf-hint" id="pf-instant-hint" style="margin:0 0 1rem">Instant activation via Razorpay — no waiting for manual review.</p>
-            <p class="pf-hint" style="margin:0 0 .85rem">— or pay manually via UPI/Bank Transfer —</p>
             <div class="pf-intent">
-              <strong>Your Payment Reference (Intent ID)</strong>
-              Use this as the remark/note when you pay.
-              <div class="pf-intent-id" id="pf-intent-id">—</div>
+              <strong>Manual UPI / bank transfer has been retired</strong>
+              Payments are taken through secure online checkout only. If checkout is unavailable, email
+              <a href="mailto:bivash@cyberdudebivash.com?subject=Sentinel%20APEX%20plan%20purchase" style="color:#00ffe0">bivash@cyberdudebivash.com</a> to purchase.
             </div>
-            <div class="pf-tabs">
-              <button class="pf-tab active" id="pf-tupi"  onclick="ApexPaymentFlow._tab('upi')">📱 UPI</button>
-              <button class="pf-tab"         id="pf-tbank" onclick="ApexPaymentFlow._tab('bank')">🏦 Bank Transfer</button>
-            </div>
-            <div class="pf-panel show" id="pf-pupi">
-              <div class="pf-qr"><img id="pf-qr" src="" alt="UPI QR" width="170" height="170"></div>
-              <div class="pf-upi-row">
-                <span class="pf-upi-val" id="pf-upi-val">—</span>
-                <button class="pf-copy" onclick="ApexPaymentFlow._copy(document.getElementById('pf-upi-val').textContent)">Copy</button>
-              </div>
-              <p style="font-size:.74rem;color:#7a8fa6;text-align:center;margin-bottom:.5rem">Scan QR or copy UPI ID · Add Intent ID as payment note</p>
-            </div>
-            <div class="pf-panel" id="pf-pbank">
-              <div id="pf-bank-rows"></div>
-            </div>
-            <button class="pf-btn" style="margin-top:1rem" onclick="ApexPaymentFlow._go(3)">I've Paid — Submit UTR →</button>
             <button class="pf-btn2" onclick="ApexPaymentFlow._go(1)">← Back</button>
           </div>
 
@@ -408,32 +392,12 @@
       if (!email || !/^[^@\s]{1,64}@[^@\s]{1,253}\.[^@\s]{2,}$/.test(email)) {
         _cls('pf-email-err', 'show', true); _cls('pf-email', 'err', true); return;
       }
-      const btn = _el('pf-btn1');
-      _btnLoad(btn, true, 'Creating intent…');
-      try {
-        const data = await _post(`${API_BASE}/billing?action=create-intent`, { email, plan_type: S.plan });
-        if (!data._ok) {
-          const code = data.error?.code || '';
-          if (code === 'INTENT_EXISTS') {
-            S.email    = email;
-            S.intentId = data.existing_intent_id || data.intent_id;
-            _fillPayment(data);
-            this._go(2);
-            _storeEmail(email);
-            return;
-          }
-          throw new Error(data.error?.message || 'Failed to create payment intent');
-        }
-        S.email    = email;
-        S.intentId = data.intent_id || data.data?.intent_id;
-        _fillPayment(data.data || data);
-        this._go(2);
-        _storeEmail(email);
-      } catch (e) {
-        _toast('err', 'Error', e.message || 'Could not create payment intent. Please retry.');
-      } finally {
-        _btnLoad(btn, false, 'Continue →');
-      }
+      // Manual payment intents were retired on 2026-10-01; checkout goes
+      // straight to Razorpay, which only needs the email and plan.
+      S.email    = email;
+      S.intentId = null;
+      _storeEmail(email);
+      this._go(2);
     },
 
     async _submitUtr() {
@@ -484,9 +448,8 @@
     async _poll() { await _doPoll(); },
 
     async _payInstant() {
-      if (!S.email || !S.intentId) {
-        // Step 2 can be reached straight after step 1's create-intent call,
-        // so email is always set by this point — but guard defensively.
+      if (!S.email) {
+        // Step 2 is only reachable after step 1 sets the email — guard defensively.
         _toast('err', 'Error', 'Please complete Step 1 first.');
         return;
       }
@@ -499,7 +462,7 @@
         });
         if (!data._ok) {
           if (data.error?.code === 'RAZORPAY_UNAVAILABLE') {
-            _toast('warn', 'Instant checkout unavailable', 'Please use UPI/Bank Transfer below.');
+            _toast('warn', 'Online checkout unavailable', 'Please email bivash@cyberdudebivash.com to purchase.');
             return;
           }
           throw new Error(data.error?.message || 'Could not start instant checkout.');
@@ -540,7 +503,7 @@
         });
         rzp.open();
       } catch (e) {
-        _toast('err', 'Error', e.message || 'Could not start instant checkout. Try UPI/Bank below.');
+        _toast('err', 'Error', e.message || 'Could not start online checkout. Email bivash@cyberdudebivash.com to purchase.');
         _btnLoad(btn, false, '⚡ Pay Instantly — Card / UPI / Wallet');
       }
     },
@@ -561,44 +524,6 @@
       document.head.appendChild(s);
     });
     return _rzpScriptPromise;
-  }
-
-  function _fillPayment(data) {
-    const intentId = S.intentId || data.intent_id || data.intent?.intent_id;
-    _set('pf-intent-id', intentId || '—');
-
-    // The amount the server actually recorded against this intent is the
-    // only value that's ever correct here — it's what a human reviewer will
-    // check the transferred amount against. The local PLANS cache is a
-    // display-only fallback for the rare case a response omits it.
-    const amount = data.intent?.amount ?? PLANS[S.plan]?.amount;
-
-    const upi   = data.payment_instructions?.upi || data.upi || {};
-    const upiId = upi.upi_id || 'UNAVAILABLE';
-    _set('pf-upi-val', upiId);
-
-    const qrData = upi.upi_link ||
-      `upi://pay?pa=${upiId}&pn=CYBERDUDEBIVASH&am=${amount}&cu=INR&tn=${intentId}`;
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=170x170&data=${encodeURIComponent(qrData)}&bgcolor=141c2b&color=00ffe0&margin=10`;
-    const qrImg = _el('pf-qr');
-    if (qrImg) qrImg.src = qrUrl;
-
-    const bank = data.payment_instructions?.bank || data.bank || {};
-    const rows = [
-      ['Account Name',   bank.account_name   || 'CYBERDUDEBIVASH'],
-      ['Account Number', bank.account_number || 'Contact support'],
-      ['IFSC Code',      bank.ifsc           || 'Contact support'],
-      ['Bank',           bank.bank_name      || '—'],
-      ['Amount',         `₹${amount ?? '—'}`],
-      ['Reference Note', intentId || '—'],
-    ];
-    const bankEl = _el('pf-bank-rows');
-    if (bankEl) {
-      bankEl.innerHTML = rows.map(([k, v]) =>
-        `<div class="pf-bank-row"><span class="pf-bk">${k}</span>` +
-        `<span class="pf-bv" style="${k==='Reference Note'?'color:#ffd700':k==='Amount'?'color:#00ffe0;font-weight:700':''}">${v}</span></div>`
-      ).join('');
-    }
   }
 
   function _startPolling() {
