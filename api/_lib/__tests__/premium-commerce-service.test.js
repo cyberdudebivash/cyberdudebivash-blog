@@ -176,6 +176,21 @@ describe('fulfillment and refunds', () => {
     expect(store.recordDownload).toHaveBeenCalledWith({ ownerId: 'usr_1', reportId: 'RPT-1', orderId: 'pord_1' });
   });
 
+  test('download without an active entitlement is refused before any R2 read', async () => {
+    store.getEntitlement.mockResolvedValue(null);
+    await expect(service.downloadReport({ user, reportId: 'RPT-1' })).rejects.toMatchObject({ code: 'ENTITLEMENT_NOT_FOUND' });
+    expect(storage.headCertifiedArtifact).not.toHaveBeenCalled();
+    expect(storage.getCertifiedArtifact).not.toHaveBeenCalled();
+    expect(store.recordDownload).not.toHaveBeenCalled();
+  });
+
+  test('entitlement is looked up for the authenticated caller only (no IDOR via report id)', async () => {
+    store.getEntitlement.mockResolvedValue(null);
+    await expect(service.downloadReport({ user: { userId: 'usr_attacker' }, reportId: 'RPT-1' })).rejects.toMatchObject({ code: 'ENTITLEMENT_NOT_FOUND' });
+    expect(store.getEntitlement).toHaveBeenCalledWith('usr_attacker', 'RPT-1');
+    await expect(service.downloadReport({ user: {}, reportId: 'RPT-1' })).rejects.toMatchObject({ code: 'UNAUTHORIZED' });
+  });
+
   test('processed full refund revokes premium entitlement; partial refund does not', async () => {
     store.getOrderByPaymentId.mockResolvedValue({ order_id: 'pord_1', owner_id: 'usr_1', report_id: 'RPT-1', amount_minor: 19900 });
     const partial = await service.processWebhookRefund({ payment_id: 'pay_1', amount: 5000, status: 'processed' }, { id: 'pay_1', amount: 19900, amount_refunded: 5000, status: 'captured' });
