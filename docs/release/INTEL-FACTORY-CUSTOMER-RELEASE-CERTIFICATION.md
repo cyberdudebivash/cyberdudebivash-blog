@@ -28,7 +28,33 @@
 
 The headless-browser run against live production failed TLS through the environment proxy (`ERR_CERT_AUTHORITY_INVALID`). TLS verification was **not** bypassed. Instead, byte identity with the locally browser-tested build was proven.
 
-### Phase B — evidence-only IOC engine: **PASS (repository) / pending deploy**
+### Phase B — evidence-only IOC engine: **PASS (production)**
+
+**Release record**
+
+| Field | Value |
+|---|---|
+| Merge | PR cyberdudebivash/cyberdudebivash-blog#312 → `main` @ `b26ac593` |
+| Deploy | `cloudflare-production-deploy.yml` run #114 (success) |
+| Worker version | `9af2c891-ecfe-492d-beb4-032aba9f5483`, deployed 2026-10-01T05:51:56Z |
+| Rollback identity | `51952766-b253-4b7c-bf9e-a6f44422960d` (pre-#312 version) |
+
+**Live checks (read-only, 2026-10-01 ~05:55Z)**
+
+| Check | Expected | Actual | Result |
+|---|---|---|---|
+| `/api/intel/iocs.json` feed status | `healthy` or `degraded`, count > 0, `items: []` | `healthy`, 600, `[]` | PASS |
+| Public summary carries indicator values | 0 | 0 of 600 | PASS |
+| `/api/intel/threat-graph.json` IOC nodes | 0 | 0 (`stats.iocs` 0) | PASS |
+| `/data/ioc-feed.json`, `/data/ioc-store.json`, `/config/ioc-sources.json` | 404 | 404 / 404 / 404 | PASS |
+| `action=iocs` / `action=ioc` without a key | 401 | 401 / 401 | PASS |
+| `api.html` retired claims | 0 | 0 | PASS |
+| Regressions: homepage; CVE-2026-32202 CVSS / KEV | 200; 4.3 / true | 200; 4.3 / true | PASS |
+| Team-key `action=iocs&format=stix` | bundle | not executed | **BLOCKED** (no customer key in this environment) |
+
+The live feed was regenerated at merge time and is all HIGH confidence. By type: url 457, ipv4 83, domain 53, sha256 7. The feed is capped at 600 and ordered by confidence, then recency, so freshly confirmed online URLs crowd out older hashes. A per-type share of the cap is the proposed follow-up.
+
+**Repository results (pre-merge)**
 
 - Design and dependency graph: `docs/architecture/IOC-INTELLIGENCE-PIPELINE.md`.
 - Source policy: `docs/intelligence/IOC-SOURCE-POLICY.md`.
