@@ -354,7 +354,17 @@ function getPlatformStats() {
 /* ═══════════════════════════════════════════════════════════════════════
    THREAT GRAPH  — serves pre-built graph.json with tier filtering
 ═══════════════════════════════════════════════════════════════════════ */
-const { getGraphForTier, getTopActors, loadGraph } = require('./threat-graph');
+const { getGraphForTier, getTopActors, loadGraph: loadPersistedGraph } = require('./threat-graph');
+const { projectGraph } = require('./ioc-engine/feed');
+
+// Every customer-facing graph read (graph, search, IOC/actor detail,
+// dossiers) goes through this serving projection: IOC nodes without
+// evidence-engine provenance (legacy regex-derived values, ICF-P0-009) are
+// removed and evidence-backed feed indicators are added. The persisted
+// graph file itself is not modified.
+function loadGraph() {
+  return projectGraph(loadPersistedGraph());
+}
 
 function getGraph(tier) {
   try {

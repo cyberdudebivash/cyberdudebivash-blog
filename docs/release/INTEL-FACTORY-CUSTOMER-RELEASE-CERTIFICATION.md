@@ -1,5 +1,62 @@
 # Intel Factory — Customer Release Certification
 
+## Tranche 2 (2026-10-01): #310 production certification + evidence-only IOC engine
+
+### Phase A — PR cyberdudebivash/cyberdudebivash-blog#310 in production: **PASS**
+
+| Field | Value |
+|---|---|
+| Merge commit on `main` | `af83f6d2` (squash of #310) |
+| Deploy run | `cloudflare-production-deploy.yml` run #97, success |
+| Production Worker version | `8ad19eef-ad90-4bbe-8bc2-eea11fa5b0cf` (#87), deployed 2026-09-30T18:16:24Z |
+| Rollback identity | `ef41a58d-d900-420b-bd45-d3aa053db42e` (#86, the pre-#310 version) |
+| Follow-up deploy fix | PR cyberdudebivash/cyberdudebivash-blog#311 (build synthesises CVE pages missing at build time). Runs #98/#99 had failed the link gate; runs #107–#111 green through `main` @ `1f2e06b6` |
+
+| Live check (read-only, blog.cyberdudebivash.in) | Expected | Actual | Result |
+|---|---|---|---|
+| `api/intel/live.json` CVE-2026-32202 | CVSS 4.3, NVD source, KEV true | 4.3 / NVD / true | PASS |
+| Records still served at the anomalous 9.5 | 0 | 0 | PASS |
+| `posts/cve-2026-86218.html` correction notice | 1 | 1 | PASS |
+| Homepage `VERIFYING` | 0 | 0 | PASS |
+| `/runtime-state.js` | 200 | 200 | PASS |
+| `pricing.html` legacy seat/latency/Elastic claims | 0 | 0 | PASS |
+| Legacy audience/pre-disclosure claims on the sampled post | 0 | 0 | PASS |
+| `intelligence.html` unsupported claims | 0 | 0 | PASS |
+| Live assets vs locally validated build | byte-identical | sha256 equal | PASS |
+| Team-tier canary `action=iocs&format=stix` | bundle | not executed | **BLOCKED** (no customer API key in this environment) |
+| Razorpay test-mode purchase | entitlement granted | not executed | **BLOCKED** (no test credentials) |
+
+The headless-browser run against live production failed TLS through the environment proxy (`ERR_CERT_AUTHORITY_INVALID`). TLS verification was **not** bypassed. Instead, byte identity with the locally browser-tested build was proven.
+
+### Phase B — evidence-only IOC engine: **PASS (repository) / pending deploy**
+
+- Design and dependency graph: `docs/architecture/IOC-INTELLIGENCE-PIPELINE.md`.
+- Source policy: `docs/intelligence/IOC-SOURCE-POLICY.md`.
+- Audits: `docs/audits/IOC-INTELLIGENCE-QUALITY-AUDIT.md`, `docs/audits/IOC-COMMERCIAL-READINESS.md`.
+- **Live refresh (2026-10-01):** 4/4 sources healthy; 600 indicators published (url 237, domain 148, sha256 150, ipv4 65; HIGH 496, MEDIUM 104), each with a source record URL. Production currently serves 0.
+- **Graph cleanup:** 911 legacy unproven IOC nodes are removed from every served graph, search and detail path, and from the public `threat-graph.json`.
+- **STIX:** 601 objects parse with OASIS `stix2` (strict); 0 `stix2-patterns` errors.
+- **Tests:** 56 engine + 11 real-handler + 2 build tests. All 7 mandated negative controls are refused at every layer, and 17/17 safeguard mutations are detected.
+- **Cost:** no new Cloudflare resources, bindings or secrets.
+
+**Post-deploy checks (read-only):**
+1. `curl -s https://blog.cyberdudebivash.in/api/intel/iocs.json | jq '.feed_status.status, .feed_status.indicator_count, (.items|length)'` → `"healthy"` or `"degraded"`, > 0, `0`.
+2. `curl -s https://blog.cyberdudebivash.in/api/intel/threat-graph.json | jq '[.nodes[]|select(.type=="IOC")]|length'` → `0`.
+3. `curl -s https://blog.cyberdudebivash.in/data/ioc-feed.json -o /dev/null -w '%{http_code}'` → `404`.
+4. With a Team key: `GET /api/v1/intel?action=iocs&format=stix&limit=5` → `stix.type == "bundle"`, every `pattern` without `file:value`.
+
+### Operator decisions required (not executed; no production mutation from this environment)
+
+| Item | Evidence | Exact operator action | Validation |
+|---|---|---|---|
+| **Premium store / D1 (ICF-P1-008)** | Production D1 `sentinel-apex-core` (bound as `DB` in `wrangler.jsonc`, `migrations_dir: ./migrations`) contains no application tables, only `_cf_KV` (verified via the authenticated Cloudflare API, Phase A). Migrations `0001`–`0008` were never applied. This also disables watchlists, notifications, SIEM connectors, hunting and detection performance. R2 `sentinel-apex-premium-reports` exists and is empty. | 1. Review `migrations/0001…0008_*.sql`. 2. `npx wrangler d1 migrations list sentinel-apex-core --remote`. 3. `npx wrangler d1 migrations apply sentinel-apex-core --remote`. 4. Upload certified artefacts to the existing R2 bucket. No new database or bucket is needed. | `GET /api/v1/premium-intelligence?action=catalog` → 200; `wrangler d1 execute sentinel-apex-core --remote --command "SELECT name FROM sqlite_master WHERE type='table'"` lists the migration tables |
+| **Manual UPI (ICF-P1-001)** | `OPERATIONS.md` L73 says: "Do not enable manual payment fallback". Yet the `pricing.html` UPI QR/UTR flow and `api/v1/billing-legacy.js` `create-intent`/`submit-payment` are live. | Decide one: **(a)** retire the manual UPI path (remove the UI and disable the two actions; deploy), or **(b)** amend `OPERATIONS.md` to authorise it with a manual-review SLA. The financial behaviour was not changed here. | Pricing UI and API behaviour match the written policy |
+| **Legal entity name** | The repository uses "CYBERDUDEBIVASH PRIVATE LIMITED" (16,502 occurrences) and "CyberDudeBivash Pvt. Ltd." (199 occurrences, mostly `vendor/`, `posts/` and root pages). No CIN or registration document is present to decide which is correct. | Confirm the exact registered name (as on the MCA/ROC certificate). Legal representations were left unchanged. | A single canonical name across footer, terms and invoices |
+
+---
+
+## Tranche 1 (2026-09-30): PR #310
+
 **Release candidate:** branch `claude/amazing-thompson-h8ukxi` (PR cyberdudebivash/cyberdudebivash-blog#310), 7 code commits on top of `main` @ `5c8ba3dd`
 **Certified:** 2026-09-30 UTC, repository gates only.
 **Production state:** **CONDITIONAL.** The repository release gate passes. Nothing here is deployed until the PR merges
@@ -20,7 +77,7 @@ Rule applied: PASS requires executed evidence. Code that merely looks correct is
 - PASS: CVSS for 123 CVEs verified against the NVD CVE API 2.0 (0 unresolved) and applied on every serving/publishing path; build gate fails on 343 records without it.
 - PASS: KEV flag reconciled from provenance; joined refs split.
 - PASS: advisory pseudo-IOC extraction stopped at source; legacy record IOCs withheld (build gate: 458 records fail without it).
-- FAIL (open): paid IOC feed empty (ICF-P0-010); graph/search pseudo-IOC nodes (ICF-P0-009 remainder); Tier D claim semantics; fixed-value confidence (ICF-P1-002).
+- FAIL (open at Tranche 1; addressed in Tranche 2 above): paid IOC feed empty (ICF-P0-010); graph/search pseudo-IOC nodes (ICF-P0-009 remainder); Tier D claim semantics; fixed-value confidence (ICF-P1-002).
 - Evidence: `docs/audits/INTELLIGENCE-QUALITY-AUDIT.md`.
 
 ## PIPELINE — PASS (unchanged behaviour, verified)

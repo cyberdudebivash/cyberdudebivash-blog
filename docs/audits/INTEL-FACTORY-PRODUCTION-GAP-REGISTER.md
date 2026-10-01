@@ -22,8 +22,8 @@ named in the item. **OPEN** = verified, not remediated in this tranche.
 | ICF-P0-006 | P0 | Intelligence | Unsupported CVSS 9.5 served by API, feeds and pages: 119 of 123 CVEs disagree with NVD/CNA | FIXED |
 | ICF-P0-007 | P0 | Runtime / UX | Runtime state unbounded "VERIFYING"; "LIVE" for up to 6h-old batch data | FIXED |
 | ICF-P0-008 | P0 | SEO | CTI search visibility cliff (issue #219): templated near-duplicate corpus + Blogspot identity | BLOCKED |
-| ICF-P0-009 | P0 | Intelligence safety | Advisory text regex hits (vendor domains, commit SHAs, 169.254.169.254, CVE ids) served as IOCs | FIXED (records) / OPEN (graph, search) |
-| ICF-P0-010 | P0 | Commercial / Intelligence | Paid IOC feed (`api/intel/iocs.json`, `action=iocs`) is empty in every available version | OPEN |
+| ICF-P0-009 | P0 | Intelligence safety | Advisory text regex hits (vendor domains, commit SHAs, 169.254.169.254, CVE ids) served as IOCs | FIXED (records: Tranche 1; graph, search, public graph: Tranche 2, pending deploy) |
+| ICF-P0-010 | P0 | Commercial / Intelligence | Paid IOC feed (`api/intel/iocs.json`, `action=iocs`) is empty in every available version | FIXED (Tranche 2, pending deploy) |
 | ICF-P1-001 | P1 | Payments / Policy | Manual UPI/UTR payment path live despite OPERATIONS.md "no manual fallback" | BLOCKED |
 | ICF-P1-002 | P1 | Intelligence | `attestItem()` stamps fixed 0.82/0.95/0.98 confidence and `verified_at = now` | OPEN |
 | ICF-P1-003 | P1 | Intelligence | Legacy records self-contradict (source `cisa_kev`, `cisa_kev:false`) and carry joined refs | FIXED |

@@ -362,6 +362,27 @@ test('legitimate content containing prohibited words as substrings is not flagge
     assert.deepEqual(offenders.slice(0, 20), [], offenders.length + ' CVE records publish unvetted IOCs');
   });
 
+  test('public threat graph carries no IOC node without evidence provenance (ICF-P0-009)', () => {
+    const graph = JSON.parse(fs.readFileSync(path.join(OUT, 'api', 'intel', 'threat-graph.json'), 'utf8'));
+    const iocs = Object.values(graph.nodes || {}).filter(n => n && n.type === 'IOC');
+    const unproven = iocs.filter(n => !(n.attributes && n.attributes.provenance && n.attributes.provenance.source_url));
+    assert.deepEqual(unproven.map(n => n.name).slice(0, 20), [], unproven.length + ' unproven IOC nodes published');
+    const nodeIds = new Set(Object.keys(graph.nodes || {}));
+    assert.ok((graph.edges || []).every(e => nodeIds.has(e.source) && nodeIds.has(e.target)), 'dangling edges');
+    assert.equal(graph.stats.iocs, iocs.length);
+  });
+
+  test('evidence IOC feed and store are API-only; the public iocs.json carries no values', () => {
+    assert.ok(!outputFiles.includes('data/ioc-feed.json'));
+    assert.ok(!outputFiles.includes('data/ioc-store.json'));
+    assert.ok(!outputFiles.some(f => f.startsWith('config/')));
+    const pub = JSON.parse(fs.readFileSync(path.join(OUT, 'api', 'intel', 'iocs.json'), 'utf8'));
+    assert.deepEqual(pub.items, []);
+    const feed = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'ioc-feed.json'), 'utf8'));
+    const text = JSON.stringify(pub);
+    assert.ok(feed.items.every(i => !text.includes(i.value)));
+  });
+
   test('every api/intel/cve record has a published CVE page (generator race cannot break the link gate)', () => {
     const records = outputFiles.filter(f => /^api\/intel\/cve\/CVE-\d{4}-\d+\.json$/.test(f)).map(f => path.basename(f, '.json'));
     const missing = records.filter(id => !fs.existsSync(path.join(OUT, 'cve', id + '.html')));

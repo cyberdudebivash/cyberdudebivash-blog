@@ -2896,31 +2896,11 @@ async function writeAPIFiles(allItems, state) {
     }, null, 2), 'utf8');
     log(`api/intel/raw.json: ${rawItems.length} items (incl. ${s2nResult.stats.suppressed} suppressed).`);
 
-    // ── /api/intel/iocs.json — all enriched IOCs ────────────────────────
-    const allIOCs = [];
-    s2nResult.passed.slice(0, 40).forEach(item => {
-      (item.iocs||[]).forEach(ioc => {
-        if (ioc && ioc.value) allIOCs.push({
-          ...ioc, related_id: item.id, related_type: item.type,
-          threat_level: finalThreatLevel(item.final_ps||0),
-          priority_score: item.final_ps||0,
-          quality_score: item.quality_score||0,
-        });
-      });
-    });
-    const iocMap = new Map();
-    allIOCs.forEach(ioc => {
-      const k = `${ioc.type}:${ioc.value}`;
-      if (!iocMap.has(k)) iocMap.set(k, { ...ioc, source_count: 1 });
-      else { const ex = iocMap.get(k); ex.source_count++; ex.confidence_score = Math.min(0.99, (ex.confidence_score||0.5) + 0.05); }
-    });
-    safeWriteSync(path.join(CFG.apiDir, 'iocs.json'), JSON.stringify({
-      ...apiMeta, endpoint: '/api/intel/iocs.json',
-      description: 'Enriched IOC feed with confidence scoring',
-      count: iocMap.size,
-      note: 'Pro/Enterprise subscribers receive STIX 2.1 feeds',
-      items: Array.from(iocMap.values()).sort((a,b)=>(b.confidence_score||0)-(a.confidence_score||0)).slice(0,200),
-    }, null, 2), 'utf8');
+    // ── /api/intel/iocs.json ────────────────────────────────────────────
+    // Owned by the evidence-only IOC engine (scripts/refresh-ioc-intelligence.js,
+    // docs/architecture/IOC-INTELLIGENCE-PIPELINE.md). This generator no longer
+    // writes it: rebuilding it from the current run's item IOCs discarded every
+    // earlier indicator and could not attach source provenance (ICF-P0-010).
 
     // ── /api/intel/ransomware.json — ransomware-specific ────────────────
     const ransomItems = s2nResult.passed.filter(i => i.ransomware || i.type==='RANSOMWARE');
@@ -2968,7 +2948,7 @@ async function writeAPIFiles(allItems, state) {
         cveFileCount++;
       });
 
-    log(`API files written: live.json (${rolledLiveItems.length}), top-threats.json (${topItems.length}), raw.json (${rawItems.length}), iocs.json (${iocMap.size} IOCs), ransomware.json (${ransomItems.length}), ${cveFileCount} CVE files.`);
+    log(`API files written: live.json (${rolledLiveItems.length}), top-threats.json (${topItems.length}), raw.json (${rawItems.length}), ransomware.json (${ransomItems.length}), ${cveFileCount} CVE files.`);
   } catch(e) { warn(`API generation failed: ${e.message}\n${e.stack||''}`); }
 }
 

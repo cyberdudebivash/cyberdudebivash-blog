@@ -46,6 +46,8 @@ const defenseProfileStore = require('../_lib/defense-profile-store');
 const defenseCompatibility = require('../_lib/defense-compatibility');
 const sec = require('../_lib/security');
 const { tierAtLeast } = require('../_lib/tier-entitlements');
+const { getFeed: getIocFeed, queryFeed: queryIocFeed, QueryError: IocQueryError, runtimeFeedStatus } = require('../_lib/ioc-engine/feed');
+const { buildStixBundle } = require('../_lib/ioc-engine/stix');
 const reportsIndex = require('../intel/reports-index.json');
 
 function safeHttps(raw) {
@@ -279,46 +281,48 @@ module.exports = async (req, res) => {
             'IOC feed requires Pro, Team or Enterprise plan. Upgrade at https://blog.cyberdudebivash.in/pricing.html',
             { 'X-Upgrade-URL': 'https://blog.cyberdudebivash.in/pricing.html' });
         }
-        const raw   = getIntel('iocs', user.tier, {});
-        let items   = raw.items || [];
-
-        // Additional filters
-        if (req.query.type) {
-          const t = req.query.type.toLowerCase();
-          items = items.filter(i => (i.type || '').toLowerCase() === t);
+        // Evidence-only feed (api/_lib/ioc-engine): every indicator carries
+        // allowlisted-source provenance; see docs/architecture/IOC-INTELLIGENCE-PIPELINE.md.
+        const feed = getIocFeed();
+        let result;
+        try {
+          result = queryIocFeed(feed.items || [], req.query || {});
+        } catch (e) {
+          if (e instanceof IocQueryError) return apiError(res, 400, e.code, e.message);
+          throw e;
         }
-        if (req.query.min_confidence) {
-          const mc = parseFloat(req.query.min_confidence);
-          if (!isNaN(mc)) items = items.filter(i => (i.confidence_score || 0) >= mc);
-        }
-        if (req.query.related_id) {
-          const rid = req.query.related_id.toUpperCase();
-          items = items.filter(i => (i.related_id || '').toUpperCase() === rid);
-        }
-
-        // Pagination
-        const page   = Math.max(1, parseInt(req.query.page  || '1',  10));
-        const limit  = Math.min(200, parseInt(req.query.limit || '50', 10));
-        const offset = (page - 1) * limit;
-        const paged  = items.slice(offset, offset + limit);
+        const paged = result.items;
+        const stixEntitled = tierAtLeast(user.tier, 'team');
 
         // STIX 2.1 export — sold on Sentinel Team and Enterprise Apex.
         let stixBundle = null;
-        if (tierAtLeast(user.tier, 'team') && req.query.format === 'stix') {
+        if (stixEntitled && req.query.format === 'stix') {
           stixBundle = buildSTIXBundle(paged);
         }
 
         return successResponse(res, {
           iocs: paged,
           stix: stixBundle,
+          ...(req.query.format === 'stix' && !stixEntitled ? { stix_note: 'STIX 2.1 export is included in the Team and Enterprise plans.' } : {}),
           pagination: {
-            page, limit, total: items.length,
-            total_pages: Math.ceil(items.length / limit),
-            has_next: offset + limit < items.length,
+            page: result.page, limit: result.limit, total: result.total,
+            total_pages: result.total_pages,
+            has_next: result.has_next,
           },
-          ioc_types:  [...new Set(items.map(i => i.type).filter(Boolean))],
-          intel_meta: raw.intel_meta,
-          tier_info:  raw.tier_info,
+          ioc_types:  result.ioc_types,
+          feed_status: runtimeFeedStatus(feed),
+          revocations: feed.revocations || [],
+          intel_meta: {
+            generated_at:    feed.generated_at || null,
+            total_published: (feed.items || []).length,
+            source_platform: 'CYBERDUDEBIVASH SENTINEL APEX evidence-only IOC engine',
+          },
+          tier_info: {
+            tier: user.tier,
+            ioc_access: true,
+            stix_export: stixEntitled,
+            upgrade_url: user.tier !== 'enterprise' ? 'https://blog.cyberdudebivash.in/pricing.html' : null,
+          },
         }, {
           endpoint:       '/api/v1/intel?action=iocs',
           requests_used:  user.requestsUsed,
@@ -744,31 +748,10 @@ module.exports = async (req, res) => {
 };
 
 /* ─── STIX 2.1 Bundle Builder (Enterprise only) ──────────────── */
+// Delegates to the canonical STIX 2.1 builder (api/_lib/ioc-engine/stix.js).
+// The previous inline builder emitted random indicator ids per request, the
+// invalid pattern `[file:value = ...]` for hashes, an `artifact:value`
+// fallback and unescaped values; it is replaced, not kept in parallel.
 function buildSTIXBundle(iocs) {
-  const typeMap = {
-    ipv4: 'ipv4-addr', domain: 'domain-name', url: 'url',
-    sha256: 'file', md5: 'file', sha1: 'file',
-  };
-  return {
-    type:         'bundle',
-    id:           `bundle--${crypto.randomUUID()}`,
-    spec_version: '2.1',
-    created:      new Date().toISOString(),
-    objects:      iocs.map(ioc => ({
-      type:            'indicator',
-      spec_version:    '2.1',
-      id:              `indicator--${crypto.randomUUID()}`,
-      created:         ioc.first_seen || new Date().toISOString(),
-      modified:        new Date().toISOString(),
-      name:            `${ioc.type}: ${ioc.value}`,
-      description:     `SENTINEL APEX IOC — ${ioc.related_id || ''} | Confidence: ${Math.round((ioc.confidence_score || 0.8) * 100)}%`,
-      indicator_types: [ioc.related_type === 'RANSOMWARE' ? 'malicious-activity' : 'compromised'],
-      pattern:         `[${typeMap[ioc.type] || 'artifact'}:value = '${ioc.value}']`,
-      pattern_type:    'stix',
-      valid_from:      ioc.first_seen || new Date().toISOString(),
-      confidence:      Math.round((ioc.confidence_score || 0.8) * 100),
-      labels:          ['cyberdudebivash-sentinel-apex', ioc.type, ioc.related_type || 'threat'].filter(Boolean),
-    })),
-    extensions: { 'x-sentinel-apex': { version: '4.0', platform: 'blog.cyberdudebivash.in' } },
-  };
+  return buildStixBundle(iocs, `bundle--${crypto.randomUUID()}`);
 }

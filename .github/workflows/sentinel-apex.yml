@@ -133,6 +133,16 @@ jobs:
             exit $EXIT_CODE
           fi
 
+      # Evidence-only IOC feed (docs/architecture/IOC-INTELLIGENCE-PIPELINE.md).
+      # Isolated from the main generator: a source outage or timeout here never
+      # fails the pipeline, and the previously published feed stays in place
+      # (data/ioc-feed.json is only replaced after the new feed validates).
+      - name: "Refresh evidence-only IOC feed"
+        timeout-minutes: 3
+        run: |
+          timeout 150 node scripts/refresh-ioc-intelligence.js \
+            || echo "::warning title=IOC refresh::IOC refresh did not publish; last-known-good feed retained"
+
       - name: "Ensure feed heartbeat (production stability)"
         run: |
           echo "⏱️ Adding heartbeat timestamp to live-intel.json..."
