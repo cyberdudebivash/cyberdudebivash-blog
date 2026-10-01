@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex,follow">
-  <meta name="description" content="Secure CYBERDUDEBIVASH SENTINEL APEX subscription checkout for API Starter, SOC Pro, Sentinel Team and Enterprise Apex threat intelligence access.">
+  <meta name="description" content="CYBERDUDEBIVASH SENTINEL APEX plans are purchased on the Sentinel APEX platform checkout. This page forwards you there.">
   <meta name="theme-color" content="#071018">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -22,47 +22,28 @@
       <a class="brand" href="/">CYBERDUDEBIVASH // SENTINEL APEX</a>
       <a class="back" href="/pricing.html">Compare all plans</a>
     </header>
-
     <div class="grid">
       <section class="hero" aria-labelledby="checkoutTitle">
-        <div class="eyebrow">P0 // Secure Subscription Checkout</div>
-        <h1 id="checkoutTitle">Move from public intelligence to authenticated operational access.</h1>
-        <p>SENTINEL APEX paid tiers unlock higher-rate API delivery and tier-specific operational intelligence. Your purchase uses the platform's existing server-verified entitlement system; buying a plan does not change the factual certainty of any public CTI report.</p>
-
-        <div class="assurance" aria-label="Checkout assurances">
-          <div><strong>Instant path:</strong> Razorpay checkout supports card, UPI and wallet methods where available. Successful payments are cryptographically verified before entitlement activation.</div>
-          <div><strong>If checkout is unavailable:</strong> Manual UPI/bank transfer was retired on 1 October 2026. Email <a href="mailto:bivash@cyberdudebivash.com">bivash@cyberdudebivash.com</a> to purchase.</div>
-          <div><strong>No account yet:</strong> You may pay using the email you intend to register. The entitlement is held for that email and activates when you register with the same address.</div>
-          <div><strong>Commercial boundary:</strong> Subscription access changes delivery, quota and product capabilities; it never implies that a threat claim is more certain because it is paid.</div>
-        </div>
-
-        <p class="support">Need procurement or billing assistance? <a href="mailto:bivash@cyberdudebivash.com?subject=SENTINEL%20APEX%20billing%20support">Contact billing support</a>.</p>
+        <div class="eyebrow">Secure Subscription Checkout</div>
+        <h1 id="checkoutTitle">Plans are purchased on the Sentinel APEX platform.</h1>
+        <p>You are being taken to the CYBERDUDEBIVASH SENTINEL APEX platform checkout, which shows the exact plan, amount and features before you pay, and issues your plan's API keys.</p>
+        <p><a class="buy" id="buyNowButton" data-intel-plan="pro" data-intel-medium="buy-page" href="https://intel.cyberdudebivash.com/upgrade.html?plan=pro&amp;utm_source=blog&amp;utm_medium=buy-page&amp;utm_campaign=plan-checkout">Continue to checkout →</a></p>
+        <p class="support">Already bought a plan on this site, or need procurement help? <a href="mailto:bivash@cyberdudebivash.com?subject=SENTINEL%20APEX%20billing%20support">Contact billing support</a>.</p>
       </section>
-
-      <aside class="card" aria-label="Selected subscription">
-        <span class="tag" id="buyPlanTag">PRO</span>
-        <div class="plan-name" id="buyPlanName">SOC Pro</div>
-        <div class="price" id="buyPlanPrice">₹1,499/month</div>
-        <ul class="features" id="buyFeatures">
-          <li>25,000 API calls/day</li>
-          <li>Complete IOC feed access</li>
-          <li>SIGMA + Yara detection rules</li>
-          <li>Authenticated full-intelligence API depth</li>
-        </ul>
-        <button type="button" class="buy" id="buyNowButton"><span id="buyCtaLabel">Continue to SOC Pro Checkout</span></button>
-        <p class="payment-note">The canonical amount is loaded from the billing API before checkout. No payment is accepted by this page itself.</p>
-        <div class="facts">
-          <div class="fact"><span>Billing period</span><span>Monthly</span></div>
-          <div class="fact"><span>Entitlement source</span><span>SENTINEL APEX billing API</span></div>
-          <div class="fact"><span>Payment verification</span><span>Server-side</span></div>
-          <div class="fact"><span>Support</span><span>bivash@cyberdudebivash.com</span></div>
-        </div>
-        <p class="legal">By purchasing, you agree to the <a href="/terms.html">Terms</a> and <a href="/privacy.html">Privacy Policy</a>. Do not refresh or close the page while payment verification is in progress.</p>
-      </aside>
     </div>
   </main>
-
-  <script src="/payment-flow.js" defer></script>
-  <script src="/revenue-conversion-v19.js" defer></script>
+  <script src="/intel-plans.js"></script>
+  <script>
+    (function () {
+      // Old links carry ?plan=<blog plan>; forward to the matching platform plan.
+      var plan = (new URLSearchParams(window.location.search).get('plan') || 'pro').toLowerCase();
+      var button = document.getElementById('buyNowButton');
+      button.setAttribute('data-intel-plan', plan);
+      if (window.IntelCheckout) {
+        window.IntelCheckout.bindLinks(document);
+        window.IntelCheckout.go(plan, 'buy-page');
+      }
+    })();
+  </script>
 </body>
 </html>

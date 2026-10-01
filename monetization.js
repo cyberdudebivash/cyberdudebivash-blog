@@ -308,7 +308,7 @@
       overlay.innerHTML = `
         <div class="apex-paywall-lock">🔒</div>
         <div class="apex-paywall-title">Full IOC Data — SOC Pro Members Only</div>
-        <div class="apex-paywall-sub">Complete indicator list, YARA signatures, and SIEM queries available to SOC Pro subscribers ($18/mo) and Enterprise clients.</div>
+        <div class="apex-paywall-sub">Complete indicator list, YARA signatures, and SIEM queries available on the PRO Defense and Enterprise SOC plans.</div>
         <div class="apex-paywall-btns">
           <a href="${CFG.pricingUrl}" class="apex-inline-cta-btn">Unlock with SOC Pro →</a>
           <a href="mailto:${CFG.email}?subject=Free%20Trial%20Request" class="apex-inline-cta-btn outline">Request Free Trial</a>
@@ -478,7 +478,7 @@
     bar.innerHTML = `
       <div class="apex-bottom-msg">
         <strong>🔒 Full IOC data, YARA rules &amp; SIEM queries</strong> locked for SOC Pro members.
-        Unlock everything for <strong>$18/month</strong>.
+        Unlock everything with the <strong>PRO Defense</strong> plan.
       </div>
       <div class="apex-bottom-btns">
         <a href="${CFG.pricingUrl}" class="apex-bottom-btn primary">Unlock SOC Pro →</a>

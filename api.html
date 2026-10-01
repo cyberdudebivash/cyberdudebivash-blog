@@ -5,11 +5,11 @@
 <link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><meta name="theme-color" content="#00ffe0">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>CYBERDUDEBIVASH SENTINEL APEX API — Threat Intelligence API | CVE Feed, IOC Data, AI Risk Scoring | CyberDudeBivash</title>
-  <meta name="description" content="CYBERDUDEBIVASH SENTINEL APEX Threat Intelligence API. Real-time CVE data, IOC feeds, malware hashes, ransomware tracking, and AI-powered risk scoring. Free tier + Pro at $18/mo + Sentinel Team + Enterprise Managed.">
+  <meta name="description" content="CYBERDUDEBIVASH SENTINEL APEX Threat Intelligence API. Real-time CVE data, IOC feeds, malware hashes, ransomware tracking, and AI-powered risk scoring. Free tier, plus PRO Defense, Enterprise SOC and MSSP plans on the Sentinel APEX platform.">
   <meta name="keywords" content="threat intelligence API, CVE API, IOC feed API, cybersecurity API, SIEM integration, vulnerability feed, malware hash API, SOC automation API">
   <meta name="author" content="CyberDudeBivash — CYBERDUDEBIVASH SENTINEL APEX">
   <meta property="og:title" content="CYBERDUDEBIVASH SENTINEL APEX Threat Intelligence API — CVE Feed, IOC Data, AI Risk Scoring">
-  <meta property="og:description" content="Integrate real-time threat intelligence into your SIEM, SOAR, or custom tooling. Free tier + Sentinel Team + Enterprise plans.">
+  <meta property="og:description" content="Integrate real-time threat intelligence into your SIEM, SOAR, or custom tooling. Free tier plus PRO Defense, Enterprise SOC and MSSP plans.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://blog.cyberdudebivash.in/api.html">
   <meta property="og:image" content="https://blog.cyberdudebivash.in/og-image.png">
@@ -29,8 +29,7 @@
     "url": "https://blog.cyberdudebivash.in/api.html",
     "offers": [
       {"@type": "Offer", "name": "Free Tier", "price": "0", "priceCurrency": "USD", "description": "100 requests/day, public CVE data"},
-      {"@type": "Offer", "name": "SOC Pro API", "price": "18", "priceCurrency": "USD", "billingPeriod": "P1M"},
-      {"@type": "Offer", "name": "Enterprise API", "price": "0", "priceCurrency": "USD", "description": "Custom pricing"}
+      {"@type": "Offer", "name": "Sentinel APEX platform plans", "url": "https://intel.cyberdudebivash.com/upgrade.html", "description": "PRO Defense, Enterprise SOC and MSSP / White-Label plans; current prices on the platform checkout"}
     ],
     "publisher": {"@type": "Organization", "name": "CyberDudeBivash Pvt. Ltd.", "url": "https://www.cyberdudebivash.com"}
   }
@@ -174,7 +173,7 @@
     <a href="intelligence.html">Intelligence Hub</a>
     <a href="products.html">Products</a>
     <a href="/search.html">🔍 Search</a>
-    <a href="pricing.html" class="nav-cta">SOC Pro $18/mo</a>
+    <a href="pricing.html" class="nav-cta">Plans &amp; Pricing</a>
   </div>
 </nav>
 
@@ -340,7 +339,7 @@ req = urllib.request.<span class="c-func">Request</span>(
 
   <!-- API PRICING -->
   <div class="section-title" style="margin:60px 0 8px;">API Pricing Plans</div>
-  <div class="section-sub">Start free. Scale to enterprise. No vendor lock-in.</div>
+  <div class="section-sub">Start free here. Paid plans are purchased on the Sentinel APEX platform, which shows the exact amount before you pay.</div>
 
   <div class="api-pricing">
     <!-- Free -->
@@ -367,77 +366,51 @@ req = urllib.request.<span class="c-func">Request</span>(
       <a href="/api-dashboard.html" class="plan-cta outline">Get Free API Key →</a>
     </div>
 
-    <!-- Pro -->
+    <!-- Paid plans: sold on the Sentinel APEX platform (owner decision 2026-10-01).
+         Prices come from intel.cyberdudebivash.com/api/pricing via intel-plans.js;
+         features as listed on the platform's upgrade page. -->
     <div class="api-plan popular">
-      <div class="plan-popular-badge">SOC PROFESSIONAL</div>
-      <div class="plan-tier" style="color:var(--apex-yellow);">SOC Professional</div>
-      <div class="plan-price"><sup>$</sup>18</div>
-      <div class="plan-price-period">/ month</div>
-      <p class="plan-desc">For SOC analysts, threat hunters, and security teams who need real-time intelligence.</p>
-      <div class="plan-limits">
-        <div class="plan-limit-row"><span>Daily Requests</span><span class="plan-limit-val">25,000 / day</span></div>
-        <div class="plan-limit-row"><span>Rate Limit</span><span class="plan-limit-val">100 req/min</span></div>
-        <div class="plan-limit-row"><span>Data Freshness</span><span class="plan-limit-val">Current feed · timestamped</span></div>
-      </div>
+      <div class="plan-popular-badge">MOST POPULAR</div>
+      <div class="plan-tier" style="color:var(--apex-yellow);">PRO Defense</div>
+      <div class="plan-price" data-intel-price="PRO" style="font-size:28px;margin-top:10px;">See price</div>
+      <div class="plan-price-period">/ month · Sentinel APEX platform</div>
+      <p class="plan-desc">For SOC analysts and threat hunters who need full IOC data and STIX 2.1.</p>
       <ul class="plan-features">
-        <li>Everything in Free</li>
-        <li>Current CVE feed with runtime freshness metadata</li>
-        <li>Full IOC feed (IPs/domains/hashes)</li>
-        <li>AI risk scoring (POST /risk/score)</li>
-        <li>Ransomware group tracker</li>
-        <li>APT campaign intelligence</li>
-        <li>Priority analyst advisories</li>
-        <li class="locked">YARA rules API (Enterprise)</li>
-        <li class="locked">SIEM query bundles (Enterprise)</li>
+        <li>120 requests/min</li>
+        <li>Full IOC arrays</li>
+        <li>STIX 2.1 bundles</li>
+        <li>Threat alerts</li>
+        <li>10 API keys</li>
       </ul>
-      <a href="/api-dashboard.html#plans" class="plan-cta cyan">View Plans →</a>
+      <a href="https://intel.cyberdudebivash.com/upgrade.html?plan=pro&amp;utm_source=blog&amp;utm_medium=api-page&amp;utm_campaign=plan-checkout" data-intel-plan="pro" data-intel-medium="api-page" class="plan-cta cyan">Get PRO Defense →</a>
     </div>
 
-    <!-- Sentinel Team -->
     <div class="api-plan">
-      <div class="plan-tier" style="color:var(--apex-green);">Sentinel Team</div>
-      <div class="plan-price"><sup>$</sup>249</div>
-      <div class="plan-price-period">/ month</div>
-      <p class="plan-desc">For multi-analyst SOC teams that need STIX and SIEM-native export, not just a feed.</p>
-      <div class="plan-limits">
-        <div class="plan-limit-row"><span>Daily Requests</span><span class="plan-limit-val">100,000 / day</span></div>
-        <div class="plan-limit-row"><span>Rate Limit</span><span class="plan-limit-val">500 req/min</span></div>
-        <div class="plan-limit-row"><span>API keys</span><span class="plan-limit-val">1 account key</span></div>
-      </div>
+      <div class="plan-tier" style="color:var(--apex-green);">Enterprise SOC</div>
+      <div class="plan-price" data-intel-price="ENTERPRISE" style="font-size:28px;margin-top:10px;">See price</div>
+      <div class="plan-price-period">/ month · Sentinel APEX platform</div>
+      <p class="plan-desc">For production SOCs that push intelligence into their SIEM.</p>
       <ul class="plan-features">
-        <li>Everything in SOC Pro</li>
-        <li>YARA rules API (all malware families)</li>
-        <li>SIEM query bundles (Splunk SPL / Sentinel KQL)</li>
-        <li>STIX 2.1 bundle export</li>
-        <li>Bulk IOC export (JSON, 200 per page)</li>
-        <li>Priority Slack/Discord channel</li>
-        <li class="locked">Dedicated analyst support (Enterprise)</li>
+        <li>600 requests/min</li>
+        <li>SIEM push: Splunk / Microsoft Sentinel / QRadar</li>
+        <li>Webhooks</li>
+        <li>SLA by contract</li>
+        <li>50 API keys</li>
       </ul>
-      <a href="/api-dashboard.html#plans" class="plan-cta cyan">View Plans →</a>
+      <a href="https://intel.cyberdudebivash.com/upgrade.html?plan=enterprise&amp;utm_source=blog&amp;utm_medium=api-page&amp;utm_campaign=plan-checkout" data-intel-plan="enterprise" data-intel-medium="api-page" class="plan-cta cyan">Get Enterprise SOC →</a>
     </div>
 
-    <!-- Enterprise -->
     <div class="api-plan enterprise">
-      <div class="plan-tier" style="color:var(--apex-purple);">Enterprise Managed</div>
-      <div class="plan-price" style="font-size:28px;margin-top:10px;">Custom</div>
-      <div class="plan-price-period">pricing — volume discounts available</div>
-      <p class="plan-desc">For MSSPs, enterprise SOC teams, and organizations that need full-stack threat intelligence infrastructure.</p>
-      <div class="plan-limits">
-        <div class="plan-limit-row"><span>Daily Requests</span><span class="plan-limit-val">Unlimited</span></div>
-        <div class="plan-limit-row"><span>Rate Limit</span><span class="plan-limit-val">Dedicated</span></div>
-        <div class="plan-limit-row"><span>SLA</span><span class="plan-limit-val">Contract-defined + support</span></div>
-      </div>
+      <div class="plan-tier" style="color:var(--apex-purple);">MSSP / White-Label</div>
+      <div class="plan-price" data-intel-price="MSSP" style="font-size:28px;margin-top:10px;">See price</div>
+      <div class="plan-price-period">/ month · Sentinel APEX platform</div>
+      <p class="plan-desc">For MSSPs serving multiple clients.</p>
       <ul class="plan-features">
-        <li>Everything in SOC Pro</li>
-        <li>YARA rules API (all malware families)</li>
-        <li>SIEM query bundles (Splunk SPL / Sentinel KQL)</li>
-        <li>Webhook-based real-time alerts</li>
-        <li>White-label intelligence feeds</li>
-        <li>Dedicated threat analyst support</li>
-        <li>MSSP multi-tenant access</li>
-        <li>On-premise data export (STIX 2.1)</li>
+        <li>Multi-tenant</li>
+        <li>White-label</li>
+        <li>Dedicated analyst support</li>
       </ul>
-      <a href="mailto:bivash@cyberdudebivash.com?subject=Enterprise%20API%20Inquiry" class="plan-cta purple">📅 Book Enterprise Demo →</a>
+      <a href="https://intel.cyberdudebivash.com/upgrade.html?plan=mssp&amp;utm_source=blog&amp;utm_medium=api-page&amp;utm_campaign=plan-checkout" data-intel-plan="mssp" data-intel-medium="api-page" class="plan-cta purple">Get MSSP / White-Label →</a>
     </div>
   </div>
 
@@ -492,7 +465,7 @@ req = urllib.request.<span class="c-func">Request</span>(
   <div style="background:linear-gradient(135deg,rgba(0,255,224,.06),rgba(0,60,50,.08));border:1px solid rgba(0,255,224,.2);border-radius:12px;padding:40px;margin:60px 0;text-align:center;">
     <div style="font-size:32px;margin-bottom:12px;">⚡</div>
     <h2 style="font-size:26px;font-weight:900;color:#fff;margin-bottom:12px;">Start integrating threat intelligence today</h2>
-    <p style="color:var(--apex-muted);font-size:15px;max-width:500px;margin:0 auto 24px;">Free tier requires no credit card. SOC Pro includes full API access + blog subscriptions. Enterprise gets dedicated support.</p>
+    <p style="color:var(--apex-muted);font-size:15px;max-width:500px;margin:0 auto 24px;">Free tier requires no credit card. Paid plans (PRO Defense, Enterprise SOC, MSSP / White-Label) are purchased on the Sentinel APEX platform.</p>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
       <a href="/api-dashboard.html" class="btn-primary">Get Your Free API Key →</a>
       <a href="/api-dashboard.html#plans" class="btn-outline">Upgrade to Pro →</a>
@@ -538,5 +511,6 @@ req = urllib.request.<span class="c-func">Request</span>(
   el.textContent='Selected intelligence context: '+[id,title,intent].filter(Boolean).join(' · ')+'. This context is preserved so you can choose the relevant commercial workflow.';
 })();
 </script>
+<script src="/intel-plans.js" defer></script>
 </body>
 </html>

@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
 <link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><meta name="theme-color" content="#00ffe0">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="CYBERDUDEBIVASH SENTINEL APEX Pricing — Free, API Starter, SOC Professional, Sentinel Team, and Enterprise Apex cybersecurity threat intelligence plans. Source-attributed reports, IOC feeds, SIEM rule drafts, and dedicated analyst access.">
+  <meta name="description" content="CYBERDUDEBIVASH SENTINEL APEX pricing — a free threat intelligence API tier plus PRO Defense, Enterprise SOC and MSSP / White-Label plans on the Sentinel APEX platform. IOC feeds, STIX 2.1 bundles and SIEM integrations for security teams.">
   <meta name="keywords" content="cybersecurity threat intelligence pricing, SOC professional plan, enterprise security intelligence, CVE feed API, IOC feed, CYBERDUDEBIVASH SENTINEL APEX">
   <meta name="author" content="CyberDudeBivash — CYBERDUDEBIVASH SENTINEL APEX">
 
   <!-- Open Graph -->
   <meta property="og:title" content="CYBERDUDEBIVASH SENTINEL APEX Pricing — Threat Intelligence Plans for Security Teams">
-  <meta property="og:description" content="Free, API Starter (₹999/$12/mo), Pro (₹1,499/$18/mo), Sentinel Team (₹20,699/$249/mo), and Enterprise Apex (from ₹82,999/$999/mo) plans. Priority analyst advisories, IOC feeds, SIEM rules, and dedicated analyst access for SOC teams worldwide.">
+  <meta property="og:description" content="Start free with a threat intelligence API key, then upgrade to PRO Defense, Enterprise SOC or MSSP / White-Label on the Sentinel APEX platform. Current prices are shown live from the platform checkout.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://blog.cyberdudebivash.in/pricing.html">
   <meta property="og:image" content="https://blog.cyberdudebivash.in/og-image.png">
@@ -20,7 +20,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@cyberdudebivash">
   <meta name="twitter:title" content="CYBERDUDEBIVASH SENTINEL APEX Pricing — Threat Intelligence Plans">
-  <meta name="twitter:description" content="Free, API Starter (₹999/$12/mo), Pro (₹1,499/$18/mo), Sentinel Team (₹20,699/$249/mo), and Enterprise Apex (from ₹82,999/$999/mo) plans. Priority analyst advisories, IOC feeds, SIEM rules, and dedicated analyst access for global SOC teams.">
+  <meta name="twitter:description" content="Start free with a threat intelligence API key, then upgrade to PRO Defense, Enterprise SOC or MSSP / White-Label on the Sentinel APEX platform.">
   <meta name="twitter:image" content="https://blog.cyberdudebivash.in/og-image.png">
 
   <title>Pricing — CYBERDUDEBIVASH SENTINEL APEX Threat Intelligence Plans | CyberDudeBivash</title>
@@ -32,7 +32,7 @@
     "@id": "https://blog.cyberdudebivash.in/pricing.html",
     "url": "https://blog.cyberdudebivash.in/pricing.html",
     "name": "CYBERDUDEBIVASH SENTINEL APEX Pricing — Threat Intelligence Plans",
-    "description": "Free, API Starter, Pro, Sentinel Team, and Enterprise Apex cybersecurity threat intelligence subscription plans from CyberDudeBivash CYBERDUDEBIVASH SENTINEL APEX.",
+    "description": "Free threat intelligence API tier and the Sentinel APEX platform plans (PRO Defense, Enterprise SOC, MSSP / White-Label) from CyberDudeBivash CYBERDUDEBIVASH SENTINEL APEX.",
     "isPartOf": { "@id": "https://blog.cyberdudebivash.in/#website" },
     "publisher": {
       "@type": "Organization",
@@ -560,6 +560,14 @@
     .toggle-switch input:checked + .toggle-slider { background: rgba(0,255,224,0.2); }
     .toggle-switch input:checked + .toggle-slider::before { transform: translateX(26px); }
     .plan-currency-note { font-size: 11px; color: var(--muted); text-align: center; margin-top: -1rem; margin-bottom: 1.5rem; }
+    /* Platform plan prices come from intel.cyberdudebivash.com/api/pricing (intel-plans.js) */
+    .intel-usd { display: none; }
+    body.show-usd .intel-usd { display: inline-block; }
+    body.show-usd .intel-inr { display: none; }
+    .plan-annual { font-size: 12px; color: var(--muted); margin-top: .25rem; min-height: 1.2em; }
+    a.plan-cta { display: block; text-align: center; text-decoration: none; }
+    a.plan-cta:hover { text-decoration: none; }
+    .platform-note { max-width: 760px; margin: 1.5rem auto 0; font-size: 13px; color: var(--muted); text-align: center; }
   </style>
   <!-- Google Analytics 4 — CYBERDUDEBIVASH SENTINEL APEX -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XTGLNMNNC7"></script>
@@ -588,7 +596,7 @@
 <section class="hero">
   <div class="hero-eyebrow">⚡ Production-Ready Threat Intelligence</div>
   <h1>Security Intelligence That<br><span>Actually Protects</span></h1>
-  <p class="hero-sub">From free CVE feeds to enterprise STIX 2.1 exports — pick the plan that fits your security team and threat model.</p>
+  <p class="hero-sub">Start with a free API key here. Paid plans are sold and managed on the Sentinel APEX platform — pick the one that fits your security team.</p>
 
   <div class="trust-bar">
     <div class="trust-item">
@@ -626,7 +634,7 @@
     </label>
     <span id="usdLabel">USD $</span>
   </div>
-  <p class="plan-currency-note" id="currencyNote">Prices shown in Indian Rupees (INR). Toggle for USD equivalent.</p>
+  <p class="plan-currency-note" id="currencyNote">Prices shown in Indian Rupees (INR). Toggle for USD.</p>
 
   <div class="pricing-grid">
 
@@ -657,166 +665,82 @@
       </ul>
     </div>
 
-    <!-- Starter -->
-    <div class="plan-card">
-      <div class="plan-name">API Starter</div>
-      <div class="plan-price-row">
-        <span class="plan-currency" data-inr="₹" data-usd="$">₹</span>
-        <span class="plan-price" data-inr="999" data-usd="12">999</span>
-        <span class="plan-period">/month</span>
-      </div>
-      <p class="plan-tagline">Higher quota for growing integrations.</p>
-      <button class="plan-cta cta-starter" onclick="PaymentFlow.startUpgrade('starter')">
-        Upgrade to Starter →
-      </button>
-      <hr class="plan-divider">
-      <ul class="features-list">
-        <li><span class="ico ico-check">✓</span> 10 live threat items per request</li>
-        <li><span class="ico ico-check">✓</span> CVE lookups (CVSS ≥ 7.0)</li>
-        <li><span class="ico ico-check">✓</span> 5,000 API calls/day</li>
-        <li><span class="ico ico-check">✓</span> Weekly threat intel digest</li>
-        <li><span class="ico ico-check">✓</span> Full-text search (unlimited)</li>
-        <li><span class="ico ico-cross">✗</span> IOC feed access</li>
-        <li><span class="ico ico-cross">✗</span> Detection rules (SIGMA/Yara)</li>
-        <li><span class="ico ico-cross">✗</span> Full threat descriptions</li>
-        <li><span class="ico ico-cross">✗</span> Actor/campaign details</li>
-        <li><span class="ico ico-cross">✗</span> STIX 2.1 export</li>
-      </ul>
-    </div>
+    <!-- Paid plans: sold on the Sentinel APEX platform (owner decision 2026-10-01).
+         Prices are never hardcoded here: intel-plans.js fills them from
+         https://intel.cyberdudebivash.com/api/pricing; features are as listed
+         on the platform's own upgrade page. -->
 
-    <!-- Pro -->
+    <!-- PRO Defense -->
     <div class="plan-card popular">
       <div class="popular-badge">⚡ Most Popular</div>
-      <div class="plan-name">SOC Professional</div>
+      <div class="plan-name">PRO Defense</div>
       <div class="plan-price-row">
-        <span class="plan-currency" data-inr="₹" data-usd="$">₹</span>
-        <span class="plan-price" data-inr="1,499" data-usd="18">1,499</span>
+        <span class="plan-price intel-inr" data-intel-price="PRO" data-intel-currency="inr">See price</span>
+        <span class="plan-price intel-usd" data-intel-price="PRO" data-intel-currency="usd">See price</span>
         <span class="plan-period">/month</span>
       </div>
-      <p class="plan-tagline">Full intel access for active SOC teams.</p>
-      <button class="plan-cta cta-pro" onclick="PaymentFlow.startUpgrade('pro')">
-        Upgrade to Pro →
-      </button>
+      <div class="plan-annual">or <span class="intel-inr" data-intel-price="PRO" data-intel-period="annual">see annual price</span><span class="intel-usd" data-intel-price="PRO" data-intel-period="annual" data-intel-currency="usd">see annual price</span>/year</div>
+      <p class="plan-tagline">Full IOC data and STIX 2.1 for active SOC teams.</p>
+      <a class="plan-cta cta-pro" data-intel-plan="pro" data-intel-medium="pricing-card" href="https://intel.cyberdudebivash.com/upgrade.html?plan=pro&amp;utm_source=blog&amp;utm_medium=pricing-card&amp;utm_campaign=plan-checkout">
+        Get PRO Defense →
+      </a>
       <hr class="plan-divider">
       <ul class="features-list">
-        <li><span class="ico ico-check">✓</span> 50 live threat items per request</li>
-        <li><span class="ico ico-check">✓</span> CVE lookups + full descriptions</li>
-        <li><span class="ico ico-check">✓</span> Complete IOC feed</li>
-        <li><span class="ico ico-check">✓</span> 25,000 API calls/day</li>
-        <li><span class="ico ico-check">✓</span> Ransomware + actor TTPs</li>
-        <li><span class="ico ico-check">✓</span> SIGMA detection rules</li>
-        <li><span class="ico ico-check">✓</span> Yara rule downloads</li>
-        <li><span class="ico ico-check">✓</span> Full-text search (unlimited)</li>
-        <li><span class="ico ico-check">✓</span> IOC type + confidence filters</li>
-        <li><span class="ico ico-cross">✗</span> STIX 2.1 export</li>
+        <li><span class="ico ico-check">✓</span> 120 requests/min</li>
+        <li><span class="ico ico-check">✓</span> Full IOC arrays</li>
+        <li><span class="ico ico-check">✓</span> STIX 2.1 bundles</li>
+        <li><span class="ico ico-check">✓</span> Threat alerts</li>
+        <li><span class="ico ico-check">✓</span> 10 API keys</li>
       </ul>
     </div>
 
-    <!-- Sentinel Team -->
+    <!-- Enterprise SOC -->
     <div class="plan-card">
-      <div class="plan-name">Sentinel Team</div>
+      <div class="plan-name">Enterprise SOC</div>
       <div class="plan-price-row">
-        <span class="plan-currency" data-inr="₹" data-usd="$">₹</span>
-        <span class="plan-price" data-inr="20,699" data-usd="249">20,699</span>
+        <span class="plan-price intel-inr" data-intel-price="ENTERPRISE" data-intel-currency="inr">See price</span>
+        <span class="plan-price intel-usd" data-intel-price="ENTERPRISE" data-intel-currency="usd">See price</span>
         <span class="plan-period">/month</span>
       </div>
-      <p class="plan-tagline">Higher limits with STIX 2.1 + SIEM export on one account key.</p>
-      <button class="plan-cta cta-team" onclick="PaymentFlow.startUpgrade('team')">
-        Upgrade to Sentinel Team →
-      </button>
+      <div class="plan-annual">or <span class="intel-inr" data-intel-price="ENTERPRISE" data-intel-period="annual">see annual price</span><span class="intel-usd" data-intel-price="ENTERPRISE" data-intel-period="annual" data-intel-currency="usd">see annual price</span>/year</div>
+      <p class="plan-tagline">SIEM push and higher limits for production SOCs.</p>
+      <a class="plan-cta cta-team" data-intel-plan="enterprise" data-intel-medium="pricing-card" href="https://intel.cyberdudebivash.com/upgrade.html?plan=enterprise&amp;utm_source=blog&amp;utm_medium=pricing-card&amp;utm_campaign=plan-checkout">
+        Get Enterprise SOC →
+      </a>
       <hr class="plan-divider">
       <ul class="features-list">
-        <li><span class="ico ico-check">✓</span> Up to 100 threat items per page (IOC feed: 200)</li>
-        <li><span class="ico ico-check">✓</span> Complete IOC feed</li>
-        <li><span class="ico ico-check">✓</span> 100,000 API calls/day</li>
-        <li><span class="ico ico-check">✓</span> Single account API key (multi-seat access not yet available)</li>
-        <li><span class="ico ico-check">✓</span> STIX 2.1 bundle export</li>
-        <li><span class="ico ico-check">✓</span> SIEM rule export (Splunk SPL / Sentinel KQL) + live Microsoft Sentinel connector</li>
-        <li><span class="ico ico-check">✓</span> SIGMA + Yara rule downloads</li>
-        <li><span class="ico ico-check">✓</span> All Pro features included</li>
-        <li><span class="ico ico-check">✓</span> Priority Slack/Discord channel</li>
-        <li><span class="ico ico-cross">✗</span> Dedicated analyst / custom SLA</li>
+        <li><span class="ico ico-check">✓</span> 600 requests/min</li>
+        <li><span class="ico ico-check">✓</span> SIEM push: Splunk / Microsoft Sentinel / QRadar</li>
+        <li><span class="ico ico-check">✓</span> Webhooks</li>
+        <li><span class="ico ico-check">✓</span> SLA by contract</li>
+        <li><span class="ico ico-check">✓</span> 50 API keys</li>
       </ul>
     </div>
 
-    <!-- Enterprise Apex -->
+    <!-- MSSP / White-Label -->
     <div class="plan-card">
-      <div class="plan-name">Enterprise Apex</div>
+      <div class="plan-name">MSSP / White-Label</div>
       <div class="plan-price-row">
-        <span class="plan-currency" data-inr="₹" data-usd="$">₹</span>
-        <span class="plan-price" data-inr="82,999" data-usd="999">82,999</span>
-        <span class="plan-period">/month starting</span>
+        <span class="plan-price intel-inr" data-intel-price="MSSP" data-intel-currency="inr">See price</span>
+        <span class="plan-price intel-usd" data-intel-price="MSSP" data-intel-currency="usd">See price</span>
+        <span class="plan-period">/month</span>
       </div>
-      <p class="plan-tagline">Custom-scoped intelligence for global SOCs, MSSPs, and critical infrastructure.</p>
-      <button class="plan-cta cta-enterprise" onclick="window.location.href='/enterprise.html'">
-        Contact Sales →
-      </button>
+      <div class="plan-annual">or <span class="intel-inr" data-intel-price="MSSP" data-intel-period="annual">see annual price</span><span class="intel-usd" data-intel-price="MSSP" data-intel-period="annual" data-intel-currency="usd">see annual price</span>/year</div>
+      <p class="plan-tagline">Multi-tenant intelligence for service providers.</p>
+      <a class="plan-cta cta-enterprise" data-intel-plan="mssp" data-intel-medium="pricing-card" href="https://intel.cyberdudebivash.com/upgrade.html?plan=mssp&amp;utm_source=blog&amp;utm_medium=pricing-card&amp;utm_campaign=plan-checkout">
+        Get MSSP / White-Label →
+      </a>
       <hr class="plan-divider">
       <ul class="features-list">
-        <li><span class="ico ico-gold">★</span> Unlimited API calls/day</li>
-        <li><span class="ico ico-gold">★</span> All Sentinel Team features included</li>
-        <li><span class="ico ico-gold">★</span> Dedicated analyst &amp; custom intelligence requests</li>
-        <li><span class="ico ico-gold">★</span> Custom SLA &amp; white-label reporting</li>
-        <li><span class="ico ico-gold">★</span> Multi-seat access not yet available</li>
-        <li><span class="ico ico-gold">★</span> IOC feed export (JSON; CSV not yet available)</li>
-                <li><span class="ico ico-gold">★</span> Priority analyst advisories</li>
-        <li><span class="ico ico-gold">★</span> Direct line to CYBERDUDEBIVASH analysts</li>
-        <li><span class="ico ico-gold">★</span> Custom-scoped invoicing &amp; procurement support</li>
+        <li><span class="ico ico-gold">★</span> Multi-tenant</li>
+        <li><span class="ico ico-gold">★</span> White-label</li>
+        <li><span class="ico ico-gold">★</span> Dedicated analyst support</li>
+        <li><span class="ico ico-gold">★</span> Custom scope: <a href="/enterprise.html">talk to sales</a></li>
       </ul>
     </div>
 
   </div>
-</section>
-
-<!-- ── Comparison Table ──────────────────────────────────────────── -->
-<section class="compare-section">
-  <h2>Full Feature Comparison</h2>
-  <table class="compare-table">
-    <thead>
-      <tr>
-        <th style="text-align:left">Feature</th>
-        <th>Free</th>
-        <th>Starter</th>
-        <th>Pro</th>
-        <th>Team</th>
-        <th>Enterprise Apex</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr class="cat-row"><td colspan="6">API Access</td></tr>
-      <tr><td>Daily API calls</td><td>100</td><td>5,000</td><td>25,000</td><td>100,000</td><td>Unlimited</td></tr>
-      <tr><td>Threat items per page</td><td>Up to 100</td><td>Up to 100</td><td>Up to 100</td><td>Up to 100</td><td>Up to 100</td></tr>
-      <tr><td>API keys per account</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
-
-      <tr class="cat-row"><td colspan="6">Threat Intelligence</td></tr>
-      <tr><td>Live threat feed</td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td></tr>
-      <tr><td>CVE lookup (CVSS ≥ 7.0)</td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td></tr>
-      <tr><td>Full threat descriptions</td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td></tr>
-      <tr><td>Top threats feed</td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td></tr>
-      <tr><td>Weekly intel digest email</td><td><span class="dash">—</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td></tr>
-      <tr><td>Ransomware campaigns</td><td>Overview</td><td>Overview</td><td>Full + TTPs</td><td>Full + TTPs</td><td>Full + TTPs</td></tr>
-      <tr><td>Priority analyst advisories</td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="tick">✓</span></td></tr>
-
-      <tr class="cat-row"><td colspan="6">IOC & Detection</td></tr>
-      <tr><td>IOC feed access</td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td></tr>
-      <tr><td>Confidence score filters</td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td></tr>
-      <tr><td>SIGMA detection rules</td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td></tr>
-      <tr><td>Yara rules</td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td></tr>
-      <tr><td>SIEM rule export (Splunk SPL / Sentinel KQL)</td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td></tr>
-      <tr><td>STIX 2.1 export</td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td></tr>
-      <tr><td>IOC feed JSON export</td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td></tr>
-
-      <tr class="cat-row"><td colspan="6">Search</td></tr>
-      <tr><td>Full-text search</td><td>5 results</td><td>Unlimited</td><td>Unlimited</td><td>Unlimited</td><td>Unlimited</td></tr>
-      <tr><td>CVE search</td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td></tr>
-      <tr><td>Actor/campaign search</td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td></tr>
-
-      <tr class="cat-row"><td colspan="6">Enterprise Support</td></tr>
-      <tr><td>Priority Slack/Discord channel</td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td></tr>
-      <tr><td>Dedicated analyst &amp; custom SLA</td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="tick">✓</span></td></tr>
-      <tr><td>White-label reporting</td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="tick">✓</span></td></tr>
-    </tbody>
-  </table>
+  <p class="platform-note">Paid plans are purchased, billed and managed on the <a href="https://intel.cyberdudebivash.com/upgrade.html?utm_source=blog&amp;utm_medium=pricing-note&amp;utm_campaign=plan-checkout" data-intel-plan="" data-intel-medium="pricing-note">CYBERDUDEBIVASH SENTINEL APEX platform</a>, which shows the full feature list and the exact amount before you pay. Prices above are read live from the platform.</p>
 </section>
 
 <!-- ── FAQ ───────────────────────────────────────────────────────── -->
@@ -825,41 +749,41 @@
 
   <div class="faq-item">
     <button class="faq-question" onclick="toggleFaq(this)">
-      How do I pay?
+      Where do I buy a paid plan?
       <span class="faq-chevron">▼</span>
     </button>
     <div class="faq-answer">
-      <p>Click "Upgrade", enter your email and pay through secure online checkout (Razorpay). Manual UPI and bank-transfer payments were retired on 1 October 2026. If online checkout is unavailable, email bivash@cyberdudebivash.com to purchase.</p>
+      <p>On the CYBERDUDEBIVASH SENTINEL APEX platform. Each "Get" button above opens the platform checkout for that plan, where you see the exact amount and pay securely. The platform issues and manages your plan's API keys.</p>
     </div>
   </div>
 
   <div class="faq-item">
     <button class="faq-question" onclick="toggleFaq(this)">
-      How quickly is payment verified?
+      Is the free API key still available here?
       <span class="faq-chevron">▼</span>
     </button>
     <div class="faq-answer">
-      <p>Online checkout payments are verified automatically from Razorpay's signed payment confirmation, and your API tier upgrades as soon as verification succeeds — no need to re-register or get a new key.</p>
+      <p>Yes. <a href="/api-dashboard.html">Get a free API key</a> on the API dashboard: 100 calls/day, live threat items, CVE lookups and the top threats feed.</p>
     </div>
   </div>
 
   <div class="faq-item">
     <button class="faq-question" onclick="toggleFaq(this)">
-      I paid by UPI or bank transfer before the change — what happens?
+      I already bought a plan on this site — what changes?
       <span class="faq-chevron">▼</span>
     </button>
     <div class="faq-answer">
-      <p>Manual payments submitted before the retirement are still reviewed. If you transferred money but could not submit your UTR, email bivash@cyberdudebivash.com with your Intent ID, UTR and payment proof.</p>
+      <p>Nothing you paid for is taken away: your existing API key keeps the tier you bought. Questions about an earlier purchase, including manual UPI or bank-transfer payments made before 1 October 2026, go to bivash@cyberdudebivash.com with your payment reference.</p>
     </div>
   </div>
 
   <div class="faq-item">
     <button class="faq-question" onclick="toggleFaq(this)">
-      Can I upgrade from Free to Pro, Pro to Sentinel Team, or Team to Enterprise Apex?
+      Can I buy premium intelligence reports here?
       <span class="faq-chevron">▼</span>
     </button>
     <div class="faq-answer">
-      <p>Yes. Any API key can be upgraded at any time. Simply use the Upgrade button with your registered email address and the system will link the payment to your existing key. No new API key is issued — the same key gets more access.</p>
+      <p>Yes. Individual certified reports are sold in the <a href="/intelligence-store.html">Intelligence Store</a> on this site.</p>
     </div>
   </div>
 
@@ -869,17 +793,7 @@
       <span class="faq-chevron">▼</span>
     </button>
     <div class="faq-answer">
-      <p>We store your email, hashed API key, tier, and usage counters in Redis. We do not store card or bank details — only payment references (Razorpay order and payment IDs, or the UTR of an earlier manual payment) and the plan you paid for. Your email is never shared or sold.</p>
-    </div>
-  </div>
-
-  <div class="faq-item">
-    <button class="faq-question" onclick="toggleFaq(this)">
-      What happens if my payment is rejected?
-      <span class="faq-chevron">▼</span>
-    </button>
-    <div class="faq-answer">
-      <p>If an online payment cannot be verified, your tier is not changed. Contact bivash@cyberdudebivash.com with your Razorpay payment ID (or, for an earlier manual payment, your Intent ID and UTR) for resolution.</p>
+      <p>For a free API key we store your email, hashed API key, tier and usage counters. We never store card or bank details. Your email is never shared or sold.</p>
     </div>
   </div>
 
@@ -889,9 +803,9 @@
 <section class="bottom-cta">
   <h2>Ready to Upgrade Your SOC?</h2>
   <p>Join security teams using SENTINEL APEX for production threat intelligence.</p>
-  <button class="btn-cta-large" onclick="PaymentFlow.startUpgrade('pro')">
-    Upgrade to Pro — ₹1,499/mo →
-  </button>
+  <a class="btn-cta-large" data-intel-plan="pro" data-intel-medium="pricing-bottom" href="https://intel.cyberdudebivash.com/upgrade.html?plan=pro&amp;utm_source=blog&amp;utm_medium=pricing-bottom&amp;utm_campaign=plan-checkout">
+    Get PRO Defense →
+  </a>
   <p style="margin-top:1rem; font-size:0.8rem; color:var(--muted);">
     Or <a href="/api-dashboard.html">get a free API key</a> to start immediately.
   </p>
@@ -899,626 +813,39 @@
 
 <!-- ── Sticky Upgrade Bar ──────────────────────────────────────────── -->
 <div class="sticky-bar" id="stickyBar">
-  <span>🔒 <strong>Unlock full IOC feeds, detection rules & STIX export</strong> — from ₹1,499/mo</span>
-  <button class="sticky-bar-cta" onclick="PaymentFlow.startUpgrade('pro')">Upgrade Now</button>
+  <span>🔒 <strong>Unlock full IOC arrays, STIX 2.1 bundles &amp; threat alerts</strong> with PRO Defense</span>
+  <a class="sticky-bar-cta" data-intel-plan="pro" data-intel-medium="pricing-sticky" href="https://intel.cyberdudebivash.com/upgrade.html?plan=pro&amp;utm_source=blog&amp;utm_medium=pricing-sticky&amp;utm_campaign=plan-checkout">Upgrade Now</a>
   <button class="sticky-bar-close" onclick="document.getElementById('stickyBar').classList.remove('visible')" aria-label="Close">×</button>
 </div>
 
 <!-- ── Toast Stack ──────────────────────────────────────────────────── -->
 <div class="toast-stack" id="toastStack"></div>
 
-<!-- ═══════════════════════════════════════════════════════════════════
-     PAYMENT MODAL
-════════════════════════════════════════════════════════════════════ -->
-<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
-  <div class="modal" id="modal">
-
-    <div class="modal-header">
-      <div>
-        <div class="modal-title" id="modalTitle">Upgrade Your Plan</div>
-        <div class="modal-subtitle" id="modalSubtitle">Complete payment to activate your tier</div>
-      </div>
-      <button class="modal-close" onclick="PaymentFlow.close()" aria-label="Close">×</button>
-    </div>
-
-    <!-- Step indicators -->
-    <div class="step-indicators" id="stepIndicators">
-      <div class="step-dot" id="dot1"></div>
-      <div class="step-dot" id="dot2"></div>
-      <div class="step-dot" id="dot3"></div>
-      <div class="step-dot" id="dot4"></div>
-      <div class="step-dot" id="dot5"></div>
-    </div>
-
-    <!-- ── STEP 1: Email ──────────────────────── -->
-    <div id="step1">
-      <div class="plan-summary">
-        <div>
-          <div class="plan-summary-name" id="s1PlanName">SOC Pro</div>
-          <div style="font-size:0.75rem;color:var(--muted)">Billed monthly · Cancel anytime</div>
-        </div>
-        <div class="plan-summary-price" id="s1PlanPrice">₹1,499/mo</div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="emailInput">Your Registered Email</label>
-        <input type="email" class="form-input" id="emailInput"
-          placeholder="you@company.com" autocomplete="email">
-        <div class="field-error" id="emailError">Please enter a valid email address.</div>
-      </div>
-      <p style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem;">
-        Use the email you registered (or will register) your API key with. Your tier is linked to this email.
-      </p>
-      <button class="btn-primary" id="btnEmailNext" onclick="PaymentFlow.handleEmailSubmit()">
-        Continue →
-      </button>
-    </div>
-
-    <!-- ── STEP 2: Payment Details ─────────────── -->
-    <div id="step2" style="display:none">
-      <button class="btn-primary" id="btnInstantPay" style="margin-bottom:0.4rem;background:linear-gradient(135deg,#00ffe0,#00b8a3)" onclick="PaymentFlow.payInstant()">⚡ Pay Instantly — Card / UPI / Wallet</button>
-      <p style="font-size:0.78rem;color:var(--muted);text-align:center;margin:0 0 1rem">Instant activation via Razorpay — no waiting for manual review.</p>
-      <div class="intent-id-callout">
-        <strong>Manual UPI / bank transfer has been retired</strong>
-        Payments are taken through secure online checkout only. If checkout is unavailable, email
-        <a href="mailto:bivash@cyberdudebivash.com?subject=Sentinel%20APEX%20plan%20purchase" style="color:var(--cyan)">bivash@cyberdudebivash.com</a> to purchase.
-      </div>
-      <button class="btn-secondary" onclick="PaymentFlow.goToStep(1)">← Back</button>
-    </div>
-
-    <!-- ── STEP 3: UTR Submission ──────────────── -->
-    <div id="step3" style="display:none">
-      <div class="intent-id-callout">
-        <strong>Submit Your Transaction Reference</strong>
-        Enter the UTR / transaction reference number from your payment confirmation.
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="utrInput">UTR / Transaction Reference Number</label>
-        <input type="text" class="form-input" id="utrInput"
-          placeholder="e.g. 123456789012" maxlength="64">
-        <div class="field-error" id="utrError">UTR must be 12–64 alphanumeric characters.</div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="emailConfirmInput">Confirm Your Email</label>
-        <input type="email" class="form-input" id="emailConfirmInput"
-          placeholder="same email as step 1" autocomplete="email">
-        <div class="field-error" id="emailConfirmError">Email must match what you entered in step 1.</div>
-      </div>
-
-      <p style="font-size:0.77rem;color:var(--muted);margin-bottom:1rem;">
-        Find your UTR in your UPI app's transaction history or bank SMS confirmation. It's usually 12–22 digits.
-      </p>
-
-      <button class="btn-primary" id="btnSubmitUtr" onclick="PaymentFlow.submitPayment()">
-        Submit for Verification →
-      </button>
-      <button class="btn-secondary" onclick="PaymentFlow.goToStep(2)">← Back to Payment</button>
-    </div>
-
-    <!-- ── STEP 4: Status Polling ──────────────── -->
-    <div id="step4" style="display:none">
-      <div class="status-tracker">
-        <div class="status-icon" id="pollIcon">⏳</div>
-        <div class="status-title" id="pollTitle">Payment Under Review</div>
-        <p class="status-sub" id="pollSub">Our team is verifying your transaction. This typically takes 2–4 hours during business hours.</p>
-
-        <div class="txn-id-display">
-          Transaction ID: <span id="txnIdDisplay">—</span>
-        </div>
-
-        <div style="margin-bottom:0.5rem;display:flex;justify-content:center">
-          <span class="status-badge pending" id="statusBadge">
-            <span id="statusDot">●</span>
-            <span id="statusText">Pending Review</span>
-          </span>
-        </div>
-
-        <div class="poll-countdown" id="pollCountdown">Next check in 10s...</div>
-        <div class="poll-bar"><div class="poll-fill" id="pollFill" style="width:100%"></div></div>
-
-        <p style="font-size:0.78rem;color:var(--muted);margin-bottom:1.5rem;">
-          Keep this tab open to get notified when approved, or check back with your email at <a href="/api-dashboard.html">API Dashboard</a>.
-        </p>
-        <button class="btn-secondary" style="max-width:240px;margin:0 auto" onclick="PaymentFlow.manualPoll()">
-          🔄 Check Now
-        </button>
-      </div>
-    </div>
-
-    <!-- ── STEP 5: Success ─────────────────────── -->
-    <div id="step5" style="display:none">
-      <div class="success-screen">
-        <div class="success-icon">🎉</div>
-        <div class="success-title" id="successTitle">Pro Tier Activated!</div>
-        <p class="success-sub" id="successSub">Your API key now has full Pro access. No changes needed — same key, more power.</p>
-        <div class="unlock-features" id="unlockFeatures">
-          <h4>🔓 Unlocked Features</h4>
-          <!-- populated by JS -->
-        </div>
-        <button class="btn-primary" onclick="window.location.href='/api-dashboard.html'">
-          Go to API Dashboard →
-        </button>
-        <button class="btn-secondary" onclick="PaymentFlow.close()">Close</button>
-      </div>
-    </div>
-
-  </div><!-- /modal -->
-</div><!-- /modal-overlay -->
-
-<!-- ═══════════════════════════════════════════════════════════════════
-     JAVASCRIPT
-════════════════════════════════════════════════════════════════════ -->
+<script src="/intel-plans.js" defer></script>
 <script>
 'use strict';
 
-/* ── Config ─────────────────────────────────────────────────────── */
 const API_BASE = '/api/v1';
-// Fallback only — used if action=plans hasn't resolved yet (or fails) by the
-// time a user clicks upgrade. The backend (api/_lib/payment-utils.js) is the
-// real source of truth; this must be kept in sync with it, not treated as
-// authoritative. See docs/PRICING.md.
-let PLANS = {
-  starter:    { name: 'API Starter',     price: '₹999',     amount: 999,   currency: 'INR' },
-  pro:        { name: 'SOC Pro',         price: '₹1,499',   amount: 1499,  currency: 'INR' },
-  team:       { name: 'Sentinel Team',   price: '₹20,699',  amount: 20699, currency: 'INR' },
-  enterprise: { name: 'Enterprise Apex', price: '₹82,999',  amount: 82999, currency: 'INR' },
+
+/* Compatibility shim: older pages, saved links and #upgrade=<plan> call
+   PaymentFlow.startUpgrade(). Plans are sold on the Sentinel APEX platform,
+   so every entry point goes to its checkout (mapping in intel-plans.js). */
+const PaymentFlow = {
+  startUpgrade(plan) {
+    if (window.IntelCheckout) window.IntelCheckout.go(plan, 'pricing-legacy');
+    else window.location.href = 'https://intel.cyberdudebivash.com/upgrade.html?utm_source=blog&utm_medium=pricing-legacy&utm_campaign=plan-checkout';
+  },
+  close() {},
 };
-const plansReady = fetch(`${API_BASE}/billing?action=plans`)
-  .then(r => r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`)))
-  .then(data => {
-    const fetched = data.plans || data.data?.plans;
-    if (!fetched) return;
-    const merged = {};
-    for (const [key, p] of Object.entries(fetched)) {
-      merged[key] = { name: p.label, amount: p.amount, currency: p.currency,
-        price: `${p.currency === 'INR' ? '₹' : '$'}${p.amount.toLocaleString('en-IN')}` };
-    }
-    PLANS = merged;
-  })
-  .catch(e => console.warn('[Pricing] Could not load canonical plans, using fallback:', e.message));
-const PLAN_FEATURES = {
-  starter: ['5,000 API calls per day', 'Weekly threat intel digest', 'Unlimited full-text search', 'Single API key'],
-  pro: ['50 live threat items per request', 'Complete IOC feed access', 'SIGMA + Yara detection rules', 'Unlimited full-text search', '25,000 API calls per day'],
-  enterprise: ['Unlimited threat items', 'Unlimited API calls/day', 'STIX 2.1 bundle export', 'Bulk CSV/JSON export', 'Priority analyst advisories', 'All Pro features'],
-};
-const POLL_INTERVAL = 10000;
-const STORAGE_KEY = 'apex_payment_state';
-
-/* ── PaymentFlow State Machine ───────────────────────────────────── */
-const PaymentFlow = (() => {
-  let state = {
-    plan: null, email: null, intentId: null,
-    transactionId: null, step: 1, pollTimer: null, pollCountdown: null,
-  };
-
-  /* ── Open modal ── */
-  async function startUpgrade(plan) {
-    await plansReady; // resolves near-instantly if already loaded; never blocks more than one fetch
-    if (!PLANS[plan]) return;
-    state.plan = plan;
-
-    // Check for in-progress session
-    try {
-      const saved = sessionStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed.plan === plan && parsed.step >= 4 && parsed.transactionId) {
-          state = { ...state, ...parsed };
-          openModal();
-          goToStep(state.step);
-          return;
-        }
-      }
-    } catch (_) {}
-
-    // Fresh start
-    state.email = null; state.intentId = null; state.transactionId = null;
-
-    const p = PLANS[plan];
-    document.getElementById('modalTitle').textContent = `Upgrade to ${p.name}`;
-    document.getElementById('modalSubtitle').textContent = `${p.price}/month · Activate instantly after verification`;
-    document.getElementById('s1PlanName').textContent = p.name;
-    document.getElementById('s1PlanPrice').textContent = `${p.price}/mo`;
-
-    // Pre-fill email if stored in localStorage
-    try {
-      const storedEmail = localStorage.getItem('apex_email');
-      if (storedEmail) document.getElementById('emailInput').value = storedEmail;
-    } catch (_) {}
-
-    openModal();
-    goToStep(1);
-  }
-
-  function openModal() {
-    document.getElementById('modalOverlay').classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function close() {
-    // Stop polling
-    if (state.pollTimer)     { clearInterval(state.pollTimer);     state.pollTimer = null; }
-    if (state.pollCountdown) { clearInterval(state.pollCountdown); state.pollCountdown = null; }
-    document.getElementById('modalOverlay').classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
-  /* ── Step navigation ── */
-  function goToStep(n) {
-    for (let i = 1; i <= 5; i++) {
-      const el = document.getElementById(`step${i}`);
-      if (el) el.style.display = i === n ? '' : 'none';
-    }
-    // Update dots
-    for (let i = 1; i <= 5; i++) {
-      const dot = document.getElementById(`dot${i}`);
-      if (!dot) continue;
-      dot.classList.remove('active', 'done');
-      if (i < n) dot.classList.add('done');
-      else if (i === n) dot.classList.add('active');
-    }
-    state.step = n;
-    saveState();
-  }
-
-  /* ── STEP 1: Email submit → online checkout ── */
-  async function handleEmailSubmit() {
-    const emailEl = document.getElementById('emailInput');
-    const email = emailEl.value.trim().toLowerCase();
-    const errEl = document.getElementById('emailError');
-
-    // Validate
-    errEl.classList.remove('show');
-    emailEl.classList.remove('error');
-    if (!email || !/^[^@\s]{1,64}@[^@\s]{1,253}\.[^@\s]{2,}$/.test(email)) {
-      errEl.classList.add('show'); emailEl.classList.add('error');
-      return;
-    }
-
-    // Manual payment intents were retired on 2026-10-01; checkout goes
-    // straight to Razorpay, which only needs the email and plan.
-    state.email = email;
-    state.intentId = null;
-    goToStep(2);
-    try { localStorage.setItem('apex_email', email); } catch (_) {}
-  }
-
-  function switchTab(tab) {
-    document.getElementById('tabUpi').classList.toggle('active', tab === 'upi');
-    document.getElementById('tabBank').classList.toggle('active', tab === 'bank');
-    document.getElementById('panelUpi').classList.toggle('active', tab === 'upi');
-    document.getElementById('panelBank').classList.toggle('active', tab === 'bank');
-  }
-
-  /* ── STEP 3: Submit UTR ── */
-  async function submitPayment() {
-    const utrEl       = document.getElementById('utrInput');
-    const emailCEl    = document.getElementById('emailConfirmInput');
-    const utrErrEl    = document.getElementById('utrError');
-    const emailCErrEl = document.getElementById('emailConfirmError');
-
-    const utr    = utrEl.value.trim();
-    const emailC = emailCEl.value.trim().toLowerCase();
-
-    // Reset errors
-    [utrErrEl, emailCErrEl].forEach(e => e.classList.remove('show'));
-    [utrEl, emailCEl].forEach(e => e.classList.remove('error'));
-
-    let valid = true;
-    if (!utr || !/^[a-zA-Z0-9]{12,64}$/.test(utr)) {
-      utrErrEl.classList.add('show'); utrEl.classList.add('error'); valid = false;
-    }
-    if (!emailC || emailC !== state.email) {
-      emailCErrEl.classList.add('show'); emailCEl.classList.add('error'); valid = false;
-    }
-    if (!valid) return;
-
-    const btn = document.getElementById('btnSubmitUtr');
-    setLoading(btn, true, 'Submitting...');
-
-    try {
-      const res = await apiFetch(`${API_BASE}/billing?action=submit-payment`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          intent_id:        state.intentId,
-          utr_number:       utr,
-          email:            state.email,
-          payment_method:   'upi',
-        }),
-      });
-
-      if (!res.ok_flag) {
-        const code = res.error?.code || '';
-        const msg  = res.error?.message || 'Submission failed';
-        const friendlyErrors = {
-          DUPLICATE_TRANSACTION: 'This UTR has already been submitted. Each transaction can only be submitted once.',
-          INTENT_NOT_FOUND:      'Payment intent expired or not found. Please restart the payment process.',
-          EMAIL_MISMATCH:        'Email does not match the intent. Please use the same email from Step 1.',
-          INVALID_UTR:           'Invalid UTR format. Must be 12–64 alphanumeric characters.',
-          RATE_LIMIT_EXCEEDED:   'Too many submissions. Please wait before trying again.',
-        };
-        throw new Error(friendlyErrors[code] || msg);
-      }
-
-      state.transactionId = res.transaction_id || res.data?.transaction_id;
-      document.getElementById('txnIdDisplay').textContent = state.transactionId || '—';
-      saveState();
-      goToStep(4);
-      startPolling();
-
-    } catch (e) {
-      showToast('error', 'Submission Failed', e.message);
-    } finally {
-      setLoading(btn, false, 'Submit for Verification →');
-    }
-  }
-
-  /* ── STEP 4: Polling ── */
-  function startPolling() {
-    if (state.pollTimer) { clearInterval(state.pollTimer); }
-    _doPoll();
-    state.pollTimer = setInterval(_doPoll, POLL_INTERVAL);
-    _startCountdown();
-  }
-
-  function _startCountdown() {
-    let secs = POLL_INTERVAL / 1000;
-    const fillEl = document.getElementById('pollFill');
-    const cdEl   = document.getElementById('pollCountdown');
-    if (state.pollCountdown) clearInterval(state.pollCountdown);
-    fillEl.style.transition = 'none';
-    fillEl.style.width = '100%';
-    setTimeout(() => { fillEl.style.transition = `width ${POLL_INTERVAL}ms linear`; fillEl.style.width = '0%'; }, 50);
-    state.pollCountdown = setInterval(() => {
-      secs--;
-      if (cdEl) cdEl.textContent = secs > 0 ? `Next check in ${secs}s...` : 'Checking...';
-      if (secs <= 0) {
-        clearInterval(state.pollCountdown);
-        fillEl.style.transition = 'none';
-        fillEl.style.width = '100%';
-        setTimeout(() => { fillEl.style.transition = `width ${POLL_INTERVAL}ms linear`; fillEl.style.width = '0%'; secs = POLL_INTERVAL / 1000; }, 50);
-      }
-    }, 1000);
-  }
-
-  async function _doPoll() {
-    if (!state.transactionId || !state.email) return;
-    try {
-      const res = await apiFetch(
-        `${API_BASE}/billing?action=status&transaction_id=${encodeURIComponent(state.transactionId)}&email=${encodeURIComponent(state.email)}`
-      );
-      if (!res || !res.ok_flag) return;
-
-      const status = res.status || res.data?.status || 'pending_review';
-      updateStatusBadge(status);
-
-      if (status === 'approved') {
-        clearInterval(state.pollTimer); state.pollTimer = null;
-        clearInterval(state.pollCountdown); state.pollCountdown = null;
-        try { sessionStorage.removeItem(STORAGE_KEY); } catch (_) {}
-        _showSuccess();
-      } else if (status === 'rejected') {
-        clearInterval(state.pollTimer); state.pollTimer = null;
-        clearInterval(state.pollCountdown); state.pollCountdown = null;
-        const reason = res.rejection_reason || res.data?.rejection_reason || 'Contact support with your Intent ID.';
-        updateStatusBadge('rejected', reason);
-        showToast('error', 'Payment Rejected', reason);
-      }
-    } catch (_) { /* silent — will retry */ }
-  }
-
-  function manualPoll() { _doPoll(); }
-
-  function updateStatusBadge(status, note) {
-    const badge = document.getElementById('statusBadge');
-    const text  = document.getElementById('statusText');
-    badge.className = `status-badge ${status === 'approved' ? 'approved' : status === 'rejected' ? 'rejected' : 'pending'}`;
-    const labels = { pending_review: 'Pending Review', approved: 'Approved ✓', rejected: 'Rejected' };
-    text.textContent = labels[status] || status;
-    if (note) {
-      document.getElementById('pollSub').textContent = note;
-    }
-  }
-
-  // Reflects the server's actual verification result: activated, awaiting
-  // capture (webhook completes it), or paid-but-not-yet-registered.
-  function _showSuccess(result) {
-    const p = PLANS[state.plan];
-    const feats = PLAN_FEATURES[state.plan] || [];
-    const r = result || {};
-    const v = r.verification || {};
-    const dash = ' Open the API Dashboard (/api-dashboard.html) with this email to manage your key.';
-    if (r.pending_capture) {
-      document.getElementById('successTitle').textContent = 'Payment received';
-      document.getElementById('successSub').textContent  = `Your ${p?.name || ''} plan activates automatically within a few minutes, once Razorpay confirms capture.` + dash;
-      goToStep(5);
-      showToast('info', 'Payment received', 'Activation completes automatically within minutes.');
-      return;
-    }
-    if (v.pending_registration) {
-      document.getElementById('successTitle').textContent = 'Payment confirmed';
-      document.getElementById('successSub').textContent  = `Register an API key with ${state.email} and it will carry ${p?.name || 'your plan'} access automatically.` + dash;
-      goToStep(5);
-      showToast('success', 'Payment confirmed', 'Register your API key to start using your plan.');
-      return;
-    }
-    document.getElementById('successTitle').textContent = `${p?.name || 'Pro'} Tier Activated!`;
-    document.getElementById('successSub').textContent  = `Your API key now has full ${p?.name} access. No changes needed — same key, more power.` + dash;
-    const ul = document.getElementById('unlockFeatures');
-    ul.innerHTML = '<h4>🔓 Unlocked Features</h4>' +
-      feats.map(f => `<div class="unlock-item"><span>✓</span><span>${f}</span></div>`).join('');
-    goToStep(5);
-    showToast('success', '🎉 Upgrade Complete!', `Your API key is now ${p?.name}. Full access activated.`);
-  }
-
-  /* ── Persistence ── */
-  function saveState() {
-    try {
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
-        plan: state.plan, email: state.email,
-        intentId: state.intentId, transactionId: state.transactionId, step: state.step,
-      }));
-    } catch (_) {}
-  }
-
-  /* ── Instant checkout via Razorpay ── */
-  let _rzpScriptPromise = null;
-  function _loadRazorpayScript() {
-    if (window.Razorpay) return Promise.resolve();
-    if (_rzpScriptPromise) return _rzpScriptPromise;
-    _rzpScriptPromise = new Promise((resolve, reject) => {
-      const s = document.createElement('script');
-      s.src = 'https://checkout.razorpay.com/v1/checkout.js';
-      s.onload  = () => resolve();
-      s.onerror = () => { _rzpScriptPromise = null; reject(new Error('Could not load secure checkout.')); };
-      document.head.appendChild(s);
-    });
-    return _rzpScriptPromise;
-  }
-
-  async function payInstant() {
-    if (!state.email) {
-      showToast('error', 'Error', 'Please complete Step 1 first.');
-      return;
-    }
-    const btn = document.getElementById('btnInstantPay');
-    setLoading(btn, true, 'Opening secure checkout...');
-    try {
-      await _loadRazorpayScript();
-      const res = await apiFetch(`${API_BASE}/billing?action=create-razorpay-order`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: state.email, plan_type: state.plan }),
-      });
-      if (!res.ok_flag) {
-        if (res.error?.code === 'RAZORPAY_UNAVAILABLE') {
-          showToast('warning', 'Online checkout unavailable', 'Please email bivash@cyberdudebivash.com to purchase.');
-          return;
-        }
-        throw new Error(res.error?.message || 'Could not start instant checkout.');
-      }
-      const order = res.order || res.data?.order;
-      if (!order || !order.order_id || !order.key_id) throw new Error('Malformed order response.');
-
-      const rzp = new window.Razorpay({
-        key:      order.key_id,
-        amount:   order.amount,
-        currency: order.currency,
-        name:     'CYBERDUDEBIVASH SENTINEL APEX',
-        description: `${order.plan_label || state.plan} — monthly subscription`,
-        order_id: order.order_id,
-        prefill:  { email: state.email },
-        theme:    { color: '#00ffe0' },
-        handler: async (resp) => {
-          setLoading(btn, true, 'Verifying payment...');
-          try {
-            const verify = await apiFetch(`${API_BASE}/billing?action=verify-razorpay-payment`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                email: state.email, plan_type: state.plan,
-                razorpay_order_id:   resp.razorpay_order_id,
-                razorpay_payment_id: resp.razorpay_payment_id,
-                razorpay_signature:  resp.razorpay_signature,
-              }),
-            });
-            if (!verify.ok_flag) throw new Error(verify.error?.message || 'Payment verification failed.');
-            try { sessionStorage.removeItem(STORAGE_KEY); } catch (_) {}
-            _showSuccess(verify.data || verify);
-          } catch (e) {
-            showToast('error', 'Verification Failed', e.message || 'Contact support with your payment ID.');
-          } finally {
-            setLoading(btn, false, '⚡ Pay Instantly — Card / UPI / Wallet');
-          }
-        },
-        modal: {
-          ondismiss: () => { setLoading(btn, false, '⚡ Pay Instantly — Card / UPI / Wallet'); },
-        },
-      });
-      rzp.open();
-    } catch (e) {
-      showToast('error', 'Error', e.message || 'Could not start online checkout. Email bivash@cyberdudebivash.com to purchase.');
-      setLoading(btn, false, '⚡ Pay Instantly — Card / UPI / Wallet');
-    }
-  }
-
-  /* ── Public API ── */
-  return { startUpgrade, close, handleEmailSubmit, goToStep, switchTab, submitPayment, manualPoll, payInstant };
-})();
-
-/* ── API fetch helper ─────────────────────────────────────────────── */
-async function apiFetch(url, options = {}) {
-  const res = await fetch(url, options);
-  let data;
-  try { data = await res.json(); } catch (_) { data = {}; }
-  data.ok_flag = res.ok;
-  data._status = res.status;
-  return data;
-}
-
-/* ── Utilities ────────────────────────────────────────────────────── */
-function handleOverlayClick(e) {
-  if (e.target === document.getElementById('modalOverlay')) PaymentFlow.close();
-}
-
-function setLoading(btn, loading, label) {
-  btn.disabled = loading;
-  btn.textContent = label;
-  btn.classList.toggle('btn-loading', loading);
-}
-
-function copyText(text) {
-  if (!text || text === '—') return;
-  navigator.clipboard.writeText(text).then(() => {
-    showToast('success', 'Copied!', text.length > 30 ? text.slice(0,30) + '…' : text);
-  }).catch(() => {
-    showToast('warning', 'Copy failed', 'Please copy manually.');
-  });
-}
 
 function toggleFaq(btn) {
   const item = btn.closest('.faq-item');
   item.classList.toggle('open');
 }
 
-/* ── Toast system ─────────────────────────────────────────────────── */
-let _toastId = 0;
-function showToast(type, title, msg, durationMs = 5000) {
-  const stack = document.getElementById('toastStack');
-  const id    = ++_toastId;
-  const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
-  const t = document.createElement('div');
-  t.className = `toast ${type !== 'success' ? type : ''}`;
-  t.id = `toast${id}`;
-  t.innerHTML = `
-    <span class="toast-icon">${icons[type] || 'ℹ️'}</span>
-    <div class="toast-body">
-      <div class="toast-title">${escHtml(title)}</div>
-      ${msg ? `<div class="toast-msg">${escHtml(msg)}</div>` : ''}
-    </div>
-    <button class="toast-dismiss" onclick="dismissToast(${id})" aria-label="Dismiss">×</button>
-  `;
-  stack.appendChild(t);
-  setTimeout(() => dismissToast(id), durationMs);
-}
-function dismissToast(id) {
-  const t = document.getElementById(`toast${id}`);
-  if (!t) return;
-  t.style.animation = 'fadeOut 0.3s forwards';
-  setTimeout(() => t.remove(), 280);
-}
-function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
 /* ── Sticky bar ───────────────────────────────────────────────────── */
 (function() {
-  let stickyDismissed = false;
   window.addEventListener('scroll', () => {
-    if (stickyDismissed) return;
     const bar = document.getElementById('stickyBar');
     if (window.scrollY > 600) bar.classList.add('visible');
     else bar.classList.remove('visible');
@@ -1537,19 +864,11 @@ function escHtml(s) {
   } catch (_) {}
 })();
 
-/* ── Handle #upgrade=plan hash ─────────────────────────────────────── */
+/* ── Handle #upgrade=plan hash (old links) ─────────────────────────── */
 (function checkHash() {
-  const hash = window.location.hash;
-  const m = hash.match(/[?#&]upgrade=(starter|pro|team|enterprise)/i);
-  if (m) {
-    setTimeout(() => PaymentFlow.startUpgrade(m[1].toLowerCase()), 300);
-  }
+  const m = window.location.hash.match(/[?#&]upgrade=(starter|pro|team|enterprise|mssp)/i);
+  if (m) PaymentFlow.startUpgrade(m[1].toLowerCase());
 })();
-
-/* ── Keyboard shortcut: ESC closes modal ──────────────────────────── */
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') PaymentFlow.close();
-});
 </script>
 
 
@@ -1563,15 +882,16 @@ document.addEventListener('keydown', e => {
 
       currencies.forEach(el => { el.textContent = isUSD ? el.dataset.usd : el.dataset.inr; });
       prices.forEach(el => { el.textContent = isUSD ? el.dataset.usd : el.dataset.inr; });
+      document.body.classList.toggle('show-usd', isUSD);
 
       if (isUSD) {
         inrLabel.classList.remove('active');
         usdLabel.classList.add('active');
-        note.textContent = 'Prices shown in USD ($1 ≈ ₹84). Billed in INR at checkout.';
+        note.textContent = 'Prices shown in USD as listed by the Sentinel APEX platform.';
       } else {
         usdLabel.classList.remove('active');
         inrLabel.classList.add('active');
-        note.textContent = 'Prices shown in Indian Rupees (INR). Toggle for USD equivalent.';
+        note.textContent = 'Prices shown in Indian Rupees (INR). Toggle for USD.';
       }
     }
 
@@ -1590,7 +910,7 @@ document.addEventListener('keydown', e => {
 
 <footer style="border-top:1px solid #1f2937;padding:28px 24px;text-align:center;font-size:13px;color:#6b7280">
   &copy; 2026 CyberDudeBivash Pvt. Ltd. · <a href="/about.html" style="color:#00ffe0;text-decoration:none">About</a> · <a href="/privacy.html" style="color:#00ffe0;text-decoration:none">Privacy</a> · <a href="/terms.html" style="color:#00ffe0;text-decoration:none">Terms</a> · <a href="/contact.html" style="color:#00ffe0;text-decoration:none">Contact</a><br>
-  <span style="font-size:12px">Subscriptions renew automatically and can be cancelled anytime. Payments processed securely by Razorpay.</span>
+  <span style="font-size:12px">Paid plans are sold, billed and managed on the CYBERDUDEBIVASH SENTINEL APEX platform.</span>
 </footer>
 </body>
 </html>

@@ -1,35 +1,57 @@
 # Pricing — source of truth and incident record
 
-## Canonical source
+## Canonical source (since 2026-10-01)
 
-`api/_lib/payment-utils.js`'s `PLANS` object is the **only** authoritative
-definition of what each tier costs. Every other value — display copy,
-checkout UI, structured data — must either read from it at runtime or, for
-static text that can't be dynamic, match it exactly and be covered by the
-regression test below.
+**Plans are sold only on the CYBERDUDEBIVASH SENTINEL APEX platform checkout**
+(`https://intel.cyberdudebivash.com/upgrade.html`, owner decision 2026-10-01).
+That platform owns plan prices: `https://intel.cyberdudebivash.com/api/pricing`
+is the single source of truth (INR in paise plus USD display figures).
+
+| Platform plan | Checkout | Blog plan names that map to it |
+|---|---|---|
+| PRO Defense | `upgrade.html?plan=pro` | starter, pro |
+| Enterprise SOC | `upgrade.html?plan=enterprise` | team, enterprise |
+| MSSP / White-Label | `upgrade.html?plan=mssp` | — |
+
+Rules for the blog:
+
+- **No plan price is hardcoded on any blog page.** Plan cards carry
+  `data-intel-price="PRO|ENTERPRISE|MSSP"` placeholders that
+  `intel-plans.js` fills from the platform's pricing endpoint; if that fails,
+  the placeholder ("See price") stays and the platform checkout shows the
+  amount. Enforced by `tests-js/pricing-consistency.test.js`.
+- Every plan CTA links to the platform checkout (`data-intel-plan`), tagged
+  `utm_source=blog&utm_campaign=plan-checkout`. The mapping exists once on
+  the server (`INTEL_PLAN_FOR` / `intelUpgradeUrl` in
+  `api/_lib/payment-utils.js`) and once in the browser (`intel-plans.js`).
+- The blog API no longer creates plan orders or subscriptions:
+  `billing?action=create-razorpay-order` and `action=create-subscription`
+  return `410 PLAN_CHECKOUT_MOVED` with `checkout_url`.
+  `action=verify-razorpay-payment` and the Razorpay webhook still complete
+  plan orders created before the switch. API rate-limit responses recommend
+  the matching platform plan.
+- Premium intelligence reports are still sold on the blog (Intelligence
+  Store, INR via Razorpay, `config/premium-catalog.json`).
+
+## Legacy blog plans (no longer sold)
+
+`api/_lib/payment-utils.js`'s `PLANS` remains the record of what existing
+blog customers bought and drives verification of in-flight orders. Its
+prices are not displayed anywhere.
 
 | Tier | Amount | Currency |
 |---|---|---|
-| Starter | 999 | INR (≈$12) |
-| Pro ("SOC Pro") | 1,499 | INR (≈$18) |
-| Team ("Sentinel Team") | 20,699 | INR (≈$249) — added 2026-09-10; see below |
-| Enterprise ("Enterprise Apex") | 82,999 | INR (≈$999) — starting price for a custom-scoped, contact-sales offering; repositioned 2026-09-10, see below. Distinct from api.html's separately-priced "Enterprise Managed" API product (confirmed as a different offering, not a price conflict — see the 2026-07-17 entry below). |
+| Starter | 999 | INR |
+| Pro ("SOC Pro") | 1,499 | INR |
+| Team ("Sentinel Team") | 20,699 | INR |
+| Enterprise ("Enterprise Apex") | 82,999 | INR |
 
-## Runtime consumers
+Retired-price literals in already-generated posts are rewritten at build time
+(`LEGACY_COMMERCIAL_COPY` in `scripts/build-cloudflare-assets.js`).
 
-`GET /api/v1/billing?action=plans` serves the `PLANS` object publicly
-(cached 5 min). `pricing.html` and `payment-flow.js` fetch it on load and
-use it for everything rendered in the checkout modal. Both keep a small
-local fallback constant for the rare case that fetch fails before a user
-clicks upgrade — the fallback must be kept in sync with `PLANS` manually and
-is covered by `tests-js/pricing-consistency.test.js`.
+## History
 
-For the manual UPI/bank-transfer flow specifically, the amount shown in the
-"Amount" instruction row and encoded in the UPI QR code comes from the
-**intent-creation response** (`intent.amount`, set server-side from
-`PLANS`), not the client cache — this is the value a human reviewer checks
-a submitted UTR against, so it has to be the real one regardless of what the
-client's fallback says.
+The sections below record how blog pricing was managed before 2026-10-01.
 
 ## What broke (2026-07-17) and why
 

@@ -67,11 +67,12 @@ beforeEach(() => {
 });
 
 describe('create-intent is retired', () => {
-  test('returns 410 MANUAL_PAYMENT_RETIRED and points to online checkout', async () => {
+  test('returns 410 MANUAL_PAYMENT_RETIRED and points to the platform checkout', async () => {
     const r = await call('POST', 'create-intent', { email: 'buyer@example.com', plan_type: 'pro' });
     expect(r.statusCode).toBe(410);
     expect(r.body.error.code).toBe('MANUAL_PAYMENT_RETIRED');
-    expect(r.body.error.message).toMatch(/create-razorpay-order/);
+    expect(r.body.error.message).toMatch(/checkout_url/);
+    expect(r.body.checkout_url).toMatch(/^https:\/\/intel\.cyberdudebivash\.com\/upgrade\.html\?/);
     expect(r.body.error.message).toMatch(/bivash@cyberdudebivash\.com/);
   });
 
@@ -114,14 +115,14 @@ describe('payments already in flight are not stranded', () => {
   });
 });
 
-describe('online checkout unavailable no longer redirects to the manual flow', () => {
-  test('RAZORPAY_UNAVAILABLE message does not mention create-intent or manual payment', async () => {
-    jest.spyOn(razorpay, 'configured').mockReturnValue(false);
+describe('plan checkout never falls back to the manual flow', () => {
+  test.each([true, false])('create-razorpay-order points to the platform checkout (razorpay configured: %s)', async configured => {
+    jest.spyOn(razorpay, 'configured').mockReturnValue(configured);
     const r = await call('POST', 'create-razorpay-order', { email: 'buyer@example.com', plan_type: 'pro' });
-    expect(r.statusCode).toBe(503);
-    expect(r.body.error.code).toBe('RAZORPAY_UNAVAILABLE');
+    expect(r.statusCode).toBe(410);
+    expect(r.body.error.code).toBe('PLAN_CHECKOUT_MOVED');
     expect(r.body.error.message).not.toMatch(/create-intent|manual payment/i);
-    expect(r.body.error.message).toMatch(/bivash@cyberdudebivash\.com/);
+    expect(r.body.checkout_url).toMatch(/^https:\/\/intel\.cyberdudebivash\.com\/upgrade\.html\?plan=pro&/);
   });
 });
 
@@ -134,7 +135,8 @@ describe('customer-facing surfaces', () => {
     expect(s).not.toMatch(/pay manually via UPI\/Bank Transfer/);
     expect(s).not.toMatch(/I've Paid — Submit UTR/);
     expect(s).not.toMatch(/upi:\/\/pay/);
-    expect(s).toMatch(/Manual UPI \/ bank transfer has been retired/);
+    // No blog plan checkout remains at all: plans go to the platform checkout.
+    expect(s).toMatch(/intel\.cyberdudebivash\.com\/upgrade\.html/);
   });
 
   test.each(['pricing.html', 'faq.html', 'buy.html', 'payment-flow.js'])('%s does not offer manual UPI/bank transfer as a way to pay', f => {

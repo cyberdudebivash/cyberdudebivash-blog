@@ -1,6 +1,11 @@
 /*
  * CYBERDUDEBIVASH SENTINEL APEX — Revenue Conversion Controller v19
  *
+ * DEPRECATED 2026-10-01: buy.html no longer loads this controller; plans are
+ * sold on the Sentinel APEX platform checkout and buy.html forwards there
+ * (intel-plans.js). Kept published for any cached page that still loads it;
+ * remove in the next major release.
+ *
  * P0 objective: reduce paid-subscription checkout friction without changing
  * canonical prices, entitlements, payment verification, or customer identity.
  *

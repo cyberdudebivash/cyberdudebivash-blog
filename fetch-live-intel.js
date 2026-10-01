@@ -2654,7 +2654,7 @@ footer{background:var(--apex-surface);border-top:1px solid var(--apex-border);pa
       <h3>🏢 ENTERPRISE THREAT INTELLIGENCE PLATFORM</h3>
       <p class="ep">Request a scoped intelligence briefing, evidence review, custom IOC ingestion assessment, or detection-engineering engagement.</p>
       <div class="cta-grid">
-        <a href="/pricing.html" class="btn-p">⚡ SOC Pro — $18/mo</a>
+        <a href="/pricing.html" class="btn-p">⚡ PRO Defense Plan</a>
         <a href="/enterprise.html" class="btn-e">🏢 Enterprise — Custom Pricing</a>
         <a href="/api.html" class="btn-s">🔌 Threat Intel API Access</a>
         <a href="/products.html" class="btn-g">📦 Detection Pack Store</a>

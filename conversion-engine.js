@@ -477,7 +477,7 @@
       security_pro: {
         badge:    '\u26A1 SOC PRO MEMBERSHIP',
         headline: 'SOC Pro — Evidence-Linked Intel + Full IOC Access',
-        sub:      'Get source-linked critical CVE reports. Full IOC bundles, SIEM rules, and ransomware tracking. $18/month.',
+        sub:      'Get source-linked critical CVE reports. Full IOC bundles, SIEM rules, and ransomware tracking.',
         cta:      'View Plans \u2192',
         url:      '/pricing.html'
       }
@@ -582,9 +582,9 @@
       overlay.innerHTML =
         '<div class="pwo-lock">\uD83D\uDD12</div>' +
         '<div class="pwo-title">Full Intelligence Report — Locked</div>' +
-        '<div class="pwo-sub">Complete IOC tables, YARA signatures, SIEM detection queries, and analyst commentary are exclusive to SOC Pro members ($18/mo) and Enterprise clients.</div>' +
+        '<div class="pwo-sub">Complete IOC tables, YARA signatures, SIEM detection queries, and analyst commentary are available on the PRO Defense and Enterprise SOC plans.</div>' +
         '<div class="pwo-btns">' +
-          '<a href="' + CFG.pricing + '" class="pwo-btn" data-track="paywall_pro_click">\u26A1 Unlock with SOC Pro \u2014 $18/mo</a>' +
+          '<a href="' + CFG.pricing + '" class="pwo-btn" data-track="paywall_pro_click">\u26A1 Unlock with PRO Defense</a>' +
           '<a href="' + CFG.enterprise + '" class="pwo-btn outline" data-track="paywall_enterprise_click">\uD83C\uDFE2 Enterprise Access</a>' +
         '</div>' +
         '<div id="cx4-paywall-lead">' +
@@ -702,7 +702,7 @@
           perk3:  { title: 'YARA + Sigma Rules',  body: 'Deploy-ready detection' },
           perk4:  { title: 'SIEM Queries',        body: 'Splunk / Elastic / KQL' },
           altCTA: [
-            { href: CFG.pricing,    label: '\u26A1 SOC Pro \u2014 $18/mo' },
+            { href: CFG.pricing,    label: '\u26A1 PRO Defense Plan' },
             { href: CFG.products,   label: '\uD83D\uDCE6 Products Store' }
           ]
         },
@@ -1054,7 +1054,7 @@
           icon: '\uD83D\uDEE1\uFE0F',
           title: 'SOC Pro — Get Ransomware Intel Before Campaigns Hit',
           sub:   'Track active ransomware groups with evidence-linked intelligence, IOC feeds, and operational alerting.',
-          cta:   'Join SOC Pro \u2014 $18/mo \u2192',
+          cta:   'Get PRO Defense \u2192',
           url:   '/pricing.html',
           track: 'ctx_prod_ransom_2'
         }
@@ -1106,7 +1106,7 @@
         },
         {
           icon: '\u26A1',
-          title: 'SOC Pro — Full Platform Access at $18/mo',
+          title: 'PRO Defense — Full Platform Access',
           sub:   'Evidence-linked CVE intelligence, complete IOC bundles, SIEM rules, ransomware tracker, and API access.',
           cta:   'View Plans \u2192',
           url:   '/pricing.html',

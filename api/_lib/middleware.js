@@ -31,7 +31,10 @@ const NEXT_PAID_TIER = Object.freeze({
   team: 'enterprise',
   enterprise: null,
 });
-const DIRECT_CHECKOUT_BASE = 'https://blog.cyberdudebivash.in/buy.html';
+// Plans are sold on the Sentinel APEX platform checkout (owner decision
+// 2026-10-01); the blog's own plan names map to the nearest platform plan.
+const { INTEL_UPGRADE_URL, INTEL_PLAN_FOR } = require('./payment-utils');
+const DIRECT_CHECKOUT_BASE = INTEL_UPGRADE_URL;
 
 function nextPaidTier(tier) {
   return Object.prototype.hasOwnProperty.call(NEXT_PAID_TIER, tier)
@@ -44,8 +47,7 @@ function upgradeCheckoutUrl(tier, source = 'api_rate_limit') {
   if (!nextTier) return null;
   const content = `${String(tier || 'unknown').replace(/[^a-z0-9_.-]/gi, '_')}_quota`;
   const query = new URLSearchParams({
-    plan: nextTier,
-    checkout: '1',
+    plan: INTEL_PLAN_FOR[nextTier],
     utm_source: String(source || 'api_rate_limit').slice(0, 80),
     utm_medium: 'api',
     utm_campaign: 'p0_revenue_conversion_v19',
@@ -179,6 +181,7 @@ async function authenticate(req, res) {
     if (used > limit) {
       recordAuthFailure('rate_limited');
       const nextTier = nextPaidTier(tier);
+      const upgradePlan = nextTier ? INTEL_PLAN_FOR[nextTier] : null; // Sentinel APEX platform plan
       const checkoutUrl = upgradeCheckoutUrl(tier);
       const headers = {
         'X-RateLimit-Limit': String(limit),
@@ -187,7 +190,7 @@ async function authenticate(req, res) {
         'Retry-After': String(86400 - (Math.floor(Date.now() / 1000) % 86400)),
       };
       if (nextTier && checkoutUrl) {
-        headers['X-RateLimit-Upgrade-Tier'] = nextTier;
+        headers['X-RateLimit-Upgrade-Tier'] = upgradePlan;
         headers['X-RateLimit-Upgrade-URL'] = checkoutUrl;
         headers.Link = `<${checkoutUrl}>; rel="upgrade"`;
       }
@@ -196,12 +199,12 @@ async function authenticate(req, res) {
         error: {
           code: 'RATE_LIMIT_EXCEEDED',
           message: nextTier
-            ? `Rate limit reached: ${limit} requests/day for ${tier} tier. Upgrade to ${nextTier} for additional capacity.`
+            ? `Rate limit reached: ${limit} requests/day for ${tier} tier. Upgrade to the Sentinel APEX ${upgradePlan.toUpperCase()} plan for additional capacity.`
             : `Rate limit reached: ${limit} requests/day for enterprise tier. Contact support if you require additional capacity.`,
         },
         ...(nextTier && checkoutUrl ? {
           upgrade: {
-            recommended_tier: nextTier,
+            recommended_tier: upgradePlan,
             checkout_url: checkoutUrl,
             reason: 'daily_api_quota_exhausted',
           },
@@ -246,7 +249,7 @@ async function authenticate(req, res) {
   if (nextTier && limit > 0 && remaining <= Math.ceil(limit * 0.10)) {
     const checkoutUrl = upgradeCheckoutUrl(tier, 'api_capacity_warning');
     if (checkoutUrl) {
-      res.setHeader('X-RateLimit-Upgrade-Tier', nextTier);
+      res.setHeader('X-RateLimit-Upgrade-Tier', INTEL_PLAN_FOR[nextTier]);
       res.setHeader('X-RateLimit-Upgrade-URL', checkoutUrl);
       res.setHeader('Link', `<${checkoutUrl}>; rel="upgrade"`);
     }

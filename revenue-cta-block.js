@@ -375,15 +375,15 @@
           // Card 0: SOC Pro
           '<div class="rcb-card" data-rcb-card="0">' +
             '<div class="rcb-card-icon">\u26A1</div>' +
-            '<div class="rcb-card-title">SOC Pro Membership</div>' +
+            '<div class="rcb-card-title">PRO Defense Plan</div>' +
             '<div class="rcb-card-sub">' +
               'Full IOC packs, SIEM rules, evidence-linked CVE reports, and ransomware tracker. ' +
               'Support faster, evidence-driven SOC triage.' +
             '</div>' +
-            '<div class="rcb-card-price" data-cx-price="18" data-cx-orig="49">' +
-              '<span class="rcb-orig">$49</span>$18' +
-              '<span class="rcb-unit">/mo</span>' +
-              '<span class="rcb-save">Save 63%</span>' +
+            // Plans are sold on the Sentinel APEX platform, which owns prices
+            // (owner decision 2026-10-01); the card names the plan, not a price.
+            '<div class="rcb-card-price">PRO Defense' +
+              '<span class="rcb-unit"> plan</span>' +
             '</div>' +
             '<a href="' + LINKS.pricing + '" class="rcb-card-btn" data-track="rcb_soc_pro_click">' +
               'View Plans \u2192' +

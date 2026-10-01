@@ -20,7 +20,7 @@
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https: blob:",
-      "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://formsubmit.co https://api.razorpay.com https://lumberjack.razorpay.com https://api.convertkit.com",
+      "connect-src 'self' https://intel.cyberdudebivash.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://formsubmit.co https://api.razorpay.com https://lumberjack.razorpay.com https://api.convertkit.com",
       "frame-src https://api.razorpay.com https://checkout.razorpay.com https://calendly.com",
       "object-src 'none'",
       "base-uri 'self'",
