@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-30T21:19:47.399Z",
+  "generated": "2026-10-01T00:44:23.301Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,11 +7,11 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 5635,
+  "total_published": 5641,
   "s2n_stats": {
-    "passed": 104,
-    "suppressed": 4,
-    "avg_qs": 0.492
+    "passed": 99,
+    "suppressed": 6,
+    "avg_qs": 0.498
   },
   "items": [
     {
@@ -312,6 +312,92 @@
           "+10 CVSS≥9",
           "+8 exploited_in_wild",
           "+7 zero_day"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-91776",
+      "title": "jackson-databind retains every unknown raw type ID",
+      "description": "Summary\n\nWith @JsonTypeInfo(use = Id.NAME, defaultImpl = ...), every distinct unknown\nraw type ID selects the same fallback deserializer but is retained as a\nseparate key in TypeDeserializerBase._deserializers. An attacker who can\nrepeatedly supply new unknown type IDs can grow t... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 46,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-91776"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-wv8q-qhhj-9h54"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=46 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-101916",
+      "title": "@grpc/grpc-js: In certain configurations, getAuthContext can return unauthorized certificates as though they were author",
+      "description": "Impact\nWhen server credentials are created with the requireClientCertificate option set to false, getAuthContext does not distinguish between authorized and unauthorized certificates in its return value. This can create improper authentication vulnerabilities for @grpc/grpc-js us... [Full analysis a",
+      "cvss": 7.4,
+      "final_ps": 45,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-101916"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-m9gg-hp2v-232j"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=45 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -1351,307 +1437,6 @@
       }
     },
     {
-      "id": "CVE-2026-97289",
-      "title": "CVE-2026-97289 - WordPress Quiz And Survey Master plugin <= 11.2.6 - Cross Site Scripting (XSS) vulnerability",
-      "description": "CVE-2026-97289 - WordPress Quiz And Survey Master plugin <= 11.2.6 - Cross Site Scripting (XSS) vulnerability",
-      "cvss": 6.1,
-      "final_ps": 40,
-      "quality_score": 0.453,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-30",
-      "last_seen": "2026-09-30",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-97289"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-97289"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.50",
-          "recency=0d (score=1.00)",
-          "QS=0.453"
-        ],
-        "priority": [
-          "base_ps=40 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-97298",
-      "title": "CVE-2026-97298 - WordPress King Addons for Elementor plugin <= 51.1.86 - Cross Site Scripting (XSS) vulnerability",
-      "description": "CVE-2026-97298 - WordPress King Addons for Elementor plugin <= 51.1.86 - Cross Site Scripting (XSS) vulnerability",
-      "cvss": 6.1,
-      "final_ps": 40,
-      "quality_score": 0.453,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-30",
-      "last_seen": "2026-09-30",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-97298"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-97298"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.50",
-          "recency=0d (score=1.00)",
-          "QS=0.453"
-        ],
-        "priority": [
-          "base_ps=40 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-97301",
-      "title": "CVE-2026-97301 - WordPress Cool Formkit Lite plugin <= 2.7.8 - Cross Site Scripting (XSS) vulnerability",
-      "description": "CVE-2026-97301 - WordPress Cool Formkit Lite plugin <= 2.7.8 - Cross Site Scripting (XSS) vulnerability",
-      "cvss": 6.1,
-      "final_ps": 40,
-      "quality_score": 0.453,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-30",
-      "last_seen": "2026-09-30",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-97301"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-97301"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.50",
-          "recency=0d (score=1.00)",
-          "QS=0.453"
-        ],
-        "priority": [
-          "base_ps=40 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-102385",
-      "title": "CVE-2026-102385 - WordPress Ninja Forms plugin <= 3.15.3 - Cross Site Scripting (XSS) vulnerability",
-      "description": "CVE-2026-102385 - WordPress Ninja Forms plugin <= 3.15.3 - Cross Site Scripting (XSS) vulnerability",
-      "cvss": 6.1,
-      "final_ps": 40,
-      "quality_score": 0.453,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-30",
-      "last_seen": "2026-09-30",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-102385"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-102385"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.50",
-          "recency=0d (score=1.00)",
-          "QS=0.453"
-        ],
-        "priority": [
-          "base_ps=40 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-102395",
-      "title": "CVE-2026-102395 - WordPress Easy Google Maps plugin <= 1.14.6 - Cross Site Scripting (XSS) vulnerability",
-      "description": "CVE-2026-102395 - WordPress Easy Google Maps plugin <= 1.14.6 - Cross Site Scripting (XSS) vulnerability",
-      "cvss": 6.1,
-      "final_ps": 40,
-      "quality_score": 0.453,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-30",
-      "last_seen": "2026-09-30",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-102395"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-102395"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.50",
-          "recency=0d (score=1.00)",
-          "QS=0.453"
-        ],
-        "priority": [
-          "base_ps=40 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-102396",
-      "title": "CVE-2026-102396 - WordPress Ultimate Maps by Supsystic plugin <= 1.5.5 - Cross Site Scripting (XSS) vulnerability",
-      "description": "CVE-2026-102396 - WordPress Ultimate Maps by Supsystic plugin <= 1.5.5 - Cross Site Scripting (XSS) vulnerability",
-      "cvss": 6.1,
-      "final_ps": 40,
-      "quality_score": 0.453,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-30",
-      "last_seen": "2026-09-30",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-102396"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-102396"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.50",
-          "recency=0d (score=1.00)",
-          "QS=0.453"
-        ],
-        "priority": [
-          "base_ps=40 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-102398",
-      "title": "CVE-2026-102398 - WordPress Popup by Supsystic plugin <= 1.13.1 - Cross Site Scripting (XSS) vulnerability",
-      "description": "CVE-2026-102398 - WordPress Popup by Supsystic plugin <= 1.13.1 - Cross Site Scripting (XSS) vulnerability",
-      "cvss": 6.1,
-      "final_ps": 40,
-      "quality_score": 0.453,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-30",
-      "last_seen": "2026-09-30",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-102398"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-102398"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.50",
-          "recency=0d (score=1.00)",
-          "QS=0.453"
-        ],
-        "priority": [
-          "base_ps=40 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
       "id": "CVE-2025-71417",
       "title": "CVE-2025-71417: PocketMine-MP before 5.32.1 fails to validate uniqueness of pack UUIDs in ResourcePackClientResponsePack",
       "description": "",
@@ -2305,9 +2090,7 @@
         ],
         "suppression": null,
         "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
+      }
     },
     {
       "id": "CVE-2026-15158",
@@ -2350,9 +2133,7 @@
         ],
         "suppression": null,
         "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
+      }
     },
     {
       "id": "CVE-2026-60206",
@@ -2394,9 +2175,7 @@
         ],
         "suppression": null,
         "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
+      }
     },
     {
       "id": "CVE-2026-49952",
@@ -2438,9 +2217,7 @@
         ],
         "suppression": null,
         "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
+      }
     },
     {
       "id": "CVE-2026-65761",
@@ -2482,9 +2259,7 @@
         ],
         "suppression": null,
         "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
+      }
     },
     {
       "id": "CVE-2026-15409",
@@ -3309,6 +3084,276 @@
       "suppression_reason": null
     },
     {
+      "id": "CVE-2026-101905",
+      "title": "Axios: Node HTTP adapter prototype-pollution gadget allows request socket hijack via inherited createConnection",
+      "description": "Summary\n\nAxios' Node HTTP adapter can act as a read-side prototype-pollution gadget for Node's sensitive createConnection request option. The adapter creates a null-prototype options object, but Node's HTTP client can copy or normalize request options into ordinary objects before... [Full analysis a",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-101905"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-m8m8-qj5v-23w3"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-101904",
+      "title": "Axios: Header Injection via Inherited headers After Minimal Interceptor",
+      "description": "Summary\n\nAxios request interceptors may return a replacement config object. If an interceptor returns a plain object without an own headers property, dispatchRequest() later evaluates config.headers and can resolve an inherited Object.prototype.headers value. In a process where a... [Full analysis a",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-101904"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-j8rh-479h-cp32"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-97711",
+      "title": "Serialize JavaScript: Cross-site scripting (XSS) via unescaped </script> in serialized function bodies",
+      "description": "Impact\n\nserialize-javascript escapes its output so it is safe to embed inside a\n\ninto the output, terminating the script element early so the remainder is\nparsed as HTML.\n\nSCRIPT_CLOSE_REGEXP used ]*> as its first alternative. The\ncharacter class excludes only >, so a single matc... [Full analysis a",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-97711"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-gfhx-hw2g-v5hg"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-101907",
+      "title": "Axios: maxRedirects: 0 is not enforced by the fetch adapter, allowing redirect-based SSRF",
+      "description": "Summary\n\nAxios exposes maxRedirects to limit redirect following, and maxRedirects: 0 is used by applications as a redirect-based SSRF guard. The Node HTTP adapter enforces this option. The fetch adapter does not read it and does not set a Fetch API redirect mode, so the runtime d... [Full analysis a",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-101907"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-r4gj-5m52-g5wh"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-101900",
+      "title": "Axios: Fetch Adapter Header Injection via Inherited FormData getHeaders",
+      "description": "Summary\n\nAxios contains a guard in the Node HTTP adapter to avoid using an inherited Object.prototype.getHeaders as a FormData header source. The fetch adapter calls the shared resolveConfig() helper before dispatch, and that helper lacks the same guard. If another vulnerability ... [Full analysis a",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-101900"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-4hqw-qxg8-jxx2"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-88920",
+      "title": "CVE-2026-88920: Apache WSS4J: SAML Sender-Vouches Authentication Bypass",
+      "description": "Posted by Colm O hEigeartaigh on Sep 30 Severity: important\n\nAffected versions:\n\n- Apache WSS4J (org.apache.wss4j:wss4j-ws-security-dom) 4.0.0 before 4.0.2\n- Apache WSS4J (org.apache.wss4j:wss4j-ws-security-dom) 3.0.0 before 3.0.6\n- Apache WSS4J (org.apache.wss4j:wss4j-ws-securit... [Full analysis a",
+      "cvss": 9.1,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-88920"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://seclists.org/oss-sec/2026/q3/1023"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
       "id": "CVE-2026-101908",
       "title": "Axios: Prototype pollution gadget in fetch adapter can alter outbound requests",
       "description": "Summary\n\nAxios fetch adapter requests can be altered by inherited properties on fetchOptions. The adapter resolves method, headers, body, signal, and credentials into resolvedOptions, creates a Request, and then calls fetch(request, fetchOptions) instead of fetch(request, resolve... [Full analysis a",
@@ -3579,583 +3624,47 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-96886",
-      "title": "CVE-2026-96886 - Course Booking System < 7.0.9 - Unauthenticated Attendee PII Disclosure via CSV Export",
-      "description": "CVE-2026-96886 - Course Booking System < 7.0.9 - Unauthenticated Attendee PII Disclosure via CSV Export",
-      "cvss": 9.1,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-30",
-      "last_seen": "2026-09-30",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-96886"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-96886"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-97316",
-      "title": "CVE-2026-97316 - Broken Link Notifier 1.3.1 - 2.0.0 - Unauthenticated SSRF via Redirect Bypass",
-      "description": "CVE-2026-97316 - Broken Link Notifier 1.3.1 - 2.0.0 - Unauthenticated SSRF via Redirect Bypass",
-      "cvss": 9.1,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-30",
-      "last_seen": "2026-09-30",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-97316"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-97316"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-103040",
-      "title": "CVE-2026-103040 - LightLLM through 1.2.0 Unauthenticated Remote Code Execution via Router Profiler RPyC Service",
-      "description": "CVE-2026-103040 - LightLLM through 1.2.0 Unauthenticated Remote Code Execution via Router Profiler RPyC Service",
-      "cvss": 9.8,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "AI_SECURITY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-29",
-      "last_seen": "2026-09-29",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-103040"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-103040"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-103041",
-      "title": "CVE-2026-103041 - LightLLM through 1.2.0 Unauthenticated Remote Code Execution via Embed Cache RPyC Service",
-      "description": "CVE-2026-103041 - LightLLM through 1.2.0 Unauthenticated Remote Code Execution via Embed Cache RPyC Service",
-      "cvss": 9.8,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "AI_SECURITY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-29",
-      "last_seen": "2026-09-29",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-103041"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-103041"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-103042",
-      "title": "CVE-2026-103042 - LightLLM through 1.2.0 Unauthenticated Memory Exhaustion via NCCL Control Channel set_value",
-      "description": "CVE-2026-103042 - LightLLM through 1.2.0 Unauthenticated Memory Exhaustion via NCCL Control Channel set_value",
-      "cvss": 9.1,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "AI_SECURITY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-29",
-      "last_seen": "2026-09-29",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-103042"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-103042"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-86131",
-      "title": "CVE-2026-86131 - Fireware OS Code Injection in BOVPN Over TLS Client Allows Remote Code Execution",
-      "description": "CVE-2026-86131 - Fireware OS Code Injection in BOVPN Over TLS Client Allows Remote Code Execution",
-      "cvss": 9.8,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-29",
-      "last_seen": "2026-09-29",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-86131"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-86131"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-13046",
-      "title": "CVE-2026-13046 - Fireware OS Deserialization of Untrusted Data in samld Allows Remote Code Execution",
-      "description": "CVE-2026-13046 - Fireware OS Deserialization of Untrusted Data in samld Allows Remote Code Execution",
-      "cvss": 9.8,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-29",
-      "last_seen": "2026-09-29",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-13046"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-13046"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-18145",
-      "title": "CVE-2026-18145 - Fireware OS Stack-based Buffer Overflow in spamd Allows Remote Code Execution",
-      "description": "CVE-2026-18145 - Fireware OS Stack-based Buffer Overflow in spamd Allows Remote Code Execution",
-      "cvss": 9.8,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-29",
-      "last_seen": "2026-09-29",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-18145"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-18145"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-86104",
-      "title": "CVE-2026-86104 - Fireware OS Resource Exhaustion in Login Process Allows Denial of Service",
-      "description": "CVE-2026-86104 - Fireware OS Resource Exhaustion in Login Process Allows Denial of Service",
-      "cvss": 9.8,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-29",
-      "last_seen": "2026-09-29",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-86104"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-86104"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-102793",
-      "title": "CVE-2026-102793 - Ziroom ZHOME A0101 set_time_zone command injection",
-      "description": "CVE-2026-102793 - Ziroom ZHOME A0101 set_time_zone command injection",
-      "cvss": 9,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-29",
-      "last_seen": "2026-09-29",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-102793"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-102793"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-102792",
-      "title": "CVE-2026-102792 - Ziroom ZHOME A0101 set_syslog command injection",
-      "description": "CVE-2026-102792 - Ziroom ZHOME A0101 set_syslog command injection",
-      "cvss": 9,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-29",
-      "last_seen": "2026-09-29",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-102792"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-102792"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-66083",
-      "title": "CVE-2026-66083 - Apache DolphinScheduler: Unauthorized Disclosure of Data Source Information via /datasources/unauth-dat",
-      "description": "CVE-2026-66083 - Apache DolphinScheduler: Unauthorized Disclosure of Data Source Information via /datasources/unauth-datasource",
-      "cvss": 9.8,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-29",
-      "last_seen": "2026-09-29",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-66083"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-66083"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-48842",
-      "title": "Roundcube SQL injection CVE-2026-48842 is now being exploited in the wild",
-      "description": "Roundcube SQL injection CVE-2026-48842 is now being exploited in the wild, putting unpatched webmail servers at risk of database compromise. A Roundcube Webmail vulnerability, tracked as CVE-2026-48842 (CVSS score of 8.1) and patched four months ago, is now being exploited in the... [Full analysis a",
-      "cvss": 8.1,
-      "final_ps": 28,
-      "quality_score": 0.497,
+      "id": "CVE-2026-84428",
+      "title": "fastify vulnerable to header validation bypass via incomplete schema case normalization",
+      "description": "### Impact Fastify lowercases header-schema property names before compiling the schema, because Node.js stores request header names in lowercase. That normalization was incomplete: it lowercased only top-level `properties` keys and the root `required` array, and did not lowercase the JSON Schema Dra",
+      "cvss": 7.5,
+      "final_ps": 21,
+      "quality_score": 0.523,
       "threat_level": "HIGH",
       "type": "CVE_REPORT",
-      "source": "sentinel_apex",
+      "source": "github_advisories",
       "sources_confirmed": 1,
       "merged_sources": [
-        "sentinel_apex"
+        "github_advisories"
       ],
-      "first_seen": "2026-09-28",
-      "last_seen": "2026-09-28",
-      "exploited": true,
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "",
-      "product": "",
+      "vendor": "npm",
+      "product": "fastify",
       "due_date": null,
       "cves": [
-        "CVE-2026-48842"
+        "CVE-2026-84428",
+        "CVE-2026-84428"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://securityaffairs.com/199882/security/roundcube-sql-injection-cve-2026-48842-is-now-being-exploited-in-the-wild.html"
+        "https://github.com/advisories/GHSA-9q9j-q6p8-xq58",
+        "https://github.com/fastify/fastify/security/advisories/GHSA-9q9j-q6p8-xq58",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-84428",
+        "https://github.com/fastify/fastify/commit/179619c8e99d54924309b9933402151ef9af37e0"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
           "recency=0d (score=1.00)",
-          "QS=0.497"
+          "QS=0.523"
         ],
         "priority": [
-          "+8 exploited_in_wild"
+          "base_ps=21 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4164,201 +3673,59 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-88772",
-      "title": "Hackers exploit Citrix NetScaler zero-day to deploy web shells",
-      "description": "Cybersecurity firms say attackers exploited the Citrix NetScaler CVE-2026-88772 zero-day to deploy custom web shells and tunneling malware, gain root access, steal credentials, and spread into internal networks. [...]",
+      "id": "CVE-2026-87817",
+      "title": "GitPython: Repository content can impersonate the git directory, leading to arbitrary code execution",
+      "description": "### Summary `Repo.__init__` decides which directory is the git directory by testing candidate paths in an order that\nconsiders the real `.git` **last**. Two earlier tests can be satisfied by ordinary tracked files. Git\nreserves only the literal name `.git`, so `HEAD`, `objects/`, `refs/`, `config`, ",
+      "cvss": 8.8,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "pip",
+      "product": "gitpython",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-87817",
+        "CVE-2026-87817"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-239g-whfq-7xj9",
+        "https://github.com/gitpython-developers/GitPython/security/advisories/GHSA-239g-whfq-7xj9",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-87817",
+        "https://github.com/gitpython-developers/GitPython/pull/2218"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-84504",
+      "title": "fastify vulnerable to request body replacement via an async validation result collision",
+      "description": "### Impact Fastify runs a route's validator and, for a result shaped like `{ value, error }`, unwraps it: an `error` becomes a validation failure and `value` replaces the request part. This convention is intended for synchronous custom compilers (for example Joi). A JSON Schema `$async` validator, h",
       "cvss": 8.1,
-      "final_ps": 25,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "ZERO_DAY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-29",
-      "last_seen": "2026-09-29",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-88772"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.bleepingcomputer.com/news/security/hackers-exploit-citrix-netscaler-zero-day-to-deploy-web-shells/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+7 zero_day"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-76504",
-      "title": "Cisco warns of new SD-WAN zero-day exploited in attacks",
-      "description": "Cisco released security updates to address a critical zero-day in the Catalyst SD-WAN Manager (tracked as CVE-2026-76504) that attackers are actively exploiting to escalate to admin privileges. [...]",
-      "cvss": 0,
-      "final_ps": 22,
-      "quality_score": 0.368,
-      "threat_level": "LOW",
-      "type": "ZERO_DAY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 3,
-      "merged_sources": [
-        "sentinel_apex",
-        "bleepingcomputer",
-        "thehackernews"
-      ],
-      "first_seen": "2026-09-30",
-      "last_seen": "2026-09-30",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-76504"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.bleepingcomputer.com/news/security/cisco-warns-of-new-sd-wan-authentication-bypass-zero-day-exploited-in-attacks/",
-        "https://thehackernews.com/2026/09/cisco-warns-of-attackers-exploiting.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.10",
-          "recency=0d (score=1.00)",
-          "QS=0.368"
-        ],
-        "priority": [
-          "+7 zero_day"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-91777",
-      "title": "jackson-databind quadratic forward-reference completion ",
-      "description": "### Summary When an `@JsonIdentityInfo` collection or map first creates N unresolved\nobject-ID references and later resolves the same IDs in reverse order,\njackson-databind scans the remaining pending-reference accumulator for each\nresolution. A shallow JSON document whose size grows linearly can th",
-      "cvss": 7.5,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-09-30",
-      "last_seen": "2026-09-30",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "maven",
-      "product": "com.fasterxml.jackson.core:jackson-databind",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-91777",
-        "CVE-2026-91777"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-cxp5-3px4-pw24",
-        "https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-cxp5-3px4-pw24",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-91777",
-        "https://github.com/FasterXML/jackson-databind/issues/6204"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-91776",
-      "title": "jackson-databind retains every unknown raw type ID ",
-      "description": "### Summary With `@JsonTypeInfo(use = Id.NAME, defaultImpl = ...)`, every distinct unknown\nraw type ID selects the same fallback deserializer but is retained as a\nseparate key in `TypeDeserializerBase._deserializers`. An attacker who can\nrepeatedly supply new unknown type IDs can grow this process-l",
-      "cvss": 7.5,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-09-30",
-      "last_seen": "2026-09-30",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "maven",
-      "product": "com.fasterxml.jackson.core:jackson-databind",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-91776",
-        "CVE-2026-91776"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-wv8q-qhhj-9h54",
-        "https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-wv8q-qhhj-9h54",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-91776",
-        "https://github.com/FasterXML/jackson-databind/issues/6203"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-101916",
-      "title": "@grpc/grpc-js: In certain configurations, getAuthContext can return unauthorized certificates as though they were author",
-      "description": "### Impact\nWhen server credentials are created with the `requireClientCertificate` option set to `false`, `getAuthContext` does not distinguish between authorized and unauthorized certificates in its return value. This can create improper authentication vulnerabilities for `@grpc/grpc-js` users who ",
-      "cvss": 7.4,
       "final_ps": 21,
       "quality_score": 0.523,
       "threat_level": "MEDIUM",
@@ -4374,18 +3741,18 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "npm",
-      "product": "@grpc/grpc-js",
+      "product": "fastify",
       "due_date": null,
       "cves": [
-        "CVE-2026-101916",
-        "CVE-2026-101916"
+        "CVE-2026-84504",
+        "CVE-2026-84504"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-m9gg-hp2v-232j",
-        "https://github.com/grpc/grpc-node/security/advisories/GHSA-m9gg-hp2v-232j",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-101916",
-        "https://github.com/grpc/grpc-node/commit/2a84ec8b01b9db68ed9d2b117a53a81449edb8ee"
+        "https://github.com/advisories/GHSA-667r-xxjv-c9mm",
+        "https://github.com/fastify/fastify/security/advisories/GHSA-667r-xxjv-c9mm",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-84504",
+        "https://github.com/fastify/fastify/commit/f02d8d4ab1ab208f10819c4dc213595b06497833"
       ],
       "explanation": {
         "quality": [
@@ -4396,6 +3763,652 @@
         ],
         "priority": [
           "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-76169",
+      "title": "fastify vulnerable to authentication bypass via malformed URLs reaching encapsulated not-found handlers",
+      "description": "### Impact Fastify routes a malformed URL under one plugin prefix to the custom not-found handler of a different sibling plugin, invoking the handler registered last and skipping the `preHandler` declared in its `setNotFoundHandler()`. When the request method has no route in the main router, a malfo",
+      "cvss": 7.5,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "fastify",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-76169",
+        "CVE-2026-76169"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-p68q-wchp-6fh7",
+        "https://github.com/fastify/fastify/security/advisories/GHSA-p68q-wchp-6fh7",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-76169",
+        "https://github.com/fastify/fastify/commit/93c239a380f3f2778bb7565fcdf777e91cfe1fbc"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-84469",
+      "title": "fastify vulnerable to request validation bypass via skipped boolean false schemas",
+      "description": "### Impact Fastify decided whether to validate a request part by checking its schema for JavaScript truthiness. JSON Schema Draft 7 defines the boolean `false` as a valid schema that rejects every instance, but because `false` is falsy, a route that set `body`, `querystring`, `params`, or `headers` ",
+      "cvss": 7.5,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "fastify",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-84469",
+        "CVE-2026-84469"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-hwr6-493r-vm6h",
+        "https://github.com/fastify/fastify/security/advisories/GHSA-hwr6-493r-vm6h",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-84469",
+        "https://github.com/fastify/fastify/commit/7de6e81697778f9f41bd327a3b1c5c9a0d9637b4"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-87819",
+      "title": "GitPython: Denial of Service via catastrophic backtracking (ReDoS) in Actor.name_email_regex — commit author/committer f",
+      "description": "### Summary GitPython's `Actor.name_email_regex` regular expression (`git/util.py`, line 863)\nis vulnerable to catastrophic backtracking (ReDoS — Regular Expression Denial of\nService). When GitPython parses the `author` or `committer` header of a git commit\nobject that contains a long string with an",
+      "cvss": 7.5,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "pip",
+      "product": "GitPython",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-87819",
+        "CVE-2026-87819"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-g5vv-9gxw-82hx",
+        "https://github.com/gitpython-developers/GitPython/security/advisories/GHSA-g5vv-9gxw-82hx",
+        "https://github.com/gitpython-developers/GitPython/pull/2215",
+        "https://github.com/gitpython-developers/GitPython/commit/751473a5f3221d6f989291cbebcc404353fd3ba8"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-47541",
+      "title": "CVE-2026-47541 - NVIDIA vGPU Virtual GPU Manager Out-of-Bounds Write Vulnerability",
+      "description": "CVE ID : CVE-2026-47541\n\n Published : Sept. 30, 2026, 3:54 p.m. | 10 minutes ago\n\n Description : NVIDIA vGPU Virtual GPU Manager for Linux contains a vulnerability in the kernel mode layer where an attacker could cause an out-of-bounds write. A successful exploit of this vulnerab... [Full analysis a",
+      "cvss": 7.8,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-47541"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-47541"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-47536",
+      "title": "CVE-2026-47536 - NVIDIA vGPU Manager Out-of-Bounds Read Vulnerability",
+      "description": "CVE ID : CVE-2026-47536\n\n Published : Sept. 30, 2026, 3:54 p.m. | 10 minutes ago\n\n Description : NVIDIA vGPU Virtual GPU Manager for Linux contains a vulnerability in the kernel mode layer where an attacker could cause an out-of-bounds read. A successful exploit of this vulnerabi... [Full analysis a",
+      "cvss": 7.8,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-47536"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-47536"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-47519",
+      "title": "CVE-2026-47519 - NVIDIA vGPU Manager Out-of-Bounds Read Vulnerability",
+      "description": "CVE ID : CVE-2026-47519\n\n Published : Sept. 30, 2026, 3:54 p.m. | 10 minutes ago\n\n Description : NVIDIA vGPU Virtual GPU Manager for Linux contains a vulnerability in the kernel mode layer where an attacker could cause an out-of-bounds read. A successful exploit of this vulnerabi... [Full analysis a",
+      "cvss": 7.8,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-47519"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-47519"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-47521",
+      "title": "CVE-2026-47521 - NVIDIA vGPU Manager Out-of-Bounds Read Vulnerability",
+      "description": "CVE ID : CVE-2026-47521\n\n Published : Sept. 30, 2026, 3:54 p.m. | 10 minutes ago\n\n Description : NVIDIA vGPU Virtual GPU Manager for Linux contains a vulnerability in the kernel mode layer where an attacker could cause an out-of-bounds read. A successful exploit of this vulnerabi... [Full analysis a",
+      "cvss": 7.8,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-47521"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-47521"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-47574",
+      "title": "CVE-2026-47574 - NVIDIA vGPU Manager Resource Isolation Vulnerability",
+      "description": "CVE ID : CVE-2026-47574\n\n Published : Sept. 30, 2026, 3:54 p.m. | 10 minutes ago\n\n Description : NVIDIA vGPU Virtual GPU Manager for Linux contains a vulnerability where an attacker could cause incorrect resource transfer between spheres. A successful exploit of this vulnerabilit... [Full analysis a",
+      "cvss": 7.8,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-47574"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-47574"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-47535",
+      "title": "CVE-2026-47535 - NVIDIA vGPU Virtual GPU Manager Out-of-Bounds Read Vulnerability",
+      "description": "CVE ID : CVE-2026-47535\n\n Published : Sept. 30, 2026, 3:54 p.m. | 10 minutes ago\n\n Description : NVIDIA vGPU Virtual GPU Manager for Linux contains a vulnerability in the firmware where an attacker could cause an out-of-bounds read. A successful exploit of this vulnerability migh... [Full analysis a",
+      "cvss": 7.8,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-47535"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-47535"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-47520",
+      "title": "CVE-2026-47520 - NVIDIA vGPU Manager Out-of-Bounds Read Vulnerability",
+      "description": "CVE ID : CVE-2026-47520\n\n Published : Sept. 30, 2026, 3:54 p.m. | 10 minutes ago\n\n Description : NVIDIA vGPU Virtual GPU Manager for Linux contains a vulnerability in the kernel mode layer where an attacker could cause an out-of-bounds read. A successful exploit of this vulnerabi... [Full analysis a",
+      "cvss": 7.8,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-47520"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-47520"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-95616",
+      "title": "CVE-2026-95616: Apache WSS4J: Unauthenticated denial of service via integer overflow in DER parsing of X.509 certificate",
+      "description": "Posted by Colm O hEigeartaigh on Sep 30 Severity: important\n\nAffected versions:\n\n- Apache WSS4J 4.0.0 before 4.0.2\n- Apache WSS4J 3.0.0 before 3.0.6\n- Apache WSS4J before 2.4.4\n\nDescription:\n\nAn integer overflow in WSS4J's DER bounds check lets an oversized allocation pass valida... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-95616"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://seclists.org/oss-sec/2026/q3/1027"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-47496",
+      "title": "CVE-2026-47496 - NVIDIA GPU Display Driver Virtual GPU Manager Out-of-Bounds Write Vulnerability",
+      "description": "CVE ID : CVE-2026-47496\n\n Published : Sept. 30, 2026, 3:54 p.m. | 10 minutes ago\n\n Description : NVIDIA GPU Display Driver for Linux contains a vulnerability in the Virtual GPU Manager (vGPU plugin) where a guest VM user may cause an out-of-bounds write by sending a specially cra... [Full analysis a",
+      "cvss": 7.3,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-47496"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-47496"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-102930",
+      "title": "virtualenv: Downloaded seed wheels (pip/setuptools) are not integrity-checked before use",
+      "description": "`download_wheel()` runs `pip download` and hands the result straight to the seeder, with nothing checking the bytes it gets back. The embedded pip and setuptools wheels carry a `BUNDLE_SHA256` that virtualenv checks on every load, but a wheel fetched over the network for the periodic-update feature ",
+      "cvss": 0,
+      "final_ps": 18,
+      "quality_score": 0.453,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "pip",
+      "product": "virtualenv",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-102930",
+        "CVE-2026-102930"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-94p9-xgh2-xp45",
+        "https://github.com/pypa/virtualenv/security/advisories/GHSA-94p9-xgh2-xp45",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-102930",
+        "https://github.com/pypa/virtualenv/pull/3251"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.40",
+          "recency=0d (score=1.00)",
+          "QS=0.453"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-47539",
+      "title": "CVE-2026-47539 - NVIDIA vGPU Virtual GPU Manager Integer Conversion Vulnerability",
+      "description": "CVE ID : CVE-2026-47539\n\n Published : Sept. 30, 2026, 3:54 p.m. | 10 minutes ago\n\n Description : NVIDIA vGPU Virtual GPU Manager for Linux contains a vulnerability in the kernel mode layer where an attacker could cause an incorrect numeric conversion. A successful exploit of this... [Full analysis a",
+      "cvss": 6.7,
+      "final_ps": 16,
+      "quality_score": 0.398,
+      "threat_level": "LOW",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-47539"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-47539"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.25",
+          "recency=0d (score=1.00)",
+          "QS=0.398"
+        ],
+        "priority": [
+          "base_ps=16 (no boosts)"
         ],
         "suppression": null,
         "merge": null
