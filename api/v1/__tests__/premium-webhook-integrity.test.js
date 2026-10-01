@@ -332,6 +332,16 @@ describe('artifact delivery', () => {
   });
 });
 
+describe('public catalog', () => {
+  test('list and detail both expose the pinned artifact SHA-256 (real D1 query)', async () => {
+    const list = await service.listCatalog();
+    expect(list).toHaveLength(1);
+    expect(list[0].artifact_sha256).toBe(SHA);
+    expect((await service.getCatalogItem(REPORT)).artifact_sha256).toBe(SHA);
+    expect(list[0]).not.toHaveProperty('artifact_key');
+  });
+});
+
 describe('checkout unavailable', () => {
   test('tells the buyer to email, never offers a manual UPI/bank fallback, takes no order', async () => {
     jest.spyOn(razorpay, 'configured').mockReturnValue(false);
