@@ -71,11 +71,37 @@ The live feed was regenerated at merge time and is all HIGH confidence. By type:
 3. `curl -s https://blog.cyberdudebivash.in/data/ioc-feed.json -o /dev/null -w '%{http_code}'` → `404`.
 4. With a Team key: `GET /api/v1/intel?action=iocs&format=stix&limit=5` → `stix.type == "bundle"`, every `pattern` without `file:value`.
 
+### D1 migrations applied (2026-10-01): **DONE**
+
+Applied on operator instruction to D1 `sentinel-apex-core` (`dfdbdd96-9054-46d6-a434-3de0c56fccfb`) through the authenticated Cloudflare API.
+
+**Pre-flight**
+- The database held only `_cf_KV` and had no `d1_migrations` table.
+- All 8 migration files were reviewed: they are additive only (`CREATE … IF NOT EXISTS`, plus two `ADD COLUMN` statements in 0007), with no `DROP`, `DELETE` or `UPDATE`.
+- All 8 were dry-run in order against an empty SQLite database first.
+
+**Restore point:** Time Travel bookmark `00000102-00000000-000050f7-b2f049371a8c4a367199b147c780928a`, taken at 2026-10-01T06:17:05Z.
+
+**Execution**
+- Each migration was sent with a SHA-256 of its comment-stripped SQL and verified inside the executor before running.
+- Each was recorded in `d1_migrations` (wrangler's own schema), so `wrangler d1 migrations list` reports them as applied.
+- Applied between 06:20:28Z and 07:13:22Z.
+
+**Post-state:** 37 application tables, 41 indexes and 8 recorded migrations, matching the dry run.
+
+**Live check**
+- `GET /api/v1/premium-intelligence?action=catalog` → **200** `{"reports":[],"count":0}`. It was 500 before.
+- The catalog is empty because no certified report is listed yet. R2 `sentinel-apex-premium-reports` is still empty.
+
+**Next operator step:** list certified reports in `premium_report_catalog` and upload their artefacts to the existing R2 bucket.
+
+**Rollback:** `npx wrangler d1 time-travel restore sentinel-apex-core --bookmark 00000102-00000000-000050f7-b2f049371a8c4a367199b147c780928a`.
+
 ### Operator decisions required (not executed; no production mutation from this environment)
 
 | Item | Evidence | Exact operator action | Validation |
 |---|---|---|---|
-| **Premium store / D1 (ICF-P1-008)** | Production D1 `sentinel-apex-core` (bound as `DB` in `wrangler.jsonc`, `migrations_dir: ./migrations`) contains no application tables, only `_cf_KV` (verified via the authenticated Cloudflare API, Phase A). Migrations `0001`–`0008` were never applied. This also disables watchlists, notifications, SIEM connectors, hunting and detection performance. R2 `sentinel-apex-premium-reports` exists and is empty. | 1. Review `migrations/0001…0008_*.sql`. 2. `npx wrangler d1 migrations list sentinel-apex-core --remote`. 3. `npx wrangler d1 migrations apply sentinel-apex-core --remote`. 4. Upload certified artefacts to the existing R2 bucket. No new database or bucket is needed. | `GET /api/v1/premium-intelligence?action=catalog` → 200; `wrangler d1 execute sentinel-apex-core --remote --command "SELECT name FROM sqlite_master WHERE type='table'"` lists the migration tables |
+| **Premium store / D1 (ICF-P1-008)** — migrations DONE 2026-10-01 (see above); catalog content and R2 artefacts still pending | Production D1 `sentinel-apex-core` (bound as `DB` in `wrangler.jsonc`, `migrations_dir: ./migrations`) contains no application tables, only `_cf_KV` (verified via the authenticated Cloudflare API, Phase A). Migrations `0001`–`0008` were never applied. This also disables watchlists, notifications, SIEM connectors, hunting and detection performance. R2 `sentinel-apex-premium-reports` exists and is empty. | 1. Review `migrations/0001…0008_*.sql`. 2. `npx wrangler d1 migrations list sentinel-apex-core --remote`. 3. `npx wrangler d1 migrations apply sentinel-apex-core --remote`. 4. Upload certified artefacts to the existing R2 bucket. No new database or bucket is needed. | `GET /api/v1/premium-intelligence?action=catalog` → 200; `wrangler d1 execute sentinel-apex-core --remote --command "SELECT name FROM sqlite_master WHERE type='table'"` lists the migration tables |
 | **Manual UPI (ICF-P1-001)** | `OPERATIONS.md` L73 says: "Do not enable manual payment fallback". Yet the `pricing.html` UPI QR/UTR flow and `api/v1/billing-legacy.js` `create-intent`/`submit-payment` are live. | Decide one: **(a)** retire the manual UPI path (remove the UI and disable the two actions; deploy), or **(b)** amend `OPERATIONS.md` to authorise it with a manual-review SLA. The financial behaviour was not changed here. | Pricing UI and API behaviour match the written policy |
 | **Legal entity name** | The repository uses "CYBERDUDEBIVASH PRIVATE LIMITED" (16,502 occurrences) and "CyberDudeBivash Pvt. Ltd." (199 occurrences, mostly `vendor/`, `posts/` and root pages). No CIN or registration document is present to decide which is correct. | Confirm the exact registered name (as on the MCA/ROC certificate). Legal representations were left unchanged. | A single canonical name across footer, terms and invoices |
 

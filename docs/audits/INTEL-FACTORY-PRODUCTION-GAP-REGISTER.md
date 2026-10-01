@@ -31,7 +31,7 @@ named in the item. **OPEN** = verified, not remediated in this tranche.
 | ICF-P1-005 | P1 | Performance | Homepage downloaded 1.3 MB KEV catalog via proxy every view to write nowhere | FIXED |
 | ICF-P1-006 | P1 | Intelligence | 68% of API items name `sentinel_apex` itself as source (circular provenance) | OPEN |
 | ICF-P1-007 | P1 | Trust | "real-time" wording for a 30-minute batch pipeline on api.html / index.html | OPEN (intelligence.html fixed) |
-| ICF-P1-008 | P1 | Commercial | Premium Intelligence store API returns HTTP 500 live (`action=catalog`) | BLOCKED |
+| ICF-P1-008 | P1 | Commercial | Premium Intelligence store API returns HTTP 500 live (`action=catalog`) | PARTIAL (D1 migrated 2026-10-01, catalog 200; content/R2 pending) |
 | ICF-P2-001 | P2 | Security | npm audit: 6 high (dev tooling), js-yaml direct | OPEN |
 | ICF-P2-002 | P2 | Intelligence | Rolling window lets legacy records persist indefinitely while ranked | OPEN |
 | ICF-P2-003 | P2 | Architecture | 19 versioned automation layers patch `premium_main` in sequence | OPEN |
