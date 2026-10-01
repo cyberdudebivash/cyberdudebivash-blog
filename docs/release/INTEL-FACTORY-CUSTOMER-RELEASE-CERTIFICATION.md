@@ -1,5 +1,49 @@
 # Intel Factory — Customer Release Certification
 
+## Tranche 4 (2026-10-01): plan cutover live + premium-report payment integrity
+
+### #317 in production: **PASS**
+
+#317 merged at 12:44 UTC and was live at 12:46 UTC.
+
+| Check (live, read-only) | Expected | Actual | Result |
+|---|---|---|---|
+| `POST billing?action=create-razorpay-order` (team) | 410 `PLAN_CHECKOUT_MOVED`, platform URL | 410, `checkout_url=https://intel.cyberdudebivash.com/upgrade.html?plan=enterprise&…` | PASS |
+| `billing?action=plans` | shape kept, `on_sale:false` | `on_sale:false`, `checkout_url` present, `pro.amount` 1499 (legacy record) | PASS |
+| `pricing.html` | platform plans, live price slots, platform CTAs; no blog checkout | 3×`data-intel-price` per tier, 3 platform CTAs; 0 `create-razorpay-order`, 0 `1,499`, 0 `API Starter` | PASS |
+| CSP `connect-src` | allows `https://intel.cyberdudebivash.com` | present | PASS |
+| Generated post | no "$18/mo" | 0; shows "⚡ PRO Defense Plan" | PASS |
+| `buy.html` | forwards to the platform | `IntelCheckout.go` present | PASS |
+| Premium catalog | 4 | 4 | PASS |
+| Webhook unsigned | 400 | 400 | PASS |
+| Manual UPI (`create-intent`) | 410 | 410 (Tranche 3, unchanged) | PASS |
+
+### Overlap window reconciliation: **0 real orders**
+
+See `docs/audits/PLAN-CUTOVER-PAYMENT-RECONCILIATION.md`.
+- Every billing request between 11:30 and 13:30 UTC came from the audit canary.
+- 0 captured orders; 0 customers affected.
+- Up to 3 unpaid ₹1,499 test orders.
+
+### This tranche (repository)
+
+- **Webhook:**
+  - classifies by the blog's own D1 order record;
+  - parses only the signed raw bytes;
+  - acknowledges permanent mismatches without granting;
+  - ignores Sentinel APEX and other foreign events with zero writes;
+  - no Razorpay order lookup;
+  - no notes-based plan recovery.
+- **Premium orders:** carry the `CYBERDUDEBIVASH_INTEL_FACTORY` / `PREMIUM_REPORT` / sku ownership contract.
+- **Observability:** PII-free events.
+- **Checkout unavailable:** shows "Online purchase temporarily unavailable. Contact bivash@cyberdudebivash.com".
+- **Tests:** `premium-webhook-integrity.test.js` adds 22 tests with real migration SQL on SQLite and real HMAC; 8 of 8 negative controls detected.
+- **Gates:** retired-offer copy gate; read-only reconciliation tool.
+- **Docs:**
+  - `docs/runbooks/BLOG-RAZORPAY-WEBHOOK.md`
+  - `docs/audits/PREMIUM-REPORT-COMMERCIAL-CERTIFICATION.md`
+- **Known defect (owner accepted):** premium artifacts are titled "Premium Intelligence Canary". The reissue requires a new human review.
+
 ## Tranche 3 (2026-10-01): #314 live certification + revenue activation readiness
 
 ### #314 in production: **PASS**
