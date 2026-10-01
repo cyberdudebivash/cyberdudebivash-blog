@@ -1,42 +1,127 @@
 name: "🚀 SENTINEL APEX — Cloudflare Production Deploy"
 
 on:
+  # Every path that can change what production serves MUST be listed here, or
+  # a merged fix waits for the 30-minute drift reconciler (the PR #318 gap).
+  # Docs, tests and pipeline-only sources are deliberately absent. Coverage is
+  # derived from the real Worker module graph + build allowlist and enforced by
+  # tests-js/deploy-triggers.test.js (scripts/deploy-trigger-inputs.js).
   push:
     branches: [main]
     paths:
-      - 'index.html'
+      # Worker bundle (wrangler.jsonc main = workers/entry.js; esbuild module graph)
+      - 'workers/**'
+      - 'api/**'
+      - 'Sentinel-APEX/engine-node/**'
+      - 'data/detection-rules-canonical.json'
+      - 'data/cvss-corrections.json'
+      - 'data/ioc-feed.json'
+      - 'live-intel.json'
+      - 'intel-state.json'
+      # Static-asset build: builder, its local modules, public directories
+      - 'scripts/build-cloudflare-assets.js'
+      - 'scripts/build-cloudflare-assets.test.js'
+      - 'generate-cve-pages.js'
+      - 'posts/**'
+      - 'cve/**'
       - 'intel/**'
+      - 'intelligence/**'
+      - 'threat/**'
       - 'malware/**'
-      - 'ai-security/**'
+      - 'detections/**'
+      - 'attack/**'
       - 'breaking/**'
-      - 'leads.html'
-      - 'api.html'
+      - 'collections/**'
+      - 'timeline/**'
+      - 'research/**'
+      - 'ai-security/**'
+      - 'vendor/**'
+      - '.well-known/**'
+      # Static-asset build: public root files (PUBLIC_ROOT_FILES)
+      - 'about.html'
       - 'api-dashboard.html'
-      - 'dossier.html'
-      - 'hunts.html'
-      - 'products.html'
-      - 'pricing.html'
+      - 'api.html'
+      - 'archive.html'
+      - 'buy.html'
+      - 'contact.html'
       - 'customer-assurance.html'
       - 'service-status.html'
+      - 'customer-incident-response.html'
       - 'enterprise-onboarding.html'
       - 'cti-delivery-acceptance.html'
+      - 'enterprise.html'
+      - 'faq.html'
+      - 'index.html'
+      - 'intelligence.html'
+      - 'leads.html'
+      - 'mitre-attack-detection.html'
+      - 'newsletter.html'
+      - 'order-confirmation.html'
+      - 'owasp-llm-top10.html'
+      - 'pricing.html'
+      - 'privacy.html'
+      - 'products.html'
+      - 'search.html'
+      - 'security-disclosure.html'
+      - 'terms.html'
+      - 'threat-intelligence.html'
+      - 'detection-quality.html'
+      - 'review-queue.html'
+      - 'hunts.html'
+      - 'deployments.html'
+      - 'dossier.html'
+      - 'defense-profile.html'
+      - 'workbench.html'
+      - 'intelligence-store.html'
+      - 'customer-library.html'
+      - 'premium-previews.json'
+      - 'apex-v12.css'
+      - 'apex-v13.css'
+      - 'mobile-first.css'
+      - 'apex-command-center.css'
+      - 'responsive-platform.css'
+      - 'customer-experience.css'
+      - 'ai-monetization-engine.js'
+      - 'analytics-engine.js'
+      - 'auto-intel-engine.js'
+      - 'banner-orchestrator.js'
+      - 'conversion-engine.js'
+      - 'email-engine.js'
+      - 'live-feed-widget.js'
+      - 'monetization.js'
+      - 'payment-engine.js'
+      - 'payment-flow.js'
+      - 'intel-plans.js'
+      - 'revenue-conversion-v19.js'
+      - 'revenue-cta-block.js'
+      - 'security-engine.js'
+      - 'seo-engine.js'
+      - 'ux-controller.js'
+      - 'apex-command-center.js'
+      - 'customer-experience.js'
+      - 'runtime-state.js'
       - 'soc-cti-console.css'
       - 'soc-triage-workspace.js'
       - 'soc-taxonomy-pivots.js'
       - 'soc-hybrid-workspace.js'
       - 'soc-evidence-drawer.js'
-      - 'auto-intel-engine.js'
-      - 'monetization.js'
-      - 'conversion-engine.js'
-      - 'revenue-cta-block.js'
-      - 'ai-monetization-engine.js'
-      - 'api/v1/intel.js'
-      - 'api/v1/customer/assurance.js'
-      - 'api/intel/**'
-      - 'workers/**'
-      - 'scripts/build-cloudflare-assets.js'
-      - 'scripts/build-cloudflare-assets.test.js'
+      - 'apple-touch-icon.png'
+      - 'brand-logo.svg'
+      - 'favicon.ico'
+      - 'favicon.svg'
+      - 'icon-192.png'
+      - 'icon-512.png'
+      - 'og-image.png'
+      - 'site.webmanifest'
+      - 'robots.txt'
+      - 'rss.xml'
+      - 'sitemap.xml'
+      - 'search-index.json'
+      - 'data/exploitation-velocity-index.json'
+      # Deploy configuration
       - 'wrangler.jsonc'
+      - 'package.json'
+      - 'package-lock.json'
       - '.github/workflows/cloudflare-production-deploy.yml'
       - '.github/workflows/production-drift-reconcile.yml'
   workflow_dispatch:
@@ -170,7 +255,24 @@ jobs:
           }
           trap rollback EXIT
 
-          npx wrangler deploy --config wrangler.jsonc
+          # Provenance: bind the Worker version to the exact commit and run.
+          npx wrangler deploy --config wrangler.jsonc \
+            --tag "git-${GITHUB_SHA::12}" \
+            --message "commit ${GITHUB_SHA} run ${GITHUB_RUN_ID}/${GITHUB_RUN_ATTEMPT} event ${GITHUB_EVENT_NAME}" \
+            | tee "$RUNNER_TEMP/wrangler-deploy.log"
+          # Never fail the (already successful) deploy over a log parse: the
+          # EXIT trap below would otherwise restore the legacy DNS record.
+          version_id="$(grep -oE 'Current Version ID: [0-9a-f-]+' "$RUNNER_TEMP/wrangler-deploy.log" | awk '{print $4}' | tail -1 || true)"
+          {
+            echo "### Production deploy provenance"
+            echo "| Field | Value |"
+            echo "|---|---|"
+            echo "| Commit | \`${GITHUB_SHA}\` |"
+            echo "| Worker version | \`${version_id:-unknown}\` |"
+            echo "| Workflow run | ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID} |"
+            echo "| Trigger | ${GITHUB_EVENT_NAME} |"
+            echo "| Deployed at (UTC) | $(date -u +%Y-%m-%dT%H:%M:%SZ) |"
+          } >> "$GITHUB_STEP_SUMMARY"
           rollback_needed=0
           trap - EXIT
 
