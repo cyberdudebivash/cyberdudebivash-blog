@@ -8,9 +8,9 @@
 //   - an authorized-but-uncaptured payment is acknowledged (202), not granted;
 //   - a Razorpay lookup outage fails closed (503), never trusts the client;
 //   - a client cannot choose the amount;
-//   - an expired local order is recovered only from server-set order notes
-//     whose amount matches the plan;
-//   - refunds are recorded exactly once.
+//   - an order this blog did not create (no local record) is never granted,
+//     whatever its Razorpay notes say (Sentinel APEX platform isolation);
+//   - non-premium refunds are logged only, never written.
 
 const mem = new Map();
 jest.mock('../../_lib/redis', () => ({
@@ -199,35 +199,26 @@ describe('signed webhook (payment.captured / order.paid)', () => {
     expect(auditLog).toHaveBeenCalledWith('RAZORPAY_WEBHOOK_PAYMENT_REJECTED', expect.objectContaining({ code: 'PAYMENT_AMOUNT_MISMATCH' }));
   });
 
-  test('expired local order is recovered from server-set order notes at the plan price', async () => {
-    mem.delete(`payment:rzp:order:${ORDER_ID}`);
-    razorpay.fetchOrder.mockResolvedValue({ id: ORDER_ID, amount: PRO_PAISE, currency: 'INR', notes: { email: EMAIL, planType: 'pro', platform: 'CYBERDUDEBIVASH_SENTINEL_APEX' } });
-    const r = await hook('payment.captured', goodPayment());
-    expect(r.statusCode).toBe(200);
-    expect(upgradeUserTier).toHaveBeenCalledWith(EMAIL, 'pro', expect.objectContaining({ transactionId: PAYMENT_ID }));
-    expect(mem.get(`payment:rzp:order:${ORDER_ID}`).status).toBe('paid');
-  });
-
   test.each([
-    ['notes from another platform', { email: EMAIL, planType: 'pro', platform: 'OTHER' }, PRO_PAISE],
-    ['order amount below plan price', { email: EMAIL, planType: 'pro', platform: 'CYBERDUDEBIVASH_SENTINEL_APEX' }, 100],
-    ['unknown plan in notes', { email: EMAIL, planType: 'platinum', platform: 'CYBERDUDEBIVASH_SENTINEL_APEX' }, PRO_PAISE],
-  ])('expired local order with %s is not granted', async (_n, notes, amount) => {
+    ['Sentinel APEX platform notes at the old blog plan price', { email: EMAIL, planType: 'pro', platform: 'CYBERDUDEBIVASH_SENTINEL_APEX' }],
+    ['notes from another platform', { email: EMAIL, planType: 'pro', platform: 'OTHER' }],
+    ['no notes', {}],
+  ])('an order with no local blog record (%s) is acknowledged and never granted', async (_n, notes) => {
     mem.delete(`payment:rzp:order:${ORDER_ID}`);
-    razorpay.fetchOrder.mockResolvedValue({ id: ORDER_ID, amount, currency: 'INR', notes });
-    // The payment itself carries the plan price, so only the order-notes
-    // checks (platform, plan, order amount) can stop this grant.
-    await hook('payment.captured', goodPayment());
+    const r = await hook('payment.captured', goodPayment({ notes }));
+    expect(r.statusCode).toBe(200);
     expect(upgradeUserTier).not.toHaveBeenCalled();
+    expect(razorpay.fetchOrder).not.toHaveBeenCalled(); // classification needs no external lookup
+    expect([...mem.keys()].filter(k => k.includes(PAYMENT_ID))).toEqual([]); // no writes
   });
 
-  test('API-plan refund is recorded once across redeliveries', async () => {
+  test('a refund for a payment that is not a blog premium order is logged only, never written', async () => {
     const refund = { refund: { entity: { id: 'rfnd_CONF000001', payment_id: PAYMENT_ID, amount: PRO_PAISE, currency: 'INR', status: 'processed' } } };
+    const before = new Map(mem);
     const a = await hook('refund.processed', goodPayment({ status: 'refunded' }), refund);
     expect(a.statusCode).toBe(200);
-    await hook('refund.processed', goodPayment({ status: 'refunded' }), refund);
-    const recorded = auditLog.mock.calls.filter(c => c[0] === 'RAZORPAY_REFUND_RECORDED');
-    expect(recorded).toHaveLength(1);
-    expect(recorded[0][1]).toMatchObject({ refundId: 'rfnd_CONF000001', paymentId: PAYMENT_ID });
+    expect(auditLog).not.toHaveBeenCalled();
+    expect(mem).toEqual(before);
+    expect(upgradeUserTier).not.toHaveBeenCalled();
   });
 });
