@@ -543,3 +543,69 @@ describe('committed production feed (data/ioc-feed.json)', () => {
     expect(JSON.parse(pub).items).toEqual([]);
   });
 });
+
+describe('feed cap — per-type balance (type_shares)', () => {
+  // Synthetic eligible set skewed like the 2026-10-01 live feed: many fresh
+  // URLs, fewer and older hashes. Ids encode type + rank for readability.
+  function skewed() {
+    const mk = (type, n, day) => Array.from({ length: n }, (_, i) => ({
+      id: `ioc:${type}:${String(i).padStart(4, '0')}`, type, status: 'ACTIVE', confidence: 'HIGH',
+      last_seen: `2026-09-${day}T${String(23 - (i % 24)).padStart(2, '0')}:00:00.000Z`,
+    }));
+    return [...mk('url', 900, 30), ...mk('domain', 60, 29), ...mk('ipv4', 120, 29), ...mk('sha256', 150, 28)];
+  }
+  const order = (a, b) => (b.last_seen || '').localeCompare(a.last_seen || '') || a.id.localeCompare(b.id);
+  const SHARES = CONFIG.type_shares;
+  const count = items => items.reduce((m, i) => { m[i.type] = (m[i.type] || 0) + 1; return m; }, {});
+
+  test('without shares the freshest type fills the whole cap (the defect)', () => {
+    const picked = store.selectBalanced(skewed().sort(order), 600, null);
+    expect(count(picked)).toEqual({ url: 600 });
+  });
+
+  test('with shares each type gets its quota; slots a type cannot use go to the best remaining records', () => {
+    const picked = store.selectBalanced(skewed().sort(order), 600, SHARES);
+    const c = count(picked);
+    expect(picked).toHaveLength(600);                 // cap always filled
+    expect(c.sha256).toBe(120);                       // floor(600 * 0.20)
+    expect(c.ipv4).toBe(90);                          // floor(600 * 0.15)
+    expect(c.domain).toBe(60);                        // only 60 exist (quota 120)
+    // ipv6/sha1/md5 absent: their 90 slots + domain's 60 unused go to the next-best records overall (URLs here).
+    expect(c.url).toBe(600 - 120 - 90 - 60);
+    expect(new Set(picked.map(i => i.id)).size).toBe(600);
+  });
+
+  test('within each type the best records are kept (quota takes the head of the type, not arbitrary ones)', () => {
+    const all = skewed().sort(order);
+    const picked = new Set(store.selectBalanced(all, 600, SHARES).map(i => i.id));
+    const hashes = all.filter(i => i.type === 'sha256');
+    expect(hashes.slice(0, 120).every(i => picked.has(i.id))).toBe(true);
+    expect(hashes.slice(120).some(i => picked.has(i.id))).toBe(false);
+  });
+
+  test('deterministic, and smaller than cap returns everything', () => {
+    const a = store.selectBalanced(skewed().sort(order), 600, SHARES).map(i => i.id);
+    const b = store.selectBalanced(skewed().sort(order), 600, SHARES).map(i => i.id);
+    expect(a).toEqual(b);
+    expect(store.selectBalanced(skewed().slice(0, 10), 600, SHARES)).toHaveLength(10);
+  });
+
+  test('buildFeed applies the shares and keeps the feed in deterministic feed order', () => {
+    const st = store.emptyStore();
+    for (const e of skewed()) st.indicators[e.id] = { ...e, sources: [] };
+    const feed = store.buildFeed(st, CONFIG, {}, NOW);
+    expect(count(feed.items)).toEqual({ url: 330, domain: 60, ipv4: 90, sha256: 120 });
+    const ids = feed.items.map(i => i.id);
+    const resorted = [...feed.items].sort(order).map(i => i.id);
+    expect(ids).toEqual(resorted);
+  });
+
+  test('config validation: unknown type, negative share and sum > 1 are refused by the publication gate', () => {
+    expect(store.validateTypeShares(CONFIG.type_shares)).toEqual([]);
+    expect(store.validateTypeShares({ email: 0.1 })).toEqual(['type_shares: unknown type email']);
+    expect(store.validateTypeShares({ url: -0.1 })[0]).toMatch(/non-negative/);
+    expect(store.validateTypeShares({ url: 0.8, domain: 0.5 })[0]).toMatch(/exceeds 1/);
+    const { feed } = buildStoreAndFeed();
+    expect(store.validateFeed(feed, { ...CONFIG, type_shares: { url: 2 } }).join()).toMatch(/exceeds 1/);
+  });
+});

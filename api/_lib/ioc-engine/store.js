@@ -263,6 +263,47 @@ const FEED_FIELDS = ['id', 'stix_id', 'value', 'display_value', 'type', 'source'
 function pick(e) { return Object.fromEntries(FEED_FIELDS.map(k => [k, e[k] === undefined ? null : e[k]])); }
 
 /**
+ * Per-type allocation of the feed cap. Without it, one type with many fresh
+ * records (e.g. online URLs) fills the whole cap and pushes out older but
+ * still ACTIVE hashes. Pass 1 gives each type up to floor(cap * share) of its
+ * best records; pass 2 hands slots a type could not use to the best remaining
+ * records of any type, so the cap is never left unfilled. `eligible` must
+ * already be in feed order; the result is deterministic.
+ */
+function selectBalanced(eligible, cap, shares) {
+  if (!shares || typeof shares !== 'object') return eligible.slice(0, cap);
+  const taken = new Set();
+  const used = {};
+  for (const e of eligible) {
+    const quota = Math.floor(cap * (Number(shares[e.type]) || 0));
+    if ((used[e.type] || 0) < quota && taken.size < cap) {
+      taken.add(e);
+      used[e.type] = (used[e.type] || 0) + 1;
+    }
+  }
+  for (const e of eligible) {
+    if (taken.size >= cap) break;
+    taken.add(e);
+  }
+  return [...taken];
+}
+
+/** Config check: shares must name known types, be non-negative and sum to <= 1. */
+function validateTypeShares(shares) {
+  if (shares == null) return [];
+  if (typeof shares !== 'object' || Array.isArray(shares)) return ['type_shares must be an object'];
+  const problems = [];
+  let sum = 0;
+  for (const [t, v] of Object.entries(shares)) {
+    if (!TYPES.includes(t)) problems.push(`type_shares: unknown type ${t}`);
+    if (!(Number(v) >= 0)) problems.push(`type_shares: ${t} must be a non-negative number`);
+    sum += Number(v) || 0;
+  }
+  if (sum > 1 + 1e-9) problems.push(`type_shares sum ${sum} exceeds 1`);
+  return problems;
+}
+
+/**
  * Build the customer feed. Only ACTIVE/STALE indicators at or above the
  * publication threshold are published. `sourceRuns` is this run's per-source
  * outcome; status is "healthy" only when every enabled source succeeded or
@@ -273,12 +314,13 @@ function buildFeed(store, config, sourceRuns, nowIso) {
   const statusRank = { ACTIVE: 0, STALE: 1 };
   const eligible = Object.values(store.indicators)
     .filter(e => (e.status === 'ACTIVE' || e.status === 'STALE') && levelIndex(e.confidence) >= threshold);
-  eligible.sort((a, b) =>
+  const order = (a, b) =>
     statusRank[a.status] - statusRank[b.status] ||
     levelIndex(b.confidence) - levelIndex(a.confidence) ||
     (b.last_seen || '').localeCompare(a.last_seen || '') ||
-    a.id.localeCompare(b.id));
-  const items = eligible.slice(0, Number(config.feed_cap) || 600).map(pick);
+    a.id.localeCompare(b.id);
+  eligible.sort(order);
+  const items = selectBalanced(eligible, Number(config.feed_cap) || 600, config.type_shares).sort(order).map(pick);
 
   const enabled = config.sources.filter(s => s.enabled);
   const okStates = new Set(['ok', 'not_modified']);
@@ -350,6 +392,7 @@ function validateFeed(feed, config) {
     if (!/^[0-9a-f]{64}$/.test(i.provenance_hash || '')) problems.push(`${where}: provenance_hash`);
   }
   if (feed.items.length > (Number(config.feed_cap) || 600)) problems.push('feed exceeds cap');
+  problems.push(...validateTypeShares(config.type_shares));
   return problems;
 }
 
@@ -393,5 +436,5 @@ function writeJsonAtomic(file, data, pretty = false) {
 module.exports = {
   SCHEMA_VERSION, CONFIDENCE_LEVELS, CONFIDENCE_SCORE, STATUSES, AGING_DAYS, STORE_CAP, STIX_NAMESPACE,
   emptyStore, indicatorId, indicatorKey, uuidv5, observationLevel, lifecycle, scoreConfidence, recommendedAction,
-  mergeCandidates, refreshDerived, buildFeed, validateFeed, buildPublicSummary, readJsonFile, writeJsonAtomic,
+  mergeCandidates, refreshDerived, selectBalanced, validateTypeShares, buildFeed, validateFeed, buildPublicSummary, readJsonFile, writeJsonAtomic,
 };
