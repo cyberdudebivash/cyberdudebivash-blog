@@ -17,7 +17,32 @@
 
 Before #4175 the live feed was the pre-merge 07:00 build: url 459, ipv4 139, domain 1, sha256 1.
 
-### This tranche (repository; pending merge and deploy)
+### #315 in production: **PASS**
+
+#315 merged as `d0795862` and was deployed by `cloudflare-production-deploy.yml` run #122 (push, success; all four in-workflow live certification steps passed).
+
+| Field | Value |
+|---|---|
+| Production Worker version | `449462cd-f8e9-4631-a9d1-299f916a6a82`, deployed 2026-10-01T11:24:23Z |
+| Rollback identity | `3c4705d2-f643-4e8e-b918-dd3ced7a00ac` (run #121, the pre-#315 version) |
+| Worker upload | 3,410.65 KiB gzip (same bindings, cron unchanged) |
+
+| Check (live, read-only, 11:24–11:26Z) | Expected | Actual | Result |
+|---|---|---|---|
+| `api.html` seat claim | "Seats: 5 included" gone; "1 account key" shown | 0 seat-count hits; "1 account key" present | PASS |
+| `pricing.html` seat claim | "Multi-seat SOC access" gone | gone; only the pre-existing disclaimers "multi-seat access not yet available" remain | PASS |
+| `live-feed-widget.js` | 15 min polling | `REFRESH_MS: 15 * 60 * 1000` | PASS |
+| `POST billing?action=create-intent` | 410 | 410 | PASS |
+| `POST billing?action=create-razorpay-order` | 503 with email fallback | 503 `RAZORPAY_UNAVAILABLE`, email fallback | PASS |
+| `POST billing?action=verify-razorpay-payment` (no secrets) | fail closed, no grant | 503 `RAZORPAY_UNAVAILABLE` | PASS |
+| Razorpay webhook | rejects unsigned / forged | 400 / 400 | PASS |
+| Premium catalog | 200 | 200, `count: 0` (publication awaits `ANALYST_KEYS`) | PASS |
+| Premium download / publish without credentials | 401 | 401 / 401 | PASS |
+| Public IOC status | healthy, 600, balanced, no indicator values | healthy, 600: url 224, ipv4 136, domain 120, sha256 120; `items: []` | PASS |
+
+Revenue remains **email-only** until the operator sets the Razorpay secrets (runbook §3) and publishes the premium catalog (runbook §9).
+
+### This tranche (repository, as merged in #315)
 
 - **Razorpay:**
   - server-side payment confirmation before any grant (captured, order, plan amount, currency);
