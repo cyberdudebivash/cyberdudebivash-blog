@@ -91,45 +91,19 @@ describe('list-subscriptions', () => {
   });
 });
 
-describe('create-subscription', () => {
-  test('unauthenticated requests are rejected before any subscription is created', async () => {
-    mockUnauthenticated();
+describe('create-subscription (retired: plans are sold on the Sentinel APEX platform)', () => {
+  test.each([
+    ['unauthenticated', () => mockUnauthenticated()],
+    ['authenticated', () => {}],
+  ])('%s callers get 410 PLAN_CHECKOUT_MOVED and no subscription is created', async (_label, setup) => {
+    setup();
     const spy = jest.spyOn(subLib, 'createSubscription');
-
     const res = mockRes();
-    await handler(mockReq('POST', 'create-subscription', { body: { plan_type: 'pro', period: 'monthly' } }), res);
-
-    expect(res.statusCode).toBe(401);
+    await handler(mockReq('POST', 'create-subscription', { body: { plan_type: 'team', period: 'monthly' } }), res);
     expect(spy).not.toHaveBeenCalled();
-  });
-
-  test('creates the subscription under the authenticated caller\'s own email', async () => {
-    const spy = jest.spyOn(subLib, 'createSubscription').mockResolvedValue({
-      subscription_id: 'sub_new', status: 'created', amount: 149900, currency: 'INR',
-      period: 'monthly', next_billing_at: 1234567890, created_at: '2026-08-21T00:00:00Z',
-    });
-    jest.spyOn(subLib, 'storeSubscriptionRecord').mockResolvedValue(true);
-
-    const res = mockRes();
-    await handler(mockReq('POST', 'create-subscription', {
-      body: { plan_type: 'pro', period: 'monthly' },
-    }), res);
-
-    expect(spy).toHaveBeenCalledWith(razorpay, 'customer@example.com', 'pro', expect.any(Object), { period: 'monthly' });
-    expect(res.statusCode).toBe(201);
-  });
-
-  test('a client-supplied email field is rejected outright by the field whitelist, not silently accepted or ignored', async () => {
-    const spy = jest.spyOn(subLib, 'createSubscription');
-
-    const res = mockRes();
-    await handler(mockReq('POST', 'create-subscription', {
-      body: { email: 'attacker-supplied@example.com', plan_type: 'pro', period: 'monthly' },
-    }), res);
-
-    expect(spy).not.toHaveBeenCalled();
-    expect(res.statusCode).toBe(400);
-    expect(res.body.error.code).toBe('INVALID_FIELDS');
+    expect(res.statusCode).toBe(410);
+    expect(res.body.error.code).toBe('PLAN_CHECKOUT_MOVED');
+    expect(res.body.checkout_url).toMatch(/^https:\/\/intel\.cyberdudebivash\.com\/upgrade\.html\?plan=enterprise&/);
   });
 });
 

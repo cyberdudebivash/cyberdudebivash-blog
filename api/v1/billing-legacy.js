@@ -13,8 +13,10 @@
  *                                      retirement (24h TTL); remove after the pending review queue
  *                                      is empty (see docs/release certification)
  *  action=status                 GET   Status of a submitted manual payment (kept for in-flight reviews)
- *  action=create-razorpay-order  POST  Create a Razorpay Order for instant checkout
- *  action=verify-razorpay-payment POST Verify checkout.js signature, instant tier upgrade
+ *  action=create-razorpay-order  POST  RETIRED 2026-10-01 -> 410 PLAN_CHECKOUT_MOVED (plans are sold
+ *                                      on the Sentinel APEX platform checkout; see payment-utils)
+ *  action=verify-razorpay-payment POST DEPRECATED: completes plan orders created before retirement
+ *  action=create-subscription    POST  RETIRED 2026-10-01 -> 410 PLAN_CHECKOUT_MOVED
  *
  * Backward-compat: vercel.json rewrites old /api/v1/billing/* paths here.
  */
@@ -30,7 +32,7 @@ const {
   MIN_UTR_LENGTH, MAX_UTR_LENGTH,
   INTENT_TTL_SECONDS, SUBMISSION_TTL_SECONDS,
   generateIntentId, sanitize, validateEmail, normalizeEmail, emailKey,
-  now, parseHash, ok, fail, parseBody, auditLog, upgradeUserTier, checkPlanPayment,
+  now, parseHash, ok, fail, parseBody, auditLog, upgradeUserTier, checkPlanPayment, intelUpgradeUrl,
 } = require('../_lib/payment-utils');
 const sec = require('../_lib/security');
 const { getProduct } = require('../_lib/products-catalog');
@@ -104,13 +106,13 @@ module.exports = async (req, res) => {
    24h and can still be completed via action=submit-payment.
 ═══════════════════════════════════════════════════════════════ */
 const MANUAL_PAYMENT_RETIRED_MESSAGE =
-  'Manual UPI/bank-transfer payments were retired on 2026-10-01. Pay through online checkout ' +
-  '(POST /api/v1/billing?action=create-razorpay-order) or email bivash@cyberdudebivash.com to purchase.';
+  'Manual UPI/bank-transfer payments were retired on 2026-10-01. Buy plans on the CYBERDUDEBIVASH ' +
+  'SENTINEL APEX platform (checkout_url) or email bivash@cyberdudebivash.com to purchase.';
 
 async function handleCreateIntent(req, res) {
   if (req.method !== 'POST') return fail(res, 405, 'METHOD_NOT_ALLOWED', 'POST required');
   await auditLog('MANUAL_INTENT_REJECTED_RETIRED', { ip: sec.getIp(req) });
-  return fail(res, 410, 'MANUAL_PAYMENT_RETIRED', MANUAL_PAYMENT_RETIRED_MESSAGE);
+  return fail(res, 410, 'MANUAL_PAYMENT_RETIRED', MANUAL_PAYMENT_RETIRED_MESSAGE, { checkout_url: intelUpgradeUrl('', 'api') });
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -336,93 +338,42 @@ async function handlePlans(req, res) {
     };
   }
   res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=3600');
-  return ok(res, { plans: publicPlans });
+  // Retained for existing integrations; these blog plans are no longer sold.
+  return ok(res, {
+    plans: publicPlans,
+    on_sale: false,
+    checkout_url: intelUpgradeUrl('', 'api'),
+    notice: 'Blog API plans are no longer sold. Plans and current prices: Sentinel APEX platform checkout_url.',
+  });
+}
+
+/* Shared 410 for every retired blog plan-purchase action. */
+async function planCheckoutMoved(req, res) {
+  let planType = '';
+  try {
+    const body = await parseBody(req);
+    planType = sanitize(String((body && body.plan_type) || '').toLowerCase(), 20);
+  } catch (_) { /* no body: link to the platform checkout without a plan */ }
+  const checkoutUrl = intelUpgradeUrl(PLANS[planType] ? planType : '', 'api');
+  await auditLog('PLAN_CHECKOUT_REDIRECTED', { plan: PLANS[planType] ? planType : null, ip: sec.getIp(req) });
+  return fail(res, 410, 'PLAN_CHECKOUT_MOVED',
+    'Plans are now purchased on the CYBERDUDEBIVASH SENTINEL APEX platform. Continue at checkout_url.',
+    { checkout_url: checkoutUrl });
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   POST /api/v1/billing?action=create-razorpay-order
-   Create a Razorpay Order for instant, automated checkout (UPI/cards/
-   netbanking/wallets via Razorpay's checkout.js). No admin review needed —
-   a valid post-payment signature (action=verify-razorpay-payment) is itself
-   cryptographic proof of payment.
-   Body: { email, plan_type: "starter"|"pro"|"team"|"enterprise" }
+   POST /api/v1/billing?action=create-razorpay-order  — RETIRED 2026-10-01
+   API plans are sold only on the Sentinel APEX platform checkout (owner
+   decision). New plan orders are refused with an explicit 410 that carries
+   the checkout URL for the nearest platform plan. Orders created before
+   retirement still complete via action=verify-razorpay-payment and the
+   webhook. Premium reports are unaffected (premium-intelligence checkout).
 ═══════════════════════════════════════════════════════════════ */
 const RAZORPAY_ID_RE = /^[a-zA-Z0-9_]{6,64}$/;
 
 async function handleCreateRazorpayOrder(req, res) {
   if (req.method !== 'POST') return fail(res, 405, 'METHOD_NOT_ALLOWED', 'POST required');
-
-  if (!razorpay.configured()) {
-    return fail(res, 503, 'RAZORPAY_UNAVAILABLE',
-      'Online checkout is temporarily unavailable. Email bivash@cyberdudebivash.com to purchase.');
-  }
-
-  const ip   = sec.getIp(req);
-  const body = await parseBody(req);
-
-  const whitelistErr = sec.assertFieldWhitelist(body, FIELDS['create-razorpay-order']);
-  if (whitelistErr) return fail(res, 400, 'INVALID_FIELDS', whitelistErr);
-
-  const email    = normalizeEmail(body.email);
-  const planType = sanitize(String(body.plan_type || '').toLowerCase(), 20);
-
-  if (!sec.validateEmail(email)) {
-    return fail(res, 400, 'INVALID_EMAIL', 'A valid email address is required.');
-  }
-  if (!sec.validatePlan(planType)) {
-    return fail(res, 400, 'INVALID_PLAN', 'plan_type must be "starter", "pro", "team" or "enterprise"');
-  }
-
-  /* Same daily intent-creation budget as the manual flow (5/day/IP) */
-  if (!(await sec.intentIpRateLimit(req, res))) return;
-
-  const plan          = PLANS[planType];
-  const amountInPaise = plan.amount * 100; // Razorpay requires the smallest currency unit
-
-  try {
-    const receipt = generateIntentId();
-    const order = await razorpay.createOrder(amountInPaise, plan.currency, receipt, {
-      email, planType, platform: 'CYBERDUDEBIVASH_SENTINEL_APEX',
-    });
-
-    await redis.hmset(`payment:rzp:order:${order.id}`, {
-      orderId:   order.id,
-      email,
-      planType,
-      amount:    String(plan.amount),
-      currency:  plan.currency,
-      status:    'created',
-      createdAt: now(),
-      ip,
-    });
-    await redis.expire(`payment:rzp:order:${order.id}`, INTENT_TTL_SECONDS);
-    /* Reconciliation index — lets admin?action=razorpay-orders enumerate
-       orders even after the underlying hash expires or is overwritten. */
-    await redis.zadd('payment:rzp:orders', Date.now(), order.id);
-
-    await auditLog('RAZORPAY_ORDER_CREATED', { orderId: order.id, email, planType, amount: plan.amount, ip });
-
-    return ok(res, {
-      message: 'Razorpay order created. Complete checkout then POST action=verify-razorpay-payment.',
-      order: {
-        order_id: order.id,
-        amount:   amountInPaise,
-        currency: plan.currency,
-        key_id:   razorpay.KEY_ID, // safe to expose — required by checkout.js
-        plan_type: planType,
-        plan_label: plan.label,
-        email,
-      },
-      next_step: {
-        endpoint: 'POST /api/v1/billing?action=verify-razorpay-payment',
-        payload: { email, plan_type: planType, razorpay_order_id: order.id, razorpay_payment_id: '<from checkout.js>', razorpay_signature: '<from checkout.js>' },
-      },
-      support: 'bivash@cyberdudebivash.com',
-    }, 201);
-
-  } catch (e) {
-    return fail(res, 500, 'RAZORPAY_ORDER_FAILED', sec.safeError(e, 'Could not create Razorpay order. Please retry.'));
-  }
+  return planCheckoutMoved(req, res);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -804,78 +755,15 @@ async function handleVerifyProductPayment(req, res) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   POST /api/v1/billing?action=create-subscription
-   Set up recurring billing (monthly or annual subscription) for the
-   authenticated caller. Requires an API key -- unlike create-intent/
-   create-razorpay-order (a brand-new customer's very first payment, who
-   has no key yet), recurring billing is for an existing account.
-   Body: { plan_type: "starter"|"pro"|"team"|"enterprise", period: "monthly"|"yearly" }
+   POST /api/v1/billing?action=create-subscription  — RETIRED 2026-10-01
+   Recurring plan billing moved to the Sentinel APEX platform checkout,
+   which owns subscriptions. Returns 410 PLAN_CHECKOUT_MOVED with the
+   checkout URL. Existing subscriptions are still listed and managed via
+   action=list-subscriptions / action=manage-subscription.
 ═══════════════════════════════════════════════════════════════ */
 async function handleCreateSubscription(req, res) {
   if (req.method !== 'POST') return fail(res, 405, 'METHOD_NOT_ALLOWED', 'POST required');
-
-  if (!razorpay.configured()) {
-    return fail(res, 503, 'RAZORPAY_UNAVAILABLE', 'Subscriptions not configured yet.');
-  }
-
-  const user = await authenticate(req, res);
-  if (!user) return;
-
-  const subLib = require('../_lib/subscriptions');
-  const ip   = sec.getIp(req);
-  let body = {};
-  try {
-    body = await parseBody(req);
-  } catch (_) {}
-
-  const whitelistErr = sec.assertFieldWhitelist(body, FIELDS['create-subscription']);
-  if (whitelistErr) return fail(res, 400, 'INVALID_FIELDS', whitelistErr);
-
-  const email    = normalizeEmail(user.email);
-  const planType = sanitize(String(body.plan_type || '').toLowerCase(), 20);
-  const period   = sanitize(String(body.period || 'monthly').toLowerCase(), 10);
-
-  if (!sec.validateEmail(email)) {
-    return fail(res, 400, 'INVALID_EMAIL', 'A valid email address is required.');
-  }
-  if (!sec.validatePlan(planType)) {
-    return fail(res, 400, 'INVALID_PLAN', 'plan_type must be "starter", "pro", "team" or "enterprise"');
-  }
-  if (!['monthly', 'yearly'].includes(period)) {
-    return fail(res, 400, 'INVALID_PERIOD', 'period must be "monthly" or "yearly"');
-  }
-
-  if (!(await sec.intentIpRateLimit(req, res))) return;
-
-  const plan = PLANS[planType];
-
-  try {
-    const subscription = await subLib.createSubscription(razorpay, email, planType, plan, { period });
-
-    await subLib.storeSubscriptionRecord(redis, email, subscription);
-
-    await auditLog('SUBSCRIPTION_CREATED', {
-      email, planType, period, subscriptionId: subscription.subscription_id, ip,
-    });
-
-    return ok(res, {
-      message: 'Subscription created. Complete first payment to activate.',
-      subscription: {
-        subscription_id: subscription.subscription_id,
-        status: subscription.status,
-        plan_type: planType,
-        period,
-        amount: subscription.amount,
-        currency: subscription.currency,
-        next_billing_at: subscription.next_billing_at,
-        created_at: subscription.created_at,
-      },
-      support: 'bivash@cyberdudebivash.com',
-    }, 201);
-
-  } catch (e) {
-    return fail(res, 500, 'SUBSCRIPTION_FAILED', sec.safeError(e, 'Could not create subscription. Please retry.'));
-  }
+  return planCheckoutMoved(req, res);
 }
 
 /* ═══════════════════════════════════════════════════════════════

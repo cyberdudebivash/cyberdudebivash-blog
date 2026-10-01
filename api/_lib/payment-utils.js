@@ -51,6 +51,29 @@ const PLANS = {
   },
 };
 
+/* ─── PLAN CHECKOUT LOCATION ─────────────────────────────────── */
+// Owner decision 2026-10-01: API plans are sold only through the Sentinel
+// APEX platform checkout (intel.cyberdudebivash.com/upgrade.html), which
+// owns plan prices (/api/pricing there), subscriptions and API keys. The
+// blog no longer creates plan orders or subscriptions; PLANS above remains
+// the record of what existing blog customers bought and still drives
+// in-flight order verification.
+const INTEL_UPGRADE_URL = 'https://intel.cyberdudebivash.com/upgrade.html';
+// Nearest Sentinel APEX plan for a retired blog plan name. Unknown names get
+// no plan parameter, which the intel checkout resolves to the free tier
+// (it never upgrades a buyer to a paid plan by default).
+const INTEL_PLAN_FOR = { starter: 'pro', pro: 'pro', team: 'enterprise', enterprise: 'enterprise', mssp: 'mssp' };
+
+function intelUpgradeUrl(planType, medium = 'api') {
+  const params = new URLSearchParams();
+  const plan = INTEL_PLAN_FOR[String(planType || '').toLowerCase()];
+  if (plan) params.set('plan', plan);
+  params.set('utm_source', 'blog');
+  params.set('utm_medium', String(medium).replace(/[^a-z0-9-]/gi, '').slice(0, 30) || 'api');
+  params.set('utm_campaign', 'plan-checkout');
+  return `${INTEL_UPGRADE_URL}?${params.toString()}`;
+}
+
 /* ─── PAYMENT INSTRUCTIONS ───────────────────────────────────── */
 // DEPRECATED 2026-10-01: manual UPI/bank transfer is retired and no API
 // response serves these details any more (billing action=create-intent
@@ -313,6 +336,9 @@ module.exports = {
   auditLog,
   upgradeUserTier,
   checkPlanPayment,
+  INTEL_UPGRADE_URL,
+  INTEL_PLAN_FOR,
+  intelUpgradeUrl,
   cors,
   ok,
   fail,

@@ -164,16 +164,23 @@ describe('checkout callback (verify-razorpay-payment)', () => {
   });
 });
 
-describe('order creation: amount is server-authoritative', () => {
-  test('a client-supplied amount is rejected; the order uses the plan price', async () => {
+describe('plan order creation moved to the Sentinel APEX platform checkout', () => {
+  test('no plan order is ever created on the blog; the 410 points to the nearest platform plan', async () => {
     jest.spyOn(razorpay, 'createOrder').mockResolvedValue({ id: 'order_NEW0000001' });
     const send = async body => { const r = res(); await billing({ method: 'POST', url: '/api/v1/billing', headers: {}, query: { action: 'create-razorpay-order' }, body }, r); return r; };
+    for (const [plan, intelPlan] of [['starter', 'pro'], ['pro', 'pro'], ['team', 'enterprise'], ['enterprise', 'enterprise']]) {
+      const r = await send({ email: EMAIL, plan_type: plan });
+      expect(r.statusCode).toBe(410);
+      expect(r.body.error.code).toBe('PLAN_CHECKOUT_MOVED');
+      const url = new URL(r.body.checkout_url);
+      expect(url.origin + url.pathname).toBe('https://intel.cyberdudebivash.com/upgrade.html');
+      expect(url.searchParams.get('plan')).toBe(intelPlan);
+    }
     const tampered = await send({ email: EMAIL, plan_type: 'enterprise', amount: 1 });
-    expect(tampered.statusCode).toBe(400);
+    expect(tampered.statusCode).toBe(410);
+    const unknown = await send({ email: EMAIL, plan_type: 'platinum' });
+    expect(new URL(unknown.body.checkout_url).searchParams.has('plan')).toBe(false); // intel resolves no plan to free
     expect(razorpay.createOrder).not.toHaveBeenCalled();
-    const okRes = await send({ email: EMAIL, plan_type: 'enterprise' });
-    expect(okRes.statusCode).toBe(201);
-    expect(razorpay.createOrder).toHaveBeenCalledWith(PLANS.enterprise.amount * 100, PLANS.enterprise.currency, expect.any(String), expect.objectContaining({ planType: 'enterprise', email: EMAIL }));
   });
 });
 
