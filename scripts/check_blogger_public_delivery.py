@@ -58,6 +58,8 @@ def retry_delay(value, attempt, now=None):
 
 
 def fetch(url, endpoint="public", attempts=3, max_retry_after=60):
+    attempts = max(1, int(attempts))
+    max_retry_after = max(1, int(max_retry_after))
     for attempt in range(1, attempts + 1):
         request = Request(url, headers={"Cache-Control": "no-cache", "User-Agent": "CDB-Public-Delivery-Monitor/1.0"})
         try:
@@ -74,12 +76,12 @@ def fetch(url, endpoint="public", attempts=3, max_retry_after=60):
             exc.close()
             if status not in (429, 502, 503, 504):
                 raise ProbeTransportError(endpoint, "http_error", attempt, status) from None
-            if attempt == 3 or delay > 60:
-                reason = "retry_after_exceeds_budget" if delay > 60 else "retries_exhausted"
+            if attempt == attempts or delay > max_retry_after:
+                reason = "retry_after_exceeds_budget" if delay > max_retry_after else "retries_exhausted"
                 raise ProbeTransportError(endpoint, reason, attempt, status) from None
             time.sleep(delay)
         except (URLError, TimeoutError) as exc:
-            if attempt == 3:
+            if attempt == attempts:
                 raise ProbeTransportError(endpoint, "network_retries_exhausted", attempt) from None
             time.sleep(5 * (2 ** (attempt - 1)))
 
@@ -102,30 +104,42 @@ def evaluate(feed, desktop, mobile, now=None):
         raise ValueError("invalid_public_permalink")
     result = evaluate_blogger_freshness({"posts": [{"published_at": newest["published"]["$t"]}]}, now=now)
     result.update({"post_id": newest.get("id", {}).get("$t"), "permalink": post_url, "checked_at": (now or datetime.now(timezone.utc)).isoformat()})
-    link_defects = []
+    visibility_defects = []
     for label, document in (("desktop", desktop), ("mobile", mobile)):
         links = Links()
         links.feed(document)
         visible = url.path in links.paths
         result[label + "_linked"] = visible
         if not visible:
-            link_defects.append(label + "_missing_latest_permalink")
-    result["defects"].extend(link_defects)
-    # A delivery defect cannot be repaired safely by repeatedly publishing.
+            defect = label + "_missing_latest_permalink"
+            visibility_defects.append(defect)
+            result["defects"].append(defect)
+    # A public-delivery/linkage defect is distinct from publication staleness.
+    # Preserve BLOGGER_STALE/exit=2 when the only problem is freshness so the
+    # controlled recovery workflow can act on the correct state. Only actual
+    # feed/homepage linkage defects are converted to a probe-integrity failure.
     result["recovery_required"] = False
-    # Only a missing homepage link is a delivery error; freshness defects
-    # (e.g. publication_count_below_slo) keep the freshness exit code.
-    if link_defects:
+    if visibility_defects:
         result["status"] = "BLOGGER_PUBLIC_DELIVERY_ERROR"
         result["exit_code"] = 1
     return result
 
 
 def main():
-    argparse.ArgumentParser(description=__doc__).parse_args()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--attempts", type=int, default=3, help="Maximum attempts per public endpoint")
+    args = parser.parse_args()
     try:
-        feed = json.loads(fetch(BASE + "/feeds/posts/summary?alt=json&max-results=5&orderby=published", "feed"))
-        result = evaluate(feed, fetch(BASE + "/", "desktop"), fetch(BASE + "/?m=1", "mobile"))
+        feed = json.loads(fetch(
+            BASE + "/feeds/posts/summary?alt=json&max-results=5&orderby=published",
+            "feed",
+            attempts=args.attempts,
+        ))
+        result = evaluate(
+            feed,
+            fetch(BASE + "/", "desktop", attempts=args.attempts),
+            fetch(BASE + "/?m=1", "mobile", attempts=args.attempts),
+        )
     except ProbeTransportError as exc:
         result = {"status": "BLOGGER_PUBLIC_RATE_LIMITED" if exc.http_status == 429 else "BLOGGER_PUBLIC_PROBE_ERROR",
                   "exit_code": 1, "recovery_required": False, "endpoint": exc.endpoint,
@@ -138,4 +152,3 @@ def main():
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
