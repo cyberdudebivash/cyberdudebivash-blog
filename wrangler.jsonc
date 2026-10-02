@@ -55,6 +55,17 @@
     }
   ],
 
+  // Sentinel APEX plan entitlement (premium reports): the blog asks the
+  // existing sentinel-apex-gateway Worker's /api/auth/validate, which applies
+  // the platform's own key, revocation and subscription checks. A binding to
+  // an existing Worker: no new Cloudflare resource, no shared secret.
+  "services": [
+    {
+      "binding": "SENTINEL_GATEWAY",
+      "service": "sentinel-apex-gateway"
+    }
+  ],
+
   "triggers": {
     "crons": ["*/30 * * * *"]
   }

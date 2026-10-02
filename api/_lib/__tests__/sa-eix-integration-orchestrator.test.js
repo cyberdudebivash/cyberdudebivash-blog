@@ -357,7 +357,10 @@ describe('Sentinel APEX SA-EIX Integration Orchestrator', () => {
     const time2 = Date.now() - start2;
 
     expect(result2.cached).toBe(true);
-    expect(time2).toBeLessThanOrEqual(time1);
+    // Millisecond timings of a Map hit vs. a render can tie or invert by
+    // clock granularity; assert the cache hit itself instead.
+    expect(orchestrator.renderingMetrics.cachedReports).toBe(1);
+    expect(result1.cached).toBe(false);
   });
 
   // ==================== CUSTOM BRANDING TESTS ====================
