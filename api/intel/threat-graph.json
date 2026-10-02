@@ -1,15 +1,15 @@
 {
-  "generated": "2026-10-02T04:50:00.601Z",
+  "generated": "2026-10-02T08:32:18.617Z",
   "version": "1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX v4.0",
   "stats": {
-    "total_nodes": 15013,
+    "total_nodes": 15017,
     "actors": 8,
-    "cves": 6706,
-    "campaigns": 1487,
+    "cves": 6709,
+    "campaigns": 1488,
     "malware": 0,
     "iocs": 911,
-    "edges": 4222
+    "edges": 4223
   },
   "nodes": {
     "actor:lockbit": {
@@ -282000,18 +282000,18 @@
     "CVE-2026-104286": {
       "id": "CVE-2026-104286",
       "type": "CVE",
-      "name": "CVE-2026-104286 - Fortinet FortiMail Path Traversal Vulnerability",
+      "name": "Fortinet warns of critical FortiMail flaw exploited in zero-day attacks",
       "attributes": {
-        "cvss": 0,
-        "threat_level": "LOW",
-        "priority_score": 26,
+        "cvss": 9.8,
+        "threat_level": "HIGH",
+        "priority_score": 79,
         "exploited": true,
         "cisa_kev": false,
         "ransomware": false,
         "vendor": "",
         "product": "",
-        "published": "2026-10-01",
-        "type": "CVE_REPORT"
+        "published": "2026-10-02",
+        "type": "ZERO_DAY"
       },
       "connections": []
     },
@@ -282446,6 +282446,80 @@
         "type": "RANSOMWARE"
       },
       "connections": []
+    },
+    "CVE-2026-10026": {
+      "id": "CVE-2026-10026",
+      "type": "CVE",
+      "name": "CVE-2026-10026 - CTX Feed Pro <= 7.6.12 - Authenticated (Administrator+) Remote Code Execution",
+      "attributes": {
+        "cvss": 9.8,
+        "threat_level": "MEDIUM",
+        "priority_score": 51,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "",
+        "product": "",
+        "published": "2026-10-02",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-104120": {
+      "id": "CVE-2026-104120",
+      "type": "CVE",
+      "name": "CVE-2026-104120 - modelcontextprotocol mcp-server-fetch/mcp-server-everything Fetch Tool server.py fetch_url server-side request forgery",
+      "attributes": {
+        "cvss": 7.3,
+        "threat_level": "LOW",
+        "priority_score": 42,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "",
+        "product": "",
+        "published": "2026-10-02",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-104054": {
+      "id": "CVE-2026-104054",
+      "type": "CVE",
+      "name": "CVE-2026-104054 - calcom cal.diy PBAC Permission BookingAccessService.ts doesUserIdHaveAccessToBooking authorization",
+      "attributes": {
+        "cvss": 6.3,
+        "threat_level": "LOW",
+        "priority_score": 37,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "",
+        "product": "",
+        "published": "2026-10-02",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "campaign:cve-2026-104286": {
+      "id": "campaign:cve-2026-104286",
+      "type": "Campaign",
+      "name": "Fortinet VPN Exploitation Campaign",
+      "attributes": {
+        "severity": "HIGH",
+        "item_count": 1,
+        "first_seen": "2026-10-02",
+        "last_seen": "2026-10-02",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-104286 | 1 item(s) confirmed exploited in the wild"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-104286",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
     }
   },
   "edges": [
@@ -320623,6 +320697,15 @@
       "relationship": "exploits",
       "confidence": 0.85,
       "first_seen": "2026-10-01",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-104286→includes→CVE-2026-104286",
+      "source": "campaign:cve-2026-104286",
+      "target": "CVE-2026-104286",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-10-02",
       "sources": []
     }
   ]
