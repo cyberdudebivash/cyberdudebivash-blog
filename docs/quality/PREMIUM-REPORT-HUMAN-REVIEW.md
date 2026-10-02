@@ -2,6 +2,10 @@
 
 A premium report is sellable only after a **named human** approves the exact artifact. The approval is a ReviewRecord bound to the artifact's SHA-256. Automated gates prepare the report; they never approve it. No v2 report has been approved yet.
 
+> **Status 2026-10-01 (second review): all four v2 artifacts FAIL editorial review. Do not sign an approval for these bytes.** See "Review record 2026-10-01" below. The publisher now also enforces an editorial gate (`scripts/premium-editorial-gate.js`), so it refuses these artifacts even with an approval.
+
+> **Ray v3.0 (refreshed edition) is READY FOR HUMAN REVIEW** — see "Ray v3.0 review" at the end. It passes every automated gate; it still needs a named human approval before it can be published.
+
 ## What changed from v1 (identical evidence, customer-facing presentation)
 
 `reportx-canary/premium_reissue_v2.py` rebuilds each report from its original module. The evidence graph, claims, sources, metrics, detection logic and hypotheses are all unchanged; nothing was re-researched or invented. It then applies one explicit rewrite table:
@@ -77,3 +81,111 @@ For each product, the publisher:
 3. only then retires the superseded v1 product.
 
 Unchanged artifacts are not re-uploaded. Commit the four REVIEW-RECORD files as the audit record.
+
+## Review record 2026-10-01 (full read of all four v2 artifacts)
+
+This is the editorial pre-approval review: every line of each `bundle.rendered_text` was read, and key facts were re-checked against live primary sources on 2026-10-01. It is **not** a ReviewRecord. A ReviewRecord still has to be signed by a named human, and for these bytes it must not be.
+
+### Defects common to all four v2 artifacts (copy gate missed them)
+
+| Defect | Example in the customer text | Gate code |
+|---|---|---|
+| Evidence-graph internals | "via an explicit evidence_refs/source_refs chain" | `CUSTOMER_COPY_INTERNAL_TERMS` |
+| Internal claim IDs | "(evidence: c-ttp-impact)" in every recommendation | `CUSTOMER_COPY_INTERNAL_TERMS` |
+| References to material the buyer never receives | "in this bundle's `forecasts` field"; Ray: "Claim Ledger appendix" (no such appendix) | `CUSTOMER_COPY_INTERNAL_TERMS` |
+| Engineering file name | Ray: "per evidence_integrity.py's documented policy" | `CUSTOMER_COPY_INTERNAL_TERMS` |
+| Defensive filler | "Real, directly-sourced …", "a real, quantified data point" | reviewer (not gated) |
+| Evidence cut-off 2026-08-17, 45 days old | All four | `EVIDENCE_STALE` (30-day window) |
+
+### Per-report findings
+
+| Report | Material finding (FAIL) | Verified against |
+|---|---|---|
+| CVE-2025-62593 (Ray) | **Outdated central judgement.** The report argues "EPSS notably low (0.369%, 29.94th percentile) despite the KEV listing", and its forecast is "tempered by the currently low EPSS". The FIRST EPSS API on 2026-10-01 returns **0.62459 (99.17th percentile)**. CISA KEV now also lists `forensicTriage: Yes` (BOD 26-04 forensics triage requirements), which the report omits. | `api.first.org/data/v1/epss?cve=CVE-2025-62593`; CISA KEV JSON feed |
+| CVE-2025-62593 (Ray) | **Detection rule excludes the attack it describes.** The documented chain is DNS rebinding from the developer's own browser, so the malicious POST reaches Ray **from 127.0.0.1**. The rule's `filter_internal_client: src_ip 127.0.0.1/32` removes exactly those requests. It only catches remote job submission, yet the text claims it flags "the exact network-observable step common to every variant". | NVD description (developer tool; Firefox/Safari; DNS rebinding) |
+| CVE-2025-62593 (Ray) | Unsupported generalisation: "Ray … typically run on a developer's own workstation rather than as an internet-facing service", followed by an unsourced inference that RondoDox "broadened … into developer-tooling supply chains". RondoDox is an internet scanner; its attempt implies internet-exposed Ray. | Report's own sources |
+| CVE-2025-62593 (Ray) | Hunting section ties RondoDox scanner IPs to the DNS-rebinding chain (different delivery paths). It also tells buyers to fetch the IOCs from Bitsight, so the free source has more indicators than the paid report. | — |
+| DragonForce / Vermont XCenter | **Detection rule half non-functional.** `TargetFilename` is a file-event field, but the rule declares `logsource: process_creation`, so `selection_encrypted_extension` can never match. The title says "Ransom Note Pattern", but the rule matches an encrypted-file extension. | Sigma logsource taxonomy; `DETECTION_FIELD_LOGSOURCE_MISMATCH` |
+| Qilin / Spoonful of Comfort | "hospitality/specialty-gifting business": "specialty-gifting" appears in no source (the aggregator says "Hospitality"). | Appendix A |
+| MedusaLocker / Bija Industrie | "Seven gaps are explicitly unresolved", but eight are listed. | Report text |
+| All three ransomware reports | The victim content is one leak-site line (no sample, no confirmation). The actor content restates free public sources (MITRE ATT&CK pages, Wikipedia, CISA AA22-181A, the Blackpoint profile). MedusaLocker withholds the indicators that the free CISA advisory publishes. See the commercial test in `docs/audits/PREMIUM-REPORT-COMMERCIAL-CERTIFICATION.md`. | — |
+
+What held up: every quoted figure checked against Appendix A matches its excerpt. CVSS 9.4/8.8, KEV dates, CWE-94/352, the fixed version 2.52.0, and the Firefox/Safari prerequisite match NVD and KEV today. T1685 is a valid ATT&CK v18 technique (the MITRE S1242 page lists T1685 and T1685.005). Every hypothesis, unknown and maturity label (`SYNTAX_VALIDATED`) is stated honestly.
+
+### Verdicts
+
+| Report | Evidence | Editorial | Detection | Commercial | Decision |
+|---|---|---|---|---|---|
+| Ray | FAIL (outdated EPSS/KEV) | FAIL | FAIL | PASS once refreshed | **REQUEST CHANGES**: refresh to a v3 edition |
+| DragonForce | PASS (as of 08-17) | FAIL | FAIL | FAIL | **NOT_FOR_SALE** in this format |
+| Qilin | PASS (as of 08-17) | FAIL | PASS (commodity) | FAIL | **NOT_FOR_SALE** in this format |
+| MedusaLocker | PASS (as of 08-17) | FAIL | PASS (low confidence) | FAIL | **NOT_FOR_SALE** in this format |
+
+Recording a rejection keeps the decision auditable (run from `Sentinel-APEX/engine`):
+
+```bash
+python3 cli.py reportx-review request-changes ../../reportx-canary/exports/v2/sentinel-apex-vuln-cve-2025-62593-ray-export.json \
+  --reviewer "<Full Name>" --role "LEAD ANALYST" --comments "EPSS/KEV outdated; Sigma loopback filter excludes the DNS-rebinding path" \
+  --out ../../reportx-canary/exports/v2/sentinel-apex-vuln-cve-2025-62593-ray-REVIEW-RECORD.json
+```
+
+A `REQUEST_CHANGES` or `REJECT` record is refused by the certifier (`REVIEW_NOT_APPROVED`), so writing one can never publish anything.
+
+## Ray v3.0 review (refreshed edition, evidence cut-off 2026-10-01)
+
+**Artifact:** `reportx-canary/exports/v3/sentinel-apex-vuln-cve-2025-62593-ray-v3-export.json`
+- `bundle.rendered_text`: 43,661 bytes, about 5,980 words.
+- Reviewer pack: `…-REVIEWER-PACK.md`, diffed against v1.
+- Built by `reportx-canary/cve_2025_62593_ray_v3.py`; export with `premium_ray_v3.py`.
+
+| report_id | artifact SHA-256 to approve |
+|---|---|
+| `sentinel-apex-vuln-cve-2025-62593-ray-v3` | `036b02d8688d398c2195e7d18e00764e8da10ac34a39304e37a501c4764dd362` |
+
+### What was re-researched (not re-rendered)
+
+| v2 defect | v3 resolution | Primary source (archived 2026-10-01) |
+|---|---|---|
+| EPSS 0.369% "notably low" | EPSS trajectory: 0.00369 (08-17), 0.01015 (08-18), 0.16888 (08-24), 0.27290 (09-24), **0.62459 / p99.17 (09-25 to 10-01)**; no cause is attributed | FIRST EPSS API, 5 raw responses |
+| SSVC automatable=no | **automatable=yes** (NVD revision 2026-08-18) | NVD JSON |
+| KEV forensic triage omitted | forensicTriage: Yes, plus BOD 26-04 forensic triage steps (collect before patching) | KEV extraction (catalog 2026.09.30); CISA guidance (excerpt fingerprint, HTTP 403) |
+| Sigma rule excluded 127.0.0.1 | Rule 1 keys on what the fix rejects (browser User-Agent or any `Sec-Fetch-*` header). Rule 2 (DRAFT) flags a non-local `Host` (DNS rebinding). Rule 3 flags ShadowRay out-of-band reconnaissance on Ray nodes. All three parse in pySigma 1.5.1, with UUID ids. | Ray commit 70e7c72; WHATWG Fetch (`Sec-` and `Host` are forbidden headers); Oligo |
+| "Ray typically runs on a workstation" (unsourced) | Default bind `127.0.0.1:8265` is from source; a second path covers `--dashboard-host 0.0.0.0` dashboards | Ray 2.52.0 `ray_constants.py` |
+| Indicators deferred to Bitsight | 36 RondoDox addresses, the RondoDox User-Agent, and 20 ShadowRay 2.0 indicators. Each is defanged and dated, with blocking confidence. | Bitsight (2026-03-11), Oligo (2025-11-18) |
+| T1190 for the browser path | T1189 for the browser path; T1190 for exposed dashboards (MITRE C0045); post-exploitation techniques from C0045 | MITRE ATT&CK |
+| Two thin recommendations | Six prioritised actions, including `RAY_AUTH_MODE=token` (disabled by default) and credential rotation | Ray 2.52.0 source; Oligo |
+| Internal terms and dangling references | None (editorial gate: 0 findings) | — |
+
+### Automated pre-checks (all PASS)
+
+- 23-control gate: **23/23**, as of 2026-10-01.
+- Editorial gate: 0 internal terms; Sigma fields valid for their log source; evidence age 0 days.
+- pySigma 1.5.1: rule and condition parse for all three rules (the negative control with an undefined selection is rejected).
+- Deterministic rebuild from the archived raw sources: `tests/reportx_canary/test_ray_v3_edition.py` (fails if any archived byte changes).
+- Publisher, tested with a temp-file approval: `detail → publish-certified → detail → set-status RETIRED (cve-2025-62593-ray-canary)`.
+
+### For the reviewer to judge (not automatable)
+
+- **Key judgement 5.** "Patching alone does not secure a network-reachable dashboard." It rests on the fix diff, which only denies browser requests, and on `RAY_AUTH_MODE` being opt-in. Confirm you accept this as an analyst assessment.
+- **Rule 1** uses `cs-sec-fetch-*` field names, which depend on the log pipeline. The report says so; confirm the wording is clear enough for a buyer.
+- **The indicators are 7–16 months old.** They are marked LOW confidence for blocking and recommended for retrospective hunting only.
+- **The 30-day release window ends 2026-10-31** (`max_evidence_age_days`). After that the publisher refuses this artifact, and EPSS/KEV must be refreshed.
+
+### Approve (human step)
+
+From `Sentinel-APEX/engine`:
+
+```bash
+python3 cli.py reportx-review approve ../../reportx-canary/exports/v3/sentinel-apex-vuln-cve-2025-62593-ray-v3-export.json \
+  --reviewer "<Full Name>" --role "LEAD ANALYST" \
+  --out ../../reportx-canary/exports/v3/sentinel-apex-vuln-cve-2025-62593-ray-v3-REVIEW-RECORD.json
+```
+
+Then, from the repository root:
+
+```bash
+node scripts/publish-premium-reports.js --only PIR-VULN-CVE-2025-62593-RAY             # dry run: CERTIFIED
+PREMIUM_ANALYST_KEY=<analyst key> node scripts/publish-premium-reports.js --only PIR-VULN-CVE-2025-62593-RAY --publish
+```
+
+The publisher stores the v3 artifact in R2 and verifies it, writes the catalog row, and confirms the live SHA-256. Only then does it retire v1 Ray. Existing v1 buyers keep their entitlement.

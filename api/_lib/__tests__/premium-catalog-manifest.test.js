@@ -41,10 +41,15 @@ afterAll(() => { delete process.env.PREMIUM_COMMERCE_CURRENCIES; });
 const fs = require('fs');
 const os = require('os');
 
-// Customer-facing copy gate (mirrors INTERNAL_COPY in
-// reportx-canary/premium_reissue_v2.py). Scoped so legitimate intelligence
-// vocabulary ("proof sample", "Mimikatz module", "browser session") passes.
-const INTERNAL_COPY = /premium intelligence canary|\bcanar(?:y|ies)\b|this session|checked-in raw files|hand-typed|reportx|GENERIC_DEFENSIVE_READINESS|content_sha256|internal pipeline|test artifact|test-only|fixture|\bstaging\b|demo-only/i;
+// Customer-facing copy gate: the single definition the publisher enforces.
+const gate = require('../../../scripts/premium-editorial-gate');
+const { INTERNAL_COPY } = gate;
+const { evaluatePremiumCertification } = require('../premium-report-certification');
+const REVIEW_DATE = new Date('2026-10-01T00:00:00Z'); // human review of the v2 reissue
+const V2 = manifest.products.filter(p => p.version === '2.0');
+const V3 = manifest.products.filter(p => p.version === '3.0');
+const V1_HISTORY = manifest.history.filter(h => h.version === '1.0');
+const RAY_V2 = manifest.history.find(h => h.report_id === 'sentinel-apex-vuln-cve-2025-62593-ray');
 
 const readJson = rel => JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', '..', rel), 'utf8'));
 // Stand-in for the human step (`cli.py reportx-review approve`), written to a
@@ -59,6 +64,20 @@ function withReview(product, overrides = {}) {
   fs.writeFileSync(file, JSON.stringify(review));
   return { ...product, review: path.relative(path.join(__dirname, '..', '..', '..'), file) };
 }
+// The publish request for an approved product, built without the editorial
+// gate so the service and transport paths stay testable on their own.
+function certifiedBody(product) {
+  const reviewed = withReview(product);
+  const reportxExport = { ...readJson(reviewed.export), bundle: { ...readJson(reviewed.export).bundle, review: readJson(reviewed.review) } };
+  const certification = evaluatePremiumCertification(reportxExport);
+  return {
+    sku: product.sku, ok: certification.certified, reasons: certification.reasons, certification, supersedes: product.supersedes,
+    body: {
+      reportx_export: reportxExport, title: product.title, slug: product.slug, report_type: product.report_type,
+      summary: product.summary || '', price_minor: product.price_minor, currency: manifest.currency, filename: product.filename || product.slug,
+    },
+  };
+}
 
 describe('premium catalog manifest (schema 2: versioned)', () => {
   test('a small, deliberate catalog: 3–5 products, unique SKUs, slugs and report ids, INR, version 2.0', () => {
@@ -68,17 +87,19 @@ describe('premium catalog manifest (schema 2: versioned)', () => {
     for (const key of ['sku', 'slug', 'report_id']) expect(new Set(manifest.products.map(p => p[key])).size).toBe(manifest.products.length);
     expect(manifest.currency).toBe('INR');
     for (const p of manifest.products) {
-      expect(p.version).toBe('2.0');
+      expect(['2.0', '3.0']).toContain(p.version);
       expect(p.price_minor).toBe(199900); // operator decision 2026-10-01: INR 1,999
       expect(p.supersedes).toMatchObject({ version: '1.0' });
       expect(p.slug).not.toBe(p.supersedes.slug); // slugs are unique in D1 across versions
     }
   });
 
-  test.each(manifest.history.map(p => [p.sku, p]))('v1 %s (live today) still certifies with its genuine human review', (_sku, product) => {
-    const r = prepareProduct(product, { ...manifest });
-    expect(r.reasons).toEqual([]);
+  test.each(V1_HISTORY.map(p => [p.sku, p]))('v1 %s (live today): human review still certifies, but the editorial gate would refuse to publish it now', (_sku, product) => {
+    const r = prepareProduct(product, { ...manifest }, undefined, { now: REVIEW_DATE });
+    expect(r.certification.certified).toBe(true); // existing entitlements stay valid
     expect(r.certification.artifactSha256).toBe(product.artifact_sha256);
+    expect(r.ok).toBe(false);
+    expect(r.reasons).toEqual(expect.arrayContaining(['CUSTOMER_COPY_INTERNAL_TERMS', 'EVIDENCE_CUTOFF_MISSING']));
   });
 
   test.each(manifest.products.map(p => [p.sku, p]))('v2 %s is NOT publishable until a human review record exists', (_sku, product) => {
@@ -95,9 +116,33 @@ describe('premium catalog manifest (schema 2: versioned)', () => {
     expect(exported.commercial_readiness).toMatchObject({ verdict: 'COMMERCIAL-READY', pass_count: 23, total_count: 23 });
   });
 
-  test.each(manifest.products.map(p => [p.sku, p]))('v2 %s: once approved, certifies and is accepted by the publish service with exactly the reviewed bytes', async (_sku, product) => {
-    const r = prepareProduct(withReview(product), manifest);
+  test.each(V2.map(p => [p.sku, p]))('v2 %s: an approval certifies, but the publisher still refuses it on the editorial gate', (_sku, product) => {
+    const r = prepareProduct(withReview(product), manifest, undefined, { now: REVIEW_DATE });
+    expect(r.certification.certified).toBe(true);
+    expect(r.ok).toBe(false);
+    expect(r.body).toBeUndefined();
+    expect(r.reasons).toEqual(expect.arrayContaining(['CUSTOMER_COPY_INTERNAL_TERMS', 'EVIDENCE_STALE']));
+  });
+
+  test('Ray v3: a human approval certifies AND passes the editorial gate, so the publisher would send it', () => {
+    const [ray] = V3;
+    expect(ray).toMatchObject({ report_id: 'sentinel-apex-vuln-cve-2025-62593-ray-v3', supersedes: { report_id: 'cve-2025-62593-ray-canary' } });
+    const r = prepareProduct(withReview(ray), manifest, undefined, { now: REVIEW_DATE });
     expect(r.reasons).toEqual([]);
+    expect(r.ok).toBe(true);
+    expect(r.editorial.details).toMatchObject({ evidence_cutoff: '2026-10-01', evidence_age_days: 0 });
+    expect(r.body).toMatchObject({ price_minor: 199900, currency: 'INR', slug: ray.slug });
+    // ...and only inside the 30-day release window.
+    expect(prepareProduct(withReview(ray), manifest, undefined, { now: new Date('2026-11-05T00:00:00Z') }).reasons).toEqual(['EVIDENCE_STALE']);
+  });
+
+  test('Ray v2 (failed review) is withdrawn to history and never publishable', () => {
+    expect(RAY_V2).toMatchObject({ version: '2.0', status: 'WITHDRAWN_FAILED_REVIEW' });
+    expect(manifest.products.some(p => p.report_id === RAY_V2.report_id)).toBe(false);
+  });
+
+  test.each(manifest.products.map(p => [p.sku, p]))('v2/v3 %s: the publish service stores exactly the reviewed bytes, R2 before catalog', async (_sku, product) => {
+    const r = certifiedBody(product);
     expect(r.ok).toBe(true);
     const out = await service.publishCertifiedReport({
       reportxExport: r.body.reportx_export, title: r.body.title, slug: r.body.slug, reportType: r.body.report_type,
@@ -118,13 +163,24 @@ describe('premium catalog manifest (schema 2: versioned)', () => {
 });
 
 describe('customer-facing copy gate', () => {
-  test.each(manifest.products.map(p => [p.sku, p]))('v2 %s artifact and product metadata carry no internal/canary terminology', (_sku, product) => {
+  // Human review 2026-10-01 found evidence-graph internals left in every v2
+  // artifact; the gate must keep reporting them until the text is reissued.
+  test.each(V2.map(p => [p.sku, p]))('v2 %s: metadata is clean; the artifact still carries the internal terms found in review', (_sku, product) => {
     const text = readJson(product.export).bundle.rendered_text;
-    expect(text.match(INTERNAL_COPY)).toBeNull();
+    expect(gate.internalTerms(text)).toEqual(expect.arrayContaining(['evidence_refs', 'source_refs', '(evidence: c-', '`forecasts` field']));
     for (const field of ['title', 'summary', 'slug', 'report_id', 'filename']) expect(String(product[field]).match(INTERNAL_COPY)).toBeNull();
     expect(text).toMatch(/^# Sentinel APEX (Ransomware Intelligence Report|Vulnerability Intelligence Assessment) -- /);
-    expect(text).toContain('**CYBERDUDEBIVASH SENTINEL APEX INTEL FACTORY** · Premium Intelligence Report · Version 2.0');
+    expect(text).toContain(`**CYBERDUDEBIVASH SENTINEL APEX INTEL FACTORY** · Premium Intelligence Report · Version ${product.version}`);
     expect(text).toMatch(/Evidence cut-off: \d{4}-\d{2}-\d{2}/);
+  });
+
+  test('Ray v3 artifact and metadata carry no internal terminology', () => {
+    const [ray] = V3;
+    const text = readJson(ray.export).bundle.rendered_text;
+    expect(gate.internalTerms(text)).toEqual([]);
+    for (const field of ['title', 'summary', 'slug', 'report_id', 'filename']) expect(String(ray[field]).match(INTERNAL_COPY)).toBeNull();
+    expect(text).toMatch(/^# Sentinel APEX Vulnerability Intelligence Assessment -- CVE-2025-62593 \(Ray\)/);
+    expect(text).toContain('Premium Intelligence Report · Version 3.0');
   });
 
   test('the gate is effective: every superseded v1 artifact fails it', () => {
@@ -132,7 +188,53 @@ describe('customer-facing copy gate', () => {
   });
 
   test('legitimate intelligence vocabulary is not blocked', () => {
-    expect('No proof sample was reviewed; an embedded Mimikatz module; a DNS-rebinding-capable browser session').not.toMatch(INTERNAL_COPY);
+    expect('No proof sample was reviewed; an embedded Mimikatz module; a DNS-rebinding-capable browser session; the attacker build pipeline').not.toMatch(INTERNAL_COPY);
+  });
+});
+
+describe('editorial release gate (scripts/premium-editorial-gate.js)', () => {
+  const v2 = Object.fromEntries([...V2, RAY_V2].map(p => [p.report_id, readJson(p.export).bundle.rendered_text]));
+  const ray = v2['sentinel-apex-vuln-cve-2025-62593-ray'];
+  const dragonforce = v2['sentinel-apex-ransomware-dragonforce-vermont-xcenter'];
+  const scrub = t => t.replace(new RegExp(INTERNAL_COPY.source, 'gi'), '');
+
+  test('DragonForce: a TargetFilename selection under process_creation can never match and is refused', () => {
+    expect(gate.detectionFieldMismatches(dragonforce)).toEqual([
+      'sentinel-apex-dragonforce-simplehelp-persistence: selection_encrypted_extension.TargetFilename under process_creation',
+    ]);
+    for (const [id, text] of Object.entries(v2)) if (id !== 'sentinel-apex-ransomware-dragonforce-vermont-xcenter') expect(gate.detectionFieldMismatches(text)).toEqual([]);
+  });
+
+  test('evidence older than the release window is refused; the 2026-08-17 cut-off was fresh at the original review', () => {
+    expect(gate.evidenceCutoff(ray)).toBe('2026-08-17');
+    expect(gate.editorialFindings(scrub(ray), { now: REVIEW_DATE }).reasons).toEqual(['EVIDENCE_STALE']);
+    expect(gate.editorialFindings(scrub(ray), { now: new Date('2026-08-18T00:00:00Z') })).toMatchObject({ ok: true, reasons: [] });
+    expect(gate.editorialFindings(scrub(ray), { now: REVIEW_DATE, maxEvidenceAgeDays: 60 }).ok).toBe(true);
+  });
+
+  test('an evidence cut-off later than today is refused', () => {
+    expect(gate.editorialFindings(scrub(ray), { now: new Date('2026-08-10T00:00:00Z') }).reasons).toEqual(['EVIDENCE_CUTOFF_IN_FUTURE']);
+  });
+
+  test('an artifact with no evidence cut-off is refused', () => {
+    expect(gate.editorialFindings(scrub(ray).replace(/Evidence cut-off: \d{4}-\d{2}-\d{2}/, ''), { now: REVIEW_DATE }).reasons).toContain('EVIDENCE_CUTOFF_MISSING');
+  });
+
+  test('negative control: the gate is not a blanket refusal (clean, fresh, field-valid text passes)', () => {
+    for (const [id, text] of Object.entries(v2)) {
+      if (id === 'sentinel-apex-ransomware-dragonforce-vermont-xcenter') continue;
+      expect(gate.editorialFindings(scrub(text), { now: new Date('2026-08-20T00:00:00Z') })).toMatchObject({ ok: true });
+    }
+  });
+
+  test('the publisher enforces the gate: a correctly approved, pinned artifact with internal terms is not sent', async () => {
+    const product = manifest.products[0];
+    const r = prepareProduct(withReview(product), manifest, undefined, { now: REVIEW_DATE });
+    expect(r.ok).toBe(false);
+    expect(r.editorial.details.internal_terms.length).toBeGreaterThan(0);
+    const fetchImpl = jest.fn();
+    expect(prepareAll({ ...manifest, products: [withReview(product)] }, undefined, { now: REVIEW_DATE }).every(p => !p.ok)).toBe(true);
+    expect(fetchImpl).not.toHaveBeenCalled();
   });
 });
 
@@ -140,9 +242,8 @@ describe('negative controls: nothing unreviewed or altered can be listed', () =>
   const product = manifest.products[0];
 
   test('altered report text (one character) fails certification', () => {
-    const r = prepareProduct(withReview(product), manifest);
+    const r = certifiedBody(product);
     const tampered = { ...r.body.reportx_export, bundle: { ...r.body.reportx_export.bundle, rendered_text: r.body.reportx_export.bundle.rendered_text + ' ' } };
-    const { evaluatePremiumCertification } = require('../premium-report-certification');
     expect(evaluatePremiumCertification(tampered).reasons).toContain('ARTIFACT_HASH_MISMATCH');
   });
 
@@ -181,7 +282,7 @@ describe('negative controls: nothing unreviewed or altered can be listed', () =>
 });
 
 describe('publisher transport and activation sequence', () => {
-  const approved = () => prepareProduct(withReview(manifest.products[0]), manifest);
+  const approved = () => certifiedBody(manifest.products[0]);
   function fakeApi({ liveSha = null, publishOk = true, retireStatus = 200 } = {}) {
     const calls = [];
     let live = liveSha ? { slug: 's', report_id: 'x', artifact_sha256: liveSha } : null;
@@ -213,6 +314,17 @@ describe('publisher transport and activation sequence', () => {
       expect(c.opts.headers['X-Analyst-Key']).toBe('k-123');
       expect(c.opts.body).not.toContain('k-123');
     }
+  });
+
+  test('Ray v3 end to end: approved -> gate -> publish -> live hash confirmed -> v1 Ray retired', async () => {
+    const [ray] = V3;
+    const r = prepareProduct(withReview(ray), manifest, undefined, { now: REVIEW_DATE });
+    expect(r.ok).toBe(true);
+    const { calls, fetchImpl } = fakeApi();
+    const report = await publish(r, { base: 'https://blog.example.test', key: 'k', fetchImpl });
+    expect(calls.map(c => (c.url.match(/action=([a-z-]+)/) || [])[1])).toEqual(['detail', 'publish-certified', 'detail', 'set-status']);
+    expect(report.artifact_sha256).toBe(ray.artifact_sha256);
+    expect(JSON.parse(calls[3].opts.body)).toEqual({ report_id: 'cve-2025-62593-ray-canary', status: 'RETIRED' });
   });
 
   test('an unchanged artifact is not re-uploaded', async () => {

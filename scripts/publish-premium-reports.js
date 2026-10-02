@@ -24,13 +24,17 @@
  *   new one is live.
  *
  * Fails closed: a product is only sent if the export plus its human review
- * record certify locally with the same certifier the server runs. The
- * analyst key is read from the environment and never printed.
+ * record certify locally with the same certifier the server runs, AND the
+ * artifact passes the editorial release gate (scripts/premium-editorial-gate.js:
+ * no internal terminology, Sigma fields valid for their logsource, evidence
+ * cut-off within manifest.max_evidence_age_days). The analyst key is read from
+ * the environment and never printed.
  */
 
 const fs = require('fs');
 const path = require('path');
 const { evaluatePremiumCertification } = require('../api/_lib/premium-report-certification');
+const { editorialFindings, DEFAULT_MAX_EVIDENCE_AGE_DAYS } = require('./premium-editorial-gate');
 
 const ROOT = path.resolve(__dirname, '..');
 const MANIFEST = path.join(ROOT, 'config', 'premium-catalog.json');
@@ -43,9 +47,9 @@ function loadManifest(file = MANIFEST) {
 
 /**
  * Build the publish request for one product and certify it locally.
- * Returns { sku, ok, reasons, body, certification }.
+ * Returns { sku, ok, reasons, body, certification, editorial }.
  */
-function prepareProduct(product, manifest, root = ROOT) {
+function prepareProduct(product, manifest, root = ROOT, { now = new Date() } = {}) {
   const reasons = [];
   const read = rel => JSON.parse(fs.readFileSync(path.join(root, rel), 'utf8'));
   let exported;
@@ -72,12 +76,18 @@ function prepareProduct(product, manifest, root = ROOT) {
   if (product.artifact_sha256 && certification.artifactSha256 !== product.artifact_sha256) {
     return { sku: product.sku, ok: false, reasons: ['ARTIFACT_HASH_NOT_PINNED'], certification };
   }
+  // A human approval proves the bytes were reviewed, not that they are fit to sell.
+  const editorial = editorialFindings(exported.bundle.rendered_text, {
+    now, maxEvidenceAgeDays: Number(manifest.max_evidence_age_days) || DEFAULT_MAX_EVIDENCE_AGE_DAYS,
+  });
+  if (!editorial.ok) return { sku: product.sku, ok: false, reasons: editorial.reasons, certification, editorial };
 
   return {
     sku: product.sku,
     ok: true,
     reasons: [],
     certification,
+    editorial,
     body: {
       reportx_export: reportxExport,
       title: product.title,
@@ -92,10 +102,10 @@ function prepareProduct(product, manifest, root = ROOT) {
   };
 }
 
-function prepareAll(manifest, root = ROOT) {
+function prepareAll(manifest, root = ROOT, options = {}) {
   const seen = new Set();
   return manifest.products.map(p => {
-    const r = prepareProduct(p, manifest, root);
+    const r = prepareProduct(p, manifest, root, options);
     if (seen.has(p.slug)) { r.ok = false; r.reasons = [...r.reasons, 'DUPLICATE_SLUG']; }
     seen.add(p.slug);
     return r;
@@ -162,6 +172,7 @@ async function main() {
   for (const p of prepared) {
     const c = p.certification || {};
     console.log(`${p.ok ? 'CERTIFIED' : 'REJECTED '} ${p.sku}  ${p.ok ? `${p.body.price_minor / 100} ${p.body.currency}  sha256=${c.artifactSha256}  reviewer=${c.reviewerIdentity}` : p.reasons.join(',')}`);
+    if (!p.ok && p.editorial) console.log(`          ${JSON.stringify(p.editorial.details)}`);
   }
   const bad = prepared.filter(p => !p.ok);
   if (bad.length) { console.error(`${bad.length} product(s) failed local certification; nothing published.`); process.exit(1); }

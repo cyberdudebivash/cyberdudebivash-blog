@@ -1,5 +1,82 @@
 # Intel Factory — Customer Release Certification
 
+## Tranche 7 (2026-10-01): Ray v3.0 refreshed edition
+
+| Item | Result |
+|---|---|
+| Re-research | 18 sources retrieved and archived on 2026-10-01 (`reportx-canary/raw-sources/*20261001*`, Ray commit and source, Oligo, MITRE C0045/T1189, WHATWG Fetch) |
+| Material changes found | EPSS 0.00369 → 0.62459 (p99.17); CISA SSVC automatable no → yes; KEV forensicTriage: Yes |
+| Detection | 3 Sigma rules (2 SYNTAX_VALIDATED by pySigma 1.5.1, 1 DRAFT) built from fix commit 70e7c72; the loopback-excluding rule is gone |
+| Gates | 23/23; editorial gate 0 findings; deterministic rebuild test; publisher end-to-end test (publish, confirm, retire v1 Ray) |
+| Artifact | `036b02d8688d398c2195e7d18e00764e8da10ac34a39304e37a501c4764dd362`, 43,661 B |
+| State | **READY FOR HUMAN REVIEW.** Not published; the release window closes 2026-10-31 |
+| Cost | No Cloudflare change. Publishing adds about 43.7 KB of report plus about 117 KB of evidence JSON to the existing R2 bucket |
+
+## Tranche 6 (2026-10-01): premium commercial review, payment certification, main protection
+
+### #320 in production: **PASS**
+
+| Field | Value |
+|---|---|
+| Merge | `1c0f6cc449dc588d64e7f33e98cf8672e854d07f` |
+| Deployed by | `cloudflare-production-deploy.yml` run `36905522817`, **event `push`** (second consecutive merge that auto-deployed) |
+| Worker version | `f9433ca0-b83f-4759-bb32-89dcc8600fc7`, created 18:16:54 UTC; live by 18:17:04 UTC |
+| Provenance | tag `git-1c0f6cc449dc`; message `commit 1c0f6cc449dc… run 36905522817/1 event push` (Cloudflare versions API) |
+| Rollback version | `d6116f41-6353-4feb-a66b-b812d26311c7` |
+| Live | catalog 4 products, each with `artifact_sha256` matching its v1 pin; no `artifact_key`; webhook unsigned/forged 400/400; download without a key 401 |
+
+### Release outcome: **NOT READY for paid sale**
+
+| Phase | Result |
+|---|---|
+| A. Review of 4 v2 reports | **4/4 reviewed, 0/4 approved.** Ray: outdated EPSS (0.369% / p29.94 in the report, 0.62459 / p99.17 live) and a Sigma rule that filters out the DNS-rebinding requests. DragonForce: a Sigma selection that can never match. All four: internal terms the old copy gate missed. Three ransomware reports fail the commercial value test. |
+| B/C. Publish v2, atomic activation | **Not executed.** Nothing passed; no R2 write, no catalog change; v1 active. |
+| D. Blog Razorpay webhook | **BLOCKED — RAZORPAY DASHBOARD CONFIGURATION.** The Worker secret is present; dashboard steps are in `docs/runbooks/BLOG-RAZORPAY-WEBHOOK.md`. |
+| E/F. Controlled purchase, refund, revocation | **BLOCKED — OPERATOR RAZORPAY ACTION REQUIRED.** Also blocked on having a passing product. Proven in tests only (real SQL, real HMAC). |
+| G. Main protection | **BLOCKED.** Live rules for `main` are `[]`. Repository-side prerequisites are done: the deadlock-free required-check set and the verifier. Staged settings are in `docs/runbooks/MAIN-BRANCH-PROTECTION.md`. |
+
+### Repository changes
+
+- **Editorial release gate** (`scripts/premium-editorial-gate.js`), enforced by the publisher after certification:
+  - internal-term copy gate, extended with the leaked evidence-graph terms;
+  - Sigma field/logsource consistency;
+  - evidence cut-off present and at most 30 days old.
+
+  An approval alone can no longer publish a defective artifact.
+- **Merge gate.** `test.yml` runs on every PR to `main`, with the path filter removed from `pull_request` only. Before this, a PR touching only `workers/**`, `config/**` or HTML ran no Jest. `scripts/verify-branch-protection.js` derives the required checks and verifies live enforcement.
+- **Test gaps closed** (found by mutation):
+  - the payment-claim race guard (removing the SQL condition was undetected);
+  - evidence-contract re-certification against the purchased hash.
+
+### Negative controls (mutation → tests red)
+
+| Mutation | Result |
+|---|---|
+| Webhook signature check disabled | 2 failed |
+| Platform isolation disabled | 5 failed |
+| Amount validation disabled | 3 failed |
+| Payment-claim idempotency guard removed (SQL) | 1 failed (**new test**; previously 0) |
+| Download authorization disabled | 3 failed |
+| R2 artifact hash check disabled | 1 failed |
+| Evidence-contract hash re-certification disabled | 1 failed (**new test**; previously 0) |
+| Copy gate disabled / leaked-term list reverted | 9 / 4 failed |
+| Sigma field/logsource check disabled | 1 failed |
+| Freshness check disabled | 5 failed |
+| Publisher editorial gate bypassed | 9 failed |
+| Branch-protection: path filter re-added to `test.yml` | 1 failed |
+| Branch-protection: force-push rule check removed | 1 failed |
+
+### Cloudflare cost
+
+- New resources: **none** (Workers, D1, R2 buckets, KV, cron, queues and Durable Objects unchanged).
+- Incremental R2 storage this tranche: **0 bytes**; nothing was uploaded.
+- When a passing set is published, the four v2 editions would add about 90.6 KB of report text plus about 320 KB of evidence JSON.
+- This PR redeploys an identical Worker bundle, because test files under `api/**` match the deploy filter.
+
+### Found, not fixed (outside this tranche)
+
+The free page `/cve/CVE-2025-62593.html` contradicts KEV ("NO CISA KEV", "No known exploitation") and names the wrong product ("Progress LoadMaster", copied from a news source). It also advertises a "Detection Pack … YARA signatures … deployable in 5 minutes" without such an artifact. This is a free-content trust defect for the next tranche.
+
 ## Tranche 5 (2026-10-01): deploy-trigger reliability, #318 live, premium reissue v2
 
 ### #318 in production: **PASS**

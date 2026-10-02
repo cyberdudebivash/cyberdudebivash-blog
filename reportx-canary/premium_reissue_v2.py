@@ -56,12 +56,14 @@ DETECTION_LEGEND = ("Detection maturity: SYNTAX_VALIDATED (rule syntax checked; 
 
 # Terms that must never reach a paying customer. Scoped so that legitimate
 # intelligence vocabulary ("proof sample", "Mimikatz module", "browser
-# session") is not blocked; mirrored by the JS gate in
-# tests-js/premium-copy-gate.test.js.
+# session") is not blocked; mirrors INTERNAL_COPY in
+# scripts/premium-editorial-gate.js, which the publisher enforces.
 INTERNAL_COPY = re.compile(
     r"premium intelligence canary|\bcanar(?:y|ies)\b|this session|checked-in raw files|hand-typed|"
-    r"reportx|GENERIC_DEFENSIVE_READINESS|content_sha256|internal pipeline|test artifact|"
-    r"test-only|fixture|\bstaging\b|demo-only",
+    r"reportx|GENERIC_DEFENSIVE_READINESS|content_sha256|internal pipeline|pipeline test|test artifact|"
+    r"test-only|fixture|\bstaging\b|demo-only|validation artifact|synthetic customer|placeholder|"
+    r"evidence_refs|source_refs|evidence_integrity|\(evidence: c-|this bundle|`forecasts` field|"
+    r"Claim Ledger appendix",
     re.IGNORECASE,
 )
 

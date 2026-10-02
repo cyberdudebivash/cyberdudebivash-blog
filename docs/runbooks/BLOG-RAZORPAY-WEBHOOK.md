@@ -1,5 +1,18 @@
 # Blog Razorpay Webhook Runbook
 
+**Status 2026-10-01: BLOCKED — RAZORPAY DASHBOARD CONFIGURATION.** No Razorpay Dashboard access exists from the repository or CI. The Worker side is ready.
+
+## Verified state (2026-10-01)
+
+| Item | Evidence |
+|---|---|
+| Endpoint | `POST https://blog.cyberdudebivash.in/api/v1/billing/razorpay-webhook` (`api/v1/billing/razorpay-webhook.js`) |
+| Worker secrets present (names only, read from the Cloudflare API) | `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` |
+| Signature | HMAC-SHA256 over the **raw** request bytes with `RAZORPAY_WEBHOOK_SECRET`, compared in constant time. Live: unsigned → 400, forged → 400, GET → 405. |
+| Events handled | `payment.captured`, `order.paid` (fulfil), `refund.processed` (revoke on full refund) |
+| Platform isolation | Orders are classified by the blog's own D1 `premium_orders` row (Razorpay order ID). Anything else, for example a Sentinel APEX plan order sharing the Razorpay account, gets `200 foreign_platform_webhook_ignored` with zero writes. Never by amount, email or notes. |
+| Idempotency | Conditional claim (`state='ORDER_CREATED' AND razorpay_payment_id IS NULL`); entitlement upsert; duplicate events are no-ops. Race test on real SQL. |
+
 ## What the blog sells
 
 Since 2026-10-01 the commercial boundary is:
@@ -142,3 +155,48 @@ Automated coverage: `api/v1/__tests__/premium-webhook-integrity.test.js`. It run
 | Stop premium fulfilment by webhook | Disable the blog webhook in the Razorpay Dashboard. The checkout callback still verifies purchases. |
 | Stop premium sales | Pause a report: `POST /api/v1/premium-intelligence?action=set-status` with `{report_id, status:"PAUSED"}` (analyst key). To stop all sales: `npx wrangler secret delete RAZORPAY_KEY_SECRET --name cyberdudebivash-blog`; checkout then returns "Online purchase temporarily unavailable". |
 | Bad deploy | Roll back the Worker version in Cloudflare, then `git revert` the release commit. |
+
+## Operator action (Razorpay Dashboard)
+
+This is separate from the Sentinel APEX webhook. **Do not edit or delete the Sentinel APEX webhook.**
+
+1. Razorpay Dashboard → **Account & Settings → Webhooks** (live mode) → **+ Add New Webhook**.
+2. **Webhook URL:** `https://blog.cyberdudebivash.in/api/v1/billing/razorpay-webhook`
+3. **Secret:** the value already stored as the Worker secret `RAZORPAY_WEBHOOK_SECRET`. If that value is not known, generate a new random secret, enter it here, then set the same value in Cloudflare with `npx wrangler secret put RAZORPAY_WEBHOOK_SECRET`. Type it at the prompt; never in a file, shell history or a ticket.
+4. **Active events:** select only `payment.captured`, `order.paid`, `refund.processed`.
+5. **Alert email:** an operator mailbox. Save.
+
+If an existing webhook already points at this URL, edit that one instead of adding a duplicate.
+
+## Live acceptance (after configuration)
+
+| Check | How | Expected |
+|---|---|---|
+| Unsigned event | `curl -X POST -H 'content-type: application/json' -d '{"event":"payment.captured"}' <url>` | 400 |
+| Wrong signature | the same, with `-H 'x-razorpay-signature: deadbeef'` | 400 |
+| Valid foreign event | an Intel-platform (Sentinel APEX) payment arrives on the shared account | 200, Worker log `foreign_platform_webhook_ignored`, no D1 row changed |
+| Valid premium event | the controlled purchase below | `premium_payment_verified`, then `premium_entitlement_granted` |
+| Duplicate valid event | Dashboard → Webhooks → this webhook → resend a delivered event | 200; no second `premium_entitlement_granted` |
+
+Worker logs: Cloudflare → Workers → `cyberdudebivash-blog` → Observability, filter on `evt`.
+
+## Controlled INR 1,999 purchase and refund
+
+**Status: BLOCKED — OPERATOR RAZORPAY ACTION REQUIRED.** Run it only on a product that passes review. Today none does (`docs/audits/PREMIUM-REPORT-COMMERCIAL-CERTIFICATION.md`). Use an operator-owned account, never a real customer.
+
+1. Sign in to the blog with the operator test account. Open `/intelligence-store.html` and choose the product.
+2. Checkout: confirm the Razorpay modal shows **INR 1,999.00** (order amount `199900` paise).
+3. Pay. **Close the browser tab immediately** after Razorpay confirms (browser-close case).
+4. Wait for the webhook, then confirm in the logs: `premium_payment_verified` and `premium_entitlement_granted` for that order.
+5. Reopen the store in a new session. **My library** lists the report. The download succeeds, and `sha256sum` of the file equals the catalog `artifact_sha256`.
+6. Signed in as a **second** operator account: the download is refused with HTTP 404 `ENTITLEMENT_NOT_FOUND`. Signed out: 401. 404 rather than 403 is deliberate: the response does not disclose whether a report is owned by someone else, and R2 is never read.
+7. Razorpay Dashboard → the payment → **Refund** the full amount.
+8. Confirm `refund.processed` is accepted, and the order shows `REFUNDED`.
+9. The same buyer's download is now refused (404 `ENTITLEMENT_NOT_FOUND`, no R2 read). Resending the refund event changes nothing.
+10. Record in `docs/release/INTEL-FACTORY-CUSTOMER-RELEASE-CERTIFICATION.md`:
+    - order and payment IDs, masked to the last 4 characters;
+    - SKU;
+    - UTC timestamps;
+    - the result of each step.
+
+Partial refunds keep access by policy (`processWebhookRefund`: only a full refund revokes; tested). Order, payment, refund and entitlement rows are never deleted; refund is a state change.

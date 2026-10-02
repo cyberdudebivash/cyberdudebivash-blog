@@ -1,0 +1,64 @@
+commit 70e7c72780bdec075dba6cad1afe0832772bfe09
+Author: richo-anyscale <richo@anyscale.com>
+Date:   Fri Nov 14 10:21:51 2025 -0800
+
+    Add denial of fetch headers (#58553)
+    
+    This causes the dashboard to be more thorough in it's attempts to deny
+    browsers access to the job creation APIs
+    
+    ---------
+    
+    Signed-off-by: Richo Healey <richo@anyscale.com>
+
+diff --git a/python/ray/dashboard/http_server_head.py b/python/ray/dashboard/http_server_head.py
+index 764f729..fd5ac1f 100644
+--- a/python/ray/dashboard/http_server_head.py
++++ b/python/ray/dashboard/http_server_head.py
+@@ -307,7 +307,10 @@ class HttpServerDashboardHead:
+             if (
+                 # A best effort test for browser traffic. All common browsers
+                 # start with Mozilla at the time of writing.
+-                dashboard_optional_utils.is_browser_request(request)
++                (
++                    dashboard_optional_utils.is_browser_request(request)
++                    or dashboard_optional_utils.has_sec_fetch_headers(request)
++                )
+                 and request.method in [hdrs.METH_POST, hdrs.METH_PUT]
+             ):
+                 return aiohttp.web.Response(
+diff --git a/python/ray/dashboard/optional_utils.py b/python/ray/dashboard/optional_utils.py
+index 191f64f..b59739f 100644
+--- a/python/ray/dashboard/optional_utils.py
++++ b/python/ray/dashboard/optional_utils.py
+@@ -138,12 +138,30 @@ def is_browser_request(req: Request) -> bool:
+     return req.headers["User-Agent"].startswith("Mozilla")
+ 
+ 
++def has_sec_fetch_headers(req: Request) -> bool:
++    """Checks for the existance of any of the sec-fetch-* headers"""
++    return any(
++        h in req.headers
++        for h in (
++            "Sec-Fetch-Mode",
++            "Sec-Fetch-Dest",
++            "Sec-Fetch-Site",
++            "Sec-Fetch-User",
++        )
++    )
++
++
+ def deny_browser_requests() -> Callable:
+     """Reject any requests that appear to be made by a browser"""
+ 
+     def decorator_factory(f: Callable) -> Callable:
+         @functools.wraps(f)
+         async def decorator(self, req: Request):
++            if has_sec_fetch_headers(req):
++                return Response(
++                    text="Browser requests not allowed",
++                    status=aiohttp.web.HTTPMethodNotAllowed.status_code,
++                )
+             if is_browser_request(req):
+                 return Response(
+                     text="Browser requests not allowed",

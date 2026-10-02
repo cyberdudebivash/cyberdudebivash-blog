@@ -65,17 +65,17 @@
     },
     {
       "sku": "PIR-VULN-CVE-2025-62593-RAY",
-      "version": "2.0",
-      "report_id": "sentinel-apex-vuln-cve-2025-62593-ray",
-      "export": "reportx-canary/exports/v2/sentinel-apex-vuln-cve-2025-62593-ray-export.json",
-      "review": "reportx-canary/exports/v2/sentinel-apex-vuln-cve-2025-62593-ray-REVIEW-RECORD.json",
+      "version": "3.0",
+      "report_id": "sentinel-apex-vuln-cve-2025-62593-ray-v3",
+      "export": "reportx-canary/exports/v3/sentinel-apex-vuln-cve-2025-62593-ray-v3-export.json",
+      "review": "reportx-canary/exports/v3/sentinel-apex-vuln-cve-2025-62593-ray-v3-REVIEW-RECORD.json",
       "slug": "cve-2025-62593-ray-vulnerability-intelligence-assessment",
       "title": "Sentinel APEX Vulnerability Intelligence Assessment — CVE-2025-62593 (Ray)",
       "report_type": "VULNERABILITY",
-      "summary": "Analyst-reviewed intelligence on the critical unauthenticated RCE in the Ray AI/ML compute engine (versions before 2.52.0), added to CISA KEV on 2026-08-17. Covers the timeline, both authoritative severity scores, the documented RondoDox exploitation attempt and why its payload likely fails, ATT&CK mapping, detection and hunting guidance, alternative hypotheses, intelligence gaps, remediation and a sourced evidence ledger.",
+      "summary": "Refreshed 2026-10-01. The browser-reachable RCE in Ray before 2.52.0 (CISA KEV, flagged for forensic triage) and why the risk has changed: EPSS now 0.62 (99th percentile), CISA rates exploitation automatable. Two exposure paths, including why patching alone leaves network-reachable dashboards open; three Sigma rules built from the vendor fix; 57 dated indicators (RondoDox, ShadowRay 2.0); hunting steps, prioritised remediation and a sourced evidence ledger.",
       "price_minor": 199900,
       "filename": "cve-2025-62593-ray-vulnerability-intelligence-assessment",
-      "artifact_sha256": "28f6f430c2e7a1c1d0d72d2753700455c0633032db454cc8dd569594eaa385df",
+      "artifact_sha256": "036b02d8688d398c2195e7d18e00764e8da10ac34a39304e37a501c4764dd362",
       "supersedes": {
         "version": "1.0",
         "report_id": "cve-2025-62593-ray-canary",
@@ -144,6 +144,28 @@
       "report_id": "cve-2025-62593-ray-canary",
       "artifact_sha256": "dde2c5ce3efe673ebb8a80e069ede5c713778bba422f7e34aa296b6b095e398a",
       "status_after_v2": "RETIRED"
+    },
+    {
+      "sku": "PIR-VULN-CVE-2025-62593-RAY",
+      "version": "2.0",
+      "report_id": "sentinel-apex-vuln-cve-2025-62593-ray",
+      "export": "reportx-canary/exports/v2/sentinel-apex-vuln-cve-2025-62593-ray-export.json",
+      "review": "reportx-canary/exports/v2/sentinel-apex-vuln-cve-2025-62593-ray-REVIEW-RECORD.json",
+      "slug": "cve-2025-62593-ray-vulnerability-intelligence-assessment",
+      "title": "Sentinel APEX Vulnerability Intelligence Assessment — CVE-2025-62593 (Ray)",
+      "report_type": "VULNERABILITY",
+      "summary": "Analyst-reviewed intelligence on the critical unauthenticated RCE in the Ray AI/ML compute engine (versions before 2.52.0), added to CISA KEV on 2026-08-17. Covers the timeline, both authoritative severity scores, the documented RondoDox exploitation attempt and why its payload likely fails, ATT&CK mapping, detection and hunting guidance, alternative hypotheses, intelligence gaps, remediation and a sourced evidence ledger.",
+      "price_minor": 199900,
+      "filename": "cve-2025-62593-ray-vulnerability-intelligence-assessment",
+      "artifact_sha256": "28f6f430c2e7a1c1d0d72d2753700455c0633032db454cc8dd569594eaa385df",
+      "supersedes": {
+        "version": "1.0",
+        "report_id": "cve-2025-62593-ray-canary",
+        "slug": "cve-2025-62593-ray-vulnerability-intelligence",
+        "artifact_sha256": "dde2c5ce3efe673ebb8a80e069ede5c713778bba422f7e34aa296b6b095e398a"
+      },
+      "status": "WITHDRAWN_FAILED_REVIEW",
+      "withdrawn_reason": "Human review 2026-10-01: outdated EPSS judgement; Sigma rule excluded the DNS-rebinding path. Never published; superseded by 3.0."
     }
   ]
 }

