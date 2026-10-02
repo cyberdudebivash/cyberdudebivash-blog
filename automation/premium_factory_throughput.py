@@ -48,16 +48,17 @@ from .logger import setup_logger
 
 logger = setup_logger("premium_factory_throughput")
 
-# P0-SEARCH-RECOVERY-2026-09-22:
-# Search Console shows a sustained CTI visibility collapse after 2026-08-16.
-# Keep public publishing selective while root-cause recovery is measured.
-# Eight runs/day * four writes/run gives a bounded theoretical ceiling of 32
-# Blogger pages/day. Eligibility, source evidence and fetch-back gates remain
-# unchanged; this capacity is not a guarantee of 32 eligible reports.
-# Internal feeds/APIs are not constrained by these public-page limits.
-FACTORY_DAILY_FLOOR = 6
-FACTORY_DAILY_GOAL = 24
-FACTORY_RUNS_PER_DAY = 8
+# P0-BLOGGER-HOURLY-FRESHNESS-2026-10-02:
+# Customer-facing CTI delivery now has an explicit four-report hourly target.
+# Twenty-four scheduled runs/day * four writes/run gives bounded scheduled
+# capacity of 96 Blogger pages/day. Publication eligibility, provenance,
+# quality/certification and fetch-back gates are unchanged and remain fail
+# closed. If four real eligible reports do not exist, telemetry records an SLO
+# miss; the factory never manufactures or weakens intelligence to fill a slot.
+FACTORY_HOURLY_TARGET = 4
+FACTORY_DAILY_FLOOR = 96
+FACTORY_DAILY_GOAL = 96
+FACTORY_RUNS_PER_DAY = 24
 FACTORY_WRITE_BURST = 4
 FACTORY_RETRY_QUEUE_LIMIT = 500
 FACTORY_RETRY_ATTEMPTS = 5
@@ -735,6 +736,7 @@ def factory_write_run_report(report: dict, logs_dir: str) -> None:
     delivered_today = _published_delivery_classes_today(_ACTIVE_STATE_FILE)
     missing_today = set(FACTORY_DAILY_DELIVERY_CLASSES) - delivered_today
     report["factory_throughput"] = {
+        "hourly_target": FACTORY_HOURLY_TARGET,
         "daily_floor": FACTORY_DAILY_FLOOR,
         "daily_goal": FACTORY_DAILY_GOAL,
         "published_today_utc": published_today,
@@ -830,6 +832,7 @@ def install_factory_throughput_overrides(main_module) -> None:
     logger.info(
         "Global CTI factory throughput runtime installed",
         extra={
+            "hourly_target": FACTORY_HOURLY_TARGET,
             "daily_floor": FACTORY_DAILY_FLOOR,
             "daily_goal": FACTORY_DAILY_GOAL,
             "runs_per_day": FACTORY_RUNS_PER_DAY,
