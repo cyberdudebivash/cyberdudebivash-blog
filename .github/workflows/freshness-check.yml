@@ -43,11 +43,7 @@ jobs:
           # Keep it visible as a warning; the scheduled monitor retains bounded
           # retries and controlled recovery. All other probe failures fail closed.
           if [ "$EXIT_CODE" -ne 0 ]; then
-            STATUS=$(python3 -c 'import json,sys
-try:
-    print(json.loads(sys.stdin.read()).get("status",""))
-except Exception:
-    print("")' <<<"$OUTPUT")
+            STATUS=$(printf '%s\n' "$OUTPUT" | sed -n 's/.*"status":[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)
             if [ "$STATUS" = "BLOGGER_PUBLIC_RATE_LIMITED" ]; then
               echo "::warning title=Blogger Public Probe Rate Limited::Provider returned HTTP 429 to the one-attempt push canary. Scheduled monitoring retains bounded retry and recovery."
               exit 0
