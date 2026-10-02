@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-02T16:33:42.165Z",
+  "generated": "2026-10-02T21:00:40.091Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -8,8 +8,428 @@
   "endpoint": "/api/intel/raw.json",
   "description": "Raw unfiltered S2N feed — all items including suppressed. Enterprise tier.",
   "note": "Access requires Enterprise API key. Includes suppression_reason and full IOC data.",
-  "count": 102,
+  "count": 116,
   "items": [
+    {
+      "id": "GHSA-6a612f12eb538d2c",
+      "title": "Dulwich: Arbitrary File Write (RCE) on Windows via Unvalidated Drive Letters in Tree Paths",
+      "description": "### Affected files\n* `dulwich/index.py` (Methods: `validate_path_element_ntfs`, `_tree_to_fs_path`)\n* `dulwich/porcelain/__init__.py` (Method: `_checked_worktree_path`) ### Description / Summary\nA High-severity Path Traversal vulnerability exists in Dulwich's checkout logic when running on Windows. ",
+      "cvss": 8.8,
+      "final_ps": 62,
+      "quality_score": 0.548,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "pip",
+      "product": "dulwich",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-8mcx-5rqc-vhmf",
+        "https://github.com/jelmer/dulwich/security/advisories/GHSA-8mcx-5rqc-vhmf",
+        "https://github.com/jelmer/dulwich/commit/4ca77f9f470742ba246cd6fa07beb6d735045664",
+        "https://github.com/jelmer/dulwich/releases/tag/dulwich-1.2.9"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.547"
+        ],
+        "priority": [
+          "base_ps=62 (no boosts)"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "iocs": []
+    },
+    {
+      "id": "GHSA-bbfd2f76e5bd03d0",
+      "title": "Dulwich: Symlink write-through in checkout(paths=[]) via raw os.open bypasses all symlink protections",
+      "description": "## Summary Dulwich's `porcelain.checkout(paths=[...])` code path writes files using raw `os.open(file_path, O_WRONLY|O_CREAT|O_TRUNC, mode)` followed by `f.write(obj.data)`. This code path does NOT call `build_file_from_blob()` at all, completely bypassing any symlink protections (including the unre",
+      "cvss": 8.6,
+      "final_ps": 61,
+      "quality_score": 0.548,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "pip",
+      "product": "dulwich",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-8w8g-wq8h-fq33",
+        "https://github.com/jelmer/dulwich/security/advisories/GHSA-8w8g-wq8h-fq33",
+        "https://github.com/jelmer/dulwich/commit/9389fcb5cb9113adfc7f207d8be86a56904db3e8",
+        "https://github.com/jelmer/dulwich/releases/tag/dulwich-1.2.8"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.547"
+        ],
+        "priority": [
+          "base_ps=61 (no boosts)"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "iocs": []
+    },
+    {
+      "id": "GHSA-e7744339e83136c5",
+      "title": "Dulwich: Symlink directory traversal in filter-branch index_filter via cross-commit state persistence",
+      "description": "## Summary Dulwich's `filter_branch.py` `CommitFilter._apply_index_filter()` is vulnerable to symlink directory traversal. When processing commit history, materialized tree entries (including symlinks) persist in the working directory between commits, allowing a symlink from an ancestor commit to re",
+      "cvss": 8.6,
+      "final_ps": 61,
+      "quality_score": 0.548,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "pip",
+      "product": "dulwich",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-5fqc-mrg8-w798",
+        "https://github.com/jelmer/dulwich/security/advisories/GHSA-5fqc-mrg8-w798",
+        "https://github.com/jelmer/dulwich/commit/9571ac60b851fce228dae7ededb380c6ce9b3fb8",
+        "https://github.com/jelmer/dulwich/releases/tag/dulwich-1.2.8"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.547"
+        ],
+        "priority": [
+          "base_ps=61 (no boosts)"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "iocs": []
+    },
+    {
+      "id": "GHSA-ca4304846070a22b",
+      "title": "Dulwich: Symlink directory traversal in stash pop allows arbitrary file write via intermediate directory symlinks",
+      "description": "## Summary Dulwich's `stash.py:pop()` function is vulnerable to symlink directory traversal, allowing an attacker to write arbitrary files outside the repository worktree when a victim pops a stash in a malicious repository. ## Root Cause The `pop()` function at `dulwich/stash.py:236` uses `os.path.",
+      "cvss": 8.6,
+      "final_ps": 61,
+      "quality_score": 0.548,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "pip",
+      "product": "dulwich",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-cm62-gvxx-vmxx",
+        "https://github.com/jelmer/dulwich/security/advisories/GHSA-cm62-gvxx-vmxx",
+        "https://github.com/jelmer/dulwich/commit/40a542cb02f9ac39a9eeac1193472903098698f9",
+        "https://github.com/jelmer/dulwich/releases/tag/dulwich-1.2.8"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.547"
+        ],
+        "priority": [
+          "base_ps=61 (no boosts)"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-63688",
+      "title": "Dell CSM Flaws Enable Unauthenticated Admin Access and Root on Kubernetes Nodes",
+      "description": "Dell has released security updates to address multiple critical security flaws in Dell Container Storage Modules (CSM) that could be exploited by bad actors to take over susceptible systems. The vulnerabilities are listed below - CVE-2026-63688 (CVSS score: 10.0) - A missing authentication for criti",
+      "cvss": 10,
+      "final_ps": 60,
+      "quality_score": 0.478,
+      "threat_level": "MEDIUM",
+      "type": "CLOUD_SECURITY",
+      "source": "thehackernews",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "thehackernews"
+      ],
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "The Hacker News",
+      "product": "Threat Intelligence",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-63688"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://thehackernews.com/2026/10/dell-csm-flaws-enable-unauthenticated.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.55 (thehackernews)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.478"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "GHSA-612e2e93ceef74b1",
+      "title": "Trigger.dev: Server-side request forgery via unvalidated webhook alert-channel URL",
+      "description": "### Summary\nA project member can create a webhook alert channel whose delivery URL points at an internal address, and trigger.dev's control plane will send the alert there with no SSRF protection. The webhook URL is stored as an unvalidated string and is fetched directly from the webapp server, so a",
+      "cvss": 7.7,
+      "final_ps": 59,
+      "quality_score": 0.548,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "trigger.dev",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-xxv7-2vv3-h682",
+        "https://github.com/triggerdotdev/trigger.dev/security/advisories/GHSA-xxv7-2vv3-h682",
+        "https://github.com/triggerdotdev/trigger.dev/pull/4199",
+        "https://github.com/triggerdotdev/trigger.dev/releases/tag/v4.5.2"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.547"
+        ],
+        "priority": [
+          "base_ps=59 (no boosts)"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-18397",
+      "title": "8 out of 10 Banks HATE This One Weird 3SKey RCE",
+      "description": "TL;DR. SConnect - 1M+ users, an extension middleware+native host for authentication with eIDs, 3SKeys and other hardware signing tokens had a drive-by RCE which enabled any site or iframe a user saw to silently download and execute a dll due to a poor hand-rolled implementation of RSA-2048 token val",
+      "cvss": 9.4,
+      "final_ps": 58,
+      "quality_score": 0.445,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "reddit_netsec",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "reddit_netsec"
+      ],
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "reddit_netsec",
+      "product": "Threat Intelligence",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-18397"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.reddit.com/r/netsec/comments/1wvxp1p/8_out_of_10_banks_hate_this_one_weird_3skey_rce/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.42 (reddit_netsec)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.445"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": "Tier-4 (social/community) source only, no authoritative confirmation",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Tier-4 (social/community) source only, no authoritative confirmation",
+      "iocs": []
+    },
+    {
+      "id": "GHSA-ef195f320376f915",
+      "title": "Trigger.dev: Run replay injects a task run into an attacker-chosen environment (cross-tenant write)",
+      "description": "### Summary\nThe dashboard replay action authorizes the source run (it must belong to the caller's org), but the target environment for the replayed run is taken verbatim from the request body and is never checked for org or project membership. The environment lookup used by the replay path filters b",
+      "cvss": 7.1,
+      "final_ps": 57,
+      "quality_score": 0.548,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "trigger.dev",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-qxpp-qjg8-x4jv",
+        "https://github.com/triggerdotdev/trigger.dev/security/advisories/GHSA-qxpp-qjg8-x4jv",
+        "https://github.com/triggerdotdev/trigger.dev/pull/4199",
+        "https://github.com/triggerdotdev/trigger.dev/commit/34b1a181c2a1d33a53ebab88f84b05f81fea4254"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.547"
+        ],
+        "priority": [
+          "base_ps=57 (no boosts)"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-86131",
+      "title": "WatchGuard fixes critical Fireware OS flaw allowing remote code execution",
+      "description": "WatchGuard fixes 15 Fireware OS flaws, including a critical RCE bug that could give attackers root access to vulnerable Firebox appliances. WatchGuard has released security updates for Fireware OS that address 15 vulnerabilities, including a critical code injection flaw, tracked ... [Full analysis a",
+      "cvss": 9.8,
+      "final_ps": 57,
+      "quality_score": 0.458,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-86131"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://securityaffairs.com/200108/security/watchguard-fixes-critical-fireware-os-flaw-allowing-remote-code-execution.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=2d (score=0.65)",
+          "QS=0.458"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
     {
       "id": "CVE-2026-50522",
       "title": "Critical SharePoint RCE CVE-2026-50522 Under Active Exploitation After Public PoC",
@@ -56,6 +476,51 @@
       },
       "suppressed": false,
       "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "BLEEPINGCOMPUTER-e4abf7cb8ed77a4f",
+      "title": "Warlock ransomware breach SharePoint in water, telecom operator attacks",
+      "description": "The China-linked ransomware group Warlock targeted a water utility, a telecom provider, a regional government body, and a university by exploiting SharePoint vulnerabilities to gain initial access. [...]",
+      "cvss": 0,
+      "final_ps": 51,
+      "quality_score": 0.42,
+      "threat_level": "MEDIUM",
+      "type": "RANSOMWARE",
+      "source": "bleepingcomputer",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "bleepingcomputer"
+      ],
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": true,
+      "vendor": "BleepingComputer",
+      "product": "Threat Intelligence",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.bleepingcomputer.com/news/security/warlock-ransomware-breach-sharepoint-in-water-telecom-operator-attacks/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.72 (bleepingcomputer)",
+          "data_confidence=0.65",
+          "recency=0d (score=1.00)",
+          "QS=0.420"
+        ],
+        "priority": [
+          "+10 ransomware_confirmed",
+          "+4 critical_infra"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
       "iocs": []
     },
     {
@@ -190,6 +655,51 @@
       },
       "suppressed": false,
       "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "SENTINELAPEX-1739a08ec27b",
+      "title": "'Warlock' ransomware used in attacks on critical infrastructure in Portuguese, Spanish-speaking countries",
+      "description": "The group is exploiting a variety of vulnerabilities impacting Microsoft SharePoint, according to a new report from Symantec Threat Hunter Team.",
+      "cvss": 0,
+      "final_ps": 49,
+      "quality_score": 0.392,
+      "threat_level": "MEDIUM",
+      "type": "RANSOMWARE",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": true,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://therecord.media/warlock-ransomware-used-in-critical-infrastructure-attacks"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.35",
+          "recency=0d (score=1.00)",
+          "QS=0.392"
+        ],
+        "priority": [
+          "+10 ransomware_confirmed",
+          "+4 critical_infra"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
       "iocs": []
     },
     {
@@ -662,9 +1172,9 @@
       "iocs": []
     },
     {
-      "id": "SENTINELAPEX-77fe80a2ea92",
-      "title": "Operation KillSwitch: Police Dismantle KillSec Ransomware Group",
-      "description": "Operation KillSwitch: Europol says the KillSec ransomware group, allegedly led by a 16-year-old, was dismantled after attacks on about 1,000 victims. Law enforcement seized control of KillSec &#8216;s dark web leak site, the Tor website the group used to threaten victims with pub... [Full analysis a",
+      "id": "SENTINELAPEX-1cf74ea9ab66",
+      "title": "Mississippi mayor says ransomware incident led city to shut down systems",
+      "description": "Government services were temporarily disrupted by ransomware in Vicksburg, Mississippi. Mayor Willis Thompson said the FBI and other authorities are investigating.",
       "cvss": 0,
       "final_ps": 41,
       "quality_score": 0.392,
@@ -675,8 +1185,8 @@
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-10-01",
-      "last_seen": "2026-10-01",
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": true,
@@ -686,7 +1196,7 @@
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://securityaffairs.com/200200/cyber-crime/operation-killswitch-police-dismantle-killsec-ransomware-group.html"
+        "https://therecord.media/vicksburg-mississippi-government-ransomware-attack"
       ],
       "explanation": {
         "quality": [
@@ -1528,6 +2038,50 @@
       },
       "suppressed": false,
       "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "SENTINELAPEX-77fe80a2ea92",
+      "title": "Operation KillSwitch: Police Dismantle KillSec Ransomware Group",
+      "description": "Operation KillSwitch: Europol says the KillSec ransomware group, allegedly led by a 16-year-old, was dismantled after attacks on about 1,000 victims. Law enforcement seized control of KillSec &#8216;s dark web leak site, the Tor website the group used to threaten victims with pub... [Full analysis a",
+      "cvss": 0,
+      "final_ps": 40,
+      "quality_score": 0.378,
+      "threat_level": "LOW",
+      "type": "RANSOMWARE",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-01",
+      "last_seen": "2026-10-01",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": true,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://securityaffairs.com/200200/cyber-crime/operation-killswitch-police-dismantle-killsec-ransomware-group.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.35",
+          "recency=1d (score=0.85)",
+          "QS=0.378"
+        ],
+        "priority": [
+          "+10 ransomware_confirmed"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
       "iocs": []
     },
     {
@@ -2778,6 +3332,51 @@
       "iocs": []
     },
     {
+      "id": "SENTINELAPEX-42b7520fda02",
+      "title": "Warlock ransomware breach SharePoint in water, telecom operator attacks",
+      "description": "Warlock ransomware breach SharePoint in water, telecom operator attacks",
+      "cvss": 0,
+      "final_ps": 39,
+      "quality_score": 0.343,
+      "threat_level": "LOW",
+      "type": "RANSOMWARE",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": true,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.bleepingcomputer.com/news/security/warlock-ransomware-breach-sharepoint-in-water-telecom-operator-attacks/",
+        "https://intel.cyberdudebivash.com/reports/2026/10/intel--1de5d6d7f66c9d0f1f1f4ca4.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.10",
+          "recency=0d (score=1.00)",
+          "QS=0.343"
+        ],
+        "priority": [
+          "+10 ransomware_confirmed"
+        ],
+        "suppression": "Quality score below minimum threshold (QS < 0.35)",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Quality score below minimum threshold (QS < 0.35)",
+      "iocs": []
+    },
+    {
       "id": "CVE-2026-5430",
       "title": "WSO2 and Adobe Commerce Flaws Exploited in Attacks, Added to CISA KEV",
       "description": "",
@@ -3249,6 +3848,57 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-61586",
+      "title": "Copernik XML Factory (stock JDK provider) has Improper restriction of XInclude resource resolution",
+      "description": "Copernik XML Factory through `0.1.1`, when running on its stock JDK provider, does not block XInclude resource resolution after an application enables XInclude on a factory returned by `XmlFactories.newDocumentBuilderFactory()` or `XmlFactories.newSAXParserFactory()`, or on an `XMLReader` passed thr",
+      "cvss": 0,
+      "final_ps": 32,
+      "quality_score": 0.45,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 2,
+      "merged_sources": [
+        "github_advisories",
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "maven",
+      "product": "eu.copernik:copernik-xml-factory",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-61586"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-xm28-xvqc-gxxg",
+        "https://github.com/copernik-eu/copernik-xml-factory/security/advisories/GHSA-xm28-xvqc-gxxg",
+        "https://github.com/copernik-eu/copernik-xml-factory/commit/2fa042c44931b0a4ddd585d62b97a8a987efd6c6",
+        "https://github.com/copernik-eu/copernik-xml-factory/commit/e5febc6039ed4b0088245acb80ed7d6d6a7f5537"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.65",
+          "multi_source=2 sources",
+          "recency=999d (score=0.05)",
+          "QS=0.450"
+        ],
+        "priority": [
+          "base_ps=32 (no boosts)"
+        ],
+        "suppression": "Item is older than 48h and priority score is below 40",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Item is older than 48h and priority score is below 40",
+      "iocs": []
+    },
+    {
       "id": "CVE-2026-19489",
       "title": "Critical: Citrix NetScaler 0-Day RCE Vulnerabilities Actively Exploited in Attacks (CVE-2026-19489)",
       "description": "",
@@ -3382,6 +4032,236 @@
         "priority": [
           "+7 zero_day",
           "+4 critical_infra"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-55559",
+      "title": "Exploit for CVE-2026-55559",
+      "description": "",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-55559"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://sploitus.com/exploit?id=DB9097F8-13AE-5F20-A827-547A76255217&utm_source=rss&utm_medium=rss"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-104848",
+      "title": "CVE-2026-104848 - Tinypool: Prototype Pollution gadget in worker options leads to Remote Code Execution",
+      "description": "",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-104848"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-104848"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-90970",
+      "title": "CVE-2026-90970 - Improper Neutralization of Special Elements Used in a Template Engine in GitLab AI Gateway",
+      "description": "",
+      "cvss": 9.9,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-90970"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-90970"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-102795",
+      "title": "CVE-2026-102795 - Apache Traffic Server: SNI to Host header matching policy is not properly enforced",
+      "description": "",
+      "cvss": 9.3,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-102795"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-102795"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-19856",
+      "title": "CVE-2026-19856 - All in One SEO < 5.0.2.1 - Unauthenticated Arbitrary Shortcode Execution via Search Query",
+      "description": "",
+      "cvss": 9.1,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-19856"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-19856"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
         ],
         "suppression": null,
         "merge": null
@@ -4219,242 +5099,11 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-96173",
-      "title": "CVE-2026-96173 - Payments for Hubtel < 1.0.2 - Unauthenticated Order Key Disclosure via IDOR",
-      "description": "",
-      "cvss": 9.1,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-01",
-      "last_seen": "2026-10-01",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-96173"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-96173"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-96200",
-      "title": "CVE-2026-96200 - Payments for Hubtel < 1.0.2 - Unauthenticated Payment Confirmation Forgery via Delayed Payment Callback",
-      "description": "",
-      "cvss": 9.1,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-01",
-      "last_seen": "2026-10-01",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-96200"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-96200"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-96255",
-      "title": "CVE-2026-96255 - Payments for Hubtel < 1.0.2 - Unauthenticated Payment Gateway Credentials Disclosure via Debug Log",
-      "description": "",
-      "cvss": 9.1,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-01",
-      "last_seen": "2026-10-01",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-96255"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-96255"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-86131",
-      "title": "WatchGuard fixes critical Fireware OS flaw allowing remote code execution",
-      "description": "",
-      "cvss": 9.8,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-09-30",
-      "last_seen": "2026-09-30",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-86131"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://securityaffairs.com/200108/security/watchguard-fixes-critical-fireware-os-flaw-allowing-remote-code-execution.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-102490",
-      "title": "Zammad 0-Day Vulnerabilities Exploited to Gain Remote Code Execution and Root Access",
-      "description": "",
-      "cvss": 7.8,
-      "final_ps": 25,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "ZERO_DAY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-02",
-      "last_seen": "2026-10-02",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-102490",
-        "CVE-2026-102489"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cybersecuritynews.com/zammad-0-day-vulnerabilities-exploited/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+7 zero_day"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-104120",
-      "title": "CVE-2026-104120 - modelcontextprotocol mcp-server-fetch/mcp-server-everything Fetch Tool server.py fetch_url server-side",
+      "id": "CVE-2026-104637",
+      "title": "CVE-2026-104637 - onetwothreeneth HospitalManagementSystem controller.php edit_patient unrestricted upload",
       "description": "",
       "cvss": 7.3,
-      "final_ps": 18,
+      "final_ps": 22,
       "quality_score": 0.438,
       "threat_level": "LOW",
       "type": "CVE_REPORT",
@@ -4472,11 +5121,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-104120"
+        "CVE-2026-104637"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-104120"
+        "https://cvefeed.io/vuln/detail/CVE-2026-104637"
       ],
       "explanation": {
         "quality": [
@@ -4486,7 +5135,7 @@
           "QS=0.438"
         ],
         "priority": [
-          "base_ps=18 (no boosts)"
+          "+4 critical_infra"
         ],
         "suppression": null,
         "merge": null
@@ -4496,12 +5145,12 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-41303",
-      "title": "CVE-2026-41303 exploit",
+      "id": "CVE-2026-104638",
+      "title": "CVE-2026-104638 - onetwothreeneth HospitalManagementSystem sessions.php improper authentication",
       "description": "",
-      "cvss": 8.8,
-      "final_ps": 18,
-      "quality_score": 0.438,
+      "cvss": 5.3,
+      "final_ps": 20,
+      "quality_score": 0.398,
       "threat_level": "LOW",
       "type": "CVE_REPORT",
       "source": "sentinel_apex",
@@ -4509,8 +5158,8 @@
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-10-01",
-      "last_seen": "2026-10-01",
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -4518,21 +5167,21 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-41303"
+        "CVE-2026-104638"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://sploitus.com/exploit?id=KITPLOIT:TOOLS-GITHUB-KALETH4-CVE-2026-41303&utm_source=rss&utm_medium=rss"
+        "https://cvefeed.io/vuln/detail/CVE-2026-104638"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
+          "data_confidence=0.25",
           "recency=0d (score=1.00)",
-          "QS=0.438"
+          "QS=0.398"
         ],
         "priority": [
-          "base_ps=18 (no boosts)"
+          "+4 critical_infra"
         ],
         "suppression": null,
         "merge": null
@@ -4542,12 +5191,12 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-86344",
-      "title": "CVE-2026-86344 - 389-ds-base: 389-ds-base: unauthenticated worker-thread-pool exhaustion via completed-operation-then-in",
+      "id": "CVE-2026-32585",
+      "title": "CVE-2026-32585 - WordPress Airano MCP Bridge plugin <= 2.11.0 - Broken Access Control vulnerability",
       "description": "",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
+      "cvss": 6.5,
+      "final_ps": 16,
+      "quality_score": 0.398,
       "threat_level": "LOW",
       "type": "CVE_REPORT",
       "source": "sentinel_apex",
@@ -4555,8 +5204,8 @@
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-10-01",
-      "last_seen": "2026-10-01",
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -4564,21 +5213,21 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-86344"
+        "CVE-2026-32585"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-86344"
+        "https://cvefeed.io/vuln/detail/CVE-2026-32585"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
+          "data_confidence=0.25",
           "recency=0d (score=1.00)",
-          "QS=0.438"
+          "QS=0.398"
         ],
         "priority": [
-          "base_ps=18 (no boosts)"
+          "base_ps=16 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4588,12 +5237,12 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-103761",
-      "title": "CVE-2026-103761 - Mooncake transfer engine through 0.3.13.post1 Memory Exhaustion via Unbounded Notify Queue",
+      "id": "CVE-2026-39439",
+      "title": "CVE-2026-39439 - WordPress WebSamurai plugin <= 1.0.7 - Broken Access Control vulnerability",
       "description": "",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
+      "cvss": 6.5,
+      "final_ps": 16,
+      "quality_score": 0.398,
       "threat_level": "LOW",
       "type": "CVE_REPORT",
       "source": "sentinel_apex",
@@ -4601,8 +5250,8 @@
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-10-01",
-      "last_seen": "2026-10-01",
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -4610,21 +5259,21 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-103761"
+        "CVE-2026-39439"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-103761"
+        "https://cvefeed.io/vuln/detail/CVE-2026-39439"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
+          "data_confidence=0.25",
           "recency=0d (score=1.00)",
-          "QS=0.438"
+          "QS=0.398"
         ],
         "priority": [
-          "base_ps=18 (no boosts)"
+          "base_ps=16 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4634,12 +5283,12 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-63045",
-      "title": "CVE-2026-63045: Apache HTTP Server: mod_proxy_ftp PASV address handling",
+      "id": "CVE-2026-102626",
+      "title": "CVE-2026-102626 - LimeSurvey Community Edition 7.4.0 - Stored XSS through the Date/Time date_min question attribute",
       "description": "",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
+      "cvss": 6.1,
+      "final_ps": 16,
+      "quality_score": 0.398,
       "threat_level": "LOW",
       "type": "CVE_REPORT",
       "source": "sentinel_apex",
@@ -4647,8 +5296,8 @@
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-10-01",
-      "last_seen": "2026-10-01",
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -4656,21 +5305,21 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-63045"
+        "CVE-2026-102626"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://seclists.org/oss-sec/2026/q4/22"
+        "https://cvefeed.io/vuln/detail/CVE-2026-102626"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
+          "data_confidence=0.25",
           "recency=0d (score=1.00)",
-          "QS=0.438"
+          "QS=0.398"
         ],
         "priority": [
-          "base_ps=18 (no boosts)"
+          "base_ps=16 (no boosts)"
         ],
         "suppression": null,
         "merge": null

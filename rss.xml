@@ -14,7 +14,7 @@
     <copyright>Copyright 2026 CyberDudeBivash. All rights reserved.</copyright>
     <managingEditor>bivash@cyberdudebivash.com (CyberDudeBivash)</managingEditor>
     <webMaster>bivash@cyberdudebivash.com (CyberDudeBivash)</webMaster>
-    <lastBuildDate>Fri, 02 Oct 2026 16:33:42 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 02 Oct 2026 21:00:40 GMT</lastBuildDate>
     <pubDate>Fri, 02 Oct 2026 12:00:00 +0000</pubDate>
     <ttl>60</ttl>
     <category>Cybersecurity</category>
@@ -31,7 +31,159 @@
       <height>144</height>
     </image>
 
-    <item>
+      <item>
+    <title><![CDATA[Dulwich: Arbitrary File Write (RCE) on Windows via Unvalidated Drive Letters in Tree Paths]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/dulwich-arbitrary-file-write-rce-on-windows-via-unvalidat.html</link>
+    <description><![CDATA[Score 66/100 HIGH — CVSS 8.8 — ### Affected files
+* `dulwich/index.py` (Methods: `validate_path_element_ntfs`, `_tree_to_fs_path`)
+* `dulwich/porcelain/__init__.py` (Method: `_checked_worktree_path`) ### Description / Summary
+A High-severity Path Traversal vulnerability exists in Dulwich's checkout logic when running on Windows. . Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Fri, 02 Oct 2026 21:00:40 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/dulwich-arbitrary-file-write-rce-on-windows-via-unvalidat.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Dulwich: Symlink write-through in checkout(paths=[]) via raw os.open bypasses all symlink protections]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/dulwich-symlink-write-through-in-checkout-paths-via-raw.html</link>
+    <description><![CDATA[Score 65/100 HIGH — CVSS 8.6 — ## Summary Dulwich's `porcelain.checkout(paths=[...])` code path writes files using raw `os.open(file_path, O_WRONLY|O_CREAT|O_TRUNC, mode)` followed by `f.write(obj.data)`. This code path does NOT call `build_file_from_blob()` at all, completely bypassing any symlink protections (including the unre. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Fri, 02 Oct 2026 21:00:40 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/dulwich-symlink-write-through-in-checkout-paths-via-raw.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Dulwich: Symlink directory traversal in filter-branch index_filter via cross-commit state persistence]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/dulwich-symlink-directory-traversal-in-filter-branch-index.html</link>
+    <description><![CDATA[Score 65/100 HIGH — CVSS 8.6 — ## Summary Dulwich's `filter_branch.py` `CommitFilter._apply_index_filter()` is vulnerable to symlink directory traversal. When processing commit history, materialized tree entries (including symlinks) persist in the working directory between commits, allowing a symlink from an ancestor commit to re. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Fri, 02 Oct 2026 21:00:40 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/dulwich-symlink-directory-traversal-in-filter-branch-index.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Dulwich: Symlink directory traversal in stash pop allows arbitrary file write via intermediate directory symlinks]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/dulwich-symlink-directory-traversal-in-stash-pop-allows-arb.html</link>
+    <description><![CDATA[Score 65/100 HIGH — CVSS 8.6 — ## Summary Dulwich's `stash.py:pop()` function is vulnerable to symlink directory traversal, allowing an attacker to write arbitrary files outside the repository worktree when a victim pops a stash in a malicious repository. ## Root Cause The `pop()` function at `dulwich/stash.py:236` uses `os.path.. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Fri, 02 Oct 2026 21:00:40 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/dulwich-symlink-directory-traversal-in-stash-pop-allows-arb.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Trigger.dev: Server-side request forgery via unvalidated webhook alert-channel URL]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/trigger-dev-server-side-request-forgery-via-unvalidated-web.html</link>
+    <description><![CDATA[Score 61/100 MEDIUM — CVSS 7.7 — ### Summary
+A project member can create a webhook alert channel whose delivery URL points at an internal address, and trigger.dev's control plane will send the alert there with no SSRF protection. The webhook URL is stored as an unvalidated string and is fetched directly from the webapp server, so a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Fri, 02 Oct 2026 21:00:40 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/trigger-dev-server-side-request-forgery-via-unvalidated-web.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Trigger.dev: Run replay injects a task run into an attacker-chosen environment (cross-tenant write)]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/trigger-dev-run-replay-injects-a-task-run-into-an-attacker.html</link>
+    <description><![CDATA[Score 59/100 MEDIUM — CVSS 7.1 — ### Summary
+The dashboard replay action authorizes the source run (it must belong to the caller's org), but the target environment for the replayed run is taken verbatim from the request body and is never checked for org or project membership. The environment lookup used by the replay path filters b. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Fri, 02 Oct 2026 21:00:40 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/trigger-dev-run-replay-injects-a-task-run-into-an-attacker.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-104848 - Tinypool: Prototype Pollution gadget in worker options leads to Remote Code Execution]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-104848.html</link>
+    <description><![CDATA[Score 51/100 MEDIUM — CVSS 9.8 — CVE-2026-104848 - Tinypool: Prototype Pollution gadget in worker options leads to Remote Code Execution. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Fri, 02 Oct 2026 21:00:40 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-104848.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Exploit for CVE-2026-55559]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-55559.html</link>
+    <description><![CDATA[Score 51/100 MEDIUM — CVSS 9.8 — Proof-of-concept exploit for CVE-2026-55559. CVSS 9.8.. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Fri, 02 Oct 2026 21:00:40 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-55559.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-90970 - Improper Neutralization of Special Elements Used in a Template Engine in GitLab AI Gateway]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-90970.html</link>
+    <description><![CDATA[Score 51/100 MEDIUM — CVSS 9.9 — CVE ID : CVE-2026-90970
+
+ Published : Oct. 2, 2026, 2:34 p.m. | 53 minutes ago
+
+ Description : GitLab has remediated a vulnerability in the GitLab AI Gateway component affecting all versions of the AI Gateway from 18.1.6 before 19.2.4, 19.3 before 19.3.2, and 19.4 before 19.4.1 t... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Fri, 02 Oct 2026 21:00:40 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-90970.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Dell CSM Flaws Enable Unauthenticated Admin Access and Root on Kubernetes Nodes]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-63688-the-hacker-news-threat-intelligence.html</link>
+    <description><![CDATA[Score 51/100 MEDIUM — CVSS 10 — Dell has released security updates to address multiple critical security flaws in Dell Container Storage Modules (CSM) that could be exploited by bad actors to take over susceptible systems. The vulnerabilities are listed below - CVE-2026-63688 (CVSS score: 10.0) - A missing authentication for criti. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Fri, 02 Oct 2026 21:00:40 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-63688-the-hacker-news-threat-intelligence.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CLOUD_SECURITY</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-102795 - Apache Traffic Server: SNI to Host header matching policy is not properly enforced]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-102795.html</link>
+    <description><![CDATA[Score 50/100 MEDIUM — CVSS 9.3 — CVE-2026-102795 - Apache Traffic Server: SNI to Host header matching policy is not properly enforced. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Fri, 02 Oct 2026 21:00:40 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-102795.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[8 out of 10 Banks HATE This One Weird 3SKey RCE]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-18397-reddit-netsec-threat-intelligence.html</link>
+    <description><![CDATA[Score 50/100 MEDIUM — CVSS 9.4 — TL;DR. SConnect - 1M+ users, an extension middleware+native host for authentication with eIDs, 3SKeys and other hardware signing tokens had a drive-by RCE which enabled any site or iframe a user saw to silently download and execute a dll due to a poor hand-rolled implementation of RSA-2048 token val. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Fri, 02 Oct 2026 21:00:40 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-18397-reddit-netsec-threat-intelligence.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-19856 - All in One SEO < 5.0.2.1 - Unauthenticated Arbitrary Shortcode Execution via Search Query]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-19856.html</link>
+    <description><![CDATA[Score 49/100 MEDIUM — CVSS 9.1 — CVE-2026-19856 - All in One SEO < 5.0.2.1 - Unauthenticated Arbitrary Shortcode Execution via Search Query. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Fri, 02 Oct 2026 21:00:40 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-19856.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-104637 - onetwothreeneth HospitalManagementSystem controller.php edit_patient unrestricted upload]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-104637.html</link>
+    <description><![CDATA[Score 49/100 MEDIUM — CVSS 7.3 — CVE ID : CVE-2026-104637
+
+ Published : Oct. 2, 2026, 2:45 p.m. | 42 minutes ago
+
+ Description : A weakness has been identified in onetwothreeneth HospitalManagementSystem up to 9ef91ed6007314b6473110ed699dff76d158f61d. The affected element is the function add_patient/add_physicia... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Fri, 02 Oct 2026 21:00:40 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-104637.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-104638 - onetwothreeneth HospitalManagementSystem sessions.php improper authentication]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-104638.html</link>
+    <description><![CDATA[Score 40/100 LOW — CVSS 5.3 — CVE ID : CVE-2026-104638
+
+ Published : Oct. 2, 2026, 3 p.m. | 27 minutes ago
+
+ Description : A security vulnerability has been detected in onetwothreeneth HospitalManagementSystem up to 9ef91ed6007314b6473110ed699dff76d158f61d. The impacted element is an unknown function of the f... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Fri, 02 Oct 2026 21:00:40 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-104638.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
     <title><![CDATA[Zammad 0-Day Vulnerabilities Exploited to Gain Remote Code Execution and Root Access]]></title>
     <link>https://blog.cyberdudebivash.in/posts/cve-2026-102490.html</link>
     <description><![CDATA[Score 54/100 MEDIUM — CVSS 7.8 — Two critical Zammad zero-day flaws, reportedly exploited against the Dutch Institute for Vulnerability Disclosure (DIVD), could allow session hijacking, remote command execution as the Zammad service user, and potential root privilege escalation. The vulnerabilities are tracked a... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
