@@ -12,7 +12,7 @@ wishlist. Principle, stated because one real tension below tests it:
 | IOC normalization | `fetch-live-intel.js` (live pipeline) + `ioc_extractor.py` (offline, on-demand) | Live: continuous. Offline: manual invocation |
 | Detection generation (Sigma/KQL/Splunk/OSQuery/Suricata) | `engine-node`'s Detection Engine, wired into `fetch-live-intel.js` | Every 30 minutes, same cadence as ingestion |
 | Metadata enrichment (CVSS/EPSS/KEV) | Live: `fetch-live-intel.js`. Offline: `enrichment.py` | Live: continuous. Offline: manual/on-demand |
-| Publication (posts, RSS, sitemap) | `blogger-syndication.yml` (every 2h), `generate-rss.yml` (every 6h), `sentinel-apex.yml` (every 30 min) | See each workflow's own cron; throttled by `vercel-ignore-build.sh` for deploy-quota reasons |
+| Publication (posts, RSS, sitemap) | `blogger-syndication.yml` (hourly, target 4 verified Blogger reports/run), `generate-rss.yml` (every 6h), `sentinel-apex.yml` (every 30 min) | Blogger cadence is a P0 customer-facing freshness SLO; evidence/certification/fetch-back gates remain fail closed |
 | AI security intelligence collection | `ai-security-intel.yml` → `ai-security-intel-engine.js` | Scheduled |
 | Freshness checking | `freshness-check.yml` | Scheduled |
 | CVE page generation | `cve-pages.yml` | Scheduled |
