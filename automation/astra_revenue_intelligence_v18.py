@@ -100,6 +100,7 @@ _RUNTIME = {
     "selected_scores_count": 0,
     "selected_score_max": 0,
     "selected_bands": Counter(),
+    "selected_readiness_bands": Counter(),
     "continuation_candidates": 0,
     "continuation_attempts": 0,
     "continuation_fragments": 0,
@@ -173,6 +174,41 @@ def _published_age_hours(article: Any) -> Optional[float]:
     age = datetime.now(timezone.utc) - parsed.astimezone(timezone.utc)
     return max(0.0, age.total_seconds() / 3600.0)
 
+
+def generation_readiness(article: Any) -> tuple[int, int, int]:
+    """Estimate whether source evidence can support the unchanged premium gate.
+
+    This is a scheduling hint only. It never grants publication permission and
+    never changes ReportX/premium quality thresholds. The intent is to spend a
+    finite free-provider generation budget on the source-backed candidates most
+    likely to survive the existing 2,200-word / 18-paragraph / 18-list-item
+    contract instead of repeatedly transforming obviously thin inputs first.
+
+    Returns (band, source_words, structured_fields), where higher is better.
+    """
+    try:
+        source_words = int(_capacity._source_word_count(article))
+    except Exception:
+        source_words = 0
+    try:
+        structured = int(_capacity._structured_evidence_count(article))
+    except Exception:
+        structured = 0
+
+    # Band 4 matches the capacity allocator provider-independent evidence
+    # threshold. Lower bands preserve fallback supply; this is prioritization,
+    # not filtering, so a thin but important source can still be attempted.
+    if _capacity._provider_independent_candidate(article):
+        band = 4
+    elif source_words >= 1400 or (source_words >= 1000 and structured >= 6):
+        band = 3
+    elif source_words >= 800 or structured >= 6:
+        band = 2
+    elif source_words >= 350 or structured >= 4:
+        band = 1
+    else:
+        band = 0
+    return band, source_words, structured
 
 def commercial_priority(article: Any) -> CommercialPriority:
     """Score finite publication capacity by customer/product utility.
@@ -269,11 +305,23 @@ def _astra_priority_key(article: Any):
         raise RuntimeError("ASTRA v18 scheduler priority is not installed")
     base = _INNER_PRIORITY_KEY(article)
     priority = commercial_priority(article)
-    # Preserve the proven scheduler invariant: canonical first. Commercial
-    # value only orders candidates inside that lane before freshness/hash.
+    readiness_band, source_words, structured = generation_readiness(article)
+    # Preserve the proven scheduler invariant: canonical first. Inside that
+    # trust lane, generation feasibility comes before commercial score so the
+    # hourly factory spends scarce transformation/provider work on evidence
+    # capable of meeting the unchanged premium semantic contract. No candidate
+    # is filtered or promoted past the publication gate by this ordering.
+    evidence_density = min(9999, source_words) + min(99, structured) * 100
     if isinstance(base, tuple) and len(base) >= 3:
-        return (base[0], priority.score, *base[1:])
-    return (0, priority.score, 0.0, str(getattr(article, "content_hash", "") or ""))
+        return (base[0], readiness_band, evidence_density, priority.score, *base[1:])
+    return (
+        0,
+        readiness_band,
+        evidence_density,
+        priority.score,
+        0.0,
+        str(getattr(article, "content_hash", "") or ""),
+    )
 
 
 def _astra_select_publication_batch(retry_articles, fresh_articles, max_posts: int):
@@ -283,10 +331,14 @@ def _astra_select_publication_batch(retry_articles, fresh_articles, max_posts: i
     _RUNTIME["selection_runs"] += 1
 
     priorities = [commercial_priority(article) for article in selection.articles]
+    readiness = [generation_readiness(article) for article in selection.articles]
     scores = [item.score for item in priorities]
     bands = Counter(item.band for item in priorities)
+    readiness_bands = Counter(f"R{item[0]}" for item in readiness)
     for item in priorities:
         _RUNTIME["selected_bands"][item.band] += 1
+    for band, count in readiness_bands.items():
+        _RUNTIME["selected_readiness_bands"][band] += count
     if scores:
         _RUNTIME["selected_scores_sum"] += sum(scores)
         _RUNTIME["selected_scores_count"] += len(scores)
@@ -299,6 +351,8 @@ def _astra_select_publication_batch(retry_articles, fresh_articles, max_posts: i
         "commercial_selected_average": round(sum(scores) / len(scores), 2) if scores else 0.0,
         "commercial_selected_max": max(scores) if scores else 0,
         "commercial_priority_bands": dict(sorted(bands.items())),
+        "generation_readiness_bands": dict(sorted(readiness_bands.items())),
+        "generation_readiness_semantics": "source_evidence_feasibility_not_publication_permission",
     })
     return _scheduler.PublicationSelection(list(selection.articles), metrics)
 
@@ -592,6 +646,8 @@ def telemetry_snapshot() -> dict:
         "selected_score_average": round(average, 2),
         "selected_score_max": int(_RUNTIME["selected_score_max"]),
         "selected_priority_bands": dict(_RUNTIME["selected_bands"]),
+        "selected_generation_readiness_bands": dict(_RUNTIME["selected_readiness_bands"]),
+        "generation_readiness_semantics": "source_evidence_feasibility_not_publication_permission",
         "continuation_candidates": int(_RUNTIME["continuation_candidates"]),
         "continuation_attempts": int(_RUNTIME["continuation_attempts"]),
         "continuation_fragments": int(_RUNTIME["continuation_fragments"]),
