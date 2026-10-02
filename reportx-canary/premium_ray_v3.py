@@ -11,8 +11,9 @@ validates every Sigma rule with the pySigma reference parser when available
   exports/v3/<report_id>-REVIEWER-PACK.md   reviewer pack, diffed against v1
   exports/v3/RELEASE-MANIFEST.json          hash, size, gate result
 
-Nothing here approves anything: a named human runs `cli.py reportx-review
-approve` on the export after reading it (docs/quality/PREMIUM-REPORT-HUMAN-REVIEW.md).
+Nothing here auto-approves anything: the authorized CYBERDUDEBIVASH internal
+review authority records the artifact-bound decision with `cli.py reportx-review
+approve` after completing the review checklist (docs/quality/PREMIUM-REPORT-HUMAN-REVIEW.md).
 """
 from __future__ import annotations
 
