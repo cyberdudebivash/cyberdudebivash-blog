@@ -30,7 +30,30 @@ jobs:
         with:
           persist-credentials: false
       - name: Verify public delivery with the released probe
-        run: python3 scripts/check_blogger_public_delivery.py --attempts 1
+        shell: bash
+        run: |
+          set +e
+          OUTPUT=$(python3 scripts/check_blogger_public_delivery.py --attempts 1 2>&1)
+          EXIT_CODE=$?
+          set -e
+          printf '%s\n' "$OUTPUT"
+
+          # The push canary intentionally uses a single public-request budget.
+          # A provider-side HTTP 429 is not proof that CTI delivery is broken.
+          # Keep it visible as a warning; the scheduled monitor retains bounded
+          # retries and controlled recovery. All other probe failures fail closed.
+          if [ "$EXIT_CODE" -ne 0 ]; then
+            STATUS=$(python3 -c 'import json,sys
+try:
+    print(json.loads(sys.stdin.read()).get("status",""))
+except Exception:
+    print("")' <<<"$OUTPUT")
+            if [ "$STATUS" = "BLOGGER_PUBLIC_RATE_LIMITED" ]; then
+              echo "::warning title=Blogger Public Probe Rate Limited::Provider returned HTTP 429 to the one-attempt push canary. Scheduled monitoring retains bounded retry and recovery."
+              exit 0
+            fi
+            exit "$EXIT_CODE"
+          fi
 
   freshness-check:
     if: github.event_name != 'push'
