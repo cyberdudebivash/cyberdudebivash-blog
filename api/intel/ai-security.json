@@ -2,12 +2,12 @@
   "platform": "CYBERDUDEBIVASH SENTINEL APEX — AI Security Intelligence Division",
   "endpoint": "/api/intel/ai-security.json",
   "doctrine": "Sentinel-APEX/prompts/ai-security-master-prompt.md",
-  "generated": "2026-10-02T12:22:08.986Z",
+  "generated": "2026-10-02T19:08:52.054Z",
   "disclaimer": "Evidence-graded AI security intelligence. Confidence and evidence labels attached per item. Community leads are corroborated before publication.",
   "stats": {
-    "published": 10,
+    "published": 11,
     "p1": 0,
-    "leadsHeld": 3,
+    "leadsHeld": 1,
     "analystReports": 0,
     "sourcesOk": 5,
     "sourcesTotal": 6,
@@ -29,6 +29,14 @@
         "error": null
       },
       {
+        "name": "NVD (prompt injection)",
+        "key": "nvd_pi",
+        "tier": 1,
+        "status": "ok",
+        "items": 40,
+        "error": null
+      },
+      {
         "name": "r/netsec",
         "key": "reddit_ns",
         "tier": 3,
@@ -45,14 +53,6 @@
         "error": null
       },
       {
-        "name": "NVD (prompt injection)",
-        "key": "nvd_pi",
-        "tier": 1,
-        "status": "ok",
-        "items": 40,
-        "error": null
-      },
-      {
         "name": "NVD (AI/LLM keyword)",
         "key": "nvd_ai",
         "tier": 1,
@@ -61,7 +61,7 @@
         "error": null
       }
     ],
-    "runtimeMs": 6031
+    "runtimeMs": 1547
   },
   "frameworks": {
     "owasp_llm_top10": {
@@ -88,8 +88,64 @@
       "AML.T0057": "LLM Data Leakage"
     }
   },
-  "count": 10,
+  "count": 11,
   "items": [
+    {
+      "id": "5cfce351005cae43",
+      "title": "rmcp OAuth client fetches server-controlled resource_metadata URLs",
+      "url": "https://github.com/advisories/GHSA-c9xm-49cp-xcr9",
+      "source": "GitHub Security Advisories",
+      "tier": 1,
+      "published": "2026-10-02T16:12:31Z",
+      "cve": null,
+      "severity": "medium",
+      "cvss": null,
+      "evidence_label": "VERIFIED_ADVISORY",
+      "categories": [
+        {
+          "id": "agent_tool",
+          "label": "Agentic / Tool / MCP Exploitation"
+        }
+      ],
+      "owasp_llm": [
+        {
+          "id": "LLM06",
+          "name": "Sensitive Information Disclosure / Excessive Agency"
+        }
+      ],
+      "mitre_atlas": [
+        {
+          "id": "AML.T0053",
+          "name": "LLM Plugin Compromise"
+        }
+      ],
+      "agent_risk": {
+        "flags": {
+          "agentic": false,
+          "mcp": true,
+          "rag": true,
+          "tool_use": false,
+          "supply_chain": false
+        },
+        "level": "elevated"
+      },
+      "enterprise_impact": {
+        "score": 35,
+        "priority": "P3"
+      },
+      "confidence": {
+        "source": "HIGH",
+        "evidence": "MODERATE",
+        "overall": "HIGH",
+        "rationale": "Authoritative source (GitHub Security Advisories)."
+      },
+      "corroboration": 1,
+      "detection": {
+        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
+        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
+      },
+      "has_analyst_report": false
+    },
     {
       "id": "ac96a8d5d3262b4f",
       "title": "CodeMimicry: Exploiting Safety Generalization Lag in Large Language Models via Structured Code Completion",
