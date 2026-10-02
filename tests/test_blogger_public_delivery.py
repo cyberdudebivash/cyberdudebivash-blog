@@ -84,8 +84,8 @@ def test_actions_push_canary_uses_single_attempt_budget():
 def test_public_probe_cli_accepts_attempt_budget_and_applies_it_to_all_reads(monkeypatch, capsys):
     calls = []
 
-    current_stamp = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
-    payload = json.dumps(feed(current_stamp))
+    # main() evaluates against the real clock, so the post must be fresh now.
+    payload = json.dumps(feed(datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")))
 
     def fake_fetch(url, endpoint="public", attempts=3, max_retry_after=60):
         calls.append((endpoint, attempts))
