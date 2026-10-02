@@ -1,5 +1,6 @@
 """Public surface failures must not be hidden by a recent local ledger."""
 import importlib.util
+import json
 import sys
 from pathlib import Path
 from datetime import datetime, timezone
@@ -79,3 +80,29 @@ def test_actions_push_canary_uses_single_attempt_budget():
     assert marker in workflow
     block = workflow.split(marker, 1)[1].split("\n\n  freshness-check:", 1)[0]
     assert "python3 scripts/check_blogger_public_delivery.py --attempts 1" in block
+
+def test_public_probe_cli_accepts_attempt_budget_and_applies_it_to_all_reads(monkeypatch, capsys):
+    calls = []
+
+    payload = json.dumps(feed())
+
+    def fake_fetch(url, endpoint="public", attempts=3, max_retry_after=60):
+        calls.append((endpoint, attempts))
+        if endpoint == "feed":
+            return payload
+        return '<a href="' + URL + '">report</a>'
+
+    monkeypatch.setattr(probe, "fetch", fake_fetch)
+    monkeypatch.setattr(sys, "argv", ["check_blogger_public_delivery.py", "--attempts", "1"])
+
+    assert probe.main() == 0
+    assert calls == [("feed", 1), ("desktop", 1), ("mobile", 1)]
+    assert '"exit_code": 0' in capsys.readouterr().out
+
+
+def test_stale_freshness_defect_is_not_reclassified_as_public_linkage_failure():
+    html = '<a href="' + URL + '">report</a>'
+    result = probe.evaluate(feed("2026-09-23T09:30:00Z"), html, html, NOW)
+    assert result["status"] == "BLOGGER_STALE"
+    assert result["exit_code"] == 2
+    assert "publication_count_below_slo:0<1" in result["defects"]
