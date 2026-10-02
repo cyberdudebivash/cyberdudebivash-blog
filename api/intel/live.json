@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-02T04:50:00.704Z",
+  "generated": "2026-10-02T08:32:18.737Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,51 +7,60 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 5721,
+  "total_published": 5736,
   "s2n_stats": {
-    "passed": 100,
-    "suppressed": 9,
-    "avg_qs": 0.492
+    "passed": 98,
+    "suppressed": 7,
+    "avg_qs": 0.494
   },
   "items": [
     {
-      "id": "CVE-2026-86131",
-      "title": "WatchGuard fixes critical Fireware OS flaw allowing remote code execution",
-      "description": "WatchGuard fixes 15 Fireware OS flaws, including a critical RCE bug that could give attackers root access to vulnerable Firebox appliances. WatchGuard has released security updates for Fireware OS that address 15 vulnerabilities, including a critical code injection flaw, tracked ... [Full analysis a",
+      "id": "CVE-2026-104286",
+      "title": "Fortinet warns of critical FortiMail flaw exploited in zero-day attacks",
+      "description": "Fortinet warns of critical FortiMail flaw exploited in zero-day attacks",
       "cvss": 9.8,
-      "final_ps": 59,
-      "quality_score": 0.478,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
+      "final_ps": 100,
+      "quality_score": 0.483,
+      "threat_level": "CRITICAL",
+      "type": "ZERO_DAY",
       "source": "sentinel_apex",
-      "sources_confirmed": 1,
+      "sources_confirmed": 3,
       "merged_sources": [
-        "sentinel_apex"
+        "sentinel_apex",
+        "thehackernews",
+        "securityweek"
       ],
-      "first_seen": "2026-09-30",
-      "last_seen": "2026-09-30",
-      "exploited": false,
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": true,
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "",
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-86131"
+        "CVE-2026-104286"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://securityaffairs.com/200108/security/watchguard-fixes-critical-fireware-os-flaw-allowing-remote-code-execution.html"
+        "https://www.bleepingcomputer.com/news/security/fortinet-warns-of-critical-fortimail-flaw-exploited-in-zero-day-attacks/",
+        "https://intel.cyberdudebivash.com/reports/2026/10/intel--625ed0bd273165804d3560f4.html",
+        "https://thehackernews.com/2026/10/critical-fortimail-zero-day-flaw.html",
+        "https://www.securityweek.com/exploited-fortinet-fortimail-zero-day-calls-for-urgent-action/"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=1d (score=0.85)",
-          "QS=0.478"
+          "data_confidence=0.45",
+          "multi_source=3 sources",
+          "recency=999d (score=0.05)",
+          "QS=0.483"
         ],
         "priority": [
-          "+10 CVSS≥9"
+          "+10 CVSS≥9",
+          "+8 exploited_in_wild",
+          "+8 multi_source≥3",
+          "+7 zero_day"
         ],
         "suppression": null,
         "merge": null
@@ -3131,6 +3140,51 @@
       "suppression_reason": null
     },
     {
+      "id": "CVE-2026-10026",
+      "title": "CVE-2026-10026 - CTX Feed Pro <= 7.6.12 - Authenticated (Administrator+) Remote Code Execution",
+      "description": "CVE-2026-10026 - CTX Feed Pro <= 7.6.12 - Authenticated (Administrator+) Remote Code Execution",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-10026"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-10026"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
       "id": "CVE-2026-103764",
       "title": "CVE-2026-103764 - Mooncake transfer engine before 0.3.13 Unauthenticated Arbitrary Memory Read/Write via TCP Transport",
       "description": "CVE-2026-103764 - Mooncake transfer engine before 0.3.13 Unauthenticated Arbitrary Memory Read/Write via TCP Transport",
@@ -4031,6 +4085,96 @@
       "suppression_reason": null
     },
     {
+      "id": "CVE-2026-86131",
+      "title": "WatchGuard fixes critical Fireware OS flaw allowing remote code execution",
+      "description": "WatchGuard fixes 15 Fireware OS flaws, including a critical RCE bug that could give attackers root access to vulnerable Firebox appliances. WatchGuard has released security updates for Fireware OS that address 15 vulnerabilities, including a critical code injection flaw, tracked ... [Full analysis a",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-09-30",
+      "last_seen": "2026-09-30",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-86131"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://securityaffairs.com/200108/security/watchguard-fixes-critical-fireware-os-flaw-allowing-remote-code-execution.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-104120",
+      "title": "CVE-2026-104120 - modelcontextprotocol mcp-server-fetch/mcp-server-everything Fetch Tool server.py fetch_url server-side",
+      "description": "CVE-2026-104120 - modelcontextprotocol mcp-server-fetch/mcp-server-everything Fetch Tool server.py fetch_url server-side request forgery",
+      "cvss": 7.3,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-104120"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-104120"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
       "id": "CVE-2026-41303",
       "title": "CVE-2026-41303 exploit",
       "description": "Exploit for CVE-2026-41303. CVSS 8.8.",
@@ -4238,141 +4382,6 @@
       "ioc_count": 0,
       "refs": [
         "https://seclists.org/oss-sec/2026/q4/24"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-63292",
-      "title": "CVE-2026-63292: Apache HTTP Server: mod_vhost_alias stack overflow",
-      "description": "Posted by Eric Covener on Oct 01 Severity: moderate\n\nAffected versions:\n\n- Apache HTTP Server 2.4.0 through 2.4.68\n\nDescription:\n\nStack-based buffer overflow in mod_vhost_alias in Apache Software Foundation Apache HTTP Server through 2.4.68 on all\nplatforms allows a remote client... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-01",
-      "last_seen": "2026-10-01",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-63292"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://seclists.org/oss-sec/2026/q4/23"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-59685",
-      "title": "CVE-2026-59685: Apache HTTP Server: Out-of-Bounds Write in ap_directory_walk() Canonical-Name Rewrite on CASE_BLIND_FILE",
-      "description": "Posted by Eric Covener on Oct 01 Severity: moderate\n\nAffected versions:\n\n- Apache HTTP Server 2.4.0 through 2.4.68\n\nDescription:\n\nOut-of-bounds Write vulnerability in Apache HTTP Server on Windows while processing paths with 8.3 names that may grow\nwhen expanded.\n\nThis issue affe... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-01",
-      "last_seen": "2026-10-01",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-59685"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://seclists.org/oss-sec/2026/q4/20"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-63718",
-      "title": "CVE-2026-63718: Apache HTTP Server: mod_proxy_uwsgi Transfer-Encoding response smuggling",
-      "description": "Posted by Eric Covener on Oct 01 Severity: low\n\nAffected versions:\n\n- Apache HTTP Server 2.4.30 through 2.4.68\n\nDescription:\n\nInconsistent Interpretation of HTTP Requests ('HTTP Request/Response Smuggling') response smuggling vulnerability in\nApache HTTP Server via mod_proxy_uwsg... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-01",
-      "last_seen": "2026-10-01",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-63718"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://seclists.org/oss-sec/2026/q4/25"
       ],
       "explanation": {
         "quality": [

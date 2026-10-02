@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 DEFAULT_MAX_AGE_MINUTES = 240
+DEFAULT_MIN_POSTS_IN_WINDOW = 1
 FUTURE_TOLERANCE_MINUTES = 5
 
 
@@ -53,9 +54,11 @@ def evaluate_blogger_freshness(
     *,
     now: datetime | None = None,
     max_age_minutes: int = DEFAULT_MAX_AGE_MINUTES,
+    min_posts_in_window: int = DEFAULT_MIN_POSTS_IN_WINDOW,
 ) -> dict[str, Any]:
     now = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
     max_age_minutes = max(1, int(max_age_minutes))
+    min_posts_in_window = max(1, int(min_posts_in_window))
 
     published_times = [
         parsed
@@ -87,14 +90,27 @@ def evaluate_blogger_freshness(
         }
 
     age_minutes = max(0.0, delta_minutes)
-    if age_minutes > max_age_minutes:
+    window_count = sum(
+        1
+        for published_at in published_times
+        if 0.0 <= (now - published_at).total_seconds() / 60.0 <= max_age_minutes
+    )
+    if age_minutes > max_age_minutes or window_count < min_posts_in_window:
+        defects = []
+        if window_count < min_posts_in_window:
+            defects.append(
+                f"publication_count_below_slo:{window_count}<{min_posts_in_window}"
+            )
         return {
             "status": "BLOGGER_STALE",
             "exit_code": 2,
             "recovery_required": True,
             "latest_published_at": latest.isoformat(),
             "age_minutes": round(age_minutes, 1),
-            "defects": [],
+            "publication_count_window": window_count,
+            "minimum_posts_required": min_posts_in_window,
+            "window_minutes": max_age_minutes,
+            "defects": defects,
         }
 
     return {
@@ -103,6 +119,9 @@ def evaluate_blogger_freshness(
         "recovery_required": False,
         "latest_published_at": latest.isoformat(),
         "age_minutes": round(age_minutes, 1),
+        "publication_count_window": window_count,
+        "minimum_posts_required": min_posts_in_window,
+        "window_minutes": max_age_minutes,
         "defects": [],
     }
 
@@ -111,6 +130,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("state_file", nargs="?", default="data/published_posts.json")
     parser.add_argument("--max-age-minutes", type=int, default=DEFAULT_MAX_AGE_MINUTES)
+    parser.add_argument("--min-posts-in-window", type=int, default=DEFAULT_MIN_POSTS_IN_WINDOW)
     parser.add_argument("--json", action="store_true", dest="as_json")
     args = parser.parse_args(argv)
 
@@ -130,6 +150,7 @@ def main(argv: list[str] | None = None) -> int:
         result = evaluate_blogger_freshness(
             state,
             max_age_minutes=args.max_age_minutes,
+            min_posts_in_window=args.min_posts_in_window,
         )
 
     if args.as_json:
@@ -139,6 +160,9 @@ def main(argv: list[str] | None = None) -> int:
         print(f"RECOVERY_REQUIRED={'true' if result['recovery_required'] else 'false'}")
         print(f"LATEST_PUBLISHED_AT={result['latest_published_at'] or 'unavailable'}")
         print(f"AGE_MINUTES={result['age_minutes'] if result['age_minutes'] is not None else 'unknown'}")
+        print(f"PUBLICATION_COUNT_WINDOW={result.get('publication_count_window', 'unknown')}")
+        print(f"MINIMUM_POSTS_REQUIRED={result.get('minimum_posts_required', args.min_posts_in_window)}")
+        print(f"WINDOW_MINUTES={result.get('window_minutes', args.max_age_minutes)}")
         if result["defects"]:
             print(f"DEFECTS={','.join(result['defects'])}")
 
