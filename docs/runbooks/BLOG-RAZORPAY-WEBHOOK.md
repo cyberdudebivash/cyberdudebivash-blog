@@ -1,6 +1,24 @@
 # Blog Razorpay Webhook Runbook
 
-**Status 2026-10-01: BLOCKED — RAZORPAY DASHBOARD CONFIGURATION.** No Razorpay Dashboard access exists from the repository or CI. The Worker side is ready.
+**Status 2026-10-02: BLOCKED — RAZORPAY DASHBOARD ACCESS REQUIRED.**
+
+Re-verified live after deploy `git-f1e31f2eb3b4`: unsigned → 400, forged signature → 400, 0 orders, 0 entitlements. The automation environment has no Dashboard access and no Razorpay credentials, so no webhook, purchase or refund was simulated.
+
+The live acceptance checks below need a correctly signed event:
+- tampered body;
+- a foreign Sentinel APEX event acknowledged with 0 blog writes;
+- an unknown order;
+- a duplicate event.
+
+They run as part of the controlled purchase, after the Dashboard webhook exists. They are proven in tests on real SQL with real HMAC.
+
+Order of operations:
+1. The operator publishes Ray v3.
+2. The Dashboard webhook is added (steps under Configuration).
+3. Run the controlled purchase and refund procedure under Test procedure, with two operator-owned accounts.
+4. Record the masked order, payment and refund IDs here.
+
+Earlier status (2026-10-01): BLOCKED — RAZORPAY DASHBOARD CONFIGURATION. No Razorpay Dashboard access exists from the repository or CI. The Worker side is ready.
 
 ## Verified state (2026-10-01)
 

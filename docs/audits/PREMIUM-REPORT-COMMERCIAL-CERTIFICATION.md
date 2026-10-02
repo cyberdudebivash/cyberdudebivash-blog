@@ -19,7 +19,7 @@ The three ransomware reports share a structural weakness: a single unconfirmed l
 
 | SKU | Human Review | v2 Published | Payment | Webhook | Download | Refund | Customer Ready |
 |---|---|---|---|---|---|---|---|
-| PIR-VULN-CVE-2025-62593-RAY (v3.0) | PENDING (automated gates PASS) | NO | BLOCKED (no controlled purchase) | BLOCKED (Razorpay Dashboard) | PASS in tests; live 401 unauthenticated | BLOCKED | **NO** |
+| PIR-VULN-CVE-2025-62593-RAY (v3.0) | **APPROVED** (`cdb_internal` / `cyberdudebivash`, 2026-10-02; certified on `main`) | NO (operator key required) | BLOCKED (no controlled purchase) | BLOCKED (Razorpay Dashboard) | PASS in tests; live 401 unauthenticated | BLOCKED | **NO** |
 | PIR-RANSOMWARE-DRAGONFORCE-VERMONT-XCENTER | FAIL (v1 **PAUSED** 2026-10-02) | NO | BLOCKED | BLOCKED | PASS in tests; live 401 | BLOCKED | **NO** (NOT_FOR_SALE) |
 | PIR-RANSOMWARE-QILIN-SPOONFUL-OF-COMFORT | FAIL (v1 **PAUSED** 2026-10-02) | NO | BLOCKED | BLOCKED | PASS in tests; live 401 | BLOCKED | **NO** (NOT_FOR_SALE) |
 | PIR-RANSOMWARE-MEDUSALOCKER-BIJA-INDUSTRIE | FAIL (v1 **PAUSED** 2026-10-02) | NO | BLOCKED | BLOCKED | PASS in tests; live 401 | BLOCKED | **NO** (NOT_FOR_SALE) |
@@ -34,6 +34,13 @@ The three ransomware reports share a structural weakness: a single unconfirmed l
 - no R2 read after revocation.
 
 That is not provider evidence. Live provider evidence needs the operator steps in `docs/runbooks/BLOG-RAZORPAY-WEBHOOK.md`.
+
+## Update 2026-10-02 (later): Ray v3 approved, not yet published
+
+- **Approval:** #324/#325 put the CDB internal approval on `main`. It is bound to `8b79dc179a4e6f339ae276c47552b00193e911351f6b387fa776fd73d5974b21`, and the publisher dry run on `main` returns CERTIFIED.
+- **Not yet published:** that needs the operator's `PREMIUM_ANALYST_KEY`. Until then, Ray v1 stays the only product taking payment, with the outdated EPSS judgement noted below.
+- **Release window:** the publisher refuses v3 after 2026-10-31.
+- **Live payment proof:** none yet (0 orders). Customer Ready stays **NO** until the controlled purchase and refund in `docs/runbooks/BLOG-RAZORPAY-WEBHOOK.md` pass.
 
 ## Update 2026-10-02: unreviewed products paused
 
