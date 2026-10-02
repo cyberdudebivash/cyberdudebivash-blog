@@ -2,10 +2,9 @@
 
 Exercises the actual CLI entry point (cli.main()) against a real exported
 artifact, not a mocked one -- these are load-bearing tests since this
-subcommand is the ONLY way a real human-review decision gets recorded in
-this system. None of these tests simulate a "real" APPROVE decision on
-behalf of an operator; every reviewer identity here is explicitly marked
-as a test fixture.
+subcommand is the canonical artifact-bound internal review path. Production
+defaults to CYBERDUDEBIVASH internal governance; tests may still override the
+reviewer identity explicitly so fixtures cannot be confused with production.
 """
 
 import json
@@ -42,10 +41,14 @@ class TestInspect:
 
 
 class TestReject:
-    def test_reject_requires_reviewer_flag(self):
-        import pytest
-        with pytest.raises(SystemExit):
-            cli.main(["reportx-review", "reject", EXPORT_PATH, "--out", "/tmp/should-not-be-written.json"])
+    def test_reject_defaults_to_cdb_internal_governance(self, tmp_path):
+        out = tmp_path / "review.json"
+        rc = cli.main(["reportx-review", "reject", EXPORT_PATH, "--out", str(out)])
+        assert rc == 0
+        review = json.loads(out.read_text())
+        assert review["reviewer_type"] == "cdb_internal"
+        assert review["reviewer_identity"] == "cyberdudebivash"
+        assert review["reviewer_role"] == "CDB_INTERNAL"
 
     def test_reject_writes_a_review_record_bound_to_the_real_artifact_hash(self, tmp_path):
         import hashlib
@@ -59,6 +62,7 @@ class TestReject:
         assert rc == 0
         review = json.loads(out.read_text())
         assert review["decision"] == "REJECT"
+        assert review["reviewer_type"] == "cdb_internal"
         assert review["reviewer_identity"] == "TEST-ONLY CI Reviewer"
         assert review["reviewer_role"] == "QA"
         assert review["is_test_only_fixture"] is False  # the CLI never sets this -- it's a Python-construction-only escape hatch

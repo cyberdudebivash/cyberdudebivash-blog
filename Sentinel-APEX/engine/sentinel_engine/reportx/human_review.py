@@ -1,10 +1,10 @@
-"""Human premium certification governance (ReportX Sections 26, 44).
+"""CYBERDUDEBIVASH internal premium certification governance.
 
-``PREMIUM_READY_PENDING_HUMAN`` requires only that the automated gates
-pass. ``PREMIUM_CERTIFIED`` additionally requires a real review record
-bound to the *exact* artifact hash — the moment the artifact's content
-changes (a new SHA-256), any prior approval is automatically invalidated,
-never carried forward by assumption.
+``PREMIUM_READY_PENDING_HUMAN`` is retained as a compatibility state name,
+but production approvals are governed by the CYBERDUDEBIVASH internal review
+authority. ``PREMIUM_CERTIFIED`` requires an artifact-bound review record;
+the moment the artifact content changes (a new SHA-256), any prior approval
+is automatically invalidated and is never carried forward by assumption.
 """
 
 from __future__ import annotations
@@ -12,6 +12,9 @@ from __future__ import annotations
 import hashlib
 from dataclasses import dataclass
 from enum import Enum
+
+CDB_REVIEWER_TYPE = "cdb_internal"
+CDB_REVIEWER_IDENTITY = "cyberdudebivash"
 
 
 class ReviewDecision(str, Enum):
@@ -43,6 +46,7 @@ class ReviewRecord:
     review_timestamp: str  # ISO-8601
     decision: ReviewDecision
     review_version: int
+    reviewer_type: str = CDB_REVIEWER_TYPE
     notes: str = ""
     is_test_only_fixture: bool = False  # Section 26: tests may use an explicit TEST-ONLY reviewer fixture
     reviewer_role: str = ""
@@ -51,6 +55,7 @@ class ReviewRecord:
     def to_dict(self) -> dict:
         return {
             "report_id": self.report_id, "artifact_sha256": self.artifact_sha256,
+            "reviewer_type": self.reviewer_type,
             "reviewer_identity": self.reviewer_identity, "reviewer_role": self.reviewer_role,
             "review_timestamp": self.review_timestamp,
             "decision": self.decision.value, "review_version": self.review_version,
@@ -60,10 +65,11 @@ class ReviewRecord:
 
 
 def is_review_valid_for_artifact(review: ReviewRecord, current_artifact_text: str) -> bool:
-    """The binding check: a review approves ONE exact byte sequence. Any
-    edit -- even whitespace -- produces a different SHA-256 and silently
-    invalidates the old approval, exactly as Section 44 requires ('A
-    changed report invalidates the previous approval')."""
+    """The binding check: a CDB internal review approves one exact artifact.
+    Any edit -- even whitespace -- produces a different SHA-256 and silently
+    invalidates the old approval. Legacy records remain readable; all new
+    production records should use reviewer_type=cdb_internal and
+    reviewer_identity=cyberdudebivash."""
     if review.decision != ReviewDecision.APPROVE:
         return False
     return review.artifact_sha256 == compute_artifact_hash(current_artifact_text)
@@ -92,13 +98,11 @@ def resolve_certification_state(
     review: ReviewRecord | None,
     current_artifact_text: str,
 ) -> CertificationState:
-    """No manual override path exists in this function's signature --
+    """No override path exists in this function's signature.
     PREMIUM_CERTIFIED is reachable only through a real, artifact-bound
-    ReviewRecord with decision == APPROVE. A production caller must never
-    pass an ``is_test_only_fixture=True`` review here (that flag exists so
-    test suites can exercise this function without needing a full human
-    workflow, and its own presence is why tests must not be mistaken for
-    production certification -- see test_human_review.py)."""
+    ReviewRecord with decision == APPROVE. Production governance uses the
+    CYBERDUDEBIVASH internal authority; test-only fixtures remain explicitly
+    separated from production certification."""
 
     if not automated_gates_passed:
         return CertificationState.PUBLIC_REFERENCE_DRAFT

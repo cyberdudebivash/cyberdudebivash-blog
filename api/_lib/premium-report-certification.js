@@ -43,6 +43,7 @@ function evaluatePremiumCertification(exported) {
     if (String(review.report_id || '') !== reportId) reasons.push('REVIEW_REPORT_ID_MISMATCH');
     if (String(review.decision || '') !== 'APPROVE') reasons.push('REVIEW_NOT_APPROVED');
     if (review.is_test_only_fixture === true) reasons.push('TEST_ONLY_REVIEW_FORBIDDEN');
+    if (review.reviewer_type && String(review.reviewer_type) !== 'cdb_internal') reasons.push('UNSUPPORTED_REVIEWER_TYPE');
     if (!String(review.reviewer_identity || '').trim()) reasons.push('MISSING_REVIEWER_IDENTITY');
     if (!String(review.review_timestamp || '').trim()) reasons.push('MISSING_REVIEW_TIMESTAMP');
     if (String(review.artifact_sha256 || '').toLowerCase() !== artifactSha256) {

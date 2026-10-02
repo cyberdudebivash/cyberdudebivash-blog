@@ -20,9 +20,10 @@ canary text drifted), the reissue stops instead of shipping a half-edited
 report. The 23-control commercial-readiness gate is re-run on each v2 bundle
 and must return 23/23 PASS. A copy-gate scan must find no internal terms.
 
-Nothing here approves anything. Outputs carry review=None
-(PREMIUM_READY_PENDING_HUMAN); a named human approves each v2 artifact with
-`python3 Sentinel-APEX/engine/cli.py reportx-review approve ...` after reading
+Nothing here auto-approves anything. Outputs carry review=None
+(PREMIUM_READY_PENDING_HUMAN); the authorized CYBERDUDEBIVASH internal review
+authority records each artifact-bound decision with
+`python3 Sentinel-APEX/engine/cli.py reportx-review approve ...` after completing
 the reviewer pack (docs/quality/PREMIUM-REPORT-HUMAN-REVIEW.md).
 
     cd Sentinel-APEX/engine && python3 ../../reportx-canary/premium_reissue_v2.py
