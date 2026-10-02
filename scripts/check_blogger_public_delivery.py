@@ -102,16 +102,20 @@ def evaluate(feed, desktop, mobile, now=None):
         raise ValueError("invalid_public_permalink")
     result = evaluate_blogger_freshness({"posts": [{"published_at": newest["published"]["$t"]}]}, now=now)
     result.update({"post_id": newest.get("id", {}).get("$t"), "permalink": post_url, "checked_at": (now or datetime.now(timezone.utc)).isoformat()})
+    link_defects = []
     for label, document in (("desktop", desktop), ("mobile", mobile)):
         links = Links()
         links.feed(document)
         visible = url.path in links.paths
         result[label + "_linked"] = visible
         if not visible:
-            result["defects"].append(label + "_missing_latest_permalink")
+            link_defects.append(label + "_missing_latest_permalink")
+    result["defects"].extend(link_defects)
     # A delivery defect cannot be repaired safely by repeatedly publishing.
     result["recovery_required"] = False
-    if result["defects"]:
+    # Only a missing homepage link is a delivery error; freshness defects
+    # (e.g. publication_count_below_slo) keep the freshness exit code.
+    if link_defects:
         result["status"] = "BLOGGER_PUBLIC_DELIVERY_ERROR"
         result["exit_code"] = 1
     return result
