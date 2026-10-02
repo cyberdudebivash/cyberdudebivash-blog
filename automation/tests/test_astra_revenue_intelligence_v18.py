@@ -91,6 +91,34 @@ def test_commercial_priority_prefers_productizable_evidence(monkeypatch):
     assert high.score > low.score
 
 
+def test_generation_readiness_prefers_source_rich_evidence_without_granting_publication(monkeypatch):
+    thin = _article(full_content="brief source note " * 30)
+    rich = _article(full_content="source-backed technical evidence " * 700)
+
+    thin_band, thin_words, _ = astra.generation_readiness(thin)
+    rich_band, rich_words, _ = astra.generation_readiness(rich)
+
+    assert rich_words > thin_words
+    assert rich_band > thin_band
+    assert premium.MIN_VISIBLE_WORDS == 2200
+    assert premium.MIN_PARAGRAPHS == 18
+    assert premium.MIN_LIST_ITEMS == 18
+
+
+def test_scheduler_prefers_generation_readiness_before_commercial_score_inside_same_trust_lane(monkeypatch):
+    monkeypatch.setattr(astra, "_INNER_PRIORITY_KEY", lambda a: (0, 10.0, a.content_hash))
+    thin = _article(content_hash="thin", full_content="brief note " * 30)
+    rich = _article(content_hash="rich", full_content="source evidence " * 1800)
+
+    monkeypatch.setattr(astra, "commercial_priority", lambda a: astra.CommercialPriority(
+        100 if a.content_hash == "thin" else 10,
+        "P0" if a.content_hash == "thin" else "P3",
+        (),
+        "threat_analysis",
+    ))
+
+    assert astra._astra_priority_key(rich) > astra._astra_priority_key(thin)
+
 def test_scheduler_priority_preserves_canonical_first(monkeypatch):
     monkeypatch.setattr(astra, "_INNER_PRIORITY_KEY", lambda a: (
         1 if scheduler.is_canonical_report(a) else 0,
