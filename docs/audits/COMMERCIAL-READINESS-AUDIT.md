@@ -3,7 +3,18 @@
 **Date:** 2026-09-30 UTC · Revenue figures: **none asserted**; no transaction records were accessed. Every
 capability below was verified in code (file cited) and, where possible, against live production.
 
-## 0. Update — 2026-10-01 (revenue activation tranche)
+## 0. Update — 2026-10-02 (commerce consolidation)
+
+Sentinel APEX is the only payment authority. Premium reports are no longer sold individually: `action=checkout` returns 410.
+
+Access requires one of:
+- a Sentinel APEX PRO/ENTERPRISE/MSSP key, validated by the gateway through the `SENTINEL_GATEWAY` service binding;
+- a blog key on the `pro` tier or above;
+- a legacy purchase (0 exist).
+
+Details: `docs/audits/PREMIUM-INTELLIGENCE-ENTITLEMENT-CUTOVER.md`. No revenue is asserted.
+
+## 0a. Update — 2026-10-01 (revenue activation tranche)
 
 No revenue is asserted. No captured transaction exists: Razorpay is not configured in production.
 
