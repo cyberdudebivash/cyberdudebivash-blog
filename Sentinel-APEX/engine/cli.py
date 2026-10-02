@@ -66,15 +66,15 @@ Usage (from Sentinel-APEX/engine/):
       existing review record. Prints to stdout, or writes to --out.
 
   python3 cli.py reportx-review (approve|reject|request-changes) <export.json>
-                                --reviewer "Full Name" [--role ROLE]
+                                [--reviewer cyberdudebivash]
+                                [--reviewer-type cdb_internal]
+                                [--role CDB_INTERNAL]
                                 [--comments "..."] [--version N] --out review.json
-      Writes a real ReviewRecord bound to the artifact's exact
-      SHA-256 (and a gate-snapshot hash of the 23-control result the
-      reviewer saw). No default reviewer identity is ever assumed --
-      --reviewer is required. This is the ONLY manual step in the
-      ReportX pipeline; running this command IS the human-approval
-      event, so it must be run by the actual human reviewer, never
-      automated on their behalf.
+      Writes an artifact-bound CYBERDUDEBIVASH internal ReviewRecord with
+      the exact SHA-256 and gate-snapshot hash. Production governance uses
+      reviewer_type=cdb_internal and reviewer=cyberdudebivash by default.
+      Test fixtures remain explicitly separate and must not be represented
+      as production approvals.
 
   python3 cli.py reportx-release certify --release-id ID
                 --canary export1.json [--canary export2.json ...]
@@ -297,6 +297,8 @@ def cmd_reportx_review(args: argparse.Namespace) -> int:
     from datetime import datetime, timezone
 
     from sentinel_engine.reportx.human_review import (
+        CDB_REVIEWER_IDENTITY,
+        CDB_REVIEWER_TYPE,
         ReviewDecision,
         ReviewRecord,
         compute_artifact_hash,
@@ -335,8 +337,9 @@ def cmd_reportx_review(args: argparse.Namespace) -> int:
     review = ReviewRecord(
         report_id=export["bundle"]["report_id"],
         artifact_sha256=artifact_sha256,
-        reviewer_identity=args.reviewer,
-        reviewer_role=args.role or "",
+        reviewer_identity=args.reviewer or CDB_REVIEWER_IDENTITY,
+        reviewer_type=args.reviewer_type or CDB_REVIEWER_TYPE,
+        reviewer_role=args.role or "CDB_INTERNAL",
         review_timestamp=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         decision=decision,
         review_version=args.version,
@@ -348,7 +351,7 @@ def cmd_reportx_review(args: argparse.Namespace) -> int:
     with open(args.out, "w", encoding="utf-8") as fh:
         json.dump(review.to_dict(), fh, indent=2)
 
-    print(f"Recorded {decision.value} by {args.reviewer!r} bound to artifact {artifact_sha256[:16]}... "
+    print(f"Recorded {decision.value} under {review.reviewer_type}:{review.reviewer_identity} bound to artifact {artifact_sha256[:16]}... "
           f"-> {args.out}", file=sys.stderr)
     return 0
 
@@ -383,6 +386,7 @@ def cmd_reportx_release(args: argparse.Namespace) -> int:
                     report_id=r["report_id"], artifact_sha256=r["artifact_sha256"],
                     reviewer_identity=r["reviewer_identity"], review_timestamp=r["review_timestamp"],
                     decision=ReviewDecision(r["decision"]), review_version=r.get("review_version", 1),
+                    reviewer_type=r.get("reviewer_type", "cdb_internal"),
                     notes=r.get("notes", ""), is_test_only_fixture=r.get("is_test_only_fixture", False),
                     reviewer_role=r.get("reviewer_role", ""), gate_snapshot_sha256=r.get("gate_snapshot_sha256", ""),
                 )
@@ -596,7 +600,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--export", default="", help="also write the full validated bundle + gate results to this path (for System 5 / JS consumers)")
     p.set_defaults(func=cmd_reportx_gate)
 
-    p = sub.add_parser("reportx-review", help="ReportX human-review workflow: inspect a reviewer pack, or record a real approve/reject/request-changes decision")
+    p = sub.add_parser("reportx-review", help="ReportX CDB-internal review workflow: inspect a reviewer pack, or record an artifact-bound approve/reject/request-changes decision")
     review_sub = p.add_subparsers(dest="action", required=True)
 
     p_inspect = review_sub.add_parser("inspect", help="render the reviewer pack for an exported artifact")
@@ -608,8 +612,9 @@ def main(argv: list[str] | None = None) -> int:
     for action in ("approve", "reject", "request-changes"):
         p_action = review_sub.add_parser(action, help=f"record a real {action} decision, bound to the artifact's exact SHA-256")
         p_action.add_argument("export", help="path to a reportx-gate --export artifact")
-        p_action.add_argument("--reviewer", required=True, help="the real reviewer's full name or identity -- no default is ever assumed")
-        p_action.add_argument("--role", default="", help="the reviewer's role (e.g. 'Senior CTI Analyst')")
+        p_action.add_argument("--reviewer", default="cyberdudebivash", help="CDB internal reviewer identity (default: cyberdudebivash)")
+        p_action.add_argument("--reviewer-type", choices=["cdb_internal"], default="cdb_internal", help="review governance type; production value is cdb_internal")
+        p_action.add_argument("--role", default="CDB_INTERNAL", help="internal review role (default: CDB_INTERNAL)")
         p_action.add_argument("--comments", default="", help="review comments/notes")
         p_action.add_argument("--version", type=int, default=1, help="review_version, if this artifact has been reviewed before")
         p_action.add_argument("--out", required=True, help="path to write the resulting ReviewRecord JSON")
