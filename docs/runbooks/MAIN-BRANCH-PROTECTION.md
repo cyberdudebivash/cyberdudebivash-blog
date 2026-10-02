@@ -1,6 +1,14 @@
 # Main Branch Protection
 
-**Status re-verified 2026-10-02: NOT ENFORCED.** Still `[]`. The classic protection endpoint returns 403 without admin credentials, and this environment has no repository-administration access, so an owner must apply phase 1. Earlier status (2026-10-01): `GET /repos/cyberdudebivash/cyberdudebivash-blog/rules/branches/main` returns `[]`, so GitHub applies no rule to `main`. This repository and its CI cannot change repository settings, so an owner applies the settings below.
+**Status re-verified 2026-10-02 03:10 UTC: NOT ENFORCED. Now P0.** On 2026-10-02, #324 merged while its Jest Test Suite was red. #325 then merged while three of its checks were still running; they finished green. Manual discipline is not enough.
+
+The automation token returns 401/403 for repository settings, so an admin must act. The safe order:
+1. **Now:** phase 1 (block force pushes, block deletion). This is safe with pipeline pushes.
+2. **Next:** phase 2 (required checks). It needs the pipeline GitHub App first, otherwise it blocks the six content pipelines that push to `main`.
+
+**There is no safe shortcut.** "Require status checks" without "Require a pull request" still makes GitHub reject direct pushes whose commit lacks the checks, and that includes the pipeline pushes. Until phase 2, merge only when every required check on the head is `completed` + `success` (`get_check_runs`), never while one is queued or running.
+
+**Earlier status (re-verified 2026-10-02): NOT ENFORCED.** Still `[]`. The classic protection endpoint returns 403 without admin credentials, and this environment has no repository-administration access, so an owner must apply phase 1. Earlier status (2026-10-01): `GET /repos/cyberdudebivash/cyberdudebivash-blog/rules/branches/main` returns `[]`, so GitHub applies no rule to `main`. This repository and its CI cannot change repository settings, so an owner applies the settings below.
 
 Verify at any time (read-only):
 

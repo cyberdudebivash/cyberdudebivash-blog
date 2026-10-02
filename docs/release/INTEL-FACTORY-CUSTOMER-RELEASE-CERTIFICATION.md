@@ -1,5 +1,89 @@
 # Intel Factory — Customer Release Certification
 
+## Tranche 9 (2026-10-02): Ray v3 approval merged; publish, payment proof and main protection pending operator
+
+### Outcome: **CONDITIONAL**
+
+Ray v3 is approved and certified on `main`, but not published. The catalog has not changed since Tranche 8: only Ray v1 is sellable.
+
+### #324 and #325 in production
+
+| Field | Value |
+|---|---|
+| #324 | merged 02:51:22 UTC as `8832d8a5`. **Its Jest Test Suite was red when it merged**: a stale test expected no product to have a review record. `main` was red for 11 s. |
+| #325 | merged 02:51:33 UTC as `f1e31f2eb3b4664c13882b4ca73de86a242d314c`. It carries #324's content plus the test fix. All 9 checks on its head `abb18bbd` completed **success**. Three of them (Performance, Resilience, Coverage) completed about 1 minute after the merge. |
+| Tree check | `git diff abb18bbd origin/main` is empty: `main` is exactly the verified head. |
+| Deployed by | `cloudflare-production-deploy.yml` run `36957559136`, **event `push`** |
+| Worker version | `65993417-aca6-457a-89cd-0ef6de7d723c`, created 02:52:41 UTC, tag `git-f1e31f2eb3b4`, at 100% |
+| Rollback version | `2f77ebf4-beb2-46e2-82b0-a3a8b7317e1b` (`git-16b40661dd0c`) |
+
+**Lesson:** two merges landed before their checks were terminal. One was red. Required status checks are therefore P0; see `docs/runbooks/MAIN-BRANCH-PROTECTION.md`.
+
+### Ray v3 certification on `main`
+
+| Check | Result |
+|---|---|
+| Review record | `reviewer_type=cdb_internal`, reviewer/identity `cyberdudebivash`, `APPROVE`, `is_test_only_fixture=false`, `report_id` v3, at 2026-10-02T02:40:03Z |
+| Artifact | SHA-256(`bundle.rendered_text`) = `8b79dc179a4e6f339ae276c47552b00193e911351f6b387fa776fd73d5974b21` = record = pin; 43,933 B; 23/23 |
+| Dry run | `CERTIFIED PIR-VULN-CVE-2025-62593-RAY 1999 INR … reviewer=cyberdudebivash` |
+| `gate_snapshot_sha256` | Empty. The field is optional and no consumer reads it, so this is legacy-compatible debt and not a blocker. The CLI would write `1d781f55…`. See the approval packet. |
+
+### Live production (2026-10-02, after the deploy)
+
+| Item | State |
+|---|---|
+| D1 catalog | Ray v1 `cve-2025-62593-ray-canary` SELLABLE (`dde2c5ce…`). Qilin, DragonForce and MedusaLocker PAUSED. No Ray v3 row. |
+| R2 | No object under `premium-reports/sentinel-apex-vuln-cve-2025-62593-ray-v3/` |
+| Public catalog | 1 product (Ray v1); `artifact_sha256` exposed, no `artifact_key` |
+| Orders / entitlements | 0 / 0 (`premium_orders`, `premium_entitlements`) |
+| Webhook | unsigned 400; forged signature 400 |
+| `main` rules | `[]` |
+
+### Blocked (operator action)
+
+| Step | State | Needs |
+|---|---|---|
+| Publish Ray v3, retire v1 | **BLOCKED — OPERATOR PREMIUM_ANALYST_KEY REQUIRED** | The key is not in the automation environment. Not simulated. |
+| Blog webhook in the Razorpay Dashboard | **BLOCKED — RAZORPAY DASHBOARD ACCESS REQUIRED** | Dashboard login |
+| Controlled purchase, browser close, download hash, cross-account check, refund, revocation | **BLOCKED** | The two steps above, plus two operator-owned accounts |
+| Branch protection | **BLOCKED — repository admin required** | GitHub ruleset UI |
+
+### Gates (`main` @ `f1e31f2e`)
+
+| Gate | Result |
+|---|---|
+| `npm ci` | exit 0 |
+| `check:cloudflare` | 15/15 |
+| `test:ci` (Jest) | 113 suites; 3,014 passed, 0 failed, 60 skipped |
+| node:test | `tests-js` 310/310; deploy-time suites 129/129 |
+| pytest (engine) | 1,067 passed |
+| `build:cloudflare` | 16,392 files |
+| Wrangler dry run | 21,573.33 KiB / gzip 3,417.15 KiB |
+
+### Negative controls on `main` (mutation → tests red): **12/12 detected**
+
+| # | Mutation | Result |
+|---|---|---|
+| 1 | Artifact SHA binding (record bound to other bytes) | 1 failed |
+| 2 | `cdb_internal` reviewer-type gate removed | 1 failed |
+| 3 | Paused product purchasable (status check removed) | 3 failed |
+| 4 | Uncertified product purchasable (certification check removed) | 1 failed |
+| 4b | Non-APPROVE decision | 1 failed |
+| 5 | Webhook signature disabled | 2 failed |
+| 6 | Platform ownership isolation disabled | 5 failed |
+| 7 | Price validation disabled | 3 failed |
+| 8 | Idempotency claim guard removed | 1 failed |
+| 9 | Artifact authorization disabled | 3 failed |
+| 10 | Refund revocation disabled | 2 failed |
+| 11 | Branch-protection verifier (force-push rule) | 1 failed |
+
+### Cloudflare cost
+
+- New resources: **none**.
+- Incremental storage: **0 bytes**.
+- This tranche is docs-only and does not deploy (deploy filter).
+- On publish, R2 grows by the Ray v3 artifact (about 43.9 KB) plus its evidence JSON. That is one write and no recurring cost.
+
 ## Tranche 8 (2026-10-02): catalog trust cleanup, Ray v3 approval packet
 
 ### #321 in production: **PASS**

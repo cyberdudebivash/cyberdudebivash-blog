@@ -13,6 +13,34 @@ reviewer: cyberdudebivash
 
 The approval remains bound to the exact artifact SHA-256; any artifact change invalidates it.
 
+## Release status (2026-10-02 03:10 UTC)
+
+| Step | State | Evidence |
+|---|---|---|
+| Approval on `main` | **DONE** | #324 (`8832d8a5`), corrected by #325 (`f1e31f2e`). Worker `git-f1e31f2eb3b4`, auto-deployed 02:52:41 UTC. |
+| Record ↔ artifact | **MATCH** | SHA-256 of `bundle.rendered_text` on `main` = record = manifest pin = `8b79dc17…74b21` (43,933 B). Gate 23/23 COMMERCIAL-READY. |
+| Publisher dry run on `main` | **CERTIFIED** | `CERTIFIED PIR-VULN-CVE-2025-62593-RAY 1999 INR sha256=8b79dc17… reviewer=cyberdudebivash` |
+| Publish (R2 + D1) | **BLOCKED — OPERATOR PREMIUM_ANALYST_KEY REQUIRED** | The key is not present in the automation environment, by design. Live: no R2 object under `premium-reports/sentinel-apex-vuln-cve-2025-62593-ray-v3/`, no D1 row. |
+| Ray v1 | SELLABLE (correct until v3 is live) | The publisher retires it only after the v3 live-detail SHA check passes. |
+| Release window | open until **2026-10-31** | The editorial gate refuses the artifact after that. |
+
+### Gate-snapshot binding (audit, 2026-10-02)
+
+The committed record has `gate_snapshot_sha256: ""`.
+
+- **Schema:** the field is optional (`ReviewRecord.gate_snapshot_sha256 = ""`), and no JS certifier or publisher reads it. The empty value is explicitly supported. It is not a publication blocker, and the certifier was not changed.
+- **Canonical CLI:** `cli.py reportx-review approve` does write a non-empty value. It is the SHA-256 of `json.dumps(commercial_readiness.controls, sort_keys=True)`, which for this export is `1d781f55e8141454768963ccdce7f89c2981137bc985a9c41885ef11b06f78ac`. So the committed record was not produced by the CLI unmodified.
+- **Disposition:** legacy-compatible technical debt. Regenerating the record is an approval action reserved to the CDB internal authority. If the owner regenerates it, only the review metadata changes (timestamp, snapshot); the artifact SHA stays `8b79dc17…`. It goes through a normal PR, and the dry run must still print `CERTIFIED`:
+
+  ```bash
+  cd Sentinel-APEX/engine && python3 cli.py reportx-review approve \
+    ../../reportx-canary/exports/v3/sentinel-apex-vuln-cve-2025-62593-ray-v3-export.json \
+    --comments "<the existing notes>" \
+    --out ../../reportx-canary/exports/v3/sentinel-apex-vuln-cve-2025-62593-ray-v3-REVIEW-RECORD.json
+  ```
+
+  The reviewer identity defaults to `cdb_internal` / `cyberdudebivash`. Pass `--comments` so the existing review notes are kept.
+
 ## Product
 
 | Field | Value |
