@@ -15,6 +15,7 @@ const { resolveRoute } = require('./route-table');
 const { applyBaselineHeaders } = require('./security-headers');
 const { setD1Binding: setHttpD1Binding } = require('../../api/_lib/d1');
 const { setR2Binding } = require('../../api/_lib/premium-report-storage');
+const { setSentinelGatewayBinding } = require('../../api/_lib/sentinel-gateway-binding');
 
 // Static require() map, not a dynamic require(computedPath) — esbuild
 // must see each module reference at build time to bundle it; a
@@ -104,7 +105,7 @@ async function dispatch(handlerPath, request, routeQuery) {
 
 /**
  * @param {Request} request
- * @param {{ ASSETS: { fetch(req: Request): Promise<Response> }, DB?: object, PREMIUM_REPORTS?: object }} env
+ * @param {{ ASSETS: { fetch(req: Request): Promise<Response> }, DB?: object, PREMIUM_REPORTS?: object, SENTINEL_GATEWAY?: { fetch(input: string, init?: object): Promise<Response> } }} env
  */
 async function handleFetch(request, env) {
   // Register Cloudflare-native state/storage bindings for HTTP handlers before
@@ -116,6 +117,9 @@ async function handleFetch(request, env) {
   // design: premium downloads fail closed unless the binding is present.
   if (env && env.DB) setHttpD1Binding(env.DB);
   if (env && env.PREMIUM_REPORTS) setR2Binding(env.PREMIUM_REPORTS);
+  // Sentinel APEX plan entitlement for premium reports: the gateway's own
+  // validation authority, reached over a service binding (no public hop).
+  if (env && env.SENTINEL_GATEWAY) setSentinelGatewayBinding(env.SENTINEL_GATEWAY);
 
   const url = new URL(request.url);
   const route = resolveRoute(url.pathname);

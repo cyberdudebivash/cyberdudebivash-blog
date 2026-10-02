@@ -6,6 +6,7 @@ const store = require('./premium-commerce-store');
 const storage = require('./premium-report-storage');
 const { evaluatePremiumCertification } = require('./premium-report-certification');
 const { loadReportXBundle } = require('./reportx-adapter');
+const plan = require('./sentinel-plan-entitlement');
 
 // Ownership contract written into every premium Razorpay order's notes, so
 // the shared Razorpay account (also used by the Sentinel APEX platform) can
@@ -64,6 +65,11 @@ function publicCatalogShape(row) {
     published_at: row.published_at,
     updated_at: row.updated_at,
     certification: 'PREMIUM_CERTIFIED',
+    // Access is a Sentinel APEX plan entitlement (2026-10-02). price_minor and
+    // currency above are historical standalone-sale metadata, kept for API
+    // compatibility; no endpoint sells a report for them any more.
+    required_plan: 'PRO',
+    upgrade_url: plan.premiumUpgradeUrl({ content: row.report_id }),
   };
 }
 
@@ -164,6 +170,12 @@ async function assertSellableArtifact(report) {
   return true;
 }
 
+/**
+ * @deprecated 2026-10-02. Standalone report checkout is retired: the route
+ * answers 410 PREMIUM_CHECKOUT_MOVED and Sentinel APEX owns all new payments.
+ * Kept (unrouted) with verifyCheckout and the webhook path so any historical
+ * order stays reconcilable. Remove after the legacy-order window closes.
+ */
 async function createCheckout({ user, reportId }) {
   if (!user || !user.userId) throw Object.assign(new Error('Authenticated customer required'), { code: 'UNAUTHORIZED' });
   if (!razorpay.configured()) throw Object.assign(new Error('Online purchase temporarily unavailable. Contact bivash@cyberdudebivash.com'), { code: 'PAYMENT_GATEWAY_UNAVAILABLE' });
@@ -324,6 +336,89 @@ async function downloadReport({ user, reportId }) {
   };
 }
 
+function planEligible(customer) {
+  if (!customer) return false;
+  if (customer.source === 'sentinel_platform') return customer.planEligible === true;
+  return plan.isEligibleBlogTier(customer.tier);
+}
+
+function availableForPlan(report) {
+  return Boolean(report && report.status === 'SELLABLE' && report.certification_state === 'PREMIUM_CERTIFIED');
+}
+
+function planRequiredError() {
+  return Object.assign(new Error('This Premium Intelligence product requires an eligible Sentinel APEX plan.'), {
+    code: 'PREMIUM_PLAN_REQUIRED', upgradeUrl: plan.premiumUpgradeUrl(),
+  });
+}
+
+async function readVerifiedArtifact({ key, reportId, sha256, sizeBytes }) {
+  const integrity = await storage.headCertifiedArtifact({ key, reportId, sha256, expectedSize: Number(sizeBytes) });
+  if (!integrity.ok) throw Object.assign(new Error(`Premium artifact unavailable: ${integrity.reason}`), { code: 'ARTIFACT_UNAVAILABLE' });
+  const object = await storage.getCertifiedArtifact(key);
+  if (!object || typeof object.arrayBuffer !== 'function') throw Object.assign(new Error('Premium artifact could not be read'), { code: 'ARTIFACT_UNAVAILABLE' });
+  const bytes = new Uint8Array(await object.arrayBuffer());
+  if (bytes.byteLength !== Number(sizeBytes)) throw Object.assign(new Error('Premium artifact size changed'), { code: 'ARTIFACT_INTEGRITY_ERROR' });
+  return bytes;
+}
+
+/**
+ * "My Premium Intelligence": legacy purchases (blog keys) plus every
+ * available certified report the customer's Sentinel APEX plan includes,
+ * one entry per report.
+ */
+async function listPremiumLibrary(customer, limit) {
+  if (!customer) throw Object.assign(new Error('Authenticated customer required'), { code: 'UNAUTHORIZED' });
+  const byReport = new Map();
+  if (customer.userId) {
+    for (const row of await store.listLibrary(customer.userId, limit)) {
+      byReport.set(row.report_id, { ...row, access: 'PURCHASE' });
+    }
+  }
+  if (planEligible(customer)) {
+    for (const r of await store.listSellableReports({ limit })) {
+      if (byReport.has(r.report_id)) continue;
+      byReport.set(r.report_id, {
+        report_id: r.report_id, report_title: r.title, artifact_filename: r.artifact_filename,
+        artifact_size_bytes: r.artifact_size_bytes, artifact_sha256: r.artifact_sha256,
+        published_at: r.published_at, granted_at: null, status: 'ACTIVE', access: 'SENTINEL_APEX_PLAN',
+      });
+    }
+  }
+  return [...byReport.values()];
+}
+
+/**
+ * canDownload = (legacy purchase of this report)
+ *            OR (report SELLABLE + PREMIUM_CERTIFIED AND plan eligible).
+ * A legacy purchase keeps the exact artifact bought, even after the product
+ * is paused or retired (existing contract). Plan access never reaches a
+ * paused, retired or uncertified product. Authorization is decided before
+ * any R2 read.
+ */
+async function downloadPremiumReport({ customer, reportId }) {
+  if (!customer) throw Object.assign(new Error('Authenticated customer required'), { code: 'UNAUTHORIZED' });
+  if (customer.userId && await store.getEntitlement(customer.userId, reportId)) {
+    return downloadReport({ user: { userId: customer.userId }, reportId });
+  }
+  const report = await store.getCatalogReport(reportId);
+  if (!report || report.report_id !== reportId) throw Object.assign(new Error('Premium report not found'), { code: 'REPORT_NOT_FOUND' });
+  if (!availableForPlan(report)) throw Object.assign(new Error('This Premium Intelligence product is not currently available.'), { code: 'REPORT_NOT_AVAILABLE' });
+  if (!planEligible(customer)) throw planRequiredError();
+
+  const bytes = await readVerifiedArtifact({ key: report.artifact_key, reportId, sha256: report.artifact_sha256, sizeBytes: report.artifact_size_bytes });
+  const ownerId = customer.userId || customer.customerRef || 'sentinel:unknown';
+  const access = `plan:${customer.source === 'sentinel_platform' ? customer.tier : String(customer.tier || '').toLowerCase()}`;
+  await store.recordDownload({ ownerId, reportId, orderId: access });
+  logCommerceEvent('premium_report_downloaded', { report: reportId, access });
+  return {
+    bytes,
+    filename: report.artifact_filename,
+    contentType: report.artifact_content_type || 'application/octet-stream',
+    sha256: report.artifact_sha256,
+  };
+}
+
 async function getEvidenceContract({ user, reportId }) {
   if (!user || !user.userId) throw Object.assign(new Error('Authenticated customer required'), { code: 'UNAUTHORIZED' });
   const id = String(reportId || '').trim();
@@ -377,5 +472,8 @@ module.exports = {
   processWebhookRefund,
   listLibrary,
   downloadReport,
+  listPremiumLibrary,
+  downloadPremiumReport,
+  planEligible,
   getEvidenceContract,
 };

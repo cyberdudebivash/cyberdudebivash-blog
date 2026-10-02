@@ -12,8 +12,8 @@
  * loaded on demand). ApexPaymentFlow.close() is a no-op.
  * Remove once no page calls ApexPaymentFlow (next major release).
  *
- * Premium intelligence reports are unaffected: they are bought in the
- * Intelligence Store (/intelligence-store.html).
+ * Premium intelligence reports are included with Sentinel APEX plans
+ * (/intelligence-store.html); they are no longer sold individually.
  */
 (function (global) {
   'use strict';
