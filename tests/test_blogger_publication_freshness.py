@@ -97,3 +97,29 @@ def test_list_shaped_legacy_post_state_is_supported():
     )
     assert result["status"] == "BLOGGER_HEALTHY"
     assert result["age_minutes"] == 15.0
+
+def test_hourly_four_report_slo_is_healthy_when_four_verified_posts_are_recent():
+    result = evaluate_blogger_freshness(
+        _state(10, 25, 40, 55, 200),
+        now=NOW,
+        max_age_minutes=75,
+        min_posts_in_window=4,
+    )
+    assert result["status"] == "BLOGGER_HEALTHY"
+    assert result["exit_code"] == 0
+    assert result["publication_count_window"] == 4
+    assert result["minimum_posts_required"] == 4
+
+
+def test_hourly_four_report_slo_requires_recovery_when_only_three_are_recent():
+    result = evaluate_blogger_freshness(
+        _state(10, 25, 55, 200),
+        now=NOW,
+        max_age_minutes=75,
+        min_posts_in_window=4,
+    )
+    assert result["status"] == "BLOGGER_STALE"
+    assert result["exit_code"] == 2
+    assert result["recovery_required"] is True
+    assert result["publication_count_window"] == 3
+    assert "publication_count_below_slo:3<4" in result["defects"]
