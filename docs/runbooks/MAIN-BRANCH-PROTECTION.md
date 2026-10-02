@@ -1,6 +1,6 @@
 # Main Branch Protection
 
-**Status 2026-10-01: NOT ENFORCED.** `GET /repos/cyberdudebivash/cyberdudebivash-blog/rules/branches/main` returns `[]`, so GitHub applies no rule to `main`. This repository and its CI cannot change repository settings, so an owner applies the settings below.
+**Status re-verified 2026-10-02: NOT ENFORCED.** Still `[]`. The classic protection endpoint returns 403 without admin credentials, and this environment has no repository-administration access, so an owner must apply phase 1. Earlier status (2026-10-01): `GET /repos/cyberdudebivash/cyberdudebivash-blog/rules/branches/main` returns `[]`, so GitHub applies no rule to `main`. This repository and its CI cannot change repository settings, so an owner applies the settings below.
 
 Verify at any time (read-only):
 

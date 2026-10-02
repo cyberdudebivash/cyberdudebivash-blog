@@ -347,6 +347,45 @@ describe('payment claim race guard (real SQL)', () => {
   });
 });
 
+describe('catalog purchase gate (real SQL)', () => {
+  // Only SELLABLE + PREMIUM_CERTIFIED products may take money. Pausing stops
+  // new sales but never removes a paying customer's access.
+  const setRow = (col, value) => db.prepare(`UPDATE premium_report_catalog SET ${col}=? WHERE report_id=?`).run(value, REPORT);
+
+  test.each([['status', 'PAUSED'], ['status', 'RETIRED']])(
+    '%s=%s: checkout refused with 409 REPORT_NOT_SELLABLE before any Razorpay order or D1 write', async (col, value) => {
+      setRow(col, value);
+      const err = await service.createCheckout({ user: BUYER, reportId: REPORT }).catch(e => e);
+      expect(err.code).toBe('REPORT_NOT_SELLABLE');
+      expect(razorpay.createOrder).not.toHaveBeenCalled();
+      expect(orders()).toHaveLength(0);
+    });
+
+  test('uncertified products: D1 refuses the row, and the service refuses one even if it got through', async () => {
+    expect(() => setRow('certification_state', 'NOT_CERTIFIED')).toThrow(/CHECK constraint failed/);
+    const store = require('../../_lib/premium-commerce-store');
+    const row = { ...(await store.getCatalogReport(REPORT)), certification_state: 'REVIEW_PENDING' };
+    jest.spyOn(store, 'getCatalogReport').mockResolvedValueOnce(row);
+    await expect(service.createCheckout({ user: BUYER, reportId: REPORT })).rejects.toMatchObject({ code: 'REPORT_NOT_SELLABLE' });
+    expect(razorpay.createOrder).not.toHaveBeenCalled();
+  });
+
+  test('a paused product disappears from the public catalog', async () => {
+    setRow('status', 'PAUSED');
+    expect(await service.listCatalog()).toHaveLength(0);
+    expect(await service.getCatalogItem(REPORT)).toBeNull();
+  });
+
+  test('pausing keeps an existing buyer\'s access; refund (not pause) is what revokes', async () => {
+    const orderId = await checkout();
+    await deliver(paymentEvent('payment.captured', captured(orderId)));
+    setRow('status', 'PAUSED');
+    const got = await service.downloadReport({ user: BUYER, reportId: REPORT });
+    expect(Buffer.from(got.bytes).toString('utf8')).toBe(ARTIFACT.toString('utf8'));
+    await expect(service.createCheckout({ user: OTHER, reportId: REPORT })).rejects.toMatchObject({ code: 'REPORT_NOT_SELLABLE' });
+  });
+});
+
 describe('public catalog', () => {
   test('list and detail both expose the pinned artifact SHA-256 (real D1 query)', async () => {
     const list = await service.listCatalog();
