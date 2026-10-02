@@ -29,3 +29,10 @@ def test_freshness_monitor_covers_customer_facing_blogger_and_preserves_write_ca
     assert "max_posts: '4'" in workflow
     assert "45 * 60 * 1000" in workflow
     assert "steps.freshness.outputs.recovery_required != 'true'" in workflow
+
+def test_push_public_delivery_canary_treats_provider_429_as_observable_not_delivery_failure():
+    workflow = Path(".github/workflows/freshness-check.yml").read_text(encoding="utf-8")
+    assert "BLOGGER_PUBLIC_RATE_LIMITED" in workflow
+    assert "Provider returned HTTP 429" in workflow
+    assert 'exit "$EXIT_CODE"' in workflow
+    assert "python3 scripts/check_blogger_public_delivery.py --attempts 1" in workflow
