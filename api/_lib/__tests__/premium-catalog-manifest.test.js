@@ -102,10 +102,25 @@ describe('premium catalog manifest (schema 2: versioned)', () => {
     expect(r.reasons).toEqual(expect.arrayContaining(['CUSTOMER_COPY_INTERNAL_TERMS', 'EVIDENCE_CUTOFF_MISSING']));
   });
 
-  test.each(manifest.products.map(p => [p.sku, p]))('v2 %s is NOT publishable until a human review record exists', (_sku, product) => {
+  test.each(V2.map(p => [p.sku, p]))('v2 %s is NOT publishable: no review record exists', (_sku, product) => {
     const r = prepareProduct(product, manifest);
     expect(r.ok).toBe(false);
     expect(r.reasons).toContain('REVIEW_UNREADABLE');
+  });
+
+  test('Ray v3: the committed CDB internal review record certifies the exact pinned artifact', () => {
+    const [ray] = V3;
+    const review = readJson(ray.review);
+    expect(review).toMatchObject({
+      report_id: ray.report_id, artifact_sha256: ray.artifact_sha256, decision: 'APPROVE',
+      reviewer_type: 'cdb_internal', reviewer_identity: 'cyberdudebivash', is_test_only_fixture: false,
+    });
+    expect(review.review_timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/);
+    // Fixed clock: the 30-day evidence window would otherwise make this test date-dependent.
+    const r = prepareProduct(ray, manifest, undefined, { now: REVIEW_DATE });
+    expect(r.reasons).toEqual([]);
+    expect(r.ok).toBe(true);
+    expect(r.certification).toMatchObject({ certified: true, artifactSha256: ray.artifact_sha256, reviewerIdentity: 'cyberdudebivash' });
   });
 
   test.each(manifest.products.map(p => [p.sku, p]))('v2 %s: export hash is pinned in the manifest and the gate is 23/23', (_sku, product) => {
@@ -249,6 +264,10 @@ describe('negative controls: nothing unreviewed or altered can be listed', () =>
 
   test('a test-only review is refused', () => {
     expect(prepareProduct(withReview(product, { is_test_only_fixture: true }), manifest).reasons).toContain('TEST_ONLY_REVIEW_FORBIDDEN');
+  });
+
+  test('a review from a reviewer type other than cdb_internal is refused', () => {
+    expect(prepareProduct(withReview(product, { reviewer_type: 'external_contractor' }), manifest).reasons).toContain('UNSUPPORTED_REVIEWER_TYPE');
   });
 
   test('a REJECT decision is refused', () => {
