@@ -1,5 +1,44 @@
 # Intel Factory — Customer Release Certification
 
+## Tranche 10 (2026-10-02): commerce consolidation — Premium Intelligence moves to Sentinel APEX plan entitlement
+
+### Outcome: **CONDITIONAL**
+
+The code is ready and certified locally. Ray v3 is still unpublished, because the operator's `PREMIUM_ANALYST_KEY` is not in the automation environment.
+
+| Area | Result |
+|---|---|
+| Payment authority | **Sentinel APEX only.** `action=checkout` → 410 `PREMIUM_CHECKOUT_MOVED`, no side effect |
+| Entitlement | Sentinel APEX `cdb_…` keys validated by `sentinel-apex-gateway` `/api/auth/validate` over the `SENTINEL_GATEWAY` service binding (owner's choice). PRO/ENTERPRISE/MSSP eligible. Blog keys `pro`+ eligible. Legacy purchases kept |
+| Rule | Legacy purchase OR (SELLABLE + PREMIUM_CERTIFIED + eligible plan). Status overrides plan |
+| Store UI | Razorpay script and checkout modal removed. "Unlock with Sentinel APEX" uses the server-issued `upgrade_url`, client-pinned to intel. Plan price comes from intel `/api/pricing` (fallback "see Sentinel APEX pricing"). Cards show SHA-256, version, cut-off and sources |
+| Library | "My Premium Intelligence": plan reports plus legacy purchases, deduplicated |
+| Blog Razorpay webhook | **NOT_REQUIRED.** D1: 0 orders, 0 entitlements, 0 downloads. Endpoint code kept for compatibility |
+| ₹1,999 purchase CTAs | **0** active |
+| Cloudflare | New resources **0**. One service binding to an existing Worker. ≤ 1 internal subrequest per premium library/download (60 s cache) |
+
+### Gates (branch, base `main` @ `77a47829`)
+
+| Gate | Result |
+|---|---|
+| `check:cloudflare` | 15/15 |
+| `test:ci` (Jest) | 115 suites; 3,064 passed, 0 failed, 60 skipped (+50 new) |
+| node:test | `tests-js` 316/316 (+6 UI guards); deploy-time 129/129 |
+| pytest (engine) | 1,067 passed |
+| `build:cloudflare` | 16,438 files |
+| Wrangler dry run | 21,598.25 KiB / gzip 3,421.00 KiB; bindings DB, PREMIUM_REPORTS, **SENTINEL_GATEWAY (Worker)**, ASSETS |
+| Commercial negative controls | **12/12 detected** (`docs/audits/PREMIUM-INTELLIGENCE-ENTITLEMENT-CUTOVER.md`) |
+
+### Still blocked (operator)
+
+| Step | State |
+|---|---|
+| Ray v3 publish, then v1 retirement | **BLOCKED — OPERATOR PREMIUM_ANALYST_KEY REQUIRED.** `git pull origin main && PREMIUM_ANALYST_KEY=<key> node scripts/publish-premium-reports.js --only PIR-VULN-CVE-2025-62593-RAY --publish` |
+| Live PRO download proof | Needs an operator-owned Sentinel APEX PRO key after deploy |
+| Branch protection phase 1 | Repository admin |
+
+Until v3 is published, plan subscribers receive Ray v1, the only SELLABLE approved product. The other three stay PAUSED.
+
 ## Tranche 9 (2026-10-02): Ray v3 approval merged; publish, payment proof and main protection pending operator
 
 ### Outcome: **CONDITIONAL**

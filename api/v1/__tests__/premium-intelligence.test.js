@@ -3,6 +3,7 @@
 jest.mock('../../_lib/premium-commerce-service', () => ({
   listCatalog: jest.fn(), getCatalogItem: jest.fn(), publishCertifiedReport: jest.fn(),
   createCheckout: jest.fn(), verifyCheckout: jest.fn(), listLibrary: jest.fn(), downloadReport: jest.fn(),
+  listPremiumLibrary: jest.fn(), downloadPremiumReport: jest.fn(), planEligible: jest.fn(() => false),
 }));
 jest.mock('../../_lib/premium-commerce-store', () => ({ setCatalogStatus: jest.fn() }));
 jest.mock('../../_lib/middleware', () => ({ authenticate: jest.fn() }));
@@ -31,12 +32,13 @@ test('public catalog contains only service-approved sellable reports and needs n
   service.listCatalog.mockResolvedValue([{report_id:'R1',title:'Premium Report'}]);const r=res();await handler({method:'GET',query:{action:'catalog'},headers:{}},r);expect(r.statusCode).toBe(200);expect(r.body.success).toBe(true);expect(authenticate).not.toHaveBeenCalled();
 });
 
-test('checkout requires authenticated customer identity and payment intent abuse control', async () => {
-  authenticate.mockResolvedValue(null);const r=res();await handler({method:'POST',query:{action:'checkout'},body:{report_id:'R1'},headers:{}},r);expect(security.intentIpRateLimit).toHaveBeenCalled();expect(service.createCheckout).not.toHaveBeenCalled();
-});
-
-test('checkout never accepts email/owner/amount/currency from client payload', async () => {
-  authenticate.mockResolvedValue({userId:'u1',email:'a@b.test'});const r=res();await handler({method:'POST',query:{action:'checkout'},body:{report_id:'R1',amount_minor:1},headers:{}},r);expect(r.statusCode).toBe(400);expect(r.body.error.code).toBe('INVALID_FIELDS');expect(service.createCheckout).not.toHaveBeenCalled();
+test('standalone checkout is retired: 410 PREMIUM_CHECKOUT_MOVED, never an order, whatever the payload', async () => {
+  authenticate.mockResolvedValue({userId:'u1',email:'a@b.test'});
+  for (const body of [{report_id:'R1'},{report_id:'R1',amount_minor:1,currency:'USD'}]) {
+    const r=res();await handler({method:'POST',query:{action:'checkout'},body,headers:{}},r);
+    expect(r.statusCode).toBe(410);expect(r.body.error.code).toBe('PREMIUM_CHECKOUT_MOVED');expect(r.body.error.upgrade_url).toMatch(/^https:\/\/intel\.cyberdudebivash\.com\/upgrade\.html\?plan=pro&/);
+  }
+  expect(service.createCheckout).not.toHaveBeenCalled();expect(authenticate).not.toHaveBeenCalled();
 });
 
 test('verify uses the stricter payment submission limiter', async () => {
@@ -52,11 +54,11 @@ test('analyst publication delegates only whitelisted commercial metadata to cert
 });
 
 test('library is owner-authenticated and bounded by service', async () => {
-  authenticate.mockResolvedValue({userId:'u1'});service.listLibrary.mockResolvedValue([{report_id:'R1'}]);const r=res();await handler({method:'GET',query:{action:'library',limit:'1000'},headers:{}},r);expect(service.listLibrary).toHaveBeenCalledWith({userId:'u1'},'1000');expect(r.body.data.count).toBe(1);
+  authenticate.mockResolvedValue({userId:'u1',tier:'free'});service.listPremiumLibrary.mockResolvedValue([{report_id:'R1'}]);const r=res();await handler({method:'GET',query:{action:'library',limit:'1000'},headers:{}},r);expect(service.listPremiumLibrary).toHaveBeenCalledWith({source:'blog_key',userId:'u1',tier:'free'},'1000');expect(r.body.data.count).toBe(1);
 });
 
 test('download returns binary with no-store, attachment and integrity headers', async () => {
-  authenticate.mockResolvedValue({userId:'u1'});service.downloadReport.mockResolvedValue({bytes:Uint8Array.from([1,2]),filename:'report.md',contentType:'text/markdown',sha256:'a'.repeat(64)});const r=res();await handler({method:'GET',query:{action:'download',report_id:'R1'},headers:{}},r);expect(r.statusCode).toBe(200);expect(r.headers['cache-control']).toMatch(/no-store/);expect(r.headers['content-disposition']).toContain('report.md');expect(r.headers['x-content-sha256']).toBe('a'.repeat(64));expect(r.body).toBeInstanceOf(Uint8Array);
+  authenticate.mockResolvedValue({userId:'u1'});service.downloadPremiumReport.mockResolvedValue({bytes:Uint8Array.from([1,2]),filename:'report.md',contentType:'text/markdown',sha256:'a'.repeat(64)});const r=res();await handler({method:'GET',query:{action:'download',report_id:'R1'},headers:{}},r);expect(r.statusCode).toBe(200);expect(r.headers['cache-control']).toMatch(/no-store/);expect(r.headers['content-disposition']).toContain('report.md');expect(r.headers['x-content-sha256']).toBe('a'.repeat(64));expect(r.body).toBeInstanceOf(Uint8Array);
 });
 
 test('catalog status mutation is analyst-only', async () => {

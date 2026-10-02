@@ -1,6 +1,10 @@
 # Blog Razorpay Webhook Runbook
 
-**Status 2026-10-02: BLOCKED — RAZORPAY DASHBOARD ACCESS REQUIRED.**
+**Status 2026-10-02 (later): LEGACY — NOT REQUIRED for new commerce.**
+
+Premium Intelligence is now a Sentinel APEX plan entitlement (`docs/architecture/UNIFIED-SENTINEL-COMMERCE.md`). Standalone checkout returns 410. Live D1 on 2026-10-02 had 0 premium orders, 0 entitlements and 0 downloads, so no historical transaction needs this webhook. Do not configure it in the Razorpay Dashboard. The endpoint code stays for compatibility (unsigned/forged requests still get 400). Remove it after the legacy window, following the deprecation policy.
+
+Earlier status 2026-10-02: BLOCKED — RAZORPAY DASHBOARD ACCESS REQUIRED.
 
 Re-verified live after deploy `git-f1e31f2eb3b4`: unsigned → 400, forged signature → 400, 0 orders, 0 entitlements. The automation environment has no Dashboard access and no Razorpay credentials, so no webhook, purchase or refund was simulated.
 
