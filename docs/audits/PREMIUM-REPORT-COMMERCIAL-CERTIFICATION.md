@@ -20,9 +20,9 @@ The three ransomware reports share a structural weakness: a single unconfirmed l
 | SKU | Human Review | v2 Published | Payment | Webhook | Download | Refund | Customer Ready |
 |---|---|---|---|---|---|---|---|
 | PIR-VULN-CVE-2025-62593-RAY (v3.0) | PENDING (automated gates PASS) | NO | BLOCKED (no controlled purchase) | BLOCKED (Razorpay Dashboard) | PASS in tests; live 401 unauthenticated | BLOCKED | **NO** |
-| PIR-RANSOMWARE-DRAGONFORCE-VERMONT-XCENTER | FAIL | NO | BLOCKED | BLOCKED | PASS in tests; live 401 | BLOCKED | **NO** (NOT_FOR_SALE) |
-| PIR-RANSOMWARE-QILIN-SPOONFUL-OF-COMFORT | FAIL | NO | BLOCKED | BLOCKED | PASS in tests; live 401 | BLOCKED | **NO** (NOT_FOR_SALE) |
-| PIR-RANSOMWARE-MEDUSALOCKER-BIJA-INDUSTRIE | FAIL | NO | BLOCKED | BLOCKED | PASS in tests; live 401 | BLOCKED | **NO** (NOT_FOR_SALE) |
+| PIR-RANSOMWARE-DRAGONFORCE-VERMONT-XCENTER | FAIL (v1 **PAUSED** 2026-10-02) | NO | BLOCKED | BLOCKED | PASS in tests; live 401 | BLOCKED | **NO** (NOT_FOR_SALE) |
+| PIR-RANSOMWARE-QILIN-SPOONFUL-OF-COMFORT | FAIL (v1 **PAUSED** 2026-10-02) | NO | BLOCKED | BLOCKED | PASS in tests; live 401 | BLOCKED | **NO** (NOT_FOR_SALE) |
+| PIR-RANSOMWARE-MEDUSALOCKER-BIJA-INDUSTRIE | FAIL (v1 **PAUSED** 2026-10-02) | NO | BLOCKED | BLOCKED | PASS in tests; live 401 | BLOCKED | **NO** (NOT_FOR_SALE) |
 
 "PASS in tests" means the end-to-end suite on a real SQLite D1 with real HMAC: `api/v1/__tests__/premium-webhook-integrity.test.js`, 28 tests. It covers:
 - browser close;
@@ -34,6 +34,10 @@ The three ransomware reports share a structural weakness: a single unconfirmed l
 - no R2 read after revocation.
 
 That is not provider evidence. Live provider evidence needs the operator steps in `docs/runbooks/BLOG-RAZORPAY-WEBHOOK.md`.
+
+## Update 2026-10-02: unreviewed products paused
+
+As instructed, the Qilin, DragonForce and MedusaLocker v1 products were set to **PAUSED** in production. They are no longer listed or purchasable; artifacts, hashes and history are kept, and there were 0 buyers. Ray v1 stays on sale until Ray v3 is approved and published; the publisher then retires it. It is the only product currently taking payment. It carries the outdated EPSS judgement described above, so pausing it before v3 ships remains an available owner choice.
 
 ## Owner decision required: the v1 products on sale
 

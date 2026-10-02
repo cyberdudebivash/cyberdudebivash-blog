@@ -1,5 +1,47 @@
 # Intel Factory — Customer Release Certification
 
+## Tranche 8 (2026-10-02): catalog trust cleanup, Ray v3 approval packet
+
+### #321 in production: **PASS**
+
+| Field | Value |
+|---|---|
+| Merge | `4c5514a60ff6053b05ca1348cdff1f1d22f77b49` |
+| Deployed by | `cloudflare-production-deploy.yml` run `36952782859`, **event `push`** (third consecutive merge that auto-deployed) |
+| Worker version | `38120bfd-8d66-4a4c-bb12-914145ca1d81`, created 2026-10-02 01:50:55 UTC, tag `git-4c5514a60ff6` |
+| Rollback version | `42bba7dd-98f5-4080-8acf-b5efa26b76ff` |
+| Live | Ray v3 preview served in `premium-previews.json` (9 entries); catalog unchanged at merge; webhook unsigned/forged 400/400 |
+
+### Catalog trust cleanup (production D1, 2026-10-02 02:14:37 UTC)
+
+| Product | Before | After | R2 artifact and evidence | Buyers affected |
+|---|---|---|---|---|
+| `qilin-spoonful-of-comfort-premium-canary` | SELLABLE | **PAUSED** | kept (`213eec33….md`, `.reportx.json`) | 0 (no orders) |
+| `dragonforce-vermont-xcenter-premium-canary` | SELLABLE | **PAUSED** | kept (`4bac2b5c…`) | 0 |
+| `medusalocker-bija-industrie-premium-canary` | SELLABLE | **PAUSED** | kept (`4b986cde…`) | 0 |
+| `cve-2025-62593-ray-canary` | SELLABLE | SELLABLE until Ray v3 is published (the publisher then retires it) | kept | 0 |
+
+- **Method:** the same statement as `setCatalogStatus`, guarded to rows that were `SELLABLE` (1 row changed each). No row, object, order or entitlement was deleted. Reversible: set the status back to `SELLABLE`.
+- **Live after:** the catalog lists only `cve-2025-62593-ray-canary`; the paused products' detail returns 404; checkout refuses them.
+- **Purchase gate:** only `SELLABLE` + `PREMIUM_CERTIFIED`, plus a verified R2 artifact, can take payment. D1 refuses any non-certified row (CHECK constraint).
+- **Tests added:** real-SQL tests that:
+  - PAUSED and RETIRED are refused with 409 `REPORT_NOT_SELLABLE`, before any Razorpay order or D1 write;
+  - an uncertified row is refused by both D1 and the service;
+  - pausing keeps existing buyers' access.
+
+  Each was mutation-checked.
+
+### Ray v3: **PENDING HUMAN APPROVAL**
+
+The approval packet is `docs/release/RAY-V3-APPROVAL-PACKET.md`. Technical, editorial and commercial review: PASS. One sourcing fix was made on 2026-10-02, so the artifact is now `8b79dc179a4e6f339ae276c47552b00193e911351f6b387fa776fd73d5974b21` (43,933 B).
+
+### Still blocked (operator)
+
+- **Ray v3 named approval:** by 2026-10-31.
+- **Razorpay Dashboard blog webhook:** BLOCKED — RAZORPAY DASHBOARD CONFIGURATION.
+- **Controlled purchase and refund:** BLOCKED until v3 is live and the webhook is configured.
+- **Branch protection on `main`:** still `[]`; no repository-settings access from this environment.
+
 ## Tranche 7 (2026-10-01): Ray v3.0 refreshed edition
 
 | Item | Result |
@@ -8,9 +50,9 @@
 | Material changes found | EPSS 0.00369 → 0.62459 (p99.17); CISA SSVC automatable no → yes; KEV forensicTriage: Yes |
 | Detection | 3 Sigma rules (2 SYNTAX_VALIDATED by pySigma 1.5.1, 1 DRAFT) built from fix commit 70e7c72; the loopback-excluding rule is gone |
 | Gates | 23/23; editorial gate 0 findings; deterministic rebuild test; publisher end-to-end test (publish, confirm, retire v1 Ray) |
-| Artifact | `036b02d8688d398c2195e7d18e00764e8da10ac34a39304e37a501c4764dd362`, 43,661 B |
+| Artifact | `8b79dc179a4e6f339ae276c47552b00193e911351f6b387fa776fd73d5974b21`, 43,933 B |
 | State | **READY FOR HUMAN REVIEW.** Not published; the release window closes 2026-10-31 |
-| Cost | No Cloudflare change. Publishing adds about 43.7 KB of report plus about 117 KB of evidence JSON to the existing R2 bucket |
+| Cost | No Cloudflare change. Publishing adds about 43.9 KB of report plus about 117 KB of evidence JSON to the existing R2 bucket |
 
 ## Tranche 6 (2026-10-01): premium commercial review, payment certification, main protection
 

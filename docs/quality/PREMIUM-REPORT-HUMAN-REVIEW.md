@@ -134,13 +134,15 @@ A `REQUEST_CHANGES` or `REJECT` record is refused by the certifier (`REVIEW_NOT_
 ## Ray v3.0 review (refreshed edition, evidence cut-off 2026-10-01)
 
 **Artifact:** `reportx-canary/exports/v3/sentinel-apex-vuln-cve-2025-62593-ray-v3-export.json`
-- `bundle.rendered_text`: 43,661 bytes, about 5,980 words.
+- `bundle.rendered_text`: 43,933 bytes, about 5,980 words.
 - Reviewer pack: `…-REVIEWER-PACK.md`, diffed against v1.
 - Built by `reportx-canary/cve_2025_62593_ray_v3.py`; export with `premium_ray_v3.py`.
 
 | report_id | artifact SHA-256 to approve |
 |---|---|
-| `sentinel-apex-vuln-cve-2025-62593-ray-v3` | `036b02d8688d398c2195e7d18e00764e8da10ac34a39304e37a501c4764dd362` |
+| `sentinel-apex-vuln-cve-2025-62593-ray-v3` | `8b79dc179a4e6f339ae276c47552b00193e911351f6b387fa776fd73d5974b21` |
+
+**Revision 2026-10-02.** One Business Impact sentence that went beyond its source now quotes Oligo directly; this changed the hash from `036b02d8…`. The full review result and approval fields are in `docs/release/RAY-V3-APPROVAL-PACKET.md`.
 
 ### What was re-researched (not re-rendered)
 

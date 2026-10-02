@@ -17,7 +17,7 @@ Hashes verified: local candidate = manifest pin for all four. R2/D1/customer has
 
 | SKU | New title | Version | Review | Evidence | Editorial | Commercial | Artifact SHA-256 | Size | R2 object key | Publication state |
 |---|---|---:|---|---|---|---|---|---:|---|---|
-| PIR-VULN-CVE-2025-62593-RAY | Sentinel APEX Vulnerability Intelligence Assessment — CVE-2025-62593 (Ray) | 3.0 | **PENDING** (all automated gates PASS) | PASS (re-retrieved 2026-10-01) | PASS (editorial gate 0 findings) | PASS vs the free page | `036b02d8688d398c2195e7d18e00764e8da10ac34a39304e37a501c4764dd362` | 43,661 B | `premium-reports/sentinel-apex-vuln-cve-2025-62593-ray-v3/036b02d8….md` (not uploaded) | **READY FOR HUMAN REVIEW**; v1 on sale |
+| PIR-VULN-CVE-2025-62593-RAY | Sentinel APEX Vulnerability Intelligence Assessment — CVE-2025-62593 (Ray) | 3.0 | **PENDING** (all automated gates PASS) | PASS (re-retrieved 2026-10-01) | PASS (editorial gate 0 findings) | PASS vs the free page | `8b79dc179a4e6f339ae276c47552b00193e911351f6b387fa776fd73d5974b21` | 43,933 B | `premium-reports/sentinel-apex-vuln-cve-2025-62593-ray-v3/8b79dc17….md` (not uploaded) | **READY FOR HUMAN REVIEW**; v1 on sale |
 
 **Result: 4/4 v2 reviewed, 0/4 approved, 0/4 published. Ray v3: ready for review.** No R2 write, no catalog change; v1 stays active (fail-closed per the reissue rule).
 
