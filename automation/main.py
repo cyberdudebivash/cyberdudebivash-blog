@@ -32,6 +32,7 @@ from .publication_verifier import fetch_back_and_verify
 from .report_integrity import PublicationIntegrityError, compute_artifact_hash
 from .search_console_submitter import SearchConsoleSubmitter
 from .social_amplifier import SocialAmplifier
+from .source_evidence_hydrator import hydrate_selected_article, telemetry_snapshot as source_hydration_telemetry
 
 logger = setup_logger("main")
 
@@ -367,6 +368,19 @@ def run_pipeline(config: Config, dry_run: bool = False) -> dict:
         }
 
         try:
+            # P0 source-depth recovery: only the finite selected global-RSS
+            # candidate set is eligible. This may replace a short feed excerpt
+            # with a richer capture from the exact publisher article URL; it
+            # never expands discovery or treats generated prose as evidence.
+            hydration = hydrate_selected_article(article)
+            post_result["source_hydration"] = {
+                "attempted": hydration.attempted,
+                "adopted": hydration.adopted,
+                "reason": hydration.reason,
+                "before_words": hydration.before_words,
+                "after_words": hydration.after_words,
+            }
+
             # Transform content
             transformed = transformer.transform(article)
             post_result["blogger_title"] = transformed["title"]
@@ -577,6 +591,7 @@ def run_pipeline(config: Config, dry_run: bool = False) -> dict:
     # append replacement candidates during the loop.
     report["discovered"] = len(report["posts"])
     report["attempted"] = len(report["posts"])
+    report["source_evidence_hydration"] = source_hydration_telemetry()
     report["run_end"] = datetime.now(timezone.utc).isoformat()
     report["run_status"] = _pipeline_run_status(report)
 
