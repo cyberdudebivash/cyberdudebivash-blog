@@ -15,8 +15,7 @@
     apiUrl: '/api.html',
     productsUrl: '/products.html',
     intelUrl: 'https://intel.cyberdudebivash.com',
-    patreon: 'https://www.patreon.com/c/CYBERDUDEBIVASH',
-    twitter: 'https://x.com/cdbsentinelapex',
+twitter: 'https://x.com/cdbsentinelapex',
     exitDelay: 30000,          // ms before exit intent activates
     scrollCTAInterval: 600,    // px scroll before first inline CTA
     toastInterval: 45000,      // ms between social proof toasts
