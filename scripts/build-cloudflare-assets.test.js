@@ -412,7 +412,7 @@ test('legitimate content containing prohibited words as substrings is not flagge
 
     const incident = fs.readFileSync(path.join(OUT, 'customer-incident-response.html'), 'utf8');
     assert.match(incident, /No public response-time guarantee is created by this page/i);
-    assert.match(incident, /security@cyberdudebivash\.in/);
+    assert.match(incident, /security@cyberdudebivash\.com/);
     assert.match(incident, /contact@cyberdudebivash\.in/);
   });
 
