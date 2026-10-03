@@ -541,7 +541,7 @@ jobs:
           fetch_page "/service-status.html" "$tmp/service-status.html"
           grep -Fq 'Availability without invented percentages.' "$tmp/service-status.html" || { echo "::error::Service assurance truth model missing"; exit 1; }
           grep -Fq 'Marketing copy is not an SLA.' "$tmp/service-status.html" || { echo "::error::Service SLA truth boundary missing"; exit 1; }
-          grep -Fq 'security@cyberdudebivash.in' "$tmp/service-status.html" || { echo "::error::Security escalation contact missing"; exit 1; }
+          grep -Fq 'security@cyberdudebivash.com' "$tmp/service-status.html" || { echo "::error::Security escalation contact missing"; exit 1; }
           grep -Fq 'contact@cyberdudebivash.in' "$tmp/service-status.html" || { echo "::error::Customer incident contact missing"; exit 1; }
 
           fetch_page "/enterprise-onboarding.html" "$tmp/onboarding.html"
