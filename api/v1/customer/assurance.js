@@ -48,7 +48,7 @@ function packageFor(user) {
       acceptance_profile: PUBLIC_BASE + '/api/intel/cti-delivery-acceptance.json'
     },
     incident_response: {
-      security_contact: 'security@cyberdudebivash.in',
+      security_contact: 'security@cyberdudebivash.com',
       customer_production_contact: 'contact@cyberdudebivash.in',
       security_disclosure: PUBLIC_BASE + '/security-disclosure.html',
       security_txt: PUBLIC_BASE + '/.well-known/security.txt',

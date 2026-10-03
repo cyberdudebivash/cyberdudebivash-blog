@@ -961,7 +961,7 @@ def test_full_soc2_cti_customer_release_package_contract():
         "Availability without invented percentages.",
         "Historical uptime percentages are not fabricated",
         "Marketing copy is not an SLA.",
-        "security@cyberdudebivash.in",
+        "security@cyberdudebivash.com",
         "contact@cyberdudebivash.in",
         "ALIGNED · NOT CERTIFIED",
     ]:
