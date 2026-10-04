@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-04T13:49:34.295Z",
+  "generated": "2026-10-04T17:35:25.756Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -9,9 +9,9 @@
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
   "total_published": 5848,
   "s2n_stats": {
-    "passed": 102,
-    "suppressed": 7,
-    "avg_qs": 0.493
+    "passed": 98,
+    "suppressed": 6,
+    "avg_qs": 0.495
   },
   "items": [
     {
@@ -450,178 +450,6 @@
           "+12 PoC_available",
           "+8 exploited_in_wild",
           "+7 zero_day"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-104861",
-      "title": "probe-image-size: Quadratic-time Denial of Service in the SVG Parser",
-      "description": "Overview\n\nprobe-image-size scans the SVG header with a searching regular expression, /<[-_.:a-zA-Z0-9][^>]*>/. On input that contains many < characters but no >, the engine restarts the [^>]* scan at every < position and runs to end of input each time, giving quadratic time compl... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 44,
-      "quality_score": 0.478,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-02",
-      "last_seen": "2026-10-02",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-104861"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-gjj5-9665-rwrc"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=1d (score=0.85)",
-          "QS=0.478"
-        ],
-        "priority": [
-          "base_ps=44 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-19481",
-      "title": "@fastify/busboy vulnerable to Denial of Service via prototype-named multipart part header",
-      "description": "Impact\n\nVersions of @fastify/busboy from 1.0.0 and prior to 3.2.1 are vulnerable to a Denial of Service. The multipart header parser stores part-header names on a plain JavaScript object, so a part header named __proto__ or constructor resolves to an inherited value that is not a... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 44,
-      "quality_score": 0.478,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-02",
-      "last_seen": "2026-10-02",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-19481"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-x8mw-p69m-v3mx"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=1d (score=0.85)",
-          "QS=0.478"
-        ],
-        "priority": [
-          "base_ps=44 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-19484",
-      "title": "@fastify/busboy vulnerable to Denial of Service via oversized multipart boundary",
-      "description": "Impact\n\nVersions of @fastify/busboy from 3.1.0 and prior to 3.2.1 are vulnerable to a Denial of Service. The vendored streaming multipart search stores its default skip distance in a Uint8Array(256). A multipart boundary of exactly 252 bytes makes the search needle 256 bytes, and... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 44,
-      "quality_score": 0.478,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-02",
-      "last_seen": "2026-10-02",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-19484"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-xjh9-v7x6-24jw"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=1d (score=0.85)",
-          "QS=0.478"
-        ],
-        "priority": [
-          "base_ps=44 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-74904",
-      "title": "SiYuan: 17 block metadata/content endpoints in kernel/api/block.go have zero publish-access filtering, reachable by anon",
-      "description": "Same CWE-862 family, found via an automated bulk sweep of every\n/api/block/* handler in kernel/api/block.go for the presence of any\naccess-check reference (IsReadOnlyRoleContext, checkBlockPublishAccess,\nGetPublishAccess) anywhere in the function body. 17 of 28 candidate\nendpoint... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 44,
-      "quality_score": 0.478,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-02",
-      "last_seen": "2026-10-02",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-74904"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-4vpg-gwqq-w44c"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=1d (score=0.85)",
-          "QS=0.478"
-        ],
-        "priority": [
-          "base_ps=44 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -2310,9 +2138,7 @@
         ],
         "suppression": null,
         "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
+      }
     },
     {
       "id": "CVE-2026-60206",
@@ -2354,9 +2180,7 @@
         ],
         "suppression": null,
         "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
+      }
     },
     {
       "id": "CVE-2026-49952",
@@ -2398,9 +2222,7 @@
         ],
         "suppression": null,
         "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
+      }
     },
     {
       "id": "CVE-2026-65761",
@@ -2442,9 +2264,7 @@
         ],
         "suppression": null,
         "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
+      }
     },
     {
       "id": "CVE-2026-15409",
@@ -4383,6 +4203,186 @@
       "ioc_count": 0,
       "refs": [
         "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-1920"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-71416",
+      "title": "Headroom vulnerable to Cross-Site WebSocket Hijacking (CSWSH)",
+      "description": "Summary\nThe Headroom WebSocket server does not validate the Origin header of incoming client WebSocket requests before forwarding the request to the upstream server, allowing malicious WebSocket clients to perform arbitrary LLM requests without authentication. This can be exploit... [Full analysis a",
+      "cvss": 8.8,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "AI_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-71416"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-h46j-26q3-rggf"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-104861",
+      "title": "probe-image-size: Quadratic-time Denial of Service in the SVG Parser",
+      "description": "Overview\n\nprobe-image-size scans the SVG header with a searching regular expression, /<[-_.:a-zA-Z0-9][^>]*>/. On input that contains many < characters but no >, the engine restarts the [^>]* scan at every < position and runs to end of input each time, giving quadratic time compl... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-104861"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-gjj5-9665-rwrc"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-19481",
+      "title": "@fastify/busboy vulnerable to Denial of Service via prototype-named multipart part header",
+      "description": "Impact\n\nVersions of @fastify/busboy from 1.0.0 and prior to 3.2.1 are vulnerable to a Denial of Service. The multipart header parser stores part-header names on a plain JavaScript object, so a part header named __proto__ or constructor resolves to an inherited value that is not a... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-19481"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-x8mw-p69m-v3mx"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-19484",
+      "title": "@fastify/busboy vulnerable to Denial of Service via oversized multipart boundary",
+      "description": "Impact\n\nVersions of @fastify/busboy from 3.1.0 and prior to 3.2.1 are vulnerable to a Denial of Service. The vendored streaming multipart search stores its default skip distance in a Uint8Array(256). A multipart boundary of exactly 252 bytes makes the search needle 256 bytes, and... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-19484"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-xjh9-v7x6-24jw"
       ],
       "explanation": {
         "quality": [
