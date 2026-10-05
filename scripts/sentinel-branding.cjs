@@ -17,10 +17,26 @@ function displayName(value) {
     .replace(/Sentinel Apex/gi, 'SENTINEL APEX');
 }
 
-function brandHtml(source, platformName) {
-  if (typeof platformName !== 'string' || !platformName.startsWith('SENTINEL APEX')) {
-    throw new Error('A canonical SENTINEL APEX platform name is required');
+function canonicalPlatformName(value) {
+  if (typeof value !== 'string') throw new Error('A canonical SENTINEL APEX platform name is required');
+  const normalized = value.trim();
+  if (
+    normalized.length < 'SENTINEL APEX'.length ||
+    normalized.length > 96 ||
+    !normalized.startsWith('SENTINEL APEX') ||
+    /[\u0000-\u001f\u007f<>"\`]/.test(normalized)
+  ) {
+    throw new Error('Unsafe or non-canonical SENTINEL APEX platform name');
   }
+  return normalized;
+}
+
+function escapeHtmlAttr(value) {
+  return value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function brandHtml(source, platformName) {
+  const canonicalName = canonicalPlatformName(platformName);
   let raw = null;
   const stack = [];
   const input = String(source).replace(/(<script\b[^>]*>)([\s\S]*?)(<\/script>)/gi, (all, open, text, close) => {
@@ -38,7 +54,7 @@ function brandHtml(source, platformName) {
       function visit(value) {
         if (!value || typeof value !== 'object') return;
         const types = [value['@type']].flat();
-        if (types.includes('WebSite')) { changed ||= value.name !== platformName; value.name = platformName; }
+        if (types.includes('WebSite')) { changed ||= value.name !== canonicalName; value.name = canonicalName; }
         if (types.includes('SoftwareApplication') && typeof value.name === 'string') {
           const name = displayName(value.name); changed ||= value.name !== name; value.name = name;
         }
@@ -74,7 +90,7 @@ function brandHtml(source, platformName) {
         (all, prefix, quote, text) => SELLER.test(text) || /\bUPI\b/i.test(text) ? all : prefix + quote + displayName(text) + quote);
       if (name === 'meta' && /(?:name|property)=["'](?:description|keywords|application-name|og:(?:title|site_name|description|image:alt)|twitter:(?:title|description|image:alt))["']/i.test(token)) {
         changed = changed.replace(/(\scontent\s*=\s*)(["'])([\s\S]*?)\2/i,
-          (_, prefix, quote, text) => prefix + quote + (/property=["']og:site_name["']/i.test(token) ? platformName : displayName(text)) + quote);
+          (_, prefix, quote, text) => prefix + quote + (/property=["']og:site_name["']/i.test(token) ? escapeHtmlAttr(canonicalName) : displayName(text)) + quote);
       }
       return changed;
     }
@@ -113,4 +129,4 @@ if (require.main === module) {
   if (!directory || !fs.statSync(directory).isDirectory()) throw new Error('Existing public artifact directory required');
   console.log('SENTINEL APEX branding: ' + brandDirectory(directory, platformName) + ' HTML files');
 }
-module.exports = { brandHtml, brandDirectory, displayName };
+module.exports = { brandHtml, brandDirectory, displayName, canonicalPlatformName, escapeHtmlAttr };
