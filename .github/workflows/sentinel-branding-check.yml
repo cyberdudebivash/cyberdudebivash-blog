@@ -1,0 +1,21 @@
+name: SENTINEL APEX presentation branding
+on:
+  pull_request:
+    paths:
+      - 'scripts/sentinel-branding.cjs'
+      - 'scripts/sentinel-branding.test.cjs'
+      - '.github/workflows/sentinel-branding-check.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  branding:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test scripts/sentinel-branding.test.cjs
+

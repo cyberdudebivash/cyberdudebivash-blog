@@ -8,6 +8,7 @@
  */
 const fs = require('fs');
 const path = require('path');
+const { brandHtml } = require('./sentinel-branding.cjs');
 
 const ROOT = path.join(__dirname, '..');
 const OUT = path.join(ROOT, 'dist-public');
@@ -113,7 +114,7 @@ function injectCustomerExperience(html) {
   if (!out.includes(CX_JS)) {
     out = out.replace(/<\/body>/i, '<script src="' + CX_JS + '" defer></script>\n</body>');
   }
-  return out;
+  return brandHtml(out, 'SENTINEL APEX Research Blog / Intel Factory');
 }
 
 function validatePublicHtmlStructure(html, sourcePath = 'public HTML') {
