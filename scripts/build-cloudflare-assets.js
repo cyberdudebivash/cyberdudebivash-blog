@@ -8,7 +8,6 @@
  */
 const fs = require('fs');
 const path = require('path');
-const { brandHtml } = require('./sentinel-branding.cjs');
 
 const ROOT = path.join(__dirname, '..');
 const OUT = path.join(ROOT, 'dist-public');
@@ -95,6 +94,10 @@ const CX_CSS = '/customer-experience.css?v=20260928-cx2';
 const CX_JS = '/customer-experience.js?v=20260928-cx2';
 
 function injectCustomerExperience(html) {
+  // Header/runtime audits import constants from isolated fixtures. Load the
+  // presentation renderer only when publishing HTML; missing build assets
+  // still fail closed at the real rendering boundary.
+  const { brandHtml } = require('./sentinel-branding.cjs');
   let out = String(html);
   out = out.replace(/<html(?![^>]*\blang=)([^>]*)>/i, '<html lang="en"$1>');
   if (!/<meta\s+charset=/i.test(out)) {
