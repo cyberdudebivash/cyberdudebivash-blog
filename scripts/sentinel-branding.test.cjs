@@ -74,3 +74,15 @@ test('literal dynamic display tags change; operational/payment scripts remain by
   const payment = '<script>const payment={name:"CYBERDUDEBIVASH"};const template=\`<span>'+LEGACY_NAME+'</span>\`;</script>';
   assert.equal(brandHtml(payment, NAME), payment);
 });
+
+
+test('split legacy wordmarks collapse to one canonical product-family brand', () => {
+  const html = '<html><head></head><body><header><span class="cdb-brand-name">CYBERDUDE<span>BIVASH</span></span><span class="cdb-platform-name">SENTINEL APEX Research Blog / Intel Factory</span></header></body></html>';
+  const out = brandHtml(html, NAME);
+  assert.ok(out.includes('<span class="cdb-brand-name">SENTINEL APEX</span>'));
+  assert.equal((out.match(/SENTINEL APEX/g) || []).length, 1, 'exactly one product-family wordmark must remain');
+  assert.ok(out.includes('<span class="cdb-platform-name">Research Blog / Intel Factory</span>'));
+  assert.ok(!out.includes('CYBERDUDE<span>BIVASH</span>'));
+  assert.ok(!out.includes('SENTINEL APEX SENTINEL APEX'));
+  assert.equal(brandHtml(out, NAME), out);
+});

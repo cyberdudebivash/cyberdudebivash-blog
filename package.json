@@ -14,8 +14,9 @@
     "test:performance": "jest tests/performance --runInBand --passWithNoTests",
     "test:resilience": "jest tests/resilience --runInBand --passWithNoTests",
     "test:ci": "jest --ci --coverage --maxWorkers=2",
-    "build:cloudflare": "node scripts/build-cloudflare-assets.js",
-    "check:cloudflare": "node scripts/check-cloudflare-runtime.js && node --test workers/lib/security-headers.test.js scripts/check-cloudflare-runtime.test.js"
+    "build:cloudflare": "npm run test:branding && node scripts/build-cloudflare-assets.js",
+    "check:cloudflare": "node scripts/check-cloudflare-runtime.js && node --test workers/lib/security-headers.test.js scripts/check-cloudflare-runtime.test.js",
+    "test:branding": "node --test scripts/sentinel-branding.test.cjs"
   },
   "keywords": [
     "cybersecurity",
@@ -48,4 +49,3 @@
     "wrangler": "4.123.0"
   }
 }
-
