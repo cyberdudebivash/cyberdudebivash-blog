@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-04T21:16:08.698Z",
+  "generated": "2026-10-05T00:05:47.003Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -571,12 +571,12 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-104861",
-      "title": "probe-image-size: Quadratic-time Denial of Service in the SVG Parser",
-      "description": "Overview\n\nprobe-image-size scans the SVG header with a searching regular expression, /<[-_.:a-zA-Z0-9][^>]*>/. On input that contains many < characters but no >, the engine restarts the [^>]* scan at every < position and runs to end of input each time, giving quadratic time compl... [Full analysis a",
+      "id": "CVE-2026-18140",
+      "title": "aws-smithy-json: Uncontrolled recursion in the aws-smithy-json unknown-key skip path allows unauthenticated remote denia",
+      "description": "Summary\nSmithy-RS is a Rust code generation and runtime framework that generates HTTP clients and servers from Smithy interface definitions, powering the AWS SDK for Rust and custom service implementations. An issue exists which allows uncontrolled recursion in the unknown-key sk... [Full analysis a",
       "cvss": 7.5,
-      "final_ps": 44,
-      "quality_score": 0.478,
+      "final_ps": 42,
+      "quality_score": 0.458,
       "threat_level": "LOW",
       "type": "NEWS_REPORT",
       "source": "sentinel_apex",
@@ -593,21 +593,21 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-104861"
+        "CVE-2026-18140"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-gjj5-9665-rwrc"
+        "https://github.com/advisories/GHSA-8ffr-xgwf-xj56"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
           "data_confidence=0.70",
-          "recency=1d (score=0.85)",
-          "QS=0.478"
+          "recency=2d (score=0.65)",
+          "QS=0.458"
         ],
         "priority": [
-          "base_ps=44 (no boosts)"
+          "base_ps=42 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -2827,50 +2827,6 @@
       "iocs": []
     },
     {
-      "id": "SENTINELAPEX-e555f2df5dfc",
-      "title": "Police dismantle KillSec ransomware gang allegedly led by 16-year-old",
-      "description": "An international law enforcement operation dubbed \"Operation KillSwitch\" seized the KillSec ransomware gang's data leak site and servers, led to three arrests, and identified a 16-year-old as the group's alleged administrator. [...]",
-      "cvss": 0,
-      "final_ps": 38,
-      "quality_score": 0.358,
-      "threat_level": "LOW",
-      "type": "RANSOMWARE",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-01",
-      "last_seen": "2026-10-01",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": true,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.bleepingcomputer.com/news/security/police-dismantle-killsec-ransomware-gang-allegedly-led-by-16-year-old/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.35",
-          "recency=3d (score=0.65)",
-          "QS=0.357"
-        ],
-        "priority": [
-          "+10 ransomware_confirmed"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
-      "iocs": []
-    },
-    {
       "id": "CVE-2026-5430",
       "title": "WSO2 and Adobe Commerce Flaws Exploited in Attacks, Added to CISA KEV",
       "description": "",
@@ -3482,6 +3438,55 @@
       },
       "suppressed": false,
       "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-88779",
+      "title": "Citrix patches NetScaler SAML zero-day exploited in attacks",
+      "description": "Citrix patches NetScaler SAML zero-day exploited in attacks",
+      "cvss": 0,
+      "final_ps": 29,
+      "quality_score": 0.315,
+      "threat_level": "LOW",
+      "type": "ZERO_DAY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 2,
+      "merged_sources": [
+        "sentinel_apex",
+        "bleepingcomputer"
+      ],
+      "first_seen": "2026-10-04",
+      "last_seen": "2026-10-04",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-88779"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.bleepingcomputer.com/news/security/citrix-patches-netscaler-saml-zero-day-exploited-in-attacks/",
+        "https://intel.cyberdudebivash.com/reports/2026/10/intel--f23b5c67e62f3a14f195b15e.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.10",
+          "multi_source=2 sources",
+          "recency=999d (score=0.05)",
+          "QS=0.315"
+        ],
+        "priority": [
+          "+7 zero_day"
+        ],
+        "suppression": "Quality score below minimum threshold (QS < 0.35)",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Quality score below minimum threshold (QS < 0.35)",
       "iocs": []
     },
     {
@@ -4455,14 +4460,14 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-19481",
-      "title": "@fastify/busboy vulnerable to Denial of Service via prototype-named multipart part header",
+      "id": "CVE-2026-71416",
+      "title": "Headroom vulnerable to Cross-Site WebSocket Hijacking (CSWSH)",
       "description": "",
-      "cvss": 7.5,
+      "cvss": 8.8,
       "final_ps": 18,
       "quality_score": 0.438,
       "threat_level": "LOW",
-      "type": "NEWS_REPORT",
+      "type": "AI_SECURITY",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
@@ -4477,11 +4482,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-19481"
+        "CVE-2026-71416"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-x8mw-p69m-v3mx"
+        "https://github.com/advisories/GHSA-h46j-26q3-rggf"
       ],
       "explanation": {
         "quality": [
@@ -4593,6 +4598,98 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-104861",
+      "title": "probe-image-size: Quadratic-time Denial of Service in the SVG Parser",
+      "description": "",
+      "cvss": 7.5,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-104861"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-gjj5-9665-rwrc"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-19481",
+      "title": "@fastify/busboy vulnerable to Denial of Service via prototype-named multipart part header",
+      "description": "",
+      "cvss": 7.5,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-02",
+      "last_seen": "2026-10-02",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-19481"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-x8mw-p69m-v3mx"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
       "id": "CVE-2026-19484",
       "title": "@fastify/busboy vulnerable to Denial of Service via oversized multipart boundary",
       "description": "",
@@ -4666,98 +4763,6 @@
       "ioc_count": 0,
       "refs": [
         "https://github.com/advisories/GHSA-4vpg-gwqq-w44c"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-18140",
-      "title": "aws-smithy-json: Uncontrolled recursion in the aws-smithy-json unknown-key skip path allows unauthenticated remote denia",
-      "description": "",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-02",
-      "last_seen": "2026-10-02",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-18140"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-8ffr-xgwf-xj56"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-71416",
-      "title": "Headroom vulnerable to Cross-Site WebSocket Hijacking (CSWSH)",
-      "description": "",
-      "cvss": 8.8,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "AI_SECURITY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-02",
-      "last_seen": "2026-10-02",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-71416"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-h46j-26q3-rggf"
       ],
       "explanation": {
         "quality": [
