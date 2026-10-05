@@ -35,11 +35,17 @@ function escapeHtmlAttr(value) {
   return value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+function normalizeSplitLegacyBrand(source) {
+  return String(source)
+    .replace(/CYBERDUDE\s*<span\b[^>]*>\s*BIVASH\s*<\/span>/gi, 'SENTINEL APEX')
+    .replace(/SENTINEL APEX\s*(?:<[^>]+>\s*)*SENTINEL APEX/gi, 'SENTINEL APEX');
+}
+
 function brandHtml(source, platformName) {
   const canonicalName = canonicalPlatformName(platformName);
   let raw = null;
   const stack = [];
-  const input = String(source).replace(/(<script\b[^>]*>)([\s\S]*?)(<\/script>)/gi, (all, open, text, close) => {
+  const input = normalizeSplitLegacyBrand(source).replace(/(<script\b[^>]*>)([\s\S]*?)(<\/script>)/gi, (all, open, text, close) => {
     if (!/type=["']application\/ld\+json["']/i.test(open)) {
       // Narrow legacy UI-template treatment. Operational/payment/license scripts
       // are byte-preserved; only plain text inside literal display tags changes.
@@ -129,4 +135,4 @@ if (require.main === module) {
   if (!directory || !fs.statSync(directory).isDirectory()) throw new Error('Existing public artifact directory required');
   console.log('SENTINEL APEX branding: ' + brandDirectory(directory, platformName) + ' HTML files');
 }
-module.exports = { brandHtml, brandDirectory, displayName, canonicalPlatformName, escapeHtmlAttr };
+module.exports = { brandHtml, brandDirectory, displayName, canonicalPlatformName, escapeHtmlAttr, normalizeSplitLegacyBrand };
