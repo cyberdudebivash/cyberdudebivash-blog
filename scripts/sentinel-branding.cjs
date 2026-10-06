@@ -39,7 +39,7 @@ function normalizeSplitLegacyBrand(source) {
   return String(source)
     .replace(/CYBERDUDE\s*<span\b[^>]*>\s*BIVASH\s*<\/span>/gi, 'SENTINEL APEX')
     .replace(
-      /(SENTINEL APEX)(\s*<\/span>\s*<span\b[^>]*class=["'][^"']*(?:platform|brand)[^"']*["'][^>]*>)\s*SENTINEL APEX/gi,
+      /(SENTINEL APEX)(\s*<\/span>\s*<span\b[^>]*class=["'][^"']*(?:platform|brand)[^"']*["'][^>]*>)\s*SENTINEL APEX\s*/gi,
       '$1$2',
     );
 }
