@@ -86,3 +86,15 @@ test('split legacy wordmarks collapse to one canonical product-family brand', ()
   assert.ok(!out.includes('SENTINEL APEX SENTINEL APEX'));
   assert.equal(brandHtml(out, NAME), out);
 });
+ 
+test('Cloudflare asset builder cannot bypass SENTINEL APEX branding', () => {
+  const fs = require('node:fs');
+  const path = require('node:path');
+  const builder = fs.readFileSync(path.join(__dirname, 'build-cloudflare-assets.js'), 'utf8');
+
+  assert.ok(builder.includes("require('./sentinel-branding.cjs')"), 'Cloudflare asset builder must load the branding transformer');
+  assert.ok(
+    builder.includes("brandHtml(out, 'SENTINEL APEX Research Blog / Intel Factory')"),
+    'Cloudflare asset builder must apply the canonical Blog / Intel Factory identity',
+  );
+});
