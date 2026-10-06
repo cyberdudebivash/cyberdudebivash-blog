@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-06T09:16:46.409Z",
+  "generated": "2026-10-06T14:29:29.241Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,11 +7,11 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 5899,
+  "total_published": 5900,
   "s2n_stats": {
     "passed": 97,
-    "suppressed": 4,
-    "avg_qs": 0.491
+    "suppressed": 6,
+    "avg_qs": 0.492
   },
   "items": [
     {
@@ -3321,6 +3321,51 @@
       "suppression_reason": null
     },
     {
+      "id": "CVE-2026-21589",
+      "title": "Atlassian Patches Critical Vulnerabilities in Jira, Confluence, Bitbucket, and Five More Products",
+      "description": "Atlassian has disclosed a critical arbitrary file access vulnerability affecting eight products, including Jira, Confluence, and Bitbucket. Tracked as CVE-2026-21589, the flaw has a CVSS score of 9.3. It lets unauthenticated attackers access specific files in an affected applicat... [Full analysis a",
+      "cvss": 9.1,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-06",
+      "last_seen": "2026-10-06",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-21589"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cybersecuritynews.com/atlassian-patches-critical-vulnerabilities/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
       "id": "CVE-2026-104851",
       "title": "fsspec: Server-Side Template Injection in ReferenceFileSystem leads to Remote Code Execution",
       "description": "Summary\n\nfsspec.implementations.reference.ReferenceFileSystem parses a \"references\"\nJSON document (Kerchunk format) supplied either inline or via a URL. The\nparser renders fields from this JSON through un-sandboxed\njinja2.Template(...).render(...) calls in three locations. An att... [Full analysis a",
@@ -3908,6 +3953,51 @@
       "suppression_reason": null
     },
     {
+      "id": "CVE-2026-105836",
+      "title": "CVE-2026-105836 - QloApps through 1.7.0 Authorization Bypass via ajaxProcessBulkUpdateRooms",
+      "description": "CVE-2026-105836 - QloApps through 1.7.0 Authorization Bypass via ajaxProcessBulkUpdateRooms",
+      "cvss": 7.5,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-06",
+      "last_seen": "2026-10-06",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-105836"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-105836"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
       "id": "CVE-2026-87776",
       "title": "compression vulnerable to Denial of Service via memory leak on premature response close",
       "description": "Impact\n\nA vulnerability in compression < 1.8.2 allows an attacker to trigger a Denial of Service (DoS) by disconnecting while a compressed response is being sent. When the client aborts the connection before the response finishes, the zlib stream created to compress that response... [Full analysis a",
@@ -4295,96 +4385,6 @@
       "ioc_count": 0,
       "refs": [
         "https://github.com/advisories/GHSA-2mjx-qc3c-rqvc"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-105758",
-      "title": "vLLM: Qwen2-VL / Qwen3-VL video samplers bound on request-controlled max_frames, which the num_frames ceiling does not r",
-      "description": "Summary\n\nAn unauthenticated remote attacker can exhaust the memory of the vLLM API-server process by raising the request-level media_io_kwargs.video.max_frames and fps knobs on any deployment serving a Qwen2-VL or Qwen3-VL model. 74 extra bytes of JSON took the server's peak RSS ... [Full analysis a",
-      "cvss": 5.3,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "AI_SECURITY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-05",
-      "last_seen": "2026-10-05",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-105758"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-x6mc-67gf-chw4"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-105760",
-      "title": "vLLM: GLMGA video sampling permits request-driven CPU and memory exhaustion",
-      "description": "Summary\n\nThe OpenAI-compatible chat endpoint accepts request-level video loader options through media_io_kwargs. A caller can select the GLMGA sampler and provide large fps and max_frames values. GLMGA first constructs an attacker-sized Python index list and then deduplicates it,... [Full analysis a",
-      "cvss": 5.3,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "AI_SECURITY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-05",
-      "last_seen": "2026-10-05",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-105760"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-58v5-2m8f-94pr"
       ],
       "explanation": {
         "quality": [
