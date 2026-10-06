@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-06T19:51:24.046Z",
+  "generated": "2026-10-06T21:09:04.231Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,11 +7,11 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 5907,
+  "total_published": 5919,
   "s2n_stats": {
-    "passed": 97,
-    "suppressed": 13,
-    "avg_qs": 0.499
+    "passed": 100,
+    "suppressed": 7,
+    "avg_qs": 0.496
   },
   "items": [
     {
@@ -4043,6 +4043,55 @@
       "suppression_reason": null
     },
     {
+      "id": "CVE-2026-41510",
+      "title": "Coraza: Silent argument drop at ArgumentLimit allows bypass of ARGS-targeted rules via parameter flooding",
+      "description": "## Root Cause File: `internal/corazawaf/transaction.go`, lines 770–808 (since commit 2fd87b89, PR #812, 2023-06-14) ```go\nfunc (tx *Transaction) AddGetRequestArgument(key string, value string) { if tx.checkArgumentLimit(tx.variables.argsGet) { tx.debugLogger.Warn().Msg(\"skipping get request argument",
+      "cvss": 7.2,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-06",
+      "last_seen": "2026-10-06",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "go",
+      "product": "github.com/corazawaf/coraza/v3",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-41510",
+        "CVE-2026-41510"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-6r3q-mjv7-xr8m",
+        "https://github.com/corazawaf/coraza/security/advisories/GHSA-6r3q-mjv7-xr8m",
+        "https://github.com/corazawaf/coraza/commit/146c2f79f39ad16f13787e7d67ad400f8d8cb9a3",
+        "https://github.com/corazawaf/coraza/commit/814e1898e083d2ff2ceb644382d0da17e930f93f"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
       "id": "CVE-2026-86540",
       "title": "knowns OS Command Injection via Insecure LSP Binary Path Config in .knowns/config.json",
       "description": "## Overview A critical **Arbitrary Code Execution (ACE)** vulnerability exists in the Knowns Language Server Protocol (LSP) detection and startup pipeline. The system blindly trusts the `settings.lsp.languages. .binary` field defined in the project-level `.knowns/config.json` file. Because this fiel",
@@ -4284,13 +4333,13 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-105836",
-      "title": "CVE-2026-105836 - QloApps through 1.7.0 Authorization Bypass via ajaxProcessBulkUpdateRooms",
-      "description": "CVE-2026-105836 - QloApps through 1.7.0 Authorization Bypass via ajaxProcessBulkUpdateRooms",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
+      "id": "CVE-2026-101027",
+      "title": "CVE-2026-101027 - Gitea migration SSRF through ALLOWED_DOMAINS address check bypass",
+      "description": "CVE-2026-101027 - Gitea migration SSRF through ALLOWED_DOMAINS address check bypass",
+      "cvss": 6.1,
+      "final_ps": 16,
+      "quality_score": 0.398,
+      "threat_level": "LOW",
       "type": "CVE_REPORT",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
@@ -4306,21 +4355,21 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-105836"
+        "CVE-2026-101027"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-105836"
+        "https://cvefeed.io/vuln/detail/CVE-2026-101027"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
+          "data_confidence=0.25",
           "recency=0d (score=1.00)",
-          "QS=0.438"
+          "QS=0.398"
         ],
         "priority": [
-          "base_ps=18 (no boosts)"
+          "base_ps=16 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4329,59 +4378,14 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-87776",
-      "title": "compression vulnerable to Denial of Service via memory leak on premature response close",
-      "description": "Impact\n\nA vulnerability in compression < 1.8.2 allows an attacker to trigger a Denial of Service (DoS) by disconnecting while a compressed response is being sent. When the client aborts the connection before the response finishes, the zlib stream created to compress that response... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-05",
-      "last_seen": "2026-10-05",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-87776"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-vc2v-76pw-4v95"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-105753",
-      "title": "vLLM: Mirrored multimodal IPC caches desync after a rejected request — a later request reusing the same media hash trips",
-      "description": "Affected\n\n- Ecosystem / package: pip / vllm\n- Affected versions: vLLM ≤ 0.25.1 (confirmed on 0.25.1, commit 752a3a504485 (https://github.com/vllm-project/vllm/tree/752a3a504485790a2e8491cacbb35c137339ad34)). The lower bound predates 0.25.1; maintainers can confirm how far back th... [Full analysis a",
-      "cvss": 6.5,
+      "id": "CVE-2026-96400",
+      "title": "CVE-2026-96400 - Gitea migration SSRF to reserved addresses through ALLOWED_DOMAINS",
+      "description": "CVE-2026-96400 - Gitea migration SSRF to reserved addresses through ALLOWED_DOMAINS",
+      "cvss": 6.1,
       "final_ps": 16,
       "quality_score": 0.398,
       "threat_level": "LOW",
-      "type": "AI_SECURITY",
+      "type": "CVE_REPORT",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
@@ -4396,11 +4400,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-105753"
+        "CVE-2026-96400"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-ph3r-5jfg-f84f"
+        "https://cvefeed.io/vuln/detail/CVE-2026-96400"
       ],
       "explanation": {
         "quality": [
