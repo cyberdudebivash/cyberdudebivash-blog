@@ -388,6 +388,66 @@ function countFiles(dir) {
   return n;
 }
 
+function listHtmlFiles(dir, prefix = '') {
+  const files = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    const rel = prefix ? prefix + '/' + entry.name : entry.name;
+    if (entry.isDirectory()) files.push(...listHtmlFiles(full, rel));
+    else if (/\.html$/i.test(entry.name)) files.push(rel);
+  }
+  return files;
+}
+
+function buildPublicSitemap(outDir) {
+  const canonicalHost = 'https://blog.cyberdudebivash.in';
+  const seen = new Set();
+  const urls = [];
+
+  for (const rel of listHtmlFiles(outDir).sort()) {
+    if (/^(?:admin-|review-queue|leads|customer-library|order-confirmation)\.html$/i.test(rel)) continue;
+    const html = fs.readFileSync(path.join(outDir, rel), 'utf8');
+    if (/<meta\b[^>]*name=["']robots["'][^>]*content=["'][^"']*noindex/i.test(html)) continue;
+    const match = html.match(/<link\b[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)["']/i);
+    if (!match) continue;
+
+    let canonical;
+    try {
+      const url = new URL(match[1]);
+      if (url.origin !== canonicalHost) continue;
+      url.hash = '';
+      canonical = url.toString().replace(/\/$/, rel === 'index.html' ? '/' : '');
+    } catch {
+      throw new Error('Invalid canonical URL in public artifact: ' + rel);
+    }
+    if (/\/undefined(?:\.|\/|$)/i.test(canonical)) {
+      throw new Error('Undefined canonical URL in public artifact: ' + rel);
+    }
+    if (seen.has(canonical)) {
+      throw new Error('Duplicate canonical URL in public artifact: ' + canonical);
+    }
+    seen.add(canonical);
+    urls.push(canonical);
+  }
+
+  if (!seen.has(canonicalHost + '/')) {
+    throw new Error('Homepage canonical missing from generated public artifact');
+  }
+  if (urls.length < 10) {
+    throw new Error('Generated sitemap unexpectedly small: ' + urls.length + ' canonical URLs');
+  }
+
+  const escapeXml = value => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const xml = '<?xml version="1.0" encoding="UTF-8"?>\n' +
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+    urls.map(url => '  <url><loc>' + escapeXml(url) + '</loc></url>').join('\n') +
+    '\n</urlset>\n';
+
+  fs.writeFileSync(path.join(outDir, 'sitemap.xml'), xml);
+  return urls.length;
+}
+
+
 function build() {
   fs.rmSync(OUT, { recursive: true, force: true });
   fs.mkdirSync(OUT, { recursive: true });
@@ -407,6 +467,8 @@ function build() {
   }
   synthesizeMissingCvePages(OUT);
   stripUnprovenGraphIocs(OUT);
+  const sitemapUrls = buildPublicSitemap(OUT);
+  if (!sitemapUrls) throw new Error('Public sitemap generation failed');
 
   fs.writeFileSync(path.join(OUT, '_headers'), HEADERS_FILE_CONTENT);
   return OUT;
@@ -417,4 +479,4 @@ if (require.main === module) {
   console.log(`dist-public/ built: ${countFiles(out)} files`);
 }
 
-module.exports = { build, countFiles, PUBLIC_DIRS, PUBLIC_ROOT_FILES, ROOT, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure, hasUndefinedMetadataArtifacts, repairLegacyCveHtml, CX_CSS, CX_JS, LEGACY_COMMERCIAL_COPY, RETIRED_PLAN_PRICE_COPY, UNSUPPORTED_PUBLIC_CLAIMS, neutralizeLegacyCommercialCopy, findUnsupportedPublicClaims, correctPublicIntelJson, applyLegacyCvssCorrection, synthesizeMissingCvePages, renderCvePageFromJson, stripUnprovenGraphIocs };
+module.exports = { build, countFiles, buildPublicSitemap, listHtmlFiles, PUBLIC_DIRS, PUBLIC_ROOT_FILES, ROOT, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure, hasUndefinedMetadataArtifacts, repairLegacyCveHtml, CX_CSS, CX_JS, LEGACY_COMMERCIAL_COPY, RETIRED_PLAN_PRICE_COPY, UNSUPPORTED_PUBLIC_CLAIMS, neutralizeLegacyCommercialCopy, findUnsupportedPublicClaims, correctPublicIntelJson, applyLegacyCvssCorrection, synthesizeMissingCvePages, renderCvePageFromJson, stripUnprovenGraphIocs };
