@@ -14,7 +14,7 @@
     <copyright>Copyright 2026 CyberDudeBivash. All rights reserved.</copyright>
     <managingEditor>bivash@cyberdudebivash.com (CyberDudeBivash)</managingEditor>
     <webMaster>bivash@cyberdudebivash.com (CyberDudeBivash)</webMaster>
-    <lastBuildDate>Tue, 06 Oct 2026 12:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 06 Oct 2026 07:36:00 GMT</lastBuildDate>
     <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
     <ttl>60</ttl>
     <category>Cybersecurity</category>
@@ -31,6 +31,175 @@
       <height>144</height>
     </image>
 
+    <item>
+    <title><![CDATA[vm2: Default VM can mutate host TypedArray and ArrayBuffer intrinsics after the host-prototype pollution fix]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-92953.html</link>
+    <description><![CDATA[Score 58/100 MEDIUM — CVSS 10 — Summary
+
+vm2's current host-intrinsic prototype protection is incomplete. The fix for GHSA-vwrp-x96c-mhwq blocks sandbox writes into classic host intrinsics such as Object.prototype, Array.prototype, and Function.prototype, but current head still lets sandbox code in a default VM... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Tue, 06 Oct 2026 07:36:00 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-92953.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CRITICAL_INFRASTRUCTURE</category>
+  </item>
+  <item>
+    <title><![CDATA[GraphQL Tools has prototype pollution in well-established utility function mergeDeep]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-104852.html</link>
+    <description><![CDATA[Score 56/100 MEDIUM — CVSS 9.1 — Closed by https://github.com/ardatan/graphql-tools/pull/8423
+Mitigated in Hive Gateway by https://github.com/graphql-hive/gateway/pull/2600
+
+A client can alias fields to constructor, __proto__ or prototype so that the response keys from two subgraphs collide on those names during... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Tue, 06 Oct 2026 07:36:00 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-104852.html</guid>
+    <category>Threat Intelligence</category>
+    <category>NEWS_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[vm2: NodeVM zlib Buffers expose pooled host memory across the VM boundary]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-100723.html</link>
+    <description><![CDATA[Score 51/100 MEDIUM — CVSS 10 — Summary
+
+When an application explicitly exposes Node's zlib module through vm2's NodeVM builtin allowlist, an untrusted guest can obtain a pool-backed host Buffer from zlib.deflateSync, create a full-width view of its backing ArrayBuffer, read bytes outside the compressed result,... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Tue, 06 Oct 2026 07:36:00 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-100723.html</guid>
+    <category>Threat Intelligence</category>
+    <category>NEWS_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Seroval: fromJSON() Promise thenable assimilation invokes plugin-produced callables (bypass of GHSA-mv8w-475r-vwqw)]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-104846.html</link>
+    <description><![CDATA[Score 51/100 MEDIUM — CVSS 9.8 — A fulfilled Promise node deserialized by fromJSON() can trigger unintended invocation of a plugin-produced callable through native ECMAScript thenable assimilation. This bypasses the type-confusion fix in seroval@1.5.3 (GHSA-mv8w-475r-vwqw / CVE-2026-59940) and affects every plug... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Tue, 06 Oct 2026 07:36:00 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-104846.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[vm2: Sandbox Escape (NodeVM)]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-92955.html</link>
+    <description><![CDATA[Score 51/100 MEDIUM — CVSS 10 — Summary
+
+It being possible to obtain the host __proto__ getter/setter, has been used in many reports:
+
+- https://github.com/patriksimek/vm2/security/advisories/GHSA-vwrp-x96c-mhwq
+- https://github.com/patriksimek/vm2/security/advisories/GHSA-v6mx-mf47-r5wg
+- https://github.com/pa... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Tue, 06 Oct 2026 07:36:00 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-92955.html</guid>
+    <category>Threat Intelligence</category>
+    <category>NEWS_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Capacitor Android and iOS: remote content can be loaded at the app origin via the internal HTTP proxy path]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-103922.html</link>
+    <description><![CDATA[Score 50/100 MEDIUM — CVSS 9.3 — Impact
+
+Capacitor's WebView navigation guard validated only the host and scheme of a
+target URL, not its path. Because the internal HTTP proxy path
+(/_capacitor_http_interceptor_) is served at the application's own origin, a
+frame navigation to it was always treated as in-app nav... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Tue, 06 Oct 2026 07:36:00 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-103922.html</guid>
+    <category>Threat Intelligence</category>
+    <category>SOCIAL_ENGINEERING</category>
+  </item>
+  <item>
+    <title><![CDATA[vm2: Host-returned Promise rejection can bypass vm2's unhandled-rejection hardening and terminate the host process]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-92954.html</link>
+    <description><![CDATA[Score 47/100 MEDIUM — CVSS 8.6 — Summary
+
+vm2 current head (v3.11.5, commit 7a1f5100b96f48d34e0fe104ab37c0acc5944f92) can still be used to terminate the host Node.js process when sandbox code calls a host-realm function that returns a rejected host Promise and then ignores the returned value.
+
+This is an incompl... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Tue, 06 Oct 2026 07:36:00 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-92954.html</guid>
+    <category>Threat Intelligence</category>
+    <category>NEWS_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-105072 - WordPress FluentBooking Pro plugin < 2.5.0 - Broken Access Control vulnerability]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-105072.html</link>
+    <description><![CDATA[Score 43/100 LOW — CVSS 7.5 — CVE-2026-105072 - WordPress FluentBooking Pro plugin < 2.5.0 - Broken Access Control vulnerability. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Tue, 06 Oct 2026 07:36:00 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-105072.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-39789 - WordPress Fluent Affiliate Pro plugin <= 1.6.4 - Broken Access Control vulnerability]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-39789.html</link>
+    <description><![CDATA[Score 43/100 LOW — CVSS 7.5 — CVE-2026-39789 - WordPress Fluent Affiliate Pro plugin <= 1.6.4 - Broken Access Control vulnerability. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Tue, 06 Oct 2026 07:36:00 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-39789.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-41558 - WordPress WP Migration Plugin DB & Files – WP Synchro plugin <= 1.16.1 - 2FA Bypass vulnerability]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-41558.html</link>
+    <description><![CDATA[Score 43/100 LOW — CVSS 7.5 — CVE-2026-41558 - WordPress WP Migration Plugin DB & Files – WP Synchro plugin <= 1.16.1 - 2FA Bypass vulnerability. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Tue, 06 Oct 2026 07:36:00 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-41558.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-41563 - WordPress Sitemovr plugin <= 1.0.1 - Sensitive Data Exposure vulnerability]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-41563.html</link>
+    <description><![CDATA[Score 43/100 LOW — CVSS 7.5 — CVE-2026-41563 - WordPress Sitemovr plugin <= 1.0.1 - Sensitive Data Exposure vulnerability. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Tue, 06 Oct 2026 07:36:00 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-41563.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[vm2: timeout Option Bypass via FinalizationRegistry Cleanup Callback (Unbounded Host Event-Loop Block)]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-92942.html</link>
+    <description><![CDATA[Score 43/100 LOW — CVSS 7.5 — Vulnerability Summary
+
+vm2's VM({ timeout }) option is documented and relied upon as the mechanism that bounds how long sandboxed code may execute. In the current implementation, the timeout only wraps the single synchronous call to VM#run() (via doWithTimeout → this._runScript(s... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Tue, 06 Oct 2026 07:36:00 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-92942.html</guid>
+    <category>Threat Intelligence</category>
+    <category>NEWS_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Mako: Path traversal via drive-letter URI on Windows in TemplateLookup]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-102991.html</link>
+    <description><![CDATA[Score 43/100 LOW — CVSS 7.5 — Summary
+
+On Windows, a TemplateLookup URI beginning with a drive designator (e.g. C:/../../secret.txt or C:\..\..\secret.txt) bypasses the directory traversal check in Template.__init__, allowing reads of files outside the configured template directory.
+
+This is a third, independ... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Tue, 06 Oct 2026 07:36:00 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-102991.html</guid>
+    <category>Threat Intelligence</category>
+    <category>NEWS_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[GraphQL Tools: TLS Certificate Validation Disabled in Legacy GraphQL WebSocket Executor]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-103921.html</link>
+    <description><![CDATA[Score 42/100 LOW — CVSS 7.4 — Impact
+
+buildWSLegacyExecutor() in @graphql-tools/executor-legacy-ws previously hardcoded rejectUnauthorized: false when creating WebSocket connections over WSS. This disabled TLS certificate validation, allowing a network-positioned attacker to perform a Man-in-the-Middle (MITM)... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Tue, 06 Oct 2026 07:36:00 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-103921.html</guid>
+    <category>Threat Intelligence</category>
+    <category>NEWS_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-92821 - Sssd: sssd: access control bypass via premature ldap access rule evaluation]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-92821.html</link>
+    <description><![CDATA[Score 40/100 LOW — CVSS 6.8 — CVE ID : CVE-2026-92821
+
+ Published : Oct. 6, 2026, 1:16 a.m. | 26 minutes ago
+
+ Description : A flaw was found in SSSD. When configured to evaluate password expiration warnings before restrictive access rules in LDAP (Lightweight Directory Access Protocol) environments, an expir... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Tue, 06 Oct 2026 07:36:00 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-92821.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
   <item>
     <title>Citrix discloses third actively exploited NetScaler zero-day in less than a week</title>
     <link>https://blog.cyberdudebivash.in/posts/citrix-discloses-third-actively-exploited-netscaler-zero-day.html</link>
