@@ -1,15 +1,15 @@
 {
-  "generated": "2026-10-06T14:29:29.170Z",
+  "generated": "2026-10-06T16:10:40.111Z",
   "version": "1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX v4.0",
   "stats": {
-    "total_nodes": 15225,
+    "total_nodes": 15230,
     "actors": 8,
-    "cves": 6864,
-    "campaigns": 1508,
+    "cves": 6867,
+    "campaigns": 1510,
     "malware": 0,
     "iocs": 911,
-    "edges": 4243
+    "edges": 4245
   },
   "nodes": {
     "actor:lockbit": {
@@ -286304,6 +286304,100 @@
         "type": "CRITICAL_INFRASTRUCTURE"
       },
       "connections": []
+    },
+    "CVE-2026-105796": {
+      "id": "CVE-2026-105796",
+      "type": "CVE",
+      "name": "Kiota: Code injection through doc-comment delimiter reformation in Kiota Java and PHP generators",
+      "attributes": {
+        "cvss": 8.8,
+        "threat_level": "HIGH",
+        "priority_score": 66,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "nuget",
+        "product": "Microsoft.OpenApi.Kiota",
+        "published": "2026-10-06",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-104850": {
+      "id": "CVE-2026-104850",
+      "type": "CVE",
+      "name": "MCP TypeScript SDK: OAuth client could send credentials to an authorization server chosen by the MCP server",
+      "attributes": {
+        "cvss": 7.5,
+        "threat_level": "MEDIUM",
+        "priority_score": 61,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "@modelcontextprotocol/sdk",
+        "published": "2026-10-06",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-26287": {
+      "id": "CVE-2026-26287",
+      "type": "CVE",
+      "name": "External Secrets Operator: label enforcement bypass in webhook generator enables secret exfiltration",
+      "attributes": {
+        "cvss": 7.1,
+        "threat_level": "MEDIUM",
+        "priority_score": 59,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "go",
+        "product": "github.com/external-secrets/external-secrets",
+        "published": "2026-10-06",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "campaign:cve-2026-105796": {
+      "id": "campaign:cve-2026-105796",
+      "type": "Campaign",
+      "name": "Microsoft Ecosystem Targeting Campaign",
+      "attributes": {
+        "severity": "HIGH",
+        "item_count": 1,
+        "first_seen": "2026-10-06",
+        "last_seen": "2026-10-06",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-105796"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-105796",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-104850": {
+      "id": "campaign:cve-2026-104850",
+      "type": "Campaign",
+      "name": "npm @modelcontextprotocol/sdk Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-10-06",
+        "last_seen": "2026-10-06",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-104850"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-104850",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
     }
   },
   "edges": [
@@ -324667,6 +324761,24 @@
       "id": "campaign:cve-2026-87776→includes→CVE-2026-87776",
       "source": "campaign:cve-2026-87776",
       "target": "CVE-2026-87776",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-10-06",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-105796→includes→CVE-2026-105796",
+      "source": "campaign:cve-2026-105796",
+      "target": "CVE-2026-105796",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-10-06",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-104850→includes→CVE-2026-104850",
+      "source": "campaign:cve-2026-104850",
+      "target": "CVE-2026-104850",
       "relationship": "includes",
       "confidence": 1,
       "first_seen": "2026-10-06",
