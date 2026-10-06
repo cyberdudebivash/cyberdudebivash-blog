@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-06T16:10:40.211Z",
+  "generated": "2026-10-06T19:51:24.046Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,11 +7,11 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 5904,
+  "total_published": 5907,
   "s2n_stats": {
     "passed": 97,
-    "suppressed": 6,
-    "avg_qs": 0.496
+    "suppressed": 13,
+    "avg_qs": 0.499
   },
   "items": [
     {
@@ -3321,6 +3321,96 @@
       "suppression_reason": null
     },
     {
+      "id": "CVE-2026-105844",
+      "title": "Payload: Prototype pollution in Payload Import Export plugin",
+      "description": "Impact\nAn unauthenticated user could cause unintended application behavior when the Import Export plugin is enabled, allowing an attacker to submit and execute remote code (RCE).\n\nApplications that do not use @payloadcms/plugin-import-export are not affected.\n\nPatches\nUsers shoul... [Full analysis a",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-06",
+      "last_seen": "2026-10-06",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-105844"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-qf28-8hc6-vwrp"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-105845",
+      "title": "Payload: SQL Injection in SQLite and Postgres",
+      "description": "Impact\nA user can submit a request that exploits a SQL Injection vulnerability in Payload.\n\nYou are affected if:\n- You use an affected Payload version.\n- Untrusted users can query readable collections using dynamic filters or joins.\n\nYou are not affected if you use MongoDB (@payl... [Full analysis a",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-06",
+      "last_seen": "2026-10-06",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-105845"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-v49j-62m6-pgrr"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
       "id": "CVE-2026-21589",
       "title": "Atlassian Patches Critical Vulnerabilities in Jira, Confluence, Bitbucket, and Five More Products",
       "description": "Atlassian has disclosed a critical arbitrary file access vulnerability affecting eight products, including Jira, Confluence, and Bitbucket. Tracked as CVE-2026-21589, the flaw has a CVSS score of 9.3. It lets unauthenticated attackers access specific files in an affected applicat... [Full analysis a",
@@ -3953,6 +4043,55 @@
       "suppression_reason": null
     },
     {
+      "id": "CVE-2026-86540",
+      "title": "knowns OS Command Injection via Insecure LSP Binary Path Config in .knowns/config.json",
+      "description": "## Overview A critical **Arbitrary Code Execution (ACE)** vulnerability exists in the Knowns Language Server Protocol (LSP) detection and startup pipeline. The system blindly trusts the `settings.lsp.languages. .binary` field defined in the project-level `.knowns/config.json` file. Because this fiel",
+      "cvss": 7.8,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-06",
+      "last_seen": "2026-10-06",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "knowns",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-86540",
+        "CVE-2026-86540"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-mc52-mwq4-vfx3",
+        "https://github.com/knowns-dev/knowns/security/advisories/GHSA-mc52-mwq4-vfx3",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-86540",
+        "https://github.com/knowns-dev/knowns/commit/d3989829fb5095666d23d005b2f78a082832a396"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
       "id": "CVE-2026-105796",
       "title": "Kiota: Code injection through doc-comment delimiter reformation in Kiota Java and PHP generators",
       "description": "### Impact An attacker who controls or tampers with an OpenAPI description can cause Kiota to emit attacker-controlled Java or PHP source outside a generated documentation comment. The affected sanitizers remove comment terminators rather than neutralizing them, allowing a terminator to reform from ",
@@ -4100,6 +4239,51 @@
       "suppression_reason": null
     },
     {
+      "id": "CVE-2026-105860",
+      "title": "CVE-2026-105860 - Payload: Tenant authorization bypass in Multi-Tenant Plugin",
+      "description": "CVE-2026-105860 - Payload: Tenant authorization bypass in Multi-Tenant Plugin",
+      "cvss": 7.5,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-06",
+      "last_seen": "2026-10-06",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-105860"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-105860"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
       "id": "CVE-2026-105836",
       "title": "CVE-2026-105836 - QloApps through 1.7.0 Authorization Bypass via ajaxProcessBulkUpdateRooms",
       "description": "CVE-2026-105836 - QloApps through 1.7.0 Authorization Bypass via ajaxProcessBulkUpdateRooms",
@@ -4217,186 +4401,6 @@
       "ioc_count": 0,
       "refs": [
         "https://github.com/advisories/GHSA-ph3r-5jfg-f84f"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-105472",
-      "title": "CVE-2026-105472 - girishsaraf Online-Appointment-Booking-System Booking book.php sql injection",
-      "description": "CVE ID : CVE-2026-105472\n\n Published : Oct. 6, 2026, 1:16 a.m. | 26 minutes ago\n\n Description : A weakness has been identified in girishsaraf Online-Appointment-Booking-System up to f427b4757128ca253d33d0cc4e87bbb9c999a4d5. The affected element is an unknown function of the file ... [Full analysis a",
-      "cvss": 6.3,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-06",
-      "last_seen": "2026-10-06",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-105472"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-105472"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-104038",
-      "title": "CVE-2026-104038 - Sssd: sssd: denial of service via missing sid extension in certificate mapping",
-      "description": "CVE ID : CVE-2026-104038\n\n Published : Oct. 6, 2026, 1:16 a.m. | 26 minutes ago\n\n Description : A flaw was found in sssd. A remote attacker can cause a denial of service (DoS) by submitting a certificate that lacks an expected Security Identifier (SID) extension. In deployments c... [Full analysis a",
-      "cvss": 5.9,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-06",
-      "last_seen": "2026-10-06",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-104038"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-104038"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-105756",
-      "title": "vLLM: Loose cache_salt validation lets a single request kill EngineCore on LMCache-MP deployments — uncaught downstream ",
-      "description": "Affected\n\n- Ecosystem / package: pip / vllm\n- Affected versions: vLLM ≤ 0.25.1 (confirmed on 0.25.1, commit 752a3a504485 (https://github.com/vllm-project/vllm/tree/752a3a504485790a2e8491cacbb35c137339ad34)). The lower bound predates 0.25.1; maintainers can confirm how far back th... [Full analysis a",
-      "cvss": 6.5,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "AI_SECURITY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-05",
-      "last_seen": "2026-10-05",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-105756"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-2823-qmq8-rwvj"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-105754",
-      "title": "vLLM: Scale-out disaggregated multimodal transport trusts caller-supplied features",
-      "description": "Affected\n\n- Ecosystem / package: pip / vllm\n- Affected versions: vLLM ≤ 0.25.1 (confirmed on 0.25.1, commit 752a3a504485 (https://github.com/vllm-project/vllm/tree/752a3a504485790a2e8491cacbb35c137339ad34)). The lower bound predates 0.25.1; maintainers can confirm how far back th... [Full analysis a",
-      "cvss": 6.5,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "AI_SECURITY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-05",
-      "last_seen": "2026-10-05",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-105754"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-ph72-cqr5-qpp7"
       ],
       "explanation": {
         "quality": [
