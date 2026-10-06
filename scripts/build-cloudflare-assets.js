@@ -423,9 +423,10 @@ function buildPublicSitemap(outDir) {
     if (/\/undefined(?:\.|\/|$)/i.test(canonical)) {
       throw new Error('Undefined canonical URL in public artifact: ' + rel);
     }
-    if (seen.has(canonical)) {
-      throw new Error('Duplicate canonical URL in public artifact: ' + canonical);
-    }
+    // Multiple legacy artifacts may intentionally converge on one canonical URL.
+    // The sitemap must contain the canonical once; duplicate HTML is handled by
+    // each page's canonical tag and must never create duplicate sitemap entries.
+    if (seen.has(canonical)) continue;
     seen.add(canonical);
     urls.push(canonical);
   }
