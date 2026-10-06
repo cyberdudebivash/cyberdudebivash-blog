@@ -38,7 +38,7 @@ const PUBLIC_ROOT_FILES = [
   'soc-cti-console.css', 'soc-triage-workspace.js', 'soc-taxonomy-pivots.js', 'soc-hybrid-workspace.js', 'soc-evidence-drawer.js',
   'apple-touch-icon.png', 'brand-logo.svg', 'favicon.ico', 'favicon.svg',
   'icon-192.png', 'icon-512.png', 'og-image.png', 'site.webmanifest',
-  'robots.txt', 'rss.xml', 'sitemap.xml',
+  'robots.txt', 'rss.xml', 'sitemap.xml', 'llms.txt', 'llms-full.txt',
   'search-index.json', 'live-intel.json', 'data/exploitation-velocity-index.json',
 ];
 
