@@ -14,7 +14,7 @@
     <copyright>Copyright 2026 CyberDudeBivash. All rights reserved.</copyright>
     <managingEditor>bivash@cyberdudebivash.com (CyberDudeBivash)</managingEditor>
     <webMaster>bivash@cyberdudebivash.com (CyberDudeBivash)</webMaster>
-    <lastBuildDate>Wed, 07 Oct 2026 19:33:24 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 07 Oct 2026 12:00:00 +0000</lastBuildDate>
     <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
     <ttl>60</ttl>
     <category>Cybersecurity</category>
@@ -31,222 +31,34 @@
       <height>144</height>
     </image>
 
-        <item>
-    <title><![CDATA[WeasyPrint: EPS images reach the Ghostscript interpreter resulting in RCE]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106443-pip-weasyprint.html</link>
-    <description><![CDATA[Score 66/100 HIGH — CVSS 8.8 — ### Summary This was found during a pentest, funded by the NLNnet foundation, conducted by Stefan Vink from Radically Open Security and the only High issue found. WeasyPrint passes fetched image bytes directly to Pillow's generic format dispatcher without restricting the input format. When Ghostscri. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106443-pip-weasyprint.html</guid>
-    <category>Threat Intelligence</category>
-    <category>CVE_REPORT</category>
-  </item>
   <item>
-    <title><![CDATA[Backstage: Improper validation of TechDocs MkDocs configuration]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106558-npm-backstage-plugin-techdocs-node.html</link>
-    <description><![CDATA[Score 66/100 HIGH — CVSS 8.8 — ### Impact An attacker who can provide configuration to a TechDocs build may execute code in the generator runtime. Impact is greatest when documentation generation runs with backend credentials or host access. ### Patches Patched in `@backstage/plugin-techdocs-node` version `1.15.4`. ### Workaround. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106558-npm-backstage-plugin-techdocs-node.html</guid>
-    <category>Threat Intelligence</category>
-    <category>CVE_REPORT</category>
-  </item>
-  <item>
-    <title><![CDATA[Backstage has iImproper filesystem validation in Bitbucket pull-request scaffolder actions]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106486-npm-backstage-plugin-scaffolder-backend-module-bitbucket-cloud.html</link>
-    <description><![CDATA[Score 65/100 HIGH — CVSS 8.5 — ### Impact An authenticated user who can execute an eligible template and influence an allowed Bitbucket repository could affect filesystem paths outside the expected working area. Depending on the backend deployment, this could compromise backend confidentiality, integrity, or availability. ### Pat. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106486-npm-backstage-plugin-scaffolder-backend-module-bitbucket-cloud.html</guid>
-    <category>Threat Intelligence</category>
-    <category>CVE_REPORT</category>
-  </item>
-  <item>
-    <title><![CDATA[Backstage: Improper authentication in the OIDC provider]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106488-npm-backstage-plugin-auth-backend-module-oidc-provider.html</link>
-    <description><![CDATA[Score 63/100 MEDIUM — CVSS 8.1 — ### Impact Deployments using OIDC email-based identity resolution with a provider that permits unverified email addresses may allow an authenticated provider user to assume another catalog identity. This may grant access and permissions associated with that user. No direct availability impact is dem. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106488-npm-backstage-plugin-auth-backend-module-oidc-provider.html</guid>
-    <category>Threat Intelligence</category>
-    <category>CVE_REPORT</category>
-  </item>
-  <item>
-    <title><![CDATA[Hydra logging configuration permits unsafe callable resolution]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106441-pip-hydra-core.html</link>
-    <description><![CDATA[Score 62/100 MEDIUM — CVSS 7.8 — ## Summary Hydra passed its Python logging configuration to `logging.config.dictConfig()`. Python's logging configurator can resolve and invoke importable classes and factories named by configuration, including handler `class` values and formatter, filter, handler, queue, and listener `()` factories. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106441-pip-hydra-core.html</guid>
-    <category>Threat Intelligence</category>
-    <category>CVE_REPORT</category>
-  </item>
-  <item>
-    <title><![CDATA[Hydra instantiate target blacklist bypasses permit code execution]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106442-pip-hydra-core.html</link>
-    <description><![CDATA[Score 62/100 MEDIUM — CVSS 7.8 — ## Summary Hydra's `instantiate()` API resolves and invokes Python callables named by the `_target_` field in configuration. The target blacklist introduced for CVE-2026-68508 was incomplete. Representative bypasses included execution wrappers such as `timeit.timeit`, executable deserialization thro. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106442-pip-hydra-core.html</guid>
-    <category>Threat Intelligence</category>
-    <category>CVE_REPORT</category>
-  </item>
-  <item>
-    <title><![CDATA[mppx-condition-gate: Free-access path grants on a self-declared wallet without proving control]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-104891-npm-insumermodel-mppx-condition-gate.html</link>
-    <description><![CDATA[Score 61/100 MEDIUM — CVSS 7.5 — ### Impact Both packages wrap an `mppx` payment method so that a wallet meeting on-chain conditions is granted free access instead of being charged. The free-access path reads the payer address from `credential.source` — a client-supplied DID in the payment credential — asks InsumerAPI whether that . Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-104891-npm-insumermodel-mppx-condition-gate.html</guid>
-    <category>Threat Intelligence</category>
-    <category>CVE_REPORT</category>
-  </item>
-  <item>
-    <title><![CDATA[Backstage: Remote code execution via crafted markdown_extensions in TechDocs mkdocs.yml]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106510-npm-backstage-plugin-techdocs-node.html</link>
-    <description><![CDATA[Score 61/100 MEDIUM — CVSS 7.7 — ### Impact An authenticated user who can register catalog entities can provide a crafted `mkdocs.yml` causing arbitrary OS command execution on the TechDocs build host when the docs are built. ### Patches Patched in `@backstage/plugin-techdocs-node`, version `1.15.4`. ### Workarounds If you cannot u. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106510-npm-backstage-plugin-techdocs-node.html</guid>
-    <category>Threat Intelligence</category>
-    <category>CVE_REPORT</category>
-  </item>
-  <item>
-    <title><![CDATA[Backstage: Improper repository path validation in a Scaffolder backend module]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106560-npm-backstage-plugin-scaffolder-backend-module-confluence-to-markdown.html</link>
-    <description><![CDATA[Score 59/100 MEDIUM — CVSS 7.1 — ### Impact An authenticated user who can execute an affected template and control its repository file location may cause generated content to be written outside the task workspace, within locations writable by the Backstage backend process. ### Patches Patched in `@backstage/plugin-scaffolder-backen. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106560-npm-backstage-plugin-scaffolder-backend-module-confluence-to-markdown.html</guid>
-    <category>Threat Intelligence</category>
-    <category>CVE_REPORT</category>
-  </item>
-  <item>
-    <title><![CDATA[SonicWall Patches CVSS 10.0 Pre-Authentication SSRF Flaw in SMA1000 Appliances]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/sonicwall-patches-cvss-10-0-pre-authentication-ssrf-flaw-in.html</link>
-    <description><![CDATA[Score 51/100 MEDIUM — CVSS 10 — SonicWall has released hotfixes for four flaws in its SMA1000 appliances, the gateways that give remote workers access to a company's network and applications. The most serious could allow an attacker without a login to send requests through the appliance and reach internal functions. SonicWall rate. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/sonicwall-patches-cvss-10-0-pre-authentication-ssrf-flaw-in.html</guid>
-    <category>Threat Intelligence</category>
-    <category>NEWS_REPORT</category>
-  </item>
-  <item>
-    <title><![CDATA[Cybersecurity statistics of the week (September 28th - October 4th)]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cybersecurity-statistics-of-the-week-september-28th-octob.html</link>
-    <description><![CDATA[Score 48/100 MEDIUM — CVSS 0 — Hi guys, I send out a weekly newsletter with the latest cybersecurity vendor reports and research, and thought you might find it useful, so sharing it here. All the reports and research below were published between September 28th - October 4th. You can get the below into your inbox every week if you. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cybersecurity-statistics-of-the-week-september-28th-octob.html</guid>
-    <category>Threat Intelligence</category>
-    <category>ZERO_DAY</category>
-  </item>
-  <item>
-    <title><![CDATA[CVE-2026-96940: Microsoft Fixes Exchange Server Flaw For Which Exploitation Is More Likely]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-96940.html</link>
-    <description><![CDATA[Score 46/100 MEDIUM — CVSS 8.8 — Microsoft released emergency updates for Exchange Server to fix CVE-2026-96940, a high-severity flaw that can let attackers gain higher privileges. Microsoft has released out-of-band security updates for Exchange Server to fix a high-severity vulnerability tracked as CVE-2026-969... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-96940.html</guid>
-    <category>Threat Intelligence</category>
-    <category>CVE_REPORT</category>
-  </item>
-  <item>
-    <title><![CDATA[CVE-2026-106572 - ImageMagick: Stack Overflown CALS decoder due to missing depth check.]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106572.html</link>
-    <description><![CDATA[Score 41/100 LOW — CVSS 7.2 — CVE-2026-106572 - ImageMagick: Stack Overflown CALS decoder due to missing depth check.. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106572.html</guid>
-    <category>Threat Intelligence</category>
-    <category>CVE_REPORT</category>
-  </item>
-  <item>
-    <title><![CDATA[CVE-2026-107273 - Gophish 0.11.0 through 0.12.1 SSRF via POST /api/import/site]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-107273.html</link>
-    <description><![CDATA[Score 37/100 LOW — CVSS 6.1 — CVE-2026-107273 - Gophish 0.11.0 through 0.12.1 SSRF via POST /api/import/site. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-107273.html</guid>
-    <category>Threat Intelligence</category>
-    <category>CVE_REPORT</category>
-  </item>
-  <item>
-    <title><![CDATA[PraisonAI: AgentMail webhook mode accepts forged unsigned message.received events and invokes agents]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-61436-pip-praisonai.html</link>
-    <description><![CDATA[Score 65/100 HIGH — CVSS 8.6 — # AgentMail webhook mode accepts forged unsigned message.received events and invokes agents ## Summary `praisonai` AgentMail webhook mode exposes a public aiohttp webhook endpoint that accepts caller-controlled `message.received` JSON without verifying AgentMail's Svix webhook signatures, then dispa. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Wed, 07 Oct 2026 14:24:24 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-61436-pip-praisonai.html</guid>
-    <category>Threat Intelligence</category>
-    <category>CVE_REPORT</category>
-  </item>
-  <item>
-    <title><![CDATA[PraisonAI: AgentMail webhook lacks signature verification, allowing unauthenticated message injection and sender spoofing]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-61428-pip-praisonai.html</link>
-    <description><![CDATA[Score 60/100 MEDIUM — CVSS 7.3 — ## Summary PraisonAI's AgentMail bot, when run in webhook (or hybrid) mode, starts an aiohttp webhook server bound to `0.0.0.0` and processes inbound `message.received` events **without verifying any signature/HMAC and without authentication**. The sender address and message body are taken directly . Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Wed, 07 Oct 2026 14:24:24 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-61428-pip-praisonai.html</guid>
-    <category>Threat Intelligence</category>
-    <category>CVE_REPORT</category>
-  </item>
-  <item>
-    <title><![CDATA[wger: Trainer Privilege Escalation - Improper Privilege Management]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-46434-pip-wger.html</link>
-    <description><![CDATA[Score 59/100 MEDIUM — CVSS 7.1 — ### Summary A user with only the `gym_trainer` permission can deactivate any account in the same gym, including `gym_manager` and `general_gym_manager` accounts. The `UserDeactivateView` grants access to anyone holding **any one** of `gym.manage_gym`, `gym.manage_gyms`, or `gym.gym_trainer` (OR logi. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Wed, 07 Oct 2026 14:24:24 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-46434-pip-wger.html</guid>
-    <category>Threat Intelligence</category>
-    <category>CVE_REPORT</category>
-  </item>
-  <item>
-    <title><![CDATA[wger: cross-tenant admin notes/contracts leak via gym=None bypass (5 views)]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-43976-pip-wger.html</link>
-    <description><![CDATA[Score 59/100 MEDIUM — CVSS 7.1 — ### Summary Five gym management views in wger apply a flawed gym-scope guard (`gym_a != gym_b`) that silently passes when both operands are `None`. A trainer with `gym.gym_trainer` and `gym.add_adminusernote` permissions and no gym assignment (`gym=None`) can read private admin notes, uploaded docum. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Wed, 07 Oct 2026 14:24:24 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-43976-pip-wger.html</guid>
-    <category>Threat Intelligence</category>
-    <category>CVE_REPORT</category>
-  </item>
-  <item>
-    <title><![CDATA[Ransomware has a new target. Is your backup ready?]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/ransomware-has-a-new-target-is-your-backup-ready.html</link>
-    <description><![CDATA[Score 26/100 LOW — CVSS 0 — Ransomware groups are increasingly targeting backup infrastructure to eliminate recovery options and increase pressure on victims to pay. Kaseya explains why organizations need isolated, immutable, and regularly tested backups that attackers cannot easily reach. [...]. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Wed, 07 Oct 2026 14:24:24 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/ransomware-has-a-new-target-is-your-backup-ready.html</guid>
-    <category>Threat Intelligence</category>
-    <category>RANSOMWARE</category>
-  </item>
-  <item>
-    <title><![CDATA[Qilin Ransomware Suspect Arrested in Japan, Extradited to Germany]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/qilin-ransomware-suspect-arrested-in-japan-extradited-to-ge.html</link>
-    <description><![CDATA[Score 26/100 LOW — CVSS 0 — The individual was detained in May and has been extradited to Germany to face hacking charges. The post Qilin Ransomware Suspect Arrested in Japan, Extradited to Germany appeared first on SecurityWeek .. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Wed, 07 Oct 2026 14:24:24 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/qilin-ransomware-suspect-arrested-in-japan-extradited-to-ge.html</guid>
-    <category>Threat Intelligence</category>
-    <category>RANSOMWARE</category>
-  </item>
-  <item>
-    <title><![CDATA[Critical Progress DataDirect GenAI Flaw Lets Malicious OpenAPI Files Execute OS Commands]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-91140.html</link>
-    <description><![CDATA[Score 51/100 MEDIUM — CVSS 9.6 — Progress disclosed critical command injection flaw CVE-2026-91140 in DataDirect Autonomous REST Connector AI Model Generator agents, allowing malicious OpenAPI or Swagger documents to execute arbitrary OS commands. The security bulletin, published on October 6, 2026, covers Early... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Wed, 07 Oct 2026 13:25:06 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-91140.html</guid>
-    <category>Threat Intelligence</category>
-    <category>CVE_REPORT</category>
-  </item>
-  <item>
-    <title><![CDATA[Dell Urges Customers to Patch Critical DSU Flaw That Can Give Attackers Root Access]]></title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-86360.html</link>
-    <description><![CDATA[Score 49/100 MEDIUM — CVSS 9.6 — Dell warns that a critical DSU flaw lets attackers run code as root. Customers should patch affected PowerEdge systems as soon as possible. Dell urged customers to patch a critical flaw, tracked as CVE-2026-86360 (CVSS score of 9.6), in its System Update (DSU) tool. The vulnerabi... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Wed, 07 Oct 2026 13:25:06 GMT</pubDate>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-86360.html</guid>
-    <category>Threat Intelligence</category>
-    <category>CVE_REPORT</category>
-  </item>
-  <item>
-    <title><![CDATA[Advantest confirms personal information stolen in ransomware attack]]></title>
+    <title>Advantest confirms personal information stolen in ransomware attack</title>
     <link>https://blog.cyberdudebivash.in/posts/advantest-confirms-personal-information-stolen-in-ransomware.html</link>
-    <description><![CDATA[Score 26/100 LOW — CVSS 0 — Advantest Corporation is notifying affected individuals that a ransomware attack earlier this year exposed their personally identifiable data. [...]. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Wed, 07 Oct 2026 13:25:06 GMT</pubDate>
     <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/advantest-confirms-personal-information-stolen-in-ransomware.html</guid>
+    <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[Advantest Corporation is notifying affected individuals that a ransomware attack earlier this year exposed their personally identifiable data. [...]. Cybersecurity analysis, IOCs, and detection guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>Advantest Corporation is notifying affected individuals that a ransomware attack earlier this year exposed their personally identifiable data. [...]. Cybersecurity analysis, IOCs, and detection guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/advantest-confirms-personal-information-stolen-in-ransomware.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>Ransomware</category>
     <category>Threat Intelligence</category>
-    <category>RANSOMWARE</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
   </item>
+
   <item>
-    <title><![CDATA[Advantest Discloses Data Breach Months After Ransomware Attack]]></title>
+    <title>Advantest Discloses Data Breach Months After Ransomware Attack</title>
     <link>https://blog.cyberdudebivash.in/posts/advantest-discloses-data-breach-months-after-ransomware-atta.html</link>
-    <description><![CDATA[Score 26/100 LOW — CVSS 0 — The Japanese chip testing giant said hackers stole personal information from its servers in the February 2026 cyberattack. The post Advantest Discloses Data Breach Months After Ransomware Attack appeared first on SecurityWeek .. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
-    <pubDate>Wed, 07 Oct 2026 13:25:06 GMT</pubDate>
     <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/advantest-discloses-data-breach-months-after-ransomware-atta.html</guid>
+    <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[The Japanese chip testing giant said hackers stole personal information from its servers in the February 2026 cyberattack. The post Advantest Discloses. Cybersecurity analysis, IOCs, and detection guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>The Japanese chip testing giant said hackers stole personal information from its servers in the February 2026 cyberattack. The post Advantest Discloses. Cybersecurity analysis, IOCs, and detection guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/advantest-discloses-data-breach-months-after-ransomware-atta.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>Ransomware</category>
     <category>Threat Intelligence</category>
-    <category>RANSOMWARE</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
   </item>
+
   <item>
     <title>Alert: FortiBleed remains active campaign, can lock out users or lead to ransomware attacks</title>
     <link>https://blog.cyberdudebivash.in/posts/alert-fortibleed-remains-active-campaign-can-lock-out-user.html</link>
@@ -261,12 +73,166 @@
   </item>
 
   <item>
+    <title>mppx-condition-gate: Free-access path grants on a self-declared wallet without proving control</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-104891-npm-insumermodel-mppx-condition-gate.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-104891-npm-insumermodel-mppx-condition-gate.html</guid>
+    <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-104891 (CVSS 7.5) — Impact Both packages wrap an mppx payment method so that a wallet meeting on-chain conditions is granted free access instead of. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-104891 (CVSS 7.5) — Impact Both packages wrap an mppx payment method so that a wallet meeting on-chain conditions is granted free access instead of. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-104891-npm-insumermodel-mppx-condition-gate.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>Hydra logging configuration permits unsafe callable resolution</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106441-pip-hydra-core.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106441-pip-hydra-core.html</guid>
+    <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-106441 (CVSS 7.8) — Summary Hydra passed its Python logging configuration to logging.config.dictConfig(). Python&#39;s logging configurator can resolve. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-106441 (CVSS 7.8) — Summary Hydra passed its Python logging configuration to logging.config.dictConfig(). Python&#39;s logging configurator can resolve. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-106441-pip-hydra-core.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>Hydra instantiate target blacklist bypasses permit code execution</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106442-pip-hydra-core.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106442-pip-hydra-core.html</guid>
+    <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-106442 (CVSS 7.8) — Summary Hydra&#39;s instantiate() API resolves and invokes Python callables named by the _target_ field in configuration. The target. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-106442 (CVSS 7.8) — Summary Hydra&#39;s instantiate() API resolves and invokes Python callables named by the _target_ field in configuration. The target. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-106442-pip-hydra-core.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>WeasyPrint: EPS images reach the Ghostscript interpreter resulting in RCE</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106443-pip-weasyprint.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106443-pip-weasyprint.html</guid>
+    <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-106443 (CVSS 8.8) — Summary This was found during a pentest, funded by the NLNnet foundation, conducted by Stefan Vink from Radically Open Security. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-106443 (CVSS 8.8) — Summary This was found during a pentest, funded by the NLNnet foundation, conducted by Stefan Vink from Radically Open Security. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-106443-pip-weasyprint.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>Backstage has iImproper filesystem validation in Bitbucket pull-request scaffolder actions</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106486-npm-backstage-plugin-scaffolder-backend-module-bitbucket-cloud.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106486-npm-backstage-plugin-scaffolder-backend-module-bitbucket-cloud.html</guid>
+    <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-106486 (CVSS 8.5) — Impact An authenticated user who can execute an eligible template and influence an allowed Bitbucket repository could affect. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-106486 (CVSS 8.5) — Impact An authenticated user who can execute an eligible template and influence an allowed Bitbucket repository could affect. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-106486-npm-backstage-plugin-scaffolder-backend-module-bitbucket-cloud.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>Backstage: Improper authentication in the OIDC provider</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106488-npm-backstage-plugin-auth-backend-module-oidc-provider.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106488-npm-backstage-plugin-auth-backend-module-oidc-provider.html</guid>
+    <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-106488 (CVSS 8.1) — Impact Deployments using OIDC email-based identity resolution with a provider that permits unverified email addresses may allow an. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-106488 (CVSS 8.1) — Impact Deployments using OIDC email-based identity resolution with a provider that permits unverified email addresses may allow an. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-106488-npm-backstage-plugin-auth-backend-module-oidc-provider.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
     <title>CVE-2026-106503 - Backstage: Scaffolder action input authorization bypass</title>
     <link>https://blog.cyberdudebivash.in/posts/cve-2026-106503.html</link>
     <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106503.html</guid>
     <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
     <description><![CDATA[CVE-2026-106503 (CVSS 7.5) — CVE-2026-106503 - Backstage: Scaffolder action input authorization bypass. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
     <content:encoded><![CDATA[<p>CVE-2026-106503 (CVSS 7.5) — CVE-2026-106503 - Backstage: Scaffolder action input authorization bypass. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-106503.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>Backstage: Remote code execution via crafted markdown_extensions in TechDocs mkdocs.yml</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106510-npm-backstage-plugin-techdocs-node.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106510-npm-backstage-plugin-techdocs-node.html</guid>
+    <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-106510 (CVSS 7.7) — Impact An authenticated user who can register catalog entities can provide a crafted mkdocs.yml causing arbitrary OS command. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-106510 (CVSS 7.7) — Impact An authenticated user who can register catalog entities can provide a crafted mkdocs.yml causing arbitrary OS command. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-106510-npm-backstage-plugin-techdocs-node.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>Backstage: Improper validation of TechDocs MkDocs configuration</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106558-npm-backstage-plugin-techdocs-node.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106558-npm-backstage-plugin-techdocs-node.html</guid>
+    <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-106558 (CVSS 8.8) — Impact An attacker who can provide configuration to a TechDocs build may execute code in the generator runtime. Impact is greatest. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-106558 (CVSS 8.8) — Impact An attacker who can provide configuration to a TechDocs build may execute code in the generator runtime. Impact is greatest. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-106558-npm-backstage-plugin-techdocs-node.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>Backstage: Improper repository path validation in a Scaffolder backend module</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106560-npm-backstage-plugin-scaffolder-backend-module-confluence-to-markdown.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106560-npm-backstage-plugin-scaffolder-backend-module-confluence-to-markdown.html</guid>
+    <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-106560 (CVSS 7.1) — Impact An authenticated user who can execute an affected template and control its repository file location may cause generated. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-106560 (CVSS 7.1) — Impact An authenticated user who can execute an affected template and control its repository file location may cause generated. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-106560-npm-backstage-plugin-scaffolder-backend-module-confluence-to-markdown.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>CVE-2026-106572 - ImageMagick: Stack Overflown CALS decoder due to missing depth check.</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106572.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106572.html</guid>
+    <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-106572 (CVSS 7.2) — CVE-2026-106572 - ImageMagick: Stack Overflown CALS decoder due to missing depth check.. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-106572 (CVSS 7.2) — CVE-2026-106572 - ImageMagick: Stack Overflown CALS decoder due to missing depth check.. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-106572.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>CVE-2026-107273 - Gophish 0.11.0 through 0.12.1 SSRF via POST /api/import/site</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-107273.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-107273.html</guid>
+    <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-107273 (CVSS 6.1) — CVE-2026-107273 - Gophish 0.11.0 through 0.12.1 SSRF via POST /api/import/site. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-107273 (CVSS 6.1) — CVE-2026-107273 - Gophish 0.11.0 through 0.12.1 SSRF via POST /api/import/site. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-107273.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
     <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
     <category>CVE Analysis</category>
     <category>Vulnerability Intelligence</category>
@@ -303,12 +269,164 @@
   </item>
 
   <item>
+    <title>wger: cross-tenant admin notes/contracts leak via gym=None bypass (5 views)</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-43976-pip-wger.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-43976-pip-wger.html</guid>
+    <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-43976 (CVSS 7.1) — Summary Five gym management views in wger apply a flawed gym-scope guard (gym_a != gym_b) that silently passes when both operands. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-43976 (CVSS 7.1) — Summary Five gym management views in wger apply a flawed gym-scope guard (gym_a != gym_b) that silently passes when both operands. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-43976-pip-wger.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>wger: Trainer Privilege Escalation - Improper Privilege Management</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-46434-pip-wger.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-46434-pip-wger.html</guid>
+    <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-46434 (CVSS 7.1) — Summary A user with only the gym_trainer permission can deactivate any account in the same gym, including gym_manager and. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-46434 (CVSS 7.1) — Summary A user with only the gym_trainer permission can deactivate any account in the same gym, including gym_manager and. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-46434-pip-wger.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>PraisonAI: AgentMail webhook lacks signature verification, allowing unauthenticated message injection and sender spoofing</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-61428-pip-praisonai.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-61428-pip-praisonai.html</guid>
+    <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-61428 (CVSS 7.3) — Summary PraisonAI&#39;s AgentMail bot, when run in webhook (or hybrid) mode, starts an aiohttp webhook server bound to 0.0.0.0 and. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-61428 (CVSS 7.3) — Summary PraisonAI&#39;s AgentMail bot, when run in webhook (or hybrid) mode, starts an aiohttp webhook server bound to 0.0.0.0 and. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-61428-pip-praisonai.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>PraisonAI: AgentMail webhook mode accepts forged unsigned message.received events and invokes agents</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-61436-pip-praisonai.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-61436-pip-praisonai.html</guid>
+    <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-61436 (CVSS 8.6) — AgentMail webhook mode accepts forged unsigned message.received events and invokes agents Summary praisonai AgentMail webhook mode. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-61436 (CVSS 8.6) — AgentMail webhook mode accepts forged unsigned message.received events and invokes agents Summary praisonai AgentMail webhook mode. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-61436-pip-praisonai.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>Dell Urges Customers to Patch Critical DSU Flaw That Can Give Attackers Root Access</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-86360.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-86360.html</guid>
+    <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-86360 (CVSS 9.6) — Dell warns that a critical DSU flaw lets attackers run code as root. Customers should patch affected PowerEdge systems as soon as. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-86360 (CVSS 9.6) — Dell warns that a critical DSU flaw lets attackers run code as root. Customers should patch affected PowerEdge systems as soon as. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-86360.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>Critical Progress DataDirect GenAI Flaw Lets Malicious OpenAPI Files Execute OS Commands</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-91140.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-91140.html</guid>
+    <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-91140 (CVSS 9.6) — Progress disclosed critical command injection flaw CVE-2026-91140 in DataDirect Autonomous REST Connector AI Model Generator. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-91140 (CVSS 9.6) — Progress disclosed critical command injection flaw CVE-2026-91140 in DataDirect Autonomous REST Connector AI Model Generator. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-91140.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>CVE-2026-96940: Microsoft Fixes Exchange Server Flaw For Which Exploitation Is More Likely</title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-96940.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-96940.html</guid>
+    <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[CVE-2026-96940 (CVSS 8.8) — Microsoft released emergency updates for Exchange Server to fix CVE-2026-96940, a high-severity flaw that can let attackers gain. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>CVE-2026-96940 (CVSS 8.8) — Microsoft released emergency updates for Exchange Server to fix CVE-2026-96940, a high-severity flaw that can let attackers gain. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-96940.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>CVE Analysis</category>
+    <category>Vulnerability Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>Cybersecurity statistics of the week (September 28th - October 4th)</title>
+    <link>https://blog.cyberdudebivash.in/posts/cybersecurity-statistics-of-the-week-september-28th-octob.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cybersecurity-statistics-of-the-week-september-28th-octob.html</guid>
+    <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[Hi guys, I send out a weekly newsletter with the latest cybersecurity vendor reports and research, and thought you might find it useful, so sharing it. Cybersecurity analysis, IOCs, and detection guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>Hi guys, I send out a weekly newsletter with the latest cybersecurity vendor reports and research, and thought you might find it useful, so sharing it. Cybersecurity analysis, IOCs, and detection guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cybersecurity-statistics-of-the-week-september-28th-octob.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>Cyber Threat Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
     <title>GitHub Internal Repository Breach — Consolidated Intelligence</title>
     <link>https://blog.cyberdudebivash.in/posts/github-confirms-breach-4k-internal-repos-stolen.html</link>
     <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/github-confirms-breach-4k-internal-repos-stolen.html</guid>
     <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
     <description><![CDATA[This archived GitHub / TeamPCP intelligence item has been consolidated into the complete SENTINEL APEX GitHub breach report.]]></description>
     <content:encoded><![CDATA[<p>This archived GitHub / TeamPCP intelligence item has been consolidated into the complete SENTINEL APEX GitHub breach report.</p><p><a href="https://blog.cyberdudebivash.in/posts/github-confirms-breach-4k-internal-repos-stolen.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>Cyber Threat Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>Qilin Ransomware Suspect Arrested in Japan, Extradited to Germany</title>
+    <link>https://blog.cyberdudebivash.in/posts/qilin-ransomware-suspect-arrested-in-japan-extradited-to-ge.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/qilin-ransomware-suspect-arrested-in-japan-extradited-to-ge.html</guid>
+    <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[The individual was detained in May and has been extradited to Germany to face hacking charges. The post Qilin Ransomware Suspect Arrested in Japan,. Cybersecurity analysis, IOCs, and detection guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>The individual was detained in May and has been extradited to Germany to face hacking charges. The post Qilin Ransomware Suspect Arrested in Japan,. Cybersecurity analysis, IOCs, and detection guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/qilin-ransomware-suspect-arrested-in-japan-extradited-to-ge.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>Ransomware</category>
+    <category>Threat Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>Ransomware has a new target. Is your backup ready?</title>
+    <link>https://blog.cyberdudebivash.in/posts/ransomware-has-a-new-target-is-your-backup-ready.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/ransomware-has-a-new-target-is-your-backup-ready.html</guid>
+    <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[Ransomware groups are increasingly targeting backup infrastructure to eliminate recovery options and increase pressure on victims to pay. Kaseya explains. Cybersecurity analysis, IOCs, and detection guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>Ransomware groups are increasingly targeting backup infrastructure to eliminate recovery options and increase pressure on victims to pay. Kaseya explains. Cybersecurity analysis, IOCs, and detection guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/ransomware-has-a-new-target-is-your-backup-ready.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
+    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
+    <category>Ransomware</category>
+    <category>Threat Intelligence</category>
+    <category>Cybersecurity</category>
+    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
+  </item>
+
+  <item>
+    <title>SonicWall Patches CVSS 10.0 Pre-Authentication SSRF Flaw in SMA1000 Appliances</title>
+    <link>https://blog.cyberdudebivash.in/posts/sonicwall-patches-cvss-10-0-pre-authentication-ssrf-flaw-in.html</link>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/sonicwall-patches-cvss-10-0-pre-authentication-ssrf-flaw-in.html</guid>
+    <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
+    <description><![CDATA[SonicWall has released hotfixes for four flaws in its SMA1000 appliances, the gateways that give remote workers access to a company&#39;s network and. Cybersecurity analysis, IOCs, and detection guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
+    <content:encoded><![CDATA[<p>SonicWall has released hotfixes for four flaws in its SMA1000 appliances, the gateways that give remote workers access to a company&#39;s network and. Cybersecurity analysis, IOCs, and detection guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/sonicwall-patches-cvss-10-0-pre-authentication-ssrf-flaw-in.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
     <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
     <category>Cyber Threat Intelligence</category>
     <category>Cybersecurity</category>
@@ -599,342 +717,6 @@
     <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
     <description><![CDATA[CVE-2026-105757 (CVSS 6.5) — CVE-2026-105757 - vLLM: Structured-output request errors escape the request boundary and terminate the shared EngineCore —. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
     <content:encoded><![CDATA[<p>CVE-2026-105757 (CVSS 6.5) — CVE-2026-105757 - vLLM: Structured-output request errors escape the request boundary and terminate the shared EngineCore —. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-105757.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>CVE-2026-105758 - vLLM: Qwen2-VL / Qwen3-VL video samplers bound on request-controlled max_frames, which the num_frames ceiling does not reach</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-105758.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-105758.html</guid>
-    <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-105758 (CVSS 5.3) — CVE-2026-105758 - vLLM: Qwen2-VL / Qwen3-VL video samplers bound on request-controlled max_frames, which the num_frames ceiling. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-105758 (CVSS 5.3) — CVE-2026-105758 - vLLM: Qwen2-VL / Qwen3-VL video samplers bound on request-controlled max_frames, which the num_frames ceiling. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-105758.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>CVE-2026-105760 - vLLM: GLMGA video sampling permits request-driven CPU and memory exhaustion</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-105760.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-105760.html</guid>
-    <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-105760 (CVSS 5.3) — CVE-2026-105760 - vLLM: GLMGA video sampling permits request-driven CPU and memory exhaustion. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-105760 (CVSS 5.3) — CVE-2026-105760 - vLLM: GLMGA video sampling permits request-driven CPU and memory exhaustion. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-105760.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>Kiota: Code injection through doc-comment delimiter reformation in Kiota Java and PHP generators</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-105796-nuget-microsoft-openapi-kiota.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-105796-nuget-microsoft-openapi-kiota.html</guid>
-    <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-105796 (CVSS 8.8) — Impact An attacker who controls or tampers with an OpenAPI description can cause Kiota to emit attacker-controlled Java or PHP. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-105796 (CVSS 8.8) — Impact An attacker who controls or tampers with an OpenAPI description can cause Kiota to emit attacker-controlled Java or PHP. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-105796-nuget-microsoft-openapi-kiota.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>Payload: Improper access control for MCP API keys</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-105806-npm-payloadcms-plugin-mcp.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-105806-npm-payloadcms-plugin-mcp.html</guid>
-    <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-105806 (CVSS 0) — Impact Under certain conditions, an authenticated user could manage MCP API keys outside their intended account allowing an. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-105806 (CVSS 0) — Impact Under certain conditions, an authenticated user could manage MCP API keys outside their intended account allowing an. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-105806-npm-payloadcms-plugin-mcp.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>CVE-2026-105836 - QloApps through 1.7.0 Authorization Bypass via ajaxProcessBulkUpdateRooms</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-105836.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-105836.html</guid>
-    <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-105836 (CVSS 7.5) — CVE-2026-105836 - QloApps through 1.7.0 Authorization Bypass via ajaxProcessBulkUpdateRooms. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-105836 (CVSS 7.5) — CVE-2026-105836 - QloApps through 1.7.0 Authorization Bypass via ajaxProcessBulkUpdateRooms. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-105836.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>Payload: Prototype pollution in Payload Import Export plugin</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-105844.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-105844.html</guid>
-    <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-105844 (CVSS 9.8) — Impact An unauthenticated user could cause unintended application behavior when the Import Export plugin is enabled, allowing an. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-105844 (CVSS 9.8) — Impact An unauthenticated user could cause unintended application behavior when the Import Export plugin is enabled, allowing an. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-105844.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>Payload: SQL Injection in SQLite and Postgres</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-105845.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-105845.html</guid>
-    <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-105845 (CVSS 9.8) — Impact A user can submit a request that exploits a SQL Injection vulnerability in Payload. You are affected if: - You use an. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-105845 (CVSS 9.8) — Impact A user can submit a request that exploits a SQL Injection vulnerability in Payload. You are affected if: - You use an. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-105845.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>Payload: Polymorphic join queries could disclose hidden fields</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-105847-npm-payload.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-105847-npm-payload.html</guid>
-    <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-105847 (CVSS 0) — Impact A user with query access could use polymorphic join filters to infer hidden or read-restricted field values, including. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-105847 (CVSS 0) — Impact A user with query access could use polymorphic join filters to infer hidden or read-restricted field values, including. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-105847-npm-payload.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>Payload vulnerable to API key disclosure through ordinary document reads</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-105849-npm-payload.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-105849-npm-payload.html</guid>
-    <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-105849 (CVSS 0) — Impact Users with read access to other user documents could access their active API keys. An exposed key grants the target. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-105849 (CVSS 0) — Impact Users with read access to other user documents could access their active API keys. An exposed key grants the target. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-105849-npm-payload.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>Payload Ecommerce has an order confirmation validation issue</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-105850-npm-payloadcms-plugin-ecommerce.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-105850-npm-payloadcms-plugin-ecommerce.html</guid>
-    <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-105850 (CVSS 0) — Impact When using the Stripe payment adapter, an order confirmation could be processed more than once under certain conditions.. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-105850 (CVSS 0) — Impact When using the Stripe payment adapter, an order confirmation could be processed more than once under certain conditions.. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-105850-npm-payloadcms-plugin-ecommerce.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>Payload: Token refresh and password reset responses may expose restricted user fields</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-105853-npm-payload.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-105853-npm-payload.html</guid>
-    <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-105853 (CVSS 0) — Impact Token refresh and password reset responses could return fields that the requesting user did not have access to. You are. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-105853 (CVSS 0) — Impact Token refresh and password reset responses could return fields that the requesting user did not have access to. You are. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-105853-npm-payload.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>Payload: ReDoS in Multipart Content-Type Validation</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-105854-npm-payload.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-105854-npm-payload.html</guid>
-    <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-105854 (CVSS 0) — Impact A malformed multipart request body could take an extremely long time to finish. Patches Users should upgrade Payload. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-105854 (CVSS 0) — Impact A malformed multipart request body could take an extremely long time to finish. Patches Users should upgrade Payload. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-105854-npm-payload.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>Payload didn&amp;#39;t enforce field-level password update restrictions</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-105855-npm-payload.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-105855-npm-payload.html</guid>
-    <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-105855 (CVSS 0) — Impact When an auth collection defined a field-level access.update restriction on the password field, the restriction was not. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-105855 (CVSS 0) — Impact When an auth collection defined a field-level access.update restriction on the password field, the restriction was not. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-105855-npm-payload.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>CVE-2026-105860 - Payload: Tenant authorization bypass in Multi-Tenant Plugin</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-105860.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-105860.html</guid>
-    <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-105860 (CVSS 7.5) — CVE-2026-105860 - Payload: Tenant authorization bypass in Multi-Tenant Plugin. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-105860 (CVSS 7.5) — CVE-2026-105860 - Payload: Tenant authorization bypass in Multi-Tenant Plugin. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-105860.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>Atlassian Patches Critical Vulnerabilities in Jira, Confluence, Bitbucket, and Five More Products</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-21589.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-21589.html</guid>
-    <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-21589 (CVSS 9.1) — Atlassian has disclosed a critical arbitrary file access vulnerability affecting eight products, including Jira, Confluence, and. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-21589 (CVSS 9.1) — Atlassian has disclosed a critical arbitrary file access vulnerability affecting eight products, including Jira, Confluence, and. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-21589.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>External Secrets Operator: label enforcement bypass in webhook generator enables secret exfiltration</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-26287-go-github-com-external-secrets-external-secrets.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-26287-go-github-com-external-secrets-external-secrets.html</guid>
-    <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-26287 (CVSS 7.1) — Summary A bug in the webhook generator initialization order incorrectly cleared the label-enforcement flag (EnforceLabels) after. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-26287 (CVSS 7.1) — Summary A bug in the webhook generator initialization order incorrectly cleared the label-enforcement flag (EnforceLabels) after. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-26287-go-github-com-external-secrets-external-secrets.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>CVE-2026-39789 - WordPress Fluent Affiliate Pro plugin &amp;lt;= 1.6.4 - Broken Access Control vulnerability</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-39789.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-39789.html</guid>
-    <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-39789 (CVSS 7.5) — CVE-2026-39789 - WordPress Fluent Affiliate Pro plugin &lt;= 1.6.4 - Broken Access Control vulnerability. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-39789 (CVSS 7.5) — CVE-2026-39789 - WordPress Fluent Affiliate Pro plugin &lt;= 1.6.4 - Broken Access Control vulnerability. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-39789.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>Coraza: Silent argument drop at ArgumentLimit allows bypass of ARGS-targeted rules via parameter flooding</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-41510-go-github-com-corazawaf-coraza-v3.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-41510-go-github-com-corazawaf-coraza-v3.html</guid>
-    <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-41510 (CVSS 7.2) — Root Cause File: internal/corazawaf/transaction.go, lines 770–808 (since commit 2fd87b89, PR #812, 2023-06-14). Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-41510 (CVSS 7.2) — Root Cause File: internal/corazawaf/transaction.go, lines 770–808 (since commit 2fd87b89, PR #812, 2023-06-14). Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-41510-go-github-com-corazawaf-coraza-v3.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>CVE-2026-41558 - WordPress WP Migration Plugin DB &amp;amp; Files – WP Synchro plugin &amp;lt;= 1.16.1 - 2FA Bypass vulnerability</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-41558.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-41558.html</guid>
-    <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-41558 (CVSS 7.5) — CVE-2026-41558 - WordPress WP Migration Plugin DB &amp; Files – WP Synchro plugin &lt;= 1.16.1 - 2FA Bypass vulnerability. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-41558 (CVSS 7.5) — CVE-2026-41558 - WordPress WP Migration Plugin DB &amp; Files – WP Synchro plugin &lt;= 1.16.1 - 2FA Bypass vulnerability. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-41558.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>CVE-2026-41563 - WordPress Sitemovr plugin &amp;lt;= 1.0.1 - Sensitive Data Exposure vulnerability</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-41563.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-41563.html</guid>
-    <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-41563 (CVSS 7.5) — CVE-2026-41563 - WordPress Sitemovr plugin &lt;= 1.0.1 - Sensitive Data Exposure vulnerability. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-41563 (CVSS 7.5) — CVE-2026-41563 - WordPress Sitemovr plugin &lt;= 1.0.1 - Sensitive Data Exposure vulnerability. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-41563.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>CVE-2026-70357 - Gitea repository migration SSRF through DNS rebinding</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-70357.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-70357.html</guid>
-    <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-70357 (CVSS 6.1) — CVE-2026-70357 - Gitea repository migration SSRF through DNS rebinding. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-70357 (CVSS 6.1) — CVE-2026-70357 - Gitea repository migration SSRF through DNS rebinding. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-70357.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>compression vulnerable to Denial of Service via memory leak on premature response close</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-87776-npm-compression.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-87776-npm-compression.html</guid>
-    <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-87776 (CVSS 7.5) — Impact A vulnerability in compression &lt; 1.8.2 allows an attacker to trigger a Denial of Service (DoS) by disconnecting while a. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-87776 (CVSS 7.5) — Impact A vulnerability in compression &lt; 1.8.2 allows an attacker to trigger a Denial of Service (DoS) by disconnecting while a. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-87776-npm-compression.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>CVE-2026-92821 - Sssd: sssd: access control bypass via premature ldap access rule evaluation</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-92821.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-92821.html</guid>
-    <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-92821 (CVSS 6.8) — CVE ID : CVE-2026-92821 Published : Oct. 6, 2026, 1:16 a.m. | 26 minutes ago Description : A flaw was found in SSSD. When. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-92821 (CVSS 6.8) — CVE ID : CVE-2026-92821 Published : Oct. 6, 2026, 1:16 a.m. | 26 minutes ago Description : A flaw was found in SSSD. When. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-92821.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
-    <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
-    <category>CVE Analysis</category>
-    <category>Vulnerability Intelligence</category>
-    <category>Cybersecurity</category>
-    <source url="https://blog.cyberdudebivash.in/rss.xml">CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence</source>
-  </item>
-
-  <item>
-    <title>vm2: timeout Option Bypass via FinalizationRegistry Cleanup Callback (Unbounded Host Event-Loop Block)</title>
-    <link>https://blog.cyberdudebivash.in/posts/cve-2026-92942.html</link>
-    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-92942.html</guid>
-    <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
-    <description><![CDATA[CVE-2026-92942 (CVSS 7.5) — Vulnerability Summary vm2&#39;s VM({ timeout }) option is documented and relied upon as the mechanism that bounds how long sandboxed. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.]]></description>
-    <content:encoded><![CDATA[<p>CVE-2026-92942 (CVSS 7.5) — Vulnerability Summary vm2&#39;s VM({ timeout }) option is documented and relied upon as the mechanism that bounds how long sandboxed. Source-attributed analysis and response guidance by CYBERDUDEBIVASH SENTINEL APEX.</p><p><a href="https://blog.cyberdudebivash.in/posts/cve-2026-92942.html" target="_blank" rel="noopener">🔗 Read Full Intel Report →</a></p><p><strong>🛡️ Get Premium Threat Intel:</strong> <a href="https://blog.cyberdudebivash.in/products.html">CyberDudeBivash Products</a></p>]]></content:encoded>
     <author>bivash@cyberdudebivash.com (CyberDudeBivash)</author>
     <category>CVE Analysis</category>
     <category>Vulnerability Intelligence</category>
