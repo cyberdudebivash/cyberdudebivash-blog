@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-07T13:25:06.439Z",
+  "generated": "2026-10-07T14:24:23.484Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,11 +7,11 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 5929,
+  "total_published": 5934,
   "s2n_stats": {
     "passed": 97,
-    "suppressed": 6,
-    "avg_qs": 0.5
+    "suppressed": 9,
+    "avg_qs": 0.501
   },
   "items": [
     {
@@ -4133,6 +4133,202 @@
       "suppression_reason": null
     },
     {
+      "id": "CVE-2026-61436",
+      "title": "PraisonAI: AgentMail webhook mode accepts forged unsigned message.received events and invokes agents",
+      "description": "# AgentMail webhook mode accepts forged unsigned message.received events and invokes agents ## Summary `praisonai` AgentMail webhook mode exposes a public aiohttp webhook endpoint that accepts caller-controlled `message.received` JSON without verifying AgentMail's Svix webhook signatures, then dispa",
+      "cvss": 8.6,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-07",
+      "last_seen": "2026-10-07",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "pip",
+      "product": "praisonai",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-61436",
+        "CVE-2026-61436"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-7c92-x8vg-4258",
+        "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-7c92-x8vg-4258",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-61436",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-62172"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-61428",
+      "title": "PraisonAI: AgentMail webhook lacks signature verification, allowing unauthenticated message injection and sender spoofin",
+      "description": "## Summary PraisonAI's AgentMail bot, when run in webhook (or hybrid) mode, starts an aiohttp webhook server bound to `0.0.0.0` and processes inbound `message.received` events **without verifying any signature/HMAC and without authentication**. The sender address and message body are taken directly ",
+      "cvss": 7.3,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-07",
+      "last_seen": "2026-10-07",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "pip",
+      "product": "praisonai",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-61428",
+        "CVE-2026-61428"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-qj9c-59p6-8cgx",
+        "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-qj9c-59p6-8cgx",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-61428",
+        "https://www.vulncheck.com/advisories/praisonai-agentmail-before-message-injection-via-webhook"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-46434",
+      "title": "wger: Trainer Privilege Escalation - Improper Privilege Management",
+      "description": "### Summary A user with only the `gym_trainer` permission can deactivate any account in the same gym, including `gym_manager` and `general_gym_manager` accounts. The `UserDeactivateView` grants access to anyone holding **any one** of `gym.manage_gym`, `gym.manage_gyms`, or `gym.gym_trainer` (OR logi",
+      "cvss": 7.1,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-07",
+      "last_seen": "2026-10-07",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "pip",
+      "product": "wger",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-46434",
+        "CVE-2026-46434"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-x249-cx55-2h87",
+        "https://github.com/wger-project/wger/security/advisories/GHSA-x249-cx55-2h87",
+        "https://github.com/wger-project/wger/releases/tag/2.6",
+        "https://github.com/advisories/GHSA-x249-cx55-2h87"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-43976",
+      "title": "wger: cross-tenant admin notes/contracts leak via gym=None bypass (5 views)",
+      "description": "### Summary Five gym management views in wger apply a flawed gym-scope guard (`gym_a != gym_b`) that silently passes when both operands are `None`. A trainer with `gym.gym_trainer` and `gym.add_adminusernote` permissions and no gym assignment (`gym=None`) can read private admin notes, uploaded docum",
+      "cvss": 7.1,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-07",
+      "last_seen": "2026-10-07",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "pip",
+      "product": "wger",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-43976",
+        "CVE-2026-43976"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-c72h-82w6-rqfp",
+        "https://github.com/wger-project/wger/security/advisories/GHSA-c72h-82w6-rqfp",
+        "https://github.com/wger-project/wger/releases/tag/2.6",
+        "https://github.com/advisories/GHSA-c72h-82w6-rqfp"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
       "id": "CVE-2026-41510",
       "title": "Coraza: Silent argument drop at ArgumentLimit allows bypass of ARGS-targeted rules via parameter flooding",
       "description": "## Root Cause File: `internal/corazawaf/transaction.go`, lines 770–808 (since commit 2fd87b89, PR #812, 2023-06-14) ```go\nfunc (tx *Transaction) AddGetRequestArgument(key string, value string) { if tx.checkArgumentLimit(tx.variables.argsGet) { tx.debugLogger.Warn().Msg(\"skipping get request argument",
@@ -4223,198 +4419,6 @@
         ],
         "priority": [
           "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-105796",
-      "title": "Kiota: Code injection through doc-comment delimiter reformation in Kiota Java and PHP generators",
-      "description": "### Impact An attacker who controls or tampers with an OpenAPI description can cause Kiota to emit attacker-controlled Java or PHP source outside a generated documentation comment. The affected sanitizers remove comment terminators rather than neutralizing them, allowing a terminator to reform from ",
-      "cvss": 8.8,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-10-06",
-      "last_seen": "2026-10-06",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "nuget",
-      "product": "Microsoft.OpenApi.Kiota",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-105796",
-        "CVE-2026-105796"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-rm89-rhwj-9j92",
-        "https://github.com/microsoft/kiota/security/advisories/GHSA-rm89-rhwj-9j92",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-105796",
-        "https://github.com/microsoft/kiota/pull/8017"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-104850",
-      "title": "MCP TypeScript SDK: OAuth client could send credentials to an authorization server chosen by the MCP server",
-      "description": "### Summary\nIn affected versions, the SDK's OAuth client let the MCP server decide which authorization server received the client's OAuth credentials. Credentials were not tied to the authorization server they belong to. A malicious or compromised MCP server could name its own authorization server. ",
-      "cvss": 7.5,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-10-06",
-      "last_seen": "2026-10-06",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "npm",
-      "product": "@modelcontextprotocol/sdk",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-104850",
-        "CVE-2026-104850"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-6qxp-vccf-f47h",
-        "https://github.com/modelcontextprotocol/typescript-sdk/security/advisories/GHSA-6qxp-vccf-f47h",
-        "https://github.com/modelcontextprotocol/typescript-sdk/pull/2887",
-        "https://github.com/modelcontextprotocol/typescript-sdk/commit/edd12e282620ebf770d67316f19cf91d4112a1bd"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-26287",
-      "title": "External Secrets Operator: label enforcement bypass in webhook generator enables secret exfiltration",
-      "description": "## Summary\nA bug in the `webhook` generator initialization order incorrectly cleared the label-enforcement flag (`EnforceLabels`) after it was set, resulting in the provider-side check for `external-secrets.io/type=webhook` being skipped (and the operation to succeed while it should have failed with",
-      "cvss": 7.1,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-10-06",
-      "last_seen": "2026-10-06",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "go",
-      "product": "github.com/external-secrets/external-secrets",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-26287",
-        "CVE-2026-26287"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-q7hv-xx6h-q2x8",
-        "https://github.com/external-secrets/external-secrets/security/advisories/GHSA-q7hv-xx6h-q2x8",
-        "https://github.com/external-secrets/external-secrets/pull/5901",
-        "https://github.com/external-secrets/external-secrets/commit/25aa09275861e3ed6fc5d2a1a60b9ac3df4a93ba"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-106503",
-      "title": "CVE-2026-106503 - Backstage: Scaffolder action input authorization bypass",
-      "description": "CVE-2026-106503 - Backstage: Scaffolder action input authorization bypass",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-06",
-      "last_seen": "2026-10-06",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-106503"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-106503"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
         ],
         "suppression": null,
         "merge": null
