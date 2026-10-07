@@ -1,15 +1,15 @@
 {
-  "generated": "2026-10-07T14:24:23.394Z",
+  "generated": "2026-10-07T19:33:23.748Z",
   "version": "1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX v4.0",
   "stats": {
-    "total_nodes": 15268,
+    "total_nodes": 15291,
     "actors": 8,
-    "cves": 6892,
-    "campaigns": 1513,
+    "cves": 6904,
+    "campaigns": 1521,
     "malware": 0,
     "iocs": 911,
-    "edges": 4249
+    "edges": 4257
   },
   "nodes": {
     "actor:lockbit": {
@@ -285153,12 +285153,12 @@
     "CVE-2026-61500": {
       "id": "CVE-2026-61500",
       "type": "CVE",
-      "name": "Rejetto HFS servers now actively scanned for critical RCE flaw",
+      "name": "Anthropic Mythos Found A Bug in Rejetto HFS. Attackers Are Now Exploiting It.",
       "attributes": {
         "cvss": 9.8,
-        "threat_level": "MEDIUM",
-        "priority_score": 49,
-        "exploited": false,
+        "threat_level": "HIGH",
+        "priority_score": 67,
+        "exploited": true,
         "cisa_kev": false,
         "ransomware": false,
         "vendor": "",
@@ -285297,7 +285297,7 @@
     "campaign:cve-2026-61500": {
       "id": "campaign:cve-2026-61500",
       "type": "Campaign",
-      "name": "The Threat Exploitation Campaign",
+      "name": "Multi-Vendor Platform Exploitation Campaign",
       "attributes": {
         "severity": "HIGH",
         "item_count": 1,
@@ -285389,17 +285389,17 @@
     "CVE-2026-104890": {
       "id": "CVE-2026-104890",
       "type": "CVE",
-      "name": "CVE-2026-104890 Kunstmaan CMS: MediaBundle extension blacklist bypass allows authenticated administrators to upload executable PHP files leading to remote code execution",
+      "name": "Kunstmaan CMS: MediaBundle extension blacklist bypass allows authenticated administrators to upload executable PHP files leading to remote code execution",
       "attributes": {
-        "cvss": 9.8,
+        "cvss": 7.2,
         "threat_level": "MEDIUM",
-        "priority_score": 51,
+        "priority_score": 59,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
-        "vendor": "",
-        "product": "",
-        "published": "2026-10-05",
+        "vendor": "composer",
+        "product": "kunstmaan/media-bundle",
+        "published": "2026-10-07",
         "type": "CVE_REPORT"
       },
       "connections": []
@@ -286223,11 +286223,11 @@
     "CVE-2026-21589": {
       "id": "CVE-2026-21589",
       "type": "CVE",
-      "name": "Atlassian warns of critical file-access flaw in Jira, Confluence",
+      "name": "Hackers exploit critical Atlassian flaw after public PoC release",
       "attributes": {
-        "cvss": 9.3,
-        "threat_level": "MEDIUM",
-        "priority_score": 54,
+        "cvss": 0,
+        "threat_level": "LOW",
+        "priority_score": 6,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
@@ -287089,6 +287089,436 @@
       "connections": [
         {
           "target": "CVE-2026-61428",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "CVE-2026-106443": {
+      "id": "CVE-2026-106443",
+      "type": "CVE",
+      "name": "WeasyPrint: EPS images reach the Ghostscript interpreter resulting in RCE",
+      "attributes": {
+        "cvss": 8.8,
+        "threat_level": "HIGH",
+        "priority_score": 66,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "pip",
+        "product": "WeasyPrint",
+        "published": "2026-10-07",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-106558": {
+      "id": "CVE-2026-106558",
+      "type": "CVE",
+      "name": "Backstage: Improper validation of TechDocs MkDocs configuration",
+      "attributes": {
+        "cvss": 8.8,
+        "threat_level": "HIGH",
+        "priority_score": 66,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "@backstage/plugin-techdocs-node",
+        "published": "2026-10-07",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-106486": {
+      "id": "CVE-2026-106486",
+      "type": "CVE",
+      "name": "Backstage has iImproper filesystem validation in Bitbucket pull-request scaffolder actions",
+      "attributes": {
+        "cvss": 8.5,
+        "threat_level": "HIGH",
+        "priority_score": 65,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "@backstage/plugin-scaffolder-backend-module-bitbucket-cloud",
+        "published": "2026-10-07",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-106488": {
+      "id": "CVE-2026-106488",
+      "type": "CVE",
+      "name": "Backstage: Improper authentication in the OIDC provider",
+      "attributes": {
+        "cvss": 8.1,
+        "threat_level": "MEDIUM",
+        "priority_score": 63,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "@backstage/plugin-auth-backend-module-oidc-provider",
+        "published": "2026-10-07",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-106441": {
+      "id": "CVE-2026-106441",
+      "type": "CVE",
+      "name": "Hydra logging configuration permits unsafe callable resolution",
+      "attributes": {
+        "cvss": 7.8,
+        "threat_level": "MEDIUM",
+        "priority_score": 62,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "pip",
+        "product": "hydra-core",
+        "published": "2026-10-07",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-106442": {
+      "id": "CVE-2026-106442",
+      "type": "CVE",
+      "name": "Hydra instantiate target blacklist bypasses permit code execution",
+      "attributes": {
+        "cvss": 7.8,
+        "threat_level": "MEDIUM",
+        "priority_score": 62,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "pip",
+        "product": "hydra-core",
+        "published": "2026-10-07",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-104891": {
+      "id": "CVE-2026-104891",
+      "type": "CVE",
+      "name": "mppx-condition-gate: Free-access path grants on a self-declared wallet without proving control",
+      "attributes": {
+        "cvss": 7.5,
+        "threat_level": "MEDIUM",
+        "priority_score": 61,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "@insumermodel/mppx-condition-gate",
+        "published": "2026-10-07",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-106510": {
+      "id": "CVE-2026-106510",
+      "type": "CVE",
+      "name": "Backstage: Remote code execution via crafted markdown_extensions in TechDocs mkdocs.yml",
+      "attributes": {
+        "cvss": 7.7,
+        "threat_level": "MEDIUM",
+        "priority_score": 61,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "@backstage/plugin-techdocs-node",
+        "published": "2026-10-07",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-106560": {
+      "id": "CVE-2026-106560",
+      "type": "CVE",
+      "name": "Backstage: Improper repository path validation in a Scaffolder backend module",
+      "attributes": {
+        "cvss": 7.1,
+        "threat_level": "MEDIUM",
+        "priority_score": 59,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "@backstage/plugin-scaffolder-backend-module-confluence-to-markdown",
+        "published": "2026-10-07",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "THEHACKERNEWS-77a1faaf0505273c": {
+      "id": "THEHACKERNEWS-77a1faaf0505273c",
+      "type": "Intel",
+      "name": "SonicWall Patches CVSS 10.0 Pre-Authentication SSRF Flaw in SMA1000 Appliances",
+      "attributes": {
+        "cvss": 10,
+        "threat_level": "MEDIUM",
+        "priority_score": 51,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "The Hacker News",
+        "product": "Threat Intelligence",
+        "published": "2026-10-07",
+        "type": "NEWS_REPORT"
+      },
+      "connections": []
+    },
+    "REDDIT_CYBER-007111d8177257a9": {
+      "id": "REDDIT_CYBER-007111d8177257a9",
+      "type": "Intel",
+      "name": "Cybersecurity statistics of the week (September 28th - October 4th)",
+      "attributes": {
+        "cvss": 0,
+        "threat_level": "MEDIUM",
+        "priority_score": 48,
+        "exploited": true,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "reddit_cyber",
+        "product": "Threat Intelligence",
+        "published": "2026-10-07",
+        "type": "ZERO_DAY"
+      },
+      "connections": []
+    },
+    "CVE-2026-96940": {
+      "id": "CVE-2026-96940",
+      "type": "CVE",
+      "name": "CVE-2026-96940: Microsoft Fixes Exchange Server Flaw For Which Exploitation Is More Likely",
+      "attributes": {
+        "cvss": 8.8,
+        "threat_level": "MEDIUM",
+        "priority_score": 46,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "",
+        "product": "",
+        "published": "2026-10-06",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-106572": {
+      "id": "CVE-2026-106572",
+      "type": "CVE",
+      "name": "CVE-2026-106572 - ImageMagick: Stack Overflown CALS decoder due to missing depth check.",
+      "attributes": {
+        "cvss": 7.2,
+        "threat_level": "LOW",
+        "priority_score": 41,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "",
+        "product": "",
+        "published": "2026-10-07",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-107273": {
+      "id": "CVE-2026-107273",
+      "type": "CVE",
+      "name": "CVE-2026-107273 - Gophish 0.11.0 through 0.12.1 SSRF via POST /api/import/site",
+      "attributes": {
+        "cvss": 6.1,
+        "threat_level": "LOW",
+        "priority_score": 37,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "",
+        "product": "",
+        "published": "2026-10-07",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "SENTINELAPEX-81fea0d88451": {
+      "id": "SENTINELAPEX-81fea0d88451",
+      "type": "Intel",
+      "name": "Ransomware has a new target. Is your backup ready?",
+      "attributes": {
+        "cvss": 0,
+        "threat_level": "LOW",
+        "priority_score": 26,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": true,
+        "vendor": "",
+        "product": "",
+        "published": "2026-10-07",
+        "type": "RANSOMWARE"
+      },
+      "connections": []
+    },
+    "campaign:cve-2026-106443": {
+      "id": "campaign:cve-2026-106443",
+      "type": "Campaign",
+      "name": "pip WeasyPrint Exploitation Campaign",
+      "attributes": {
+        "severity": "HIGH",
+        "item_count": 1,
+        "first_seen": "2026-10-07",
+        "last_seen": "2026-10-07",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-106443"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-106443",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-106558": {
+      "id": "campaign:cve-2026-106558",
+      "type": "Campaign",
+      "name": "npm @backstage/plugin-techdocs-node Exploitation Campaign",
+      "attributes": {
+        "severity": "HIGH",
+        "item_count": 1,
+        "first_seen": "2026-10-07",
+        "last_seen": "2026-10-07",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-106558"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-106558",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-106486": {
+      "id": "campaign:cve-2026-106486",
+      "type": "Campaign",
+      "name": "npm @backstage/plugin-scaffolder-backend-module-bitbucket-cloud Exploitation Campaign",
+      "attributes": {
+        "severity": "HIGH",
+        "item_count": 1,
+        "first_seen": "2026-10-07",
+        "last_seen": "2026-10-07",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-106486"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-106486",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-106488": {
+      "id": "campaign:cve-2026-106488",
+      "type": "Campaign",
+      "name": "npm @backstage/plugin-auth-backend-module-oidc-provider Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-10-07",
+        "last_seen": "2026-10-07",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-106488"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-106488",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-106441": {
+      "id": "campaign:cve-2026-106441",
+      "type": "Campaign",
+      "name": "pip hydra-core Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-10-07",
+        "last_seen": "2026-10-07",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-106441"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-106441",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-106442": {
+      "id": "campaign:cve-2026-106442",
+      "type": "Campaign",
+      "name": "pip hydra-core Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-10-07",
+        "last_seen": "2026-10-07",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-106442"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-106442",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-104891": {
+      "id": "campaign:cve-2026-104891",
+      "type": "Campaign",
+      "name": "npm @insumermodel/mppx-condition-gate Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-10-07",
+        "last_seen": "2026-10-07",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-104891"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-104891",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-106510": {
+      "id": "campaign:cve-2026-106510",
+      "type": "Campaign",
+      "name": "npm @backstage/plugin-techdocs-node Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-10-07",
+        "last_seen": "2026-10-07",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-106510"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-106510",
           "relationship": "includes",
           "confidence": 1
         }
@@ -325510,6 +325940,78 @@
       "id": "campaign:cve-2026-61428→includes→CVE-2026-61428",
       "source": "campaign:cve-2026-61428",
       "target": "CVE-2026-61428",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-10-07",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-106443→includes→CVE-2026-106443",
+      "source": "campaign:cve-2026-106443",
+      "target": "CVE-2026-106443",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-10-07",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-106558→includes→CVE-2026-106558",
+      "source": "campaign:cve-2026-106558",
+      "target": "CVE-2026-106558",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-10-07",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-106486→includes→CVE-2026-106486",
+      "source": "campaign:cve-2026-106486",
+      "target": "CVE-2026-106486",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-10-07",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-106488→includes→CVE-2026-106488",
+      "source": "campaign:cve-2026-106488",
+      "target": "CVE-2026-106488",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-10-07",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-106441→includes→CVE-2026-106441",
+      "source": "campaign:cve-2026-106441",
+      "target": "CVE-2026-106441",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-10-07",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-106442→includes→CVE-2026-106442",
+      "source": "campaign:cve-2026-106442",
+      "target": "CVE-2026-106442",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-10-07",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-104891→includes→CVE-2026-104891",
+      "source": "campaign:cve-2026-104891",
+      "target": "CVE-2026-104891",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-10-07",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-106510→includes→CVE-2026-106510",
+      "source": "campaign:cve-2026-106510",
+      "target": "CVE-2026-106510",
       "relationship": "includes",
       "confidence": 1,
       "first_seen": "2026-10-07",

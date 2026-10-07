@@ -14,7 +14,7 @@
     <copyright>Copyright 2026 CyberDudeBivash. All rights reserved.</copyright>
     <managingEditor>bivash@cyberdudebivash.com (CyberDudeBivash)</managingEditor>
     <webMaster>bivash@cyberdudebivash.com (CyberDudeBivash)</webMaster>
-    <lastBuildDate>Wed, 07 Oct 2026 14:24:24 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 07 Oct 2026 19:33:24 GMT</lastBuildDate>
     <pubDate>Wed, 07 Oct 2026 12:00:00 +0000</pubDate>
     <ttl>60</ttl>
     <category>Cybersecurity</category>
@@ -31,7 +31,133 @@
       <height>144</height>
     </image>
 
-      <item>
+        <item>
+    <title><![CDATA[WeasyPrint: EPS images reach the Ghostscript interpreter resulting in RCE]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106443-pip-weasyprint.html</link>
+    <description><![CDATA[Score 66/100 HIGH — CVSS 8.8 — ### Summary This was found during a pentest, funded by the NLNnet foundation, conducted by Stefan Vink from Radically Open Security and the only High issue found. WeasyPrint passes fetched image bytes directly to Pillow's generic format dispatcher without restricting the input format. When Ghostscri. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106443-pip-weasyprint.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Backstage: Improper validation of TechDocs MkDocs configuration]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106558-npm-backstage-plugin-techdocs-node.html</link>
+    <description><![CDATA[Score 66/100 HIGH — CVSS 8.8 — ### Impact An attacker who can provide configuration to a TechDocs build may execute code in the generator runtime. Impact is greatest when documentation generation runs with backend credentials or host access. ### Patches Patched in `@backstage/plugin-techdocs-node` version `1.15.4`. ### Workaround. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106558-npm-backstage-plugin-techdocs-node.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Backstage has iImproper filesystem validation in Bitbucket pull-request scaffolder actions]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106486-npm-backstage-plugin-scaffolder-backend-module-bitbucket-cloud.html</link>
+    <description><![CDATA[Score 65/100 HIGH — CVSS 8.5 — ### Impact An authenticated user who can execute an eligible template and influence an allowed Bitbucket repository could affect filesystem paths outside the expected working area. Depending on the backend deployment, this could compromise backend confidentiality, integrity, or availability. ### Pat. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106486-npm-backstage-plugin-scaffolder-backend-module-bitbucket-cloud.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Backstage: Improper authentication in the OIDC provider]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106488-npm-backstage-plugin-auth-backend-module-oidc-provider.html</link>
+    <description><![CDATA[Score 63/100 MEDIUM — CVSS 8.1 — ### Impact Deployments using OIDC email-based identity resolution with a provider that permits unverified email addresses may allow an authenticated provider user to assume another catalog identity. This may grant access and permissions associated with that user. No direct availability impact is dem. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106488-npm-backstage-plugin-auth-backend-module-oidc-provider.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Hydra logging configuration permits unsafe callable resolution]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106441-pip-hydra-core.html</link>
+    <description><![CDATA[Score 62/100 MEDIUM — CVSS 7.8 — ## Summary Hydra passed its Python logging configuration to `logging.config.dictConfig()`. Python's logging configurator can resolve and invoke importable classes and factories named by configuration, including handler `class` values and formatter, filter, handler, queue, and listener `()` factories. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106441-pip-hydra-core.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Hydra instantiate target blacklist bypasses permit code execution]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106442-pip-hydra-core.html</link>
+    <description><![CDATA[Score 62/100 MEDIUM — CVSS 7.8 — ## Summary Hydra's `instantiate()` API resolves and invokes Python callables named by the `_target_` field in configuration. The target blacklist introduced for CVE-2026-68508 was incomplete. Representative bypasses included execution wrappers such as `timeit.timeit`, executable deserialization thro. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106442-pip-hydra-core.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[mppx-condition-gate: Free-access path grants on a self-declared wallet without proving control]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-104891-npm-insumermodel-mppx-condition-gate.html</link>
+    <description><![CDATA[Score 61/100 MEDIUM — CVSS 7.5 — ### Impact Both packages wrap an `mppx` payment method so that a wallet meeting on-chain conditions is granted free access instead of being charged. The free-access path reads the payer address from `credential.source` — a client-supplied DID in the payment credential — asks InsumerAPI whether that . Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-104891-npm-insumermodel-mppx-condition-gate.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Backstage: Remote code execution via crafted markdown_extensions in TechDocs mkdocs.yml]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106510-npm-backstage-plugin-techdocs-node.html</link>
+    <description><![CDATA[Score 61/100 MEDIUM — CVSS 7.7 — ### Impact An authenticated user who can register catalog entities can provide a crafted `mkdocs.yml` causing arbitrary OS command execution on the TechDocs build host when the docs are built. ### Patches Patched in `@backstage/plugin-techdocs-node`, version `1.15.4`. ### Workarounds If you cannot u. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106510-npm-backstage-plugin-techdocs-node.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Backstage: Improper repository path validation in a Scaffolder backend module]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106560-npm-backstage-plugin-scaffolder-backend-module-confluence-to-markdown.html</link>
+    <description><![CDATA[Score 59/100 MEDIUM — CVSS 7.1 — ### Impact An authenticated user who can execute an affected template and control its repository file location may cause generated content to be written outside the task workspace, within locations writable by the Backstage backend process. ### Patches Patched in `@backstage/plugin-scaffolder-backen. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106560-npm-backstage-plugin-scaffolder-backend-module-confluence-to-markdown.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[SonicWall Patches CVSS 10.0 Pre-Authentication SSRF Flaw in SMA1000 Appliances]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/sonicwall-patches-cvss-10-0-pre-authentication-ssrf-flaw-in.html</link>
+    <description><![CDATA[Score 51/100 MEDIUM — CVSS 10 — SonicWall has released hotfixes for four flaws in its SMA1000 appliances, the gateways that give remote workers access to a company's network and applications. The most serious could allow an attacker without a login to send requests through the appliance and reach internal functions. SonicWall rate. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/sonicwall-patches-cvss-10-0-pre-authentication-ssrf-flaw-in.html</guid>
+    <category>Threat Intelligence</category>
+    <category>NEWS_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Cybersecurity statistics of the week (September 28th - October 4th)]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cybersecurity-statistics-of-the-week-september-28th-octob.html</link>
+    <description><![CDATA[Score 48/100 MEDIUM — CVSS 0 — Hi guys, I send out a weekly newsletter with the latest cybersecurity vendor reports and research, and thought you might find it useful, so sharing it here. All the reports and research below were published between September 28th - October 4th. You can get the below into your inbox every week if you. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cybersecurity-statistics-of-the-week-september-28th-octob.html</guid>
+    <category>Threat Intelligence</category>
+    <category>ZERO_DAY</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-96940: Microsoft Fixes Exchange Server Flaw For Which Exploitation Is More Likely]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-96940.html</link>
+    <description><![CDATA[Score 46/100 MEDIUM — CVSS 8.8 — Microsoft released emergency updates for Exchange Server to fix CVE-2026-96940, a high-severity flaw that can let attackers gain higher privileges. Microsoft has released out-of-band security updates for Exchange Server to fix a high-severity vulnerability tracked as CVE-2026-969... [Full analysis a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-96940.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-106572 - ImageMagick: Stack Overflown CALS decoder due to missing depth check.]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-106572.html</link>
+    <description><![CDATA[Score 41/100 LOW — CVSS 7.2 — CVE-2026-106572 - ImageMagick: Stack Overflown CALS decoder due to missing depth check.. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-106572.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-107273 - Gophish 0.11.0 through 0.12.1 SSRF via POST /api/import/site]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-107273.html</link>
+    <description><![CDATA[Score 37/100 LOW — CVSS 6.1 — CVE-2026-107273 - Gophish 0.11.0 through 0.12.1 SSRF via POST /api/import/site. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 07 Oct 2026 19:33:24 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-107273.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
     <title><![CDATA[PraisonAI: AgentMail webhook mode accepts forged unsigned message.received events and invokes agents]]></title>
     <link>https://blog.cyberdudebivash.in/posts/cve-2026-61436-pip-praisonai.html</link>
     <description><![CDATA[Score 65/100 HIGH — CVSS 8.6 — # AgentMail webhook mode accepts forged unsigned message.received events and invokes agents ## Summary `praisonai` AgentMail webhook mode exposes a public aiohttp webhook endpoint that accepts caller-controlled `message.received` JSON without verifying AgentMail's Svix webhook signatures, then dispa. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
