@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-08T06:05:24.777Z",
+  "generated": "2026-10-08T06:31:37.584Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,7 +7,7 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 5965,
+  "total_published": 5980,
   "s2n_stats": {
     "passed": 99,
     "suppressed": 9,
@@ -275,49 +275,6 @@
       }
     },
     {
-      "id": "CVE-2026-105858",
-      "title": "Payload: Remote Code Execution through first-register",
-      "description": "Impact\nA crafted request to the public first-register operation can be used to perform a RCE exploit.\n\nYou are affected if:\n\n- You use local auth strategy and your application remains without an initial user created\n\nPatches\n\nIn the patched version data submission to create first... [Full analysis a",
-      "cvss": 8.1,
-      "final_ps": 47,
-      "quality_score": 0.493,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-07",
-      "last_seen": "2026-10-07",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-105858"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-97rh-rhh2-7vjv"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=0d (score=1.00)",
-          "QS=0.493"
-        ],
-        "priority": [
-          "base_ps=47 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
       "id": "CVE-2026-58644",
       "title": "CISA Adds Exploited SharePoint RCE Zero-Day CVE-2026-58644 to KEV",
       "description": "",
@@ -355,6 +312,49 @@
           "+10 CVSS≥9",
           "+8 exploited_in_wild",
           "+7 zero_day"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-105867",
+      "title": "Payload: Client uploads could overwrite S3 objects",
+      "description": "Impact\nAn authenticated user could overwrite an existing S3 object belonging to another upload collection, bypassing that collection’s access controls and prior file validation.\n\nYou are affected if ALL of these are true:\n- Client uploads are enabled for multiple collections that... [Full analysis a",
+      "cvss": 7.5,
+      "final_ps": 46,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-07",
+      "last_seen": "2026-10-07",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-105867"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-7vg8-29qx-jgj8"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=46 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4268,6 +4268,51 @@
       "suppression_reason": null
     },
     {
+      "id": "CVE-2026-105858",
+      "title": "Payload: Remote Code Execution through first-register",
+      "description": "Impact\nA crafted request to the public first-register operation can be used to perform a RCE exploit.\n\nYou are affected if:\n\n- You use local auth strategy and your application remains without an initial user created\n\nPatches\n\nIn the patched version data submission to create first... [Full analysis a",
+      "cvss": 8.1,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-07",
+      "last_seen": "2026-10-07",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-105858"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-97rh-rhh2-7vjv"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
       "id": "CVE-2026-105862",
       "title": "Payload: Bypassed sanitization of user uploaded SVGs",
       "description": "Impact\n\nA malicious SVG file upload could bypass sanitization, be stored, and execute attacker-controlled JavaScript (XSS) after a user downloads it and opens it.\n\nYou are affected if:\n\n- You have a collection configured to upload and allow SVG files which can then be downloaded ... [Full analysis a",
@@ -4340,51 +4385,6 @@
       "ioc_count": 0,
       "refs": [
         "https://github.com/advisories/GHSA-p223-2wr2-j562"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-105867",
-      "title": "Payload: Client uploads could overwrite S3 objects",
-      "description": "Impact\nAn authenticated user could overwrite an existing S3 object belonging to another upload collection, bypassing that collection’s access controls and prior file validation.\n\nYou are affected if ALL of these are true:\n- Client uploads are enabled for multiple collections that... [Full analysis a",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-07",
-      "last_seen": "2026-10-07",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-105867"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-7vg8-29qx-jgj8"
       ],
       "explanation": {
         "quality": [
