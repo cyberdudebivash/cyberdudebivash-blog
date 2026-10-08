@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-08T19:44:05.330Z",
+  "generated": "2026-10-08T23:58:35.496Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,10 +7,10 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 5999,
+  "total_published": 6005,
   "s2n_stats": {
     "passed": 98,
-    "suppressed": 8,
+    "suppressed": 9,
     "avg_qs": 0.502
   },
   "items": [
@@ -318,21 +318,21 @@
       }
     },
     {
-      "id": "CVE-2026-96940",
-      "title": "CVE-2026-96940: Microsoft Fixes Exchange Server Flaw For Which Exploitation Is More Likely",
-      "description": "Microsoft released emergency updates for Exchange Server to fix CVE-2026-96940, a high-severity flaw that can let attackers gain higher privileges. Microsoft has released out-of-band security updates for Exchange Server to fix a high-severity vulnerability tracked as CVE-2026-969... [Full analysis a",
-      "cvss": 8.8,
+      "id": "CVE-2026-107385",
+      "title": "MariaDB Connector/Node.js: SQL injection in the text protocol when the session uses NO_BACKSLASH_ESCAPES",
+      "description": "Description\nWhen escaping string and binary parameters for the text protocol, the connector always escaped the quote character with a backslash, without ever consulting the session's NO_BACKSLASH_ESCAPES SQL mode. The server status flag was declared (STATUS_NO_BACKSLASH_ESCAPES) ... [Full analysis a",
+      "cvss": 7.4,
       "final_ps": 45,
-      "quality_score": 0.458,
+      "quality_score": 0.493,
       "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
+      "type": "NEWS_REPORT",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-10-06",
-      "last_seen": "2026-10-06",
+      "first_seen": "2026-10-08",
+      "last_seen": "2026-10-08",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -340,18 +340,18 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-96940"
+        "CVE-2026-107385"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://securityaffairs.com/200476/security/cve-2026-96940-microsoft-fixes-high-severity-exchange-server-flaw.html"
+        "https://github.com/advisories/GHSA-r3rv-jm3r-62q2"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
           "data_confidence=0.70",
-          "recency=2d (score=0.65)",
-          "QS=0.458"
+          "recency=0d (score=1.00)",
+          "QS=0.493"
         ],
         "priority": [
           "base_ps=45 (no boosts)"
@@ -3457,6 +3457,52 @@
       "suppression_reason": null
     },
     {
+      "id": "CVE-2026-102255",
+      "title": "SonicWall Fixes Max Severity Pre-Auth Flaw in SMA1000 Appliances",
+      "description": "SonicWall patched a CVSS 10 pre-auth SSRF flaw in SMA1000 appliances that could let unauthenticated attackers reach internal functions. SonicWall released hotfixes for four vulnerabilities in its SMA1000 remote access appliances, including a critical flaw tracked as CVE-2026-1022... [Full analysis a",
+      "cvss": 10,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-07",
+      "last_seen": "2026-10-07",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-102255",
+        "CVE-2026-1022"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://securityaffairs.com/200569/security/sonicwall-fixes-max-severity-pre-auth-flaw-in-sma1000-appliances.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
       "id": "CVE-2026-105859",
       "title": "Payload: Unauthorized update to collection documents",
       "description": "Impact\n\nAn attacker can submit a request to a specific endpoint that permits collection documents to be updated regardless of access control and field level access control.\n\nYou are affected if:\n\n- You are configuring orderable: true with any collection or join field.\n\nPatches\n\nI... [Full analysis a",
@@ -4044,10 +4090,10 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-61435",
-      "title": "PraisonAI: Call API localhost-only authentication bypass via spoofed Host header",
-      "description": "# Call API localhost-only authentication bypass via spoofed Host header ## Summary PraisonAI's patched `PRAISONAI_CALL_AUTH=disabled` safeguard for the n8n/call agent invocation API can be bypassed with a spoofed `Host: 127.0.0.1` header, allowing an unauthenticated network caller to list and invoke",
-      "cvss": 8.2,
+      "id": "CVE-2026-61434",
+      "title": "PraisonAI: Shell command allowlist bypass via find -exec built-in action",
+      "description": "### Summary The shell command execution hardening introduced in PraisonAI npm 1.7.2 / Python 4.6.58 to fix GHSA-5jv7-2mjm-h6qj (utility-tools shell chaining) and GHSA-vjv9-7m7j-h833 (SandboxExecutor chaining) can be bypassed via `find`'s built-in `-exec` action. The fix blocks shell metacharacters (",
+      "cvss": 8.8,
       "final_ps": 21,
       "quality_score": 0.523,
       "threat_level": "HIGH",
@@ -4066,15 +4112,15 @@
       "product": "praisonai",
       "due_date": null,
       "cves": [
-        "CVE-2026-61435",
-        "CVE-2026-61435"
+        "CVE-2026-61434",
+        "CVE-2026-61434"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-2gpf-2492-q9jh",
-        "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-2gpf-2492-q9jh",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-61435",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-62174"
+        "https://github.com/advisories/GHSA-cv3g-hj65-pcfh",
+        "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-cv3g-hj65-pcfh",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-61434",
+        "https://www.vulncheck.com/advisories/praisonai-before-allowlist-bypass-via-find-exec"
       ],
       "explanation": {
         "quality": [
@@ -4093,9 +4139,107 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-107384",
-      "title": "MariaDB Connector/Node.js: SQL injection through object keys in SET expansion (permitSetMultiParamEntries)",
-      "description": "### Description\nWith the non-default permitSetMultiParamEntries option enabled, an object passed as a query parameter is expanded into a SET clause, each key becoming a column name. The three code paths implementing that expansion built the backtick-quoted identifier by hand and wrote the key out un",
+      "id": "CVE-2026-107724",
+      "title": "fast-jwt treats raw public JWK JSON as an HMAC secret, enabling HS256 token forgery",
+      "description": "### Summary `fast-jwt` 6.2.4 silently classifies raw serialized public JWK JSON\nas an HMAC secret. If an application supplies public JWK JSON text as the verifier key and\nHS256 is explicitly allowed or automatically inferred, an attacker who\nknows the same public JSON text can use it as an HMAC key ",
+      "cvss": 7.4,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-08",
+      "last_seen": "2026-10-08",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "fast-jwt",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-107724",
+        "CVE-2026-107724"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-g3jj-5cmm-3hxx",
+        "https://github.com/nearform/fast-jwt/security/advisories/GHSA-g3jj-5cmm-3hxx",
+        "https://github.com/nearform/fast-jwt/pull/636",
+        "https://github.com/nearform/fast-jwt/commit/10f9591349199ed2ab9fa1748ce92cdca697f6cf"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-61426",
+      "title": "PraisonAI: AgentOS defaults to network-exposed no-auth mode, allowing unauthenticated agent invocation and instruction d",
+      "description": "## Summary The AgentOS server in the `praisonai` TypeScript/npm package ships an insecure default: it binds `0.0.0.0`, sets no API key, and uses CORS `*` with credentials. The API-key middleware is only registered when an API key is configured, so the documented quickstart (`new AgentOS({agents:[...",
+      "cvss": 8.6,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-08",
+      "last_seen": "2026-10-08",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "praisonai",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-61426",
+        "CVE-2026-61426"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-6wjp-v33h-5cvq",
+        "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-6wjp-v33h-5cvq",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-61426",
+        "https://www.vulncheck.com/advisories/praisonai-before-unauthenticated-agent-access-via-insecure-defaults"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-107723",
+      "title": "fast-jwt : Silent claim-validator bypass when JWT payload is a JSON array",
+      "description": "### Summary `fast-jwt`'s `createVerifier` silently skips **all** configured claim validators (`exp`, `nbf`, `iss`, `aud`, `sub`, `jti`, `nonce`) when a validly-signed JWT carries a JSON array as its payload instead of an object. The verifier reports success while having enforced only the signature. ",
       "cvss": 8.1,
       "final_ps": 21,
       "quality_score": 0.523,
@@ -4112,18 +4256,18 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "npm",
-      "product": "mariadb",
+      "product": "fast-jwt",
       "due_date": null,
       "cves": [
-        "CVE-2026-107384",
-        "CVE-2026-107384"
+        "CVE-2026-107723",
+        "CVE-2026-107723"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-v6pj-gxxw-phfw",
-        "https://github.com/mariadb-corporation/mariadb-connector-nodejs/security/advisories/GHSA-v6pj-gxxw-phfw",
-        "https://github.com/mariadb-corporation/mariadb-connector-nodejs/commit/144b8f4ef29539a9fb4b75d972b9dcdac4088b4e",
-        "https://github.com/mariadb-corporation/mariadb-connector-nodejs/commit/6743b2f4a89b074268b44c650170767f35e1fb5d"
+        "https://github.com/advisories/GHSA-5hjw-83fp-phq9",
+        "https://github.com/nearform/fast-jwt/security/advisories/GHSA-5hjw-83fp-phq9",
+        "https://github.com/nearform/fast-jwt/pull/639",
+        "https://github.com/nearform/fast-jwt/commit/86e83efd8b5244f50859532d99244f0a9a9a4368"
       ],
       "explanation": {
         "quality": [
@@ -4142,10 +4286,59 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-61433",
-      "title": "PraisonAI: API deploy code generator embeds unescaped YAML fields into Python source",
-      "description": "# API deploy code generator embeds unescaped YAML fields into Python source ## Summary PraisonAI's API deployment generator copies `deploy.api.host` from `agents.yaml` directly into generated Python source without safe literal encoding. A malicious PraisonAI project can set that host value to a Pyth",
-      "cvss": 7.8,
+      "id": "CVE-2026-107720",
+      "title": "fast-jwt: createVerifier accepts unsigned JWTs when key is '' or null and algorithms is explicitly set",
+      "description": "### Summary `createVerifier` in fast-jwt ≤ 6.3.0 skips signature verification entirely when the `key` option is a falsy synchronous value (`''` or `null`) **and** the `algorithms` option is set to a non-empty allowlist. An attacker who can present a JWT to the application — regardless of algorithm —",
+      "cvss": 7.4,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-08",
+      "last_seen": "2026-10-08",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "fast-jwt",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-107720",
+        "CVE-2026-107720"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-8wpc-h4q6-8fxv",
+        "https://github.com/nearform/fast-jwt/security/advisories/GHSA-8wpc-h4q6-8fxv",
+        "https://github.com/nearform/fast-jwt/pull/649",
+        "https://github.com/nearform/fast-jwt/commit/e22a151e83bf6d5e54e281216982d204d5665534"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-61427",
+      "title": "PraisonAI: MCP HTTP-stream transport is unauthenticated by default, exposing tool enumeration and an unvalidated tool-ca",
+      "description": "## Summary PraisonAI's MCP HTTP-stream server authenticates requests only when an API key is configured; the CLI defaults `--api-key` to `None`, so `praisonai mcp serve --transport http-stream` exposes the full MCP surface unauthenticated. A request with no `Authorization` (and no `Origin`) can `ini",
+      "cvss": 7.3,
       "final_ps": 21,
       "quality_score": 0.523,
       "threat_level": "MEDIUM",
@@ -4164,15 +4357,15 @@
       "product": "praisonai",
       "due_date": null,
       "cves": [
-        "CVE-2026-61433",
-        "CVE-2026-61433"
+        "CVE-2026-61427",
+        "CVE-2026-61427"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-79fv-7hq9-w7xg",
-        "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-79fv-7hq9-w7xg",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-61433",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-62173"
+        "https://github.com/advisories/GHSA-hc5v-gxvj-58wh",
+        "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-hc5v-gxvj-58wh",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-61427",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-62178"
       ],
       "explanation": {
         "quality": [
@@ -4191,10 +4384,10 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-107286",
-      "title": "Pydantic AI: Concurrency-limited models can keep their slot when a streamed request ends early",
-      "description": "> This issue was posted by Codex Desktop using gpt-6.1-sol on behalf of David. ### Summary Applications that wrap a model with `ConcurrencyLimitedModel` or `limit_model_concurrency` can permanently lose shared concurrency capacity when a streamed request releases its slot from a different task than ",
-      "cvss": 7.5,
+      "id": "CVE-2026-61442",
+      "title": "PraisonAI: Platform member PATCH routes allow owner resource rewrites and project lead reassignment delete bypass",
+      "description": "# Platform member PATCH routes allow owner resource rewrites and project lead reassignment delete bypass ## Summary `praisonai-platform` lets an ordinary workspace member patch owner-created project, issue, and agent records even though the paired delete routes enforce owner/admin authorization. For",
+      "cvss": 7.1,
       "final_ps": 21,
       "quality_score": 0.523,
       "threat_level": "MEDIUM",
@@ -4210,214 +4403,18 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "pip",
-      "product": "pydantic-ai",
+      "product": "praisonai-platform",
       "due_date": null,
       "cves": [
-        "CVE-2026-107286",
-        "CVE-2026-107286"
+        "CVE-2026-61442",
+        "CVE-2026-61442"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-6fqq-452j-qhrp",
-        "https://github.com/pydantic/pydantic-ai/security/advisories/GHSA-6fqq-452j-qhrp",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-107286",
-        "https://github.com/pydantic/pydantic-ai/pull/9478"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-107383",
-      "title": "MariaDB Connector/Node.js exposes uninitialized process memory through malformed GeoJSON parameters",
-      "description": "### Description\nWhen encoding a GeoJSON Polygon or MultiPolygon parameter for the binary protocol, the connector sized its output buffer from the length property of each ring, then wrote each ring only if it was a real array. The two loops disagreed: any non-array ring carrying a numeric length (a s",
-      "cvss": 7.5,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-10-08",
-      "last_seen": "2026-10-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "npm",
-      "product": "mariadb",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-107383",
-        "CVE-2026-107383"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-48qf-xh34-q73r",
-        "https://github.com/mariadb-corporation/mariadb-connector-nodejs/security/advisories/GHSA-48qf-xh34-q73r",
-        "https://github.com/mariadb-corporation/mariadb-connector-nodejs/commit/2314c03b785db482599d2befd06f4992e5fc46b3",
-        "https://github.com/mariadb-corporation/mariadb-connector-nodejs/commit/a4aa048b57dc47309b80e5cc25a4a8eedb32fd9f"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-107385",
-      "title": "MariaDB Connector/Node.js: SQL injection in the text protocol when the session uses NO_BACKSLASH_ESCAPES",
-      "description": "### Description\nWhen escaping string and binary parameters for the text protocol, the connector always escaped the quote character with a backslash, without ever consulting the session's NO_BACKSLASH_ESCAPES SQL mode. The server status flag was declared (STATUS_NO_BACKSLASH_ESCAPES) but never read. ",
-      "cvss": 7.4,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-10-08",
-      "last_seen": "2026-10-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "npm",
-      "product": "mariadb",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-107385",
-        "CVE-2026-107385"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-r3rv-jm3r-62q2",
-        "https://github.com/mariadb-corporation/mariadb-connector-nodejs/security/advisories/GHSA-r3rv-jm3r-62q2",
-        "https://github.com/mariadb-corporation/mariadb-connector-nodejs/commit/6995c8cf8e51b2ad055de63dcaa4094eebbef5ce",
-        "https://github.com/mariadb-corporation/mariadb-connector-nodejs/commit/7670d90949307e735c0ae148d80b3776478a599d"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-107375",
-      "title": "JHipster: SQL Injection in the Parameter of JHipster-Generated Reactive (WebFlux + R2DBC) Applicationssort",
-      "description": "# SQL Injection in the `sort` Parameter of JHipster-Generated Reactive (WebFlux + R2DBC) Applications - **Product**: jhipster/generator-jhipster (npm package `generator-jhipster`)\n- **Affected versions**: v7.0.0 through v9.2.0 - **Component**: generated reactive-application code, template `EntityMan",
-      "cvss": 8.8,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-10-08",
-      "last_seen": "2026-10-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "npm",
-      "product": "generator-jhipster",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-107375",
-        "CVE-2026-107375"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-r223-96jv-q533",
-        "https://github.com/jhipster/generator-jhipster/security/advisories/GHSA-r223-96jv-q533",
-        "https://github.com/jhipster/generator-jhipster/commit/f6f1579581da8db0d1b8bd28dd473b56951c83af",
-        "https://github.com/jhipster/generator-jhipster/releases/tag/v9.4.0"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-107377",
-      "title": "datamodel-code-generator: Protobuf weak-import path traversal allows files to be written outside the temporary directory",
-      "description": "## Summary When processing an attacker-controlled Protobuf schema, vulnerable versions of\n`datamodel-code-generator` could write a generated weak-import stub outside the\nintended `__weak_imports__` temporary directory. Absolute import paths and relative\npaths containing `..` could escape this direct",
-      "cvss": 7.5,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-10-08",
-      "last_seen": "2026-10-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "pip",
-      "product": "datamodel-code-generator",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-107377",
-        "CVE-2026-107377"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-77xj-x4rm-935c",
-        "https://github.com/datamodel-code-generator/datamodel-code-generator/security/advisories/GHSA-77xj-x4rm-935c",
-        "https://github.com/datamodel-code-generator/datamodel-code-generator/commit/5e94b8f4203198798ec66b8e48217f70af69a0dc",
-        "https://github.com/datamodel-code-generator/datamodel-code-generator/releases/tag/0.81.0"
+        "https://github.com/advisories/GHSA-c78w-2q4r-68r7",
+        "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-c78w-2q4r-68r7",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-61442",
+        "https://github.com/MervinPraison/PraisonAI/commit/846568c7a5d8ce9e71e56e4c213f027c04909753"
       ],
       "explanation": {
         "quality": [

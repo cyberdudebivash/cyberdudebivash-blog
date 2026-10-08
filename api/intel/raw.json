@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-08T19:44:05.330Z",
+  "generated": "2026-10-08T23:58:35.496Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -8,53 +8,52 @@
   "endpoint": "/api/intel/raw.json",
   "description": "Raw unfiltered S2N feed — all items including suppressed. Enterprise tier.",
   "note": "Access requires Enterprise API key. Includes suppression_reason and full IOC data.",
-  "count": 106,
+  "count": 107,
   "items": [
     {
-      "id": "GHSA-08d7f76923c22afe",
-      "title": "Coraza JSON body processor: argument-limit truncation reopens an unbounded-depth gjson.Valid stack overflow (process cra",
-      "description": "### Summary The JSON body processor (`internal/bodyprocessors/json.go`) can be made to\ncrash the whole process with an unrecoverable `fatal error: stack overflow`,\nusing a request body that is well under the recommended `SecRequestBodyLimit`\nand the default `SecArgumentsLimit`. ### Root cause `readJ",
-      "cvss": 7.5,
-      "final_ps": 59,
-      "quality_score": 0.548,
+      "id": "CVE-2026-47483",
+      "title": "How We Found Thousands of Exposed NVIDIA GPUs and a Way to Disrupt Them (CVE-2026-47483)",
+      "description": "TL;DR: NVIDIA DCGM Exporter is a widely used monitoring tool that collects GPU metrics like utilization, memory, temperature, and power consumption from AI servers. We discovered that thousands of these monitoring endpoints are exposed to the public internet, allowing anyone to inspect GPU infrastru",
+      "cvss": 8.2,
+      "final_ps": 53,
+      "quality_score": 0.445,
       "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
+      "type": "AI_SECURITY",
+      "source": "reddit_netsec",
       "sources_confirmed": 1,
       "merged_sources": [
-        "github_advisories"
+        "reddit_netsec"
       ],
       "first_seen": "2026-10-08",
       "last_seen": "2026-10-08",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "go",
-      "product": "github.com/corazawaf/coraza/v3",
+      "vendor": "reddit_netsec",
+      "product": "Threat Intelligence",
       "due_date": null,
-      "cves": [],
+      "cves": [
+        "CVE-2026-47483"
+      ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-6gcq-wc29-5xf2",
-        "https://github.com/corazawaf/coraza/security/advisories/GHSA-6gcq-wc29-5xf2",
-        "https://github.com/corazawaf/coraza/commit/814e1898e083d2ff2ceb644382d0da17e930f93f",
-        "https://github.com/corazawaf/coraza/releases/tag/v3.8.1"
+        "https://www.reddit.com/r/netsec/comments/1x13vqz/how_we_found_thousands_of_exposed_nvidia_gpus_and/"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.95 (github_advisories)",
+          "source_weight=0.42 (reddit_netsec)",
           "data_confidence=1.00",
           "recency=0d (score=1.00)",
-          "QS=0.547"
+          "QS=0.445"
         ],
         "priority": [
-          "base_ps=59 (no boosts)"
+          "+4 critical_infra"
         ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "suppression": "Tier-4 (social/community) source only, no authoritative confirmation",
         "merge": null
       },
       "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "suppression_reason": "Tier-4 (social/community) source only, no authoritative confirmation",
       "iocs": []
     },
     {
@@ -425,21 +424,21 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-96940",
-      "title": "CVE-2026-96940: Microsoft Fixes Exchange Server Flaw For Which Exploitation Is More Likely",
-      "description": "Microsoft released emergency updates for Exchange Server to fix CVE-2026-96940, a high-severity flaw that can let attackers gain higher privileges. Microsoft has released out-of-band security updates for Exchange Server to fix a high-severity vulnerability tracked as CVE-2026-969... [Full analysis a",
-      "cvss": 8.8,
+      "id": "CVE-2026-107385",
+      "title": "MariaDB Connector/Node.js: SQL injection in the text protocol when the session uses NO_BACKSLASH_ESCAPES",
+      "description": "Description\nWhen escaping string and binary parameters for the text protocol, the connector always escaped the quote character with a backslash, without ever consulting the session's NO_BACKSLASH_ESCAPES SQL mode. The server status flag was declared (STATUS_NO_BACKSLASH_ESCAPES) ... [Full analysis a",
+      "cvss": 7.4,
       "final_ps": 45,
-      "quality_score": 0.458,
+      "quality_score": 0.493,
       "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
+      "type": "NEWS_REPORT",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-10-06",
-      "last_seen": "2026-10-06",
+      "first_seen": "2026-10-08",
+      "last_seen": "2026-10-08",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -447,18 +446,18 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-96940"
+        "CVE-2026-107385"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://securityaffairs.com/200476/security/cve-2026-96940-microsoft-fixes-high-severity-exchange-server-flaw.html"
+        "https://github.com/advisories/GHSA-r3rv-jm3r-62q2"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
           "data_confidence=0.70",
-          "recency=2d (score=0.65)",
-          "QS=0.458"
+          "recency=0d (score=1.00)",
+          "QS=0.493"
         ],
         "priority": [
           "base_ps=45 (no boosts)"
@@ -615,6 +614,50 @@
       },
       "suppressed": false,
       "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "BLEEPINGCOMPUTER-88f872c238c8ac72",
+      "title": "Ransomware attack disrupts Japan's IDCF Cloud used by govt clients",
+      "description": "IDC Frontier, a major Japanese cloud and digital infrastructure company, disclosed that its IDCF Cloud service was targeted in a ransomware attack that caused an outage at a data center cluster serving the eastern part of the country. [...]",
+      "cvss": 0,
+      "final_ps": 42,
+      "quality_score": 0.42,
+      "threat_level": "LOW",
+      "type": "RANSOMWARE",
+      "source": "bleepingcomputer",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "bleepingcomputer"
+      ],
+      "first_seen": "2026-10-08",
+      "last_seen": "2026-10-08",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": true,
+      "vendor": "BleepingComputer",
+      "product": "Threat Intelligence",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.bleepingcomputer.com/news/security/ransomware-attack-disrupts-japans-idcf-cloud-used-by-govt-clients/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.72 (bleepingcomputer)",
+          "data_confidence=0.65",
+          "recency=0d (score=1.00)",
+          "QS=0.420"
+        ],
+        "priority": [
+          "+10 ransomware_confirmed"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
       "iocs": []
     },
     {
@@ -800,38 +843,38 @@
       "iocs": []
     },
     {
-      "id": "THEHACKERNEWS-62aa4b919c8f9771",
-      "title": "ThreatsDay: Ransomware Affiliate Betrayal, WhatsApp RAT, Exposed Hacker Tools and 12 More Stories",
-      "description": "The crooks have trust problems of their own. One ransomware affiliate decided to keep the profits for himself. Elsewhere, an attacker left a server exposed, complete with tools and traces of an intrusion. Apparently, keeping things secure is a problem on both sides of the fence. The rest of the week",
+      "id": "SENTINELAPEX-e3ebeab24d4c",
+      "title": "Ransomware attack disrupts Japan's IDCF Cloud used by govt clients",
+      "description": "IDC Frontier, a major Japanese cloud and digital infrastructure company, disclosed that its IDCF Cloud service was targeted in a ransomware attack that caused an outage at a data center cluster serving the eastern part of the country. [...]",
       "cvss": 0,
       "final_ps": 41,
-      "quality_score": 0.378,
+      "quality_score": 0.392,
       "threat_level": "LOW",
       "type": "RANSOMWARE",
-      "source": "thehackernews",
+      "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
-        "thehackernews"
+        "sentinel_apex"
       ],
       "first_seen": "2026-10-08",
       "last_seen": "2026-10-08",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": true,
-      "vendor": "The Hacker News",
-      "product": "Threat Intelligence",
+      "vendor": "",
+      "product": "",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://thehackernews.com/2026/10/threatsday-ransomware-affiliate.html"
+        "https://www.bleepingcomputer.com/news/security/ransomware-attack-disrupts-japans-idcf-cloud-used-by-govt-clients/"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.55 (thehackernews)",
-          "data_confidence=0.65",
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.35",
           "recency=0d (score=1.00)",
-          "QS=0.378"
+          "QS=0.392"
         ],
         "priority": [
           "+10 ransomware_confirmed"
@@ -1694,50 +1737,6 @@
       "ioc_count": 0,
       "refs": [
         "https://www.bleepingcomputer.com/news/security/ransomware-recovery-ceo-charged-over-secret-ransom-payments/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.35",
-          "recency=1d (score=0.85)",
-          "QS=0.378"
-        ],
-        "priority": [
-          "+10 ransomware_confirmed"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
-      "iocs": []
-    },
-    {
-      "id": "SENTINELAPEX-81fea0d88451",
-      "title": "Ransomware has a new target. Is your backup ready?",
-      "description": "Ransomware groups are increasingly targeting backup infrastructure to eliminate recovery options and increase pressure on victims to pay. Kaseya explains why organizations need isolated, immutable, and regularly tested backups that attackers cannot easily reach. [...]",
-      "cvss": 0,
-      "final_ps": 40,
-      "quality_score": 0.378,
-      "threat_level": "LOW",
-      "type": "RANSOMWARE",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-07",
-      "last_seen": "2026-10-07",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": true,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.bleepingcomputer.com/news/security/ransomware-has-a-new-target-is-your-backup-ready/"
       ],
       "explanation": {
         "quality": [
@@ -3573,6 +3572,57 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-60085",
+      "title": "PraisonAI: SecurityPolicy command/path/import restrictions are completely unenforced by the default SubprocessSandbox ba",
+      "description": "Summary\nSecurityPolicy in praisonaiagents/sandbox/config.py is a documented configuration data class with fields for allow_subprocess, allowed_paths, blocked_paths, allowed_commands, blocked_commands, allowed_imports, and blocked_imports. Its strict() classmethod is explicitly described as creating ",
+      "cvss": 0,
+      "final_ps": 32,
+      "quality_score": 0.45,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 2,
+      "merged_sources": [
+        "github_advisories",
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-08",
+      "last_seen": "2026-10-08",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "pip",
+      "product": "praisonai",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-60085"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-5r6c-gj4g-r697",
+        "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-5r6c-gj4g-r697",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-60085",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-62177"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.65",
+          "multi_source=2 sources",
+          "recency=999d (score=0.05)",
+          "QS=0.450"
+        ],
+        "priority": [
+          "base_ps=32 (no boosts)"
+        ],
+        "suppression": "Item is older than 48h and priority score is below 40",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Item is older than 48h and priority score is below 40",
+      "iocs": []
+    },
+    {
       "id": "CVE-2026-92953",
       "title": "vm2: Default VM can mutate host TypedArray and ArrayBuffer intrinsics after the host-prototype pollution fix",
       "description": "",
@@ -3800,6 +3850,53 @@
         "priority": [
           "+7 zero_day",
           "+4 critical_infra"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-102255",
+      "title": "SonicWall Fixes Max Severity Pre-Auth Flaw in SMA1000 Appliances",
+      "description": "",
+      "cvss": 10,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-07",
+      "last_seen": "2026-10-07",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-102255",
+        "CVE-2026-1022"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://securityaffairs.com/200569/security/sonicwall-fixes-max-severity-pre-auth-flaw-in-sma1000-appliances.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
         ],
         "suppression": null,
         "merge": null
@@ -4455,10 +4552,10 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-61435",
-      "title": "PraisonAI: Call API localhost-only authentication bypass via spoofed Host header",
+      "id": "CVE-2026-61434",
+      "title": "PraisonAI: Shell command allowlist bypass via find -exec built-in action",
       "description": "",
-      "cvss": 8.2,
+      "cvss": 8.8,
       "final_ps": 21,
       "quality_score": 0.523,
       "threat_level": "LOW",
@@ -4477,15 +4574,15 @@
       "product": "praisonai",
       "due_date": null,
       "cves": [
-        "CVE-2026-61435",
-        "CVE-2026-61435"
+        "CVE-2026-61434",
+        "CVE-2026-61434"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-2gpf-2492-q9jh",
-        "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-2gpf-2492-q9jh",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-61435",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-62174"
+        "https://github.com/advisories/GHSA-cv3g-hj65-pcfh",
+        "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-cv3g-hj65-pcfh",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-61434",
+        "https://www.vulncheck.com/advisories/praisonai-before-allowlist-bypass-via-find-exec"
       ],
       "explanation": {
         "quality": [
@@ -4505,208 +4602,8 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-107384",
-      "title": "MariaDB Connector/Node.js: SQL injection through object keys in SET expansion (permitSetMultiParamEntries)",
-      "description": "",
-      "cvss": 8.1,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-10-08",
-      "last_seen": "2026-10-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "npm",
-      "product": "mariadb",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-107384",
-        "CVE-2026-107384"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-v6pj-gxxw-phfw",
-        "https://github.com/mariadb-corporation/mariadb-connector-nodejs/security/advisories/GHSA-v6pj-gxxw-phfw",
-        "https://github.com/mariadb-corporation/mariadb-connector-nodejs/commit/144b8f4ef29539a9fb4b75d972b9dcdac4088b4e",
-        "https://github.com/mariadb-corporation/mariadb-connector-nodejs/commit/6743b2f4a89b074268b44c650170767f35e1fb5d"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-61433",
-      "title": "PraisonAI: API deploy code generator embeds unescaped YAML fields into Python source",
-      "description": "",
-      "cvss": 7.8,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-10-08",
-      "last_seen": "2026-10-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "pip",
-      "product": "praisonai",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61433",
-        "CVE-2026-61433"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-79fv-7hq9-w7xg",
-        "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-79fv-7hq9-w7xg",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-61433",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-62173"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-107286",
-      "title": "Pydantic AI: Concurrency-limited models can keep their slot when a streamed request ends early",
-      "description": "",
-      "cvss": 7.5,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-10-08",
-      "last_seen": "2026-10-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "pip",
-      "product": "pydantic-ai",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-107286",
-        "CVE-2026-107286"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-6fqq-452j-qhrp",
-        "https://github.com/pydantic/pydantic-ai/security/advisories/GHSA-6fqq-452j-qhrp",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-107286",
-        "https://github.com/pydantic/pydantic-ai/pull/9478"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-107383",
-      "title": "MariaDB Connector/Node.js exposes uninitialized process memory through malformed GeoJSON parameters",
-      "description": "",
-      "cvss": 7.5,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-10-08",
-      "last_seen": "2026-10-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "npm",
-      "product": "mariadb",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-107383",
-        "CVE-2026-107383"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-48qf-xh34-q73r",
-        "https://github.com/mariadb-corporation/mariadb-connector-nodejs/security/advisories/GHSA-48qf-xh34-q73r",
-        "https://github.com/mariadb-corporation/mariadb-connector-nodejs/commit/2314c03b785db482599d2befd06f4992e5fc46b3",
-        "https://github.com/mariadb-corporation/mariadb-connector-nodejs/commit/a4aa048b57dc47309b80e5cc25a4a8eedb32fd9f"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-107385",
-      "title": "MariaDB Connector/Node.js: SQL injection in the text protocol when the session uses NO_BACKSLASH_ESCAPES",
+      "id": "CVE-2026-107724",
+      "title": "fast-jwt treats raw public JWK JSON as an HMAC secret, enabling HS256 token forgery",
       "description": "",
       "cvss": 7.4,
       "final_ps": 21,
@@ -4724,18 +4621,18 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "npm",
-      "product": "mariadb",
+      "product": "fast-jwt",
       "due_date": null,
       "cves": [
-        "CVE-2026-107385",
-        "CVE-2026-107385"
+        "CVE-2026-107724",
+        "CVE-2026-107724"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-r3rv-jm3r-62q2",
-        "https://github.com/mariadb-corporation/mariadb-connector-nodejs/security/advisories/GHSA-r3rv-jm3r-62q2",
-        "https://github.com/mariadb-corporation/mariadb-connector-nodejs/commit/6995c8cf8e51b2ad055de63dcaa4094eebbef5ce",
-        "https://github.com/mariadb-corporation/mariadb-connector-nodejs/commit/7670d90949307e735c0ae148d80b3776478a599d"
+        "https://github.com/advisories/GHSA-g3jj-5cmm-3hxx",
+        "https://github.com/nearform/fast-jwt/security/advisories/GHSA-g3jj-5cmm-3hxx",
+        "https://github.com/nearform/fast-jwt/pull/636",
+        "https://github.com/nearform/fast-jwt/commit/10f9591349199ed2ab9fa1748ce92cdca697f6cf"
       ],
       "explanation": {
         "quality": [
@@ -4755,10 +4652,10 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-107375",
-      "title": "JHipster: SQL Injection in the Parameter of JHipster-Generated Reactive (WebFlux + R2DBC) Applicationssort",
+      "id": "CVE-2026-61426",
+      "title": "PraisonAI: AgentOS defaults to network-exposed no-auth mode, allowing unauthenticated agent invocation and instruction d",
       "description": "",
-      "cvss": 8.8,
+      "cvss": 8.6,
       "final_ps": 21,
       "quality_score": 0.523,
       "threat_level": "LOW",
@@ -4774,18 +4671,18 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "npm",
-      "product": "generator-jhipster",
+      "product": "praisonai",
       "due_date": null,
       "cves": [
-        "CVE-2026-107375",
-        "CVE-2026-107375"
+        "CVE-2026-61426",
+        "CVE-2026-61426"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-r223-96jv-q533",
-        "https://github.com/jhipster/generator-jhipster/security/advisories/GHSA-r223-96jv-q533",
-        "https://github.com/jhipster/generator-jhipster/commit/f6f1579581da8db0d1b8bd28dd473b56951c83af",
-        "https://github.com/jhipster/generator-jhipster/releases/tag/v9.4.0"
+        "https://github.com/advisories/GHSA-6wjp-v33h-5cvq",
+        "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-6wjp-v33h-5cvq",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-61426",
+        "https://www.vulncheck.com/advisories/praisonai-before-unauthenticated-agent-access-via-insecure-defaults"
       ],
       "explanation": {
         "quality": [
@@ -4805,10 +4702,110 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-107377",
-      "title": "datamodel-code-generator: Protobuf weak-import path traversal allows files to be written outside the temporary directory",
+      "id": "CVE-2026-107723",
+      "title": "fast-jwt : Silent claim-validator bypass when JWT payload is a JSON array",
       "description": "",
-      "cvss": 7.5,
+      "cvss": 8.1,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-08",
+      "last_seen": "2026-10-08",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "fast-jwt",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-107723",
+        "CVE-2026-107723"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-5hjw-83fp-phq9",
+        "https://github.com/nearform/fast-jwt/security/advisories/GHSA-5hjw-83fp-phq9",
+        "https://github.com/nearform/fast-jwt/pull/639",
+        "https://github.com/nearform/fast-jwt/commit/86e83efd8b5244f50859532d99244f0a9a9a4368"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-107720",
+      "title": "fast-jwt: createVerifier accepts unsigned JWTs when key is '' or null and algorithms is explicitly set",
+      "description": "",
+      "cvss": 7.4,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-08",
+      "last_seen": "2026-10-08",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "fast-jwt",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-107720",
+        "CVE-2026-107720"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-8wpc-h4q6-8fxv",
+        "https://github.com/nearform/fast-jwt/security/advisories/GHSA-8wpc-h4q6-8fxv",
+        "https://github.com/nearform/fast-jwt/pull/649",
+        "https://github.com/nearform/fast-jwt/commit/e22a151e83bf6d5e54e281216982d204d5665534"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-61427",
+      "title": "PraisonAI: MCP HTTP-stream transport is unauthenticated by default, exposing tool enumeration and an unvalidated tool-ca",
+      "description": "",
+      "cvss": 7.3,
       "final_ps": 21,
       "quality_score": 0.523,
       "threat_level": "LOW",
@@ -4824,18 +4821,18 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "pip",
-      "product": "datamodel-code-generator",
+      "product": "praisonai",
       "due_date": null,
       "cves": [
-        "CVE-2026-107377",
-        "CVE-2026-107377"
+        "CVE-2026-61427",
+        "CVE-2026-61427"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-77xj-x4rm-935c",
-        "https://github.com/datamodel-code-generator/datamodel-code-generator/security/advisories/GHSA-77xj-x4rm-935c",
-        "https://github.com/datamodel-code-generator/datamodel-code-generator/commit/5e94b8f4203198798ec66b8e48217f70af69a0dc",
-        "https://github.com/datamodel-code-generator/datamodel-code-generator/releases/tag/0.81.0"
+        "https://github.com/advisories/GHSA-hc5v-gxvj-58wh",
+        "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-hc5v-gxvj-58wh",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-61427",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-62178"
       ],
       "explanation": {
         "quality": [
@@ -4855,12 +4852,12 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-107378",
-      "title": "CairoSVG: Quadratic-time DoS parsing a crafted SVG <path>",
+      "id": "CVE-2026-61442",
+      "title": "PraisonAI: Platform member PATCH routes allow owner resource rewrites and project lead reassignment delete bypass",
       "description": "",
-      "cvss": 0,
-      "final_ps": 18,
-      "quality_score": 0.453,
+      "cvss": 7.1,
+      "final_ps": 21,
+      "quality_score": 0.523,
       "threat_level": "LOW",
       "type": "CVE_REPORT",
       "source": "github_advisories",
@@ -4874,28 +4871,77 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "pip",
-      "product": "cairosvg",
+      "product": "praisonai-platform",
       "due_date": null,
       "cves": [
-        "CVE-2026-107378",
-        "CVE-2026-107378"
+        "CVE-2026-61442",
+        "CVE-2026-61442"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-c3jg-qh8m-j3h2",
-        "https://github.com/Kozea/CairoSVG/security/advisories/GHSA-c3jg-qh8m-j3h2",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-107378",
-        "https://github.com/Kozea/CairoSVG/commit/9d63f049f9988d0ddda3eb94564ac3a50a286523"
+        "https://github.com/advisories/GHSA-c78w-2q4r-68r7",
+        "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-c78w-2q4r-68r7",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-61442",
+        "https://github.com/MervinPraison/PraisonAI/commit/846568c7a5d8ce9e71e56e4c213f027c04909753"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.40",
+          "data_confidence=0.75",
           "recency=0d (score=1.00)",
-          "QS=0.453"
+          "QS=0.523"
         ],
         "priority": [
-          "base_ps=18 (no boosts)"
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-60091",
+      "title": "PraisonAI: Jobs API is unauthenticated by default and allows attacker-controlled webhook SSRF",
+      "description": "",
+      "cvss": 7.2,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-08",
+      "last_seen": "2026-10-08",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "pip",
+      "product": "praisonai",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-60091"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-4w49-gwv8-fpjg",
+        "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-4w49-gwv8-fpjg",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-60091",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-62175"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
         ],
         "suppression": null,
         "merge": null
