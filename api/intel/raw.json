@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-09T19:21:07.069Z",
+  "generated": "2026-10-09T23:16:51.805Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -8,149 +8,8 @@
   "endpoint": "/api/intel/raw.json",
   "description": "Raw unfiltered S2N feed — all items including suppressed. Enterprise tier.",
   "note": "Access requires Enterprise API key. Includes suppression_reason and full IOC data.",
-  "count": 112,
+  "count": 108,
   "items": [
-    {
-      "id": "GHSA-33aa1cf926a787b8",
-      "title": "pyload-ng: getUserData/get_userdata exposed at Perms.ANY allow any authenticated account to brute-force the administrato",
-      "description": "## Summary `Api.getUserData` (legacy) and `Api.get_userdata` are declared with `@permission(Perms.ANY)` and are reachable at `/api/getUserData` and `/api/get_userdata`. Because `Perms.ANY == 0` and pyLoad's permission check is a bitmask AND, that gate is a no-op: **every authenticated account passes",
-      "cvss": 8.1,
-      "final_ps": 60,
-      "quality_score": 0.548,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-10-09",
-      "last_seen": "2026-10-09",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "pip",
-      "product": "pyload-ng",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-68w4-83fh-f2w8",
-        "https://github.com/pyload/pyload/security/advisories/GHSA-68w4-83fh-f2w8",
-        "https://github.com/pyload/pyload/commit/b99d2a2f06135363ceb0aab16aac5025f138e658",
-        "https://github.com/advisories/GHSA-68w4-83fh-f2w8"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=1.00",
-          "recency=0d (score=1.00)",
-          "QS=0.547"
-        ],
-        "priority": [
-          "base_ps=60 (no boosts)"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
-      "iocs": []
-    },
-    {
-      "id": "GHSA-e0d5e20de8a384f1",
-      "title": "pyLoad: Privilege revocation and password change through the REST API do not invalidate the user's session",
-      "description": "An admin who revokes a user's privileges through the REST API does not actually revoke them, because the session carrying those privileges is never invalidated. pyLoad authorizes each request from values copied into the Flask session at login. set_session in webui/app/helpers.py writes role and perm",
-      "cvss": 7.5,
-      "final_ps": 59,
-      "quality_score": 0.548,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-10-09",
-      "last_seen": "2026-10-09",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "pip",
-      "product": "pyload-ng",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-jq7h-wrvp-3rgx",
-        "https://github.com/pyload/pyload/security/advisories/GHSA-jq7h-wrvp-3rgx",
-        "https://github.com/pyload/pyload/commit/3e726ba271a6b1015e3a0ea6dc7e46a8f71a62ad",
-        "https://github.com/advisories/GHSA-jq7h-wrvp-3rgx"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=1.00",
-          "recency=0d (score=1.00)",
-          "QS=0.547"
-        ],
-        "priority": [
-          "base_ps=59 (no boosts)"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
-      "iocs": []
-    },
-    {
-      "id": "GHSA-ceeb67c54ddbb148",
-      "title": "pyLoad: Api.set_user_permission never invalidates the target's session",
-      "description": "### Summary\nAn admin who revokes or downgrades a non-admin user's permissions through pyLoad's own documented\n`/api/ ` RPC surface — e.g. `POST /api/set_user_permission` (or its legacy alias\n`/api/setUserPermission`) — updates the target's database row but never invalidates that user's\nexisting Flas",
-      "cvss": 7.5,
-      "final_ps": 59,
-      "quality_score": 0.548,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-10-09",
-      "last_seen": "2026-10-09",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "pip",
-      "product": "pyload-ng",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-889w-m37p-88m5",
-        "https://github.com/pyload/pyload/security/advisories/GHSA-889w-m37p-88m5",
-        "https://github.com/pyload/pyload/commit/3e726ba271a6b1015e3a0ea6dc7e46a8f71a62ad",
-        "https://github.com/advisories/GHSA-889w-m37p-88m5"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=1.00",
-          "recency=0d (score=1.00)",
-          "QS=0.547"
-        ],
-        "priority": [
-          "base_ps=59 (no boosts)"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
-      "iocs": []
-    },
     {
       "id": "CVE-2026-50522",
       "title": "Critical SharePoint RCE CVE-2026-50522 Under Active Exploitation After Public PoC",
@@ -519,98 +378,6 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-107716",
-      "title": "Banks: Symlink traversal and arbitrary file disclosure/overwrite in DirectoryPromptRegistry",
-      "description": "Summary\nIn banks.registries.DirectoryPromptRegistry, prompt file paths and the index file (index.json) do not refuse symbolic links. When a prompt directory contains or accepts untrusted files (e.g. unpacked archives, shared repositories, or multi-tenant folders), symbolic links ... [Full analysis a",
-      "cvss": 7.8,
-      "final_ps": 46,
-      "quality_score": 0.493,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-08",
-      "last_seen": "2026-10-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-107716"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-556j-vv39-8rqv"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=0d (score=1.00)",
-          "QS=0.493"
-        ],
-        "priority": [
-          "base_ps=46 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-107720",
-      "title": "fast-jwt: createVerifier accepts unsigned JWTs when key is '' or null and algorithms is explicitly set",
-      "description": "Summary\n\ncreateVerifier in fast-jwt ≤ 6.3.0 skips signature verification entirely when the key option is a falsy synchronous value ('' or null) and the algorithms option is set to a non-empty allowlist. An attacker who can present a JWT to the application — regardless of algorith... [Full analysis a",
-      "cvss": 7.4,
-      "final_ps": 45,
-      "quality_score": 0.493,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-08",
-      "last_seen": "2026-10-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-107720"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-8wpc-h4q6-8fxv"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=0d (score=1.00)",
-          "QS=0.493"
-        ],
-        "priority": [
-          "base_ps=45 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
       "id": "CVE-2026-104286",
       "title": "Fortinet warns of critical FortiMail flaw exploited in zero-day attacks",
       "description": "",
@@ -758,14 +525,14 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-107715",
-      "title": "Mechanize sends credential headers to another host after an HTTP redirect",
-      "description": "Summary\n\nmechanize leaked credentials to the redirect target when an HTTP redirect crossed to another host. Credentials set through Mechanize#request_headers= leaked even when they were Authorization.\n\nDetails\n\nTwo defects, both in lib/mechanize/http/agent.rb.\n\n1. Mechanize#reque... [Full analysis a",
-      "cvss": 6.8,
-      "final_ps": 42,
-      "quality_score": 0.453,
+      "id": "CVE-2026-107716",
+      "title": "Banks: Symlink traversal and arbitrary file disclosure/overwrite in DirectoryPromptRegistry",
+      "description": "Summary\nIn banks.registries.DirectoryPromptRegistry, prompt file paths and the index file (index.json) do not refuse symbolic links. When a prompt directory contains or accepts untrusted files (e.g. unpacked archives, shared repositories, or multi-tenant folders), symbolic links ... [Full analysis a",
+      "cvss": 7.8,
+      "final_ps": 44,
+      "quality_score": 0.478,
       "threat_level": "LOW",
-      "type": "DATA_BREACH",
+      "type": "NEWS_REPORT",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
@@ -780,21 +547,21 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-107715"
+        "CVE-2026-107716"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-2mwr-xjcg-37j7"
+        "https://github.com/advisories/GHSA-556j-vv39-8rqv"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.50",
-          "recency=0d (score=1.00)",
-          "QS=0.453"
+          "data_confidence=0.70",
+          "recency=1d (score=0.85)",
+          "QS=0.478"
         ],
         "priority": [
-          "base_ps=42 (no boosts)"
+          "base_ps=44 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -804,47 +571,49 @@
       "iocs": []
     },
     {
-      "id": "BLEEPINGCOMPUTER-e6d9942a9ee625ab",
-      "title": "Germany arrests alleged core Qilin ransomware member after extradition",
-      "description": "Germany has arrested a Russian national suspected of being a leading member of the Qilin ransomware group following extradition from Japan earlier this month. [...]",
-      "cvss": 0,
-      "final_ps": 42,
-      "quality_score": 0.42,
+      "id": "CVE-2026-107720",
+      "title": "fast-jwt: createVerifier accepts unsigned JWTs when key is '' or null and algorithms is explicitly set",
+      "description": "Summary\n\ncreateVerifier in fast-jwt ≤ 6.3.0 skips signature verification entirely when the key option is a falsy synchronous value ('' or null) and the algorithms option is set to a non-empty allowlist. An attacker who can present a JWT to the application — regardless of algorith... [Full analysis a",
+      "cvss": 7.4,
+      "final_ps": 43,
+      "quality_score": 0.478,
       "threat_level": "LOW",
-      "type": "RANSOMWARE",
-      "source": "bleepingcomputer",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
-        "bleepingcomputer"
+        "sentinel_apex"
       ],
-      "first_seen": "2026-10-09",
-      "last_seen": "2026-10-09",
+      "first_seen": "2026-10-08",
+      "last_seen": "2026-10-08",
       "exploited": false,
       "cisa_kev": false,
-      "ransomware": true,
-      "vendor": "BleepingComputer",
-      "product": "Threat Intelligence",
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
       "due_date": null,
-      "cves": [],
+      "cves": [
+        "CVE-2026-107720"
+      ],
       "ioc_count": 0,
       "refs": [
-        "https://www.bleepingcomputer.com/news/security/germany-arrests-alleged-core-qilin-ransomware-member-after-extradition/"
+        "https://github.com/advisories/GHSA-8wpc-h4q6-8fxv"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.72 (bleepingcomputer)",
-          "data_confidence=0.65",
-          "recency=0d (score=1.00)",
-          "QS=0.420"
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=1d (score=0.85)",
+          "QS=0.478"
         ],
         "priority": [
-          "+10 ransomware_confirmed"
+          "base_ps=43 (no boosts)"
         ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "suppression": null,
         "merge": null
       },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "suppressed": false,
+      "suppression_reason": null,
       "iocs": []
     },
     {
@@ -1027,52 +796,6 @@
       },
       "suppressed": true,
       "suppression_reason": "Single-source item with no CVE IDs or IOCs",
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-107717",
-      "title": "Banks: User-controlled prompt input can be parsed as privileged chat messages",
-      "description": "Summary\n\n  Banks' Prompt.chat_messages() method parses every rendered output line as a potential ChatMessage JSON\n  object. If attacker-controlled template data renders to JSON such as {\"role\":\"system\",\"content\":\"...\"},\n  Banks returns it as a privileged system message instead of... [Full analysis a",
-      "cvss": 6.5,
-      "final_ps": 41,
-      "quality_score": 0.453,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-08",
-      "last_seen": "2026-10-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-107717"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-hmq2-7hp6-7crh"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.50",
-          "recency=0d (score=1.00)",
-          "QS=0.453"
-        ],
-        "priority": [
-          "base_ps=41 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
       "iocs": []
     },
     {
@@ -1892,6 +1615,52 @@
         "priority": [
           "+10 CVSS≥9",
           "+8 exploited_in_wild"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-107715",
+      "title": "Mechanize sends credential headers to another host after an HTTP redirect",
+      "description": "Summary\n\nmechanize leaked credentials to the redirect target when an HTTP redirect crossed to another host. Credentials set through Mechanize#request_headers= leaked even when they were Authorization.\n\nDetails\n\nTwo defects, both in lib/mechanize/http/agent.rb.\n\n1. Mechanize#reque... [Full analysis a",
+      "cvss": 6.8,
+      "final_ps": 40,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "DATA_BREACH",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-08",
+      "last_seen": "2026-10-08",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-107715"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-2mwr-xjcg-37j7"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.50",
+          "recency=1d (score=0.85)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=40 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -3186,6 +2955,98 @@
         "priority": [
           "+10 CVSS≥9",
           "+8 exploited_in_wild"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-107717",
+      "title": "Banks: User-controlled prompt input can be parsed as privileged chat messages",
+      "description": "Summary\n\n  Banks' Prompt.chat_messages() method parses every rendered output line as a potential ChatMessage JSON\n  object. If attacker-controlled template data renders to JSON such as {\"role\":\"system\",\"content\":\"...\"},\n  Banks returns it as a privileged system message instead of... [Full analysis a",
+      "cvss": 6.5,
+      "final_ps": 39,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-08",
+      "last_seen": "2026-10-08",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-107717"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-hmq2-7hp6-7crh"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.50",
+          "recency=1d (score=0.85)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=39 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-107718",
+      "title": "AdonisJS: Unencoded route parameters can produce open redirects",
+      "description": "Route parameters are inserted into generated URLs without URI encoding.\n\nWhen an application passes untrusted input to a route whose first path segment is dynamic, a value beginning with / can produce a scheme-relative URL. For example:\n\nrouter.get('/:page', handler).as('pages.sh... [Full analysis a",
+      "cvss": 6.1,
+      "final_ps": 39,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "NEWS_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-08",
+      "last_seen": "2026-10-08",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-107718"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-2m6q-8v3h-jqww"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.50",
+          "recency=1d (score=0.85)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=39 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4644,6 +4505,156 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-108259",
+      "title": "Tina: Code injection via unescaped Git branch name in generated client source",
+      "description": "",
+      "cvss": 8.2,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-09",
+      "last_seen": "2026-10-09",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "@tinacms/cli",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-108259",
+        "CVE-2026-108259"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-pwhx-cvv3-qj5c",
+        "https://github.com/tinacms/tinacms/security/advisories/GHSA-pwhx-cvv3-qj5c",
+        "https://github.com/tinacms/tinacms/pull/7526",
+        "https://github.com/tinacms/tinacms/commit/d030d414d39e15de79bf36e4c728d57205e71dde"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-107805",
+      "title": "Nginx UI: Unauthenticated signed-request body staging can exhaust temporary storage",
+      "description": "",
+      "cvss": 7.5,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-09",
+      "last_seen": "2026-10-09",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "go",
+      "product": "github.com/0xJacky/Nginx-UI",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-107805",
+        "CVE-2026-107805"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-j3hg-9rp3-5hw9",
+        "https://github.com/0xJacky/nginx-ui/security/advisories/GHSA-j3hg-9rp3-5hw9",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-107805",
+        "https://github.com/0xJacky/nginx-ui/commit/8c9b9a1aff218ee6c980d047b750e49da3c46796"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-108260",
+      "title": "@tinacms/web-components: `tina-markdown` writes rich-text link URLs into `href` without scheme validation, allowing stor",
+      "description": "",
+      "cvss": 7.6,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-09",
+      "last_seen": "2026-10-09",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "@tinacms/web-components",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-108260",
+        "CVE-2026-108260"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-c42q-qvc3-j6vg",
+        "https://github.com/tinacms/tinacms/security/advisories/GHSA-c42q-qvc3-j6vg",
+        "https://github.com/tinacms/tinacms/pull/7523",
+        "https://github.com/tinacms/tinacms/commit/5295e077f0d279c35686a0e481a15e33a4877e3b"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
       "id": "CVE-2026-107809",
       "title": "Nginx-UI AuthRequired token cookie fallback enables CSRF against management APIs",
       "description": "",
@@ -4894,47 +4905,43 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-107812",
-      "title": "Nginx UI: Self-upgrade runs an unsigned binary verified only by a same-origin digest → RCE via a compromised mirror or M",
+      "id": "CVE-2026-107889",
+      "title": "CVE-2026-107889 - Keycloak-services: keycloak-services: stored xss on login page via kcsanitize bypass",
       "description": "",
-      "cvss": 7.5,
-      "final_ps": 21,
-      "quality_score": 0.523,
+      "cvss": 6.1,
+      "final_ps": 16,
+      "quality_score": 0.398,
       "threat_level": "LOW",
       "type": "CVE_REPORT",
-      "source": "github_advisories",
+      "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
-        "github_advisories"
+        "sentinel_apex"
       ],
       "first_seen": "2026-10-09",
       "last_seen": "2026-10-09",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "go",
-      "product": "github.com/0xJacky/Nginx-UI",
+      "vendor": "",
+      "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-107812",
-        "CVE-2026-107812"
+        "CVE-2026-107889"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-662p-52hx-cmh2",
-        "https://github.com/0xJacky/nginx-ui/security/advisories/GHSA-662p-52hx-cmh2",
-        "https://github.com/0xJacky/nginx-ui/commit/580585516dd87a8b176bcdac258db70c3b64b7ec",
-        "https://github.com/0xJacky/nginx-ui/releases/tag/v2.5.0"
+        "https://cvefeed.io/vuln/detail/CVE-2026-107889"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.25",
           "recency=0d (score=1.00)",
-          "QS=0.523"
+          "QS=0.398"
         ],
         "priority": [
-          "base_ps=21 (no boosts)"
+          "base_ps=16 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4987,195 +4994,6 @@
       },
       "suppressed": false,
       "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-107889",
-      "title": "CVE-2026-107889 - Keycloak-services: keycloak-services: stored xss on login page via kcsanitize bypass",
-      "description": "",
-      "cvss": 6.1,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-09",
-      "last_seen": "2026-10-09",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-107889"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-107889"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-107718",
-      "title": "AdonisJS: Unencoded route parameters can produce open redirects",
-      "description": "",
-      "cvss": 6.1,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-08",
-      "last_seen": "2026-10-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-107718"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-2m6q-8v3h-jqww"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-107721",
-      "title": "fast-jwt clockTolerance: Infinity silently bypasses both exp and nbf validation (and persists in the verifier cache)",
-      "description": "",
-      "cvss": 5.9,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-08",
-      "last_seen": "2026-10-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-107721"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-687g-22h4-j4w4"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-82077",
-      "title": "Death By A Thousand PaperCuts (PaperCut Pre-Auth RCE Chain and Patch Bypasses WT-2026-0141-0144/CVE-2026-82077/CVE-2026-",
-      "description": "submitted by /u/dx7r__ [link] [comments]",
-      "cvss": 0,
-      "final_ps": 14,
-      "quality_score": 0.268,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "reddit_cyber",
-      "sources_confirmed": 2,
-      "merged_sources": [
-        "reddit_netsec",
-        "reddit_cyber"
-      ],
-      "first_seen": "2026-10-09",
-      "last_seen": "2026-10-09",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "reddit_cyber",
-      "product": "Threat Intelligence",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-82077",
-        "CVE-2026-82078",
-        "CVE-2026-81578"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.reddit.com/r/netsec/comments/1x1squu/death_by_a_thousand_papercuts_papercut_preauth/",
-        "https://www.reddit.com/r/cybersecurity/comments/1x1sqtr/death_by_a_thousand_papercuts_papercut_preauth/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.42 (reddit_cyber)",
-          "data_confidence=0.40",
-          "multi_source=2 sources",
-          "recency=999d (score=0.05)",
-          "QS=0.268"
-        ],
-        "priority": [
-          "base_ps=14 (no boosts)"
-        ],
-        "suppression": "Quality score below minimum threshold (QS < 0.35)",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Quality score below minimum threshold (QS < 0.35)",
       "iocs": []
     }
   ]
