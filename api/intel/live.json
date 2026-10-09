@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-08T23:58:35.496Z",
+  "generated": "2026-10-09T00:12:38.655Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,10 +7,10 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 6005,
+  "total_published": 6018,
   "s2n_stats": {
     "passed": 98,
-    "suppressed": 9,
+    "suppressed": 8,
     "avg_qs": 0.502
   },
   "items": [
@@ -4090,6 +4090,55 @@
       "suppression_reason": null
     },
     {
+      "id": "CVE-2026-60091",
+      "title": "PraisonAI: Jobs API is unauthenticated by default and allows attacker-controlled webhook SSRF",
+      "description": "## Summary PraisonAI's Async Jobs API enables its API-key middleware **only when `PRAISONAI_JOBS_API_KEY` is set**, so by default every endpoint is unauthenticated. An unauthenticated `POST /api/v1/runs` accepts an attacker-controlled `webhook_url`; on job completion the server POSTs the job payload",
+      "cvss": 7.2,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 2,
+      "merged_sources": [
+        "github_advisories",
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-08",
+      "last_seen": "2026-10-08",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "pip",
+      "product": "praisonai",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-60091"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-4w49-gwv8-fpjg",
+        "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-4w49-gwv8-fpjg",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-60091",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-62175"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
       "id": "CVE-2026-61434",
       "title": "PraisonAI: Shell command allowlist bypass via find -exec built-in action",
       "description": "### Summary The shell command execution hardening introduced in PraisonAI npm 1.7.2 / Python 4.6.58 to fix GHSA-5jv7-2mjm-h6qj (utility-tools shell chaining) and GHSA-vjv9-7m7j-h833 (SandboxExecutor chaining) can be bypassed via `find`'s built-in `-exec` action. The fix blocks shell metacharacters (",
@@ -4366,55 +4415,6 @@
         "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-hc5v-gxvj-58wh",
         "https://nvd.nist.gov/vuln/detail/CVE-2026-61427",
         "https://nvd.nist.gov/vuln/detail/CVE-2026-62178"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-61442",
-      "title": "PraisonAI: Platform member PATCH routes allow owner resource rewrites and project lead reassignment delete bypass",
-      "description": "# Platform member PATCH routes allow owner resource rewrites and project lead reassignment delete bypass ## Summary `praisonai-platform` lets an ordinary workspace member patch owner-created project, issue, and agent records even though the paired delete routes enforce owner/admin authorization. For",
-      "cvss": 7.1,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-10-08",
-      "last_seen": "2026-10-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "pip",
-      "product": "praisonai-platform",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61442",
-        "CVE-2026-61442"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-c78w-2q4r-68r7",
-        "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-c78w-2q4r-68r7",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-61442",
-        "https://github.com/MervinPraison/PraisonAI/commit/846568c7a5d8ce9e71e56e4c213f027c04909753"
       ],
       "explanation": {
         "quality": [
