@@ -14,7 +14,7 @@
     <copyright>Copyright 2026 CyberDudeBivash. All rights reserved.</copyright>
     <managingEditor>bivash@cyberdudebivash.com (CyberDudeBivash)</managingEditor>
     <webMaster>bivash@cyberdudebivash.com (CyberDudeBivash)</webMaster>
-    <lastBuildDate>Fri, 09 Oct 2026 13:21:22 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 09 Oct 2026 19:01:34 GMT</lastBuildDate>
     <pubDate>Fri, 09 Oct 2026 12:00:00 +0000</pubDate>
     <ttl>60</ttl>
     <category>Cybersecurity</category>
@@ -31,7 +31,110 @@
       <height>144</height>
     </image>
 
-    <item>
+      <item>
+    <title><![CDATA[Nginx-UI AuthRequired token cookie fallback enables CSRF against management APIs]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-107809-go-github-com-0xjacky-nginx-ui.html</link>
+    <description><![CDATA[Score 66/100 HIGH — CVSS 8.8 — ## Summary
+Nginx-UI v2.4.3 stores the API JWT in a browser cookie named `token` and the `AuthRequired` middleware accepts that cookie as an authentication source. Because management endpoints are protected by `AuthRequired` and do not enforce a universal CSRF token or Origin/Referer check, a remote . Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Fri, 09 Oct 2026 19:01:34 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-107809-go-github-com-0xjacky-nginx-ui.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Nginx UI: Incomplete fix of CVE-2026-84315 - the api/cluster router was not -  wrapped in RequireSecureSession, so those sensitive mutations run without OTP step-up]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-107813-go-github-com-0xjacky-nginx-ui.html</link>
+    <description><![CDATA[Score 66/100 HIGH — CVSS 8.8 — ## Summary Incomplete fix of GHSA-5v7c-xpfp-p65m: the secure-session (OTP step-up) requirement added to the nginx, cert, dns, backup, site, and stream mutation routers was not applied to the parallel api/cluster router, so cluster node management and cluster-wide nginx reload/restart run with only a. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Fri, 09 Oct 2026 19:01:34 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-107813-go-github-com-0xjacky-nginx-ui.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[0xJacky/nginx-ui /api/nodes Leaks Cluster Node Tokens and Allows Cross-Node Impersonation as initUser]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-107811-go-github-com-0xjacky-nginx-ui.html</link>
+    <description><![CDATA[Score 66/100 HIGH — CVSS 8.8 — Summary
+0xJacky/nginx-ui contains a high-severity trust-boundary failure between ordinary users and cluster node credentials. The source code shows that cluster node list and detail endpoints are reachable by ordinary authenticated users and return node objects containing the token field. That same . Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Fri, 09 Oct 2026 19:01:34 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-107811-go-github-com-0xjacky-nginx-ui.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Nginx UI: Node Secret Credential Exposure via URL Query Parameter]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-107807-go-github-com-0xjacky-nginx-ui.html</link>
+    <description><![CDATA[Score 66/100 HIGH — CVSS 8.8 — ## 1. Vulnerability Summary nginx-ui's `Node.Secret` is a master credential that bypasses all JWT/password authentication for the entire API. The application accepts this credential via a **URL query parameter** (`?node_secret=`), causing it to be recorded in plaintext in HTTP access logs, reverse p. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Fri, 09 Oct 2026 19:01:34 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-107807-go-github-com-0xjacky-nginx-ui.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[pyload-ng: getUserData/get_userdata exposed at Perms.ANY allow any authenticated account to brute-force the administrator password]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/pyload-ng-getuserdata-get-userdata-exposed-at-perms-any-all.html</link>
+    <description><![CDATA[Score 63/100 MEDIUM — CVSS 8.1 — ## Summary `Api.getUserData` (legacy) and `Api.get_userdata` are declared with `@permission(Perms.ANY)` and are reachable at `/api/getUserData` and `/api/get_userdata`. Because `Perms.ANY == 0` and pyLoad's permission check is a bitmask AND, that gate is a no-op: **every authenticated account passes. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Fri, 09 Oct 2026 19:01:34 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/pyload-ng-getuserdata-get-userdata-exposed-at-perms-any-all.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Nginx UI: Authentication bypass: password login does not enforce a passkey-only second factor (2FA bypass)]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-107808-go-github-com-0xjacky-nginx-ui.html</link>
+    <description><![CDATA[Score 63/100 MEDIUM — CVSS 8.1 — ## Summary nginx-ui supports two second-factor methods — TOTP (OTP) and WebAuthn passkeys —
+and reports an account as 2FA-enabled when **either** is configured. However, the
+password login endpoint (`POST /api/login`) only enforces a second factor when a
+**TOTP secret** is present. An account that h. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Fri, 09 Oct 2026 19:01:34 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-107808-go-github-com-0xjacky-nginx-ui.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[pyLoad: Privilege revocation and password change through the REST API do not invalidate the user's session]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/pyload-privilege-revocation-and-password-change-through-the.html</link>
+    <description><![CDATA[Score 61/100 MEDIUM — CVSS 7.5 — An admin who revokes a user's privileges through the REST API does not actually revoke them, because the session carrying those privileges is never invalidated. pyLoad authorizes each request from values copied into the Flask session at login. set_session in webui/app/helpers.py writes role and perm. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Fri, 09 Oct 2026 19:01:34 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/pyload-privilege-revocation-and-password-change-through-the.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[pyLoad: Api.set_user_permission never invalidates the target's session]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/pyload-api-set-user-permission-never-invalidates-the-target.html</link>
+    <description><![CDATA[Score 61/100 MEDIUM — CVSS 7.5 — ### Summary
+An admin who revokes or downgrades a non-admin user's permissions through pyLoad's own documented
+`/api/ ` RPC surface — e.g. `POST /api/set_user_permission` (or its legacy alias
+`/api/setUserPermission`) — updates the target's database row but never invalidates that user's
+existing Flas. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Fri, 09 Oct 2026 19:01:34 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/pyload-api-set-user-permission-never-invalidates-the-target.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Nginx UI: Self-upgrade runs an unsigned binary verified only by a same-origin digest → RCE via a compromised mirror or MITM]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-107812-go-github-com-0xjacky-nginx-ui.html</link>
+    <description><![CDATA[Score 61/100 MEDIUM — CVSS 7.5 — ## Summary
+The self-upgrade downloads the release binary and its checksum (`*.tar.gz` and `*.tar.gz.digest`)
+through the SAME endpoint (`version.GetUrl()`, which is `github_proxy` or, by default, the project's
+`cloud.nginxui.com` mirror), and verifies the binary ONLY by comparing it to that digest:
+. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Fri, 09 Oct 2026 19:01:34 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-107812-go-github-com-0xjacky-nginx-ui.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Germany arrests alleged core Qilin ransomware member after extradition]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/germany-arrests-alleged-core-qilin-ransomware-member-after-e.html</link>
+    <description><![CDATA[Score 26/100 LOW — CVSS 0 — Germany has arrested a Russian national suspected of being a leading member of the Qilin ransomware group following extradition from Japan earlier this month. [...]. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Fri, 09 Oct 2026 19:01:34 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/germany-arrests-alleged-core-qilin-ransomware-member-after-e.html</guid>
+    <category>Threat Intelligence</category>
+    <category>RANSOMWARE</category>
+  </item>
+  <item>
     <title><![CDATA[Flax Typhoon Exploits Five Flaws as CISA Sets October 11 Deadline for Federal Agencies]]></title>
     <link>https://blog.cyberdudebivash.in/posts/cve-2015-3306-the-hacker-news-threat-intelligence.html</link>
     <description><![CDATA[Score 58/100 MEDIUM — CVSS 10 — The U.S. Cybersecurity and Infrastructure Security Agency (CISA) on Thursday added five security flaws to its Known Exploited Vulnerabilities (KEV) catalog, following their abuse by a China-linked threat actor known as Flax Typhoon. The vulnerabilities in question are listed below - CVE-2015-3306 (C. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
