@@ -1,15 +1,15 @@
 {
-  "generated": "2026-10-09T19:01:33.724Z",
+  "generated": "2026-10-09T19:21:06.954Z",
   "version": "1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX v4.0",
   "stats": {
-    "total_nodes": 15410,
+    "total_nodes": 15411,
     "actors": 8,
-    "cves": 6971,
+    "cves": 6972,
     "campaigns": 1556,
     "malware": 0,
     "iocs": 911,
-    "edges": 4293
+    "edges": 4294
   },
   "nodes": {
     "actor:lockbit": {
@@ -179,6 +179,11 @@
         },
         {
           "target": "REDDIT_CYBER-c65f9d2ac1bd8fc4",
+          "relationship": "exploits",
+          "confidence": 0.85
+        },
+        {
+          "target": "CVE-2026-82077",
           "relationship": "exploits",
           "confidence": 0.85
         }
@@ -288104,7 +288109,7 @@
       "attributes": {
         "cvss": 0,
         "threat_level": "LOW",
-        "priority_score": 24,
+        "priority_score": 22,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": true,
@@ -289740,6 +289745,24 @@
           "confidence": 1
         }
       ]
+    },
+    "CVE-2026-82077": {
+      "id": "CVE-2026-82077",
+      "type": "CVE",
+      "name": "Death By A Thousand PaperCuts (PaperCut Pre-Auth RCE Chain and Patch Bypasses WT-2026-0141-0144/CVE-2026-82077/CVE-2026-82078/CVE-2026-81578) - watchTowr Labs",
+      "attributes": {
+        "cvss": 0,
+        "threat_level": "LOW",
+        "priority_score": 6,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "reddit_cyber",
+        "product": "Threat Intelligence",
+        "published": "2026-10-09",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
     }
   },
   "edges": [
@@ -328555,6 +328578,15 @@
       "target": "CVE-2026-107812",
       "relationship": "includes",
       "confidence": 1,
+      "first_seen": "2026-10-09",
+      "sources": []
+    },
+    {
+      "id": "actor:lockbit→exploits→CVE-2026-82077",
+      "source": "actor:lockbit",
+      "target": "CVE-2026-82077",
+      "relationship": "exploits",
+      "confidence": 0.85,
       "first_seen": "2026-10-09",
       "sources": []
     }
