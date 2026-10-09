@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-09T00:12:38.655Z",
+  "generated": "2026-10-09T06:09:59.664Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -8,54 +8,8 @@
   "endpoint": "/api/intel/raw.json",
   "description": "Raw unfiltered S2N feed — all items including suppressed. Enterprise tier.",
   "note": "Access requires Enterprise API key. Includes suppression_reason and full IOC data.",
-  "count": 106,
+  "count": 103,
   "items": [
-    {
-      "id": "CVE-2026-47483",
-      "title": "How We Found Thousands of Exposed NVIDIA GPUs and a Way to Disrupt Them (CVE-2026-47483)",
-      "description": "TL;DR: NVIDIA DCGM Exporter is a widely used monitoring tool that collects GPU metrics like utilization, memory, temperature, and power consumption from AI servers. We discovered that thousands of these monitoring endpoints are exposed to the public internet, allowing anyone to inspect GPU infrastru",
-      "cvss": 8.2,
-      "final_ps": 53,
-      "quality_score": 0.445,
-      "threat_level": "MEDIUM",
-      "type": "AI_SECURITY",
-      "source": "reddit_netsec",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "reddit_netsec"
-      ],
-      "first_seen": "2026-10-08",
-      "last_seen": "2026-10-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "reddit_netsec",
-      "product": "Threat Intelligence",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-47483"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.reddit.com/r/netsec/comments/1x13vqz/how_we_found_thousands_of_exposed_nvidia_gpus_and/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.42 (reddit_netsec)",
-          "data_confidence=1.00",
-          "recency=0d (score=1.00)",
-          "QS=0.445"
-        ],
-        "priority": [
-          "+4 critical_infra"
-        ],
-        "suppression": "Tier-4 (social/community) source only, no authoritative confirmation",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Tier-4 (social/community) source only, no authoritative confirmation",
-      "iocs": []
-    },
     {
       "id": "CVE-2026-50522",
       "title": "Critical SharePoint RCE CVE-2026-50522 Under Active Exploitation After Public PoC",
@@ -415,52 +369,6 @@
           "+10 CVSS≥9",
           "+8 exploited_in_wild",
           "+7 zero_day"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-107385",
-      "title": "MariaDB Connector/Node.js: SQL injection in the text protocol when the session uses NO_BACKSLASH_ESCAPES",
-      "description": "Description\nWhen escaping string and binary parameters for the text protocol, the connector always escaped the quote character with a backslash, without ever consulting the session's NO_BACKSLASH_ESCAPES SQL mode. The server status flag was declared (STATUS_NO_BACKSLASH_ESCAPES) ... [Full analysis a",
-      "cvss": 7.4,
-      "final_ps": 45,
-      "quality_score": 0.493,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-08",
-      "last_seen": "2026-10-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-107385"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-r3rv-jm3r-62q2"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=0d (score=1.00)",
-          "QS=0.493"
-        ],
-        "priority": [
-          "base_ps=45 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -3528,57 +3436,6 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-60085",
-      "title": "PraisonAI: SecurityPolicy command/path/import restrictions are completely unenforced by the default SubprocessSandbox ba",
-      "description": "Summary\nSecurityPolicy in praisonaiagents/sandbox/config.py is a documented configuration data class with fields for allow_subprocess, allowed_paths, blocked_paths, allowed_commands, blocked_commands, allowed_imports, and blocked_imports. Its strict() classmethod is explicitly described as creating ",
-      "cvss": 0,
-      "final_ps": 32,
-      "quality_score": 0.45,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 2,
-      "merged_sources": [
-        "github_advisories",
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-08",
-      "last_seen": "2026-10-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "pip",
-      "product": "praisonai",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-60085"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-5r6c-gj4g-r697",
-        "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-5r6c-gj4g-r697",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-60085",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-62177"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.65",
-          "multi_source=2 sources",
-          "recency=999d (score=0.05)",
-          "QS=0.450"
-        ],
-        "priority": [
-          "base_ps=32 (no boosts)"
-        ],
-        "suppression": "Item is older than 48h and priority score is below 40",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Item is older than 48h and priority score is below 40",
-      "iocs": []
-    },
-    {
       "id": "CVE-2026-92953",
       "title": "vm2: Default VM can mutate host TypedArray and ArrayBuffer intrinsics after the host-prototype pollution fix",
       "description": "",
@@ -3806,6 +3663,52 @@
         "priority": [
           "+7 zero_day",
           "+4 critical_infra"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-107406",
+      "title": "Citrix Urges NetScaler ADC and Gateway Customers to Patch for New Critical RCE Vulnerability",
+      "description": "",
+      "cvss": 9.8,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-09",
+      "last_seen": "2026-10-09",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-107406"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cybersecuritynews.com/citrix-netscaler-adc-and-gateway-rce/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
         ],
         "suppression": null,
         "merge": null
@@ -4807,97 +4710,43 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-61427",
-      "title": "PraisonAI: MCP HTTP-stream transport is unauthenticated by default, exposing tool enumeration and an unvalidated tool-ca",
+      "id": "CVE-2026-107889",
+      "title": "CVE-2026-107889 - Keycloak-services: keycloak-services: stored xss on login page via kcsanitize bypass",
       "description": "",
-      "cvss": 7.3,
-      "final_ps": 21,
-      "quality_score": 0.523,
+      "cvss": 6.1,
+      "final_ps": 16,
+      "quality_score": 0.398,
       "threat_level": "LOW",
       "type": "CVE_REPORT",
-      "source": "github_advisories",
+      "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
-        "github_advisories"
+        "sentinel_apex"
       ],
-      "first_seen": "2026-10-08",
-      "last_seen": "2026-10-08",
+      "first_seen": "2026-10-09",
+      "last_seen": "2026-10-09",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "pip",
-      "product": "praisonai",
+      "vendor": "",
+      "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-61427",
-        "CVE-2026-61427"
+        "CVE-2026-107889"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-hc5v-gxvj-58wh",
-        "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-hc5v-gxvj-58wh",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-61427",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-62178"
+        "https://cvefeed.io/vuln/detail/CVE-2026-107889"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.25",
           "recency=0d (score=1.00)",
-          "QS=0.523"
+          "QS=0.398"
         ],
         "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-61442",
-      "title": "PraisonAI: Platform member PATCH routes allow owner resource rewrites and project lead reassignment delete bypass",
-      "description": "",
-      "cvss": 7.1,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-10-08",
-      "last_seen": "2026-10-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "pip",
-      "product": "praisonai-platform",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-61442",
-        "CVE-2026-61442"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-c78w-2q4r-68r7",
-        "https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-c78w-2q4r-68r7",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-61442",
-        "https://github.com/MervinPraison/PraisonAI/commit/846568c7a5d8ce9e71e56e4c213f027c04909753"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
+          "base_ps=16 (no boosts)"
         ],
         "suppression": null,
         "merge": null
