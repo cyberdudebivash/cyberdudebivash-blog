@@ -1,15 +1,15 @@
 {
-  "generated": "2026-10-12T05:09:00.423Z",
+  "generated": "2026-10-12T09:48:24.319Z",
   "version": "1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX v4.0",
   "stats": {
-    "total_nodes": 15458,
+    "total_nodes": 15461,
     "actors": 8,
-    "cves": 7010,
-    "campaigns": 1559,
+    "cves": 7012,
+    "campaigns": 1560,
     "malware": 0,
     "iocs": 911,
-    "edges": 4299
+    "edges": 4300
   },
   "nodes": {
     "actor:lockbit": {
@@ -290111,7 +290111,7 @@
       "attributes": {
         "cvss": 7.1,
         "threat_level": "LOW",
-        "priority_score": 41,
+        "priority_score": 39,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
@@ -290165,7 +290165,7 @@
       "attributes": {
         "cvss": 6.5,
         "threat_level": "LOW",
-        "priority_score": 38,
+        "priority_score": 36,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
@@ -290625,6 +290625,62 @@
         "type": "CVE_REPORT"
       },
       "connections": []
+    },
+    "CVE-2026-85097": {
+      "id": "CVE-2026-85097",
+      "type": "CVE",
+      "name": "Attackers Exploit CVSS 10.0 Bricksforge WordPress Flaw Enabling Unauthenticated RCE",
+      "attributes": {
+        "cvss": 10,
+        "threat_level": "HIGH",
+        "priority_score": 71,
+        "exploited": true,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "The Hacker News",
+        "product": "Threat Intelligence",
+        "published": "2026-10-12",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-108985": {
+      "id": "CVE-2026-108985",
+      "type": "CVE",
+      "name": "CVE-2026-108985 - libnfs ZDR Out-of-Bounds Write",
+      "attributes": {
+        "cvss": 7.1,
+        "threat_level": "LOW",
+        "priority_score": 41,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "",
+        "product": "",
+        "published": "2026-10-12",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "campaign:cve-2026-85097": {
+      "id": "campaign:cve-2026-85097",
+      "type": "Campaign",
+      "name": "The Threat Exploitation Campaign",
+      "attributes": {
+        "severity": "HIGH",
+        "item_count": 1,
+        "first_seen": "2026-10-12",
+        "last_seen": "2026-10-12",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-85097 | 1 item(s) confirmed exploited in the wild"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-85097",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
     }
   },
   "edges": [
@@ -329495,6 +329551,15 @@
       "relationship": "exploits",
       "confidence": 0.85,
       "first_seen": "2026-10-10",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-85097→includes→CVE-2026-85097",
+      "source": "campaign:cve-2026-85097",
+      "target": "CVE-2026-85097",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-10-12",
       "sources": []
     }
   ]
