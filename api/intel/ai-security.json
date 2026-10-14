@@ -2,10 +2,10 @@
   "platform": "CYBERDUDEBIVASH SENTINEL APEX — AI Security Intelligence Division",
   "endpoint": "/api/intel/ai-security.json",
   "doctrine": "Sentinel-APEX/prompts/ai-security-master-prompt.md",
-  "generated": "2026-10-13T21:09:51.041Z",
+  "generated": "2026-10-14T01:05:02.627Z",
   "disclaimer": "Evidence-graded AI security intelligence. Confidence and evidence labels attached per item. Community leads are corroborated before publication.",
   "stats": {
-    "published": 7,
+    "published": 8,
     "p1": 0,
     "leadsHeld": 6,
     "analystReports": 0,
@@ -29,14 +29,6 @@
         "error": null
       },
       {
-        "name": "NVD (prompt injection)",
-        "key": "nvd_pi",
-        "tier": 1,
-        "status": "ok",
-        "items": 40,
-        "error": null
-      },
-      {
         "name": "r/MachineLearning",
         "key": "reddit_ml",
         "tier": 3,
@@ -45,11 +37,11 @@
         "error": null
       },
       {
-        "name": "arXiv cs.CR (LLM security)",
-        "key": "arxiv_sec",
-        "tier": 2,
+        "name": "NVD (prompt injection)",
+        "key": "nvd_pi",
+        "tier": 1,
         "status": "ok",
-        "items": 30,
+        "items": 40,
         "error": null
       },
       {
@@ -59,9 +51,17 @@
         "status": "ok",
         "items": 40,
         "error": null
+      },
+      {
+        "name": "arXiv cs.CR (LLM security)",
+        "key": "arxiv_sec",
+        "tier": 2,
+        "status": "ok",
+        "items": 30,
+        "error": null
       }
     ],
-    "runtimeMs": 12020
+    "runtimeMs": 14764
   },
   "frameworks": {
     "owasp_llm_top10": {
@@ -88,8 +88,64 @@
       "AML.T0057": "LLM Data Leakage"
     }
   },
-  "count": 7,
+  "count": 8,
   "items": [
+    {
+      "id": "eb5c36c60857fb61",
+      "title": "SEEK: Agentic Knowledge Graph Retrieval for Secure Code Generation",
+      "url": "https://arxiv.org/abs/2610.14968v1",
+      "source": "arXiv cs.CR (LLM security)",
+      "tier": 2,
+      "published": "2026-10-10T14:37:22Z",
+      "cve": null,
+      "severity": null,
+      "cvss": null,
+      "evidence_label": "PUBLISHED_RESEARCH",
+      "categories": [
+        {
+          "id": "agent_tool",
+          "label": "Agentic / Tool / MCP Exploitation"
+        }
+      ],
+      "owasp_llm": [
+        {
+          "id": "LLM06",
+          "name": "Sensitive Information Disclosure / Excessive Agency"
+        }
+      ],
+      "mitre_atlas": [
+        {
+          "id": "AML.T0053",
+          "name": "LLM Plugin Compromise"
+        }
+      ],
+      "agent_risk": {
+        "flags": {
+          "agentic": true,
+          "mcp": false,
+          "rag": true,
+          "tool_use": false,
+          "supply_chain": false
+        },
+        "level": "elevated"
+      },
+      "enterprise_impact": {
+        "score": 20,
+        "priority": "P3"
+      },
+      "confidence": {
+        "source": "MODERATE",
+        "evidence": "LOW",
+        "overall": "LOW",
+        "rationale": "Research source; 1 corroborating source(s)."
+      },
+      "corroboration": 1,
+      "detection": {
+        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
+        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
+      },
+      "has_analyst_report": false
+    },
     {
       "id": "d3f5494f878f3806",
       "title": "ToFu: Exploiting and Fuzzing the LLM-Orchestrator-Tool Trust Boundary",
