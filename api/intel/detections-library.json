@@ -1,8 +1,40 @@
 {
-  "generated": "2026-10-15T21:29:30.162Z",
+  "generated": "2026-10-16T04:39:26.216Z",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
   "count": 200,
   "items": [
+    {
+      "slug": "cve-2026-103929-rust-mise",
+      "title": "mise permits untrusted local configuration to override default shell arguments",
+      "url": "/posts/cve-2026-103929-rust-mise.html",
+      "generated": "2026-10-15T21:41:51.809Z",
+      "severity": "HIGH",
+      "cves": [
+        "CVE-2026-103929",
+        "CVE-2026-103929"
+      ],
+      "mitreAttack": [
+        {
+          "id": "T1204.002",
+          "name": "Malicious File",
+          "tactic": "execution",
+          "confidence": "MEDIUM"
+        }
+      ],
+      "sigma": [
+        "title: Office Application Spawning Script Interpreter\nid: 7b3625a2-968e-5066-aac8-746b6dbabe14\nstatus: experimental\ndescription: 'Office Application Spawning Script Interpreter. Evidence basis: untrusted repository with no trust prompt for the malicious file, on par with the patched CVE. Confirmed at HEAD 7. CYBERDUDEBIVASH SENTINEL APEX Detection Engineering.'\nreferences:\n- 'https://nvd.nist.gov/vuln/detail/CVE-2026-103929'\nauthor: CYBERDUDEBIVASH SENTINEL APEX Detection Engineering\ndate: 2026-10-15\ntags:\n- attack.t1204.002\nlogsource:\n    product: windows\n    category: process_creation\ndetection:\n    selection:\n        ParentImage|endswith:\n            - \\outlook.exe\n            - \\winword.exe\n            - \\excel.exe\n            - \\powerpnt.exe\n        Image|endswith:\n            - \\powershell.exe\n            - \\cmd.exe\n            - \\wscript.exe\n            - \\mshta.exe\n    condition: selection\nfalsepositives:\n    - Legitimate administrative activity\n    - Authorized security testing\nlevel: high"
+      ],
+      "kql": [
+        "DeviceProcessEvents\n| where (InitiatingProcessFolderPath endswith \"\\\\outlook.exe\" or InitiatingProcessFolderPath endswith \"\\\\winword.exe\" or InitiatingProcessFolderPath endswith \"\\\\excel.exe\" or InitiatingProcessFolderPath endswith \"\\\\powerpnt.exe\")\n| where (FolderPath endswith \"\\\\powershell.exe\" or FolderPath endswith \"\\\\cmd.exe\" or FolderPath endswith \"\\\\wscript.exe\" or FolderPath endswith \"\\\\mshta.exe\")\n| project Timestamp, DeviceName, FolderPath, ProcessCommandLine, InitiatingProcessFolderPath"
+      ],
+      "splunk": [
+        "| tstats count from datamodel=Endpoint where nodename=Endpoint.Processes (Processes.parent_process_path=\"*\\outlook.exe\" OR Processes.parent_process_path=\"*\\winword.exe\" OR Processes.parent_process_path=\"*\\excel.exe\" OR Processes.parent_process_path=\"*\\powerpnt.exe\") (Processes.process_path=\"*\\powershell.exe\" OR Processes.process_path=\"*\\cmd.exe\" OR Processes.process_path=\"*\\wscript.exe\" OR Processes.process_path=\"*\\mshta.exe\") by Processes.process_path Processes.parent_process_path _time"
+      ],
+      "osquery": [
+        "SELECT * FROM processes WHERE (path LIKE '%\\powershell.exe' OR path LIKE '%\\cmd.exe' OR path LIKE '%\\wscript.exe' OR path LIKE '%\\mshta.exe');"
+      ],
+      "suricata": []
+    },
     {
       "slug": "nestjs-platform-fastify-path-scoped-middleware-bypass-via",
       "title": "@nestjs/platform-fastify: Path-scoped middleware bypass via absolute-form request targets",
@@ -4222,24 +4254,6 @@
         "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uw1j1w/enhancing_the_threat_intelligence_ai_model_w\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uw1j1w/enhancing_the_threat_intelligence_ai_model_w\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
         "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)",
         "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain aibaranov.github.io\"; dns.query; content:\"aibaranov.github.io\"; nocase; classtype:trojan-activity; sid:9000005; rev:1;)"
-      ]
-    },
-    {
-      "slug": "zimbra-classic-web-client-has-a-critical-stored-xss-patched",
-      "title": "Zimbra Classic Web Client has a critical stored XSS, patched in ZCS 10.1.19 (reported by Google TAG, no CVE yet, not flagged as exploited in the wild)",
-      "url": "/posts/zimbra-classic-web-client-has-a-critical-stored-xss-patched.html",
-      "generated": "2026-07-14T07:31:55.483Z",
-      "severity": "MEDIUM",
-      "cves": [],
-      "mitreAttack": [],
-      "sigma": [],
-      "kql": [],
-      "splunk": [],
-      "osquery": [],
-      "suricata": [
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/user/Servola-Journal&quot;&gt;\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/user/Servola-Journal&quot\\;&gt\\;\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uw1ajs/zimbra_classic_web_client_has_a_critical_sto\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uw1ajs/zimbra_classic_web_client_has_a_critical_sto\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)"
       ]
     }
   ]
