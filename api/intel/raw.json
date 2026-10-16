@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-15T21:41:50.985Z",
+  "generated": "2026-10-16T00:09:39.744Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -8,46 +8,50 @@
   "endpoint": "/api/intel/raw.json",
   "description": "Raw unfiltered S2N feed — all items including suppressed. Enterprise tier.",
   "note": "Access requires Enterprise API key. Includes suppression_reason and full IOC data.",
-  "count": 160,
+  "count": 166,
   "items": [
     {
-      "id": "CVE-2026-55680",
-      "title": "CVE-2026-55680 - WeGIA: Unauthenticated SQL Injection in cadastro_cobranca.php via \"codigo\" parameter",
-      "description": "CVE-2026-55680 - WeGIA: Unauthenticated SQL Injection in cadastro_cobranca.php via \"codigo\" parameter",
-      "cvss": 9.1,
-      "final_ps": 57,
-      "quality_score": 0.478,
+      "id": "CVE-2026-95837",
+      "title": "containerd CRI plugin: Checkpoint restore bypasses destination security context",
+      "description": "### Impact A vulnerability in containerd's CRI implementation allows a container restored from an untrusted checkpoint via the `CreateContainer` API to bypass the destination security context and execute with elevated privileges. When restoring a container from a checkpoint archive or annotated OCI ",
+      "cvss": 7.8,
+      "final_ps": 60,
+      "quality_score": 0.578,
       "threat_level": "MEDIUM",
       "type": "CVE_REPORT",
-      "source": "sentinel_apex",
+      "source": "github_advisories",
       "sources_confirmed": 1,
       "merged_sources": [
-        "sentinel_apex"
+        "github_advisories"
       ],
-      "first_seen": "2026-10-14",
-      "last_seen": "2026-10-14",
+      "first_seen": "2026-10-15",
+      "last_seen": "2026-10-15",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "",
-      "product": "",
+      "vendor": "go",
+      "product": "github.com/containerd/containerd/v2",
       "due_date": null,
       "cves": [
-        "CVE-2026-55680"
+        "CVE-2026-95837",
+        "CVE-2026-95837"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-55680"
+        "https://github.com/advisories/GHSA-p7v4-vr35-mj6f",
+        "https://github.com/containerd/containerd/security/advisories/GHSA-p7v4-vr35-mj6f",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-95837",
+        "https://github.com/containerd/containerd/pull/13913"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=1d (score=0.85)",
-          "QS=0.478"
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.578"
         ],
         "priority": [
-          "+10 CVSS≥9"
+          "base_ps=60 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -57,43 +61,47 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-103366",
-      "title": "CVE-2026-103366 - Appointment Booking Plugin <= 5.7.3 - Insecure Direct Object Reference to Unauthenticated Sensitive In",
-      "description": "CVE-2026-103366 - Appointment Booking Plugin <= 5.7.3 - Insecure Direct Object Reference to Unauthenticated Sensitive Information Disclosure via 'booking[id]' and 'cart[id]' Parameters",
-      "cvss": 9.1,
-      "final_ps": 57,
-      "quality_score": 0.478,
+      "id": "CVE-2026-103929",
+      "title": "mise permits untrusted local configuration to override default shell arguments",
+      "description": "## Summary Untrusted local .mise.toml [settings] can set the shell interpreter args (unix/windows default_inline / default_file shell_args), yielding arbitrary command execution, because those command-interpreter settings were not added to the global_only denylist the CVE-2026-55448 fix relies on. C",
+      "cvss": 7.8,
+      "final_ps": 60,
+      "quality_score": 0.578,
       "threat_level": "MEDIUM",
       "type": "CVE_REPORT",
-      "source": "sentinel_apex",
+      "source": "github_advisories",
       "sources_confirmed": 1,
       "merged_sources": [
-        "sentinel_apex"
+        "github_advisories"
       ],
-      "first_seen": "2026-10-14",
-      "last_seen": "2026-10-14",
+      "first_seen": "2026-10-15",
+      "last_seen": "2026-10-15",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "",
-      "product": "",
+      "vendor": "rust",
+      "product": "mise",
       "due_date": null,
       "cves": [
-        "CVE-2026-103366"
+        "CVE-2026-103929",
+        "CVE-2026-103929"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-103366"
+        "https://github.com/advisories/GHSA-g74g-rg72-j2p3",
+        "https://github.com/jdx/mise/security/advisories/GHSA-g74g-rg72-j2p3",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-103929",
+        "https://github.com/jdx/mise/pull/11293"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=1d (score=0.85)",
-          "QS=0.478"
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.578"
         ],
         "priority": [
-          "+10 CVSS≥9"
+          "base_ps=60 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -411,7 +419,7 @@
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
           "data_confidence=0.70",
-          "recency=2d (score=0.65)",
+          "recency=3d (score=0.65)",
           "QS=0.458"
         ],
         "priority": [
@@ -549,7 +557,7 @@
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
           "data_confidence=0.45",
-          "recency=2d (score=0.65)",
+          "recency=3d (score=0.65)",
           "QS=0.407"
         ],
         "priority": [
@@ -2090,52 +2098,6 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-110860",
-      "title": "CVE-2026-110860 - GitPython 3.1.62 before 3.2.0 Symlink Path Traversal via Submodule.move()",
-      "description": "CVE-2026-110860 - GitPython 3.1.62 before 3.2.0 Symlink Path Traversal via Submodule.move()",
-      "cvss": 6.5,
-      "final_ps": 41,
-      "quality_score": 0.453,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-14",
-      "last_seen": "2026-10-14",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-110860"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-110860"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.50",
-          "recency=0d (score=1.00)",
-          "QS=0.453"
-        ],
-        "priority": [
-          "base_ps=41 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
       "id": "CVE-2026-108972",
       "title": "CVE-2026-108972 SourceCodester Human Resource Management System Employee Endpoint employee.php session_start improper au",
       "description": "CVE-2026-108972 SourceCodester Human Resource Management System Employee Endpoint employee.php session_start improper authentication",
@@ -3044,6 +3006,282 @@
         "priority": [
           "+10 CVSS≥9",
           "+8 exploited_in_wild"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-111155",
+      "title": "CVE-2026-111155 - libTiMidity through 0.2.8 Out-of-Bounds Read via SoundFont Loader sndfont.c",
+      "description": "CVE-2026-111155 - libTiMidity through 0.2.8 Out-of-Bounds Read via SoundFont Loader sndfont.c",
+      "cvss": 6.1,
+      "final_ps": 40,
+      "quality_score": 0.453,
+      "threat_level": "LOW",
+      "type": "MALWARE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-15",
+      "last_seen": "2026-10-15",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-111155"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-111155"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.50",
+          "recency=0d (score=1.00)",
+          "QS=0.453"
+        ],
+        "priority": [
+          "base_ps=40 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-111156",
+      "title": "CVE-2026-111156 - libTiMidity through 0.2.8 Out-of-Bounds Access via SoundFont Preset Header",
+      "description": "CVE-2026-111156 - libTiMidity through 0.2.8 Out-of-Bounds Access via SoundFont Preset Header",
+      "cvss": 6.1,
+      "final_ps": 40,
+      "quality_score": 0.453,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-15",
+      "last_seen": "2026-10-15",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-111156"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-111156"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.50",
+          "recency=0d (score=1.00)",
+          "QS=0.453"
+        ],
+        "priority": [
+          "base_ps=40 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-111157",
+      "title": "CVE-2026-111157 - SoX through 14.4.2 Heap Out-of-Bounds Write via MS ADPCM WAV Decoding",
+      "description": "CVE-2026-111157 - SoX through 14.4.2 Heap Out-of-Bounds Write via MS ADPCM WAV Decoding",
+      "cvss": 6.1,
+      "final_ps": 40,
+      "quality_score": 0.453,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-15",
+      "last_seen": "2026-10-15",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-111157"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-111157"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.50",
+          "recency=0d (score=1.00)",
+          "QS=0.453"
+        ],
+        "priority": [
+          "base_ps=40 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-111159",
+      "title": "CVE-2026-111159 - libewf through 20260924 Heap Out-of-Bounds Read via L01 Extended Attribute Parsing",
+      "description": "CVE-2026-111159 - libewf through 20260924 Heap Out-of-Bounds Read via L01 Extended Attribute Parsing",
+      "cvss": 6.1,
+      "final_ps": 40,
+      "quality_score": 0.453,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-15",
+      "last_seen": "2026-10-15",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-111159"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-111159"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.50",
+          "recency=0d (score=1.00)",
+          "QS=0.453"
+        ],
+        "priority": [
+          "base_ps=40 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-111162",
+      "title": "CVE-2026-111162 - WildMIDI through 0.5.0 Heap Out-of-Bounds Read via _WM_ParseNewHmp",
+      "description": "CVE-2026-111162 - WildMIDI through 0.5.0 Heap Out-of-Bounds Read via _WM_ParseNewHmp",
+      "cvss": 6.1,
+      "final_ps": 40,
+      "quality_score": 0.453,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-15",
+      "last_seen": "2026-10-15",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-111162"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-111162"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.50",
+          "recency=0d (score=1.00)",
+          "QS=0.453"
+        ],
+        "priority": [
+          "base_ps=40 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-111167",
+      "title": "CVE-2026-111167 - GNU LibreDWG through 0.14.8612 Out-of-Bounds Read in acds_private AcDs Decoder",
+      "description": "CVE-2026-111167 - GNU LibreDWG through 0.14.8612 Out-of-Bounds Read in acds_private AcDs Decoder",
+      "cvss": 6.1,
+      "final_ps": 40,
+      "quality_score": 0.453,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-15",
+      "last_seen": "2026-10-15",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-111167"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-111167"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.50",
+          "recency=0d (score=1.00)",
+          "QS=0.453"
+        ],
+        "priority": [
+          "base_ps=40 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4627,6 +4865,52 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-108438",
+      "title": "CVE-2026-108438 - Microsoft Office Word Information Disclosure Vulnerability",
+      "description": "CVE-2026-108438 - Microsoft Office Word Information Disclosure Vulnerability",
+      "cvss": 6.5,
+      "final_ps": 39,
+      "quality_score": 0.403,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-15",
+      "last_seen": "2026-10-15",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-108438"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-108438"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.25",
+          "recency=0d (score=1.00)",
+          "QS=0.403"
+        ],
+        "priority": [
+          "base_ps=39 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
       "id": "CVE-2026-110923",
       "title": "Low Security Vulnerability (CVE-2026-110923)",
       "description": "CVE-2026-110923",
@@ -4845,6 +5129,98 @@
           "data_confidence=0.25",
           "recency=0d (score=1.00)",
           "QS=0.403"
+        ],
+        "priority": [
+          "base_ps=39 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-110855",
+      "title": "CVE-2026-110855 - GitPython before 3.2.0 Environment Variable Disclosure via .gitmodules Submodule Name",
+      "description": "CVE-2026-110855 - GitPython before 3.2.0 Environment Variable Disclosure via .gitmodules Submodule Name",
+      "cvss": 6.5,
+      "final_ps": 39,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-14",
+      "last_seen": "2026-10-14",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-110855"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-110855"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.50",
+          "recency=1d (score=0.85)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=39 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-110860",
+      "title": "CVE-2026-110860 - GitPython 3.1.62 before 3.2.0 Symlink Path Traversal via Submodule.move()",
+      "description": "CVE-2026-110860 - GitPython 3.1.62 before 3.2.0 Symlink Path Traversal via Submodule.move()",
+      "cvss": 6.5,
+      "final_ps": 39,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-14",
+      "last_seen": "2026-10-14",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-110860"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-110860"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.50",
+          "recency=1d (score=0.85)",
+          "QS=0.438"
         ],
         "priority": [
           "base_ps=39 (no boosts)"
@@ -5363,52 +5739,6 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-110669",
-      "title": "CVE-2026-110669 cemtan sar2html sar2html.py deleteAll missing authentication",
-      "description": "CVE-2026-110669 cemtan sar2html sar2html.py deleteAll missing authentication",
-      "cvss": 6.5,
-      "final_ps": 37,
-      "quality_score": 0.388,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-14",
-      "last_seen": "2026-10-14",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-110669"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://vulners.com/cve/CVE-2026-110669?utm_source=rss&utm_medium=rss&utm_campaign=rss"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=1d (score=0.85)",
-          "QS=0.388"
-        ],
-        "priority": [
-          "base_ps=37 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
       "id": "CVE-2026-101926",
       "title": "Low Security Vulnerability (CVE-2026-101926)",
       "description": "CVE-2026-101926",
@@ -5549,6 +5879,57 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-99999",
+      "title": "CVE-2026-99999 - ipv4: validate checksum_start before completing checksum",
+      "description": "CVE-2026-99999 - ipv4: validate checksum_start before completing checksum",
+      "cvss": 0,
+      "final_ps": 28,
+      "quality_score": 0.353,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 3,
+      "merged_sources": [
+        "sentinel_apex",
+        "thehackernews",
+        "reddit_cyber"
+      ],
+      "first_seen": "2026-10-15",
+      "last_seen": "2026-10-15",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-99999"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-99999",
+        "https://thehackernews.com/2026/10/critical-pwnescape-linux-kernel.html",
+        "https://www.reddit.com/r/cybersecurity/comments/1x6yqui/major_security_vulnerability_in_linux_has_just/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.10",
+          "multi_source=3 sources",
+          "recency=999d (score=0.05)",
+          "QS=0.353"
+        ],
+        "priority": [
+          "+8 multi_source≥3"
+        ],
+        "suppression": "Item is older than 48h and priority score is below 40",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Item is older than 48h and priority score is below 40",
+      "iocs": []
+    },
+    {
       "id": "CVE-2026-100353",
       "title": "kin-openapi: Incomplete Fix for GHSA-p6wj-qrr4-pgh5: Three Unpatched nil-Items Panic Paths in openapi3filter",
       "description": "",
@@ -5645,47 +6026,43 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-95837",
-      "title": "containerd CRI plugin: Checkpoint restore bypasses destination security context",
+      "id": "CVE-2026-55680",
+      "title": "CVE-2026-55680 - WeGIA: Unauthenticated SQL Injection in cadastro_cobranca.php via \"codigo\" parameter",
       "description": "",
-      "cvss": 7.8,
-      "final_ps": 21,
-      "quality_score": 0.523,
+      "cvss": 9.1,
+      "final_ps": 28,
+      "quality_score": 0.438,
       "threat_level": "LOW",
       "type": "CVE_REPORT",
-      "source": "github_advisories",
+      "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
-        "github_advisories"
+        "sentinel_apex"
       ],
-      "first_seen": "2026-10-15",
-      "last_seen": "2026-10-15",
+      "first_seen": "2026-10-14",
+      "last_seen": "2026-10-14",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "go",
-      "product": "github.com/containerd/containerd/v2",
+      "vendor": "",
+      "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-95837",
-        "CVE-2026-95837"
+        "CVE-2026-55680"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-p7v4-vr35-mj6f",
-        "https://github.com/containerd/containerd/security/advisories/GHSA-p7v4-vr35-mj6f",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-95837",
-        "https://github.com/containerd/containerd/pull/13913"
+        "https://cvefeed.io/vuln/detail/CVE-2026-55680"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
           "recency=0d (score=1.00)",
-          "QS=0.523"
+          "QS=0.438"
         ],
         "priority": [
-          "base_ps=21 (no boosts)"
+          "+10 CVSS≥9"
         ],
         "suppression": null,
         "merge": null
@@ -5695,47 +6072,43 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-103929",
-      "title": "mise permits untrusted local configuration to override default shell arguments",
+      "id": "CVE-2026-103366",
+      "title": "CVE-2026-103366 - Appointment Booking Plugin <= 5.7.3 - Insecure Direct Object Reference to Unauthenticated Sensitive In",
       "description": "",
-      "cvss": 7.8,
-      "final_ps": 21,
-      "quality_score": 0.523,
+      "cvss": 9.1,
+      "final_ps": 28,
+      "quality_score": 0.438,
       "threat_level": "LOW",
       "type": "CVE_REPORT",
-      "source": "github_advisories",
+      "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
-        "github_advisories"
+        "sentinel_apex"
       ],
-      "first_seen": "2026-10-15",
-      "last_seen": "2026-10-15",
+      "first_seen": "2026-10-14",
+      "last_seen": "2026-10-14",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "rust",
-      "product": "mise",
+      "vendor": "",
+      "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-103929",
-        "CVE-2026-103929"
+        "CVE-2026-103366"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-g74g-rg72-j2p3",
-        "https://github.com/jdx/mise/security/advisories/GHSA-g74g-rg72-j2p3",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-103929",
-        "https://github.com/jdx/mise/pull/11293"
+        "https://cvefeed.io/vuln/detail/CVE-2026-103366"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
           "recency=0d (score=1.00)",
-          "QS=0.523"
+          "QS=0.438"
         ],
         "priority": [
-          "base_ps=21 (no boosts)"
+          "+10 CVSS≥9"
         ],
         "suppression": null,
         "merge": null
@@ -5995,54 +6368,6 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-110447",
-      "title": "Hackers exploit Collabora RCE flaw to backdoor Nextcloud servers",
-      "description": "Threat actors are exploiting a critical command execution flaw, now tracked as CVE-2026-110447, in the Collabora Online - Built-in CODE Server app (richdocumentscode) for Nextcloud. [...]",
-      "cvss": 0,
-      "final_ps": 18,
-      "quality_score": 0.365,
-      "threat_level": "LOW",
-      "type": "MALWARE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 2,
-      "merged_sources": [
-        "sentinel_apex",
-        "bleepingcomputer"
-      ],
-      "first_seen": "2026-10-15",
-      "last_seen": "2026-10-15",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-110447"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.bleepingcomputer.com/news/security/hackers-exploit-collabora-rce-flaw-to-backdoor-nextcloud-servers/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.35",
-          "multi_source=2 sources",
-          "recency=999d (score=0.05)",
-          "QS=0.365"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": "Item is older than 48h and priority score is below 40",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Item is older than 48h and priority score is below 40",
-      "iocs": []
-    },
-    {
       "id": "CVE-2026-109688",
       "title": "CVE-2026-109688 - WordPress Link Whisper Free plugin <= 0.9.7 - SQL Injection vulnerability",
       "description": "",
@@ -6070,98 +6395,6 @@
       "ioc_count": 0,
       "refs": [
         "https://cvefeed.io/vuln/detail/CVE-2026-109688"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-55684",
-      "title": "CVE-2026-55684 WeGIA: SQL Injection in html/socio/sistema/cadastro_cobrancas_geracao.php",
-      "description": "",
-      "cvss": 8.8,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-14",
-      "last_seen": "2026-10-14",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-55684"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://vulners.com/cve/CVE-2026-55684?utm_source=rss&utm_medium=rss&utm_campaign=rss"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-55683",
-      "title": "CVE-2026-55683 - WeGIA: SQL Injection in html/socio/sistema/cadastro_cobranca.php",
-      "description": "",
-      "cvss": 8.8,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-14",
-      "last_seen": "2026-10-14",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-55683"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-55683"
       ],
       "explanation": {
         "quality": [
@@ -6254,98 +6487,6 @@
       "ioc_count": 0,
       "refs": [
         "https://cvefeed.io/vuln/detail/CVE-2026-109901"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-110859",
-      "title": "CVE-2026-110859 - GitPython before 3.2.0 Arbitrary File Read via Head.checkout() Branch Name",
-      "description": "",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-14",
-      "last_seen": "2026-10-14",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-110859"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-110859"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-110861",
-      "title": "CVE-2026-110861 - Better Auth drizzle-adapter 1.6.17 before 1.7.7 Rate Limit Bypass via Race Condition",
-      "description": "",
-      "cvss": 7.5,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-14",
-      "last_seen": "2026-10-14",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-110861"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-110861"
       ],
       "explanation": {
         "quality": [
@@ -6622,6 +6763,98 @@
       "ioc_count": 0,
       "refs": [
         "https://cvefeed.io/vuln/detail/CVE-2026-79828"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-110859",
+      "title": "CVE-2026-110859 - GitPython before 3.2.0 Arbitrary File Read via Head.checkout() Branch Name",
+      "description": "",
+      "cvss": 7.5,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-14",
+      "last_seen": "2026-10-14",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-110859"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-110859"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-110861",
+      "title": "CVE-2026-110861 - Better Auth drizzle-adapter 1.6.17 before 1.7.7 Rate Limit Bypass via Race Condition",
+      "description": "",
+      "cvss": 7.5,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-14",
+      "last_seen": "2026-10-14",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-110861"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-110861"
       ],
       "explanation": {
         "quality": [
@@ -7147,19 +7380,18 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-99999",
-      "title": "CVE-2026-99999 - ipv4: validate checksum_start before completing checksum",
-      "description": "CVE-2026-99999 - ipv4: validate checksum_start before completing checksum",
-      "cvss": 0,
+      "id": "CVE-2026-108453",
+      "title": "CVE-2026-108453 - Microsoft Office PowerPoint Information Disclosure Vulnerability",
+      "description": "",
+      "cvss": 6.5,
       "final_ps": 16,
-      "quality_score": 0.315,
+      "quality_score": 0.398,
       "threat_level": "LOW",
       "type": "CVE_REPORT",
       "source": "sentinel_apex",
-      "sources_confirmed": 2,
+      "sources_confirmed": 1,
       "merged_sources": [
-        "sentinel_apex",
-        "thehackernews"
+        "sentinel_apex"
       ],
       "first_seen": "2026-10-15",
       "last_seen": "2026-10-15",
@@ -7170,29 +7402,119 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-99999"
+        "CVE-2026-108453"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-99999",
-        "https://thehackernews.com/2026/10/critical-pwnescape-linux-kernel.html"
+        "https://cvefeed.io/vuln/detail/CVE-2026-108453"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.10",
-          "multi_source=2 sources",
-          "recency=999d (score=0.05)",
-          "QS=0.315"
+          "data_confidence=0.25",
+          "recency=0d (score=1.00)",
+          "QS=0.398"
         ],
         "priority": [
           "base_ps=16 (no boosts)"
         ],
-        "suppression": "Quality score below minimum threshold (QS < 0.35)",
+        "suppression": null,
         "merge": null
       },
-      "suppressed": true,
-      "suppression_reason": "Quality score below minimum threshold (QS < 0.35)",
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-108454",
+      "title": "CVE-2026-108454 - Microsoft Office PowerPoint Information Disclosure Vulnerability",
+      "description": "",
+      "cvss": 6.5,
+      "final_ps": 16,
+      "quality_score": 0.398,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-15",
+      "last_seen": "2026-10-15",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-108454"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-108454"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.25",
+          "recency=0d (score=1.00)",
+          "QS=0.398"
+        ],
+        "priority": [
+          "base_ps=16 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-108455",
+      "title": "CVE-2026-108455 - Microsoft Office PowerPoint Information Disclosure Vulnerability",
+      "description": "",
+      "cvss": 6.5,
+      "final_ps": 16,
+      "quality_score": 0.398,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-15",
+      "last_seen": "2026-10-15",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-108455"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-108455"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.25",
+          "recency=0d (score=1.00)",
+          "QS=0.398"
+        ],
+        "priority": [
+          "base_ps=16 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
       "iocs": []
     },
     {
@@ -7315,52 +7637,6 @@
       "ioc_count": 0,
       "refs": [
         "https://cvefeed.io/vuln/detail/CVE-2026-110726"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-110855",
-      "title": "CVE-2026-110855 - GitPython before 3.2.0 Environment Variable Disclosure via .gitmodules Submodule Name",
-      "description": "",
-      "cvss": 6.5,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-14",
-      "last_seen": "2026-10-14",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-110855"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-110855"
       ],
       "explanation": {
         "quality": [
