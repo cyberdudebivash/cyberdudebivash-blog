@@ -21,7 +21,7 @@ _ECOSYSTEM = {
     "academy": ("Enterprise Academy", "https://academy.cyberdudebivash.com/"),
     "labs": ("Security Labs", "https://labs.cyberdudebivash.in/"),
     "tools": ("Security Tools", "https://tools.cyberdudebivash.com/"),
-    "trust": ("Trust Center", "https://trustx.cyberdudebivash.com/"),
+    "trust": ("TRUSTX Identity Security (Private Preview)", "https://trustx.cyberdudebivash.com/"),
     "corporate": ("Enterprise Services", "https://www.cyberdudebivash.com/"),
 }
 # Validation instructions, not assertions that these activities occurred.
@@ -92,8 +92,8 @@ def _recommended_links(key: str) -> tuple[str, str, str]:
         "ai": ("ai", "labs", "academy"),
         "cve": ("intelligence", "tools", "corporate"),
         "ransomware_claim": ("intelligence", "corporate", "trust"),
-        "m365_identity": ("intelligence", "corporate", "academy"),
-        "identity": ("intelligence", "corporate", "academy"),
+        "m365_identity": ("intelligence", "trust", "corporate"),
+        "identity": ("intelligence", "trust", "corporate"),
         "editorial": ("intelligence", "academy", "ai"),
     }.get(key, ("intelligence", "ai", "corporate"))
 
