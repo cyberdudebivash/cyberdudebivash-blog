@@ -2399,8 +2399,8 @@ function generatePostHTML(item) {
   const verifiedDetectionEvidence = item.detectionEvidenceVerified === true
     && ((Array.isArray(item.iocs) && item.iocs.some(i => i && i.value && i.source))
       || item.sourceBackedDetection === true);
-  const sigma = verifiedDetectionEvidence ? genSigma(item) : '';
-  const yara = verifiedDetectionEvidence ? genYARA(item) : '';
+  // Never generate faux detections from CVE IDs. The existing genSigma/genYARA
+  // templates match advisory text and are not indicators of exploitation.
   const multiDetections = verifiedDetectionEvidence ? genMultiPlatformDetections(item, escHtml) : '';
   const priorIntel = genPriorIntelligence(item, escHtml);
   const structuredReasoning = genStructuredReasoning(item, escHtml);
@@ -2632,11 +2632,25 @@ footer{background:var(--apex-surface);border-top:1px solid var(--apex-border);pa
     </tbody></table>
     ${cveIds.length>0?`<h2 class="sh"><span>🔴</span> CVE Reference</h2><table class="tbl"><thead><tr><th>CVE ID</th><th>Reference</th><th>Score</th></tr></thead><tbody>${cveRows||`<tr><td style="font-family:var(--mono);color:var(--apex-cyan)">${escHtml(item.id)}</td><td><a href="https://nvd.nist.gov/vuln/detail/${escHtml(item.id)}" target="_blank" rel="noopener" style="color:var(--apex-cyan)">NVD →</a></td><td>CVSS ${cvss}</td></tr>`}</tbody></table>`:''}
     ${iocRows?`<h2 class="sh"><span>🏷️</span> Source-Provided Indicators</h2><p class="bp">Indicators are normalized from structured source fields. Validate ownership, context, freshness, and false-positive impact before monitoring or blocking.</p><table class="tbl"><thead><tr><th>Indicator Value</th><th>Type</th><th>Source Confidence</th><th>First Seen</th></tr></thead><tbody>${iocRows}</tbody></table>`:''}
-    ${showDetection?`<h2 class="sh"><span>🔍</span> Reference Detection Draft — Sigma</h2><p class="bp">Not production-validated. Review the evidence basis, test syntax, baseline expected activity, and tune in a non-production environment.</p><div class="code-block"><span class="code-lbl">Sigma YAML — reference draft</span>${escHtml(sigma)}</div>
-    <h2 class="sh"><span>📡</span> Reference Detection Draft — YARA</h2><p class="bp">Not false-positive validated. Confirm that strings identify malicious behavior rather than the vulnerability name or normal product artifacts.</p><div class="code-block"><span class="code-lbl">YARA — reference draft</span>${escHtml(yara)}</div>`:''}
+    <!-- Unverified CVE-keyword Sigma/YARA templates are intentionally withheld. -->
     ${showDetection ? multiDetections : ''}
     ${detectionRelevant && !verifiedDetectionEvidence ? '<h2 class="sh"><span>🔎</span> Detection Evidence Gap</h2><p class="bp">No source-validated detection content is established for this record. Do not deploy rules that match only a CVE identifier or generic product string. Inventory affected systems, inspect the linked vendor advisory, identify relevant telemetry, and validate detections in a test environment before any production enforcement.</p>' : ''}
     ${showDetection ? intelligenceProducts : ''}
+    <section class="ecta" data-cdb-ecosystem-static-v1="true" aria-label="Relevant security platforms and services">
+      <h3>SENTINEL APEX™ | Extend this investigation</h3>
+      <p class="ep">Source-linked intelligence is freely assessable. Explore related CYBERDUDEBIVASH® platforms, training, and enterprise services. Commercial access never increases intelligence certainty.</p>
+      <div class="cta-grid">
+        <a href="https://intel.cyberdudebivash.com/?utm_source=static_cti_report&amp;utm_medium=report&amp;utm_campaign=intel_factory" class="btn-s" rel="noopener noreferrer">Threat Intel Platform →</a>
+        ${item.type === 'AI_SECURITY'
+          ? '<a href="https://www.cyberdudebivash.in/?utm_source=static_cti_report&amp;utm_medium=report&amp;utm_campaign=ai_security" class="btn-e" rel="noopener noreferrer">AI Security Hub™ →</a>'
+          : '<a href="https://tools.cyberdudebivash.com/?utm_source=static_cti_report&amp;utm_medium=report&amp;utm_campaign=detection_review" class="btn-e" rel="noopener noreferrer">Security Tools →</a>'}
+        <a href="https://academy.cyberdudebivash.com/?utm_source=static_cti_report&amp;utm_medium=report&amp;utm_campaign=academy" class="btn-s" rel="noopener noreferrer">Enterprise Academy →</a>
+        <a href="https://www.cyberdudebivash.com/?utm_source=static_cti_report&amp;utm_medium=report&amp;utm_campaign=enterprise_inquiry" class="btn-e" rel="noopener noreferrer">Enterprise Services →</a>
+      </div>
+      <details><summary style="color:var(--apex-cyan);cursor:pointer">Explore other ecosystem portals</summary>
+        <p class="ep"><a href="https://labs.cyberdudebivash.in/" rel="noopener noreferrer">Security Labs</a> · <a href="https://trustx.cyberdudebivash.com/" rel="noopener noreferrer">TRUSTX Private Preview</a> · <a href="https://blog.cyberdudebivash.in/" rel="noopener noreferrer">Research Blog</a></p>
+      </details>
+    </section>
     <h2 class="sh"><span>🛡️</span> SOC Response Playbook</h2>
     <ul class="alist">${playbookItems}</ul>
     <h2 class="sh"><span>📎</span> Intelligence References</h2>
@@ -3405,7 +3419,7 @@ if (require.main === module) {
   });
 } else {
   module.exports = {
-    generatePostHTML, genMultiPlatformDetections, genPriorIntelligence,
+    generatePostHTML, generatePostCard, genMultiPlatformDetections, genPriorIntelligence,
     genStructuredReasoning, genIntelligenceProducts, buildProductApiJSON,
     genSigma, genYARA, getMitre, stripHtml, decodeEntities,
     extractHttpUrls, parseCvssFromText, hasConfirmedExploitation,
