@@ -174,7 +174,6 @@ def _family(article: DiscoveredArticle) -> tuple[str, str]:
     title = str(article.title or "")
     summary = str(article.summary or "")
     event_text = f"{title} {summary}"
-    text = _source_text(article).lower()
     labels = {str(label).strip().lower() for label in article.labels}
 
     # Typed/structured source identity takes precedence over SEO keywords.
