@@ -26,11 +26,17 @@ _ECOSYSTEM = {
 }
 # Validation instructions, not assertions that these activities occurred.
 _GUIDES = {
-    "identity": (
-        "Identity and SaaS compromise validation",
+    "m365_identity": (
+        "Microsoft 365 identity and SaaS compromise validation",
         "Confirm the named application, integration or delegated identity exists in the tenant; identify its owners and privileges.",
         "Review Microsoft Entra sign-in and audit records and Microsoft 365 unified audit events for relevant identities, consent grants, access changes and abnormal activity in the source-supported window.",
         "Preserve original logs and timestamps; scope anomalous sessions and revoke or rotate credentials only under the organization’s incident-response procedure after evidence review.",
+    ),
+    "identity": (
+        "Identity and SaaS compromise validation",
+        "Confirm the named integration, service account or delegated identity exists in the relevant environment; document its effective permissions and owner.",
+        "Review the affected identity provider's sign-in and audit logs and related SaaS activity for source-supported indicators; do not assume a particular cloud or identity platform.",
+        "Preserve original logs and timestamps; review suspicious sessions and follow approved incident-response procedures for access restrictions or credential rotation.",
     ),
     "cve": (
         "Vulnerability exposure and remediation validation",
@@ -75,7 +81,9 @@ def _guide_key(article: Any, context: Any) -> str:
         return "ransomware_claim"
     if family == "ai_security":
         return "ai"
-    if re.search(r"\b(?:microsoft 365|m365|entra|oauth|connectwise|credential|identity|service principal)\b", title, re.I):
+    if re.search(r"\b(?:microsoft 365|m365|entra)\b", title, re.I):
+        return "m365_identity"
+    if re.search(r"\b(?:oauth|connectwise|credential|identity|service principal)\b", title, re.I):
         return "identity"
     return "general"
 
@@ -84,6 +92,7 @@ def _recommended_links(key: str) -> tuple[str, str, str]:
         "ai": ("ai", "labs", "academy"),
         "cve": ("intelligence", "tools", "corporate"),
         "ransomware_claim": ("intelligence", "corporate", "trust"),
+        "m365_identity": ("intelligence", "corporate", "academy"),
         "identity": ("intelligence", "corporate", "academy"),
         "editorial": ("intelligence", "academy", "ai"),
     }.get(key, ("intelligence", "ai", "corporate"))
