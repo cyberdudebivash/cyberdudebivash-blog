@@ -18,6 +18,12 @@ test('the production deploy push filter covers every production runtime input', 
   assert.deepStrictEqual(missing, [], `uncovered runtime inputs:\n${missing.join('\n')}`);
 });
 
+test('actual .cjs branding module is covered without an invented .cjs.js path', () => {
+  const inputs = requiredInputs();
+  assert.ok(inputs.includes('scripts/sentinel-branding.cjs'));
+  assert.ok(!inputs.includes('scripts/sentinel-branding.cjs.js'));
+});
+
 test('the Worker module graph is real and includes the payment/webhook modules', () => {
   const graph = workerModuleGraph();
   for (const f of ['workers/entry.js', 'api/v1/billing/razorpay-webhook.js', 'api/_lib/premium-commerce-service.js', 'api/_lib/payment-utils.js']) {
