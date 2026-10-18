@@ -90,7 +90,7 @@ function buildInputs() {
   const src = fs.readFileSync(path.join(ROOT, 'scripts', 'build-cloudflare-assets.js'), 'utf8');
   for (const m of src.matchAll(/require\('(\.\.?\/[^']+)'\)/g)) {
     let rel = path.relative(ROOT, path.resolve(ROOT, 'scripts', m[1])).replace(/\\/g, '/');
-    if (!/\.(js|json)$/.test(rel)) rel += '.js';
+    if (!/\.(?:cjs|mjs|js|json)$/.test(rel)) rel += '.js';
     files.add(rel);
   }
   // Representative file per public directory (any change under it is served).
