@@ -165,9 +165,19 @@ def compute_artifact_hash(html: str) -> str:
 
 
 def _family(article: DiscoveredArticle) -> tuple[str, str]:
+    """Classify from authoritative signals and event-specific context.
+
+    Third-party article bodies frequently contain related-story recommendations,
+    syndicated AI advertisements, and unrelated CVEs. Those terms must never
+    silently reclassify the headline event as an AI attack or vulnerability.
+    """
+    title = str(article.title or "")
+    summary = str(article.summary or "")
+    event_text = f"{title} {summary}"
     text = _source_text(article).lower()
     labels = {str(label).strip().lower() for label in article.labels}
 
+    # Typed/structured source identity takes precedence over SEO keywords.
     if article.source == "cisa_kev" or article.kev_listed is True:
         return "cisa_kev", "CISA KEV Alert"
     if article.source == "ransomware_intel":
@@ -178,12 +188,28 @@ def _family(article: DiscoveredArticle) -> tuple[str, str]:
         return "cisa_advisory", "CISA Security Advisory"
     if article.source == "threat_actor_intel":
         return "threat_actor", "Threat Actor Intelligence"
-    if article.cve_id or re.search(r"\bCVE-\d{4}-\d{4,}\b", text, re.IGNORECASE):
+    if article.cve_id:
         return "cve_advisory", "CVE Vulnerability Advisory"
-    if "ai security" in labels or re.search(
-        r"\b(?:AI|LLM|large language model|generative AI|model safety|prompt injection)\b",
-        _source_text(article),
-        re.IGNORECASE,
+
+    # A newsletter/roundup may discuss multiple unrelated incidents or CVEs.
+    # It is not itself a single actionable AI attack or CVE advisory.
+    if re.search(r"\b(?:newsletter|round[ -]?up|daily digest|weekly digest|top stories)\b", title, re.I):
+        return "general_intelligence", "Cyber Threat Intelligence"
+
+    # Prefer the event headline/abstract. A CVE in a related-story or footer
+    # inside full_content is not evidence the headline concerns that CVE.
+    if re.search(r"\bCVE-\d{4}-\d{4,}\b", event_text, re.I):
+        return "cve_advisory", "CVE Vulnerability Advisory"
+
+    # A single generic "AI" in full_content is insufficient. A focused title
+    # (or its abstract) must explicitly describe an AI/LLM/model/agent subject.
+    ai_subject = re.compile(
+        r"\b(?:AI|LLM|large language models?|generative AI|genAI|"
+        r"AI agents?|coding agents?|prompt injection|model poisoning|"
+        r"model safety|model security|machine learning)\b", re.I
+    )
+    if ai_subject.search(title) or (
+        "ai security" in labels and ai_subject.search(summary)
     ):
         return "ai_security", "AI Security Intelligence"
     if "ransomware" in labels or "ransomware" in text:
