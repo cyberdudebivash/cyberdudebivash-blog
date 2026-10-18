@@ -77,6 +77,7 @@ class TestContextualCustomerExperience(unittest.TestCase):
             SimpleNamespace(family="general_intelligence"),
         )
         self.assertIn("Microsoft Entra sign-in", panel)
+        self.assertIn("TRUSTX Identity Security (Private Preview)", panel)
         self.assertNotIn("AI system trust-boundary validation", panel)
 
     def test_generic_identity_guidance_does_not_assume_microsoft(self):
