@@ -241,7 +241,7 @@ const LEGACY_COMMERCIAL_COPY = Object.freeze([
   ['Pre-disclosure intel, enriched IOC bundles, deploy-ready SIEM packs, and dedicated analyst support — before threats become headlines.',
     'Request a scoped intelligence briefing, evidence review, custom IOC ingestion assessment, or detection-engineering engagement.'],
   ['Deploy to endpoint detection platforms. Enterprise subscribers receive tuned, FP-validated YARA rule packs.',
-    'Not false-positive validated. Confirm that strings identify malicious behavior rather than the vulnerability name or normal product artifacts.'],
+    'No source-validated detection content is established for this record. Do not deploy rules that match only a CVE identifier or generic product string.'],
 ]);
 
 // Claims no public page may carry without a telemetry/commercial evidence
