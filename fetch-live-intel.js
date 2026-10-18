@@ -2458,7 +2458,7 @@ function generatePostHTML(item) {
     `<span class="badge bdg-score">${score}/100</span>`,
     `<span class="badge ${hasCvss?'bdg-red':'bdg-cyan'}">CVSS ${cvssDisplay}</span>`,
     `<span class="badge bdg-cyan">${typeLabel}</span>`,
-    (item.sourceCount||1)>=2?`<span class="badge bdg-green">✓ ${item.sourceCount}x CONFIRMED</span>`:'',
+    (item.sourceCount||1)>=2?`<span class="badge bdg-green">${item.sourceCount} SOURCE RECORDS</span>`:'',
   ].filter(Boolean).join('\n      ');
   const cveIds  = item.cves||(item.id?.startsWith('CVE')?[item.id]:[]);
   const cveRows = cveIds.slice(0,5).map(cve=>`<tr><td style="font-family:var(--mono);color:var(--apex-cyan)">${escHtml(cve)}</td><td><a href="https://nvd.nist.gov/vuln/detail/${escHtml(cve)}" target="_blank" rel="noopener" style="color:var(--apex-cyan)">NVD →</a></td><td>${cvssDisplay}</td></tr>`).join('\n');
@@ -2763,7 +2763,7 @@ function generatePostCard(item, slug, title) {
   const shortDesc  = (item.desc||'').slice(0,200)+((item.desc||'').length>200?'...':'');
   const typeIcos = { CVE_REPORT:'🔴', ZERO_DAY:'💀', RANSOMWARE:'🏴', MALWARE_REPORT:'🦠', DATA_BREACH:'⚠️', THREAT_ACTOR:'🎯', AI_SECURITY:'🤖', NEWS_REPORT:'📡', ADVISORY:'🛡️' };
   const ico = typeIcos[item.type]||'⚡';
-  const multiSrcBadge = (item.sourceCount||1)>=2 ? `<span class="post-badge" style="background:#00ff8822;color:#00ff88;border:1px solid #00ff8844;font-size:10px;padding:3px 7px;border-radius:3px;font-weight:700">✓ ${item.sourceCount}x</span>` : '';
+  const multiSrcBadge = (item.sourceCount||1)>=2 ? `<span class="post-badge" style="background:#00ff8822;color:#00ff88;border:1px solid #00ff8844;font-size:10px;padding:3px 7px;border-radius:3px;font-weight:700">${item.sourceCount} SOURCES COLLECTED</span>` : '';
   return `
     <!-- AUTO-GENERATED: ${item.id} — ${isoNow()} -->
     <a href="posts/${escHtml(slug)}.html" class="post-card" data-intel-auto="${escHtml(item.id)}" data-score="${score}" data-threat="${tl}">
