@@ -212,7 +212,7 @@ def _family(article: DiscoveredArticle) -> tuple[str, str]:
         "ai security" in labels and ai_subject.search(summary)
     ):
         return "ai_security", "AI Security Intelligence"
-    if "ransomware" in labels or "ransomware" in text:
+    if "ransomware" in labels or re.search(r"\bransomware\b", event_text, re.I):
         return "ransomware_reporting", "Ransomware Intelligence"
     return "general_intelligence", "Cyber Threat Intelligence"
 
