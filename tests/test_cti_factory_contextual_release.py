@@ -79,6 +79,22 @@ class TestContextualCustomerExperience(unittest.TestCase):
         self.assertIn("Microsoft Entra sign-in", panel)
         self.assertNotIn("AI system trust-boundary validation", panel)
 
+    def test_generic_identity_guidance_does_not_assume_microsoft(self):
+        panel = build_panel(
+            SimpleNamespace(title="Cloud API credential theft in unrelated service"),
+            SimpleNamespace(family="general_intelligence"),
+        )
+        self.assertIn("identity provider", panel)
+        self.assertNotIn("Microsoft Entra", panel)
+
+    def test_incidental_ransomware_in_related_story_does_not_reclassify(self):
+        item = _article(
+            "Cloud identity access incident",
+            summary="Unauthorized login through a SaaS integration.",
+            full_content="Related story: ransomware in another organization.",
+        )
+        self.assertEqual(build_report_context(item).family, "general_intelligence")
+
     def test_ransomware_panel_does_not_claim_confirmed_breach(self):
         panel = build_panel(SimpleNamespace(title="Leak site claim"), SimpleNamespace(family="ransomware_claim"))
         self.assertIn("does not confirm intrusion", panel)
