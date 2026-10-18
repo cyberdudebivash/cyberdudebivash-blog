@@ -75,6 +75,16 @@ test('a single source remains collected, not independently confirmed', () => {
   assert.doesNotMatch(html, /1 confirmed<\/span>/);
 });
 
+test('two collected source records are not labeled independently confirmed', () => {
+  const item = report({ sourceCount: 2, _sources: ['source_a', 'source_b'] });
+  const html = generatePostHTML(item).html;
+  const card = generatePostCard(item, 'source-test', item.title);
+  assert.match(html, /2 SOURCE RECORDS/);
+  assert.match(card, /2 SOURCES COLLECTED/);
+  assert.doesNotMatch(html, /2x CONFIRMED/);
+  assert.doesNotMatch(card, /2x CONFIRMED/);
+});
+
 test('static CVE reports include relevant commercial discovery without prices', () => {
   const { html } = generatePostHTML(report());
   assert.equal((html.match(/data-cdb-ecosystem-static-v1="true"/g) || []).length, 1);
