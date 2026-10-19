@@ -12,6 +12,7 @@ const http   = require('http');
 const fs     = require('fs');
 const path   = require('path');
 const { renderSocCtiCover, CSS: SOC_CTI_COVER_CSS } = require('./scripts/cti-soc-cover');
+const { CSS: CTI_READER_CSS } = require('./scripts/cti-reading-style-v13');
 const url    = require('url');
 const crypto = require('crypto');
 
@@ -2581,6 +2582,7 @@ footer{background:var(--apex-surface);border-top:1px solid var(--apex-border);pa
 @media(max-width:767px){nav{padding:0 14px}.nlinks a:not(.ncta){display:none}.ntag{display:none}}
 </style>
 ${SOC_CTI_COVER_CSS}
+${CTI_READER_CSS}
 </head>
 <body>
 <canvas id="mc"></canvas>
@@ -2597,7 +2599,7 @@ ${SOC_CTI_COVER_CSS}
   <div class="nlinks"><a href="/">Reports</a><a href="/intelligence.html">Intel Hub</a><a href="/products.html">Detection Packs</a><a href="/contact.html">Enterprise</a><a href="/pricing.html" class="ncta">⚡ SOC Pro</a></div>
 </nav>
 <main>
-  <article>
+  <article class="cdb-cti-reader">
     ${socCtiCover}
     <div class="meta-bar">${badges}<span class="rep-date">Published: ${pubDateFmt}</span></div>
     <h1 class="rh1">${escHtml(item.title)}</h1>
