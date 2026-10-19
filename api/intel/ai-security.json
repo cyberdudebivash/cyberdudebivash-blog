@@ -2,7 +2,7 @@
   "platform": "CYBERDUDEBIVASH SENTINEL APEX — AI Security Intelligence Division",
   "endpoint": "/api/intel/ai-security.json",
   "doctrine": "Sentinel-APEX/prompts/ai-security-master-prompt.md",
-  "generated": "2026-10-18T22:22:15.882Z",
+  "generated": "2026-10-19T04:26:14.236Z",
   "disclaimer": "Evidence-graded AI security intelligence. Confidence and evidence labels attached per item. Community leads are corroborated before publication.",
   "stats": {
     "published": 18,
@@ -29,19 +29,19 @@
         "error": null
       },
       {
-        "name": "NVD (AI/LLM keyword)",
-        "key": "nvd_ai",
-        "tier": 1,
-        "status": "ok",
-        "items": 40,
-        "error": null
-      },
-      {
         "name": "arXiv cs.CR (LLM security)",
         "key": "arxiv_sec",
         "tier": 2,
         "status": "ok",
         "items": 30,
+        "error": null
+      },
+      {
+        "name": "GitHub Security Advisories",
+        "key": "ghsa",
+        "tier": 1,
+        "status": "ok",
+        "items": 60,
         "error": null
       },
       {
@@ -53,15 +53,15 @@
         "error": null
       },
       {
-        "name": "GitHub Security Advisories",
-        "key": "ghsa",
+        "name": "NVD (AI/LLM keyword)",
+        "key": "nvd_ai",
         "tier": 1,
         "status": "ok",
-        "items": 60,
+        "items": 40,
         "error": null
       }
     ],
-    "runtimeMs": 963
+    "runtimeMs": 1237
   },
   "frameworks": {
     "owasp_llm_top10": {
@@ -427,6 +427,118 @@
       "has_analyst_report": false
     },
     {
+      "id": "94d6a4ca464b0f3f",
+      "title": "SAFE-Mem: Secure Agentic Memory with Fine-Grained Authority and Governance-Aware Retrieval",
+      "url": "https://arxiv.org/abs/2610.22959v1",
+      "source": "arXiv cs.CR (LLM security)",
+      "tier": 2,
+      "published": "2026-10-16T05:29:55Z",
+      "cve": null,
+      "severity": null,
+      "cvss": null,
+      "evidence_label": "PUBLISHED_RESEARCH",
+      "categories": [
+        {
+          "id": "agent_tool",
+          "label": "Agentic / Tool / MCP Exploitation"
+        }
+      ],
+      "owasp_llm": [
+        {
+          "id": "LLM06",
+          "name": "Sensitive Information Disclosure / Excessive Agency"
+        }
+      ],
+      "mitre_atlas": [
+        {
+          "id": "AML.T0053",
+          "name": "LLM Plugin Compromise"
+        }
+      ],
+      "agent_risk": {
+        "flags": {
+          "agentic": true,
+          "mcp": false,
+          "rag": false,
+          "tool_use": false,
+          "supply_chain": false
+        },
+        "level": "elevated"
+      },
+      "enterprise_impact": {
+        "score": 20,
+        "priority": "P3"
+      },
+      "confidence": {
+        "source": "MODERATE",
+        "evidence": "LOW",
+        "overall": "LOW",
+        "rationale": "Research source; 1 corroborating source(s)."
+      },
+      "corroboration": 1,
+      "detection": {
+        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
+        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
+      },
+      "has_analyst_report": false
+    },
+    {
+      "id": "e7029579c3dfa094",
+      "title": "Stealthy Poisoning Attacks via Reused KV Cache of Reasoning",
+      "url": "https://arxiv.org/abs/2610.22873v1",
+      "source": "arXiv cs.CR (LLM security)",
+      "tier": 2,
+      "published": "2026-10-16T03:22:33Z",
+      "cve": null,
+      "severity": null,
+      "cvss": null,
+      "evidence_label": "PUBLISHED_RESEARCH",
+      "categories": [
+        {
+          "id": "prompt_injection",
+          "label": "Prompt Injection"
+        }
+      ],
+      "owasp_llm": [
+        {
+          "id": "LLM01",
+          "name": "Prompt Injection"
+        }
+      ],
+      "mitre_atlas": [
+        {
+          "id": "AML.T0051",
+          "name": "LLM Prompt Injection"
+        }
+      ],
+      "agent_risk": {
+        "flags": {
+          "agentic": false,
+          "mcp": false,
+          "rag": true,
+          "tool_use": false,
+          "supply_chain": false
+        },
+        "level": "elevated"
+      },
+      "enterprise_impact": {
+        "score": 20,
+        "priority": "P3"
+      },
+      "confidence": {
+        "source": "MODERATE",
+        "evidence": "LOW",
+        "overall": "LOW",
+        "rationale": "Research source; 1 corroborating source(s)."
+      },
+      "corroboration": 1,
+      "detection": {
+        "detect": "Monitor LLM gateway logs for delimiter-breaking tokens, role-swap phrases (\"ignore previous\", \"you are now\"), and base64/hex blobs in user or retrieved content.",
+        "hunt": "Correlate anomalous tool-invocation sequences that immediately follow untrusted content ingestion (email, web, RAG chunks)."
+      },
+      "has_analyst_report": false
+    },
+    {
       "id": "5cfb021e6940b648",
       "title": "From Training to Escalation: Forensic Analysis and Local Recreation of RL/RLHF-Induced Privilege Escalation in AI Agents (CVE-2026-65616)",
       "url": "https://arxiv.org/abs/2610.20437v1",
@@ -539,12 +651,12 @@
       "has_analyst_report": false
     },
     {
-      "id": "f28b5d56146f1820",
-      "title": "ATTCK-R: Knowledge-Aware Long-Horizon Jailbreaking for Protected LLMs",
-      "url": "https://arxiv.org/abs/2610.16305v1",
+      "id": "e8716ae60e16b022",
+      "title": "MobileInject: Evaluating Reasoning-to-Action Security of MLLM-Based Mobile Agents under Cross-Modal Consistency Injection",
+      "url": "https://arxiv.org/abs/2610.23307v1",
       "source": "arXiv cs.CR (LLM security)",
       "tier": 2,
-      "published": "2026-10-12T07:32:11Z",
+      "published": "2026-10-16T11:10:30Z",
       "cve": null,
       "severity": null,
       "cvss": null,
@@ -571,14 +683,14 @@
         "flags": {
           "agentic": false,
           "mcp": false,
-          "rag": true,
+          "rag": false,
           "tool_use": false,
           "supply_chain": false
         },
-        "level": "elevated"
+        "level": "standard"
       },
       "enterprise_impact": {
-        "score": 20,
+        "score": 10,
         "priority": "P3"
       },
       "confidence": {
@@ -595,46 +707,46 @@
       "has_analyst_report": false
     },
     {
-      "id": "eb5c36c60857fb61",
-      "title": "SEEK: Agentic Knowledge Graph Retrieval for Secure Code Generation",
-      "url": "https://arxiv.org/abs/2610.14968v1",
+      "id": "dc340190d76d894f",
+      "title": "ECHO: Replacing the Compliance Proxy with Response Harmfulness in Optimization-Based Jailbreak Attack",
+      "url": "https://arxiv.org/abs/2610.23030v1",
       "source": "arXiv cs.CR (LLM security)",
       "tier": 2,
-      "published": "2026-10-10T14:37:22Z",
+      "published": "2026-10-16T07:07:08Z",
       "cve": null,
       "severity": null,
       "cvss": null,
       "evidence_label": "PUBLISHED_RESEARCH",
       "categories": [
         {
-          "id": "agent_tool",
-          "label": "Agentic / Tool / MCP Exploitation"
+          "id": "prompt_injection",
+          "label": "Prompt Injection"
         }
       ],
       "owasp_llm": [
         {
-          "id": "LLM06",
-          "name": "Sensitive Information Disclosure / Excessive Agency"
+          "id": "LLM01",
+          "name": "Prompt Injection"
         }
       ],
       "mitre_atlas": [
         {
-          "id": "AML.T0053",
-          "name": "LLM Plugin Compromise"
+          "id": "AML.T0051",
+          "name": "LLM Prompt Injection"
         }
       ],
       "agent_risk": {
         "flags": {
-          "agentic": true,
+          "agentic": false,
           "mcp": false,
-          "rag": true,
+          "rag": false,
           "tool_use": false,
           "supply_chain": false
         },
-        "level": "elevated"
+        "level": "standard"
       },
       "enterprise_impact": {
-        "score": 20,
+        "score": 10,
         "priority": "P3"
       },
       "confidence": {
@@ -645,8 +757,8 @@
       },
       "corroboration": 1,
       "detection": {
-        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
-        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
+        "detect": "Monitor LLM gateway logs for delimiter-breaking tokens, role-swap phrases (\"ignore previous\", \"you are now\"), and base64/hex blobs in user or retrieved content.",
+        "hunt": "Correlate anomalous tool-invocation sequences that immediately follow untrusted content ingestion (email, web, RAG chunks)."
       },
       "has_analyst_report": false
     },
@@ -819,32 +931,32 @@
       "has_analyst_report": false
     },
     {
-      "id": "2730269f87ff2fbf",
-      "title": "TRAP: Tree-Guided Reinforcement-Augmented Probing for Automated LLM Jailbreaking",
-      "url": "https://arxiv.org/abs/2610.17313v1",
+      "id": "443a8b30d38f0fcf",
+      "title": "From GAN-Based Models to GPT-5: A Taxonomy-Guided Study of Human Performance in Detecting Deepfake Face Images",
+      "url": "https://arxiv.org/abs/2610.23144v1",
       "source": "arXiv cs.CR (LLM security)",
       "tier": 2,
-      "published": "2026-10-12T19:10:37Z",
+      "published": "2026-10-16T08:41:12Z",
       "cve": null,
       "severity": null,
       "cvss": null,
       "evidence_label": "PUBLISHED_RESEARCH",
       "categories": [
         {
-          "id": "prompt_injection",
-          "label": "Prompt Injection"
+          "id": "ai_malware",
+          "label": "AI-Enabled Threats"
         }
       ],
       "owasp_llm": [
         {
-          "id": "LLM01",
-          "name": "Prompt Injection"
+          "id": "LLM05",
+          "name": "Supply Chain Vulnerabilities"
         }
       ],
       "mitre_atlas": [
         {
-          "id": "AML.T0051",
-          "name": "LLM Prompt Injection"
+          "id": "AML.T0048",
+          "name": "External Harms"
         }
       ],
       "agent_risk": {
@@ -858,7 +970,7 @@
         "level": "standard"
       },
       "enterprise_impact": {
-        "score": 10,
+        "score": 0,
         "priority": "P3"
       },
       "confidence": {
@@ -869,120 +981,8 @@
       },
       "corroboration": 1,
       "detection": {
-        "detect": "Monitor LLM gateway logs for delimiter-breaking tokens, role-swap phrases (\"ignore previous\", \"you are now\"), and base64/hex blobs in user or retrieved content.",
-        "hunt": "Correlate anomalous tool-invocation sequences that immediately follow untrusted content ingestion (email, web, RAG chunks)."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "fb77c1b2ab1a8917",
-      "title": "StableJudge: A Lightweight Adversarial Defense Framework for LLM-as-a-Judge",
-      "url": "https://arxiv.org/abs/2610.16814v1",
-      "source": "arXiv cs.CR (LLM security)",
-      "tier": 2,
-      "published": "2026-10-12T14:00:13Z",
-      "cve": null,
-      "severity": null,
-      "cvss": null,
-      "evidence_label": "PUBLISHED_RESEARCH",
-      "categories": [
-        {
-          "id": "prompt_injection",
-          "label": "Prompt Injection"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM01",
-          "name": "Prompt Injection"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0051",
-          "name": "LLM Prompt Injection"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": false,
-          "rag": false,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "standard"
-      },
-      "enterprise_impact": {
-        "score": 10,
-        "priority": "P3"
-      },
-      "confidence": {
-        "source": "MODERATE",
-        "evidence": "LOW",
-        "overall": "LOW",
-        "rationale": "Research source; 1 corroborating source(s)."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Monitor LLM gateway logs for delimiter-breaking tokens, role-swap phrases (\"ignore previous\", \"you are now\"), and base64/hex blobs in user or retrieved content.",
-        "hunt": "Correlate anomalous tool-invocation sequences that immediately follow untrusted content ingestion (email, web, RAG chunks)."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "1e214a8c9f498a50",
-      "title": "Exploring Jailbreak Vulnerability Across Depth-Based Dynamic Inference in Large Language Models",
-      "url": "https://arxiv.org/abs/2610.15207v1",
-      "source": "arXiv cs.CR (LLM security)",
-      "tier": 2,
-      "published": "2026-10-10T22:36:04Z",
-      "cve": null,
-      "severity": null,
-      "cvss": null,
-      "evidence_label": "PUBLISHED_RESEARCH",
-      "categories": [
-        {
-          "id": "prompt_injection",
-          "label": "Prompt Injection"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM01",
-          "name": "Prompt Injection"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0051",
-          "name": "LLM Prompt Injection"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": false,
-          "rag": false,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "standard"
-      },
-      "enterprise_impact": {
-        "score": 10,
-        "priority": "P3"
-      },
-      "confidence": {
-        "source": "MODERATE",
-        "evidence": "LOW",
-        "overall": "LOW",
-        "rationale": "Research source; 1 corroborating source(s)."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Monitor LLM gateway logs for delimiter-breaking tokens, role-swap phrases (\"ignore previous\", \"you are now\"), and base64/hex blobs in user or retrieved content.",
-        "hunt": "Correlate anomalous tool-invocation sequences that immediately follow untrusted content ingestion (email, web, RAG chunks)."
+        "detect": "Instrument the AI application boundary (gateway, tool layer, model API) with structured logging and anomaly alerting.",
+        "hunt": "Baseline normal model/agent behavior, then hunt for deviations tied to untrusted input."
       },
       "has_analyst_report": false
     },
