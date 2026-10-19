@@ -462,15 +462,58 @@ jobs:
             local marker="$2"
             local code=""
             local file="$tmp/customer-route.html"
+            local headers="$tmp/customer-route-headers.txt"
+            local local_page="dist-public$route"
+            case "$local_page" in */) local_page="${local_page}index.html";; esac
             for attempt in 1 2 3 4 5 6; do
-              code="$(curl -sS -L --max-time 25 -H 'Cache-Control: no-cache' -o "$file" -w '%{http_code}' "$base$route?release_sha=$GITHUB_SHA" || true)"
+              code="$(curl -sS -L --proto '=https' --proto-redir '=https' --max-time 25 --max-filesize 3000000 -H 'Cache-Control: no-cache' -D "$headers" -o "$file" -w '%{http_code}' "$base$route?release_sha=$GITHUB_SHA" || true)"
               if [ "$code" = "200" ] && grep -Fq "$marker" "$file"; then
                 return 0
               fi
               echo "Waiting for customer route: $route attempt $attempt status=$code"
               sleep 10
             done
+            # Fail closed as before. Capture bounded response evidence, not secrets or whole HTML.
             echo "::error::Customer route $route failed marker '$marker' with HTTP $code"
+            echo "::group::Customer route response evidence: $route"
+            echo "UTC: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo "Commit: $GITHUB_SHA"
+            echo "Requested: $base$route?release_sha=$GITHUB_SHA"
+            if [ -s "$file" ]; then
+              echo "Release-query response bytes: $(wc -c < "$file")"
+              sha256sum "$file"
+              grep -oiE '<title[^>]*>[^<]*' "$file" | head -1 || true
+            fi
+            if [ -f "$headers" ]; then
+              grep -Ei '^(HTTP/|content-type:|cache-control:|cf-ray:|age:|etag:|last-modified:|location:|server:)' "$headers" || true
+            fi
+            if [ -f "$local_page" ]; then
+              echo "Expected build output: $local_page"
+              echo "Build bytes: $(wc -c < "$local_page")"
+              sha256sum "$local_page"
+              if [ -s "$file" ] && cmp -s "$local_page" "$file"; then
+                echo "Exact built-vs-served bytes: MATCH"
+              else
+                echo "Exact built-vs-served bytes: DIFFER (diagnostic; investigate edge transformations)"
+              fi
+            else
+              echo "::warning::Built local route file not found: $local_page"
+            fi
+            # Compare the same public route without the cache-busting query.
+            local plain_body="$tmp/customer-route-plain.html"
+            local plain_headers="$tmp/customer-route-plain-headers.txt"
+            local plain_response=""
+            plain_response="$(curl -sS -L --proto '=https' --proto-redir '=https' --max-time 25 --max-filesize 3000000 -H 'Cache-Control: no-cache' -D "$plain_headers" -o "$plain_body" -w '%{http_code} %{url_effective}' "$base$route" || true)"
+            echo "Plain route response status + final URL: $plain_response"
+            if [ -s "$plain_body" ]; then
+              echo "Plain response bytes: $(wc -c < "$plain_body")"
+              sha256sum "$plain_body"
+              grep -oiE '<title[^>]*>[^<]*' "$plain_body" | head -1 || true
+            fi
+            if [ -f "$plain_headers" ]; then
+              grep -Ei '^(HTTP/|content-type:|cache-control:|cf-ray:|age:|etag:|last-modified:|location:|server:)' "$plain_headers" || true
+            fi
+            echo "::endgroup::"
             exit 1
           }
 
