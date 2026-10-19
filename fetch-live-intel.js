@@ -2415,7 +2415,6 @@ function generatePostHTML(item) {
   // scheduling score. Never render priority band as CVSS severity.
   const tl = item.threatLevel || 'UNASSESSED';
   const score = item.priority || 0;
-  const socCtiCover = renderSocCtiCover(item, { verifiedDetectionEvidence: showDetection });
   const typeLabels = { CVE_REPORT:'🔴 CVE ANALYSIS', ZERO_DAY:'💀 ZERO-DAY', RANSOMWARE:'🏴 RANSOMWARE', MALWARE_REPORT:'🦠 MALWARE', DATA_BREACH:'⚠️ DATA BREACH', THREAT_ACTOR:'🎯 THREAT ACTOR', AI_SECURITY:'🤖 AI SECURITY', NEWS_REPORT:'📡 INTEL', ADVISORY:'🛡️ ADVISORY' };
   const typeLabel = typeLabels[item.type]||'⚡ INTEL';
   const vendorProductLabel = [item.vendor, item.product].filter(Boolean).join(' ');
@@ -2478,6 +2477,7 @@ function generatePostHTML(item) {
     </tr>`).join('\n    ');
   const detectionRelevant = ['CVE_REPORT','ZERO_DAY','ADVISORY','MALWARE_REPORT','RANSOMWARE'].includes(item.type);
   const showDetection = detectionRelevant && verifiedDetectionEvidence;
+  const socCtiCover = renderSocCtiCover(item, { verifiedDetectionEvidence: showDetection });
   const srcBadges = (item._sources||[item.source]).map(s=>`<span style="display:inline-block;padding:2px 8px;border:1px solid var(--apex-border);border-radius:4px;font-size:11px;color:var(--apex-muted);margin:2px">${escHtml(s)}</span>`).join('');
 
   const html = `<!DOCTYPE html>
