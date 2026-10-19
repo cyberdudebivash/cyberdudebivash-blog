@@ -132,7 +132,23 @@ function inspectArchive(root){
         const source=findSourceForCve(resolution,rel);
         entry.state=modern?'already_modern':source.status;
         entry.source_sha256=source.source_sha256||null;
-        if(source.status==='source_eligible'&&!modern)totals.cve_source_eligible++;
+        if(source.status==='source_eligible'&&!modern){
+          totals.cve_source_eligible++;
+          // Produce the exact build-stage public-byte hash using the same
+          // canonical renderer and customer-experience layer. Only read files.
+          try {
+            const pub=require('./build-cloudflare-assets');
+            const rendered=pub.renderCvePageFromJson(source.id,source.source,rel);
+            const staged=pub.injectCustomerExperience(pub.validatePublicHtmlStructure(
+              pub.neutralizeLegacyCommercialCopy(rendered),rel));
+            entry.staged_sha256=digest(staged);
+            entry.staged_bytes=Buffer.byteLength(staged);
+          } catch (error) {
+            entry.state='render_failed';
+            entry.render_error=String(error.message||'error').slice(0,160);
+            totals.cve_source_eligible--;
+          }
+        }
       }
       if(modern)totals.already_modern++;
       if(entry.state!=='already_modern'&&entry.state!=='presentation_candidate'&&entry.state!=='source_eligible')totals.exceptions++;
