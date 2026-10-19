@@ -8,7 +8,6 @@
  */
 const fs = require('fs');
 const path = require('path');
-const { decorateLegacyPost, findSourceForCve } = require('./cti-archive-v14');
 
 const ROOT = path.join(__dirname, '..');
 const OUT = path.join(ROOT, 'dist-public');
@@ -158,6 +157,7 @@ function repairLegacyCveHtml(src, html) {
   // COPY with the modern generator; never overwrite repository-source HTML.
   // Missing/insufficient source records remain historical and appear in the
   // read-only v14 audit manifest (never fill missing evidence by inference).
+  const { findSourceForCve } = require('./cti-archive-v14');
   const stagedSource = findSourceForCve(ROOT, rel);
   if (stagedSource.status === 'source_eligible' &&
       !html.includes('data-cdb-soc-cti-v12="true"')) {
@@ -309,6 +309,7 @@ function copyFileForPublicBuild(src, dest) {
     // Add only visual affordances and an archive-use disclosure for older posts.
     // The underlying threat narrative, headings, claims, evidence, provenance,
     // SEO metadata and historic publish date remain intact in source control.
+    const { decorateLegacyPost } = require('./cti-archive-v14');
     const html = validatePublicHtmlStructure(decorateLegacyPost(repairedHtml,rel), rel);
     fs.writeFileSync(dest, injectCustomerExperience(html));
   } else if (src.toLowerCase().endsWith('.json')) {
@@ -495,4 +496,4 @@ if (require.main === module) {
   console.log(`dist-public/ built: ${countFiles(out)} files`);
 }
 
-module.exports = { build, countFiles, buildPublicSitemap, listHtmlFiles, PUBLIC_DIRS, PUBLIC_ROOT_FILES, ROOT, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure, hasUndefinedMetadataArtifacts, repairLegacyCveHtml, CX_CSS, CX_JS, LEGACY_COMMERCIAL_COPY, RETIRED_PLAN_PRICE_COPY, UNSUPPORTED_PUBLIC_CLAIMS, neutralizeLegacyCommercialCopy, findUnsupportedPublicClaims, correctPublicIntelJson, applyLegacyCvssCorrection, synthesizeMissingCvePages, renderCvePageFromJson, stripUnprovenGraphIocs, decorateLegacyPost, findSourceForCve };
+module.exports = { build, countFiles, buildPublicSitemap, listHtmlFiles, PUBLIC_DIRS, PUBLIC_ROOT_FILES, ROOT, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure, hasUndefinedMetadataArtifacts, repairLegacyCveHtml, CX_CSS, CX_JS, LEGACY_COMMERCIAL_COPY, RETIRED_PLAN_PRICE_COPY, UNSUPPORTED_PUBLIC_CLAIMS, neutralizeLegacyCommercialCopy, findUnsupportedPublicClaims, correctPublicIntelJson, applyLegacyCvssCorrection, synthesizeMissingCvePages, renderCvePageFromJson, stripUnprovenGraphIocs };
