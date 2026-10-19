@@ -16,6 +16,7 @@ from .cti_dossier_v8 import install_cti_dossier_v8
 from .cti_dossier_v9 import install_cti_dossier_v9
 from .cti_dossier_v10 import install_cti_dossier_v10
 from .cti_dossier_v11 import install_cti_dossier_v11
+from .cti_dossier_v12 import install_cti_dossier_v12
 from .cti_evidence_convergence import install_cti_evidence_convergence
 from .cti_evidence_convergence_v7 import install_cti_evidence_convergence_v7
 from .cti_integrity_revenue_v19_1 import install_cti_integrity_revenue_v19_1
@@ -192,6 +193,7 @@ def main() -> int:
     install_cti_dossier_v9(_main)
     install_cti_dossier_v10(_main)
     install_cti_dossier_v11(_main)
+    install_cti_dossier_v12(_main)
     install_astra_revenue_presentation_v18(_main)
     install_astra_cash_conversion_v19(_main)
     install_claim_semantics_v19_1()
