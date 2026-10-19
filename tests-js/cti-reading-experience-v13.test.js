@@ -62,3 +62,28 @@ test('v13 presentation does not change report claims or source references', () =
   assert.match(post, /not an AICPA SOC 2 Type I\/II attestation/);
   assert.match(page, /not an AICPA SOC 2 Type I\/II attestation/);
 });
+
+test('IOC evidence table does not invent confidence or first-seen timestamps', () => {
+  const html = generatePostHTML({ ...report,
+    iocs:[{type:'domain',value:'suspicious.example'}] }).html;
+  assert.match(html, /suspicious\.example/);
+  assert.match(html, /NOT PROVIDED/);
+  assert.doesNotMatch(html, /80%<\/td>/);
+});
+
+test('CISA KEV disclaimer does not incorrectly bind private enterprises to federal deadlines', () => {
+  const html = generatePostHTML({ ...report,
+    cisaKev:true,dueDate:'2026-11-05',reqAction:'' }).html;
+  assert.match(html, /Federal civilian executive branch agencies/);
+  assert.match(html, /Other organizations should prioritize remediation/);
+  assert.doesNotMatch(html, /All organizations must patch immediately/);
+  assert.doesNotMatch(html, /MANDATORY REMEDIATION/);
+});
+
+test('reported exploitation is not falsely framed as detection by the platform', () => {
+  const html = generatePostHTML({ ...report,
+    cisaKev:false,exploited:true }).html;
+  assert.match(html, /SOURCE-REPORTED EXPLOITATION/);
+  assert.doesNotMatch(html, /ACTIVE EXPLOITATION DETECTED/);
+  assert.doesNotMatch(html, /Emergency patching required/);
+});
