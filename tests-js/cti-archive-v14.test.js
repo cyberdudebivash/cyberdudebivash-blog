@@ -134,3 +134,21 @@ test('CVE source records do not invent publication date or emit blank sitemap la
   assert.doesNotMatch(html,/"dateModified"/);
   assert.match(html,/Source publication date/i);
 });
+
+test('historic CVSS HIGH and MEDIUM editorial priority are labeled as separate measures',()=>{
+  const {normalizeArchiveSidebar}=require('../scripts/cti-archive-v14');
+  const raw='<div class="vscore">8.1</div><div class="threat-badge">MEDIUM — 45/100</div>'+
+    '<div class="vrow"><span class="vk">Sources</span><span class="vv" style="color:#00f">1 confirmed</span></div>';
+  const fixed=normalizeArchiveSidebar(raw);
+  assert.match(fixed,/Displayed CVSS 8\.1 \(HIGH\) · Editorial priority 45\/100 \(MEDIUM\)/);
+  assert.match(fixed,/Sources<\/span><span class="vv" style="color:#00f">1 collected/);
+  assert.equal(normalizeArchiveSidebar(fixed),fixed);
+});
+
+test('missing CVSS or malformed priority badge is not silently upgraded',()=>{
+  const {normalizeArchiveSidebar}=require('../scripts/cti-archive-v14');
+  const raw='<div class="vscore">N/A</div><div class="threat-badge">LOW — 39/100</div>';
+  assert.equal(normalizeArchiveSidebar(raw),raw);
+  const bad='<div class="vscore">12.5</div><div class="threat-badge">LOW — 39/100</div>';
+  assert.equal(normalizeArchiveSidebar(bad),bad);
+});
