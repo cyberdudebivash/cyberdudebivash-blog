@@ -75,7 +75,9 @@ test('CISA KEV disclaimer does not incorrectly bind private enterprises to feder
   const html = generatePostHTML({ ...report,
     cisaKev:true,dueDate:'2026-11-05',reqAction:'' }).html;
   assert.match(html, /Federal civilian executive branch agencies/);
-  assert.match(html, /Other organizations should prioritize remediation/);
+  const withoutDueDate = generatePostHTML({ ...report,
+    cisaKev:true,dueDate:null,reqAction:'' }).html;
+  assert.match(withoutDueDate, /Other organizations should prioritize remediation/);
   assert.doesNotMatch(html, /All organizations must patch immediately/);
   assert.doesNotMatch(html, /MANDATORY REMEDIATION/);
 });
