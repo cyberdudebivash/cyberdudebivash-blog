@@ -38,7 +38,7 @@ test('already-modern and unrelated HTML are bytewise unchanged',()=>{
 test('archive notice is not SOC 2 certification nor operational compromise conclusion',()=>{
   const upgraded=decorateLegacyPost(original,'posts/source.html');
   assert.match(upgraded,/not an audited SOC 2 attestation/);
-  assert.match(upgraded,/not independently revalidated/);
+  assert.match(upgraded,/has not been independently revalidated/);
   assert.match(upgraded,/not.*evidence of customer compromise/);
   assert.doesNotMatch(upgraded,/certified by an independent auditor/);
 });
