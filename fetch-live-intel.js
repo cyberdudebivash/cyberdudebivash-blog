@@ -12,6 +12,7 @@ const http   = require('http');
 const fs     = require('fs');
 const path   = require('path');
 const { renderSocCtiCover, CSS: SOC_CTI_COVER_CSS } = require('./scripts/cti-soc-cover');
+const { CSS: CTI_READER_CSS } = require('./scripts/cti-reading-style-v13');
 const url    = require('url');
 const crypto = require('crypto');
 
@@ -2463,7 +2464,7 @@ function generatePostHTML(item) {
   ].filter(Boolean).join('\n      ');
   const cveIds  = item.cves||(item.id?.startsWith('CVE')?[item.id]:[]);
   const cveRows = cveIds.slice(0,5).map(cve=>`<tr><td style="font-family:var(--mono);color:var(--apex-cyan)">${escHtml(cve)}</td><td><a href="https://nvd.nist.gov/vuln/detail/${escHtml(cve)}" target="_blank" rel="noopener" style="color:var(--apex-cyan)">NVD →</a></td><td>${cvssDisplay}</td></tr>`).join('\n');
-  const iocRows = (item.iocs||[]).filter(ioc=>ioc&&ioc.value).slice(0,10).map(ioc=>`<tr><td style="font-family:var(--mono);font-size:11px;color:var(--apex-cyan)">${escHtml(String(ioc.value||'').slice(0,80))}</td><td>${escHtml(ioc.type||'ioc')}</td><td style="text-align:center">${Math.round((ioc.confidence_score||0.8)*100)}%</td><td style="color:var(--apex-muted);font-size:11px">${escHtml(ioc.first_seen||isoNow())}</td></tr>`).join('\n');
+  const iocRows = (item.iocs||[]).filter(ioc=>ioc&&ioc.value).slice(0,10).map(ioc=>`<tr><td style="font-family:var(--mono);font-size:11px;color:var(--apex-cyan)">${escHtml(String(ioc.value||'').slice(0,80))}</td><td>${escHtml(ioc.type||'ioc')}</td><td style="text-align:center">${typeof ioc.confidence_score==='number'&&Number.isFinite(ioc.confidence_score)&&ioc.confidence_score>=0&&ioc.confidence_score<=1?Math.round(ioc.confidence_score*100)+'%':'NOT PROVIDED'}</td><td style="color:var(--apex-muted);font-size:11px">${escHtml(ioc.first_seen||'NOT PROVIDED')}</td></tr>`).join('\n');
   // v5.1: Filter refs to valid URLs only — prevents NVD GHSA description strings leaking into hrefs
   const validRefs = (item.refs||[]).flatMap(extractHttpUrls);
   const refLinks = validRefs.slice(0,5).map(r=>`<li><a href="${escHtml(r)}" target="_blank" rel="noopener" style="color:var(--apex-cyan)">${escHtml(r.replace(/https?:\/\//,'').slice(0,70))}</a></li>`).join('\n');
@@ -2581,23 +2582,24 @@ footer{background:var(--apex-surface);border-top:1px solid var(--apex-border);pa
 @media(max-width:767px){nav{padding:0 14px}.nlinks a:not(.ncta){display:none}.ntag{display:none}}
 </style>
 ${SOC_CTI_COVER_CSS}
+${CTI_READER_CSS}
 </head>
 <body>
 <canvas id="mc"></canvas>
 <div class="ticker"><div class="ticker-inner">
   <span class="ticker-item">⚡ ${escHtml(item.id)}${vendorProductLabel?` — ${escHtml(vendorProductLabel)}`:''} — Editorial priority ${score}/100 (${escHtml(tl)})</span>
   <span class="ticker-item">🛡️ CYBERDUDEBIVASH SENTINEL APEX — 24/7 Global Threat Intelligence v4.0</span>
-  <span class="ticker-item">⚠️ ${item.cisaKev?'CISA KEV CONFIRMED — ACTIVE EXPLOITATION':item.exploited?'ACTIVE EXPLOITATION DETECTED':'SOURCE-LINKED SECURITY ADVISORY'}</span>
+  <span class="ticker-item">⚠️ ${item.cisaKev?'CISA KEV CONFIRMED — ACTIVE EXPLOITATION':item.exploited?'SOURCE-REPORTED EXPLOITATION — VALIDATE':'SOURCE-LINKED SECURITY ADVISORY'}</span>
   <span class="ticker-item">⚡ ${escHtml(item.id)} — CVSS ${cvssDisplay} — ${(item.sourceCount||1)} Source(s) Collected</span>
   <span class="ticker-item">🛡️ CYBERDUDEBIVASH SENTINEL APEX — 24/7 Global Threat Intelligence v4.0</span>
-  <span class="ticker-item">⚠️ ${item.cisaKev?'CISA KEV CONFIRMED — ACTIVE EXPLOITATION':item.exploited?'ACTIVE EXPLOITATION DETECTED':'SOURCE-LINKED SECURITY ADVISORY'}</span>
+  <span class="ticker-item">⚠️ ${item.cisaKev?'CISA KEV CONFIRMED — ACTIVE EXPLOITATION':item.exploited?'SOURCE-REPORTED EXPLOITATION — VALIDATE':'SOURCE-LINKED SECURITY ADVISORY'}</span>
 </div></div>
 <nav>
   <a href="/" class="nbrand"><div><div class="nlogo">CYBERDUDE<span style="color:#fff">BIVASH</span></div><div class="ntag">SENTINEL APEX v4.0 — Global Threat Intelligence</div></div></a>
   <div class="nlinks"><a href="/">Reports</a><a href="/intelligence.html">Intel Hub</a><a href="/products.html">Detection Packs</a><a href="/contact.html">Enterprise</a><a href="/pricing.html" class="ncta">⚡ SOC Pro</a></div>
 </nav>
 <main>
-  <article>
+  <article class="cdb-cti-reader">
     ${socCtiCover}
     <div class="meta-bar">${badges}<span class="rep-date">Published: ${pubDateFmt}</span></div>
     <h1 class="rh1">${escHtml(item.title)}</h1>
@@ -2610,7 +2612,7 @@ ${SOC_CTI_COVER_CSS}
       <div class="stat ${item.cisaKev?'red':'green'}"><div class="sv">${item.cisaKev?'⚠️ KEV':'Monitor'}</div><div class="sl">CISA Status</div></div>
       <div class="stat"><div class="sv" style="color:var(--apex-green)">${item.sourceCount||1}x</div><div class="sl">Sources</div></div>
     </div>
-    ${item.cisaKev?`<div class="alert alert-crit"><span class="aico">🚨</span><div class="abody"><div class="atitle">CISA KNOWN EXPLOITED VULNERABILITY — MANDATORY REMEDIATION</div><p>Active exploitation confirmed. CISA KEV catalog listed. ${item.dueDate?`Federal agencies must remediate by <strong>${item.dueDate}</strong>.`:'All organizations must patch immediately.'} Required action: ${escHtml(item.reqAction||'Apply vendor patch immediately.')}</p></div></div>`:item.exploited?`<div class="alert alert-warn"><span class="aico">⚠️</span><div class="abody"><div class="atitle">ACTIVE EXPLOITATION DETECTED</div><p>Exploitation confirmed in the wild. Emergency patching required. Score: ${score}/100 — do not wait for maintenance window.</p></div></div>`:`<div class="alert alert-info"><span class="aico">🔵</span><div class="abody"><div class="atitle">SOURCE-LINKED SECURITY ADVISORY — Editorial priority: ${score}/100 (${escHtml(tl)})</div><p>CVSS ${cvssDisplay} — ${sevLabel} technical severity. Assess affected versions, exposure and vendor remediation. Evidence collected from ${item.sourceCount||1} source record(s); source count does not establish independent corroboration.</p></div></div>`}
+    ${item.cisaKev?`<div class="alert alert-crit"><span class="aico">🚨</span><div class="abody"><div class="atitle">CISA KEV LISTED — PRIORITIZE SOURCE-VERIFIED REMEDIATION</div><p>CISA KEV lists this CVE as known exploited. Validate affected assets and follow the official required action. ${item.dueDate?`Federal civilian executive branch agencies should follow the CISA due date: <strong>${escHtml(item.dueDate)}</strong>.`:'Other organizations should prioritize remediation according to verified exposure and vendor guidance.'} Required action: ${escHtml(item.reqAction||'Review the official CISA KEV required action and vendor bulletin.')}</p></div></div>`:item.exploited?`<div class="alert alert-warn"><span class="aico">⚠️</span><div class="abody"><div class="atitle">SOURCE-REPORTED EXPLOITATION — VALIDATE</div><p>Exploitation is reported in collected intelligence; verify the primary source, affected versions, enterprise exposure and appropriate change-controlled response. Editorial priority: ${score}/100.</p></div></div>`:`<div class="alert alert-info"><span class="aico">🔵</span><div class="abody"><div class="atitle">SOURCE-LINKED SECURITY ADVISORY — Editorial priority: ${score}/100 (${escHtml(tl)})</div><p>CVSS ${cvssDisplay} — ${sevLabel} technical severity. Assess affected versions, exposure and vendor remediation. Evidence collected from ${item.sourceCount||1} source record(s); source count does not establish independent corroboration.</p></div></div>`}
     <h2 id="cdb-static-executive" class="sh"><span>📋</span> Executive Summary</h2>
     <div class="exec-box"><div class="ex-label">⚡ Analyst Assessment — SENTINEL APEX v4.0</div><p>${escHtml(execSummary)}</p><div style="margin-top:12px;font-size:12px;color:var(--apex-muted)">Intelligence sources: ${srcBadges}</div></div>
     ${genSeverityAnatomy(item, escHtml)}
