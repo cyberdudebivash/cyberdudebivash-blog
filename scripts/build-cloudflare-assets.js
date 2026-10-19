@@ -8,6 +8,7 @@
  */
 const fs = require('fs');
 const path = require('path');
+const { decorateLegacyPost, findSourceForCve } = require('./cti-archive-v14');
 
 const ROOT = path.join(__dirname, '..');
 const OUT = path.join(ROOT, 'dist-public');
@@ -29,7 +30,7 @@ const PUBLIC_ROOT_FILES = [
   'hunts.html', 'deployments.html', 'dossier.html', 'defense-profile.html', 'workbench.html',
   // Premium Intelligence Commerce Engine v1.
   'intelligence-store.html', 'customer-library.html', 'premium-previews.json',
-  'apex-v12.css', 'apex-v13.css', 'mobile-first.css', 'apex-command-center.css', 'responsive-platform.css', 'customer-experience.css',
+  'apex-v12.css', 'apex-v13.css', 'cti-archive-reader.css', 'mobile-first.css', 'apex-command-center.css', 'responsive-platform.css', 'customer-experience.css',
   'ai-monetization-engine.js', 'analytics-engine.js', 'auto-intel-engine.js',
   'banner-orchestrator.js', 'conversion-engine.js', 'email-engine.js',
   'live-feed-widget.js', 'monetization.js', 'payment-engine.js',
@@ -152,6 +153,16 @@ function repairLegacyCveHtml(src, html) {
   const match = rel.match(/^cve\/(CVE-\d{4}-\d+)\.html$/i);
   if (!match) return html;
   const id = match[1].toUpperCase();
+  // Historical CVE artifacts were produced before the v12/v13 reader. When a
+  // sufficient, exact-ID source record exists, render only the PUBLIC BUILD
+  // COPY with the modern generator; never overwrite repository-source HTML.
+  // Missing/insufficient source records remain historical and appear in the
+  // read-only v14 audit manifest (never fill missing evidence by inference).
+  const stagedSource = findSourceForCve(ROOT, rel);
+  if (stagedSource.status === 'source_eligible' &&
+      !html.includes('data-cdb-soc-cti-v12="true"')) {
+    return renderCvePageFromJson(id, stagedSource.source, rel);
+  }
   // Pages whose CVSS is in the NVD-verified ledger are re-rendered from the
   // corrected record (ICF-P0-006); generate-cve-pages.js skips existing pages.
   const corrections = require('../api/_lib/cvss-corrections');
@@ -294,7 +305,11 @@ function copyFileForPublicBuild(src, dest) {
   if (src.toLowerCase().endsWith('.html')) {
     const sourceHtml = fs.readFileSync(src, 'utf8');
     const repairedHtml = applyLegacyCvssCorrection(src, neutralizeLegacyCommercialCopy(repairLegacyCveHtml(src, sourceHtml)));
-    const html = validatePublicHtmlStructure(repairedHtml, path.relative(ROOT, src));
+    const rel = path.relative(ROOT,src).replace(/\\/g,'/');
+    // Add only visual affordances and an archive-use disclosure for older posts.
+    // The underlying threat narrative, headings, claims, evidence, provenance,
+    // SEO metadata and historic publish date remain intact in source control.
+    const html = validatePublicHtmlStructure(decorateLegacyPost(repairedHtml,rel), rel);
     fs.writeFileSync(dest, injectCustomerExperience(html));
   } else if (src.toLowerCase().endsWith('.json')) {
     fs.writeFileSync(dest, correctPublicIntelJson(fs.readFileSync(src, 'utf8')));
@@ -480,4 +495,4 @@ if (require.main === module) {
   console.log(`dist-public/ built: ${countFiles(out)} files`);
 }
 
-module.exports = { build, countFiles, buildPublicSitemap, listHtmlFiles, PUBLIC_DIRS, PUBLIC_ROOT_FILES, ROOT, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure, hasUndefinedMetadataArtifacts, repairLegacyCveHtml, CX_CSS, CX_JS, LEGACY_COMMERCIAL_COPY, RETIRED_PLAN_PRICE_COPY, UNSUPPORTED_PUBLIC_CLAIMS, neutralizeLegacyCommercialCopy, findUnsupportedPublicClaims, correctPublicIntelJson, applyLegacyCvssCorrection, synthesizeMissingCvePages, renderCvePageFromJson, stripUnprovenGraphIocs };
+module.exports = { build, countFiles, buildPublicSitemap, listHtmlFiles, PUBLIC_DIRS, PUBLIC_ROOT_FILES, ROOT, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure, hasUndefinedMetadataArtifacts, repairLegacyCveHtml, CX_CSS, CX_JS, LEGACY_COMMERCIAL_COPY, RETIRED_PLAN_PRICE_COPY, UNSUPPORTED_PUBLIC_CLAIMS, neutralizeLegacyCommercialCopy, findUnsupportedPublicClaims, correctPublicIntelJson, applyLegacyCvssCorrection, synthesizeMissingCvePages, renderCvePageFromJson, stripUnprovenGraphIocs, decorateLegacyPost, findSourceForCve };
