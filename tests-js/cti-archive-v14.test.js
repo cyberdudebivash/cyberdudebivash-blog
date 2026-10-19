@@ -152,3 +152,30 @@ test('missing CVSS or malformed priority badge is not silently upgraded',()=>{
   const bad='<div class="vscore">12.5</div><div class="threat-badge">LOW — 39/100</div>';
   assert.equal(normalizeArchiveSidebar(bad),bad);
 });
+
+test('read-only manifest records exact before and staged CVE public-byte hashes',()=>{
+  const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'cti-cve-hash-v14-'));
+  try{
+    const cveId='CVE-2026-77234';
+    const sourceDir=path.join(tmp,'api','intel','cve');
+    const cveDir=path.join(tmp,'cve');
+    fs.mkdirSync(sourceDir,{recursive:true});fs.mkdirSync(cveDir,{recursive:true});
+    const record={id:cveId,title:'Example vendor application vulnerability',
+      description:'The vendor bulletin reports a vulnerability that requires assessment of the affected application version.',
+      cvss:6.1,refs:['https://vendor.example/advisory'],published:'2026-10-16'};
+    fs.writeFileSync(path.join(sourceDir,cveId+'.json'),JSON.stringify(record));
+    const orig='<html><head><title>Old record</title></head><body><h1>Legacy source</h1></body></html>';
+    const historical=path.join(cveDir,cveId+'.html');
+    fs.writeFileSync(historical,orig);
+    const before=digest(fs.readFileSync(historical));
+    const result=inspectArchive(tmp);
+    assert.equal(result.totals.cve_source_eligible,1);
+    assert.equal(result.files.length,1);
+    const entry=result.files[0];
+    assert.equal(entry.original_sha256,before);
+    assert.equal(entry.staged_sha256.length,64);
+    assert.notEqual(entry.staged_sha256,before);
+    assert.ok(entry.staged_bytes>orig.length);
+    assert.equal(digest(fs.readFileSync(historical)),before);
+  }finally{fs.rmSync(tmp,{recursive:true,force:true})}
+});
