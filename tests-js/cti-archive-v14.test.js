@@ -99,3 +99,38 @@ test('public CVE builder regenerates a matching old CVE from authoritative store
   assert.match(next,/https:\/\/blog\.cyberdudebivash\.in\/cve\/CVE-2009-0238\.html/);
   assert.equal(fs.readFileSync(source,'utf8'),old,'builder may not modify git source');
 });
+
+test('CVE legacy source date is reused, not replaced by build date',()=>{
+  const {renderPage,sourceIsoDate}=require('../generate-cve-pages.js');
+  assert.equal(sourceIsoDate('2026-04-14'),'2026-04-14');
+  assert.equal(sourceIsoDate('not supplied'),null);
+  const source=JSON.parse(fs.readFileSync(path.join(ROOT,'api','intel','cve','CVE-2009-0238.json'),'utf8'));
+  const html=renderPage(source);
+  assert.match(html, /"datePublished":"2026-04-14"/);
+  assert.doesNotMatch(html, /"datePublished":"2026-06-22"/);
+  assert.match(html, /SOURCE PUBLICATION DATE/);
+});
+
+test('compound primary references split into independently clickable HTTP links',()=>{
+  const {renderPage,normalizeReferences}=require('../generate-cve-pages.js');
+  const list=normalizeReferences([
+    'https://learn.microsoft.com/example ; https://nvd.nist.gov/vuln/detail/CVE-2009-0238',
+    'javascript:alert(1)', 'https://learn.microsoft.com/example',
+    'https://guest:pass@example.com/private',
+  ]);
+  assert.deepEqual(list,['https://learn.microsoft.com/example','https://nvd.nist.gov/vuln/detail/CVE-2009-0238']);
+  const source=JSON.parse(fs.readFileSync(path.join(ROOT,'api','intel','cve','CVE-2009-0238.json'),'utf8'));
+  const html=renderPage(source);
+  assert.match(html,/href="https:\/\/learn\.microsoft\.com\/en-us\/security-updates\/securitybulletins\/2009\/ms09-009"/);
+  assert.match(html,/href="https:\/\/nvd\.nist\.gov\/vuln\/detail\/CVE-2009-0238"/);
+  assert.doesNotMatch(html,/ms09-009 ; https:/);
+});
+
+test('CVE source records do not invent publication date or emit blank sitemap lastmod',()=>{
+  const {renderPage}=require('../generate-cve-pages.js');
+  const source={id:'CVE-2026-99999',title:'Vendor advisory for example service',description:'Vulnerability in a supported example component affecting a version.',refs:[],cvss:7.5};
+  const html=renderPage(source);
+  assert.doesNotMatch(html,/"datePublished"/);
+  assert.doesNotMatch(html,/"dateModified"/);
+  assert.match(html,/Source publication date/i);
+});
