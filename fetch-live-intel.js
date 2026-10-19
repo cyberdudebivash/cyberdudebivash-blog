@@ -11,6 +11,7 @@ const https  = require('https');
 const http   = require('http');
 const fs     = require('fs');
 const path   = require('path');
+const { renderSocCtiCover, CSS: SOC_CTI_COVER_CSS } = require('./scripts/cti-soc-cover');
 const url    = require('url');
 const crypto = require('crypto');
 
@@ -1810,7 +1811,7 @@ function genMultiPlatformDetections(item, esc) {
       sigma: 'Sigma (SIEM-agnostic)', kql: 'Microsoft Defender / Sentinel (KQL)',
       splunk: 'Splunk (SPL)', osquery: 'OSQuery (Endpoint)',
     };
-    let html = `<h2 class="sh"><span>🧠</span> Multi-Platform Detection Engineering</h2>`;
+    let html = `<h2 id="cdb-static-detection" class="sh"><span>🧠</span> Multi-Platform Detection Engineering</h2>`;
     html += `<p class="bp">Reference detection drafts mapped to MITRE ATT&amp;CK by the SENTINEL APEX Detection Engine. These rules are not environment-validated: review source evidence, test syntax, establish a baseline, and tune before deployment.</p>`;
     for (const d of detections) {
       html += `<h3 style="font-size:1rem;color:var(--apex-cyan);margin:1.2rem 0 .5rem">${esc(d.technique_id)} — ${esc(d.title)}</h3>`;
@@ -2414,6 +2415,7 @@ function generatePostHTML(item) {
   // scheduling score. Never render priority band as CVSS severity.
   const tl = item.threatLevel || 'UNASSESSED';
   const score = item.priority || 0;
+  const socCtiCover = renderSocCtiCover(item, { verifiedDetectionEvidence: showDetection });
   const typeLabels = { CVE_REPORT:'🔴 CVE ANALYSIS', ZERO_DAY:'💀 ZERO-DAY', RANSOMWARE:'🏴 RANSOMWARE', MALWARE_REPORT:'🦠 MALWARE', DATA_BREACH:'⚠️ DATA BREACH', THREAT_ACTOR:'🎯 THREAT ACTOR', AI_SECURITY:'🤖 AI SECURITY', NEWS_REPORT:'📡 INTEL', ADVISORY:'🛡️ ADVISORY' };
   const typeLabel = typeLabels[item.type]||'⚡ INTEL';
   const vendorProductLabel = [item.vendor, item.product].filter(Boolean).join(' ');
@@ -2578,6 +2580,7 @@ p.bp{font-size:15px;color:#c9d1d9;line-height:1.8;margin-bottom:14px}
 footer{background:var(--apex-surface);border-top:1px solid var(--apex-border);padding:32px 24px;text-align:center}footer p{font-size:13px;color:var(--apex-muted);line-height:1.8}footer a{color:var(--apex-cyan);text-decoration:none}
 @media(max-width:767px){nav{padding:0 14px}.nlinks a:not(.ncta){display:none}.ntag{display:none}}
 </style>
+${SOC_CTI_COVER_CSS}
 </head>
 <body>
 <canvas id="mc"></canvas>
@@ -2595,6 +2598,7 @@ footer{background:var(--apex-surface);border-top:1px solid var(--apex-border);pa
 </nav>
 <main>
   <article>
+    ${socCtiCover}
     <div class="meta-bar">${badges}<span class="rep-date">Published: ${pubDateFmt}</span></div>
     <h1 class="rh1">${escHtml(item.title)}</h1>
     <p class="rsubtitle">${escHtml(truncAtWord(cleanDescText,350))}${cleanDescText.length>350?'…':''}</p>
@@ -2607,7 +2611,7 @@ footer{background:var(--apex-surface);border-top:1px solid var(--apex-border);pa
       <div class="stat"><div class="sv" style="color:var(--apex-green)">${item.sourceCount||1}x</div><div class="sl">Sources</div></div>
     </div>
     ${item.cisaKev?`<div class="alert alert-crit"><span class="aico">🚨</span><div class="abody"><div class="atitle">CISA KNOWN EXPLOITED VULNERABILITY — MANDATORY REMEDIATION</div><p>Active exploitation confirmed. CISA KEV catalog listed. ${item.dueDate?`Federal agencies must remediate by <strong>${item.dueDate}</strong>.`:'All organizations must patch immediately.'} Required action: ${escHtml(item.reqAction||'Apply vendor patch immediately.')}</p></div></div>`:item.exploited?`<div class="alert alert-warn"><span class="aico">⚠️</span><div class="abody"><div class="atitle">ACTIVE EXPLOITATION DETECTED</div><p>Exploitation confirmed in the wild. Emergency patching required. Score: ${score}/100 — do not wait for maintenance window.</p></div></div>`:`<div class="alert alert-info"><span class="aico">🔵</span><div class="abody"><div class="atitle">SOURCE-LINKED SECURITY ADVISORY — Editorial priority: ${score}/100 (${escHtml(tl)})</div><p>CVSS ${cvssDisplay} — ${sevLabel} technical severity. Assess affected versions, exposure and vendor remediation. Evidence collected from ${item.sourceCount||1} source record(s); source count does not establish independent corroboration.</p></div></div>`}
-    <h2 class="sh"><span>📋</span> Executive Summary</h2>
+    <h2 id="cdb-static-executive" class="sh"><span>📋</span> Executive Summary</h2>
     <div class="exec-box"><div class="ex-label">⚡ Analyst Assessment — SENTINEL APEX v4.0</div><p>${escHtml(execSummary)}</p><div style="margin-top:12px;font-size:12px;color:var(--apex-muted)">Intelligence sources: ${srcBadges}</div></div>
     ${genSeverityAnatomy(item, escHtml)}
     ${genCweAnatomy(item, escHtml)}
@@ -2616,7 +2620,7 @@ footer{background:var(--apex-surface);border-top:1px solid var(--apex-border);pa
     <h2 class="sh"><span>🔗</span> Representative Attack Path</h2>
     <p class="bp" style="font-size:14px">A typical attack path for this vulnerability class, mapped to MITRE ATT&amp;CK. This is a representative model to guide detection and defense — not a claim of observed activity against a specific target. Confirm specifics against the primary sources below.</p>
     <table class="tbl"><thead><tr><th>#</th><th>Phase</th><th>Attacker Action</th><th>MITRE</th></tr></thead><tbody>${chainRows}</tbody></table>
-    <h2 class="sh"><span>⚠</span> Deep Dive Analysis</h2>
+    <h2 id="cdb-static-technical" class="sh"><span>⚠</span> Deep Dive Analysis</h2>
     ${commentary.split('\n\n').map(p=>`<p class="bp">${escHtml(p)}</p>`).join('\n    ')}
     ${structuredReasoning}
     ${priorIntel}
@@ -2636,7 +2640,7 @@ footer{background:var(--apex-surface);border-top:1px solid var(--apex-border);pa
     ${showDetection ? multiDetections : ''}
     ${detectionRelevant && !verifiedDetectionEvidence ? '<h2 class="sh"><span>🔎</span> Detection Evidence Gap</h2><p class="bp">No source-validated detection content is established for this record. Do not deploy rules that match only a CVE identifier or generic product string. Inventory affected systems, inspect the linked vendor advisory, identify relevant telemetry, and validate detections in a test environment before any production enforcement.</p>' : ''}
     ${showDetection ? intelligenceProducts : ''}
-    <section class="ecta" data-cdb-ecosystem-static-v1="true" aria-label="Relevant security platforms and services">
+    <section id="cdb-ecosystem-services" class="ecta" data-cdb-ecosystem-static-v1="true" aria-label="Relevant security platforms and services">
       <h3>SENTINEL APEX™ | Extend this investigation</h3>
       <p class="ep">Source-linked intelligence is freely assessable. Explore related CYBERDUDEBIVASH® platforms, training, and enterprise services. Commercial access never increases intelligence certainty.</p>
       <div class="cta-grid">
@@ -2651,9 +2655,9 @@ footer{background:var(--apex-surface);border-top:1px solid var(--apex-border);pa
         <p class="ep"><a href="https://labs.cyberdudebivash.in/" rel="noopener noreferrer">Security Labs</a> · <a href="https://trustx.cyberdudebivash.com/" rel="noopener noreferrer">TRUSTX Private Preview</a> · <a href="https://blog.cyberdudebivash.in/" rel="noopener noreferrer">Research Blog</a></p>
       </details>
     </section>
-    <h2 class="sh"><span>🛡️</span> SOC Response Playbook</h2>
+    <h2 id="cdb-static-response" class="sh"><span>🛡️</span> SOC Response Playbook</h2>
     <ul class="alist">${playbookItems}</ul>
-    <h2 class="sh"><span>📎</span> Intelligence References</h2>
+    <h2 id="cdb-static-references" class="sh"><span>📎</span> Intelligence References</h2>
     <ul style="list-style:none;padding:0">${refLinks}${item.id?.startsWith('CVE')?`<li><a href="https://nvd.nist.gov/vuln/detail/${escHtml(item.id)}" target="_blank" rel="noopener" style="color:var(--apex-cyan)">📌 NVD — ${escHtml(item.id)}</a></li>`:''}</ul>
     ${aiSecSection}${malwareSection}${darkwebSection}
     <!-- SENTINEL APEX: Newsletter capture + Related Resources -->
