@@ -40,7 +40,7 @@ _CSS = r"""<style id="cdb-cti-readability-v13-css">
 .cdb-cti-dossier pre{max-width:100%!important;overflow:auto!important;tab-size:2}
 .cdb-cti-dossier a{color:var(--read-link)!important;text-underline-offset:3px!important}
 .cdb-cti-dossier .cdbv12-cover{max-width:100%!important}
-@media(max-width:760px){.cdb-cti-dossier{padding-inline:clamp(12px,3vw,19px)!important}.cdb-cti-dossier .cdbd-nav{top:0!important}.cdb-cti-dossier .cdbd-nav>div{overscroll-behavior-x:contain}.cdb-cti-dossier :is(.cdbv12-nav,.cdbv11-intel-actions nav){gap:8px!important}.cdb-cti-dossier .cdb-cti-dossier table{display:block!important;overflow-x:auto!important}}
+@media(max-width:760px){.cdb-cti-dossier{padding-inline:clamp(12px,3vw,19px)!important}.cdb-cti-dossier .cdbd-nav{top:0!important}.cdb-cti-dossier .cdbd-nav>div{overscroll-behavior-x:contain}.cdb-cti-dossier :is(.cdbv12-nav,.cdbv11-intel-actions nav){gap:8px!important}.cdb-cti-dossier table{display:block!important;overflow-x:auto!important}}
 @media(prefers-reduced-motion:reduce){.cdb-cti-dossier *{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 @media print{.cdb-cti-dossier{background:#fff!important;color:#111!important;box-shadow:none!important}.cdb-cti-dossier :is(p,li,td,th){color:#111!important}.cdb-cti-dossier :is(.cdbd-command,.cdbv12-cover,.cdbv11-intel-actions){box-shadow:none!important;break-inside:avoid}.cdb-cti-dossier :is(.cdbd-nav,.cdbv12-nav){display:none!important}}
 </style>"""
