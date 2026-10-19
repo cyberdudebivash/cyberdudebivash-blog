@@ -108,7 +108,9 @@ describe('SENTINEL APEX evidence-integrity controls', () => {
     });
     expect(html).toContain('CVSS Not assigned');
     expect(html).toContain('Evidence boundary');
-    expect(html).toContain('reference draft');
+    expect(html).toContain('Detection Evidence Gap');
+    expect(html).not.toContain('Reference Detection Draft — Sigma');
+    expect(html).not.toContain('Reference Detection Draft — YARA');
     expect(html).not.toMatch(/10,000\+|48hr pre-disclosure|PRIVATE LIMITED|FP-validated|production-ready/i);
   });
 });

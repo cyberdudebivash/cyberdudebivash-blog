@@ -2377,8 +2377,13 @@ function generatePostHTML(item) {
   // per-CVE API file writer already reads (writeAPIFiles) but nothing has
   // ever set — every source's CVE JSON gains a populated `mitre` field as
   // a side effect, not just Sentinel APEX's.
-  const mitre = item.mitreNative || getMitre(item);
-  item._mitre = mitre;
+  // Publish ATT&CK as mapped event evidence only when native source metadata
+  // supplies it. Keyword-inferred techniques are NOT verified event behavior.
+  const hasSourceMitre = Boolean(item.mitreNative && item.mitreNative.technique);
+  const mitre = hasSourceMitre ? item.mitreNative
+    : { tactic: 'NOT ESTABLISHED', technique: 'NOT ESTABLISHED', sub: 'NOT ESTABLISHED' };
+  if (hasSourceMitre) item._mitre = mitre;
+  else delete item._mitre;
   const execSummary = genExecutiveSummary(item);
   const bizImpact   = genBusinessImpact(item);
   const attackChain = genAttackChain(item);
@@ -2388,9 +2393,15 @@ function generatePostHTML(item) {
   const aiSecSection   = item.type==='AI_SECURITY' ? genAISecSection(item, escHtml) : '';
   const malwareSection = (item.type==='MALWARE_REPORT'||item.type==='RANSOMWARE') ? genMalwareSection(item, escHtml) : '';
   const darkwebSection = item.type==='DARK_WEB' ? genDarkWebSection(item, escHtml) : '';
-  const sigma = genSigma(item);
-  const yara  = genYARA(item);
-  const multiDetections = genMultiPlatformDetections(item, escHtml);
+  // A CVE identifier, product name or generic ATT&CK guess is not an IOC
+  // or a tested detection. Require explicit trusted evidence certification
+  // before publishing executable-looking Sigma/YARA/SIEM content.
+  const verifiedDetectionEvidence = item.detectionEvidenceVerified === true
+    && ((Array.isArray(item.iocs) && item.iocs.some(i => i && i.value && i.source))
+      || item.sourceBackedDetection === true);
+  // Never generate faux detections from CVE IDs. The existing genSigma/genYARA
+  // templates match advisory text and are not indicators of exploitation.
+  const multiDetections = verifiedDetectionEvidence ? genMultiPlatformDetections(item, escHtml) : '';
   const priorIntel = genPriorIntelligence(item, escHtml);
   const structuredReasoning = genStructuredReasoning(item, escHtml);
   const pubDateFmt = fmtDate(item.pubDate||isoNow()), today = isoNow();
@@ -2399,8 +2410,10 @@ function generatePostHTML(item) {
   const cvssDisplay = hasCvss ? String(cvss) : 'Not assigned';
   const cvssColor = !hasCvss?'#8b949e':cvss>=9.0?'#ff3b3b':cvss>=7.0?'#ff8c00':'#ffe000';
   const sevLabel = hasCvss ? (cvss>=9.0?'CRITICAL':cvss>=7.0?'HIGH':cvss>=4.0?'MEDIUM':'LOW') : String(item.severityLabel||'UNASSESSED').toUpperCase();
-  const tl = item.threatLevel||sevLabel;
-  const score = item.priority||0;
+  // Distinct concepts: CVSS = technical severity; priority = editorial
+  // scheduling score. Never render priority band as CVSS severity.
+  const tl = item.threatLevel || 'UNASSESSED';
+  const score = item.priority || 0;
   const typeLabels = { CVE_REPORT:'🔴 CVE ANALYSIS', ZERO_DAY:'💀 ZERO-DAY', RANSOMWARE:'🏴 RANSOMWARE', MALWARE_REPORT:'🦠 MALWARE', DATA_BREACH:'⚠️ DATA BREACH', THREAT_ACTOR:'🎯 THREAT ACTOR', AI_SECURITY:'🤖 AI SECURITY', NEWS_REPORT:'📡 INTEL', ADVISORY:'🛡️ ADVISORY' };
   const typeLabel = typeLabels[item.type]||'⚡ INTEL';
   const vendorProductLabel = [item.vendor, item.product].filter(Boolean).join(' ');
@@ -2445,7 +2458,7 @@ function generatePostHTML(item) {
     `<span class="badge bdg-score">${score}/100</span>`,
     `<span class="badge ${hasCvss?'bdg-red':'bdg-cyan'}">CVSS ${cvssDisplay}</span>`,
     `<span class="badge bdg-cyan">${typeLabel}</span>`,
-    (item.sourceCount||1)>=2?`<span class="badge bdg-green">✓ ${item.sourceCount}x CONFIRMED</span>`:'',
+    (item.sourceCount||1)>=2?`<span class="badge bdg-green">${item.sourceCount} SOURCE RECORDS</span>`:'',
   ].filter(Boolean).join('\n      ');
   const cveIds  = item.cves||(item.id?.startsWith('CVE')?[item.id]:[]);
   const cveRows = cveIds.slice(0,5).map(cve=>`<tr><td style="font-family:var(--mono);color:var(--apex-cyan)">${escHtml(cve)}</td><td><a href="https://nvd.nist.gov/vuln/detail/${escHtml(cve)}" target="_blank" rel="noopener" style="color:var(--apex-cyan)">NVD →</a></td><td>${cvssDisplay}</td></tr>`).join('\n');
@@ -2461,7 +2474,8 @@ function generatePostHTML(item) {
       <td style="padding:10px 14px;font-size:13px;color:var(--apex-text)">${escHtml(step.detail)}</td>
       <td style="padding:10px 8px;text-align:center"><code style="font-size:10px;color:var(--apex-orange)">${escHtml(step.tactic)}</code></td>
     </tr>`).join('\n    ');
-  const showDetection = ['CVE_REPORT','ZERO_DAY','ADVISORY','MALWARE_REPORT','RANSOMWARE'].includes(item.type);
+  const detectionRelevant = ['CVE_REPORT','ZERO_DAY','ADVISORY','MALWARE_REPORT','RANSOMWARE'].includes(item.type);
+  const showDetection = detectionRelevant && verifiedDetectionEvidence;
   const srcBadges = (item._sources||[item.source]).map(s=>`<span style="display:inline-block;padding:2px 8px;border:1px solid var(--apex-border);border-radius:4px;font-size:11px;color:var(--apex-muted);margin:2px">${escHtml(s)}</span>`).join('');
 
   const html = `<!DOCTYPE html>
@@ -2568,12 +2582,12 @@ footer{background:var(--apex-surface);border-top:1px solid var(--apex-border);pa
 <body>
 <canvas id="mc"></canvas>
 <div class="ticker"><div class="ticker-inner">
-  <span class="ticker-item">⚡ ${escHtml(item.id)}${vendorProductLabel?` — ${escHtml(vendorProductLabel)}`:''} — Score ${score}/100 ${tl}</span>
+  <span class="ticker-item">⚡ ${escHtml(item.id)}${vendorProductLabel?` — ${escHtml(vendorProductLabel)}`:''} — Editorial priority ${score}/100 (${escHtml(tl)})</span>
   <span class="ticker-item">🛡️ CYBERDUDEBIVASH SENTINEL APEX — 24/7 Global Threat Intelligence v4.0</span>
-  <span class="ticker-item">⚠️ ${item.cisaKev?'CISA KEV CONFIRMED — ACTIVE EXPLOITATION':item.exploited?'ACTIVE EXPLOITATION DETECTED':'HIGH-PRIORITY SECURITY ADVISORY'}</span>
+  <span class="ticker-item">⚠️ ${item.cisaKev?'CISA KEV CONFIRMED — ACTIVE EXPLOITATION':item.exploited?'ACTIVE EXPLOITATION DETECTED':'SOURCE-LINKED SECURITY ADVISORY'}</span>
   <span class="ticker-item">⚡ ${escHtml(item.id)} — CVSS ${cvssDisplay} — ${(item.sourceCount||1)} Source(s) Collected</span>
   <span class="ticker-item">🛡️ CYBERDUDEBIVASH SENTINEL APEX — 24/7 Global Threat Intelligence v4.0</span>
-  <span class="ticker-item">⚠️ ${item.cisaKev?'CISA KEV CONFIRMED — ACTIVE EXPLOITATION':item.exploited?'ACTIVE EXPLOITATION DETECTED':'HIGH-PRIORITY SECURITY ADVISORY'}</span>
+  <span class="ticker-item">⚠️ ${item.cisaKev?'CISA KEV CONFIRMED — ACTIVE EXPLOITATION':item.exploited?'ACTIVE EXPLOITATION DETECTED':'SOURCE-LINKED SECURITY ADVISORY'}</span>
 </div></div>
 <nav>
   <a href="/" class="nbrand"><div><div class="nlogo">CYBERDUDE<span style="color:#fff">BIVASH</span></div><div class="ntag">SENTINEL APEX v4.0 — Global Threat Intelligence</div></div></a>
@@ -2585,14 +2599,14 @@ footer{background:var(--apex-surface);border-top:1px solid var(--apex-border);pa
     <h1 class="rh1">${escHtml(item.title)}</h1>
     <p class="rsubtitle">${escHtml(truncAtWord(cleanDescText,350))}${cleanDescText.length>350?'…':''}</p>
     <div class="stats-bar">
-      <div class="stat red"><div class="sv">${cvss}</div><div class="sl">CVSS Score</div></div>
-      <div class="stat"><div class="sv" style="color:${cvssColor}">${tl}</div><div class="sl">Threat Level</div></div>
-      <div class="stat yellow"><div class="sv">${score}</div><div class="sl">Priority /100</div></div>
+      <div class="stat red"><div class="sv">${cvssDisplay}</div><div class="sl">CVSS Base Score</div></div>
+      <div class="stat"><div class="sv" style="color:${cvssColor}">${sevLabel}</div><div class="sl">CVSS Severity</div></div>
+      <div class="stat yellow"><div class="sv">${score}</div><div class="sl">Editorial Priority /100 (${escHtml(tl)})</div></div>
       <div class="stat orange"><div class="sv">${item.exploited?'YES':'TBD'}</div><div class="sl">Exploited ITW</div></div>
       <div class="stat ${item.cisaKev?'red':'green'}"><div class="sv">${item.cisaKev?'⚠️ KEV':'Monitor'}</div><div class="sl">CISA Status</div></div>
       <div class="stat"><div class="sv" style="color:var(--apex-green)">${item.sourceCount||1}x</div><div class="sl">Sources</div></div>
     </div>
-    ${item.cisaKev?`<div class="alert alert-crit"><span class="aico">🚨</span><div class="abody"><div class="atitle">CISA KNOWN EXPLOITED VULNERABILITY — MANDATORY REMEDIATION</div><p>Active exploitation confirmed. CISA KEV catalog listed. ${item.dueDate?`Federal agencies must remediate by <strong>${item.dueDate}</strong>.`:'All organizations must patch immediately.'} Required action: ${escHtml(item.reqAction||'Apply vendor patch immediately.')}</p></div></div>`:item.exploited?`<div class="alert alert-warn"><span class="aico">⚠️</span><div class="abody"><div class="atitle">ACTIVE EXPLOITATION DETECTED</div><p>Exploitation confirmed in the wild. Emergency patching required. Score: ${score}/100 — do not wait for maintenance window.</p></div></div>`:`<div class="alert alert-info"><span class="aico">🔵</span><div class="abody"><div class="atitle">HIGH-PRIORITY SECURITY ADVISORY — Priority Score: ${score}/100</div><p>CVSS ${cvss} ${tl}. SENTINEL APEX recommends immediate patch evaluation. Intelligence from ${item.sourceCount||1} confirmed source(s).</p></div></div>`}
+    ${item.cisaKev?`<div class="alert alert-crit"><span class="aico">🚨</span><div class="abody"><div class="atitle">CISA KNOWN EXPLOITED VULNERABILITY — MANDATORY REMEDIATION</div><p>Active exploitation confirmed. CISA KEV catalog listed. ${item.dueDate?`Federal agencies must remediate by <strong>${item.dueDate}</strong>.`:'All organizations must patch immediately.'} Required action: ${escHtml(item.reqAction||'Apply vendor patch immediately.')}</p></div></div>`:item.exploited?`<div class="alert alert-warn"><span class="aico">⚠️</span><div class="abody"><div class="atitle">ACTIVE EXPLOITATION DETECTED</div><p>Exploitation confirmed in the wild. Emergency patching required. Score: ${score}/100 — do not wait for maintenance window.</p></div></div>`:`<div class="alert alert-info"><span class="aico">🔵</span><div class="abody"><div class="atitle">SOURCE-LINKED SECURITY ADVISORY — Editorial priority: ${score}/100 (${escHtml(tl)})</div><p>CVSS ${cvssDisplay} — ${sevLabel} technical severity. Assess affected versions, exposure and vendor remediation. Evidence collected from ${item.sourceCount||1} source record(s); source count does not establish independent corroboration.</p></div></div>`}
     <h2 class="sh"><span>📋</span> Executive Summary</h2>
     <div class="exec-box"><div class="ex-label">⚡ Analyst Assessment — SENTINEL APEX v4.0</div><p>${escHtml(execSummary)}</p><div style="margin-top:12px;font-size:12px;color:var(--apex-muted)">Intelligence sources: ${srcBadges}</div></div>
     ${genSeverityAnatomy(item, escHtml)}
@@ -2606,7 +2620,8 @@ footer{background:var(--apex-surface);border-top:1px solid var(--apex-border);pa
     ${commentary.split('\n\n').map(p=>`<p class="bp">${escHtml(p)}</p>`).join('\n    ')}
     ${structuredReasoning}
     ${priorIntel}
-    <h2 class="sh"><span>🎯</span> MITRE ATT&CK Mapping</h2>
+    <h2 class="sh"><span>🎯</span> MITRE ATT&amp;CK Evidence Assessment</h2>
+    <p class="bp">${hasSourceMitre ? 'Source-provided mapping. Confirm techniques against the linked primary record before hunting or blocking.' : 'No ATT&amp;CK technique is established by the cited event-specific evidence. A vulnerability class does not prove adversary use of any technique.'}</p>
     <table class="tbl"><thead><tr><th>Category</th><th>Mapping</th></tr></thead><tbody>
       <tr><td>Primary Tactic</td><td style="color:var(--apex-red);font-weight:700">${escHtml(mitre.tactic)}</td></tr>
       <tr><td>Primary Technique</td><td style="color:var(--apex-cyan)">${escHtml(mitre.technique)}</td></tr>
@@ -2617,10 +2632,25 @@ footer{background:var(--apex-surface);border-top:1px solid var(--apex-border);pa
     </tbody></table>
     ${cveIds.length>0?`<h2 class="sh"><span>🔴</span> CVE Reference</h2><table class="tbl"><thead><tr><th>CVE ID</th><th>Reference</th><th>Score</th></tr></thead><tbody>${cveRows||`<tr><td style="font-family:var(--mono);color:var(--apex-cyan)">${escHtml(item.id)}</td><td><a href="https://nvd.nist.gov/vuln/detail/${escHtml(item.id)}" target="_blank" rel="noopener" style="color:var(--apex-cyan)">NVD →</a></td><td>CVSS ${cvss}</td></tr>`}</tbody></table>`:''}
     ${iocRows?`<h2 class="sh"><span>🏷️</span> Source-Provided Indicators</h2><p class="bp">Indicators are normalized from structured source fields. Validate ownership, context, freshness, and false-positive impact before monitoring or blocking.</p><table class="tbl"><thead><tr><th>Indicator Value</th><th>Type</th><th>Source Confidence</th><th>First Seen</th></tr></thead><tbody>${iocRows}</tbody></table>`:''}
-    ${showDetection?`<h2 class="sh"><span>🔍</span> Reference Detection Draft — Sigma</h2><p class="bp">Not production-validated. Review the evidence basis, test syntax, baseline expected activity, and tune in a non-production environment.</p><div class="code-block"><span class="code-lbl">Sigma YAML — reference draft</span>${escHtml(sigma)}</div>
-    <h2 class="sh"><span>📡</span> Reference Detection Draft — YARA</h2><p class="bp">Not false-positive validated. Confirm that strings identify malicious behavior rather than the vulnerability name or normal product artifacts.</p><div class="code-block"><span class="code-lbl">YARA — reference draft</span>${escHtml(yara)}</div>`:''}
-    ${showDetection?multiDetections:''}
-    ${showDetection?intelligenceProducts:''}
+    <!-- Unverified CVE-keyword Sigma/YARA templates are intentionally withheld. -->
+    ${showDetection ? multiDetections : ''}
+    ${detectionRelevant && !verifiedDetectionEvidence ? '<h2 class="sh"><span>🔎</span> Detection Evidence Gap</h2><p class="bp">No source-validated detection content is established for this record. Do not deploy rules that match only a CVE identifier or generic product string. Inventory affected systems, inspect the linked vendor advisory, identify relevant telemetry, and validate detections in a test environment before any production enforcement.</p>' : ''}
+    ${showDetection ? intelligenceProducts : ''}
+    <section class="ecta" data-cdb-ecosystem-static-v1="true" aria-label="Relevant security platforms and services">
+      <h3>SENTINEL APEX™ | Extend this investigation</h3>
+      <p class="ep">Source-linked intelligence is freely assessable. Explore related CYBERDUDEBIVASH® platforms, training, and enterprise services. Commercial access never increases intelligence certainty.</p>
+      <div class="cta-grid">
+        <a href="https://intel.cyberdudebivash.com/?utm_source=static_cti_report&amp;utm_medium=report&amp;utm_campaign=intel_factory" class="btn-s" rel="noopener noreferrer">Threat Intel Platform →</a>
+        ${item.type === 'AI_SECURITY'
+          ? '<a href="https://www.cyberdudebivash.in/?utm_source=static_cti_report&amp;utm_medium=report&amp;utm_campaign=ai_security" class="btn-e" rel="noopener noreferrer">AI Security Hub™ →</a>'
+          : '<a href="https://tools.cyberdudebivash.com/?utm_source=static_cti_report&amp;utm_medium=report&amp;utm_campaign=detection_review" class="btn-e" rel="noopener noreferrer">Security Tools →</a>'}
+        <a href="https://academy.cyberdudebivash.com/?utm_source=static_cti_report&amp;utm_medium=report&amp;utm_campaign=academy" class="btn-s" rel="noopener noreferrer">Enterprise Academy →</a>
+        <a href="https://www.cyberdudebivash.com/?utm_source=static_cti_report&amp;utm_medium=report&amp;utm_campaign=enterprise_inquiry" class="btn-e" rel="noopener noreferrer">Enterprise Services →</a>
+      </div>
+      <details><summary style="color:var(--apex-cyan);cursor:pointer">Explore other ecosystem portals</summary>
+        <p class="ep"><a href="https://labs.cyberdudebivash.in/" rel="noopener noreferrer">Security Labs</a> · <a href="https://trustx.cyberdudebivash.com/" rel="noopener noreferrer">TRUSTX Private Preview</a> · <a href="https://blog.cyberdudebivash.in/" rel="noopener noreferrer">Research Blog</a></p>
+      </details>
+    </section>
     <h2 class="sh"><span>🛡️</span> SOC Response Playbook</h2>
     <ul class="alist">${playbookItems}</ul>
     <h2 class="sh"><span>📎</span> Intelligence References</h2>
@@ -2665,7 +2695,7 @@ footer{background:var(--apex-surface);border-top:1px solid var(--apex-border);pa
   <aside class="sidebar">
     <div class="vbox">
       <div class="vscore">${cvss}</div><div class="vlabel">CVSS Score</div>
-      <div class="threat-badge">${tl} — ${score}/100</div>
+      <div class="threat-badge">CVSS ${sevLabel} · Editorial priority ${score}/100 (${escHtml(tl)})</div>
       <div style="margin-top:12px">
         <div class="vrow"><span class="vk">ID</span><span class="vv" style="color:var(--apex-cyan);font-family:monospace;font-size:11px">${escHtml(item.id)}</span></div>
         ${item.vendor?`<div class="vrow"><span class="vk">Vendor</span><span class="vv">${escHtml(item.vendor)}</span></div>`:''}
@@ -2675,7 +2705,7 @@ footer{background:var(--apex-surface);border-top:1px solid var(--apex-border);pa
         <div class="vrow"><span class="vk">CISA KEV</span><span class="vv" style="color:${item.cisaKev?'var(--apex-red)':'var(--apex-muted)'}">${item.cisaKev?'⚠️ Listed':'Not Listed'}</span></div>
         ${item.dueDate?`<div class="vrow"><span class="vk">Patch By</span><span class="vv" style="color:var(--apex-red)">${escHtml(item.dueDate)}</span></div>`:''}
         <div class="vrow"><span class="vk">Published</span><span class="vv">${pubDateFmt}</span></div>
-        <div class="vrow"><span class="vk">Sources</span><span class="vv" style="color:var(--apex-green)">${item.sourceCount||1} confirmed</span></div>
+        <div class="vrow"><span class="vk">Sources</span><span class="vv" style="color:var(--apex-green)">${item.sourceCount||1} collected</span></div>
         <div class="vrow"><span class="vk">IOCs</span><span class="vv">${(item.iocs||[]).length} indicators</span></div>
       </div>
     </div>
@@ -2724,14 +2754,16 @@ function generatePostCard(item, slug, title) {
   const cvss = hasCvss ? item.cvss : null;
   const cvssDisplay = hasCvss ? String(cvss) : 'Not assigned';
   const sevLabel = hasCvss ? (cvss>=9.0?'CRITICAL':cvss>=7.0?'HIGH':cvss>=4.0?'MEDIUM':'LOW') : String(item.severityLabel||'UNASSESSED').toUpperCase();
-  const tl = item.threatLevel||sevLabel;
-  const score = item.priority||0;
+  // Distinct concepts: CVSS = technical severity; priority = editorial
+  // scheduling score. Never render priority band as CVSS severity.
+  const tl = item.threatLevel || 'UNASSESSED';
+  const score = item.priority || 0;
   const todayFmt = fmtDate(item.pubDate||isoNow());
   const shortTitle = (title||'').length>110 ? title.slice(0,107)+'...' : title;
   const shortDesc  = (item.desc||'').slice(0,200)+((item.desc||'').length>200?'...':'');
   const typeIcos = { CVE_REPORT:'🔴', ZERO_DAY:'💀', RANSOMWARE:'🏴', MALWARE_REPORT:'🦠', DATA_BREACH:'⚠️', THREAT_ACTOR:'🎯', AI_SECURITY:'🤖', NEWS_REPORT:'📡', ADVISORY:'🛡️' };
   const ico = typeIcos[item.type]||'⚡';
-  const multiSrcBadge = (item.sourceCount||1)>=2 ? `<span class="post-badge" style="background:#00ff8822;color:#00ff88;border:1px solid #00ff8844;font-size:10px;padding:3px 7px;border-radius:3px;font-weight:700">✓ ${item.sourceCount}x</span>` : '';
+  const multiSrcBadge = (item.sourceCount||1)>=2 ? `<span class="post-badge" style="background:#00ff8822;color:#00ff88;border:1px solid #00ff8844;font-size:10px;padding:3px 7px;border-radius:3px;font-weight:700">${item.sourceCount} SOURCES COLLECTED</span>` : '';
   return `
     <!-- AUTO-GENERATED: ${item.id} — ${isoNow()} -->
     <a href="posts/${escHtml(slug)}.html" class="post-card" data-intel-auto="${escHtml(item.id)}" data-score="${score}" data-threat="${tl}">
@@ -2747,7 +2779,7 @@ function generatePostCard(item, slug, title) {
         <div class="post-title">${escHtml(shortTitle)}</div>
         <p class="post-excerpt">${escHtml(shortDesc)}</p>
         <div class="post-meta">
-          <span class="post-cvss${cvss<9?' orange':''}">CVSS ${cvss} — ${tl}</span>
+          <span class="post-cvss${cvss<9?' orange':''}">CVSS ${cvssDisplay} — ${sevLabel} severity · Editorial priority ${score}/100 (${escHtml(tl)})</span>
           <span class="post-cve">${escHtml(item.id)}</span>
           <span class="post-source" style="font-size:11px;color:var(--apex-muted,#6b7280)">${escHtml((item._sources||[item.source]).join(', '))}</span>
           <span class="post-read-more">Read Report →</span>
@@ -3387,7 +3419,7 @@ if (require.main === module) {
   });
 } else {
   module.exports = {
-    generatePostHTML, genMultiPlatformDetections, genPriorIntelligence,
+    generatePostHTML, generatePostCard, genMultiPlatformDetections, genPriorIntelligence,
     genStructuredReasoning, genIntelligenceProducts, buildProductApiJSON,
     genSigma, genYARA, getMitre, stripHtml, decodeEntities,
     extractHttpUrls, parseCvssFromText, hasConfirmedExploitation,

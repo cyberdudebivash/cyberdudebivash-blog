@@ -18,7 +18,8 @@ const RICH_ITEM = {
     + 'volume shadow copies before ransomware encryption.',
   vendor: 'PHP', product: 'PHP-CGI', cvss: 9.8, threatLevel: 'CRITICAL',
   priority: 95, type: 'RANSOMWARE', cves: ['CVE-2024-4577'],
-  iocs: [{ type: 'domain', value: 'evil-c2[.]top', confidence_score: 0.9, first_seen: '2026-07-04' }],
+  detectionEvidenceVerified: true, // explicit test-only evidence admission
+  iocs: [{ type: 'domain', value: 'evil-c2[.]top', source: 'vendor-advisory-fixture', confidence_score: 0.9, first_seen: '2026-07-04' }],
   refs: ['https://vendor.example/advisory'], pubDate: new Date().toISOString(),
 };
 
