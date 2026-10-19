@@ -37,9 +37,10 @@ function renderSocCtiCover(item, options={}){
   const exploit=item.cisaKev===true?'CISA KEV listed; verify record':item.exploited===true?'Exploitation reported; check sources':'Not established by this source record';
   const priority=item.priority==null?'Not assigned':clean(item.priority,5)+'/100';
   const vector=clean(item.vector||'',50),scoreVersion=vector.startsWith('CVSS:4.0')?'CVSS 4.0':vector.startsWith('CVSS:3.')?'CVSS v3.x':'CVSS version not provided';
-  const nav=[['Executive','#cdb-static-executive'],['Technical','#cdb-static-technical'],
+  const nav=Array.isArray(options.navLinks) ? options.navLinks.slice(0,8) :
+    [['Executive','#cdb-static-executive'],['Technical','#cdb-static-technical'],
     ['Sources','#cdb-static-references'],['Response','#cdb-static-response'],['Ecosystem','#cdb-ecosystem-services']];
-  if(options.verifiedDetectionEvidence)nav.splice(3,0,['Detection','#cdb-static-detection']);
+  if(options.verifiedDetectionEvidence && !Array.isArray(options.navLinks))nav.splice(3,0,['Detection','#cdb-static-detection']);
   const navHtml=nav.map(([n,h])=>'<a href="'+h+'">'+esc(n)+'</a>').join('');
   const stepHtml=STEPS.map(([n,d],i)=>'<div><b>0'+(i+1)+' / '+esc(n)+'</b><p>'+esc(d)+'</p></div>').join('');
   const cell=(name,value,note='')=>'<div><small>'+esc(name)+'</small><strong>'+esc(value)+'</strong>'+(note?'<small>'+esc(note)+'</small>':'')+'</div>';
@@ -54,7 +55,7 @@ function renderSocCtiCover(item, options={}){
     '<nav aria-label="Jump to dossier sections" class="cdb-soc12-nav">'+navHtml+'</nav>'+
     '<div class="cdb-soc12-focus"><div><small>ANALYST FOCUS</small><h3>'+esc(focus)+'</h3><p>'+esc(focusDetail)+'</p></div>'+
     '<div><small>PROVENANCE ENTRY</small><p>'+sourceLink(item.refs)+'</p><p>Source facts are separate from customer telemetry and commercial content.</p></div></div>'+
-    '<div class="cdb-soc12-handoff"><h3>SOC HANDOFF / DECISION GATES</h3><div>'+stepHtml+'</div></div>'+
+    '<div id="cdb-soc12-handoff" class="cdb-soc12-handoff"><h3>SOC HANDOFF / DECISION GATES</h3><div>'+stepHtml+'</div></div>'+
     '<p class="cdb-soc12-caveat"><b>Assurance boundary:</b> This is an operational CTI brief, not an AICPA SOC 2 Type I/II attestation, audit opinion, completed control test or evidence of customer compromise. All response actions require source and local-telemetry verification.</p>'+
     '</section>';
 }
