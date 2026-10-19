@@ -28,6 +28,27 @@ function isPost(rel){return /^posts\/[^/]+\.html$/i.test(String(rel).replace(/\\
 function isCve(rel){return /^cve\/CVE-\d{4}-\d+\.html$/i.test(String(rel).replace(/\\/g,'/'));}
 function digest(data){return crypto.createHash('sha256').update(data).digest('hex');}
 
+/**
+ * Legacy sidebar used an editorial priority band as if it described a CVSS
+ * base score. Render BOTH labels separately, deriving a band solely from the
+ * numeric score already shown on this page. This does not verify that the
+ * historical score itself is authoritative.
+ */
+function normalizeArchiveSidebar(html) {
+  const match=String(html).match(/<div class="vscore">\s*(\d+(?:\.\d+)?)\s*<\/div>/i);
+  if(!match)return String(html);
+  const score=Number(match[1]);
+  if(!Number.isFinite(score)||score<0||score>10)return String(html);
+  const band=score>=9?'CRITICAL':score>=7?'HIGH':score>=4?'MEDIUM':score>0?'LOW':'NONE';
+  let out=String(html);
+  out=out.replace(/(<div class="threat-badge">)(CRITICAL|HIGH|MEDIUM|LOW)\s*[—-]\s*(\d{1,3})\/100(<\/div>)/i,
+    (_,begin,priorityBand,priority,end)=>begin+'Displayed CVSS '+match[1]+' ('+band+') · Editorial priority '+priority+'/100 ('+priorityBand+')'+end);
+  // Source-count is an ingestion count. It does not establish corroboration.
+  out=out.replace(/(<span class="vk">Sources<\/span><span class="vv"[^>]*>)(\d+)\s+confirmed(<\/span>)/i,
+    (_,begin,count,end)=>begin+count+' collected'+end);
+  return out;
+}
+
 function decorateLegacyPost(html, relativePath) {
   const raw = String(html || '');
   if(!isPost(relativePath) || !raw || raw.includes(ARCHIVE_MARKER) ||
@@ -38,7 +59,7 @@ function decorateLegacyPost(html, relativePath) {
      !/<head(?:\s[^>]*)?>/i.test(raw) || !/<\/head>/i.test(raw) ||
      !/<\/body>/i.test(raw)) return raw;
 
-  let output = raw;
+  let output = normalizeArchiveSidebar(raw);
   if(!output.includes('cti-archive-reader.css')) {
     output = output.replace(/<\/head>/i,
       '<link rel="stylesheet" href="'+STYLE_REF+'">\n</head>');
@@ -146,4 +167,4 @@ function cli(argv=process.argv.slice(2)){
   return report;
 }
 if(require.main===module){try{cli();}catch(err){console.error('[CTI ARCHIVE] '+err.message);process.exitCode=1;}}
-module.exports={ARCHIVE_MARKER,STYLE_REF,NOTICE,decorateLegacyPost,findSourceForCve,inspectArchive,digest,cli};
+module.exports={ARCHIVE_MARKER,STYLE_REF,NOTICE,decorateLegacyPost,normalizeArchiveSidebar,findSourceForCve,inspectArchive,digest,cli};
