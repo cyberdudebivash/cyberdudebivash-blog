@@ -8,7 +8,7 @@ const source = fs.readFileSync(path.join(__dirname,'../.github/workflows/cloudfl
 test('production route checker remains fail closed on exact customer marker', () => {
   assert.match(source, /if \[ "\$code" = "200" \] && grep -Fq "\$marker" "\$file"/);
   assert.match(source, /Customer route \$route failed marker/);
-  assert.match(source, /customer_route_check "\/api-dashboard\.html" "API Dashboard — CYBERDUDEBIVASH SENTINEL APEX"/);
+  assert.match(source, /customer_route_check "\/api-dashboard\.html" "API Dashboard — SENTINEL APEX"/);
   assert.match(source, /exit 1\n          }\n\n          customer_route_check/);
 });
 test('route mismatch records sufficient privacy-bounded evidence', () => {

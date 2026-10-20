@@ -844,14 +844,14 @@ def test_homepage_release_certifies_major_customer_routes():
         'customer_route_check "/hunts.html" "Threat Hunting Workspace"',
         'customer_route_check "/detections/" "Traceable Detection Pack"',
         'customer_route_check "/customer-assurance.html" "Operational assurance for enterprise CTI customers."',
-        'customer_route_check "/api-dashboard.html" "API Dashboard — CYBERDUDEBIVASH SENTINEL APEX"',
+        'customer_route_check "/api-dashboard.html" "API Dashboard — SENTINEL APEX"',
         'customer_route_check "/service-status.html" "Availability without invented percentages."',
         'customer_route_check "/enterprise-onboarding.html" "From security review to accepted CTI delivery."',
         'customer_route_check "/customer-incident-response.html" "Customer Incident"',
         'customer_route_check "/cti-delivery-acceptance.html" "Acceptance is evidence, not assumption."',
         'customer_route_check "/products.html" "Premium Intelligence Reports"',
-        'customer_route_check "/pricing.html" "Pricing — CYBERDUDEBIVASH SENTINEL APEX Threat Intelligence Plans"',
-        'customer_route_check "/enterprise.html" "Enterprise Threat Intelligence Platform — CYBERDUDEBIVASH SENTINEL APEX"',
+        'customer_route_check "/pricing.html" "Pricing — SENTINEL APEX Threat Intelligence Plans | SENTINEL APEX"',
+        'customer_route_check "/enterprise.html" "Enterprise Threat Intelligence Platform — SENTINEL APEX | SENTINEL APEX"',
         'customer_route_check "/search.html" "cybersecurity reports"',
     ]:
         assert required in workflow

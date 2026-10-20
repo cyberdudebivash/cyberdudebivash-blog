@@ -166,7 +166,7 @@ jobs:
       - name: "Cloudflare runtime gate"
         run: |
           npm run check:cloudflare
-          node --test scripts/build-cloudflare-assets.test.js workers/lib/route-table.test.js workers/lib/router.test.js
+          node --test scripts/build-cloudflare-assets.test.js workers/lib/route-table.test.js workers/lib/router.test.js tests-js/production-route-markers.test.js
 
       - name: "Commercial dashboard integrity gate"
         run: python3 tests/test_commercial_intel_surfaces.py
@@ -191,6 +191,9 @@ jobs:
           test -s dist-public/soc-taxonomy-pivots.js
           test -s dist-public/soc-hybrid-workspace.js
           test -s dist-public/soc-evidence-drawer.js
+
+      - name: "Predeploy customer route certification parity — rendered build"
+        run: node scripts/preflight-customer-route-markers.cjs dist-public
 
       - name: "Wrangler configuration dry-run"
         run: npx wrangler deploy --dry-run --config wrangler.jsonc --outdir .wrangler-dry-run
@@ -521,14 +524,14 @@ jobs:
           customer_route_check "/hunts.html" "Threat Hunting Workspace"
           customer_route_check "/detections/" "Traceable Detection Pack"
           customer_route_check "/customer-assurance.html" "Operational assurance for enterprise CTI customers."
-          customer_route_check "/api-dashboard.html" "API Dashboard — CYBERDUDEBIVASH SENTINEL APEX"
+          customer_route_check "/api-dashboard.html" "API Dashboard — SENTINEL APEX"
           customer_route_check "/service-status.html" "Availability without invented percentages."
           customer_route_check "/enterprise-onboarding.html" "From security review to accepted CTI delivery."
           customer_route_check "/customer-incident-response.html" "Customer Incident"
           customer_route_check "/cti-delivery-acceptance.html" "Acceptance is evidence, not assumption."
           customer_route_check "/products.html" "Premium Intelligence Reports"
-          customer_route_check "/pricing.html" "Pricing — CYBERDUDEBIVASH SENTINEL APEX Threat Intelligence Plans"
-          customer_route_check "/enterprise.html" "Enterprise Threat Intelligence Platform — CYBERDUDEBIVASH SENTINEL APEX"
+          customer_route_check "/pricing.html" "Pricing — SENTINEL APEX Threat Intelligence Plans | SENTINEL APEX"
+          customer_route_check "/enterprise.html" "Enterprise Threat Intelligence Platform — SENTINEL APEX | SENTINEL APEX"
           customer_route_check "/search.html" "cybersecurity reports"
 
                     echo "SOC 2 + CTI homepage command center certified on $GITHUB_SHA"

@@ -10,7 +10,7 @@ const root = path.resolve(__dirname, '..');
 function fixture(t) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cloudflare-gate-'));
   t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
-  for (const file of ['scripts/check-cloudflare-runtime.js', 'scripts/build-cloudflare-assets.js', 'workers/lib/security-headers.js', 'package.json', 'wrangler.jsonc']) {
+  for (const file of ['scripts/check-cloudflare-runtime.js', 'scripts/build-cloudflare-assets.js', 'scripts/cti-archive-v14.js', 'workers/lib/security-headers.js', 'package.json', 'wrangler.jsonc']) {
     const dest = path.join(dir, file);
     fs.mkdirSync(path.dirname(dest), { recursive: true });
     fs.copyFileSync(path.join(root, file), dest);
