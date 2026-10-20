@@ -80,6 +80,16 @@ const CHANNELS = Object.freeze({
   NEWS_REPORT: ['intel', 'academy', 'research']
 });
 const BACKUP = ['intel','services','tools'];
+// Product examples appear in the supplied public catalog. Names are
+// directory discovery only, NOT claims of tested SaaS readiness or inventory.
+const PRODUCT_EXAMPLES = Object.freeze({
+  AI_SECURITY: ['AGENTGUARD PRO', 'TrustGov AI™', 'AI Security Red Team Professional Toolkit'],
+  RANSOMWARE: ['Fortress Lockdown', 'Ransomware IOC Blocker', 'SOC Incident Response Professional Toolkit'],
+  DATA_BREACH: ['LeakHunter', 'GHOST-CHECK', 'DPDP Audit & Readiness Professional Toolkit'],
+  CVE_REPORT: ['QuickScan', 'ReconX', 'Penetration Testing Reporting Toolkit'],
+  ZERO_DAY: ['QuickScan', 'ReconX', 'SOC Starter Bundle'],
+  DEFAULT: ['SOC Starter Bundle', 'LeakHunter', 'SovereignSOC']
+});
 const safe = value => String(value ?? '').replace(/&/g, '&amp;')
   .replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
   .replace(/'/g, '&#39;');
@@ -91,6 +101,7 @@ function recommendationsFor(type) {
 
 function renderEcosystemShowcase({ type = 'ADVISORY' } = {}) {
   const picks = recommendationsFor(type);
+  const productList = PRODUCT_EXAMPLES[String(type || '').toUpperCase()] || PRODUCT_EXAMPLES.DEFAULT;
   const card = key => {
     const offering = OFFERINGS[key];
     return '<article class="cdb-eco-card">' +
@@ -109,8 +120,13 @@ function renderEcosystemShowcase({ type = 'ADVISORY' } = {}) {
     '<span class="cdb-eco-overline">ECOSYSTEM PROMOTION · OWNED PLATFORMS &amp; SERVICES</span>' +
     '<h2>Extend your defense with CYBERDUDEBIVASH® ECOSYSTEM</h2>' +
     '<p>Explore connected cybersecurity platforms, specialist engagements, tools, labs and learning resources. ' +
-    'Choose a relevant next step for your organization.</p></header>' +
+    'Choose a relevant next step for your organization.</p>' +
+    '<p class="cdb-eco-directory-summary">Public directory listing (Oct 2026): 11 platforms · ' +
+    '13 services · 43 products · 2 APIs. Listings do not establish current availability.</p></header>' +
     '<div class="cdb-eco-cards">' + picks.map(card).join('') + '</div>' +
+    '<div class="cdb-eco-products"><strong>Relevant catalog products:</strong> ' +
+    productList.map(safe).join(' · ') + ' — <a href="https://tools.cyberdudebivash.com/" ' +
+    'target="_blank" rel="noopener noreferrer">Explore current listings ↗</a></div>' +
     '<div class="cdb-eco-actions">' +
     '<a class="cdb-eco-primary" href="https://www.cyberdudebivash.com/ecosystem" ' +
     'target="_blank" rel="noopener noreferrer">Explore the complete ecosystem ↗</a>' +
@@ -140,6 +156,9 @@ const RULES = [
   '.cdb-eco-card p{flex:1;color:#d0e0eb!important;font-size:13px!important;line-height:1.7!important;margin:0!important}',
   '.cdb-eco-showcase a{color:var(--eco-link);text-underline-offset:3px;overflow-wrap:anywhere}',
   '.cdb-eco-card a{display:inline-flex;align-items:center;margin-top:5px;min-height:44px;font-size:13px;font-weight:800;text-decoration:underline}',
+  '.cdb-eco-directory-summary{font-size:12px!important;color:#d4e6f2!important;margin:12px 0 0!important;line-height:1.6!important}',
+  '.cdb-eco-products{padding:13px 15px;border:1px solid #486b84;border-radius:9px;background:rgba(9,28,42,.35);color:#d9e7f0;font-size:13px;line-height:1.75}',
+  '.cdb-eco-products strong{color:#fff}',
   '.cdb-eco-actions{display:flex;flex-wrap:wrap;gap:12px;margin:20px 0 5px}',
   '.cdb-eco-actions a{min-height:44px;display:inline-flex;align-items:center;justify-content:center;border-radius:8px;padding:10px 15px;font-size:14px;font-weight:800;text-align:center;text-decoration:none}',
   '.cdb-eco-actions .cdb-eco-primary{background:#a1edeb;color:#092331!important}',
