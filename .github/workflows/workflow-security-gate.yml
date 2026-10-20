@@ -123,3 +123,24 @@ jobs:
 
       - name: "P0 production route and drift retry guard regressions"
         run: node --test tests-js/production-route-markers.test.js tests-js/production-drift-loop.test.js
+
+  customer-asset-contract:
+    name: "Rendered customer route contract (offline)"
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: "Node.js 24"
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: npm
+      - name: "Install locked dependencies"
+        run: npm ci --legacy-peer-deps --ignore-scripts --no-audit --no-fund
+      - name: "Build exactly the Cloudflare allowlisted static assets"
+        run: npm run build:cloudflare
+      - name: "Hard fail on any post-branding customer route marker drift"
+        run: node scripts/preflight-customer-route-markers.cjs dist-public
