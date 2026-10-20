@@ -850,8 +850,8 @@ def test_homepage_release_certifies_major_customer_routes():
         'customer_route_check "/customer-incident-response.html" "Customer Incident"',
         'customer_route_check "/cti-delivery-acceptance.html" "Acceptance is evidence, not assumption."',
         'customer_route_check "/products.html" "Premium Intelligence Reports"',
-        'customer_route_check "/pricing.html" "Pricing — CYBERDUDEBIVASH SENTINEL APEX Threat Intelligence Plans"',
-        'customer_route_check "/enterprise.html" "Enterprise Threat Intelligence Platform — CYBERDUDEBIVASH SENTINEL APEX"',
+        'customer_route_check "/pricing.html" "Pricing — SENTINEL APEX Threat Intelligence Plans | SENTINEL APEX"',
+        'customer_route_check "/enterprise.html" "Enterprise Threat Intelligence Platform — SENTINEL APEX | SENTINEL APEX"',
         'customer_route_check "/search.html" "cybersecurity reports"',
     ]:
         assert required in workflow
