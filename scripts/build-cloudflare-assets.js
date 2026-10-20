@@ -251,7 +251,7 @@ const LEGACY_COMMERCIAL_COPY = Object.freeze([
   ['48hr pre-disclosure · IOC feeds · Custom advisories · White-label reports · Dedicated analyst · MSSP licensing',
     'Explore connected cybersecurity platforms, specialist engagements, tools, labs and learning resources.'],
   ['Pre-disclosure intel, enriched IOC bundles, deploy-ready SIEM packs, and dedicated analyst support — before threats become headlines.',
-    'Request a scoped intelligence briefing, evidence review, custom IOC ingestion assessment, or detection-engineering engagement.'],
+    'Explore connected cybersecurity platforms, specialist engagements, tools, labs and learning resources.'],
   ['Deploy to endpoint detection platforms. Enterprise subscribers receive tuned, FP-validated YARA rule packs.',
     'No source-validated detection content is established for this record. Do not deploy rules that match only a CVE identifier or generic product string.'],
 ]);
