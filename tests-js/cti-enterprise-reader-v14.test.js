@@ -76,6 +76,9 @@ test('enterprise typesetting respects mobile/keyboard/reduced-motion/accessibili
   assert.match(CSS, /max-width:78ch/);
   assert.match(CSS, /min-height:44px/);
   assert.match(CSS, /:focus-visible/);
+  // Blogger's global nav CSS is sticky; report shortcuts must NOT inherit it.
+  assert.match(CSS, /\.cdb-v14-shortcuts\{[^}]*position:static!important/);
+  assert.match(CSS, /\.cdb-v14-shortcuts\{[^}]*height:auto!important/);
   assert.match(CSS, /@media\(max-width:760px\)/);
   assert.match(CSS, /overflow-x:auto/);
   assert.match(CSS, /prefers-reduced-motion:reduce/);
