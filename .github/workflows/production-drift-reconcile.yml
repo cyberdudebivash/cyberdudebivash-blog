@@ -31,7 +31,7 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - name: "Compare main with latest successful production deploy"
+      - name: "Compare main with latest fully certified production deploy"
         id: drift
         shell: bash
         env:
@@ -64,8 +64,24 @@ jobs:
             exit 0
           fi
 
+          # Do not auto-dispatch after a completed failed deploy/certification.
+          # The production deploy may have uploaded and activated the Worker
+          # before a post-deploy assertion failed. Automatically retrying it
+          # for every high-frequency publisher commit wastes Actions/Cloudflare
+          # capacity and can mutate DNS repeatedly without resolving the
+          # underlying customer contract. Require one operator-reviewed
+          # workflow_dispatch to re-establish a successful certified baseline.
+          last_completed="$(jq -r '[.workflow_runs[] | select(.status=="completed")][0].conclusion // empty' <<<"$runs_json")"
+          last_run_url="$(jq -r '[.workflow_runs[] | select(.status=="completed")][0].html_url // empty' <<<"$runs_json")"
+          if [ -n "$last_completed" ] && [ "$last_completed" != "success" ]; then
+            echo "drift=blocked" >> "$GITHUB_OUTPUT"
+            echo "blocked_run=$last_run_url" >> "$GITHUB_OUTPUT"
+            echo "::warning::Production deployment certification failed ($last_completed). Automatic redeploy paused to prevent a failure loop. Investigate $last_run_url; require manually reviewed recovery and an independently successful certification."
+            exit 0
+          fi
+
           echo "drift=true" >> "$GITHUB_OUTPUT"
-          echo "::notice::Production drift detected. main=$main_sha deployed=${deployed_sha:-none}"
+          echo "::notice::Production drift detected. main=$main_sha certified=${deployed_sha:-none}"
 
       - name: "Dispatch Cloudflare production deployment"
         if: steps.drift.outputs.drift == 'true'
@@ -85,5 +101,6 @@ jobs:
         run: |
           echo "### Production drift reconciliation" >> "$GITHUB_STEP_SUMMARY"
           echo "- main: \`${{ steps.drift.outputs.main_sha }}\`" >> "$GITHUB_STEP_SUMMARY"
-          echo "- latest successful deploy: \`${{ steps.drift.outputs.deployed_sha || 'none' }}\`" >> "$GITHUB_STEP_SUMMARY"
-          echo "- deploy dispatched: \`${{ steps.drift.outputs.drift }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- latest fully certified deploy: \`${{ steps.drift.outputs.deployed_sha || 'none' }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- dispatch decision: \`${{ steps.drift.outputs.drift }}\` (blocked = operator review required)" >> "$GITHUB_STEP_SUMMARY"
+          echo "- last failed deploy requiring review: ${{ steps.drift.outputs.blocked_run || 'none' }}" >> "$GITHUB_STEP_SUMMARY"
