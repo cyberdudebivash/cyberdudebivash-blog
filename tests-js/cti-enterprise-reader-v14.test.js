@@ -80,6 +80,7 @@ test('enterprise typesetting respects mobile/keyboard/reduced-motion/accessibili
   assert.match(CSS, /\.cdb-v14-shortcuts\{[^}]*position:static!important/);
   assert.match(CSS, /\.cdb-v14-shortcuts\{[^}]*height:auto!important/);
   assert.match(CSS, /@media\(max-width:760px\)/);
+  assert.match(CSS, /\.cdb-v14-shortcuts\{display:grid!important/);
   assert.match(CSS, /overflow-x:auto/);
   assert.match(CSS, /prefers-reduced-motion:reduce/);
   assert.match(CSS, /animation:none!important/);
@@ -88,6 +89,7 @@ test('enterprise typesetting respects mobile/keyboard/reduced-motion/accessibili
 test('print and PDF stylesheet is source-preserving and removes conversion blockers', () => {
   assert.match(CSS, /@page\{size:A4;margin:15mm 13mm\}/);
   assert.match(CSS, /@media print/);
+  assert.match(CSS, /body \.sidebar/);
   assert.match(CSS, /max-height:none!important/);
   assert.match(CSS, /white-space:pre-wrap!important/);
   assert.match(CSS, /break-after:avoid-page/);
