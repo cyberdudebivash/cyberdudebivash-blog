@@ -72,6 +72,19 @@ test('complete offering discovery uses grounded HTTPS links only and identifies 
   assert.match(html,/Listings do not establish current availability/);
 });
 
+test('directory discoverability covers all eleven named ecosystem platforms and corporate entry points',()=>{
+  for(const key of ['gateway','intel','ai','tools','labs','research','academy','globalcti','trustx','swarms','connect']){
+    assert.ok(OFFERINGS[key], 'missing platform directory entry '+key);
+    assert.ok(new URL(OFFERINGS[key].url).protocol==='https:');
+  }
+  const html=renderEcosystemShowcase({type:'AI_SECURITY'});
+  for(const name of ['CYBERDUDEBIVASH® Official Gateway','CYBERDUDEBIVASH® Connect','Global CTI Research']){
+    assert.ok(html.includes(name), 'not discoverable: '+name);
+  }
+  assert.match(html,/Explore the complete ecosystem/);
+  assert.match(html,/Availability, checkout, licensing/);
+});
+
 test('products spotlight matches threat context, without implying current SKU availability',()=>{
   const ai=renderEcosystemShowcase({type:'AI_SECURITY'});
   const ransomware=renderEcosystemShowcase({type:'RANSOMWARE'});
