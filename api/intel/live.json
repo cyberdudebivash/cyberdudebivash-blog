@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-20T19:18:14.671Z",
+  "generated": "2026-10-20T19:55:19.027Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,13 +7,60 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 6341,
+  "total_published": 6345,
   "s2n_stats": {
-    "passed": 126,
-    "suppressed": 6,
+    "passed": 127,
+    "suppressed": 3,
     "avg_qs": 0.478
   },
   "items": [
+    {
+      "id": "CVE-2026-111767",
+      "title": "MCP TypeScript SDK: Experimental tasks were not tied to the session that created them",
+      "description": "### Summary\nIn affected versions, the experimental tasks feature (`taskStore`) did not check which session created a task. Clients sharing one `InMemoryTaskStore` could list, read and cancel each other's tasks. Experimental tasks are deprecated. The 2026-07-28 specification replaced them with a rede",
+      "cvss": 8.6,
+      "final_ps": 62,
+      "quality_score": 0.578,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-20",
+      "last_seen": "2026-10-20",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "@modelcontextprotocol/sdk",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-111767",
+        "CVE-2026-111767"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-22jm-h49p-29qw",
+        "https://github.com/modelcontextprotocol/typescript-sdk/security/advisories/GHSA-22jm-h49p-29qw",
+        "https://github.com/modelcontextprotocol/typescript-sdk/pull/2925",
+        "https://github.com/modelcontextprotocol/typescript-sdk/commit/727075b5bbeb77fbea22041b36b72a73042160fa"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.578"
+        ],
+        "priority": [
+          "base_ps=62 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
     {
       "id": "CVE-2026-54459",
       "title": "CVE-2026-54459 FileRise: Missing CSRF enforcement for file creation and share-link creation",
@@ -2261,7 +2308,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2025-71417",
@@ -3535,6 +3584,51 @@
       "suppression_reason": null
     },
     {
+      "id": "CVE-2026-106931",
+      "title": "Japan’s SiteGuard WAF flaw CVE-2026-106931 is already being exploited",
+      "description": "Attackers are exploiting vulnerability CVE-2026-106931 in SiteGuard Server Edition to run commands as root or SYSTEM. EG Secure Solutions published an urgent alert warning of CVE-2026-106931, an OS command injection bug in SiteGuard Server Edition. Threat actors are already explo... [Full analysis a",
+      "cvss": 9,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-19",
+      "last_seen": "2026-10-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-106931"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://securityaffairs.com/201258/security/japans-siteguard-waf-flaw-cve-2026-106931-is-already-being-exploited.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
       "id": "CVE-2026-112779",
       "title": "Low Security Vulnerability (CVE-2026-112779)",
       "description": "CVE-2026-112779",
@@ -4292,100 +4386,6 @@
         ],
         "priority": [
           "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-89110",
-      "title": "CVE-2026-89110 - Broken Access Control in SAP NetWeaver Visual Composer",
-      "description": "CVE-2026-89110 - Broken Access Control in SAP NetWeaver Visual Composer",
-      "cvss": 9.9,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-13",
-      "last_seen": "2026-10-13",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-89110"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-89110"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-111767",
-      "title": "MCP TypeScript SDK: Experimental tasks were not tied to the session that created them",
-      "description": "### Summary\nIn affected versions, the experimental tasks feature (`taskStore`) did not check which session created a task. Clients sharing one `InMemoryTaskStore` could list, read and cancel each other's tasks. Experimental tasks are deprecated. The 2026-07-28 specification replaced them with a rede",
-      "cvss": 8.6,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-10-20",
-      "last_seen": "2026-10-20",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "npm",
-      "product": "@modelcontextprotocol/sdk",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-111767",
-        "CVE-2026-111767"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-22jm-h49p-29qw",
-        "https://github.com/modelcontextprotocol/typescript-sdk/security/advisories/GHSA-22jm-h49p-29qw",
-        "https://github.com/modelcontextprotocol/typescript-sdk/pull/2925",
-        "https://github.com/modelcontextprotocol/typescript-sdk/commit/727075b5bbeb77fbea22041b36b72a73042160fa"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
         ],
         "suppression": null,
         "merge": null

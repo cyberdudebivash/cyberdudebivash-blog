@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-20T19:18:14.671Z",
+  "generated": "2026-10-20T19:55:19.027Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -8,8 +8,58 @@
   "endpoint": "/api/intel/raw.json",
   "description": "Raw unfiltered S2N feed — all items including suppressed. Enterprise tier.",
   "note": "Access requires Enterprise API key. Includes suppression_reason and full IOC data.",
-  "count": 132,
+  "count": 130,
   "items": [
+    {
+      "id": "CVE-2026-111767",
+      "title": "MCP TypeScript SDK: Experimental tasks were not tied to the session that created them",
+      "description": "### Summary\nIn affected versions, the experimental tasks feature (`taskStore`) did not check which session created a task. Clients sharing one `InMemoryTaskStore` could list, read and cancel each other's tasks. Experimental tasks are deprecated. The 2026-07-28 specification replaced them with a rede",
+      "cvss": 8.6,
+      "final_ps": 62,
+      "quality_score": 0.578,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-20",
+      "last_seen": "2026-10-20",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "@modelcontextprotocol/sdk",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-111767",
+        "CVE-2026-111767"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-22jm-h49p-29qw",
+        "https://github.com/modelcontextprotocol/typescript-sdk/security/advisories/GHSA-22jm-h49p-29qw",
+        "https://github.com/modelcontextprotocol/typescript-sdk/pull/2925",
+        "https://github.com/modelcontextprotocol/typescript-sdk/commit/727075b5bbeb77fbea22041b36b72a73042160fa"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.578"
+        ],
+        "priority": [
+          "base_ps=62 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
     {
       "id": "CVE-2026-54459",
       "title": "CVE-2026-54459 FileRise: Missing CSRF enforcement for file creation and share-link creation",
@@ -374,55 +424,6 @@
       },
       "suppressed": false,
       "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-106173",
-      "title": "CVE-2026-106173 Deep-Dive: Fortinet FortiSIEM gRPC Path Traversal File Write to RCE",
-      "description": "submitted by /u/scopedsecurity [link] [comments]",
-      "cvss": 9.4,
-      "final_ps": 51,
-      "quality_score": 0.338,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "reddit_netsec",
-      "sources_confirmed": 2,
-      "merged_sources": [
-        "thehackernews",
-        "reddit_netsec"
-      ],
-      "first_seen": "2026-10-20",
-      "last_seen": "2026-10-20",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "reddit_netsec",
-      "product": "Threat Intelligence",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-106173"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://thehackernews.com/2026/10/critical-fortisiem-flaw-gets-public.html",
-        "https://www.reddit.com/r/netsec/comments/1xardr3/cve2026106173_deepdive_fortinet_fortisiem_grpc/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.42 (reddit_netsec)",
-          "data_confidence=0.75",
-          "multi_source=2 sources",
-          "recency=999d (score=0.05)",
-          "QS=0.338"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": "Quality score below minimum threshold (QS < 0.35)",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Quality score below minimum threshold (QS < 0.35)",
       "iocs": []
     },
     {
@@ -1400,94 +1401,6 @@
       },
       "suppressed": false,
       "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "SENTINELAPEX-bbf6ccb8173b",
-      "title": "Hackers Exploit Palo Alto VPN Flaw to Bypass MFA and Steal Credentials From VMware Disks",
-      "description": "Ransomware operators are exploiting a Palo Alto Networks GlobalProtect VPN flaw to bypass multi-factor authentication and enter corporate networks. In one investigated case, attackers reached VMware management systems and stole credentials directly from a domain controller’s virt... [Full analysis a",
-      "cvss": 0,
-      "final_ps": 41,
-      "quality_score": 0.392,
-      "threat_level": "LOW",
-      "type": "RANSOMWARE",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-20",
-      "last_seen": "2026-10-20",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": true,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://cybersecuritynews.com/palo-alto-vpn-flaw-exploited/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.35",
-          "recency=0d (score=1.00)",
-          "QS=0.392"
-        ],
-        "priority": [
-          "+10 ransomware_confirmed"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
-      "iocs": []
-    },
-    {
-      "id": "SENTINELAPEX-fc4182e7046a",
-      "title": "Hackers Use Generative AI to Build Custom Malware and Bypass Traditional Security Detection",
-      "description": "Hackers are using generative AI to build custom malware, rewrite harmful scripts, and make phishing messages harder to spot. The shift puts pressure on security tools that mainly depend on known file signatures, while helping ransomware operators move faster from their first foot... [Full analysis a",
-      "cvss": 0,
-      "final_ps": 41,
-      "quality_score": 0.392,
-      "threat_level": "LOW",
-      "type": "RANSOMWARE",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-20",
-      "last_seen": "2026-10-20",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": true,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://cybersecuritynews.com/hackers-use-generative-ai/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.35",
-          "recency=0d (score=1.00)",
-          "QS=0.392"
-        ],
-        "priority": [
-          "+10 ransomware_confirmed"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
       "iocs": []
     },
     {
@@ -4446,6 +4359,52 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-106931",
+      "title": "Japan’s SiteGuard WAF flaw CVE-2026-106931 is already being exploited",
+      "description": "",
+      "cvss": 9,
+      "final_ps": 28,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-19",
+      "last_seen": "2026-10-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-106931"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://securityaffairs.com/201258/security/japans-siteguard-waf-flaw-cve-2026-106931-is-already-being-exploited.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
       "id": "CVE-2026-112779",
       "title": "Low Security Vulnerability (CVE-2026-112779)",
       "description": "",
@@ -5274,56 +5233,6 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-111767",
-      "title": "MCP TypeScript SDK: Experimental tasks were not tied to the session that created them",
-      "description": "",
-      "cvss": 8.6,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-10-20",
-      "last_seen": "2026-10-20",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "npm",
-      "product": "@modelcontextprotocol/sdk",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-111767",
-        "CVE-2026-111767"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-22jm-h49p-29qw",
-        "https://github.com/modelcontextprotocol/typescript-sdk/security/advisories/GHSA-22jm-h49p-29qw",
-        "https://github.com/modelcontextprotocol/typescript-sdk/pull/2925",
-        "https://github.com/modelcontextprotocol/typescript-sdk/commit/727075b5bbeb77fbea22041b36b72a73042160fa"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
       "id": "CVE-2026-113658",
       "title": "ApostropheCMS: Unauthenticated CSV import requests leave rejected uploads in the system temporary directory",
       "description": "",
@@ -5415,6 +5324,52 @@
         ],
         "priority": [
           "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-86949",
+      "title": "CVE-2026-86949 - Apple Xcode Sandbox Escape Vulnerability",
+      "description": "",
+      "cvss": 8.8,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-20",
+      "last_seen": "2026-10-20",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-86949"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-86949"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -5543,52 +5498,6 @@
       "ioc_count": 0,
       "refs": [
         "https://cvefeed.io/vuln/detail/CVE-2026-113469"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-106931",
-      "title": "Japan’s SiteGuard WAF flaw CVE-2026-106931 is already being exploited",
-      "description": "",
-      "cvss": 7.8,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-19",
-      "last_seen": "2026-10-19",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-106931"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://securityaffairs.com/201258/security/japans-siteguard-waf-flaw-cve-2026-106931-is-already-being-exploited.html"
       ],
       "explanation": {
         "quality": [
