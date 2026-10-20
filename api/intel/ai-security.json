@@ -2,11 +2,11 @@
   "platform": "CYBERDUDEBIVASH SENTINEL APEX — AI Security Intelligence Division",
   "endpoint": "/api/intel/ai-security.json",
   "doctrine": "Sentinel-APEX/prompts/ai-security-master-prompt.md",
-  "generated": "2026-10-20T16:47:47.814Z",
+  "generated": "2026-10-20T21:30:10.653Z",
   "disclaimer": "Evidence-graded AI security intelligence. Confidence and evidence labels attached per item. Community leads are corroborated before publication.",
   "stats": {
     "published": 15,
-    "p1": 1,
+    "p1": 0,
     "leadsHeld": 1,
     "analystReports": 0,
     "sourcesOk": 5,
@@ -21,14 +21,6 @@
         "error": "HTTP 429"
       },
       {
-        "name": "NVD (prompt injection)",
-        "key": "nvd_pi",
-        "tier": 1,
-        "status": "ok",
-        "items": 40,
-        "error": null
-      },
-      {
         "name": "r/netsec",
         "key": "reddit_ns",
         "tier": 3,
@@ -37,11 +29,11 @@
         "error": null
       },
       {
-        "name": "arXiv cs.CR (LLM security)",
-        "key": "arxiv_sec",
-        "tier": 2,
+        "name": "NVD (prompt injection)",
+        "key": "nvd_pi",
+        "tier": 1,
         "status": "ok",
-        "items": 30,
+        "items": 40,
         "error": null
       },
       {
@@ -53,6 +45,14 @@
         "error": null
       },
       {
+        "name": "arXiv cs.CR (LLM security)",
+        "key": "arxiv_sec",
+        "tier": 2,
+        "status": "ok",
+        "items": 30,
+        "error": null
+      },
+      {
         "name": "NVD (AI/LLM keyword)",
         "key": "nvd_ai",
         "tier": 1,
@@ -61,7 +61,7 @@
         "error": null
       }
     ],
-    "runtimeMs": 7457
+    "runtimeMs": 1957
   },
   "frameworks": {
     "owasp_llm_top10": {
@@ -91,14 +91,14 @@
   "count": 15,
   "items": [
     {
-      "id": "cc8a62d2d764571c",
-      "title": "Claude Agent SDK: Argument Injection via resume Option Allows Arbitrary Command Execution",
-      "url": "https://github.com/advisories/GHSA-h4mw-j7qp-8mwm",
+      "id": "c608c0c28507b033",
+      "title": "MCP  TypeScript server SDK: Shared transport or server instances delivered one HTTP client's messages to another",
+      "url": "https://github.com/advisories/GHSA-jm63-cq47-j5jp",
       "source": "GitHub Security Advisories",
       "tier": 1,
-      "published": "2026-10-16T19:44:37Z",
-      "cve": "CVE-2026-96620",
-      "severity": "critical",
+      "published": "2026-10-20T20:07:29Z",
+      "cve": "CVE-2026-111770",
+      "severity": "high",
       "cvss": null,
       "evidence_label": "VERIFIED_ADVISORY",
       "categories": [
@@ -130,8 +130,8 @@
         "level": "elevated"
       },
       "enterprise_impact": {
-        "score": 75,
-        "priority": "P1"
+        "score": 63,
+        "priority": "P2"
       },
       "confidence": {
         "source": "HIGH",
@@ -147,69 +147,13 @@
       "has_analyst_report": false
     },
     {
-      "id": "d2071db4b7d5fec3",
-      "title": "LMCache: Remote code execution via unsafe deserialization in multiprocess mode transport",
-      "url": "https://github.com/advisories/GHSA-w5f2-9q9c-ff4h",
+      "id": "e8db8c6284f507e2",
+      "title": "MCP TypeScript SDK: Server bearer authentication accepted tokens issued for another service",
+      "url": "https://github.com/advisories/GHSA-rvq5-wwqv-78pq",
       "source": "GitHub Security Advisories",
       "tier": 1,
-      "published": "2026-10-16T20:08:44Z",
-      "cve": "CVE-2026-105192",
-      "severity": "critical",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "infra",
-          "label": "AI Infrastructure / Inference Server"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM05",
-          "name": "Supply Chain Vulnerabilities"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0010",
-          "name": "ML Supply Chain Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": false,
-          "rag": false,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "standard"
-      },
-      "enterprise_impact": {
-        "score": 55,
-        "priority": "P2"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Expose-check inference servers (Triton/vLLM/Ollama/MLflow/Ray) for unauthenticated management endpoints.",
-        "hunt": "Shodan/asset-inventory sweep for AI infra bound to 0.0.0.0 without auth."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "211635d693e63cbb",
-      "title": "agent-router: MCP session resume does not verify the embedded anti-hijacking subject; default Helm seed makes session IDs forgeable",
-      "url": "https://github.com/advisories/GHSA-953h-535j-jg2v",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-10-19T16:53:26Z",
-      "cve": null,
+      "published": "2026-10-20T19:43:36Z",
+      "cve": "CVE-2026-111771",
       "severity": "medium",
       "cvss": null,
       "evidence_label": "VERIFIED_ADVISORY",
@@ -233,23 +177,79 @@
       ],
       "agent_risk": {
         "flags": {
-          "agentic": true,
+          "agentic": false,
           "mcp": true,
-          "rag": true,
+          "rag": false,
           "tool_use": false,
           "supply_chain": false
         },
-        "level": "high"
+        "level": "elevated"
       },
       "enterprise_impact": {
-        "score": 45,
+        "score": 50,
         "priority": "P2"
       },
       "confidence": {
         "source": "HIGH",
-        "evidence": "MODERATE",
+        "evidence": "HIGH",
         "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories)."
+        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
+      },
+      "corroboration": 1,
+      "detection": {
+        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
+        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
+      },
+      "has_analyst_report": false
+    },
+    {
+      "id": "043ee481206ff87b",
+      "title": "MCP TypeScript client SDK: HTTP client transports and OAuth requests followed cross-origin redirects and re-sent custom headers and request bodies",
+      "url": "https://github.com/advisories/GHSA-6prh-2h8m-c8cw",
+      "source": "GitHub Security Advisories",
+      "tier": 1,
+      "published": "2026-10-20T18:26:30Z",
+      "cve": "CVE-2026-111769",
+      "severity": "medium",
+      "cvss": null,
+      "evidence_label": "VERIFIED_ADVISORY",
+      "categories": [
+        {
+          "id": "agent_tool",
+          "label": "Agentic / Tool / MCP Exploitation"
+        }
+      ],
+      "owasp_llm": [
+        {
+          "id": "LLM06",
+          "name": "Sensitive Information Disclosure / Excessive Agency"
+        }
+      ],
+      "mitre_atlas": [
+        {
+          "id": "AML.T0053",
+          "name": "LLM Plugin Compromise"
+        }
+      ],
+      "agent_risk": {
+        "flags": {
+          "agentic": false,
+          "mcp": true,
+          "rag": false,
+          "tool_use": false,
+          "supply_chain": false
+        },
+        "level": "elevated"
+      },
+      "enterprise_impact": {
+        "score": 50,
+        "priority": "P2"
+      },
+      "confidence": {
+        "source": "HIGH",
+        "evidence": "HIGH",
+        "overall": "HIGH",
+        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
       },
       "corroboration": 1,
       "detection": {
