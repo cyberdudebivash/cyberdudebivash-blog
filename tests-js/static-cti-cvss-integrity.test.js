@@ -92,7 +92,8 @@ test('static CVE reports include relevant commercial discovery without prices', 
   assert.match(html, /https:\/\/tools\.cyberdudebivash\.com/);
   assert.match(html, /https:\/\/academy\.cyberdudebivash\.com/);
   assert.match(html, /https:\/\/www\.cyberdudebivash\.com/);
-  assert.match(html, /utm_source=static_cti_report/);
+  assert.match(html, /data-cdb-ecosystem-promotion="v1"/);
+  assert.match(html, /Commercial disclosure:/);
   assert.doesNotMatch(html, /data-cdb-ecosystem-static-v1="true"[\s\S]*₹/);
 });
 
@@ -104,7 +105,9 @@ test('AI reports recommend AI Security Hub rather than CVE tools', () => {
   });
   const { html } = generatePostHTML(item);
   assert.match(html, /AI Security Hub™/);
-  assert.match(html, /utm_campaign=ai_security/);
+  const spotlight = html.split('class="cdb-eco-cards">')[1].split('</div>')[0];
+  assert.match(spotlight, /AI Security Hub™/);
+  assert.doesNotMatch(spotlight, /Fortress Lockdown/);
 });
 
 test('existing publication integrity validator still accepts source-limited render', () => {
