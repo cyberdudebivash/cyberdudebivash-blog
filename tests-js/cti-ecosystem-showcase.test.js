@@ -68,6 +68,25 @@ test('complete offering discovery uses grounded HTTPS links only and identifies 
   assert.match(html,/Private preview/);
   assert.match(html,/https:\/\/www\.cyberdudebivash\.com\/ecosystem/);
   assert.match(html,/contact@cyberdudebivash\.in/);
+  assert.match(html,/11 platforms · 13 services · 43 products · 2 APIs/);
+  assert.match(html,/Listings do not establish current availability/);
+});
+
+test('products spotlight matches threat context, without implying current SKU availability',()=>{
+  const ai=renderEcosystemShowcase({type:'AI_SECURITY'});
+  const ransomware=renderEcosystemShowcase({type:'RANSOMWARE'});
+  const cve=renderEcosystemShowcase({type:'CVE_REPORT'});
+  assert.match(ai,/AGENTGUARD PRO/);
+  assert.match(ai,/TrustGov AI™/);
+  assert.match(ransomware,/Fortress Lockdown/);
+  assert.match(ransomware,/Ransomware IOC Blocker/);
+  assert.match(cve,/QuickScan/);
+  assert.match(cve,/ReconX/);
+  for(const h of [ai,ransomware,cve]){
+    assert.match(h,/Relevant catalog products:/);
+    assert.match(h,/Explore current listings/);
+    assert.doesNotMatch(h,/₹|\$\d+/);
+  }
 });
 
 test('commercial message is disclosed and has no unsupported price, SLA, or readiness guarantee',()=>{
