@@ -14,6 +14,7 @@ const path   = require('path');
 const { renderSocCtiCover, CSS: SOC_CTI_COVER_CSS } = require('./scripts/cti-soc-cover');
 const { CSS: CTI_READER_CSS } = require('./scripts/cti-reading-style-v13');
 const { CSS: CTI_ENTERPRISE_READER_CSS, renderReaderGuide } = require('./scripts/cti-enterprise-reader-v14');
+const { CSS: ECOSYSTEM_SHOWCASE_CSS, renderEcosystemShowcase } = require('./scripts/cti-ecosystem-showcase-v1');
 const url    = require('url');
 const crypto = require('crypto');
 
@@ -2585,6 +2586,7 @@ footer{background:var(--apex-surface);border-top:1px solid var(--apex-border);pa
 ${SOC_CTI_COVER_CSS}
 ${CTI_READER_CSS}
 ${CTI_ENTERPRISE_READER_CSS}
+${ECOSYSTEM_SHOWCASE_CSS}
 </head>
 <body>
 <canvas id="mc"></canvas>
@@ -2645,26 +2647,12 @@ ${CTI_ENTERPRISE_READER_CSS}
     ${showDetection ? multiDetections : ''}
     ${detectionRelevant && !verifiedDetectionEvidence ? '<h2 class="sh"><span>🔎</span> Detection Evidence Gap</h2><p class="bp">No source-validated detection content is established for this record. Do not deploy rules that match only a CVE identifier or generic product string. Inventory affected systems, inspect the linked vendor advisory, identify relevant telemetry, and validate detections in a test environment before any production enforcement.</p>' : ''}
     ${showDetection ? intelligenceProducts : ''}
-    <section id="cdb-ecosystem-services" class="ecta" data-cdb-ecosystem-static-v1="true" aria-label="Relevant security platforms and services">
-      <h3>SENTINEL APEX™ | Extend this investigation</h3>
-      <p class="ep">Source-linked intelligence is freely assessable. Explore related CYBERDUDEBIVASH® platforms, training, and enterprise services. Commercial access never increases intelligence certainty.</p>
-      <div class="cta-grid">
-        <a href="https://intel.cyberdudebivash.com/?utm_source=static_cti_report&amp;utm_medium=report&amp;utm_campaign=intel_factory" class="btn-s" rel="noopener noreferrer">Threat Intel Platform →</a>
-        ${item.type === 'AI_SECURITY'
-          ? '<a href="https://www.cyberdudebivash.in/?utm_source=static_cti_report&amp;utm_medium=report&amp;utm_campaign=ai_security" class="btn-e" rel="noopener noreferrer">AI Security Hub™ →</a>'
-          : '<a href="https://tools.cyberdudebivash.com/?utm_source=static_cti_report&amp;utm_medium=report&amp;utm_campaign=detection_review" class="btn-e" rel="noopener noreferrer">Security Tools →</a>'}
-        <a href="https://academy.cyberdudebivash.com/?utm_source=static_cti_report&amp;utm_medium=report&amp;utm_campaign=academy" class="btn-s" rel="noopener noreferrer">Enterprise Academy →</a>
-        <a href="https://www.cyberdudebivash.com/?utm_source=static_cti_report&amp;utm_medium=report&amp;utm_campaign=enterprise_inquiry" class="btn-e" rel="noopener noreferrer">Enterprise Services →</a>
-      </div>
-      <details><summary style="color:var(--apex-cyan);cursor:pointer">Explore other ecosystem portals</summary>
-        <p class="ep"><a href="https://labs.cyberdudebivash.in/" rel="noopener noreferrer">Security Labs</a> · <a href="https://trustx.cyberdudebivash.com/" rel="noopener noreferrer">TRUSTX Private Preview</a> · <a href="https://blog.cyberdudebivash.in/" rel="noopener noreferrer">Research Blog</a></p>
-      </details>
-    </section>
     <h2 id="cdb-static-response" class="sh"><span>🛡️</span> SOC Response Playbook</h2>
     <ul class="alist">${playbookItems}</ul>
     <h2 id="cdb-static-references" class="sh"><span>📎</span> Intelligence References</h2>
     <ul style="list-style:none;padding:0">${refLinks}${item.id?.startsWith('CVE')?`<li><a href="https://nvd.nist.gov/vuln/detail/${escHtml(item.id)}" target="_blank" rel="noopener" style="color:var(--apex-cyan)">📌 NVD — ${escHtml(item.id)}</a></li>`:''}</ul>
     ${aiSecSection}${malwareSection}${darkwebSection}
+    ${renderEcosystemShowcase({ type: item.type })}
     <!-- SENTINEL APEX: Newsletter capture + Related Resources -->
     <div style="background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(0,153,255,0.06));border:1px solid rgba(139,92,246,0.3);border-radius:14px;padding:1.75rem;margin:2.5rem 0;text-align:center">
       <div style="font-size:10px;color:#8b5cf6;font-weight:800;letter-spacing:.15em;text-transform:uppercase;margin-bottom:.6rem">SENTINEL INTEL BRIEF — FREE</div>
@@ -2689,17 +2677,6 @@ ${CTI_ENTERPRISE_READER_CSS}
       </div>
     </div>
     <div class="intel-sig"><div class="isb">⚡ CYBERDUDEBIVASH SENTINEL APEX</div><div class="iss">Automated, source-attributed intelligence report<br>Report ID: SENTINEL-${escHtml(item.id)}-${today} | Editorial priority: ${score}/100 ${tl} | Sources collected: ${item.sourceCount||1}<br>&copy; ${new Date().getFullYear()} CYBERDUDEBIVASH<br><strong style="color:var(--apex-cyan)">Verify technical claims in the linked primary sources before operational use</strong></div></div>
-    <div class="ecta">
-      <h3>🏢 ENTERPRISE THREAT INTELLIGENCE PLATFORM</h3>
-      <p class="ep">Request a scoped intelligence briefing, evidence review, custom IOC ingestion assessment, or detection-engineering engagement.</p>
-      <div class="cta-grid">
-        <a href="/pricing.html" class="btn-p">⚡ PRO Defense Plan</a>
-        <a href="/enterprise.html" class="btn-e">🏢 Enterprise — Custom Pricing</a>
-        <a href="/api.html" class="btn-s">🔌 Threat Intel API Access</a>
-        <a href="/products.html" class="btn-g">📦 Detection Pack Store</a>
-      </div>
-      <p style="font-size:12px;color:var(--apex-muted);margin:0">Source review · Custom advisories · Detection assessment · API and MSSP licensing discussions</p>
-    </div>
   </article>
   <aside class="sidebar">
     <div class="vbox">
