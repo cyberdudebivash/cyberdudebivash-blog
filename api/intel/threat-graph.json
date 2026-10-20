@@ -1,15 +1,15 @@
 {
-  "generated": "2026-10-19T21:42:00.443Z",
+  "generated": "2026-10-20T00:58:27.486Z",
   "version": "1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX v4.0",
   "stats": {
-    "total_nodes": 15809,
+    "total_nodes": 15811,
     "actors": 8,
-    "cves": 7309,
+    "cves": 7310,
     "campaigns": 1586,
     "malware": 0,
     "iocs": 911,
-    "edges": 4336
+    "edges": 4337
   },
   "nodes": {
     "actor:lockbit": {
@@ -1911,6 +1911,11 @@
         },
         {
           "target": "KREBSONSECURITY-1f5b4f3065bd928a",
+          "relationship": "exploits",
+          "confidence": 0.85
+        },
+        {
+          "target": "REDDIT_CYBER-b4dd63d7128ad235",
           "relationship": "exploits",
           "confidence": 0.85
         }
@@ -38299,17 +38304,17 @@
     "CVE-2026-0257": {
       "id": "CVE-2026-0257",
       "type": "CVE",
-      "name": "Ransomware Actors Exploiting Palo Alto GlobalProtect Flaw for Stealthy VPN Access",
+      "name": "Threat Brief: Active Exploitation of PAN-OS CVE-2026-0257 (Updated October 19)",
       "attributes": {
-        "cvss": 9.1,
+        "cvss": 0,
         "threat_level": "MEDIUM",
-        "priority_score": 64,
-        "exploited": false,
+        "priority_score": 46,
+        "exploited": true,
         "cisa_kev": false,
         "ransomware": true,
-        "vendor": "",
-        "product": "",
-        "published": "2026-10-11",
+        "vendor": "unit42",
+        "product": "Threat Intelligence",
+        "published": "2026-10-19",
         "type": "RANSOMWARE"
       },
       "connections": []
@@ -297047,6 +297052,42 @@
         "type": "CVE_REPORT"
       },
       "connections": []
+    },
+    "CVE-2026-108097": {
+      "id": "CVE-2026-108097",
+      "type": "CVE",
+      "name": "Critical Drupal RCE Vulnerability Could Let Attackers Take Over Websites Without Authentication",
+      "attributes": {
+        "cvss": 9.8,
+        "threat_level": "MEDIUM",
+        "priority_score": 51,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "",
+        "product": "",
+        "published": "2026-10-19",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "REDDIT_CYBER-b4dd63d7128ad235": {
+      "id": "REDDIT_CYBER-b4dd63d7128ad235",
+      "type": "Intel",
+      "name": "Update from Krebs: Feds Suspect Ransom Negotiator Ran ShinyHunters Extortion Site",
+      "attributes": {
+        "cvss": 0,
+        "threat_level": "LOW",
+        "priority_score": 33,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": true,
+        "vendor": "reddit_cyber",
+        "product": "Threat Intelligence",
+        "published": "2026-10-19",
+        "type": "DATA_BREACH"
+      },
+      "connections": []
     }
   },
   "edges": [
@@ -336250,6 +336291,15 @@
       "relationship": "exploits",
       "confidence": 0.85,
       "first_seen": "2026-10-19",
+      "sources": []
+    },
+    {
+      "id": "actor:shinyhunters→exploits→REDDIT_CYBER-b4dd63d7128ad235",
+      "source": "actor:shinyhunters",
+      "target": "REDDIT_CYBER-b4dd63d7128ad235",
+      "relationship": "exploits",
+      "confidence": 0.85,
+      "first_seen": "2026-10-20",
       "sources": []
     }
   ]
