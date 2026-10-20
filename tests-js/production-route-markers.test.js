@@ -27,6 +27,21 @@ test('API dashboard marker matches the final post-branding document title', () =
   assert.doesNotMatch(branded, /API Dashboard — CYBERDUDEBIVASH SENTINEL APEX/);
 });
 
+test('pricing and enterprise route markers match transformed customer-facing titles', () => {
+  const contracts = getCustomerRouteContracts(workflow);
+  const names = [
+    ['pricing.html', '/pricing.html', 'Pricing — SENTINEL APEX Threat Intelligence Plans | SENTINEL APEX'],
+    ['enterprise.html', '/enterprise.html', 'Enterprise Threat Intelligence Platform — SENTINEL APEX | SENTINEL APEX'],
+  ];
+  for (const [name, route, title] of names) {
+    const source = fs.readFileSync(path.join(__dirname, '..', name), 'utf8');
+    const rendered = brandHtml(source, 'SENTINEL APEX Research Blog / Intel Factory');
+    const actual = /<title[^>]*>([^<]*)<\/title>/i.exec(rendered)?.[1];
+    assert.equal(actual, title);
+    assert.equal(contracts.find(contract => contract.route === route)?.marker, actual);
+  }
+});
+
 test('pre-deploy preflight catches a stale title without touching Cloudflare', () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'apex-contract-'));
   try {
