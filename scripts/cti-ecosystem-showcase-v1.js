@@ -98,6 +98,16 @@ const CHANNELS = Object.freeze({
   NEWS_REPORT: ['intel', 'academy', 'research']
 });
 const BACKUP = ['intel','services','tools'];
+const BUYER_GUIDANCE = Object.freeze({
+  AI_SECURITY: 'Assess AI application and agent risks, prioritize governance gaps, and discuss an authorized scope.',
+  RANSOMWARE: 'Review ransomware exposure, improve investigation readiness, and scope relevant defensive controls.',
+  DATA_BREACH: 'Understand the incident evidence, validate organizational exposure, and plan an authorized response.',
+  DARK_WEB: 'Review verified threat context and discuss controlled exposure-assessment options.',
+  CVE_REPORT: 'Prioritize verified asset exposure, patch evaluation, and detection engineering.',
+  ZERO_DAY: 'Validate affected assets, compensating controls, and escalation requirements.',
+  MALWARE_REPORT: 'Review actionable artifacts and decide which defensive controls require testing.',
+  DEFAULT: 'Translate the intelligence findings into scoped security priorities for your organization.'
+});
 // Product examples appear in the supplied public catalog. Names are
 // directory discovery only, NOT claims of tested SaaS readiness or inventory.
 const PRODUCT_EXAMPLES = Object.freeze({
@@ -120,6 +130,7 @@ function recommendationsFor(type) {
 function renderEcosystemShowcase({ type = 'ADVISORY' } = {}) {
   const picks = recommendationsFor(type);
   const productList = PRODUCT_EXAMPLES[String(type || '').toUpperCase()] || PRODUCT_EXAMPLES.DEFAULT;
+  const buyerGuidance = BUYER_GUIDANCE[String(type || '').toUpperCase()] || BUYER_GUIDANCE.DEFAULT;
   const card = key => {
     const offering = OFFERINGS[key];
     return '<article class="cdb-eco-card">' +
@@ -141,6 +152,9 @@ function renderEcosystemShowcase({ type = 'ADVISORY' } = {}) {
     'Choose a relevant next step for your organization.</p>' +
     '<p class="cdb-eco-directory-summary">Public directory listing (Oct 2026): 11 platforms · ' +
     '13 services · 43 products · 2 APIs. Listings do not establish current availability.</p></header>' +
+    '<div class="cdb-eco-buyer-path" role="note" aria-label="Commercial next-step guidance">' +
+    '<strong>From intelligence to an authorized security decision</strong>' +
+    '<p>' + safe(buyerGuidance) + '</p></div>' +
     '<div class="cdb-eco-cards">' + picks.map(card).join('') + '</div>' +
     '<div class="cdb-eco-products"><strong>Relevant catalog products:</strong> ' +
     productList.map(safe).join(' · ') + ' — <a href="https://tools.cyberdudebivash.com/" ' +
@@ -167,6 +181,9 @@ const RULES = [
   '.cdb-eco-overline{display:block;font:800 11px/1.6 system-ui,sans-serif;letter-spacing:.11em;color:#a8eafa;text-transform:uppercase}',
   '.cdb-eco-head h2{font-size:clamp(22px,2.45vw,32px)!important;line-height:1.2!important;font-weight:800!important;color:#fff!important;max-width:34ch;margin:11px 0!important}',
   '.cdb-eco-head p{max-width:68ch;color:#d5e5f3;font-size:15px;line-height:1.75;margin:0 0 22px}',
+  '.cdb-eco-buyer-path{margin:20px 0;padding:16px 18px;border-left:4px solid #9ae6e7;background:#18384e;border-radius:0 10px 10px 0;color:#eaf6ff}',
+  '.cdb-eco-buyer-path strong{display:block;color:#fff;font-size:14px;line-height:1.45}',
+  '.cdb-eco-buyer-path p{margin:7px 0 0!important;color:#d5e7f2!important;font-size:13px!important;line-height:1.65!important}',
   '.cdb-eco-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}',
   '.cdb-eco-card{display:flex;flex-direction:column;gap:10px;padding:20px 18px;border-radius:12px;border:1px solid #46647e;background:#162f43;min-width:0}',
   '.cdb-eco-category{color:#c1e6ec;font-size:11px;letter-spacing:.07em;text-transform:uppercase;font-weight:800}',
@@ -192,7 +209,7 @@ const RULES = [
   '@media(max-width:940px){.cdb-eco-cards{grid-template-columns:1fr 1fr}.cdb-eco-card:last-child{grid-column:span 2}}',
   '@media(max-width:600px){.cdb-eco-showcase{padding:18px;margin:28px 0}.cdb-eco-cards,.cdb-eco-directory ul{grid-template-columns:1fr}.cdb-eco-card:last-child{grid-column:auto}.cdb-eco-actions a{width:100%}}',
   '@media(prefers-reduced-motion:reduce){.cdb-eco-showcase *{animation:none!important;transition:none!important}}',
-  '@media print{.cdb-eco-showcase{background:#fff!important;color:#111!important;box-shadow:none!important;border:1px solid #8899a6!important;break-inside:avoid-page}.cdb-eco-head h2,.cdb-eco-card h3,.cdb-eco-showcase :where(p,span,summary){color:#111!important}.cdb-eco-card{background:#fff!important;border:1px solid #bdc8cf!important;break-inside:avoid-page}.cdb-eco-showcase a{color:#153e5c!important;text-decoration:underline!important}.cdb-eco-directory{display:none!important}.cdb-eco-actions .cdb-eco-primary{background:#fff!important;border:1px solid #999!important}}'
+  '@media print{.cdb-eco-showcase{background:#fff!important;color:#111!important;box-shadow:none!important;border:1px solid #8899a6!important;break-inside:avoid-page}.cdb-eco-head h2,.cdb-eco-card h3,.cdb-eco-showcase :where(p,span,summary){color:#111!important}.cdb-eco-card{background:#fff!important;border:1px solid #bdc8cf!important;break-inside:avoid-page}.cdb-eco-buyer-path{background:#fff!important;color:#111!important;border-left-color:#345c71!important;break-inside:avoid-page}.cdb-eco-buyer-path strong,.cdb-eco-buyer-path p{color:#111!important}.cdb-eco-showcase a{color:#153e5c!important;text-decoration:underline!important}.cdb-eco-directory{display:none!important}.cdb-eco-actions .cdb-eco-primary{background:#fff!important;border:1px solid #999!important}}'
 ].join('\n');
 const CSS = '<style id="' + STYLE_ID + '">\n' + RULES + '\n</style>';
 module.exports={STYLE_ID,CSS,OFFERINGS,recommendationsFor,renderEcosystemShowcase};
