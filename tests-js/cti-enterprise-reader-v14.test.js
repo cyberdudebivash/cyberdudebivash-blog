@@ -105,6 +105,12 @@ test('report facts, TLP/IOC source and suppression logic not transformed by read
   assert.doesNotMatch(html,/Model confidence: 99%|customer compromise verified/i);
 });
 
+test('unrated intelligence never displays literal null as a CVSS sidebar metric', () => {
+  const html = generatePostHTML({...post,cvss:null}).html;
+  assert.match(html, /<div class="vscore">Not assigned<\/div>/);
+  assert.doesNotMatch(html, /<div class="vscore">null<\/div>/);
+});
+
 test('v14 module never inserts remote scripts or writes production state', () => {
   const html=renderReaderGuide({surface:'cve',hasSources:false});
   assert.doesNotMatch(html,/<script|<form|fetch\(|<img|<iframe/i);
