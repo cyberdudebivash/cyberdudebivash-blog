@@ -11,6 +11,24 @@
  */
 const STYLE_ID = 'cdb-ecosystem-showcase-v1-css';
 const OFFERINGS = Object.freeze({
+  gateway: {
+    name: 'CYBERDUDEBIVASH® Official Gateway',
+    category: 'Corporate platform and customer enquiry',
+    description: 'Find the official organization, enterprise proposals, policy information and ecosystem navigation.',
+    url: 'https://www.cyberdudebivash.com/'
+  },
+  connect: {
+    name: 'CYBERDUDEBIVASH® Connect',
+    category: 'Ecosystem directory',
+    description: 'Browse the official cross-platform directory for services, applications, products and access terms.',
+    url: 'https://www.cyberdudebivash.com/ecosystem'
+  },
+  globalcti: {
+    name: 'Global CTI Research',
+    category: 'Public intelligence publications',
+    description: 'Explore publicly published defender-oriented CTI research and technical intelligence briefs.',
+    url: 'https://blog.cyberdudebivash.in/'
+  },
   intel: {
     name: 'SENTINEL APEX™ Threat Intelligence',
     category: 'Threat intelligence platform',
