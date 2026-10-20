@@ -104,7 +104,7 @@ function renderEcosystemShowcase({ type = 'ADVISORY' } = {}) {
     '<li><a href="' + safe(offering.url) + '" target="_blank" rel="noopener noreferrer">' +
     safe(offering.name) + '</a><span>' + safe(offering.category) + '</span></li>').join('');
   return '<section id="cdb-ecosystem-services" class="cdb-eco-showcase" ' +
-    'data-cdb-ecosystem-promotion="v1" aria-label="CYBERDUDEBIVASH ecosystem promotional offers">' +
+    'data-cdb-ecosystem-promotion="v1" data-cdb-ecosystem-static-v1="true" aria-label="CYBERDUDEBIVASH ecosystem promotional offers">' +
     '<header class="cdb-eco-head">' +
     '<span class="cdb-eco-overline">ECOSYSTEM PROMOTION · OWNED PLATFORMS &amp; SERVICES</span>' +
     '<h2>Extend your defense with CYBERDUDEBIVASH® ECOSYSTEM</h2>' +
