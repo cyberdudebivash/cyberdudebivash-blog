@@ -130,7 +130,11 @@ test('customer experience injector handles valid HTML and malformed public HTML 
 });
 
 test('legacy commercial copy converges on the current generator wording and never touches intelligence text', () => {
-  const generator = fs.readFileSync(path.join(__dirname, '..', 'fetch-live-intel.js'), 'utf8');
+  const generator = [
+    fs.readFileSync(path.join(__dirname, '..', 'fetch-live-intel.js'), 'utf8'),
+    // The canonical promotional text moved into its own presentation-only module.
+    fs.readFileSync(path.join(__dirname, 'cti-ecosystem-showcase-v1.js'), 'utf8'),
+  ].join('\n');
   for (const [legacy, canonical] of LEGACY_COMMERCIAL_COPY) {
     // Single source of truth: every replacement is verbatim current-generator copy.
     assert.ok(generator.includes(canonical.replace(/&#xB7;/g, '\u00b7')), 'not current generator copy: ' + canonical);
