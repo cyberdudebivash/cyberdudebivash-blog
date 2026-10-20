@@ -13,6 +13,7 @@ const fs     = require('fs');
 const path   = require('path');
 const { renderSocCtiCover, CSS: SOC_CTI_COVER_CSS } = require('./scripts/cti-soc-cover');
 const { CSS: CTI_READER_CSS } = require('./scripts/cti-reading-style-v13');
+const { CSS: CTI_ENTERPRISE_READER_CSS, renderReaderGuide } = require('./scripts/cti-enterprise-reader-v14');
 const url    = require('url');
 const crypto = require('crypto');
 
@@ -2583,6 +2584,7 @@ footer{background:var(--apex-surface);border-top:1px solid var(--apex-border);pa
 </style>
 ${SOC_CTI_COVER_CSS}
 ${CTI_READER_CSS}
+${CTI_ENTERPRISE_READER_CSS}
 </head>
 <body>
 <canvas id="mc"></canvas>
@@ -2601,6 +2603,7 @@ ${CTI_READER_CSS}
 <main>
   <article class="cdb-cti-reader">
     ${socCtiCover}
+    ${renderReaderGuide({ surface: 'post', hasSources: validRefs.length > 0 })}
     <div class="meta-bar">${badges}<span class="rep-date">Published: ${pubDateFmt}</span></div>
     <h1 class="rh1">${escHtml(item.title)}</h1>
     <p class="rsubtitle">${escHtml(truncAtWord(cleanDescText,350))}${cleanDescText.length>350?'…':''}</p>
