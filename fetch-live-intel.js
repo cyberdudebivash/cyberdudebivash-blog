@@ -2703,7 +2703,7 @@ ${CTI_ENTERPRISE_READER_CSS}
   </article>
   <aside class="sidebar">
     <div class="vbox">
-      <div class="vscore">${cvss}</div><div class="vlabel">CVSS Score</div>
+      <div class="vscore">${cvssDisplay}</div><div class="vlabel">CVSS Score</div>
       <div class="threat-badge">CVSS ${sevLabel} · Editorial priority ${score}/100 (${escHtml(tl)})</div>
       <div style="margin-top:12px">
         <div class="vrow"><span class="vk">ID</span><span class="vv" style="color:var(--apex-cyan);font-family:monospace;font-size:11px">${escHtml(item.id)}</span></div>
