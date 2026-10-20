@@ -1,15 +1,15 @@
 {
-  "generated": "2026-10-20T15:47:42.690Z",
+  "generated": "2026-10-20T19:18:14.561Z",
   "version": "1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX v4.0",
   "stats": {
-    "total_nodes": 15828,
+    "total_nodes": 15834,
     "actors": 8,
-    "cves": 7323,
-    "campaigns": 1588,
+    "cves": 7327,
+    "campaigns": 1590,
     "malware": 0,
     "iocs": 911,
-    "edges": 4339
+    "edges": 4341
   },
   "nodes": {
     "actor:lockbit": {
@@ -38304,17 +38304,17 @@
     "CVE-2026-0257": {
       "id": "CVE-2026-0257",
       "type": "CVE",
-      "name": "Threat Brief: Active Exploitation of PAN-OS CVE-2026-0257 (Updated October 19)",
+      "name": "Qilin and INC Ransomware Groups Exploit Palo Alto Networks Flaw to Bypass MFA",
       "attributes": {
-        "cvss": 0,
+        "cvss": 7.8,
         "threat_level": "MEDIUM",
-        "priority_score": 46,
-        "exploited": true,
+        "priority_score": 59,
+        "exploited": false,
         "cisa_kev": false,
         "ransomware": true,
-        "vendor": "unit42",
+        "vendor": "The Hacker News",
         "product": "Threat Intelligence",
-        "published": "2026-10-19",
+        "published": "2026-10-20",
         "type": "RANSOMWARE"
       },
       "connections": []
@@ -296136,7 +296136,7 @@
       "attributes": {
         "cvss": 8.1,
         "threat_level": "LOW",
-        "priority_score": 41,
+        "priority_score": 39,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
@@ -296154,7 +296154,7 @@
       "attributes": {
         "cvss": 7.5,
         "threat_level": "LOW",
-        "priority_score": 39,
+        "priority_score": 37,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
@@ -297394,6 +297394,118 @@
       "connections": [
         {
           "target": "CVE-2026-63209",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "CVE-2026-111767": {
+      "id": "CVE-2026-111767",
+      "type": "CVE",
+      "name": "MCP TypeScript SDK: Experimental tasks were not tied to the session that created them",
+      "attributes": {
+        "cvss": 8.6,
+        "threat_level": "HIGH",
+        "priority_score": 65,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "@modelcontextprotocol/sdk",
+        "published": "2026-10-20",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-113658": {
+      "id": "CVE-2026-113658",
+      "type": "CVE",
+      "name": "ApostropheCMS: Unauthenticated CSV import requests leave rejected uploads in the system temporary directory",
+      "attributes": {
+        "cvss": 7.5,
+        "threat_level": "MEDIUM",
+        "priority_score": 61,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "apostrophe",
+        "published": "2026-10-20",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-113666": {
+      "id": "CVE-2026-113666",
+      "type": "CVE",
+      "name": "ApostropheCMS: Authenticated projection-exclusion prototype-member deletion in @apostrophecms/db-connect causes process-wide denial of service",
+      "attributes": {
+        "cvss": 7.1,
+        "threat_level": "MEDIUM",
+        "priority_score": 59,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "npm",
+        "product": "@apostrophecms/db-connect",
+        "published": "2026-10-20",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-106173": {
+      "id": "CVE-2026-106173",
+      "type": "CVE",
+      "name": "CVE-2026-106173 Deep-Dive: Fortinet FortiSIEM gRPC Path Traversal File Write to RCE",
+      "attributes": {
+        "cvss": 9.4,
+        "threat_level": "MEDIUM",
+        "priority_score": 45,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "reddit_netsec",
+        "product": "Threat Intelligence",
+        "published": "2026-10-20",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "campaign:cve-2026-111767": {
+      "id": "campaign:cve-2026-111767",
+      "type": "Campaign",
+      "name": "npm @modelcontextprotocol/sdk Exploitation Campaign",
+      "attributes": {
+        "severity": "HIGH",
+        "item_count": 1,
+        "first_seen": "2026-10-20",
+        "last_seen": "2026-10-20",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-111767"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-111767",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-113658": {
+      "id": "campaign:cve-2026-113658",
+      "type": "Campaign",
+      "name": "npm apostrophe Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-10-20",
+        "last_seen": "2026-10-20",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-113658"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-113658",
           "relationship": "includes",
           "confidence": 1
         }
@@ -336625,6 +336737,24 @@
       "id": "campaign:cve-2026-63209→includes→CVE-2026-63209",
       "source": "campaign:cve-2026-63209",
       "target": "CVE-2026-63209",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-10-20",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-111767→includes→CVE-2026-111767",
+      "source": "campaign:cve-2026-111767",
+      "target": "CVE-2026-111767",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-10-20",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-113658→includes→CVE-2026-113658",
+      "source": "campaign:cve-2026-113658",
+      "target": "CVE-2026-113658",
       "relationship": "includes",
       "confidence": 1,
       "first_seen": "2026-10-20",
