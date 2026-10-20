@@ -120,3 +120,6 @@ jobs:
               sys.exit(1)
           print('Workflow security policy PASS: critical invariants satisfied across every workflow.')
           PY
+
+      - name: "P0 production route and drift retry guard regressions"
+        run: node --test tests-js/production-route-markers.test.js tests-js/production-drift-loop.test.js
