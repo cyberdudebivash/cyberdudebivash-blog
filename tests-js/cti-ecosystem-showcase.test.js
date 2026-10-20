@@ -46,7 +46,7 @@ test('AI reports feature AI Hub and assessment route, not arbitrary ransomware c
   assert.deepEqual(recommendationsFor('AI_SECURITY'),['ai','services','labs']);
   const html=renderEcosystemShowcase({type:'AI_SECURITY'});
   const featured=html.split('class="cdb-eco-actions"')[0];
-  assert.match(featured,/SENTINEL APEX™ AI Security Hub/);
+  assert.match(featured,/SENTINEL APEX AI Security Hub™/);
   assert.doesNotMatch(featured,/ransomware backup validation already completed/i);
 });
 
