@@ -18,7 +18,7 @@ const OFFERINGS = Object.freeze({
     url: 'https://intel.cyberdudebivash.com/'
   },
   ai: {
-    name: 'SENTINEL APEX™ AI Security Hub',
+    name: 'SENTINEL APEX AI Security Hub™',
     category: 'AI application and agent security',
     description: 'Discover AI security assessment, agent/MCP review and governance engagement options.',
     url: 'https://www.cyberdudebivash.in/'
