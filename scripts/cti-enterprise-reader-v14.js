@@ -24,7 +24,7 @@ const RULES = [
   '.cdb-cti-reader .cdb-v14-guide-top{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between}',
   '.cdb-cti-reader .cdb-v14-overline{font-size:11px;line-height:1.5;font-weight:800;letter-spacing:.12em;color:var(--cdb-v14-accent);text-transform:uppercase}',
   '.cdb-cti-reader .cdb-v14-status{display:inline-flex;align-items:center;padding:5px 10px;border:1px solid #55738b;border-radius:999px;font:700 11px/1.4 system-ui,sans-serif;color:#e7f2fb}',
-  '.cdb-cti-reader .cdb-v14-shortcuts{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}',
+  '.cdb-cti-reader .cdb-v14-shortcuts{display:flex!important;position:static!important;top:auto!important;z-index:auto!important;height:auto!important;min-height:0!important;gap:9px;flex-wrap:wrap;margin-top:13px;padding:0!important;background:transparent!important;border:0!important;backdrop-filter:none!important;justify-content:flex-start!important;align-items:stretch!important}',
   '.cdb-cti-reader .cdb-v14-shortcuts a{display:inline-flex;min-height:44px;align-items:center;justify-content:center;padding:9px 13px;border:1px solid #547993;border-radius:8px;color:#a5e9f6;font-size:13px;font-weight:750;text-decoration:none;line-height:1.3}',
   '.cdb-cti-reader .cdb-v14-shortcuts a:hover{background:#224258;text-decoration:underline;text-underline-offset:3px}',
   '.cdb-cti-reader .cdb-v14-guide details{margin-top:13px;padding-top:13px;border-top:1px solid #36546b}',
