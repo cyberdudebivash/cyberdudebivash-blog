@@ -72,6 +72,19 @@ test('complete offering discovery uses grounded HTTPS links only and identifies 
   assert.match(html,/Listings do not establish current availability/);
 });
 
+test('directory discoverability covers all eleven named ecosystem platforms and corporate entry points',()=>{
+  for(const key of ['gateway','intel','ai','tools','labs','research','academy','globalcti','trustx','swarms','connect']){
+    assert.ok(OFFERINGS[key], 'missing platform directory entry '+key);
+    assert.ok(new URL(OFFERINGS[key].url).protocol==='https:');
+  }
+  const html=renderEcosystemShowcase({type:'AI_SECURITY'});
+  for(const name of ['CYBERDUDEBIVASH® Official Gateway','CYBERDUDEBIVASH® Connect','Global CTI Research']){
+    assert.ok(html.includes(name), 'not discoverable: '+name);
+  }
+  assert.match(html,/Explore the complete ecosystem/);
+  assert.match(html,/Availability, checkout, licensing/);
+});
+
 test('products spotlight matches threat context, without implying current SKU availability',()=>{
   const ai=renderEcosystemShowcase({type:'AI_SECURITY'});
   const ransomware=renderEcosystemShowcase({type:'RANSOMWARE'});
@@ -125,4 +138,22 @@ test('ransomware and AI marketing are not injected into the editorial summary or
     assert.doesNotMatch(prior,/Commercial disclosure:/);
     assert.equal((h.match(/data-cdb-ecosystem-promotion="v1"/g)||[]).length,1);
   }
+});
+
+test('commercial buyer guidance is threat-specific, accessible and separate from evidence',()=>{
+  const ai=renderEcosystemShowcase({type:'AI_SECURITY'});
+  const ransomware=renderEcosystemShowcase({type:'RANSOMWARE'});
+  const cve=renderEcosystemShowcase({type:'CVE_REPORT'});
+  for(const html of [ai,ransomware,cve]){
+    assert.equal((html.match(/class="cdb-eco-buyer-path"/g)||[]).length,1);
+    assert.match(html,/role="note" aria-label="Commercial next-step guidance"/);
+    assert.ok(html.indexOf('cdb-eco-buyer-path') < html.indexOf('cdb-eco-cards'));
+    assert.match(html,/written authorization/);
+  }
+  assert.match(ai,/Assess AI application and agent risks/);
+  assert.match(ransomware,/Review ransomware exposure/);
+  assert.match(cve,/Prioritize verified asset exposure/);
+  assert.doesNotMatch(ai,/Prioritize verified asset exposure/);
+  assert.match(CSS,/\.cdb-eco-buyer-path/);
+  assert.match(CSS,/@media print[\s\S]*cdb-eco-buyer-path/);
 });
