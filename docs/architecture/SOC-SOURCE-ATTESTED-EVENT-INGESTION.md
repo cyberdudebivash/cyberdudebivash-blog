@@ -1,5 +1,7 @@
 # SENTINEL APEX SOC — Source-Attested Event Intake (Phase 6)
 
+> **Phase 7 protocol update (2026-10-21):** The internal, unpublished envelope contract is now **version 2** and MUST carry `keyId` (8–64 lowercase alphanumeric/underscore/hyphen characters) identifying a currently ACTIVE tenant/connector signing key. The signing tuple is now `JSON.stringify([2,tenantId,connectorId,keyId,sourceEventId,eventTime,signedAt,payloadSha256])`. Phase 7 migration 0013 adds signing-key status, rotation/revocation controls and a commit-time receipt guard. The legacy v1 examples below are historical only and must not be used for integrations. Neither version has a public route or an approved live connector.
+
 **Status:** Source-only engineering. NOT deployed, NOT a customer-managed SOC, no active telemetry connector.
 
 ## Threat model
