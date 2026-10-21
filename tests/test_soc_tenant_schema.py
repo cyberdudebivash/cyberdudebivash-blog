@@ -129,6 +129,14 @@ class TenantSchemaTests(unittest.TestCase):
                         "(tenant_id,manifest_id,incident_id,object_key,artifact_sha256,evidence_kind,collector_id,collected_at,retention_until,created_at) "
                         "VALUES(?,?,?,?,?,?,?,?,?,?)",("acme","manifest","incident","soc/acme/object.bin",DIGEST,"EVENT","analyst",AT,AT,AT))
 
+    def test_evidence_key_rejects_traversal_empty_or_double_slash(self):
+        for key in ("soc/acme/../contoso/object.bin", "soc/acme/", "soc/acme//object.bin"):
+            with self.subTest(key=key), self.assertRaises(sqlite3.IntegrityError):
+                self.db.execute("INSERT INTO soc_evidence_manifests "
+                                "(tenant_id,manifest_id,incident_id,object_key,artifact_sha256,evidence_kind,collector_id,collected_at,retention_until,created_at) "
+                                "VALUES(?,?,?,?,?,?,?,?,?,?)",
+                                ("acme","test-object","incident",key,DIGEST,"EVENT","analyst",AT,AT,AT))
+
     def test_sha256_rejects_nonhex_and_wrong_length(self):
         for digest in ("g"*64,"AB"*32,"a"*63):
             with self.subTest(digest=digest), self.assertRaises(sqlite3.IntegrityError):
