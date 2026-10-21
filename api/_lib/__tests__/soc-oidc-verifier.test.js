@@ -157,3 +157,31 @@ test('JWKS fetch failure does not mark token authenticated',async () => {
   await expect(h.verifier(signed())).rejects.toMatchObject({code:'JWKS_UNAVAILABLE'});
   expect(h.checkRevocation).not.toHaveBeenCalled();
 });
+
+
+test('JWKS streamed body enforces the byte ceiling before allocating full response',async () => {
+  let reads=0;
+  const stream=new ReadableStream({
+    pull(controller) {
+      reads+=1;
+      controller.enqueue(new Uint8Array(50 * 1024));
+      if (reads >= 2) controller.close();
+    },
+  });
+  const fetcher=jest.fn(async () => ({
+    ok:true,headers:{get:()=>null},body:stream,
+  }));
+  const h=harness({fetcher});
+  await expect(h.verifier(signed())).rejects.toMatchObject({code:'JWKS_OVERSIZE'});
+  expect(h.checkRevocation).not.toHaveBeenCalled();
+});
+
+test('valid streamed JWKS is accepted with strict UTF-8 decoding',async () => {
+  const bytes=Buffer.from(JSON.stringify({keys:[JWK]}),'utf8');
+  const stream=new ReadableStream({start(controller){controller.enqueue(bytes);controller.close();}});
+  const fetcher=jest.fn(async () => ({ok:true,headers:{get:()=>null},body:stream}));
+  const h=harness({fetcher});
+  await expect(h.verifier(signed())).resolves.toEqual({
+    verified:true,issuer:URL,subject:'analyst-001',
+  });
+});
