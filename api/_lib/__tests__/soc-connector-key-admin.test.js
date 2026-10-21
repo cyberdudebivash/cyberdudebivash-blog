@@ -113,7 +113,8 @@ describe('Operator connector key lifecycle — authenticated + primary D1 + seal
     expect(h.statements[0].sql).toContain('FROM soc_auth_sessions');
     expect(h.statements[1].sql).toContain("p.role='TENANT_ADMIN'");
     expect(h.statements[2].sql).toContain('INSERT INTO soc_connector_signing_keys');
-    expect(h.statements[2].params[7]).toBe('tenant-admin');
+    expect(h.statements[2].params[5]).toBe('tenant-admin');
+    expect(h.statements[2].params[6]).toBe('tenant-admin');
     expect(h.nativeD1.withSession).toHaveBeenCalledWith('first-primary');
     expect(JSON.stringify(out)).not.toContain(key.toString('hex'));
   });
