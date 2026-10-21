@@ -174,3 +174,15 @@ test('enterprise enquiry CTA is relevant, bounded and free of report/user data',
   assert.match(untrusted,/Enterprise%20Security%20Enquiry/);
   assert.doesNotMatch(untrusted,/<img|onerror=|alert\(1\)/i);
 });
+
+test('enterprise evaluation provides documented procurement steps without readiness promises',()=>{
+  const html=renderEcosystemShowcase({type:'AI_SECURITY'});
+  assert.equal((html.match(/class="cdb-eco-evaluation"/g)||[]).length,1);
+  assert.match(html,/Enterprise evaluation pathway/);
+  assert.match(html,/Confirm scope and access/);
+  assert.match(html,/documented engagement/);
+  assert.match(html,/excluding confidential intelligence and credentials/);
+  assert.match(CSS,/\.cdb-eco-evaluation/);
+  assert.match(CSS,/@media print[\s\S]*cdb-eco-evaluation/);
+  assert.doesNotMatch(html,/guaranteed|100% production ready|certified SOC 2 Type II/i);
+});
