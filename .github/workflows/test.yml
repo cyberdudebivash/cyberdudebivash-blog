@@ -81,6 +81,8 @@ jobs:
           cache: 'npm'
       - name: Install locked dependencies
         run: npm ci --legacy-peer-deps
+      - name: Validate tenant-scoped SOC D1 schema (offline SQLite)
+        run: python3 -m unittest -v tests.test_soc_tenant_schema
       - name: Validate production entrypoint syntax
         run: node --check fetch-live-intel.js
       - name: Enterprise CTI reader v14 layout and accessibility regressions
