@@ -98,6 +98,18 @@ const CHANNELS = Object.freeze({
   NEWS_REPORT: ['intel', 'academy', 'research']
 });
 const BACKUP = ['intel','services','tools'];
+// Controlled, non-sensitive enquiry labels. Never incorporate report titles,
+// IOC values, user identifiers or request data into outbound mailto URLs.
+const ENQUIRY_LABELS = Object.freeze({
+  AI_SECURITY: 'AI Security Assessment Enquiry',
+  RANSOMWARE: 'Ransomware Readiness Enquiry',
+  DATA_BREACH: 'Incident Response Readiness Enquiry',
+  DARK_WEB: 'Threat Exposure Review Enquiry',
+  CVE_REPORT: 'Vulnerability Exposure Review Enquiry',
+  ZERO_DAY: 'Critical Vulnerability Response Enquiry',
+  MALWARE_REPORT: 'Malware Detection Engineering Enquiry',
+  DEFAULT: 'Enterprise Security Enquiry'
+});
 const BUYER_GUIDANCE = Object.freeze({
   AI_SECURITY: 'Assess AI application and agent risks, prioritize governance gaps, and discuss an authorized scope.',
   RANSOMWARE: 'Review ransomware exposure, improve investigation readiness, and scope relevant defensive controls.',
@@ -131,6 +143,8 @@ function renderEcosystemShowcase({ type = 'ADVISORY' } = {}) {
   const picks = recommendationsFor(type);
   const productList = PRODUCT_EXAMPLES[String(type || '').toUpperCase()] || PRODUCT_EXAMPLES.DEFAULT;
   const buyerGuidance = BUYER_GUIDANCE[String(type || '').toUpperCase()] || BUYER_GUIDANCE.DEFAULT;
+  const enquiryLabel = ENQUIRY_LABELS[String(type || '').toUpperCase()] || ENQUIRY_LABELS.DEFAULT;
+  const enquiryUrl = 'mailto:contact@cyberdudebivash.in?subject=' + encodeURIComponent(enquiryLabel);
   const card = key => {
     const offering = OFFERINGS[key];
     return '<article class="cdb-eco-card">' +
@@ -162,8 +176,8 @@ function renderEcosystemShowcase({ type = 'ADVISORY' } = {}) {
     '<div class="cdb-eco-actions">' +
     '<a class="cdb-eco-primary" href="https://www.cyberdudebivash.com/ecosystem" ' +
     'target="_blank" rel="noopener noreferrer">Explore the complete ecosystem ↗</a>' +
-    '<a class="cdb-eco-secondary" href="mailto:contact@cyberdudebivash.in?subject=Enterprise%20Security%20Enquiry">' +
-    'Request an enterprise consultation</a></div>' +
+    '<a class="cdb-eco-secondary" href="' + safe(enquiryUrl) + '">' +
+    'Discuss ' + safe(enquiryLabel.replace(/ Enquiry$/, '').toLowerCase()) + '</a></div>' +
     '<details class="cdb-eco-directory"><summary>Browse all public platform listings</summary>' +
     '<ul>' + catalogLinks + '</ul></details>' +
     '<p class="cdb-eco-disclosure"><strong>Commercial disclosure:</strong> This section promotes ' +
