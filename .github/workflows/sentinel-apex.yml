@@ -197,6 +197,12 @@ jobs:
             }
           " 2>&1
 
+      # A timed-out publisher may have partial generated output; this gate
+      # must pass before source changes can be staged or committed.
+      - name: "P0 homepage precommit integrity gate"
+        run: |
+          node -e "require('./scripts/soc-homepage-integrity').assertHomepageIntegrity(require('fs').readFileSync('index.html','utf8'),'publisher precommit')"
+
       - name: "Detect changes"
         id: changes
         run: |
@@ -249,6 +255,9 @@ jobs:
           echo "🚀 Pushing to main with retry logic..."
           # Push with retry + rebase (production-stable)
           for i in 1 2 3; do
+            # A successful rebase can reintroduce malformed HTML from upstream.
+            # Validate the actual final checkout before EACH push attempt.
+            node -e "require('./scripts/soc-homepage-integrity').assertHomepageIntegrity(require('fs').readFileSync('index.html','utf8'),'publisher prepush')" 
             if git push origin main; then
               echo "✅ Push succeeded (attempt $i)"
               break
