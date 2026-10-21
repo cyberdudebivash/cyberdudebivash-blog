@@ -80,7 +80,9 @@ BEGIN
     length(trim(NEW.review_note)) NOT BETWEEN 24 AND 2000 OR
     NEW.reviewed_at IS NULL OR length(NEW.reviewed_at) NOT BETWEEN 20 AND 40
     THEN RAISE(ABORT,'SOC reviewer, request, rationale and time required') END;
-  SELECT CASE WHEN NEW.review_note GLOB '*'||char(0)||'*'
+  -- GLOB with an embedded NUL truncates its pattern in SQLite and would
+  -- incorrectly reject EVERY rationale. Search raw UTF-8 bytes instead.
+  SELECT CASE WHEN instr(CAST(NEW.review_note AS BLOB),x'00')>0
     THEN RAISE(ABORT,'SOC invalid review note') END;
   SELECT CASE WHEN NOT EXISTS (
     SELECT 1 FROM soc_principals p
