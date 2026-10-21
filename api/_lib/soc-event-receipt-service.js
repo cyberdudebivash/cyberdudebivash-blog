@@ -121,15 +121,17 @@ function createSocEventReceiptService({nativeD1,resolveSecret,now=()=>Date.now()
     if (!connector) deny('CONNECTOR_NOT_AUTHORIZED',403);
 
     const id=receiptId(envelope);
+    const attestationSha256=crypto.createHash('sha256')
+      .update(canonicalFields(envelope)+'.'+envelope.signature,'utf8').digest('hex');
     const receivedAt=new Date(current).toISOString();
     try {
       const result=await session.prepare(
         'INSERT INTO soc_event_receipts '+
-        '(tenant_id,event_id,connector_id,source_event_at,received_at,digest_sha256,created_at) '+
-        'VALUES(?,?,?,?,?,?,?)'
+        '(tenant_id,event_id,connector_id,source_event_at,received_at,digest_sha256,created_at,source_signed_at,attestation_sha256) '+
+        'VALUES(?,?,?,?,?,?,?,?,?)'
       ).bind(
         envelope.tenantId,id,envelope.connectorId,envelope.eventTime,
-        receivedAt,envelope.payloadSha256,receivedAt
+        receivedAt,envelope.payloadSha256,receivedAt,envelope.signedAt,attestationSha256
       ).run();
       if (!result || result.success!==true) deny('RECEIPT_REJECTED',409);
     } catch (_) {
