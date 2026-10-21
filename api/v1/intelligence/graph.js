@@ -20,7 +20,8 @@ const correlationEngine = new CorrelationEngine(graphEngine, traversal);
 const similarityEngine = new SimilarityEngine(graphEngine);
 
 const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': '*',
+  // Internal analyst APIs are same-origin only: deliberately do not emit Access-Control-Allow-Origin.
+  'Cache-Control': 'no-store, no-cache, must-revalidate',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Analyst-Key',
 };
