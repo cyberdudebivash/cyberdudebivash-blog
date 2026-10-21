@@ -70,9 +70,12 @@ describe('SENTINEL APEX SOC source-attested intake',()=>{
     expect(h.bind.mock.calls[0]).toEqual(['acme','edr-primary']);
     const insert=h.prepare.mock.calls[1][0];
     expect(insert).toMatch(/INSERT INTO soc_event_receipts/);
+    const attestationSha256=crypto.createHash('sha256')
+      .update(canonicalFields(event)+'.'+event.signature).digest('hex');
     expect(h.bind.mock.calls[1]).toEqual([
       'acme',receiptId(BASE),'edr-primary',BASE.eventTime,
       '2026-10-21T16:00:00.000Z',PAYLOAD_DIGEST,'2026-10-21T16:00:00.000Z',
+      BASE.signedAt,attestationSha256,
     ]);
   });
   test('deterministic receipt ID for same source and connector prevents replay',()=>{
