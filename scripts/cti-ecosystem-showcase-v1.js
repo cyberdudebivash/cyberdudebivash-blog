@@ -178,6 +178,11 @@ function renderEcosystemShowcase({ type = 'ADVISORY' } = {}) {
     'target="_blank" rel="noopener noreferrer">Explore the complete ecosystem ↗</a>' +
     '<a class="cdb-eco-secondary" href="' + safe(enquiryUrl) + '">' +
     'Discuss ' + safe(enquiryLabel.replace(/ Enquiry$/, '').toLowerCase()) + '</a></div>' +
+    '<div class="cdb-eco-evaluation" aria-label="Enterprise engagement process">' +
+    '<h3>Enterprise evaluation pathway</h3>' +
+    '<ol><li><strong>Identify the requirement.</strong> Share the security objective and environment context, excluding confidential intelligence and credentials.</li>' +
+    '<li><strong>Confirm scope and access.</strong> Review availability, authorization boundaries, deliverables, licensing and commercial terms.</li>' +
+    '<li><strong>Agree on a documented engagement.</strong> Proceed after scope, ownership and customer approvals are established.</li></ol></div>' +
     '<details class="cdb-eco-directory"><summary>Browse all public platform listings</summary>' +
     '<ul>' + catalogLinks + '</ul></details>' +
     '<p class="cdb-eco-disclosure"><strong>Commercial disclosure:</strong> This section promotes ' +
@@ -212,6 +217,11 @@ const RULES = [
   '.cdb-eco-actions a{min-height:44px;display:inline-flex;align-items:center;justify-content:center;border-radius:8px;padding:10px 15px;font-size:14px;font-weight:800;text-align:center;text-decoration:none}',
   '.cdb-eco-actions .cdb-eco-primary{background:#a1edeb;color:#092331!important}',
   '.cdb-eco-actions .cdb-eco-secondary{border:1px solid #7097b4;color:#e1f2fa}',
+  '.cdb-eco-evaluation{margin:22px 0 0;padding:17px 18px;border:1px solid #47687f;border-radius:11px;background:#10293c}',
+  '.cdb-eco-evaluation h3{margin:0 0 9px!important;font-size:16px!important;color:#fff!important;line-height:1.4!important}',
+  '.cdb-eco-evaluation ol{margin:0;padding-left:20px;display:grid;gap:8px;color:#d5e6f1;font-size:13px;line-height:1.65}',
+  '.cdb-eco-evaluation li{padding-left:3px}',
+  '.cdb-eco-evaluation strong{color:#fff}',
   '.cdb-eco-directory{margin:20px 0 0;border-top:1px solid #3f617a;padding-top:15px}',
   '.cdb-eco-directory summary{cursor:pointer;min-height:44px;font-size:14px;font-weight:800;color:#e2f5fe;display:flex;align-items:center}',
   '.cdb-eco-directory ul{list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 18px;padding:8px 0;margin:0}',
@@ -223,7 +233,7 @@ const RULES = [
   '@media(max-width:940px){.cdb-eco-cards{grid-template-columns:1fr 1fr}.cdb-eco-card:last-child{grid-column:span 2}}',
   '@media(max-width:600px){.cdb-eco-showcase{padding:18px;margin:28px 0}.cdb-eco-cards,.cdb-eco-directory ul{grid-template-columns:1fr}.cdb-eco-card:last-child{grid-column:auto}.cdb-eco-actions a{width:100%}}',
   '@media(prefers-reduced-motion:reduce){.cdb-eco-showcase *{animation:none!important;transition:none!important}}',
-  '@media print{.cdb-eco-showcase{background:#fff!important;color:#111!important;box-shadow:none!important;border:1px solid #8899a6!important;break-inside:avoid-page}.cdb-eco-head h2,.cdb-eco-card h3,.cdb-eco-showcase :where(p,span,summary){color:#111!important}.cdb-eco-card{background:#fff!important;border:1px solid #bdc8cf!important;break-inside:avoid-page}.cdb-eco-buyer-path{background:#fff!important;color:#111!important;border-left-color:#345c71!important;break-inside:avoid-page}.cdb-eco-buyer-path strong,.cdb-eco-buyer-path p{color:#111!important}.cdb-eco-showcase a{color:#153e5c!important;text-decoration:underline!important}.cdb-eco-directory{display:none!important}.cdb-eco-actions .cdb-eco-primary{background:#fff!important;border:1px solid #999!important}}'
+  '@media print{.cdb-eco-showcase{background:#fff!important;color:#111!important;box-shadow:none!important;border:1px solid #8899a6!important;break-inside:avoid-page}.cdb-eco-head h2,.cdb-eco-card h3,.cdb-eco-showcase :where(p,span,summary){color:#111!important}.cdb-eco-card{background:#fff!important;border:1px solid #bdc8cf!important;break-inside:avoid-page}.cdb-eco-buyer-path{background:#fff!important;color:#111!important;border-left-color:#345c71!important;break-inside:avoid-page}.cdb-eco-buyer-path strong,.cdb-eco-buyer-path p{color:#111!important}.cdb-eco-showcase a{color:#153e5c!important;text-decoration:underline!important}.cdb-eco-directory{display:none!important}.cdb-eco-evaluation{background:#fff!important;color:#111!important;border-color:#aab4bd!important;break-inside:avoid-page}.cdb-eco-evaluation h3,.cdb-eco-evaluation ol,.cdb-eco-evaluation strong{color:#111!important}.cdb-eco-actions .cdb-eco-primary{background:#fff!important;border:1px solid #999!important}}'
 ].join('\n');
 const CSS = '<style id="' + STYLE_ID + '">\n' + RULES + '\n</style>';
 module.exports={STYLE_ID,CSS,OFFERINGS,recommendationsFor,renderEcosystemShowcase};
