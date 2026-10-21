@@ -108,6 +108,9 @@ const ENQUIRY_LABELS = Object.freeze({
   CVE_REPORT: 'Vulnerability Exposure Review Enquiry',
   ZERO_DAY: 'Critical Vulnerability Response Enquiry',
   MALWARE_REPORT: 'Malware Detection Engineering Enquiry',
+  THREAT_ACTOR: 'Threat Actor Exposure Review Enquiry',
+  ADVISORY: 'Security Advisory Consultation Enquiry',
+  NEWS_REPORT: 'Security Research Consultation Enquiry',
   DEFAULT: 'Enterprise Security Enquiry'
 });
 const BUYER_GUIDANCE = Object.freeze({
@@ -118,6 +121,9 @@ const BUYER_GUIDANCE = Object.freeze({
   CVE_REPORT: 'Prioritize verified asset exposure, patch evaluation, and detection engineering.',
   ZERO_DAY: 'Validate affected assets, compensating controls, and escalation requirements.',
   MALWARE_REPORT: 'Review actionable artifacts and decide which defensive controls require testing.',
+  THREAT_ACTOR: 'Review attributed and unattributed activity separately, and evaluate organization-specific defensive priorities.',
+  ADVISORY: 'Review verified advisory details and align relevant preventive and detective controls.',
+  NEWS_REPORT: 'Translate published research into an evidence-led security review without assuming customer exposure.',
   DEFAULT: 'Translate the intelligence findings into scoped security priorities for your organization.'
 });
 // Product examples appear in the supplied public catalog. Names are
