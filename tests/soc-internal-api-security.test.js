@@ -47,6 +47,8 @@ describe.each(handlers)('Internal-only SOC endpoint %s', (file) => {
 test('The internal workbench UI calls its own same-origin API, not a remote host', () => {
   const html = fs.readFileSync(path.join(root, 'workbench.html'), 'utf8');
   expect(html).toContain('fetch(' + '\x60' + '\u0024{API}\u0024{path}');
+  expect(html).toMatch(/const API = ['"]["'];/); // No old-host round trip during SOC migration.
+  expect(html).not.toMatch(/const API = ['"]https?:\/\//);
   expect(html).toContain('sessionStorage.setItem');
   expect(html).not.toContain('localStorage.setItem');
 });
