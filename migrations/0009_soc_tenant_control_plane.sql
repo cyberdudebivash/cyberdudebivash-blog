@@ -144,7 +144,10 @@ CREATE TABLE IF NOT EXISTS soc_evidence_manifests (
   PRIMARY KEY (tenant_id,manifest_id),
   UNIQUE (tenant_id,object_key),
   -- Reject an object path whose tenant prefix disagrees with the database tenant.
-  CHECK (substr(object_key,1,length(tenant_id)+5)='soc/' || tenant_id || '/'),
+  CHECK (substr(object_key,1,length(tenant_id)+5)='soc/' || tenant_id || '/'
+    AND length(object_key)>length(tenant_id)+5
+    AND instr(object_key,'..')=0
+    AND instr(object_key,'//')=0),
   FOREIGN KEY (tenant_id,incident_id) REFERENCES soc_incidents(tenant_id,incident_id)
     ON UPDATE RESTRICT ON DELETE RESTRICT,
   FOREIGN KEY (tenant_id,collector_id) REFERENCES soc_principals(tenant_id,principal_id)
