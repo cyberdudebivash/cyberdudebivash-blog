@@ -186,3 +186,19 @@ test('enterprise evaluation provides documented procurement steps without readin
   assert.match(CSS,/@media print[\s\S]*cdb-eco-evaluation/);
   assert.doesNotMatch(html,/guaranteed|100% production ready|certified SOC 2 Type II/i);
 });
+
+test('advisory, threat actor and research reports receive accurate bounded buyer copy',()=>{
+  const scenarios=[
+    ['ADVISORY','Security%20Advisory%20Consultation%20Enquiry','verified advisory details'],
+    ['THREAT_ACTOR','Threat%20Actor%20Exposure%20Review%20Enquiry','attributed and unattributed activity separately'],
+    ['NEWS_REPORT','Security%20Research%20Consultation%20Enquiry','without assuming customer exposure']
+  ];
+  for(const [type,subject,guidance] of scenarios){
+    const html=renderEcosystemShowcase({type});
+    assert.ok(html.includes('mailto:contact@cyberdudebivash.in?subject='+subject),type);
+    assert.ok(html.includes(guidance),type);
+    assert.equal((html.match(/class="cdb-eco-evaluation"/g)||[]).length,1);
+    assert.match(html,/Commercial disclosure:/);
+    assert.doesNotMatch(html,/guaranteed detection|SOC 2 Type II certified/i);
+  }
+});
