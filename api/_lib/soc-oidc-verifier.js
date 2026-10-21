@@ -95,8 +95,33 @@ function createSocOidcVerifier({
       if (!response || !response.ok) reject('JWKS_UNAVAILABLE');
       const length = Number(response.headers && response.headers.get('content-length'));
       if (Number.isFinite(length) && length > 96 * 1024) reject('JWKS_OVERSIZE');
-      const text = await response.text();
-      if (Buffer.byteLength(text, 'utf8') > 96 * 1024) reject('JWKS_OVERSIZE');
+      // Bound bytes WHILE reading; checking length only after response.text()
+      // would still allow an oversized provider response to allocate memory.
+      let text;
+      if (response.body && typeof response.body.getReader === 'function') {
+        const reader = response.body.getReader();
+        const chunks = [];
+        let length = 0;
+        try {
+          while (true) {
+            const next = await reader.read();
+            if (next.done) break;
+            length += next.value.byteLength;
+            if (length > 96 * 1024) reject('JWKS_OVERSIZE');
+            chunks.push(next.value);
+          }
+          const bytes = new Uint8Array(length);
+          let offset = 0;
+          for (const chunk of chunks) { bytes.set(chunk,offset); offset += chunk.byteLength; }
+          text = new TextDecoder('utf-8',{fatal:true}).decode(bytes);
+        } finally {
+          await reader.cancel().catch(() => {});
+          reader.releaseLock();
+        }
+      } else {
+        text = await response.text();
+        if (Buffer.byteLength(text,'utf8') > 96 * 1024) reject('JWKS_OVERSIZE');
+      }
       let keys;
       try { keys = JSON.parse(text).keys; } catch (_) { reject('JWKS_INVALID'); }
       if (!Array.isArray(keys) || !keys.length || keys.length > 32) reject('JWKS_INVALID');
