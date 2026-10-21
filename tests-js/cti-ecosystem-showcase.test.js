@@ -157,3 +157,20 @@ test('commercial buyer guidance is threat-specific, accessible and separate from
   assert.match(CSS,/\.cdb-eco-buyer-path/);
   assert.match(CSS,/@media print[\s\S]*cdb-eco-buyer-path/);
 });
+
+test('enterprise enquiry CTA is relevant, bounded and free of report/user data',()=>{
+  const cases=[
+    ['AI_SECURITY','AI%20Security%20Assessment%20Enquiry'],
+    ['RANSOMWARE','Ransomware%20Readiness%20Enquiry'],
+    ['CVE_REPORT','Vulnerability%20Exposure%20Review%20Enquiry']
+  ];
+  for(const [type,subject] of cases){
+    const html=renderEcosystemShowcase({type});
+    assert.ok(html.includes('mailto:contact@cyberdudebivash.in?subject='+subject),type);
+    assert.equal((html.match(/mailto:contact@cyberdudebivash.in/g)||[]).length,1);
+    assert.doesNotMatch(html,/\b(?:Bearer|api_key|secret_token)\b/i);
+  }
+  const untrusted=renderEcosystemShowcase({type:'<img src=x onerror=alert(1)>'});
+  assert.match(untrusted,/Enterprise%20Security%20Enquiry/);
+  assert.doesNotMatch(untrusted,/<img|onerror=|alert\(1\)/i);
+});
