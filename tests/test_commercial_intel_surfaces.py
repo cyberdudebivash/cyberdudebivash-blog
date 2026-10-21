@@ -742,7 +742,7 @@ def test_homepage_is_soc2_cti_customer_command_center_and_not_static_incident_ma
     css = Path("apex-command-center.css").read_text(encoding="utf-8")
     runtime = Path("apex-command-center.js").read_text(encoding="utf-8")
     for required in [
-        "LIVE HYBRID SOC 2 + CTI OPERATIONS",
+        "SOURCE-ATTRIBUTED THREAT INTELLIGENCE",
         "Enterprise Security Intelligence Command Center",
         "/customer-assurance.html",
         "ALIGNED · NOT CERTIFIED",
@@ -774,6 +774,8 @@ def test_homepage_is_soc2_cti_customer_command_center_and_not_static_incident_ma
     assert ".cdb-fabric" in css
 
     for forbidden in [
+        "LIVE HYBRID SOC 2 + CTI OPERATIONS",
+        "CYBERDUDEBIVASH SENTINEL APEX SOC 2 & CTI PLATFORM",
         "Qilin/LockBit 4.0 Active — 67 Victims April",
         "Nation-State APT Tracking in Real Time",
         "Ransomware Group Activity — Live Updates",
@@ -796,7 +798,7 @@ def test_cloudflare_release_certifies_homepage_soc2_cti_command_center():
     for required in [
         "'index.html'",
         'fetch_page "/"',
-        "LIVE HYBRID SOC 2 + CTI OPERATIONS",
+        "SOURCE-ATTRIBUTED THREAT INTELLIGENCE",
         "Security Intelligence Command Center",
         "ALIGNED · NOT CERTIFIED",
         'id="cdb-integrity-state"',
@@ -862,11 +864,11 @@ def test_homepage_exposes_premium_soc2_cti_brand_and_live_hero():
     css = Path("apex-command-center.css").read_text(encoding="utf-8")
     runtime = Path("apex-command-center.js").read_text(encoding="utf-8")
     for required in [
-        "CYBERDUDEBIVASH SENTINEL APEX SOC 2 & CTI PLATFORM",
-        "SENTINEL APEX SOC 2 &amp; CTI PLATFORM",
+        "CYBERDUDEBIVASH SENTINEL APEX — Threat Intelligence & SOC Readiness",
+        "SENTINEL APEX THREAT INTELLIGENCE &amp; SOC READINESS",
         "Enterprise Security Intelligence",
-        "SOC 2 Assurance",
-        "CTI Operations",
+        "Assurance Disclosures",
+        "CTI Research",
         'id="cdb-edge-state"',
         'class="cdb-hero"',
         'class="cdb-hero-visual"',
@@ -905,7 +907,7 @@ def test_homepage_exposes_premium_soc2_cti_brand_and_live_hero():
 def test_homepage_command_center_meets_enterprise_visibility_floor():
     html = Path("index.html").read_text(encoding="utf-8-sig")
     css = Path("apex-command-center.css").read_text(encoding="utf-8")
-    assert "CYBERDUDEBIVASH SENTINEL APEX SOC 2 & CTI PLATFORM" in html
+    assert "CYBERDUDEBIVASH SENTINEL APEX — Threat Intelligence & SOC Readiness" in html
     assert "/apex-command-center.css?v=20260928-brandhero1" in html
     assert "/apex-command-center.js?v=20260928-brandhero1" in html
     for required in [
@@ -929,7 +931,7 @@ def test_homepage_release_gate_waits_for_current_release_markers_not_just_http_2
     workflow = Path(".github/workflows/cloudflare-production-deploy.yml").read_text(encoding="utf-8")
     homepage_gate = workflow.split('name: "Certify SOC 2 + CTI homepage command center"', 1)[1].split('name: "Certify SOC 2 + CTI customer assurance"', 1)[0]
     assert 'local ready=0' in homepage_gate
-    assert "grep -Fq 'LIVE HYBRID SOC 2 + CTI OPERATIONS' \"$file\"" in homepage_gate
+    assert "grep -Fq 'SOURCE-ATTRIBUTED THREAT INTELLIGENCE' \"$file\"" in homepage_gate
     assert 'grep -Fq \'id="cdb-kev"\' "$file"' in homepage_gate
     assert 'grep -Fq \'id="cdb-freshness"\' "$file"' in homepage_gate
     assert 'ready=1' in homepage_gate

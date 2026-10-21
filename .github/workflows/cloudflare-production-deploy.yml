@@ -364,7 +364,7 @@ jobs:
             for attempt in 1 2 3 4 5 6; do
               code="$(curl -sS -L --max-time 25 -H 'Cache-Control: no-cache' -o "$file" -w '%{http_code}' "$base$route?release_sha=$GITHUB_SHA" || true)"
               if [ "$code" = "200" ] \
-                && grep -Fq 'LIVE HYBRID SOC 2 + CTI OPERATIONS' "$file" \
+                && grep -Fq 'SOURCE-ATTRIBUTED THREAT INTELLIGENCE' "$file" \
                 && grep -Fq 'id="cdb-kev"' "$file" \
                 && grep -Fq 'id="cdb-freshness"' "$file" \
                 && grep -Fq '/apex-command-center.css' "$file" \
@@ -376,7 +376,7 @@ jobs:
               sleep 10
             done
             test "$code" = "200" || { echo "::error::$route returned HTTP $code"; exit 1; }
-            test "$ready" -eq 1 || { echo "::error::$route never exposed the current SOC 2 + CTI release markers"; exit 1; }
+            test "$ready" -eq 1 || { echo "::error::$route never exposed the current CTI and SOC readiness release markers"; exit 1; }
           }
 
           fetch_asset() {
@@ -388,9 +388,9 @@ jobs:
           }
 
           fetch_page "/" "$tmp/home.html"
-          grep -Fq 'LIVE HYBRID SOC 2 + CTI OPERATIONS' "$tmp/home.html" || { echo "::error::Live Hybrid SOC 2 + CTI command center missing"; exit 1; }
+          grep -Fq 'SOURCE-ATTRIBUTED THREAT INTELLIGENCE' "$tmp/home.html" || { echo "::error::Source-attributed CTI and SOC readiness banner missing"; exit 1; }
           grep -Fq 'CYBERDUDEBIVASH' "$tmp/home.html" || { echo "::error::Homepage enterprise brand missing"; exit 1; }
-          grep -Fq 'SENTINEL APEX SOC 2 &amp; CTI PLATFORM' "$tmp/home.html" || { echo "::error::Homepage platform identity missing"; exit 1; }
+          grep -Fq 'SENTINEL APEX THREAT INTELLIGENCE &amp; SOC READINESS' "$tmp/home.html" || { echo "::error::Homepage platform identity missing"; exit 1; }
           grep -Fq 'Enterprise Security Intelligence' "$tmp/home.html" || { echo "::error::Homepage enterprise positioning missing"; exit 1; }
           grep -Fq 'id="cdb-edge-state"' "$tmp/home.html" || { echo "::error::Production-edge trust state missing"; exit 1; }
           grep -Fq 'id="cdb-hero-total"' "$tmp/home.html" || { echo "::error::Hero published-intel metric missing"; exit 1; }
