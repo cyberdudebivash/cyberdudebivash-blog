@@ -14,7 +14,7 @@
     <copyright>Copyright 2026 CyberDudeBivash. All rights reserved.</copyright>
     <managingEditor>bivash@cyberdudebivash.com (CyberDudeBivash)</managingEditor>
     <webMaster>bivash@cyberdudebivash.com (CyberDudeBivash)</webMaster>
-    <lastBuildDate>Wed, 21 Oct 2026 12:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 21 Oct 2026 17:13:36 GMT</lastBuildDate>
     <pubDate>Wed, 21 Oct 2026 12:00:00 +0000</pubDate>
     <ttl>60</ttl>
     <category>Cybersecurity</category>
@@ -31,6 +31,100 @@
       <height>144</height>
     </image>
 
+    <item>
+    <title><![CDATA[virtualenv bash activate runs commands from an environment name with a backslash before $]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-113725-pip-virtualenv.html</link>
+    <description><![CDATA[Score 62/100 MEDIUM — CVSS 7.8 — ### Summary The bash `activate` script escapes the environment name for only one of the two passes bash makes over `PS1`, so a
+backslash in the name undoes the escaping and a name containing `\$(...)` runs as commands in the user's shell each
+time bash draws the prompt. ### Affected area `src/virtua. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 21 Oct 2026 17:13:36 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-113725-pip-virtualenv.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[virtualenv activate runs commands from the environment name in zsh with PROMPT_SUBST]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-113726-pip-virtualenv.html</link>
+    <description><![CDATA[Score 62/100 MEDIUM — CVSS 7.8 — ### Impact zsh users activate an environment with the bash `activate` script, which puts the environment name into `PS1`. Since
+21.13.0 the script escapes backslashes, dollar signs and backticks in that name, but only when `BASH_VERSION` is set, so
+zsh gets the raw value. With the `PROMPT_SUBST` opt. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 21 Oct 2026 17:13:36 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-113726-pip-virtualenv.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[virtualenv activate.fish runs commands from a path or prompt with a backslash before a quote]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-113732-pip-virtualenv.html</link>
+    <description><![CDATA[Score 62/100 MEDIUM — CVSS 7.8 — ### Impact `FishActivator` defines no `quote()`, so it inherits `ViaTemplateActivator.quote`, which returns `shlex.quote(string)`. That function follows POSIX `sh` rules, where a backslash inside single quotes stays a literal character. fish reads `\'` inside single quotes as an escaped quote and `\. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 21 Oct 2026 17:13:36 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-113732-pip-virtualenv.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[virtualenv activation scripts run code from a path that contains a placeholder name]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-113776-pip-virtualenv.html</link>
+    <description><![CDATA[Score 62/100 MEDIUM — CVSS 7.8 — ### Impact `ViaTemplateActivator.instantiate_template` replaces the placeholders in an activation template one key at a time, each across the whole text. When a value that it already substituted and quoted contains the name of a later placeholder, the later pass rewrites that name inside the quoted . Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 21 Oct 2026 17:13:36 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-113776-pip-virtualenv.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Moov signedxml: Unauthenticated denial of service in exclusive XML canonicalization]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-113729-go-github-com-moov-io-signedxml.html</link>
+    <description><![CDATA[Score 61/100 MEDIUM — CVSS 7.5 — Exclusive XML canonicalization (`http://www.w3.org/2001/10/xml-exc-c14n#`) in `github.com/moov-io/signedxml` copied the entire accumulated namespace map at every node during `ValidateReferences()`, before any reference digest or signature check. For a chain of nested elements that each declare many . Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 21 Oct 2026 17:13:36 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-113729-go-github-com-moov-io-signedxml.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[ApostropheCMS: Unauthenticated resource exhaustion via pre-auth aposBigUpload processing in @apostrophecms/import-export]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-113711-npm-apostrophe.html</link>
+    <description><![CDATA[Score 61/100 MEDIUM — CVSS 7.5 — ## Summary A potential unauthenticated denial-of-service vulnerability exists in the chunked import upload path used by `@apostrophecms/import-export`. The affected import API routes invoke: `self.apos.http.bigUploadMiddleware()` before the actual import handler performs its authentication check. Be. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 21 Oct 2026 17:13:36 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-113711-npm-apostrophe.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[OpenChoreo: Authorization bypass on WorkflowRun update allows cross-project takeover of workflow runs]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-113727-go-github-com-openchoreo-openchoreo.html</link>
+    <description><![CDATA[Score 60/100 MEDIUM — CVSS 7.4 — ## Summary The OpenChoreo API server authorized `PUT .../workflowruns/{runName}` against ownership metadata taken from the request body, while the object it actually mutated was selected by the URL path. Nothing forced the two to agree. A `WorkflowRun`'s membership in a project and component is carr. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 21 Oct 2026 17:13:36 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-113727-go-github-com-openchoreo-openchoreo.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Threat Brief: Critical Vulnerabilities in PHP: CVE-2026-109618, CVE-2026-109619]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-109618.html</link>
+    <description><![CDATA[Score 51/100 MEDIUM — CVSS 9.4 — Threat Brief: Critical Vulnerabilities in PHP: CVE-2026-109618, CVE-2026-109619. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 21 Oct 2026 17:13:36 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-109618.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-111949 - miniOrange 2FA 6.2.9 - 6.3.0 - 2FA Bypass via Passkey Second-Factor Rebinding]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-111949.html</link>
+    <description><![CDATA[Score 43/100 LOW — CVSS 7.5 — CVE-2026-111949 - miniOrange 2FA 6.2.9 - 6.3.0 - 2FA Bypass via Passkey Second-Factor Rebinding. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 21 Oct 2026 17:13:36 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-111949.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-114407 - e107 CMS before 2.3.13 Reflected XSS via search.php author Parameter]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-114407.html</link>
+    <description><![CDATA[Score 37/100 LOW — CVSS 6.1 — CVE-2026-114407 - e107 CMS before 2.3.13 Reflected XSS via search.php author Parameter. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Wed, 21 Oct 2026 17:13:36 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-114407.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
   <item>
     <title>CISA: SafePay ransomware hit over 600 critical infrastructure orgs</title>
     <link>https://blog.cyberdudebivash.in/posts/cisa-safepay-ransomware-hit-over-600-critical-infrastructur.html</link>
