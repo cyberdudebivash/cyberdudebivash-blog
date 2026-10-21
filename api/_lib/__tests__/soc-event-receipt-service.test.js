@@ -169,6 +169,6 @@ describe('SENTINEL APEX SOC source-attested intake',()=>{
   test('signature attests receipt metadata only, not independent source verification',async()=>{
     const accepted=await fixture().service.ingest(signed());
     expect(accepted.source).toBe('SOURCE_ATTESTED');
-    expect(accepted.state).not.toMatch(/ANALYST_VERIFIED|CONFIRMED/);
+    expect(accepted.state).toBe('RECEIVED_NOT_ANALYST_VERIFIED');
   });
 });
