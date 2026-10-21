@@ -89,6 +89,8 @@ jobs:
         run: python3 -m unittest -v tests.test_soc_auth_sessions
       - name: Validate SOC approved-source event receipts and atomic audit (offline SQLite)
         run: python3 -m unittest -v tests.test_soc_event_receipt_integrity
+      - name: Validate SOC connector HMAC signing key rotation and revocation (offline SQLite)
+        run: python3 -m unittest -v tests.test_soc_connector_key_lifecycle
       - name: Validate production entrypoint syntax
         run: node --check fetch-live-intel.js
       - name: Enterprise CTI reader v14 layout and accessibility regressions
