@@ -2785,6 +2785,9 @@ function updateIndexHTML(newCards) {
   html = html.replace(MARKER, `${cardBlock}\n\n    ${MARKER}`);
   const today = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}).toUpperCase();
   html = html.replace(/BREAKING INTELLIGENCE &mdash;[^<]+ &mdash; UPDATED LIVE/, `BREAKING INTELLIGENCE &mdash; ${today} &mdash; UPDATED LIVE`);
+  // An interrupted or malformed auto-publish must not duplicate public
+  // containers or silently revive the historic broken homepage.
+  require('./scripts/soc-homepage-integrity').assertHomepageIntegrity(html, 'publisher index.html');
   safeWriteSync(CFG.indexPath, html, 'utf8');
   log(`index.html updated: +${newCards.length} cards.`);
 }
