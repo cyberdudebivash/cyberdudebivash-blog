@@ -157,3 +157,34 @@ test('commercial buyer guidance is threat-specific, accessible and separate from
   assert.match(CSS,/\.cdb-eco-buyer-path/);
   assert.match(CSS,/@media print[\s\S]*cdb-eco-buyer-path/);
 });
+
+test('merged enterprise conversion CTA gives safe category-specific subjects',()=>{
+  const cases=[
+    ['AI_SECURITY','AI%20Security%20Assessment%20Enquiry'],
+    ['RANSOMWARE','Ransomware%20Readiness%20Enquiry'],
+    ['CVE_REPORT','Vulnerability%20Exposure%20Review%20Enquiry'],
+    ['THREAT_ACTOR','Threat%20Actor%20Exposure%20Review%20Enquiry'],
+    ['NEWS_REPORT','Security%20Research%20Consultation%20Enquiry']
+  ];
+  for(const [type,subject] of cases){
+    const html=renderEcosystemShowcase({type});
+    assert.ok(html.includes('mailto:contact@cyberdudebivash.in?subject='+subject),type);
+    assert.equal((html.match(/mailto:contact@cyberdudebivash.in/g)||[]).length,1);
+    assert.equal((html.match(/class="cdb-eco-evaluation"/g)||[]).length,1);
+    assert.match(html,/Commercial disclosure/);
+    assert.match(html,/Enterprise evaluation pathway/);
+  }
+  const untrusted=renderEcosystemShowcase({type:'<img src=x onerror=alert(1)>'});
+  assert.match(untrusted,/Enterprise%20Security%20Enquiry/);
+  assert.doesNotMatch(untrusted,/<img|onerror=|alert\(1\)/i);
+});
+
+test('enterprise evaluation section is print legible and leaves report evidence unchanged',()=>{
+  const html=generatePostHTML({...base}).html;
+  const promo=html.indexOf('data-cdb-ecosystem-promotion="v1"');
+  assert.ok(promo>html.indexOf('id="cdb-static-references"'));
+  assert.equal((html.match(/data-cdb-ecosystem-promotion="v1"/g)||[]).length,1);
+  assert.match(CSS, /@media print[\s\S]*\.cdb-eco-evaluation h3,\.cdb-eco-evaluation ol,\.cdb-eco-evaluation strong\{color:#111!important\}/);
+  assert.match(html,/vendor\.example\/advisory/);
+  assert.match(html,/No source-validated detection content is established/);
+});
