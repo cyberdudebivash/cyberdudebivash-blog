@@ -162,8 +162,13 @@ function renderEcosystemShowcase({ type = 'ADVISORY' } = {}) {
     '<div class="cdb-eco-actions">' +
     '<a class="cdb-eco-primary" href="https://www.cyberdudebivash.com/ecosystem" ' +
     'target="_blank" rel="noopener noreferrer">Explore the complete ecosystem ↗</a>' +
-    '<a class="cdb-eco-secondary" href="mailto:contact@cyberdudebivash.in?subject=Enterprise%20Security%20Enquiry">' +
-    'Request an enterprise consultation</a></div>' +
+    '<a class="cdb-eco-secondary" href="' + safe(enquiryUrl) + '">' +
+    'Discuss ' + safe(enquiryLabel.replace(/ Enquiry$/, '').toLowerCase()) + '</a></div>' +
+    '<div class="cdb-eco-evaluation" aria-label="Enterprise engagement process">' +
+    '<h3>Enterprise evaluation pathway</h3>' +
+    '<ol><li><strong>Identify the requirement.</strong> Share the security objective and environment context, excluding confidential intelligence and credentials.</li>' +
+    '<li><strong>Confirm scope and access.</strong> Review availability, authorization boundaries, deliverables, licensing and commercial terms.</li>' +
+    '<li><strong>Agree on a documented engagement.</strong> Proceed after scope, ownership and customer approvals are established.</li></ol></div>' +
     '<details class="cdb-eco-directory"><summary>Browse all public platform listings</summary>' +
     '<ul>' + catalogLinks + '</ul></details>' +
     '<p class="cdb-eco-disclosure"><strong>Commercial disclosure:</strong> This section promotes ' +
@@ -198,6 +203,11 @@ const RULES = [
   '.cdb-eco-actions a{min-height:44px;display:inline-flex;align-items:center;justify-content:center;border-radius:8px;padding:10px 15px;font-size:14px;font-weight:800;text-align:center;text-decoration:none}',
   '.cdb-eco-actions .cdb-eco-primary{background:#a1edeb;color:#092331!important}',
   '.cdb-eco-actions .cdb-eco-secondary{border:1px solid #7097b4;color:#e1f2fa}',
+  '.cdb-eco-evaluation{margin:22px 0 0;padding:17px 18px;border:1px solid #47687f;border-radius:11px;background:#10293c}',
+  '.cdb-eco-evaluation h3{margin:0 0 9px!important;font-size:16px!important;color:#fff!important;line-height:1.4!important}',
+  '.cdb-eco-evaluation ol{margin:0;padding-left:20px;display:grid;gap:8px;color:#d5e6f1;font-size:13px;line-height:1.65}',
+  '.cdb-eco-evaluation li{padding-left:3px}',
+  '.cdb-eco-evaluation strong{color:#fff}',
   '.cdb-eco-directory{margin:20px 0 0;border-top:1px solid #3f617a;padding-top:15px}',
   '.cdb-eco-directory summary{cursor:pointer;min-height:44px;font-size:14px;font-weight:800;color:#e2f5fe;display:flex;align-items:center}',
   '.cdb-eco-directory ul{list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 18px;padding:8px 0;margin:0}',
