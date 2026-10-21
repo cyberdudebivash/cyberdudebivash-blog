@@ -116,10 +116,16 @@ describe('analystIpRateLimit', () => {
     expect(allowed).toBe(false);
   });
 
-  test('fails open when Redis is unavailable, matching adminIpRateLimit\'s own precedent', async () => {
+  test('fails closed with distinct unavailable state when Redis is down', async () => {
     redis.incr.mockRejectedValue(new Error('redis down'));
     const allowed = await analystIpRateLimit(req({ 'x-forwarded-for': '1.2.3.4' }));
-    expect(allowed).toBe(true);
+    expect(allowed).toBeNull();
+  });
+
+  test('fails closed when Redis bucket expiration fails', async () => {
+    redis.incr.mockResolvedValue(1);
+    redis.expire.mockRejectedValueOnce(new Error('ttl unavailable'));
+    expect(await analystIpRateLimit(req({ 'x-forwarded-for': '1.2.3.4' }))).toBeNull();
   });
 
   test('sets the bucket TTL only on the first request in a window', async () => {
@@ -157,6 +163,20 @@ describe('requireAnalyst', () => {
       expect(analyst).toBeNull();
       expect(res.statusCode).toBe(401);
       expect(res.body.error.code).toBe('UNAUTHORIZED');
+    });
+  });
+
+
+  test('returns 503 and no analyst identity during rate-limit backend outage', async () => {
+    redis.incr.mockRejectedValue(new Error('temporary Redis timeout'));
+    await withAnalysts(JSON.stringify([{ id: 'bivash', name: 'Bivash', key: REAL_KEY_1 }]), async () => {
+      const res = fakeRes();
+      const analyst = await requireAnalyst(req({ 'x-analyst-key': REAL_KEY_1 }), res, fakeFail);
+      expect(analyst).toBeNull();
+      expect(res.statusCode).toBe(503);
+      expect(res.body.error.code).toBe('AUTH_RATE_LIMIT_UNAVAILABLE');
+      expect(res.headers['Retry-After']).toBe('60');
+      expect(JSON.stringify(res.body)).not.toContain('Redis');
     });
   });
 
