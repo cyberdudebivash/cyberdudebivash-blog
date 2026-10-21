@@ -98,6 +98,19 @@ const CHANNELS = Object.freeze({
   NEWS_REPORT: ['intel', 'academy', 'research']
 });
 const BACKUP = ['intel','services','tools'];
+const ENQUIRY_LABELS = Object.freeze({
+  AI_SECURITY: 'AI Security Assessment Enquiry',
+  RANSOMWARE: 'Ransomware Readiness Enquiry',
+  DATA_BREACH: 'Incident Response Readiness Enquiry',
+  DARK_WEB: 'Threat Exposure Review Enquiry',
+  CVE_REPORT: 'Vulnerability Exposure Review Enquiry',
+  ZERO_DAY: 'Critical Vulnerability Response Enquiry',
+  MALWARE_REPORT: 'Malware Detection Engineering Enquiry',
+  THREAT_ACTOR: 'Threat Actor Exposure Review Enquiry',
+  ADVISORY: 'Security Advisory Consultation Enquiry',
+  NEWS_REPORT: 'Security Research Consultation Enquiry',
+  DEFAULT: 'Enterprise Security Enquiry'
+});
 const BUYER_GUIDANCE = Object.freeze({
   AI_SECURITY: 'Assess AI application and agent risks, prioritize governance gaps, and discuss an authorized scope.',
   RANSOMWARE: 'Review ransomware exposure, improve investigation readiness, and scope relevant defensive controls.',
@@ -131,6 +144,8 @@ function renderEcosystemShowcase({ type = 'ADVISORY' } = {}) {
   const picks = recommendationsFor(type);
   const productList = PRODUCT_EXAMPLES[String(type || '').toUpperCase()] || PRODUCT_EXAMPLES.DEFAULT;
   const buyerGuidance = BUYER_GUIDANCE[String(type || '').toUpperCase()] || BUYER_GUIDANCE.DEFAULT;
+  const enquiryLabel = ENQUIRY_LABELS[String(type || '').toUpperCase()] || ENQUIRY_LABELS.DEFAULT;
+  const enquiryUrl = 'mailto:contact@cyberdudebivash.in?subject=' + encodeURIComponent(enquiryLabel);
   const card = key => {
     const offering = OFFERINGS[key];
     return '<article class="cdb-eco-card">' +
