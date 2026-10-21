@@ -97,7 +97,9 @@ async function analystIpRateLimit(req) {
     if (count === 1) await redis.expire(key, 60);
     return count <= ANALYST_RATE_LIMIT;
   } catch (_) {
-    return true; // Redis down -> fail open, same risk posture as adminIpRateLimit
+    // Distinguish a backend outage from a real over-quota analyst. Deny the
+    // request rather than silently bypassing the limiter at the worst time.
+    return null;
   }
 }
 exports.analystIpRateLimit = analystIpRateLimit;
@@ -118,7 +120,13 @@ async function requireAnalyst(req, res, fail) {
     fail(res, 401, 'UNAUTHORIZED', 'Missing or invalid X-Analyst-Key header. Internal workbench access only.');
     return null;
   }
-  if (!(await analystIpRateLimit(req))) {
+  const allowed = await analystIpRateLimit(req);
+  if (allowed === null) {
+    res.setHeader('Retry-After', '60');
+    fail(res, 503, 'AUTH_RATE_LIMIT_UNAVAILABLE', 'Analyst authentication protection temporarily unavailable.');
+    return null;
+  }
+  if (!allowed) {
     res.setHeader('Retry-After', '60');
     fail(res, 429, 'RATE_LIMIT_EXCEEDED', `Analyst rate limit: ${ANALYST_RATE_LIMIT} requests/minute`);
     return null;
