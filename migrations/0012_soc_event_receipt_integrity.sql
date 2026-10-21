@@ -4,6 +4,11 @@
 -- This database layer independently enforces approved connectors, active
 -- tenants, atomic source-receipt audit, immutability and referential integrity.
 
+-- Preserve proof-of-attestation fingerprint and signed timestamp for review.
+-- Never retain the plaintext shared signing secret or raw event payload.
+ALTER TABLE soc_event_receipts ADD COLUMN source_signed_at TEXT;
+ALTER TABLE soc_event_receipts ADD COLUMN attestation_sha256 TEXT;
+
 CREATE TRIGGER IF NOT EXISTS soc_event_receipt_insert_guard
 BEFORE INSERT ON soc_event_receipts
 BEGIN
@@ -17,6 +22,10 @@ BEGIN
     OR length(NEW.event_id)<>68
     OR substr(NEW.event_id,5) GLOB '*[^0-9a-f]*'
     THEN RAISE(ABORT,'SOC receipt ID must be deterministic SHA256') END;
+  SELECT CASE WHEN NEW.source_signed_at IS NULL OR length(NEW.source_signed_at)<>24
+    OR NEW.attestation_sha256 IS NULL OR length(NEW.attestation_sha256)<>64
+    OR NEW.attestation_sha256 GLOB '*[^0-9a-f]*'
+    THEN RAISE(ABORT,'SOC event signature attestation required') END;
   SELECT CASE WHEN NEW.payload_location_ref IS NOT NULL
     THEN RAISE(ABORT,'SOC pilot intake cannot store external payload references') END;
 END;
