@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#09131e">
+  <title>SENTINEL APEX SOC | Security Operations — Customer Preview</title>
+  <meta name="description" content="SENTINEL APEX SOC — phased security operations platform transformation. Explore existing threat intelligence, detection engineering and scoped SOC readiness services. Not a released managed SOC.">
+  <link rel="canonical" href="https://blog.cyberdudebivash.in/soc-preview.html">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <style>
+    :root { color-scheme:dark; --bg:#07111b; --surface:#0c1b2a; --surface2:#102538; --line:#244050; --ink:#f0f8ff; --sub:#b3c7d4; --accent:#41e1ce; --accent2:#88bbff; --warn:#ffcb75; --max:1150px }
+    *,*::before,*::after { box-sizing:border-box }
+    html {scroll-behavior:smooth}
+    body { margin:0; color:var(--ink); background:radial-gradient(ellipse 80% 35% at 55% 1%,#103244 0,transparent 80%),var(--bg); font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif }
+    a { color:var(--accent); text-underline-offset:3px }
+    a:focus-visible { outline:3px solid var(--warn);outline-offset:4px;border-radius:3px }
+    .skip {position:absolute;left:-9999px;top:0;background:var(--ink);color:var(--bg);padding:10px}
+    .skip:focus {left:12px;z-index:20}
+    .wrap {max-width:var(--max);margin:0 auto;padding:0 24px}
+    header {position:relative;border-bottom:1px solid var(--line);background:#09131ccc}
+    nav {display:flex;gap:20px;align-items:center;justify-content:space-between;min-height:78px;flex-wrap:wrap;padding:10px 0}
+    nav .brand {font-weight:800;letter-spacing:.055em;color:var(--ink);text-decoration:none;font-size:15px}
+    nav .links {display:flex;flex-wrap:wrap;gap:16px;font-size:14px}
+    nav .links a {color:var(--sub)}
+    .pill {display:inline-block;border:1px solid #527b78;border-radius:999px;padding:6px 12px;color:var(--accent);font-size:11px;letter-spacing:.11em;font-weight:800}
+    h1,h2,h3 {line-height:1.15;letter-spacing:-.025em}
+    h1 {font-size:clamp(2.75rem,7.5vw,5.5rem);max-width:1000px;margin:24px 0}
+    h2 {font-size:clamp(1.7rem,4vw,2.5rem);margin:10px 0 20px}
+    h3 {font-size:1.13rem;margin:0 0 8px}
+    p {margin:0 0 16px}
+    .hero {padding:92px 0 70px}
+    .lead {font-size:clamp(1.05rem,2vw,1.29rem);color:var(--sub);max-width:830px}
+    .accent {color:var(--accent)}
+    .action-row {display:flex;flex-wrap:wrap;gap:13px;margin:32px 0}
+    .action {display:inline-flex;min-height:46px;align-items:center;justify-content:center;padding:10px 19px;border-radius:9px;border:1px solid #438376;background:var(--accent);color:#04151b;text-decoration:none;font-weight:750}
+    .action.secondary {background:transparent;color:var(--ink);border-color:var(--line)}
+    .truth {max-width:930px;border-left:4px solid var(--warn);background:#18262d;padding:15px 20px;color:#f4dfb5;border-radius:0 8px 8px 0;font-size:14px}
+    section {padding:49px 0}
+    section + section {border-top:1px solid var(--line)}
+    .eyebrow {font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);font-weight:850}
+    .cards {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:24px}
+    .card {background:linear-gradient(145deg,var(--surface2),var(--surface));border:1px solid var(--line);border-radius:14px;padding:26px 22px;min-height:250px}
+    .card p {color:var(--sub);font-size:14.5px}
+    .status {display:inline-block;margin-bottom:20px;color:var(--warn);font-weight:750;font-size:11px;text-transform:uppercase;letter-spacing:.1em}
+    .status.available {color:var(--accent)}
+    .card a {font-weight:700}
+    .cols {display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start}
+    .list {padding-left:22px;color:var(--sub)}
+    .list li {margin:0 0 9px}
+    .flow {display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px}
+    .step {border-top:3px solid var(--accent);padding:20px;background:#0d1c29;border-radius:0 0 9px 9px}
+    .step strong {font-size:12px;color:var(--accent)}
+    .step p {font-size:14px;color:var(--sub);margin:8px 0 0}
+    .foot {border-top:1px solid var(--line);padding:28px 0 38px;color:var(--sub);font-size:13px}
+    .foot a {color:var(--sub)}
+    .small {font-size:13px;color:var(--sub)}
+    @media(max-width:820px) {.cards{grid-template-columns:1fr}.cols{grid-template-columns:1fr}.flow{grid-template-columns:1fr 1fr}.hero{padding:58px 0 42px}}
+    @media(max-width:470px) {.flow{grid-template-columns:1fr}.wrap{padding:0 17px}nav .links{gap:11px}.hero{padding-top:45px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header><div class="wrap"><nav aria-label="Primary">
+    <a class="brand" href="/">CYBERDUDEBIVASH® / SENTINEL APEX™</a>
+    <div class="links">
+      <a href="#capabilities">Capabilities</a>
+      <a href="#operations">Operations model</a>
+      <a href="/customer-assurance.html">Assurance</a>
+      <a href="#engage">Contact</a>
+    </div>
+  </nav></div></header>
+  <main id="main">
+    <div class="wrap"><section class="hero" aria-labelledby="page-title">
+      <span class="pill">SECURITY OPERATIONS · CONTROLLED PREVIEW</span>
+      <h1 id="page-title">Security operations.<br><span class="accent">Evidence before claims.</span></h1>
+      <p class="lead">SENTINEL APEX SOC is being developed as a customer-isolated security operations platform combining threat intelligence, detection engineering, investigation and measurable response workflows.</p>
+      <div class="action-row">
+        <a class="action" href="mailto:contact@cyberdudebivash.in?subject=SENTINEL%20APEX%20SOC%20Readiness%20Pilot%20Enquiry">Request a scoped SOC pilot</a>
+        <a class="action secondary" href="/intelligence.html">Explore current threat intelligence</a>
+      </div>
+      <p class="truth"><strong>Operating boundary:</strong> This is a non-production customer preview, not a released managed SOC, 24/7 monitoring commitment or SOC 2 auditor attestation. Any engagement, incident response, response-time commitment or paid service requires explicit written scope and acceptance. We do not publish fabricated telemetry, customer or incident statistics.</p>
+    </section></div>
+    <div class="wrap"><section id="capabilities" aria-labelledby="capabilities-heading">
+      <p class="eyebrow">Existing foundations and pilot services</p>
+      <h2 id="capabilities-heading">Built on source-attributed intelligence</h2>
+      <div class="cards">
+        <article class="card">
+          <span class="status available">Current CTI capability</span>
+          <h3>Threat Intelligence & Vulnerability Triage</h3>
+          <p>Review existing source-linked CVE, known exploited vulnerability, malware and campaign intelligence. Source confidence and freshness must be checked before operational use.</p>
+          <a href="/intelligence.html">Open intelligence hub</a>
+        </article>
+        <article class="card">
+          <span class="status available">Scoped engagement by agreement</span>
+          <h3>SOC Readiness Assessment</h3>
+          <p>Review telemetry coverage, security ownership, gaps in controls, priorities and documented incident workflows. Scope and deliverables are agreed before work starts.</p>
+          <a href="mailto:contact@cyberdudebivash.in?subject=SOC%20Readiness%20Assessment">Discuss assessment scope</a>
+        </article>
+        <article class="card">
+          <span class="status available">Scoped pilot by agreement</span>
+          <h3>Detection Engineering & CTI Mapping</h3>
+          <p>Use reference detections and threat-hunting guidance to develop an explicitly authorized, environment-tested detection pilot. Draft rules are not deployed automatically.</p>
+          <a href="/detection-quality.html">Review detection quality</a>
+        </article>
+      </div>
+    </section></div>
+    <div class="wrap"><section id="operations" aria-labelledby="operations-heading">
+      <p class="eyebrow">Customer operations target architecture</p>
+      <h2 id="operations-heading">From telemetry to documented response</h2>
+      <div class="flow" aria-label="Planned security operations process">
+        <div class="step"><strong>01 · COLLECT</strong><p>Consent-based connectors and authenticated, tenant-scoped evidence ingestion.</p></div>
+        <div class="step"><strong>02 · DETECT</strong><p>Versioned detections, source attribution, correlation and confidence.</p></div>
+        <div class="step"><strong>03 · INVESTIGATE</strong><p>Isolated casework, analyst accountability and auditable evidence custody.</p></div>
+        <div class="step"><strong>04 · RESPOND</strong><p>Customer-approved playbooks, handover, validation and documented closure.</p></div>
+      </div>
+      <p class="small">This sequence describes the target SOC operating model, not a claim that customer telemetry or response coverage is currently live.</p>
+    </section></div>
+    <div class="wrap"><section aria-labelledby="trust-heading">
+      <div class="cols">
+        <div>
+          <p class="eyebrow">Enterprise buyer assurance</p><h2 id="trust-heading">Verifiable claims only.</h2>
+          <p class="lead">SOC operations and SOC 2 attestation are separate concepts. We disclose capabilities, evidence, contractual limitations and pending release gates before acceptance.</p>
+          <a href="/customer-assurance.html">Read current assurance boundaries</a>
+        </div>
+        <div>
+          <ul class="list">
+            <li>No SOC 2 Type I/II certification is claimed.</li>
+            <li>Customer data access requires a tenant-isolated control plane before release.</li>
+            <li>Actual telemetry and signed scope are prerequisites for an SOC pilot.</li>
+            <li>We do not claim an executed SLA or continuous staffing without contracts and resources.</li>
+            <li>Detection rules and IOC indicators require validation before enforcement.</li>
+          </ul>
+        </div>
+      </div>
+    </section></div>
+    <div class="wrap"><section id="engage" aria-labelledby="engage-heading">
+      <p class="eyebrow">Enterprise discovery</p>
+      <h2 id="engage-heading">Start with a measurable, limited-scope pilot.</h2>
+      <p class="lead">Share your existing SIEM/EDR environment, high-priority use cases, permitted data sources, region and retention requirements, and the decisions your security team needs to make. We will discuss a deliverable, operational boundary and proposal before any customer access or charge.</p>
+      <div class="action-row">
+        <a class="action" href="mailto:contact@cyberdudebivash.in?subject=SENTINEL%20APEX%20SOC%20Enterprise%20Discovery">Contact enterprise team</a>
+        <a class="action secondary" href="/enterprise-onboarding.html">Review onboarding process</a>
+      </div>
+    </section></div>
+  </main>
+  <footer class="foot"><div class="wrap">© 2026 CYBERDUDEBIVASH® ECOSYSTEM · Odisha, India · SENTINEL APEX™
+    <div><a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a> · <a href="/security-disclosure.html">Security disclosure</a></div>
+    <p class="small">Preview path: /soc-preview.html · Planned future hostname: soc.cyberdudebivash.in · No customer dashboard, telemetry or checkout enabled here.</p>
+  </div></footer>
+</body>
+</html>
