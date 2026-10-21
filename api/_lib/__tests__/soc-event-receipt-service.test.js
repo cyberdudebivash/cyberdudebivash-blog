@@ -9,9 +9,10 @@ const NOW = Date.parse('2026-10-21T16:00:00.000Z');
 const SECRET = crypto.randomBytes(32);
 const PAYLOAD_DIGEST = crypto.createHash('sha256').update('opaque-real-source-payload').digest('hex');
 const BASE = Object.freeze({
-  version:1,
+  version:2,
   tenantId:'acme',
   connectorId:'edr-primary',
+  keyId:'key-20261021',
   sourceEventId:'edr-detection-98421',
   eventTime:'2026-10-21T15:55:00.000Z',
   signedAt:'2026-10-21T16:00:00.000Z',
@@ -62,12 +63,17 @@ describe('SENTINEL APEX SOC source-attested intake',()=>{
     });
     expect(accepted).not.toHaveProperty('signature');
     expect(accepted).not.toHaveProperty('payload');
-    expect(h.resolveSecret).toHaveBeenCalledWith('acme','edr-primary');
+    expect(h.resolveSecret).toHaveBeenCalledWith('acme','edr-primary','key-20261021');
     expect(h.withSession).toHaveBeenCalledWith('first-primary');
     const query=h.prepare.mock.calls[0][0];
     expect(query).toMatch(/c.state='APPROVED'/);
     expect(query).toMatch(/t.status='ACTIVE'/);
-    expect(h.bind.mock.calls[0]).toEqual(['acme','edr-primary']);
+    expect(query).toMatch(/k\.state='ACTIVE'/);
+    expect(query).toMatch(/k\.key_id=\?/);
+    expect(h.bind.mock.calls[0]).toEqual([
+      'acme','edr-primary','key-20261021',Math.floor(NOW/1000),Math.floor(NOW/1000),
+      Math.floor(Date.parse(BASE.signedAt)/1000),Math.floor(Date.parse(BASE.signedAt)/1000),
+    ]);
     const insert=h.prepare.mock.calls[1][0];
     expect(insert).toMatch(/INSERT INTO soc_event_receipts/);
     const attestationSha256=crypto.createHash('sha256')
@@ -75,7 +81,7 @@ describe('SENTINEL APEX SOC source-attested intake',()=>{
     expect(h.bind.mock.calls[1]).toEqual([
       'acme',receiptId(BASE),'edr-primary',BASE.eventTime,
       '2026-10-21T16:00:00.000Z',PAYLOAD_DIGEST,'2026-10-21T16:00:00.000Z',
-      BASE.signedAt,attestationSha256,
+      BASE.signedAt,attestationSha256,'key-20261021',
     ]);
   });
   test('deterministic receipt ID for same source and connector prevents replay',()=>{
@@ -88,7 +94,7 @@ describe('SENTINEL APEX SOC source-attested intake',()=>{
   test('HMAC changes if source event identity, tenant, time or digest are tampered',async()=>{
     const h=fixture();
     for(const changes of [
-      {tenantId:'contoso'},{connectorId:'another'},{sourceEventId:'different'},
+      {tenantId:'contoso'},{connectorId:'another'},{keyId:'other-key-12'},{sourceEventId:'different'},
       {payloadSha256:'c'.repeat(64)},
       {eventTime:'2026-10-21T15:54:00.000Z'},
       {signedAt:'2026-10-21T15:59:00.000Z'},
@@ -115,7 +121,7 @@ describe('SENTINEL APEX SOC source-attested intake',()=>{
     await expect(h.service.ingest(signed())).rejects.toMatchObject({code:'CONNECTOR_AUTH_UNAVAILABLE'});
     expect(h.withSession).not.toHaveBeenCalled();
   });
-  test('revoked connector or suspended tenant denied by primary D1 state',async()=>{
+  test('revoked connector, key, or suspended tenant denied by primary D1 state',async()=>{
     const h=fixture({allowed:false});
     await expect(h.service.ingest(signed()))
       .rejects.toMatchObject({code:'CONNECTOR_NOT_AUTHORIZED',status:403});
@@ -161,7 +167,7 @@ describe('SENTINEL APEX SOC source-attested intake',()=>{
       {signature:'%'},{signature:'a'.repeat(300)},
       {payloadSha256:'0'.repeat(63)},
       {payloadSha256:'A'.repeat(64)},
-      {connectorId:'../c'},
+      {connectorId:'../c'},{keyId:'../arbitrary-file'},
     ]) await expect(h.service.ingest({...signed(),...changes}))
       .rejects.toMatchObject({code:'INVALID_ENVELOPE'});
     expect(h.resolveSecret).not.toHaveBeenCalled();
