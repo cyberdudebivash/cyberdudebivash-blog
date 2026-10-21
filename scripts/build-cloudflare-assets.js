@@ -306,6 +306,10 @@ function copyFileForPublicBuild(src, dest) {
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   if (src.toLowerCase().endsWith('.html')) {
     const sourceHtml = fs.readFileSync(src, 'utf8');
+    // Reject corrupted homepage scaffolding before copying anything public.
+    if (path.relative(ROOT, src).replace(/\\/g, '/') === 'index.html') {
+      require('./soc-homepage-integrity').assertHomepageIntegrity(sourceHtml, 'source index.html');
+    }
     const repairedHtml = applyLegacyCvssCorrection(src, neutralizeLegacyCommercialCopy(repairLegacyCveHtml(src, sourceHtml)));
     const rel = path.relative(ROOT,src).replace(/\\/g,'/');
     // Add only visual affordances and an archive-use disclosure for older posts.
