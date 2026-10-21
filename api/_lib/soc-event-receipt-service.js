@@ -38,7 +38,7 @@ function canonicalFields(event) {
   // Fixed ordered tuple prevents JSON key order and delimiter ambiguities.
   // Signing NEVER includes client-chosen SQL, timestamp/headers or raw bytes.
   return JSON.stringify([
-    1,event.tenantId,event.connectorId,event.sourceEventId,
+    2,event.tenantId,event.connectorId,event.keyId,event.sourceEventId,
     event.eventTime,event.signedAt,event.payloadSha256,
   ]);
 }
@@ -55,12 +55,13 @@ function receiptId({tenantId,connectorId,sourceEventId}) {
 function validate(envelope, current) {
   if (!envelope || typeof envelope!=='object' || Array.isArray(envelope) ||
       Object.keys(envelope).sort().join(',') !==
-      ['connectorId','eventTime','payloadSha256','signature','signedAt','sourceEventId','tenantId','version'].sort().join(',')) {
+      ['connectorId','eventTime','keyId','payloadSha256','signature','signedAt','sourceEventId','tenantId','version'].sort().join(',')) {
     deny('INVALID_ENVELOPE');
   }
-  if (envelope.version!==1 || typeof envelope.tenantId!=='string' ||
+  if (envelope.version!==2 || typeof envelope.tenantId!=='string' ||
       !TENANT.test(envelope.tenantId) ||
       typeof envelope.connectorId!=='string' || !ID.test(envelope.connectorId) ||
+      typeof envelope.keyId!=='string' || !/^[a-z0-9_-]{8,64}$/.test(envelope.keyId) ||
       typeof envelope.sourceEventId!=='string' || !ID.test(envelope.sourceEventId) ||
       typeof envelope.payloadSha256!=='string' || !HASH.test(envelope.payloadSha256) ||
       typeof envelope.signature!=='string' || !SIG.test(envelope.signature)) {
@@ -93,7 +94,9 @@ function createSocEventReceiptService({nativeD1,resolveSecret,now=()=>Date.now()
     // The resolver must not fetch network URLs supplied inside the envelope.
     let secret;
     try {
-      secret=await resolveSecret(envelope.tenantId,envelope.connectorId);
+      // This injected vault resolver MUST enforce exact tenant/connector/key ID
+      // scoping and must never interpret keyId as an arbitrary URL or file path.
+      secret=await resolveSecret(envelope.tenantId,envelope.connectorId,envelope.keyId);
     } catch (_) {deny('CONNECTOR_AUTH_UNAVAILABLE',503);}
     if (!((typeof secret==='string' && Buffer.byteLength(secret,'utf8')>=32) ||
           ((Buffer.isBuffer(secret) || secret instanceof Uint8Array) && secret.length>=32))) {
@@ -114,9 +117,16 @@ function createSocEventReceiptService({nativeD1,resolveSecret,now=()=>Date.now()
       connector=await session.prepare(
         "SELECT c.connector_id FROM soc_connectors c "+
         "INNER JOIN soc_tenants t ON t.tenant_id=c.tenant_id "+
-        "WHERE c.tenant_id=? AND c.connector_id=? "+
-        "AND c.state='APPROVED' AND t.status='ACTIVE' LIMIT 1"
-      ).bind(envelope.tenantId,envelope.connectorId).first();
+        "INNER JOIN soc_connector_signing_keys k "+
+        "ON k.tenant_id=c.tenant_id AND k.connector_id=c.connector_id "+
+        "WHERE c.tenant_id=? AND c.connector_id=? AND k.key_id=? "+
+        "AND c.state='APPROVED' AND t.status='ACTIVE' AND k.state='ACTIVE' "+
+        "AND k.valid_from_epoch<=? AND k.expires_epoch>? "+
+        "AND k.valid_from_epoch<=? AND k.expires_epoch>? LIMIT 1"
+      ).bind(envelope.tenantId,envelope.connectorId,envelope.keyId,
+        Math.floor(current/1000),Math.floor(current/1000),
+        Math.floor(parseExactIso(envelope.signedAt)/1000),
+        Math.floor(parseExactIso(envelope.signedAt)/1000)).first();
     } catch (_) {deny('INTAKE_PRIMARY_UNAVAILABLE',503);}
     if (!connector) deny('CONNECTOR_NOT_AUTHORIZED',403);
 
@@ -127,14 +137,15 @@ function createSocEventReceiptService({nativeD1,resolveSecret,now=()=>Date.now()
     try {
       const result=await session.prepare(
         'INSERT INTO soc_event_receipts '+
-        '(tenant_id,event_id,connector_id,source_event_at,received_at,digest_sha256,created_at,source_signed_at,attestation_sha256) '+
-        'VALUES(?,?,?,?,?,?,?,?,?)'
+        '(tenant_id,event_id,connector_id,source_event_at,received_at,digest_sha256,created_at,source_signed_at,attestation_sha256,signing_key_id) '+
+        'VALUES(?,?,?,?,?,?,?,?,?,?)'
       ).bind(
         envelope.tenantId,id,envelope.connectorId,envelope.eventTime,
-        receivedAt,envelope.payloadSha256,receivedAt,envelope.signedAt,attestationSha256
+        receivedAt,envelope.payloadSha256,receivedAt,envelope.signedAt,attestationSha256,envelope.keyId
       ).run();
       if (!result || result.success!==true) deny('RECEIPT_REJECTED',409);
     } catch (_) {
+      // Final D1 trigger independently enforces active signing key at INSERT.
       // Reject replayed source IDs and trigger failures. Never silently
       // treat duplicate/rejected events as newly ingested security evidence.
       deny('RECEIPT_REJECTED',409);
@@ -142,6 +153,7 @@ function createSocEventReceiptService({nativeD1,resolveSecret,now=()=>Date.now()
 
     return Object.freeze({
       tenantId:envelope.tenantId,eventId:id,source:'SOURCE_ATTESTED',
+      keyId:envelope.keyId,
       sourceEventAt:envelope.eventTime,receivedAt,
       state:'RECEIVED_NOT_ANALYST_VERIFIED',
     });
