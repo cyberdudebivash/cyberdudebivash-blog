@@ -92,6 +92,28 @@ jobs:
           fi
           echo "✅ Engine verified — ready to run"
 
+      - name: "P0 fail-closed CTI commercial renderer preflight"
+        run: |
+          node --check scripts/cti-ecosystem-showcase-v1.js
+          node <<'NODE'
+          const assert = require('node:assert/strict');
+          const { renderEcosystemShowcase } = require('./scripts/cti-ecosystem-showcase-v1');
+          const cases = {
+            AI_SECURITY: 'AI%20Security%20Assessment%20Enquiry',
+            RANSOMWARE: 'Ransomware%20Readiness%20Enquiry',
+            CVE_REPORT: 'Vulnerability%20Exposure%20Review%20Enquiry',
+            THREAT_ACTOR: 'Threat%20Actor%20Exposure%20Review%20Enquiry'
+          };
+          for (const [type, expectedSubject] of Object.entries(cases)) {
+            const html = renderEcosystemShowcase({ type });
+            assert.ok(html.includes('mailto:contact@cyberdudebivash.in?subject=' + expectedSubject), type);
+            assert.equal((html.match(/data-cdb-ecosystem-promotion="v1"/g) || []).length, 1, type);
+            assert.match(html, /Commercial disclosure:/);
+            assert.match(html, /Enterprise evaluation pathway/);
+          }
+          console.log('P0 CTI showcase renderer preflight: PASS');
+          NODE
+
       - name: "Initialize intel-state.json"
         run: |
           if [ "${{ github.event.inputs.force_reset_state }}" = "true" ]; then
