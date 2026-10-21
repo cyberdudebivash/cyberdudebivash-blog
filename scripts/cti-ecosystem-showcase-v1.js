@@ -98,21 +98,6 @@ const CHANNELS = Object.freeze({
   NEWS_REPORT: ['intel', 'academy', 'research']
 });
 const BACKUP = ['intel','services','tools'];
-// Controlled, non-sensitive enquiry labels. Never incorporate report titles,
-// IOC values, user identifiers or request data into outbound mailto URLs.
-const ENQUIRY_LABELS = Object.freeze({
-  AI_SECURITY: 'AI Security Assessment Enquiry',
-  RANSOMWARE: 'Ransomware Readiness Enquiry',
-  DATA_BREACH: 'Incident Response Readiness Enquiry',
-  DARK_WEB: 'Threat Exposure Review Enquiry',
-  CVE_REPORT: 'Vulnerability Exposure Review Enquiry',
-  ZERO_DAY: 'Critical Vulnerability Response Enquiry',
-  MALWARE_REPORT: 'Malware Detection Engineering Enquiry',
-  THREAT_ACTOR: 'Threat Actor Exposure Review Enquiry',
-  ADVISORY: 'Security Advisory Consultation Enquiry',
-  NEWS_REPORT: 'Security Research Consultation Enquiry',
-  DEFAULT: 'Enterprise Security Enquiry'
-});
 const BUYER_GUIDANCE = Object.freeze({
   AI_SECURITY: 'Assess AI application and agent risks, prioritize governance gaps, and discuss an authorized scope.',
   RANSOMWARE: 'Review ransomware exposure, improve investigation readiness, and scope relevant defensive controls.',
@@ -121,9 +106,6 @@ const BUYER_GUIDANCE = Object.freeze({
   CVE_REPORT: 'Prioritize verified asset exposure, patch evaluation, and detection engineering.',
   ZERO_DAY: 'Validate affected assets, compensating controls, and escalation requirements.',
   MALWARE_REPORT: 'Review actionable artifacts and decide which defensive controls require testing.',
-  THREAT_ACTOR: 'Review attributed and unattributed activity separately, and evaluate organization-specific defensive priorities.',
-  ADVISORY: 'Review verified advisory details and align relevant preventive and detective controls.',
-  NEWS_REPORT: 'Translate published research into an evidence-led security review without assuming customer exposure.',
   DEFAULT: 'Translate the intelligence findings into scoped security priorities for your organization.'
 });
 // Product examples appear in the supplied public catalog. Names are
@@ -149,8 +131,6 @@ function renderEcosystemShowcase({ type = 'ADVISORY' } = {}) {
   const picks = recommendationsFor(type);
   const productList = PRODUCT_EXAMPLES[String(type || '').toUpperCase()] || PRODUCT_EXAMPLES.DEFAULT;
   const buyerGuidance = BUYER_GUIDANCE[String(type || '').toUpperCase()] || BUYER_GUIDANCE.DEFAULT;
-  const enquiryLabel = ENQUIRY_LABELS[String(type || '').toUpperCase()] || ENQUIRY_LABELS.DEFAULT;
-  const enquiryUrl = 'mailto:contact@cyberdudebivash.in?subject=' + encodeURIComponent(enquiryLabel);
   const card = key => {
     const offering = OFFERINGS[key];
     return '<article class="cdb-eco-card">' +
@@ -239,7 +219,7 @@ const RULES = [
   '@media(max-width:940px){.cdb-eco-cards{grid-template-columns:1fr 1fr}.cdb-eco-card:last-child{grid-column:span 2}}',
   '@media(max-width:600px){.cdb-eco-showcase{padding:18px;margin:28px 0}.cdb-eco-cards,.cdb-eco-directory ul{grid-template-columns:1fr}.cdb-eco-card:last-child{grid-column:auto}.cdb-eco-actions a{width:100%}}',
   '@media(prefers-reduced-motion:reduce){.cdb-eco-showcase *{animation:none!important;transition:none!important}}',
-  '@media print{.cdb-eco-showcase{background:#fff!important;color:#111!important;box-shadow:none!important;border:1px solid #8899a6!important;break-inside:avoid-page}.cdb-eco-head h2,.cdb-eco-card h3,.cdb-eco-showcase :where(p,span,summary){color:#111!important}.cdb-eco-card{background:#fff!important;border:1px solid #bdc8cf!important;break-inside:avoid-page}.cdb-eco-buyer-path{background:#fff!important;color:#111!important;border-left-color:#345c71!important;break-inside:avoid-page}.cdb-eco-buyer-path strong,.cdb-eco-buyer-path p{color:#111!important}.cdb-eco-showcase a{color:#153e5c!important;text-decoration:underline!important}.cdb-eco-directory{display:none!important}.cdb-eco-evaluation{background:#fff!important;color:#111!important;border-color:#aab4bd!important;break-inside:avoid-page}.cdb-eco-evaluation h3,.cdb-eco-evaluation ol,.cdb-eco-evaluation strong{color:#111!important}.cdb-eco-actions .cdb-eco-primary{background:#fff!important;border:1px solid #999!important}}'
+  '@media print{.cdb-eco-showcase{background:#fff!important;color:#111!important;box-shadow:none!important;border:1px solid #8899a6!important;break-inside:avoid-page}.cdb-eco-head h2,.cdb-eco-card h3,.cdb-eco-showcase :where(p,span,summary){color:#111!important}.cdb-eco-card{background:#fff!important;border:1px solid #bdc8cf!important;break-inside:avoid-page}.cdb-eco-buyer-path{background:#fff!important;color:#111!important;border-left-color:#345c71!important;break-inside:avoid-page}.cdb-eco-buyer-path strong,.cdb-eco-buyer-path p{color:#111!important}.cdb-eco-showcase a{color:#153e5c!important;text-decoration:underline!important}.cdb-eco-directory{display:none!important}.cdb-eco-actions .cdb-eco-primary{background:#fff!important;border:1px solid #999!important}}'
 ].join('\n');
 const CSS = '<style id="' + STYLE_ID + '">\n' + RULES + '\n</style>';
 module.exports={STYLE_ID,CSS,OFFERINGS,recommendationsFor,renderEcosystemShowcase};
