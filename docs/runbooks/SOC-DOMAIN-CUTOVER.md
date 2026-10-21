@@ -54,16 +54,21 @@ foreach ($name in $names) {
   foreach ($path in $paths) {
     $url = "https://$name$path"
     try {
-      $res = Invoke-WebRequest -Uri $url -Method Get -MaximumRedirection 0 -SkipHttpErrorCheck
+      $res = Invoke-WebRequest -Uri $url -Method Get -MaximumRedirection 0 -UseBasicParsing -ErrorAction Stop
       '{0} {1} {2}' -f [int]$res.StatusCode,$url,$res.Headers['content-type']
-    } catch {
-      Write-Warning "$url : $($_.Exception.Message)"
+    } catch [System.Net.WebException] {
+      $http = $_.Exception.Response
+      if ($http) {
+        '{0} {1} {2}' -f [int]$http.StatusCode,$url,$http.ContentType
+      } else {
+        Write-Warning "$url : $($_.Exception.Message)"
+      }
     }
   }
 }
 \`\`\`
 
-PowerShell version/HTTP option compatibility must be checked locally; a failed probe is a NO-GO, not permission to force deployment.
+This probe is compatible with Windows PowerShell 5.1 and PowerShell 7; a DNS/TLS/read failure is a NO-GO, not permission to force deployment. Use authenticated API negative tests separately; a 401/403 result from an intentionally protected route is not itself a service outage.
 
 ## 3. Gate C — Canonical migration, not before
 
