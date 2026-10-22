@@ -22,10 +22,25 @@ for(const [title,body,code] of [
   ['duplicate hostname bindings',sample([entry(),entry({id:'other'})]),'DOMAIN_DUPLICATE'],
   ['missing binding id',sample([entry({id:null})]),'DOMAIN_ID_MISSING'],
   ['invalid API response',{success:false,result:[entry()]},'DOMAIN_API_RESPONSE_INVALID'],
-  ['truncated/paginated domain listing',{...sample([entry()]),result_info:{total_pages:2,total_count:101}},'DOMAIN_LIST_NOT_COMPLETE'],
+  ['unexpected second filtered response page',{...sample([entry()]),result_info:{page:2,count:1,per_page:20,total_pages:2,total_count:101}},'DOMAIN_LIST_NOT_COMPLETE'],
+  ['count inconsistent with returned filtered records',{...sample([entry()]),result_info:{page:1,count:2,per_page:20,total_pages:5,total_count:99}},'DOMAIN_LIST_NOT_COMPLETE'],
+  ['zero page size from API',{...sample([entry()]),result_info:{page:1,count:1,per_page:0,total_pages:1,total_count:1}},'DOMAIN_LIST_NOT_COMPLETE'],
+  ['unfiltered unrelated domain record',{...sample([entry(),entry({hostname:'another.example.com',id:'unrelated'})]),result_info:{page:1,count:2,per_page:20,total_count:400,total_pages:20}},'DOMAIN_UNFILTERED_LIST'],
+  ['incorrect owning zone',{...sample([entry({zone_name:'unrelated.invalid'})]),result_info:{page:1,count:1,per_page:20}},'DOMAIN_WRONG_ZONE'],
 ]){
   test('negative: '+title+' fails closed',()=>assert.deepEqual(classifyDomainBinding(body),{ok:false,code}));
 }
+test('positive: account-wide Cloudflare pagination totals cannot falsely block a filtered singleton',()=>{
+  // Cloudflare API example: total_count and total_pages represent broader
+  // account inventory, even though hostname-filtered result has one record.
+  const response={success:true,result:[entry({zone_name:'cyberdudebivash.in'})],
+    result_info:{count:1,page:1,per_page:20,total_count:2000,total_pages:100}};
+  assert.deepEqual(classifyDomainBinding(response),{ok:true,code:'DOMAIN_MAPPING_ESTABLISHED'});
+});
+test('positive: omitted optional result_info is acceptable with one exact hostname',()=>{
+  assert.deepEqual(classifyDomainBinding({success:true,result:[entry()]}),
+    {ok:true,code:'DOMAIN_MAPPING_ESTABLISHED'});
+});
 test('negative: unrelated hostname is not proof of expected domain mapping',()=>{
   assert.deepEqual(result([entry({hostname:'soc.cyberdudebivash.in'})]),{
     ok:false,code:'DOMAIN_NOT_ESTABLISHED',
