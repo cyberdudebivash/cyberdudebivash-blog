@@ -30,11 +30,18 @@
  */
 'use strict';
 
+const MAX_GITHUB_EVALUATION_BATCH = 200;
 function parseBatchArg(argv) {
-  const match = argv.find(a => a.startsWith('--batch='));
-  if (!match) return undefined;
-  const n = parseInt(match.split('=')[1], 10);
-  return Number.isFinite(n) && n > 0 ? n : undefined;
+  const matches = argv.filter(arg => arg === '--batch' || arg.startsWith('--batch='));
+  if (matches.length === 0) return undefined;
+  if (matches.length !== 1 || !/^--batch=[1-9][0-9]*$/.test(matches[0])) {
+    throw new RangeError('Invalid --batch; expected a single integer from 1 to 200');
+  }
+  const value = Number(matches[0].slice('--batch='.length));
+  if (!Number.isSafeInteger(value) || value > MAX_GITHUB_EVALUATION_BATCH) {
+    throw new RangeError('Invalid --batch; expected a single integer from 1 to 200');
+  }
+  return value;
 }
 
 async function main() {
@@ -71,4 +78,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { parseBatchArg };
+module.exports = { parseBatchArg, MAX_GITHUB_EVALUATION_BATCH };
