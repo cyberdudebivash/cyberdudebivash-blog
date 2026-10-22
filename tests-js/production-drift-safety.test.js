@@ -74,28 +74,28 @@ test('negative control: feature-branch dispatch must not reach production', () =
 });
 
 
-test('P0 regression: mixed 288-file drift retains 215 production, 44 benign and 29 unknown paths', () => {
-  const production = Array.from({ length: 215 }, (_, i) => 'api/intel/cve/fixture-' + i + '.json');
-  const benign = Array.from({ length: 44 }, (_, i) => 'docs/release-evidence/fixture-' + i + '.md');
+test('P0 regression: mixed 288-file drift retains 228 production, 31 benign and 29 unknown paths', () => {
+  const production = Array.from({ length: 228 }, (_, i) => 'api/intel/cve/fixture-' + i + '.json');
+  const benign = Array.from({ length: 31 }, (_, i) => 'docs/release-evidence/fixture-' + i + '.md');
   const unknown = Array.from({ length: 29 }, (_, i) => 'scripts/operator-unclassified-' + i + '.cjs');
   const files = [...production, ...benign, ...unknown];
   const r = classify(compare(files), BASE, HEAD, paths);
   assert.equal(r.state, 'blocked');
   assert.equal(r.reason, 'unrecognized changed files require source review');
   assert.equal(r.compared_files, 288);
-  assert.equal(r.production.length, 215);
-  assert.equal(r.benign.length, 44);
+  assert.equal(r.production.length, 228);
+  assert.equal(r.benign.length, 31);
   assert.equal(r.unknown.length, 29);
   assert.equal(r.production[0], 'api/intel/cve/fixture-0.json');
   const summary = renderDriftSummary(HEAD, BASE, r);
   assert.match(summary, /decision: \*\*blocked\*\*/);
-  assert.match(summary, /production-affecting files: 215/);
-  assert.match(summary, /known nonproduction files: 44/);
+  assert.match(summary, /production-affecting files: 228/);
+  assert.match(summary, /known nonproduction files: 31/);
   assert.match(summary, /unknown files: 29/);
   assert.match(summary, /total compared changed files: 288/);
   assert.match(summary, /scripts\/operator-unclassified-0\.cjs/);
   assert.match(summary, /api\/intel\/cve\/fixture-0\.json/);
-  assert.match(summary, /plus 203 additional production paths/);
+  assert.match(summary, /plus 216 additional production paths/);
   assert.match(summary, /No deployment or workflow dispatch/);
 });
 
