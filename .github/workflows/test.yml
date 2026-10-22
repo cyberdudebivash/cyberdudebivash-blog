@@ -99,6 +99,8 @@ jobs:
         run: python3 -m unittest -v tests.test_soc_evidence_read_budget
       - name: P0 FinOps — SQL-index and watcher-cost contract against offline native SQLite
         run: node --test tests-js/soc-watchlist-native-sqlite-cost-contract.test.js
+      - name: P0 — Race-safe intelligence hub publisher offline integration test
+        run: node --test tests-js/intelligence-hub-publish-race.test.js
       - name: Verify native D1 rehearsal cannot target remote production
         run: node --test tests-js/soc-native-d1-local-certify.test.js
       - name: P0 — Verify Cloudflare release control is manual-only and drift comparisons fail closed
