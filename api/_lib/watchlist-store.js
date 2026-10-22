@@ -355,6 +355,33 @@ async function getAllWatchedEntityKeys() {
   return rows.map(r => ({ entityType: r.entity_type, entityId: r.entity_id }));
 }
 
+// GitHub scheduled evaluator legacy compatibility: retain the numeric
+// cursor semantics while bounding RAW index membership reads BEFORE any
+// event, cursor or snapshot mutation. LIMIT applies to raw memberships,
+// never DISTINCT, COUNT(*), or OFFSET (which can scan unbounded rows).
+// 1,024 is a pre-revenue operational ceiling, NOT a bill-free entitlement.
+// Over-limit collections MUST fail closed until a separately reviewed
+// keyset migration/publisher is commissioned and FinOps attested.
+const GITHUB_WATCHLIST_MAX_RAW_MEMBERSHIPS = 1024;
+async function getBoundedLegacyWatchedEntityKeys() {
+  const rows = await d1.query(SOC_WATCH_WINDOW_FIRST_SQL,
+    [GITHUB_WATCHLIST_MAX_RAW_MEMBERSHIPS + 1]);
+  if (rows.length > GITHUB_WATCHLIST_MAX_RAW_MEMBERSHIPS) {
+    throw new RangeError('GITHUB_WATCHLIST_RAW_MEMBERSHIP_BUDGET_EXCEEDED');
+  }
+  const seen = new Set();
+  const out = [];
+  for (const row of rows) {
+    const entityType = row.entity_type;
+    const entityId = row.entity_id;
+    const key = JSON.stringify([entityType, entityId]);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push({ entityType, entityId });
+  }
+  return out;
+}
+
 // Central SQL contracts: queried by production and by offline native
 // SQLite cost-plan tests. A test may inspect the exact SQL used at runtime,
 // never a copy that can drift from the deployed query.
@@ -499,6 +526,8 @@ module.exports = {
   addEntity,
   removeEntity,
   getAllWatchedEntityKeys,
+  getBoundedLegacyWatchedEntityKeys,
+  GITHUB_WATCHLIST_MAX_RAW_MEMBERSHIPS,
   getWatchedEntityWindow,
   getWatchersForEntity,
   getSocCronWatchersCostGuard,
