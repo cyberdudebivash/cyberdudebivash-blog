@@ -53,7 +53,8 @@ function assess(spec,result){
     fail('ENQUIRY_LINK_MISSING',result.body.includes('mailto:contact@cyberdudebivash.in?subject='));
     fail('FALSE_CHECKOUT',!/href=["'][^"']*(?:checkout|buy\.html)/i.test(result.body));
     fail('SERVICE_BOUNDARY_MISSING',result.body.includes('not an active 24/7 monitoring service'));
-    fail('CANONICAL_INCORRECT',result.body.includes('href="'+ORIGIN+spec.path+'"'));
+    const canonical=result.body.match(/<link\b[^>]*\brel=["']canonical["'][^>]*>/i);
+    fail('CANONICAL_INCORRECT',!!canonical && canonical[0].includes('href="'+ORIGIN+spec.path+'"'));
   }
   return [...new Set(errors)].sort();
 }
