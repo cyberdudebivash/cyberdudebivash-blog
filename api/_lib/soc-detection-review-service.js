@@ -88,7 +88,7 @@ function createSocDetectionReviewService({
     const {session,actorId}=await authorize(accessToken,tenantId);
     const source=await first(session,[
       'SELECT d.detection_id,d.event_id,d.evidence_state,d.review_version,',
-      'e.digest_sha256,e.attestation_sha256,e.connector_id,e.signing_key_id,e.source_event_at',
+      'e.digest_sha256,e.attestation_sha256,e.connector_id,e.signing_key_id,e.source_event_at,e.source_event_id',
       'FROM soc_detections d',
       'JOIN soc_event_receipts e ON e.tenant_id=d.tenant_id AND e.event_id=d.event_id',
       'WHERE d.tenant_id=? AND d.detection_id=? LIMIT 1',
@@ -98,7 +98,7 @@ function createSocDetectionReviewService({
       deny('DETECTION_ALREADY_REVIEWED',409);
     if(!HASH.test(source.digest_sha256||'')||
        !HASH.test(source.attestation_sha256||'')||
-       !source.signing_key_id)deny('SOURCE_PROVENANCE_INCOMPLETE',409);
+       !source.signing_key_id||!source.source_event_id)deny('SOURCE_PROVENANCE_INCOMPLETE',409);
 
     let digest=null;
     if(decision==='ANALYST_VERIFIED'){
@@ -108,7 +108,7 @@ function createSocDetectionReviewService({
       try{
         verified=await verifySourceEvidence(Object.freeze({
           tenantId,eventId:source.event_id,connectorId:source.connector_id,
-          signingKeyId:source.signing_key_id,
+          sourceEventId:source.source_event_id,signingKeyId:source.signing_key_id,
           digestSha256:source.digest_sha256,
           attestationSha256:source.attestation_sha256,
           sourceEventAt:source.source_event_at,
