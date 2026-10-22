@@ -234,3 +234,16 @@ describe('handleScheduled — default-deny shared-account cron budget boundary',
     await assert.rejects(()=>handleScheduled({}, {DB:{},CDB_SOC_CRON_ENABLED:'true'},{},deps),/D1 unavailable/);
   });
 });
+
+test('SOC Wrangler must never silently enable the metered cron handler by default', () => {
+  const fs=require('node:fs');
+  const path=require('node:path');
+  const raw=fs.readFileSync(path.resolve(__dirname,'../../wrangler.jsonc'),'utf8');
+  const config=JSON.parse(raw.replace(/^\s*\/\/.*$/gm,''));
+  assert.equal(config.vars?.CDB_SOC_CRON_ENABLED,undefined);
+  assert.deepEqual(config.triggers.crons,['*/30 * * * *']);
+  const src=fs.readFileSync(path.resolve(__dirname,'router.js'),'utf8');
+  assert.match(src,/CRON_EVALUATION_LIMIT = 10/);
+  assert.match(src,/CRON_DELIVERY_LIMIT = 10/);
+  assert.match(src,/CDB_SOC_CRON_ENABLED !== 'true'/);
+});
