@@ -63,8 +63,7 @@ test('negative: missing enterprise inquiry link and missing 24/7 disclaimer fail
 test('negative: customer checkout links or wrong canonical block the assessment offer',()=>{
   const spec=ROUTES.find(x=>x.path==='/soc-readiness-assessment.html');
   assert.ok(assess(spec,response(fixture(spec)+'<a href="/checkout">Pay now</a>')).includes('FALSE_CHECKOUT'));
-  assert.ok(assess(spec,response(fixture(spec).replace('rel="canonical"','rel="something-else"'))).includes('CANONICAL_INCORRECT')===false,
-    'plain href evidence alone does not prove canonical; see strict canonical test');
+  assert.ok(assess(spec,response(fixture(spec).replace('rel="canonical"','rel="something-else"'))).includes('CANONICAL_INCORRECT'));
 });
 test('negative: exact build-vs-live mismatch blocks even when generic markers match',()=>{
   const spec=ROUTES[0];
