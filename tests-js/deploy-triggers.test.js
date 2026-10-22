@@ -99,6 +99,6 @@ test('drift monitor is read-only and a push cannot execute Cloudflare deployment
   assert.match(yaml, /node scripts\/production-drift-policy\.cjs/);
   assert.match(yaml, /permissions:\s*\n  contents: read/);
   assert.doesNotMatch(yaml, /actions: write|\/dispatches|Dispatch Cloudflare production deployment/);
-  assert.match(deployment, /jobs:\s*\n  deploy:[\s\S]{0,350}?if: \$\{\{ github\.event_name == 'workflow_dispatch' \}\}/);
+  assert.match(deployment, /jobs:\s*\n  deploy:[\s\S]{0,350}?if: \$\{\{ github\.event_name == 'workflow_dispatch' && github\.ref == 'refs\/heads\/main' \}\}/);
   assert.match(deployment, /environment: production/);
 });

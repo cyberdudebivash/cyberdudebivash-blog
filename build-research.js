@@ -162,7 +162,7 @@ footer a{color:var(--apex-cyan);text-decoration:none}
   </div>
 </main>
 <footer>
-  &copy; 2026 CyberDudeBivash Pvt. Ltd. · Analysis by ${AUTHOR}, CYBERDUDEBIVASH SENTINEL APEX · <a href="/about.html">About</a> · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a> · <a href="/contact.html">Contact</a>
+  &copy; 2026 CYBERDUDEBIVASH ECOSYSTEM · Analysis by ${AUTHOR}, CYBERDUDEBIVASH SENTINEL APEX · <a href="/about.html">About</a> · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a> · <a href="/contact.html">Contact</a>
 </footer>
 </body>
 </html>`;
@@ -249,7 +249,7 @@ ${cards}
   <p class="note">Our research is held to the sourcing and corrections standards described in <a href="/about.html">About &amp; Editorial Standards</a>. Datasets are published under CC BY 4.0. To discuss enterprise research or advisory work, <a href="/enterprise.html">get in touch</a>.</p>
 </main>
 <footer>
-  &copy; 2026 CyberDudeBivash Pvt. Ltd. · <a href="/about.html">About</a> · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a> · <a href="/contact.html">Contact</a>
+  &copy; 2026 CYBERDUDEBIVASH ECOSYSTEM · <a href="/about.html">About</a> · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a> · <a href="/contact.html">Contact</a>
 </footer>
 </body>
 </html>`;
