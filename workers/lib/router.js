@@ -158,21 +158,40 @@ async function handleFetch(request, env) {
  * export calls this). wrangler.jsonc's triggers.crons entry is code-complete
  * but still requires an authenticated deploy before Cloudflare invokes it.
  */
+// Cloudflare account-wide pre-revenue FinOps boundary. The 30-minute
+// schedule is preserved for compatibility, but no D1, R2, network or
+// notification operations are permitted without explicit operator enablement.
+// These are fixed ceilings, not input or environment-controlled values.
+const CRON_EVALUATION_LIMIT = 10;
+const CRON_DELIVERY_LIMIT = 10;
 async function handleScheduled(controller, env, ctx, deps = {}) {
+  const cron = controller && controller.cron;
+  if (!env || env.CDB_SOC_CRON_ENABLED !== 'true') {
+    return { trigger: 'cloudflare_cron', cron, status: 'disabled_cost_guard' };
+  }
+  // Never fall back to remote D1 REST or accidentally perform billable
+  // activity when the existing native D1 binding is absent.
+  if (!env.DB) {
+    return { trigger: 'cloudflare_cron', cron, status: 'blocked_missing_d1' };
+  }
   const { evaluateWatchedEntities } = deps.changeEngine || require('../../api/_lib/change-engine');
   const { processDueDeliveries } = deps.notificationDispatch || require('../../api/_lib/notification-dispatch');
   const { setD1Binding } = deps.d1 || require('../../api/_lib/d1');
-
-  if (env && env.DB) setD1Binding(env.DB);
+  setD1Binding(env.DB);
 
   const startedAt = Date.now();
-  const evaluation = await evaluateWatchedEntities();
-  const delivery = await processDueDeliveries();
+  const evaluation = await evaluateWatchedEntities({ batchLimit: CRON_EVALUATION_LIMIT });
+  const delivery = await processDueDeliveries({ limit: CRON_DELIVERY_LIMIT });
   const summary = {
-    trigger: 'cloudflare_cron', cron: controller && controller.cron,
+    trigger: 'cloudflare_cron', cron,
+    status: 'bounded_execution',
     elapsed_ms: Date.now() - startedAt, evaluation, delivery,
   };
-  console.log('[SCHEDULED]', JSON.stringify(summary));
+  // Metadata only: never print customer evidence, recipients or webhook URLs
+  // from returned execution summaries into potentially metered Worker logs.
+  console.log('[SCHEDULED]', JSON.stringify({
+    status: summary.status, elapsed_ms: summary.elapsed_ms,
+  }));
   return summary;
 }
 
