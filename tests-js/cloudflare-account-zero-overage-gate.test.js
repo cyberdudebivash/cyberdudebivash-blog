@@ -62,6 +62,13 @@ for(const name of Object.keys(PLAN)){
     });
   });
 }
+test('storage used-to-date plus future GB-month must be added before comparing reserve',()=>{
+  for(const name of ['d1StorageGbMonth','kvStorageGbMonth','r2StandardStorageGbMonth']){
+    hold('RESERVE_EXHAUSTED_'+name,x=>{
+      x.metrics[name]={used:PLAN[name]*0.35,forecastRemaining:PLAN[name]*0.50};
+    });
+  }
+});
 test('reject growth trend if manually forecast remaining usage is too optimistic',()=>{
   hold('RESERVE_EXHAUSTED_workersRequests',x=>{
     x.cycle.start='2026-10-21T00:00:00.000Z';
