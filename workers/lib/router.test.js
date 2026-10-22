@@ -181,50 +181,56 @@ describe('handleFetch — malformed/oversized body handling (real handler dispat
 // node:test-runnable without a real Redis-backed change-engine.js/
 // notification-dispatch.js in the loop -- those two functions already
 // have full Jest coverage (fake-redis-backed) under api/_lib/__tests__/.
-describe('handleScheduled — dormant Cloudflare Cron entry point', () => {
-  test('calls evaluateWatchedEntities then processDueDeliveries and returns a summary', async () => {
-    const calls = [];
-    const deps = {
-      changeEngine: { evaluateWatchedEntities: async () => { calls.push('evaluate'); return { evaluated: 3 }; } },
-      notificationDispatch: { processDueDeliveries: async () => { calls.push('deliver'); return { delivered: 2 }; } },
+describe('handleScheduled — default-deny shared-account cron budget boundary', () => {
+  test('default configuration does not load or execute any billed operation', async () => {
+    const calls=[];
+    const deps={
+      changeEngine:{evaluateWatchedEntities:async()=>{calls.push('evaluate');}},
+      notificationDispatch:{processDueDeliveries:async()=>{calls.push('deliver');}},
+      d1:{setD1Binding:()=>{calls.push('bind');}},
     };
-    const summary = await handleScheduled({ cron: '*/30 * * * *' }, {}, {}, deps);
-    assert.deepEqual(calls, ['evaluate', 'deliver']);
-    assert.equal(summary.trigger, 'cloudflare_cron');
-    assert.equal(summary.cron, '*/30 * * * *');
-    assert.deepEqual(summary.evaluation, { evaluated: 3 });
-    assert.deepEqual(summary.delivery, { delivered: 2 });
-    assert.ok(typeof summary.elapsed_ms === 'number');
+    const result=await handleScheduled({cron:'*/30 * * * *'},{DB:{marker:'test'}},{},deps);
+    assert.equal(result.status,'disabled_cost_guard');
+    assert.deepEqual(calls,[]);
   });
-
-  test('propagates a failure from either step rather than swallowing it', async () => {
-    const deps = {
-      changeEngine: { evaluateWatchedEntities: async () => { throw new Error('redis unavailable'); } },
-      notificationDispatch: { processDueDeliveries: async () => ({ delivered: 0 }) },
+  test('only literal string true enables costed work and imposes fixed small batches',async()=>{
+    const calls=[];const db={id:'private-d1'};
+    const deps={
+      changeEngine:{evaluateWatchedEntities:async args=>{calls.push(['evaluate',args]);return {evaluated:3};}},
+      notificationDispatch:{processDueDeliveries:async args=>{calls.push(['deliver',args]);return {delivered:2};}},
+      d1:{setD1Binding:value=>calls.push(['bind',value])},
     };
-    await assert.rejects(() => handleScheduled({}, {}, {}, deps), /redis unavailable/);
+    const result=await handleScheduled({cron:'*/30 * * * *'},
+      {DB:db,CDB_SOC_CRON_ENABLED:'true'},{},deps);
+    assert.equal(result.status,'bounded_execution');
+    assert.deepEqual(calls,[['bind',db],['evaluate',{batchLimit:10}],['deliver',{limit:10}]]);
+    assert.deepEqual(result.evaluation,{evaluated:3});
+    assert.deepEqual(result.delivery,{delivered:2});
   });
-
-  test('registers env.DB via setD1Binding before running -- the native-binding fast path', async () => {
-    let boundDb = 'not-called';
-    const fakeDb = { marker: 'the-real-d1-binding' };
-    const deps = {
-      changeEngine: { evaluateWatchedEntities: async () => ({ evaluated: 0 }) },
-      notificationDispatch: { processDueDeliveries: async () => ({ delivered: 0 }) },
-      d1: { setD1Binding: (db) => { boundDb = db; } },
-    };
-    await handleScheduled({}, { DB: fakeDb }, {}, deps);
-    assert.equal(boundDb, fakeDb);
+  test('boolean, uppercase, and other values fail closed',async()=>{
+    for(const value of [true,'TRUE','1',false,'false',null,undefined]){
+      const deps={changeEngine:{evaluateWatchedEntities:async()=>{throw Error('called unexpectedly')}}};
+      const result=await handleScheduled({}, {DB:{},CDB_SOC_CRON_ENABLED:value},{},deps);
+      assert.equal(result.status,'disabled_cost_guard');
+    }
   });
-
-  test('does not call setD1Binding when env has no DB (e.g. a misconfigured deploy)', async () => {
-    let called = false;
-    const deps = {
-      changeEngine: { evaluateWatchedEntities: async () => ({ evaluated: 0 }) },
-      notificationDispatch: { processDueDeliveries: async () => ({ delivered: 0 }) },
-      d1: { setD1Binding: () => { called = true; } },
+  test('enabled without native D1 does not perform remote fallback',async()=>{
+    let called=false;
+    const deps={
+      changeEngine:{evaluateWatchedEntities:async()=>{called=true;}},
+      notificationDispatch:{processDueDeliveries:async()=>{called=true;}},
+      d1:{setD1Binding:()=>{called=true;}},
     };
-    await handleScheduled({}, {}, {}, deps);
-    assert.equal(called, false);
+    const result=await handleScheduled({}, {CDB_SOC_CRON_ENABLED:'true'},{},deps);
+    assert.equal(result.status,'blocked_missing_d1');
+    assert.equal(called,false);
+  });
+  test('enabled execution preserves fail-closed error propagation',async()=>{
+    const deps={
+      changeEngine:{evaluateWatchedEntities:async()=>{throw Error('D1 unavailable')}},
+      notificationDispatch:{processDueDeliveries:async()=>({delivered:0})},
+      d1:{setD1Binding:()=>{}},
+    };
+    await assert.rejects(()=>handleScheduled({}, {DB:{},CDB_SOC_CRON_ENABLED:'true'},{},deps),/D1 unavailable/);
   });
 });
