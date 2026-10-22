@@ -9,15 +9,21 @@
  * be independently approved before a pilot. No mock is valid for customer SOC.
  */
 const {createSocPinnedEvidenceProxy}=require('./soc-pinned-evidence-proxy');
+const {createSocEvidenceReadBudget}=require('./soc-evidence-read-budget');
 const {createSocDetectionSourceBoundary}=require('./soc-detection-source-boundary');
 
 function createSocPinnedEvidenceBoundary({
   nativeD1,oidc,bindings,resolveToken,
   providerFetcher,identityFetcher,nowMillis,
   maxBytes=262144,timeoutMs=6000,
+  limitPerWindow=12,
 }={}){
+  // No caller-provided admission hook: bind an authoritative primary D1 budget.
+  const budget=createSocEvidenceReadBudget({
+    nativeD1,now:nowMillis||(()=>Date.now()),limitPerWindow,
+  });
   const {readAuthorizedEvent}=createSocPinnedEvidenceProxy({
-    bindings,resolveToken,
+    bindings,resolveToken,admitRead:budget.admitRead,
     ...(providerFetcher?{fetcher:providerFetcher}:{}),
     maxBytes,timeoutMs,
   });
