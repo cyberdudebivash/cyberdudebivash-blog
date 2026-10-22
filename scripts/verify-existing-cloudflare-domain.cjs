@@ -18,19 +18,35 @@ function classifyDomainBinding(body){
     return {ok:false,code:'DOMAIN_API_RESPONSE_INVALID'};
   }
   const info=body.result_info;
-  if(info && (typeof info!=='object' ||
-      (info.total_pages!==undefined && info.total_pages!==1) ||
-      (info.total_count!==undefined && info.total_count>100))){
+  // Cloudflare documents total_count as the count WITHOUT search filters.
+  // total_pages may likewise describe the account-wide set. Neither can
+  // prove pagination of the hostname-filtered response, and rejecting large
+  // unrelated accounts prevents routine release for a valid mapped domain.
+  // Instead verify the actual returned page and filtered result consistency.
+  if(info!==undefined && (info===null||typeof info!=='object'||Array.isArray(info) ||
+      (info.page!==undefined && info.page!==1) ||
+      (info.count!==undefined && (!Number.isSafeInteger(info.count) ||
+         info.count!==body.result.length)) ||
+      (info.per_page!==undefined && (!Number.isSafeInteger(info.per_page) ||
+         info.per_page<1 || body.result.length>info.per_page)))){
     return {ok:false,code:'DOMAIN_LIST_NOT_COMPLETE'};
   }
+  // A hostname-filtered API reply must contain only the requested hostname.
+  // Unexpected extra records cannot be treated as proof of binding.
   const exact=body.result.filter(item=>item &&
     typeof item==='object' && item.hostname===HOSTNAME);
   if(exact.length!==1){
     return {ok:false,code:exact.length>1?'DOMAIN_DUPLICATE':'DOMAIN_NOT_ESTABLISHED'};
   }
+  if(body.result.length!==1){
+    return {ok:false,code:'DOMAIN_UNFILTERED_LIST'};
+  }
   const domain=exact[0];
   if(domain.service!==WORKER){
     return {ok:false,code:'DOMAIN_WRONG_WORKER'};
+  }
+  if(domain.zone_name!==undefined && domain.zone_name!=='cyberdudebivash.in'){
+    return {ok:false,code:'DOMAIN_WRONG_ZONE'};
   }
   if(domain.enabled!==true){
     return {ok:false,code:'DOMAIN_NOT_ENABLED'};
@@ -80,8 +96,8 @@ if(require.main===module){
   }).catch(err=>{
     const safe=new Set(['CLOUDFLARE_READ_CONTEXT_MISSING','CLOUDFLARE_DOMAIN_API_HTTP_FAILURE',
       'DOMAIN_API_EMPTY_BODY','DOMAIN_API_RESPONSE_TOO_LARGE','DOMAIN_API_RESPONSE_INVALID',
-      'DOMAIN_LIST_NOT_COMPLETE','DOMAIN_DUPLICATE','DOMAIN_NOT_ESTABLISHED','DOMAIN_WRONG_WORKER',
-      'DOMAIN_NOT_ENABLED','DOMAIN_ID_MISSING']);
+      'DOMAIN_LIST_NOT_COMPLETE','DOMAIN_UNFILTERED_LIST','DOMAIN_DUPLICATE','DOMAIN_NOT_ESTABLISHED','DOMAIN_WRONG_WORKER',
+      'DOMAIN_WRONG_ZONE','DOMAIN_NOT_ENABLED','DOMAIN_ID_MISSING']);
     const code=safe.has(err.message)?err.message:'CLOUDFLARE_DOMAIN_VERIFICATION_FAILED';
     console.error('HOLD: '+code+' — preserve current DNS; separate approved cutover required');
     process.exitCode=1;
