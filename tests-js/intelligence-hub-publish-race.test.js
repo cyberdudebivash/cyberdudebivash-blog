@@ -35,7 +35,8 @@ test('workflow is manual-content-only, bounded, and has no stale rebase or force
   assert.match(shell, /git reset --hard "\$remote_head"/);
   assert.match(shell, /node generate-intelligence-hub\.js/);
   assert.match(shell, /git push origin HEAD:refs\/heads\/main/);
-  assert.doesNotMatch(shell, /push\s+.*--force|push\s+-f|git pull --rebase/);
+  const executableLines = shell.split('\n').filter(line => !/^\s*#/.test(line)).join('\n');
+  assert.doesNotMatch(executableLines, /push\s+.*--force|push\s+-f|git pull --rebase/);
   call('bash', ['-n', script], path.dirname(script));
 });
 
