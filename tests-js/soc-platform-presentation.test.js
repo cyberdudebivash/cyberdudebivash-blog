@@ -104,3 +104,22 @@ test('all public HTML receives the safe SOC renderer but JSON evidence is not re
   assert.match(source('rss.xml'),/<title>SENTINEL APEX SOC — Hybrid Security Operations/);
   assert.match(source('generate-rss.js'),/SENTINEL APEX SOC — Hybrid Security Operations/);
 });
+
+test('P0 privacy: public SOC homepage JSON-LD omits standalone proprietor PAN', () => {
+  for (const html of [source('index.html'), build(source('index.html'))]) {
+    const blocks = [...html.matchAll(/<script\s+type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
+      .map(match => JSON.parse(match[1]));
+    assert.ok(blocks.length > 0, 'expected structured metadata');
+    const organizations = blocks.flatMap(block =>
+      (Array.isArray(block['@graph']) ? block['@graph'] : [block]))
+      .filter(node => node['@type'] === 'Organization');
+    assert.ok(organizations.length > 0, 'expected organization identity');
+    for (const org of organizations) {
+      const ids = Array.isArray(org.identifier) ? org.identifier : [];
+      assert.ok(ids.some(id => id.propertyID === 'GSTIN'),
+        'preserve approved business identification');
+      assert.ok(ids.every(id => id.propertyID !== 'PAN'),
+        'standalone personal identifier must not be publicly published');
+    }
+  }
+});
