@@ -184,7 +184,8 @@ async function handleScheduled(controller, env, ctx, deps = {}) {
   const delivery = await processDueDeliveries({ limit: CRON_DELIVERY_LIMIT });
   const summary = {
     trigger: 'cloudflare_cron', cron,
-    status: 'bounded_execution',
+    status: evaluation.fanout_blocked || evaluation.event_budget_blocked
+      ? 'partial_cost_guard' : 'bounded_execution',
     elapsed_ms: Date.now() - startedAt, evaluation, delivery,
   };
   // Metadata only: never print customer evidence, recipients or webhook URLs
