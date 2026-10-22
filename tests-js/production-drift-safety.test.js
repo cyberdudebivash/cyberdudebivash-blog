@@ -18,7 +18,7 @@ function compare(files) {
 function state(files) { return classify(compare(files), BASE, HEAD, paths).state; }
 
 test('production workflow cannot deploy on push or schedule', () => {
-  assert.match(deploy,/\n  deploy:[\s\S]{0,350}?if: \$\{\{ github\.event_name == 'workflow_dispatch' \}\}/);
+  assert.match(deploy,/\n  deploy:[\s\S]{0,350}?if: \$\{\{ github\.event_name == 'workflow_dispatch' && github\.ref == 'refs/heads/main' \}\}/);
 });
 test('reconciler has no write permission or dispatch operation', () => {
   assert.match(monitor,/permissions:\s*\n  contents: read\n  actions: read/);
@@ -64,4 +64,11 @@ test('diverged and incomplete comparisons fail closed', () => {
 test('comparison API file list cannot disappear silently', () => {
   const c=compare(['docs/readme.md']);delete c.files;
   assert.equal(classify(c,BASE,HEAD,paths).state,'blocked');
+});
+
+test('negative control: feature-branch dispatch must not reach production', () => {
+  const jobBlock = deploy.slice(deploy.indexOf('\n  deploy:'), deploy.indexOf('\n    steps:',deploy.indexOf('\n  deploy:')));
+  assert.ok(jobBlock.includes("github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'"));
+  assert.ok(jobBlock.includes('environment: production'));
+  assert.doesNotMatch(jobBlock,/refs\/tags\//);
 });
