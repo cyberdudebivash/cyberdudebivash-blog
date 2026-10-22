@@ -46,7 +46,7 @@ test('healthy synthetic shared-account inventory with projected headroom passes'
   assert.equal(SAFETY_RATIO,0.8);
 });
 test('all billable metrics are explicitly inventoried and none can be omitted',()=>{
-  assert.equal(Object.keys(PLAN).length,14);
+  assert.equal(Object.keys(PLAN).length,15);
   hold('METRIC_COVERAGE_INCOMPLETE',x=>delete x.metrics.r2ClassB);
   hold('METRIC_COVERAGE_INCOMPLETE',x=>x.metrics.unknownMeter={used:0,forecastRemaining:0});
 });
@@ -62,6 +62,13 @@ for(const name of Object.keys(PLAN)){
     });
   });
 }
+test('storage used-to-date plus future GB-month must be added before comparing reserve',()=>{
+  for(const name of ['d1StorageGbMonth','kvStorageGbMonth','r2StandardStorageGbMonth']){
+    hold('RESERVE_EXHAUSTED_'+name,x=>{
+      x.metrics[name]={used:PLAN[name]*0.35,forecastRemaining:PLAN[name]*0.50};
+    });
+  }
+});
 test('reject growth trend if manually forecast remaining usage is too optimistic',()=>{
   hold('RESERVE_EXHAUSTED_workersRequests',x=>{
     x.cycle.start='2026-10-21T00:00:00.000Z';
@@ -94,6 +101,11 @@ test('reject pricing after the December 2026 Observability model switch',()=>{
     x.cycle.end='2026-12-15T00:00:00.000Z';
     x.capturedAt='2026-11-29T15:30:00.000Z';
   },'2026-11-29T16:00:00.000Z');
+});
+test('Queues are account-wide and scan-job operations/retries consume budget',()=>{
+  assert.equal(PLAN.queuesStandardOperations,1000000);
+  hold('RESERVE_EXHAUSTED_queuesStandardOperations',x=>
+    x.metrics.queuesStandardOperations={used:790000,forecastRemaining:100000});
 });
 test('reject unknown usage products and Infrequent Access class',()=>{
   hold('UNMODELED_BILLING_NOT_REVIEWED',x=>x.unmodeledBillableServicesPresent=true);

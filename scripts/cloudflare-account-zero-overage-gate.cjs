@@ -22,6 +22,9 @@ const PLAN=Object.freeze({
   r2StandardStorageGbMonth:10,
   r2ClassA:1000000,
   r2ClassB:10000000,
+  // AI Security Hub deploy configuration includes scan-jobs producer/consumer.
+  // Cloudflare bills Queues by operations (write, read, delete, retries).
+  queuesStandardOperations:1000000,
   workersLogEvents:20000000
 });
 const STOCK=new Set(['d1StorageGbMonth','kvStorageGbMonth','r2StandardStorageGbMonth']);
@@ -79,11 +82,12 @@ function assess(input, accountId,now=new Date().toISOString()){
     if(!metric(value)){codes.add('METRIC_MISSING_OR_INVALID_'+name);continue;}
     const elapsed=Math.max(60*1000,nowMs-start),remaining=end-nowMs;
     // For usage counters, require remaining forecast to be at least 125%
-    // of elapsed account-wide usage pace. Storage GB-month is a stock-like
-    // billing quantity and is evaluated against projected peak directly.
+    // of elapsed account-wide usage pace. Storage GB-month already accrued
+    // and forecast for remaining cycle are additive; max(used,remaining)
+    // dangerously undercounts storage that increases late in the month.
     const pace=value.used*remaining/elapsed*FORECAST_BUFFER;
     const projected=STOCK.has(name)?
-      Math.max(value.used,value.forecastRemaining):
+      value.used+value.forecastRemaining:
       value.used+Math.max(value.forecastRemaining,pace);
     if(!(projected<=(included*SAFETY_RATIO)+1e-9))codes.add('RESERVE_EXHAUSTED_'+name);
   }
