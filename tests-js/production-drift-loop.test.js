@@ -7,22 +7,20 @@ const root = path.join(__dirname, '..');
 const drift = fs.readFileSync(path.join(root, '.github/workflows/production-drift-reconcile.yml'), 'utf8');
 const deploy = fs.readFileSync(path.join(root, '.github/workflows/cloudflare-production-deploy.yml'), 'utf8');
 
-test('drift reconciler cannot auto-retry an already failed deployment/certification', () => {
-  const query = drift.indexOf('last_completed="$(jq -r');
-  const stop = drift.indexOf('if [ -n "$last_completed" ] && [ "$last_completed" != "success" ]');
-  const guard = drift.indexOf('echo "drift=blocked" >> "$GITHUB_OUTPUT"');
-  const exit = drift.indexOf('exit 0', guard);
-  const dispatch = drift.indexOf('echo "drift=true" >> "$GITHUB_OUTPUT"');
-  assert.ok(query > 0 && stop > query && guard > stop && exit > guard && dispatch > exit,
-    'failed certification must stop automatic deployment before dispatch');
-  assert.match(drift, /Production deployment certification failed/);
-  assert.match(drift, /operator-reviewed/);
+test('read-only drift reconciler blocks a failed manual deployment and cannot retry', () => {
+  const policy = fs.readFileSync(path.join(root, 'scripts/production-drift-policy.cjs'),'utf8');
+  assert.match(policy, /latest\.conclusion !== 'success'/);
+  assert.match(policy, /last manual production certification failed/);
+  assert.match(policy, /state: 'blocked'/);
+  assert.doesNotMatch(drift, /\/dispatches|actions: write/);
+  assert.match(drift, /node scripts\/production-drift-policy\.cjs/);
 });
 
-test('only explicit TRUE drift state can trigger an automatic deploy', () => {
-  assert.match(drift, /if: steps\.drift\.outputs\.drift == 'true'/);
-  assert.match(drift, /latest fully certified deploy/);
-  assert.match(drift, /last failed deploy requiring review/);
+test('only explicit operator dispatch can enter the production deployment job', () => {
+  assert.match(deploy, /jobs:\s*\n  deploy:[\s\S]{0,350}?if: \$\{\{ github\.event_name == 'workflow_dispatch' \}\}/);
+  assert.match(deploy, /environment: production/);
+  assert.match(drift, /permissions:\s*\n  contents: read/);
+  assert.doesNotMatch(drift, /curl[^\n]*-X POST|actions: write/);
 });
 
 test('route-marker certification still executes after real deployment', () => {

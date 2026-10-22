@@ -23,6 +23,7 @@ on:
       - 'scripts/deploy-trigger-inputs.js'
       - 'scripts/build-cloudflare-assets.js'
       - 'scripts/soc-homepage-integrity.js'
+      - 'scripts/soc-platform-presentation.cjs'
       - 'scripts/cti-archive-v14.js'
       - 'scripts/sentinel-branding.cjs'
       - 'scripts/build-cloudflare-assets.test.js'
@@ -52,6 +53,7 @@ on:
       - 'customer-assurance.html'
       - 'service-status.html'
       - 'soc-preview.html'
+      - 'soc.html'
       - 'customer-incident-response.html'
       - 'enterprise-onboarding.html'
       - 'cti-delivery-acceptance.html'
@@ -109,6 +111,7 @@ on:
       - 'apex-command-center.js'
       - 'customer-experience.js'
       - 'runtime-state.js'
+      - 'soc-platform-ui.css'
       - 'soc-cti-console.css'
       - 'soc-triage-workspace.js'
       - 'soc-taxonomy-pivots.js'
@@ -146,6 +149,9 @@ concurrency:
 
 jobs:
   deploy:
+    # P0 #381: only an explicit operator workflow_dispatch may mutate Cloudflare.
+    # Push events can evaluate workflows, but may never run the deploy job.
+    if: ${{ github.event_name == 'workflow_dispatch' }}
     name: "Build, deploy and certify blog.cyberdudebivash.in"
     runs-on: ubuntu-latest
     timeout-minutes: 30

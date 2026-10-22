@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#06141f">
+<meta name="description" content="SENTINEL APEX SOC — intelligence-led hybrid SOC and CTI platform for source-attributed threat intelligence, detection engineering, threat hunting, incident readiness and scoped enterprise SOC assessments.">
+<meta name="robots" content="index,follow">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="canonical" href="https://blog.cyberdudebivash.in/soc.html">
+<meta property="og:title" content="SENTINEL APEX SOC | Hybrid Security Operations + Threat Intelligence">
+<meta property="og:description" content="One connected workspace for CTI, threat hunting, detection engineering, incident readiness and transparent customer assurance.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://blog.cyberdudebivash.in/soc.html">
+<title>SENTINEL APEX SOC | Hybrid Security Operations &amp; CTI Platform</title>
+<style>
+:root{--bg:#06121c;--panel:#0b2230;--edge:#244456;--ink:#edfaff;--muted:#afc5d0;--mint:#50ebd6;--blue:#6dbaf2;--lime:#b5f18b}
+*{box-sizing:border-box}
+html{color-scheme:dark;scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(ellipse 70% 35% at 72% 0,#123d4a 0,transparent 80%),var(--bg);color:var(--ink);font:16px/1.65 Inter,ui-sans-serif,system-ui,sans-serif}
+a{color:#80f2e2;text-underline-offset:4px}
+a:focus-visible{outline:3px solid var(--lime);outline-offset:4px}
+.wrap{width:min(1280px,calc(100% - 36px));margin:0 auto}
+.soc-hero{display:grid;grid-template-columns:minmax(0,1.23fr) minmax(290px,.77fr);gap:clamp(28px,5vw,66px);padding:clamp(66px,8vw,128px) 0 76px;align-items:center}
+.kicker{display:inline-flex;align-items:center;gap:11px;color:#b1f7e9;font:800 11px/1.4 ui-monospace,monospace;text-transform:uppercase;letter-spacing:.17em}
+.kicker:before{content:'';width:8px;height:8px;background:#53efc8;border-radius:50%;box-shadow:0 0 0 5px #53efc820}
+h1{font-size:clamp(3rem,6.7vw,6.2rem);line-height:1.03;letter-spacing:-.058em;margin:23px 0;color:#f4ffff;font-weight:830}
+h1 span{color:var(--mint)}
+.lead{font-size:clamp(1rem,1.7vw,1.22rem);color:#bbd0dc;line-height:1.75;max-width:750px}
+.actions{display:flex;flex-wrap:wrap;gap:13px;margin:29px 0}
+.button{display:inline-flex;align-items:center;justify-content:center;min-height:49px;padding:12px 19px;border:1px solid #4ba4a0;border-radius:9px;background:#42e9d1;color:#032730;text-decoration:none;font-weight:820;font-size:14px}
+.button.ghost{background:#112938;color:#dffcff;border-color:#3c6175}
+.truth{border-left:3px solid #e9cb81;padding:11px 18px;background:#202b30;color:#dfd6ba;font-size:13px;max-width:760px;border-radius:0 8px 8px 0;margin-top:24px}
+.screen{border:1px solid #356277;background:#071722;border-radius:17px;box-shadow:0 34px 80px #0008;overflow:hidden}
+.screen-bar{padding:14px 17px;border-bottom:1px solid #244657;display:flex;align-items:center;justify-content:space-between;background:#112a38}
+.screen-bar strong{color:#e5faf7;font-size:12px;letter-spacing:.08em}
+.screen-bar small{color:#83a2b5;font:700 10px ui-monospace,monospace}
+.screen-stat{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:18px}
+.screen-stat div{border:1px solid #294454;background:#0b2632;padding:17px 14px;border-radius:9px}
+.screen-stat b{display:block;font-size:20px;line-height:1.15;color:#e8fff8}
+.screen-stat small{display:block;font-size:11px;color:#91b0c0;margin-top:6px}
+.screen-list{padding:7px 18px 18px}
+.screen-list a{display:flex;align-items:center;justify-content:space-between;gap:16px;border-top:1px solid #234050;padding:13px 0;color:#bdd9e4;text-decoration:none;font-size:13px}
+.screen-list a strong{color:#57ebd0}
+.section{padding:78px 0}
+.section-alt{background:linear-gradient(180deg,#0a1b27,#06131e);border-block:1px solid #203e4a}
+.eyebrow{font:800 11px ui-monospace,monospace;color:#66ead6;letter-spacing:.16em;text-transform:uppercase}
+h2{font-size:clamp(2rem,4vw,3.5rem);line-height:1.12;letter-spacing:-.038em;margin:13px 0 17px}
+.section-intro{color:#aec5d2;max-width:750px}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px;margin-top:32px}
+.card{background:linear-gradient(150deg,#122e3b,#0a1a26);border:1px solid var(--edge);border-radius:14px;padding:25px;min-height:240px;display:flex;flex-direction:column;box-shadow:0 12px 30px #0003}
+.card .number{font:800 11px ui-monospace,monospace;letter-spacing:.1em;color:#57ead5;margin-bottom:22px}
+.card h3{font-size:20px;line-height:1.2;letter-spacing:-.02em;margin:0 0 10px}
+.card p{font-size:14px;color:var(--muted);line-height:1.64;margin:0 0 19px;flex:1}
+.card a{font-size:13px;font-weight:780;color:#73e8d5}
+.cards .muted-card{border-style:dashed}
+.process{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:29px}
+.step{border-top:3px solid #4fe8d2;background:#0b2531;padding:22px 18px;min-height:184px}
+.step b{color:#b5f38e;font:800 11px ui-monospace,monospace;letter-spacing:.06em}
+.step h3{font-size:17px;margin:12px 0}
+.step p{font-size:13px;color:var(--muted)}
+.assurance{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+.assurance-list{border:1px solid var(--edge);border-radius:12px;background:#102634;padding:22px}
+.assurance-list div{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;border-bottom:1px solid #2a4453;padding:12px 0;font-size:13px}
+.assurance-list div:last-child{border:0}
+.assurance-list b{color:#d9f7ff}.assurance-list span{color:#abd0c7;text-align:right}
+.cta-panel{margin:65px 0;padding:clamp(24px,5vw,56px);background:linear-gradient(115deg,#123646,#0a2834);border:1px solid #3b756e;border-radius:16px}
+.cta-panel h2{max-width:780px}
+footer{border-top:1px solid #264553;background:#06121c;padding:30px 0;color:#a1bfcf;font-size:13px}
+.footer-flex{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
+.footer-links{display:flex;gap:17px;flex-wrap:wrap}
+.footer-links a{color:#b7d9e8}
+@media(max-width:980px){.soc-hero,.assurance{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}.process{grid-template-columns:1fr 1fr}.screen{max-width:600px}}
+@media(max-width:610px){.wrap{width:min(100% - 26px,1280px)}.cards,.process{grid-template-columns:1fr}.soc-hero{padding:54px 0 40px}h1{font-size:clamp(2.75rem,13vw,4.3rem)}.section{padding:52px 0}.screen-stat{padding:12px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <section class="soc-hero" aria-labelledby="headline">
+    <div>
+      <div class="kicker">SENTINEL APEX SOC · INTELLIGENCE-LED DEFENSE</div>
+      <h1 id="headline">See the threat.<br><span>Build the response.</span></h1>
+      <p class="lead">A unified Hybrid SOC + CTI platform connecting source-attributed threat intelligence, detection engineering, analyst hunting, incident readiness, and customer assurance—built for security teams that need defensible evidence, not decorative dashboards.</p>
+      <div class="actions"><a class="button" href="/enterprise-onboarding.html">Request a SOC Assessment ↗</a><a class="button ghost" href="/intel/">Explore Threat Intelligence</a></div>
+      <div class="truth">Platform scope: CTI research, detection guidance and SOC readiness workflows are presented here. Fully managed customer monitoring and incident response require individually authorized onboarding and agreed service terms. SOC 2 alignment is not a certified SOC 2 audit.</div>
+    </div>
+    <div class="screen" aria-label="SOC platform capability overview, not live incident counts">
+      <div class="screen-bar"><strong>SECURITY OPERATIONS / OVERVIEW</strong><small>CAPABILITY DIRECTORY</small></div>
+      <div class="screen-stat">
+        <div><b>CTI</b><small>Source-linked intelligence</small></div>
+        <div><b>HUNT</b><small>Threat hunting workbench</small></div>
+        <div><b>DETECT</b><small>Detection engineering</small></div>
+        <div><b>ASSURE</b><small>Customer assurance evidence</small></div>
+      </div>
+      <div class="screen-list">
+        <a href="/intel/">Threat Intelligence <strong>EXPLORE ↗</strong></a>
+        <a href="/detections/">Detection Guidance <strong>EXPLORE ↗</strong></a>
+        <a href="/customer-incident-response.html">Incident Readiness <strong>EXPLORE ↗</strong></a>
+        <a href="/service-status.html">Public Service Evidence <strong>VERIFY ↗</strong></a>
+      </div>
+    </div>
+  </section>
+</div>
+<section class="section section-alt" id="capabilities" aria-labelledby="capabilities-title">
+<div class="wrap">
+  <div class="eyebrow">01 / Operational Capabilities</div>
+  <h2 id="capabilities-title">One SOC workspace. Six focused disciplines.</h2>
+  <p class="section-intro">Navigate the existing modules through a consistent interface. Capabilities are described by what they provide today; unproven real-time detections and customer SOC SLAs are not represented as live.</p>
+  <div class="cards">
+    <article class="card"><div class="number">01 · CTI</div><h3>Threat Intelligence</h3><p>Investigate sourced CVEs, malware, adversary activity and actionable threat briefs with transparent confidence and freshness context.</p><a href="/intel/">Open CTI Workspace ↗</a></article>
+    <article class="card"><div class="number">02 · DETECTION</div><h3>Detection Engineering</h3><p>Review defensive detection guidance, available rules and their evidence quality rather than treating generated alerts as verified incidents.</p><a href="/detections/">Explore Detection Library ↗</a></article>
+    <article class="card"><div class="number">03 · HUNT</div><h3>Threat Hunting</h3><p>Explore analyst hunting patterns and investigative guidance with source attribution and operational context.</p><a href="/hunts.html">Open Hunting Workspace ↗</a></article>
+    <article class="card"><div class="number">04 · INCIDENT</div><h3>Incident Readiness</h3><p>Plan escalation, response ownership, evidence handling and the customer handover process before a live incident.</p><a href="/customer-incident-response.html">Review Incident Escalation ↗</a></article>
+    <article class="card"><div class="number">05 · ASSURANCE</div><h3>Governance &amp; Assurance</h3><p>Review available customer assurance evidence, security policies, responsible disclosure and documented service boundaries.</p><a href="/customer-assurance.html">View Assurance Disclosures ↗</a></article>
+    <article class="card"><div class="number">06 · ENTERPRISE</div><h3>SOC Assessment &amp; Onboarding</h3><p>Start with a scoped security operations readiness assessment before discussing customer-specific monitoring, integrations or response terms.</p><a href="/enterprise-onboarding.html">Request Enterprise Assessment ↗</a></article>
+  </div>
+</div></section>
+<section class="section" id="workflow" aria-labelledby="workflow-title"><div class="wrap">
+  <div class="eyebrow">02 / Responsible Operations</div>
+  <h2 id="workflow-title">From evidence to an analyst decision.</h2>
+  <p class="section-intro">The SOC program is engineered around attributable evidence and authorization. Customer telemetry ingestion and verified response actions are gated until pilot certification.</p>
+  <div class="process">
+    <div class="step"><b>STEP 01</b><h3>Source</h3><p>Identify authorized CTI or customer data sources and preserve provenance.</p></div>
+    <div class="step"><b>STEP 02</b><h3>Validate</h3><p>Check scope, signed source records, confidence and actual evidence bytes.</p></div>
+    <div class="step"><b>STEP 03</b><h3>Review</h3><p>Require an authorized analyst before asserting verified detections or incidents.</p></div>
+    <div class="step"><b>STEP 04</b><h3>Respond</h3><p>Use an agreed escalation and evidence-handling plan; no unauthorized containment.</p></div>
+  </div>
+</div></section>
+<section class="section section-alt" id="assurance" aria-labelledby="assurance-title"><div class="wrap assurance">
+  <div><div class="eyebrow">03 / Trust and Transparency</div><h2 id="assurance-title">Security claims backed by evidence.</h2>
+    <p class="section-intro">The platform adopts a SOC 2-aligned control direction and publishes clear assurance and availability boundaries. Independent attestation, customer contractual SLAs and production integration certifications are separate requirements—not implied by the appearance of this interface.</p>
+    <div class="actions"><a class="button ghost" href="/customer-assurance.html">Customer Assurance</a><a class="button ghost" href="/service-status.html">Service Evidence</a><a class="button ghost" href="/security-disclosure.html">Security Disclosure</a></div>
+  </div>
+  <div class="assurance-list" aria-label="Assurance posture">
+    <div><b>Security controls</b><span>SOC 2-aligned direction; not certified</span></div>
+    <div><b>Public CTI research</b><span>Source and freshness details shown per record</span></div>
+    <div><b>Managed response</b><span>Only by separately agreed service scope</span></div>
+    <div><b>Customer integrations</b><span>Require approved onboarding and evidence chain</span></div>
+    <div><b>Service availability</b><span>Verify public service-status evidence</span></div>
+  </div>
+</div></section>
+<section class="section" id="ecosystem" aria-labelledby="ecosystem-title"><div class="wrap">
+  <div class="eyebrow">04 / Connected Cybersecurity Ecosystem</div>
+  <h2 id="ecosystem-title">One ecosystem. Clearly defined platforms.</h2>
+  <p class="section-intro">SENTINEL APEX SOC focuses on operational workflows and customer security readiness. Use the dedicated products below for their respective intelligence and AI security services—without treating them as interchangeable or claiming cross-platform entitlements that have not been verified.</p>
+  <div class="cards">
+    <article class="card"><div class="number">SENTINEL APEX · SOC</div><h3>Hybrid SOC + CTI Operations</h3><p>This workspace: CTI-driven investigations, detection guidance, hunting, incident preparation and scoped enterprise SOC assessments.</p><a href="/enterprise-onboarding.html">Explore SOC Engagement ↗</a></article>
+    <article class="card"><div class="number">SENTINEL APEX · THREAT INTELLIGENCE</div><h3>Threat Intelligence Platform</h3><p>The separate intelligence product for threat monitoring, IOC enrichment, API access and source-linked CTI services.</p><a href="https://intel.cyberdudebivash.com/" rel="noopener noreferrer">Open SENTINEL APEX Threat Intel ↗</a></article>
+    <article class="card"><div class="number">SENTINEL APEX · AI SECURITY</div><h3>AI Security Hub</h3><p>The separate AI security product for assessment, governance and security workflows. Service availability is governed by its own release gates.</p><a href="https://www.cyberdudebivash.in/" rel="noopener noreferrer">Open AI Security Hub ↗</a></article>
+  </div>
+</div></section>
+<div class="wrap" id="contact"><div class="cta-panel">
+  <div class="eyebrow">05 / Customer Engagement</div>
+  <h2>Plan a controlled SOC engagement.</h2>
+  <p class="section-intro">Tell us which security operations challenges matter most. We will establish the scope, available capabilities, authorization and service assumptions before presenting a commercial proposal.</p>
+  <div class="actions"><a class="button" href="/enterprise-onboarding.html">Start an Enterprise Assessment ↗</a><a class="button ghost" href="/products.html">Review Products &amp; Services</a><a class="button ghost" href="/pricing.html">View Available Pricing</a></div>
+</div></div>
+</main>
+<footer><div class="wrap footer-flex"><span>© CYBERDUDEBIVASH ECOSYSTEM · SENTINEL APEX SOC</span>
+  <div class="footer-links"><a href="/">Threat Intelligence</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/security-disclosure.html">Security Disclosure</a><a href="/contact.html">Contact</a></div>
+</div></footer>
+</body>
+</html>

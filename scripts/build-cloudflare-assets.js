@@ -19,7 +19,7 @@ const PUBLIC_DIRS = [
 ];
 
 const PUBLIC_ROOT_FILES = [
-  'soc-preview.html',
+  'soc-preview.html', 'soc.html',
   'about.html', 'api-dashboard.html', 'api.html', 'archive.html',
   'buy.html', 'contact.html', 'customer-assurance.html', 'service-status.html', 'customer-incident-response.html', 'enterprise-onboarding.html', 'cti-delivery-acceptance.html', 'enterprise.html', 'faq.html', 'index.html',
   'intelligence.html', 'leads.html', 'mitre-attack-detection.html', 'newsletter.html',
@@ -36,7 +36,7 @@ const PUBLIC_ROOT_FILES = [
   'live-feed-widget.js', 'monetization.js', 'payment-engine.js',
   'payment-flow.js', 'intel-plans.js', 'revenue-conversion-v19.js', 'revenue-cta-block.js',
   'security-engine.js', 'seo-engine.js', 'ux-controller.js', 'apex-command-center.js', 'customer-experience.js', 'runtime-state.js',
-  'soc-cti-console.css', 'soc-triage-workspace.js', 'soc-taxonomy-pivots.js', 'soc-hybrid-workspace.js', 'soc-evidence-drawer.js',
+  'soc-platform-ui.css', 'soc-cti-console.css', 'soc-triage-workspace.js', 'soc-taxonomy-pivots.js', 'soc-hybrid-workspace.js', 'soc-evidence-drawer.js',
   'apple-touch-icon.png', 'brand-logo.svg', 'favicon.ico', 'favicon.svg',
   'icon-192.png', 'icon-512.png', 'og-image.png',
   'og-sentinel-apex-threat-intel-v1.jpg', 'og-sentinel-apex-intel-factory-v1.jpg', 'site.webmanifest',
@@ -119,7 +119,10 @@ function injectCustomerExperience(html) {
   if (!out.includes(CX_JS)) {
     out = out.replace(/<\/body>/i, '<script src="' + CX_JS + '" defer></script>\n</body>');
   }
-  return brandHtml(out, 'SENTINEL APEX Research Blog / Intel Factory');
+  // SOC identity is shared across ALL allowlisted HTML, including CVE and
+  // legacy reports. Render-only: source evidence and technical URLs preserved.
+  const { injectSocPresentation } = require('./soc-platform-presentation.cjs');
+  return brandHtml(injectSocPresentation(out), 'SENTINEL APEX SOC — Hybrid SOC + CTI');
 }
 
 function validatePublicHtmlStructure(html, sourcePath = 'public HTML') {
