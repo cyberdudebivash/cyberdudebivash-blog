@@ -31,7 +31,7 @@
  * Usage:
  *   CLOUDFLARE_ACCOUNT_ID=... CLOUDFLARE_D1_DATABASE_ID=... CLOUDFLARE_API_TOKEN=... \
  *   RESEND_API_KEY=... \
- *     node scripts/deliver-watchlist-notifications.js [--limit=100]
+ *     node scripts/deliver-watchlist-notifications.js [--limit=100]\n * Strict CLI range 1..100. Invalid/duplicated inputs fail closed.
  *
  * RESEND_API_KEY is optional here in the sense that the script still runs
  * without it — email deliveries will simply fail with EMAIL_NOT_CONFIGURED
@@ -41,14 +41,28 @@
  */
 'use strict';
 
+// Operator workload limit: never silently clamp oversized CLI batches.
+// Preserve the existing 100-job no-argument default.
+const MAX_GITHUB_DELIVERY_LIMIT = 100;
 function parseLimitArg(argv) {
-  const match = argv.find(a => a.startsWith('--limit='));
-  if (!match) return undefined;
-  const n = parseInt(match.split('=')[1], 10);
-  return Number.isFinite(n) && n > 0 ? n : undefined;
+  if (argv.some(a => a !== '--limit' && !a.startsWith('--limit='))) {
+    throw new RangeError('Invalid delivery CLI argument; only --limit=N is supported');
+  }
+  const matches = argv.filter(a => a === '--limit' || a.startsWith('--limit='));
+  if (matches.length === 0) return undefined;
+  if (matches.length !== 1 || !/^--limit=[1-9][0-9]*$/.test(matches[0])) {
+    throw new RangeError('Invalid --limit; expected a single integer from 1 to 100');
+  }
+  const value = Number(matches[0].slice('--limit='.length));
+  if (!Number.isSafeInteger(value) || value > MAX_GITHUB_DELIVERY_LIMIT) {
+    throw new RangeError('Invalid --limit; expected a single integer from 1 to 100');
+  }
+  return value;
 }
 
 async function main() {
+  // Parse and reject unsafe arguments before loading any D1 client.
+  const limit = parseLimitArg(process.argv.slice(2));
   const { isConfigured } = require('../api/_lib/d1');
   if (!isConfigured()) {
     console.error('[NOTIFY-DELIVER] CLOUDFLARE_ACCOUNT_ID / CLOUDFLARE_D1_DATABASE_ID / CLOUDFLARE_API_TOKEN must be set.');
@@ -58,11 +72,11 @@ async function main() {
 
   const { processDueDeliveries } = require('../api/_lib/notification-dispatch');
   const { getOldestPendingAgeSeconds } = require('../api/_lib/notification-store');
-  const limit = parseLimitArg(process.argv.slice(2));
-
   const startedAt = Date.now();
   const results = await processDueDeliveries(limit ? { limit } : {});
-  const oldestPendingAgeSeconds = await getOldestPendingAgeSeconds().catch(() => null);
+  // A failed D1 backlog-age query must never masquerade as an empty
+  // queue in a green GitHub Actions delivery job.
+  const oldestPendingAgeSeconds = await getOldestPendingAgeSeconds();
   const elapsedMs = Date.now() - startedAt;
 
   console.log('[NOTIFY-DELIVER] Run complete.');
@@ -102,4 +116,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { parseLimitArg };
+module.exports = { parseLimitArg, MAX_GITHUB_DELIVERY_LIMIT };
