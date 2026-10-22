@@ -550,6 +550,12 @@ jobs:
 
                     echo "SOC 2 + CTI homepage command center certified on $GITHUB_SHA"
 
+      - name: "P0: certify SOC source/build/live customer and legal parity"
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/soc-live-release-parity.cjs "--release-sha=$GITHUB_SHA"
+
       - name: "Certify SOC 2 + CTI customer assurance"
         shell: bash
         run: |
