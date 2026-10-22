@@ -31,6 +31,15 @@ jobs:
     timeout-minutes: 10
 
     steps:
+      # Full history is necessary; the GitHub compare endpoint truncates file
+      # lists and cannot safely certify large, multi-commit differences.
+      - name: "Checkout full main history for exact-tree drift classification"
+        uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+
       - name: "Compare main with latest fully certified production deploy"
         id: drift
         shell: bash
@@ -80,8 +89,40 @@ jobs:
             exit 0
           fi
 
-          echo "drift=true" >> "$GITHUB_OUTPUT"
-          echo "::notice::Production drift detected. main=$main_sha certified=${deployed_sha:-none}"
+          # Require a real successfully certified baseline; auto-deploying
+          # without one would bypass the operator's recovery authorization.
+          if [ -z "$deployed_sha" ]; then
+            echo "drift=blocked" >> "$GITHUB_OUTPUT"
+            echo "::warning::No certified production SHA: operator deployment approval required."
+            exit 0
+          fi
+
+          # Compare actual git trees without GitHub compare's 300-file cap.
+          # A non-ancestor baseline, missing history, unexpected file, or
+          # incompatible production-workflow parser returns BLOCKED.
+          decision_json="$(node scripts/production-drift-decision.cjs "$deployed_sha" "$main_sha")"
+          decision="$(jq -er '.decision' <<<"$decision_json")"
+          reason="$(jq -er '.reason' <<<"$decision_json")"
+          case "$decision" in
+            skip)
+              echo "drift=false" >> "$GITHUB_OUTPUT"
+              echo "::notice::Known nonproduction-only diff: no Cloudflare deploy required ($reason)."
+              exit 0
+              ;;
+            blocked)
+              echo "drift=blocked" >> "$GITHUB_OUTPUT"
+              echo "::warning::Cannot certify main/deployed diff ($reason). Operator review required; no auto deployment."
+              exit 0
+              ;;
+            deploy)
+              echo "drift=true" >> "$GITHUB_OUTPUT"
+              echo "::notice::Verified production input drift. main=$main_sha certified=$deployed_sha"
+              ;;
+            *)
+              echo "::error::Invalid drift classification; deployment stopped."
+              exit 1
+              ;;
+          esac
 
       - name: "Dispatch Cloudflare production deployment"
         if: steps.drift.outputs.drift == 'true'
@@ -92,6 +133,13 @@ jobs:
         run: |
           set -euo pipefail
           api="https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/cloudflare-production-deploy.yml/dispatches"
+          # A publisher can advance main during this workflow. Never
+          # dispatch a different unclassified commit through ref=main.
+          current_sha="$(curl -fsS -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$GITHUB_REPOSITORY/commits/main" | jq -er '.sha')"
+          if [ "$current_sha" != "$MAIN_SHA" ]; then
+            echo "::warning::main advanced during drift validation: defer to next reconciliation; no deployment dispatched."
+            exit 0
+          fi
           payload='{"ref":"main"}'
           curl -fsS -X POST             -H "Authorization: Bearer $GH_TOKEN"             -H "Accept: application/vnd.github+json"             -H "X-GitHub-Api-Version: 2022-11-28"             -H "Content-Type: application/json"             --data "$payload"             "$api"
           echo "Dispatched production deploy for main SHA: $MAIN_SHA"
