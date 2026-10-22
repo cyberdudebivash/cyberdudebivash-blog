@@ -14,7 +14,7 @@ const crypto=require('node:crypto');
 const ORIGIN='https://blog.cyberdudebivash.in';
 const MAX_HTML=3_000_000;
 const ROUTES=Object.freeze([
-  {path:'/', markers:['SENTINEL APEX SOC']},
+  {path:'/', markers:['SENTINEL APEX SOC'],legal:true},
   {path:'/soc.html',markers:['SENTINEL APEX SOC','Hybrid SOC']},
   {path:'/soc-readiness-assessment.html',markers:['Request a Scoped Proposal','SOC Readiness','contact@cyberdudebivash.in']},
   {path:'/about.html',markers:['CYBERDUDEBIVASH ECOSYSTEM'],legal:true},
@@ -45,6 +45,7 @@ function assess(spec,result){
   fail('UNSUPPORTED_COMMERCIAL_CLAIM',!BLOCKED_COPY.test(result.body));
   if(spec.legal){
     fail('FALSE_INCORPORATION_CLAIM',!badCompany.test(result.body));
+    fail('INCORPORATED_STRUCTURED_IDENTITY',!/["']@type["']\s*:\s*["']Corporation["']/i.test(result.body));
   }
   if(spec.path==='/'){
     fail('PERSONAL_PAN_METADATA',!personalPanStructured.test(result.body));

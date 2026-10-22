@@ -6,8 +6,13 @@ const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
 const CUSTOMER_SOURCE = Object.freeze([
-  'about.html', 'terms.html', 'privacy.html', 'pricing.html', 'contact.html',
+  'index.html', 'about.html', 'terms.html', 'privacy.html', 'pricing.html', 'contact.html',
   'faq.html', 'search.html', 'api.html', 'security-disclosure.html',
+  'intel/index.html', 'malware/index.html', 'breaking/index.html',
+  'research/index.html', 'detections/index.html', 'ai-security/index.html',
+  'ai-security/services.html', 'intelligence.html',
+  'research/exploitation-velocity-index.html',
+  'research/kev-exploitation-concentration-2026.html',
   'generate-intelligence-hub.js', 'build-research.js',
   'build-evi-page.js', 'build-detections-page.js',
 ]);
@@ -48,4 +53,49 @@ test('customer assurance and legal navigation remain intact', () => {
     assert.match(document, /mailto:/,name + ' must retain a contact path');
   }
   assert.match(read('contact.html'), /Enterprise Inquiry/);
+});
+
+test('P0 homepage structured data has one authoritative non-corporate organization entity', () => {
+  const html=read('index.html');
+  const matches=[...html.matchAll(/<script\s+type=["']application\/ld\+json["']>([\s\S]*?)<\/script>/gi)];
+  assert.ok(matches.length>0,'homepage metadata missing');
+  const nodes=matches.flatMap(match=>{
+    const doc=JSON.parse(match[1]);
+    return Array.isArray(doc['@graph']) ? doc['@graph'] : [doc];
+  });
+  const organizations=nodes.filter(node=>node['@id']==='https://www.cyberdudebivash.com/#organization');
+  assert.equal(organizations.length,1,'duplicate legal entity schema risks inconsistent public identity');
+  assert.equal(organizations[0]['@type'],'Organization');
+  assert.match(organizations[0].name,/CYBERDUDEBIVASH ECOSYSTEM/);
+  const organizationIdentifiers=organizations[0].identifier||[];
+  assert.ok(organizationIdentifiers.some(v=>v.propertyID==='BHASKAR Profile ID'),
+    'BHASKAR registration may be represented as a BHASKAR profile');
+  assert.ok(organizationIdentifiers.every(v=>v.propertyID!=='Startup India Recognition ID'),
+    'BHASKAR profile is not itself proof of DPIIT Startup Recognition');
+  assert.ok(nodes.every(node=>node['@type']!=='Corporation'),
+    'sole proprietorship may not be represented as incorporated');
+});
+test('P0 source and customer build both preserve correct seller identity', () => {
+  const source=read('index.html');
+  const {injectCustomerExperience}=require('../scripts/build-cloudflare-assets.js');
+  const rendered=injectCustomerExperience(source);
+  for(const [label,html] of [['source',source],['built',rendered]]){
+    assert.equal(checkIdentity(html),0,label+' must not claim incorporated seller');
+    assert.doesNotMatch(html,/"@type"\s*:\s*"Corporation"/i,label);
+    assert.match(html,/CYBERDUDEBIVASH ECOSYSTEM/,label);
+    assert.equal((html.match(/id="reports"/g)||[]).length,1,label+' reports landmark must be unique');
+  }
+});
+
+test('P0 AI security service structured data advertises the correct sole proprietor trading name', () => {
+  const html=read('ai-security/services.html');
+  const blocks=[...html.matchAll(/<script\s+type=["']application\/ld\+json["']>([\s\S]*?)<\/script>/gi)]
+    .map(m=>JSON.parse(m[1]));
+  assert.ok(blocks.length,'service structured metadata missing');
+  const services=blocks.filter(v=>v['@type']==='Service');
+  assert.ok(services.length,'Service JSON-LD must exist');
+  for(const service of services){
+    assert.equal(service.provider?.name,'CYBERDUDEBIVASH ECOSYSTEM');
+    assert.notEqual(service.provider?.['@type'],'Corporation');
+  }
 });
