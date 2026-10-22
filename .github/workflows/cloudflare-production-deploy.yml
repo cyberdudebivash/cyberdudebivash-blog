@@ -221,6 +221,18 @@ jobs:
           test -n "$CLOUDFLARE_API_TOKEN" || { echo "::error::CLOUDFLARE_API_TOKEN is not configured"; exit 1; }
           test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "::error::CLOUDFLARE_ACCOUNT_ID is not configured"; exit 1; }
 
+      - name: "P0 shared Cloudflare account zero-overage gate"
+        shell: bash
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CDB_CF_ACCOUNT_BUDGET_ATTESTATION: ${{ secrets.CDB_CF_ACCOUNT_BUDGET_ATTESTATION }}
+        run: |
+          set -euo pipefail
+          # This is a private, account-wide owner-reviewed usage snapshot.
+          # Missing/stale/partial evidence blocks all platform mutations.
+          # No Cloudflare API calls and no raw usage/secret values are logged.
+          node scripts/cloudflare-account-zero-overage-gate.cjs
+
       - name: "P0 precondition — verify established Worker Custom Domain without DNS writes"
         shell: bash
         env:
