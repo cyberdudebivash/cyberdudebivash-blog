@@ -25,13 +25,18 @@ function token(changes={}){
   return message+'.'+crypto.createSign('RSA-SHA256').update(message).end()
     .sign(privateKey).toString('base64url');
 }
-function fixture({tenantMember=true,authSession=true,providerBytes=RAW}={}){
+function fixture({tenantMember=true,authSession=true,providerBytes=RAW,budgetAllowed=true}={}){
   const reads=[],writes=[];
+  let consumed=0;
   const nativeD1={withSession:jest.fn(mode=>{
     if(mode!=='first-primary')throw Error('stale replica');
     return {prepare:sql=>({bind:(...params)=>({
       first:async()=>{
         reads.push({sql,params});
+        if(sql.includes('soc_evidence_read_windows')) {
+          if(!budgetAllowed || consumed>=12)return null;
+          consumed++;return {consumed};
+        }
         if(sql.includes('soc_auth_sessions'))return authSession?{allowed:1}:null;
         if(sql.includes('FROM soc_principals'))return tenantMember?{principal_id:'analyst-acme'}:null;
         if(sql.includes('FROM soc_detections'))return {
@@ -87,6 +92,8 @@ describe('SOC pinned evidence: RSA-MFA/OIDC + D1 + bounded HTTPS -> verified rev
     expect(f.nativeD1.withSession).toHaveBeenCalledWith('first-primary');
     expect(f.reads.some(x=>x.sql.includes('soc_auth_sessions'))).toBe(true);
     expect(f.reads.some(x=>x.sql.includes('FROM soc_principals'))).toBe(true);
+    expect(f.reads.some(x=>x.sql.includes('soc_evidence_read_windows') &&
+      x.sql.includes("c.state='APPROVED'"))).toBe(true);
     expect(f.resolveToken).toHaveBeenCalledWith('acme','siem');
     expect(f.providerFetcher).toHaveBeenCalledTimes(1);
     const [uri,options]=f.providerFetcher.mock.calls[0];
@@ -134,6 +141,15 @@ describe('SOC pinned evidence: RSA-MFA/OIDC + D1 + bounded HTTPS -> verified rev
     }));
     await expect(f.boundary.review(f.args))
       .rejects.toMatchObject({code:'INDEPENDENT_EVIDENCE_UNAVAILABLE'});
+    expect(f.writes).toHaveLength(0);
+  });
+
+  test('exhausted D1 budget forbids proxy credentials and review mutation',async()=>{
+    const f=fixture({budgetAllowed:false});
+    await expect(f.boundary.review(f.args))
+      .rejects.toMatchObject({code:'INDEPENDENT_EVIDENCE_UNAVAILABLE'});
+    expect(f.resolveToken).not.toHaveBeenCalled();
+    expect(f.providerFetcher).not.toHaveBeenCalled();
     expect(f.writes).toHaveLength(0);
   });
 
