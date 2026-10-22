@@ -60,10 +60,16 @@ test('production workflow neither deletes/restores nor creates DNS records',()=>
   assert.doesNotMatch(yaml,/curl[^\n]+-X (?:DELETE|POST|PUT|PATCH)[^\n]+dns_records/);
   assert.doesNotMatch(yaml,/rollback_needed|legacy_record|restore_payload/);
   const pre=yaml.indexOf('P0 precondition — verify established Worker Custom Domain');
+  const preDns=yaml.indexOf('P0 precondition — verify no legacy DNS origin before Wrangler mutation');
   const deploy=yaml.indexOf('Deploy Worker assets to the existing, approved domain');
   const post=yaml.indexOf('P0 postcondition — verify existing domain mapping unchanged');
-  assert.ok(pre>0&&deploy>pre&&post>deploy,
-    'the read-only binding check must surround the only Cloudflare deploy step');
+  const postDns=yaml.indexOf('Verify Vercel DNS retirement');
+  assert.ok(pre>0&&preDns>pre&&deploy>preDns&&post>deploy&&postDns>post,
+    'read-only Worker mapping and legacy DNS proofs MUST precede Wrangler mutation');
+  assert.equal((yaml.match(/dns_records\?name=blog\.cyberdudebivash\.in&per_page=100/g)||[]).length,2);
+  const dnsPrerequisite=yaml.slice(preDns,deploy);
+  assert.match(dnsPrerequisite,/vercel_refs/);
+  assert.match(dnsPrerequisite,/test "\$vercel_refs" -eq 0/);
   assert.equal((yaml.match(/node scripts\/verify-existing-cloudflare-domain\.cjs/g)||[]).length,2);
   assert.equal((yaml.match(/npx wrangler deploy --config wrangler\.jsonc/g)||[]).length,1);
   assert.match(yaml,/node scripts\/soc-live-release-parity\.cjs/);
