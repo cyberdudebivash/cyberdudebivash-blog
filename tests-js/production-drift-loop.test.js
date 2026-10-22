@@ -30,11 +30,16 @@ test('route-marker certification still executes after real deployment', () => {
   assert.match(deploy, /::error::Customer route \$route failed marker/);
 });
 
-test('actual build-marker gate occurs before credentials and DNS/Worker mutation', () => {
+test('build and authorization gates must precede read-only domain validation and Worker deploy', () => {
   const build = deploy.indexOf('name: "Build allowlisted production assets"');
   const preflight = deploy.indexOf('name: "Predeploy customer route certification parity — rendered build"');
   const credentials = deploy.indexOf('name: "Require deployment credentials"');
-  const production = deploy.indexOf('name: "Retire Vercel DNS and deploy Cloudflare Custom Domain atomically"');
-  assert.ok(build > 0 && preflight > build && credentials > preflight && production > credentials);
+  const domain = deploy.indexOf('name: "P0 precondition — verify established Worker Custom Domain without DNS writes"');
+  const production = deploy.indexOf('name: "Deploy Worker assets to the existing, approved domain"');
+  const post = deploy.indexOf('name: "P0 postcondition — verify existing domain mapping unchanged"');
+  const live = deploy.indexOf('name: "Certify live Hybrid SOC + CTI production surfaces"');
+  assert.ok(build > 0 && preflight > build && credentials > preflight &&
+    domain > credentials && production > domain && post > production && live > post);
   assert.match(deploy, /node scripts\/preflight-customer-route-markers\.cjs dist-public/);
+  assert.doesNotMatch(deploy, /curl[^\n]+-X (?:DELETE|POST)[^\n]+dns_records/);
 });
