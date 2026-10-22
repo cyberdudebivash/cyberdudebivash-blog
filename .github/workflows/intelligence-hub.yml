@@ -77,24 +77,10 @@ jobs:
             echo "📝 Intelligence hub changes detected — will commit"
           fi
 
-      - name: "📦 Commit and push intelligence hub"
+      - name: "📦 Commit and publish hub — bounded fast-forward regeneration"
         if: steps.check_changes.outputs.changed == 'true'
-        run: |
-          git config user.name "CYBERDUDEBIVASH"
-          git config user.email "bivash@cyberdudebivash.com"
-          git add vendor/ timeline/ collections/ detections/live-feed.html threat/index.html api/intel/vendors.json api/intel/vendor/ api/intel/timeline.json api/intel/collections.json api/intel/detections-library.json sitemap.xml
-          git commit -m "🛰 [SENTINEL APEX] Auto-generate intelligence hub — $(date -u '+%Y-%m-%d %H:%M UTC') [skip ci]"
-          for i in 1 2 3; do
-            git push origin main && echo "✅ Push succeeded (attempt $i)" && break
-            if [ $i -lt 3 ]; then
-              echo "⚠️ Push attempt $i failed — rebasing..."
-              git pull --rebase origin main || { echo "⚠️ Rebase conflict — aborting cleanly, will retry"; git rebase --abort 2>/dev/null || true; }
-              sleep $((i * 3))
-            else
-              echo "::error title=Intelligence Hub Push Failed::Failed to push intelligence hub after 3 attempts"
-              exit 1
-            fi
-          done
+        timeout-minutes: 5
+        run: bash scripts/publish-intelligence-hub.sh
 
       - name: "📋 Run summary"
         if: always()
