@@ -27,11 +27,12 @@ These are conservative October 2026 Workers Paid Standard / D1 / KV / R2 Standar
 | R2 Standard storage | 10 GB-month | 8 GB-month | Storage charged |
 | R2 Class A | 1,000,000 | 800,000 | Higher-cost mutating requests |
 | R2 Class B | 10,000,000 | 8,000,000 | Reads charged |
+| Queues standard operations (all queues, writes/reads/deletes/retries) | 1,000,000 | 800,000 | All jobs across AI Security Hub and other Workers, charged after allowance |
 | Workers Logs written | 20,000,000 events | 16,000,000 | Logs are billed beyond allocation before Dec 2026 |
 
 **Important:** R2 Infrequent Access has no corresponding free Standard-storage allowance. No R2 Infrequent Access, paid Workers AI, paid Vectorize, Queues, paid Workflows, Logpush, Browser Run, Containers, Images/Stream, extra observability or other metered add-ons may be assumed safe solely because they are absent from the table. Any such services require a **separate verified cost model** before deployment. On **December 1, 2026**, Workers Logs/Traces move to new Cloudflare Observability pricing; the current release gate deliberately blocks billing cycles crossing that date until it is reviewed and updated.
 
-Official sources: https://developers.cloudflare.com/workers/platform/pricing/ ; https://developers.cloudflare.com/d1/platform/pricing/ ; https://developers.cloudflare.com/kv/platform/pricing/ ; https://developers.cloudflare.com/r2/pricing/ ; https://developers.cloudflare.com/workers/observability/logs/workers-logs/ .
+Official sources: https://developers.cloudflare.com/workers/platform/pricing/ ; https://developers.cloudflare.com/d1/platform/pricing/ ; https://developers.cloudflare.com/kv/platform/pricing/ ; https://developers.cloudflare.com/r2/pricing/ ; https://developers.cloudflare.com/queues/platform/pricing/ ; https://developers.cloudflare.com/workers/observability/logs/workers-logs/ .
 
 ## Predeployment account-wide evidence
 
@@ -45,6 +46,19 @@ Official sources: https://developers.cloudflare.com/workers/platform/pricing/ ; 
 8. For any missing metric, unexpected paid product, unapproved add-on, impending overage, unknown billing cycle, or absent budget approval: **HOLD** and reduce workload before considering another release.
 
 **This is not a billing hard cap or a guarantee of future zero charges.** Cloudflare Paid can accumulate usage charges after a passing preflight if traffic surges, if other platforms change, or if a metered service is missed. Use Cloudflare Billing alerts and ongoing account-level monitoring; reduce high-cost operations, use static caching where feasible, and avoid increasing cron/polling frequencies. Run account-wide usage checks through the month and before every authorized deployment.
+
+## Cross-platform source inventory (NOT a live Cloudflare account usage report)
+
+Read-only GitHub configuration inspection dated 2026-10-22 identified the following workloads whose runtime usage **must be included in the one account-wide evidence package**:
+
+| Platform | Confirmed source-level Cloudflare resource configuration | FinOps implication |
+|---|---|---|
+| SENTINEL APEX SOC `cyberdudebivash-blog` | Worker, every-30-minute Cron, D1 `sentinel-apex-core`, R2 `sentinel-apex-premium-reports`, service binding | Account-wide Worker CPU, D1 read scans, R2 operations, and sampled logs |
+| SENTINEL APEX AI Security Hub `cyberdudebivash-security-hub` | Worker, D1, KV, R2, **Queues** `scan-jobs` producer/consumer and a service binding | Count Queues at **operations**, not messages; each successful message commonly uses write/read/delete operations; retries add reads |
+| SENTINEL APEX Threat Intel (example `sentinel-revenue-engine`) | Multiple Worker configs, KV, D1, multiple Cron triggers, additional Workers elsewhere in repo | Shared requests/CPU/KV/D1 plus all Cron events across the account |
+| NILACHALA `nilachala-edge` | Worker with observability enabled; optional **SQLite Durable Object visitor ledger** in distinct visitor configuration | All page/visitor Workers Logs count toward shared allowance; if visitor DO is actually provisioned, explicitly cost-model DO requests, duration and storage before signing attestation |
+
+**These are source bindings, not confirmation they are deployed or associated with the identical billing account.** The authorized owner must reconcile all active Cloudflare resources (including hidden/preproduction Workers, alternate zones, retired deployments, and add-ons) against actual billing dashboards. **The AI Security Hub's Queues are an identified billable service and therefore included in the budget model.** A live Durable Object, Workers AI inference fallback, paid AI Gateway Unified Billing, Vectorize or other unmodeled product blocks release until a separate explicitly reviewed allowance/pricing model exists. Do not mark `unmodeledBillableServicesPresent=false` without verifying them.
 
 ## SOC Worker additional guardrails
 
