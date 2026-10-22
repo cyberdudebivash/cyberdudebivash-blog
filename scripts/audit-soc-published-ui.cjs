@@ -27,10 +27,9 @@ function audit(root){
         [html.includes('href="/soc.html"'),'SOC overview link missing'],
         [html.includes('href="/enterprise-onboarding.html"'),'SOC enterprise CTA missing'],
         [!/<title>[^<]*(?:Research Blog|Intel Factory|Cybersecurity Blog|Intelligence Blog)[^<]*<\/title>/i.test(html),'Legacy product title'],
-        [!/<(?:nav|header|footer)\b[^>]*>[^]*?\bResearch Blog\s*\/\s*Intel Factory\b/i.test(
-          // Narrow: archived evidence and raw scripts may mention old product.
-          html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'')
-        ),'Legacy SOC platform identity'],
+        [!(html.match(/<(?:nav|header|footer)\b[^>]*>[\s\S]*?<\/(?:nav|header|footer)>/gi)||[])
+          .some(fragment=>/\bResearch Blog\s*\/\s*Intel Factory\b/i.test(fragment)),
+          'Legacy SOC platform identity'],
       ];
       const bad=checks.filter(x=>!x[0]).map(x=>x[1]);
       if(bad.length)failures.push({path:rel,reasons:bad});
