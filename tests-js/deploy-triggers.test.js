@@ -73,3 +73,30 @@ test('docs-only changes stay out of the deploy trigger (no deployment storms)', 
   assert.ok(!paths.some(p => p === '**' || p === '**/*' || /^docs\//.test(p) || /\*\.md$/.test(p)));
   assert.ok(requiredInputs().every(f => !f.startsWith('docs/')));
 });
+
+const { classify } = require('../scripts/production-drift-policy.js');
+const { readFileSync } = require('node:fs');
+const { join } = require('node:path');
+
+test('drift gate skips only explicitly approved non-production changes', () => {
+  assert.strictEqual(classify(['docs/release.md', 'tests-js/check.test.js', 'README.md']).decision, 'skip');
+  assert.strictEqual(classify(['.github/workflows/test.yml', 'scripts/soc-native-d1-local-certify.cjs']).decision, 'skip');
+});
+test('drift gate identifies production source and mixed source changes', () => {
+  for (const file of ['workers/entry.js', 'api/v1/billing.js', 'index.html', 'posts/new.html', 'wrangler.jsonc', 'package-lock.json', '.github/workflows/cloudflare-production-deploy.yml', 'scripts/production-drift-policy.js']) {
+    assert.strictEqual(classify([file]).decision, 'deploy', file);
+  }
+  assert.strictEqual(classify(['docs/audit.md', 'workers/entry.js']).decision, 'deploy');
+});
+test('drift gate blocks unknown paths even when production files also changed', () => {
+  for (const changed of [[], ['unexpected-source.txt'], ['docs/audit.md', 'unknown.js'], ['workers/entry.js', 'unknown.js'], ['../unexpected']]) {
+    assert.strictEqual(classify(changed).decision, 'blocked', changed.join(','));
+  }
+});
+test('drift workflow must validate ancestry and complete diff before conditional dispatch', () => {
+  const yaml = readFileSync(join(__dirname, '..', '.github/workflows/production-drift-reconcile.yml'), 'utf8');
+  for (const marker of ['fetch-depth: 0', 'merge-base --is-ancestor', 'git diff --no-renames --name-only -z', 'scripts/production-drift-policy.js', 'drift=blocked', "steps.drift.outputs.drift == 'true'"]) {
+    assert.ok(yaml.includes(marker), marker);
+  }
+  assert.ok(yaml.indexOf('scripts/production-drift-policy.js') < yaml.indexOf('Dispatch Cloudflare production deployment'));
+});
