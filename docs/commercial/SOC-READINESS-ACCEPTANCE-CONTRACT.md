@@ -37,6 +37,7 @@ node scripts/soc-readiness-delivery-gate.cjs --stage=accepted C:\Private\engagem
 - **delivery:** preflight plus nonempty evidence references, full deliverable manifest and human QA.
 - **accepted:** delivery plus genuine customer acceptance receipt that follows QA. The acceptance stage cannot be inferred from payment or email sent.
 - Reject unknown referenced evidence, duplicate IDs, missing hashes, expired authorization, cross-tenant evidence, false confidence, unapproved validated detections and placeholder fields.
+- **Chronology:** each evidence collection timestamp must be inside its signed authorization window; QA approval must follow all recorded evidence collections and the authorization signature. Customer acceptance must follow QA. Timestamp order is a metadata check and cannot substitute for verifying actual signed receipts.
 - The CLI reports **only error codes and aggregate counts**. Never include raw customer data in output.
 - A PASS proves schema/metadata completeness only, not a SOC 2 certification, that the evidence is genuine, that the service was delivered, or that the customer accepted the specific engagement; receipts must still be independently checked.
 
