@@ -58,6 +58,8 @@ function parseLimitArg(argv) {
 }
 
 async function main() {
+  // Parse and reject unsafe arguments before loading any D1 client.
+  const limit = parseLimitArg(process.argv.slice(2));
   const { isConfigured } = require('../api/_lib/d1');
   if (!isConfigured()) {
     console.error('[NOTIFY-DELIVER] CLOUDFLARE_ACCOUNT_ID / CLOUDFLARE_D1_DATABASE_ID / CLOUDFLARE_API_TOKEN must be set.');
@@ -67,8 +69,6 @@ async function main() {
 
   const { processDueDeliveries } = require('../api/_lib/notification-dispatch');
   const { getOldestPendingAgeSeconds } = require('../api/_lib/notification-store');
-  const limit = parseLimitArg(process.argv.slice(2));
-
   const startedAt = Date.now();
   const results = await processDueDeliveries(limit ? { limit } : {});
   // A failed D1 backlog-age query must never masquerade as an empty
