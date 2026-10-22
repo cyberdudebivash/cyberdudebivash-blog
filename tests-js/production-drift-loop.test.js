@@ -35,11 +35,14 @@ test('build and authorization gates must precede read-only domain validation and
   const preflight = deploy.indexOf('name: "Predeploy customer route certification parity — rendered build"');
   const credentials = deploy.indexOf('name: "Require deployment credentials"');
   const domain = deploy.indexOf('name: "P0 precondition — verify established Worker Custom Domain without DNS writes"');
+  const legacyDns = deploy.indexOf('name: "P0 precondition — verify no legacy DNS origin before Wrangler mutation"');
   const production = deploy.indexOf('name: "Deploy Worker assets to the existing, approved domain"');
   const post = deploy.indexOf('name: "P0 postcondition — verify existing domain mapping unchanged"');
+  const legacyDnsPost = deploy.indexOf('name: "Verify Vercel DNS retirement"');
   const live = deploy.indexOf('name: "Certify live Hybrid SOC + CTI production surfaces"');
   assert.ok(build > 0 && preflight > build && credentials > preflight &&
-    domain > credentials && production > domain && post > production && live > post);
+    domain > credentials && legacyDns > domain && production > legacyDns &&
+    post > production && legacyDnsPost > post && live > legacyDnsPost);
   assert.match(deploy, /node scripts\/preflight-customer-route-markers\.cjs dist-public/);
   assert.doesNotMatch(deploy, /curl[^\n]+-X (?:DELETE|POST)[^\n]+dns_records/);
 });
