@@ -61,6 +61,10 @@ test('negative: signed approval required before preflight',()=>blocks('AUTHORIZA
 test('negative: expired approval blocks all stages',()=>blocks('AUTHORIZATION_NOT_APPROVED',m=>m.authorization.expiresAt='2026-10-21T23:00:00Z','preflight'));
 test('negative: scope must be explicit and authorized',()=>blocks('SCOPE_INVALID',m=>m.scope.inScopeAssets=[],'preflight'));
 test('negative: cross-tenant evidence must not contribute to any report',()=>blocks('EVIDENCE_METADATA_INVALID',m=>m.evidence[0].tenantReference='synthetic-tenant-b'));
+test('negative: evidence collected before signed scope must not be certified',()=>blocks('EVIDENCE_OUTSIDE_AUTHORIZATION_WINDOW',m=>m.evidence[0].collectedAt='2026-10-19T23:59:59Z'));
+test('negative: evidence collected after scope expiry must not be certified',()=>blocks('EVIDENCE_OUTSIDE_AUTHORIZATION_WINDOW',m=>{m.authorization.expiresAt='2026-10-20T23:00:00Z';}));
+test('negative: QA approval before evidence collection fails delivery',()=>blocks('QA_CHRONOLOGY_INVALID',m=>m.qa.approvedAt='2026-10-20T00:01:00Z'));
+test('negative: QA approval before authorization is invalid',()=>blocks('QA_CHRONOLOGY_INVALID',m=>m.qa.approvedAt='2026-10-19T23:59:59Z'));
 test('negative: every evidence artifact must carry source hash',()=>blocks('EVIDENCE_METADATA_INVALID',m=>m.evidence[0].sha256='missing'));
 test('negative: raw customer evidence cannot be embedded in manifest',()=>blocks('EVIDENCE_METADATA_INVALID',m=>m.evidence[0].rawContent='untrusted raw provider event'));
 test('negative: duplicate evidence IDs rejected',()=>blocks('EVIDENCE_ID_INVALID_OR_DUPLICATE',m=>m.evidence.push({...m.evidence[0]})));
