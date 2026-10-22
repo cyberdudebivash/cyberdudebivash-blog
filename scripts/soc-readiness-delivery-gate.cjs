@@ -36,6 +36,9 @@ function validate(input,stage='delivery',now=new Date().toISOString()){
       if(!object(entry)||!/^E-[A-Za-z0-9_-]{2,64}$/.test(entry.id||'')||refs.has(entry.id)) {errors.push('EVIDENCE_ID_INVALID_OR_DUPLICATE');continue;}
       refs.add(entry.id);
       mark('EVIDENCE_METADATA_INVALID',str(entry.sourceType)&&privateRef(entry.privateReference)&&SHA256.test(entry.sha256||'') && time(entry.collectedAt) && Date.parse(entry.collectedAt)<=Date.parse(now) && entry.tenantReference===scope.tenantReference && entry.rawContent===undefined);
+      mark('EVIDENCE_OUTSIDE_AUTHORIZATION_WINDOW',time(entry.collectedAt) && time(auth.signedAt) && time(auth.expiresAt) &&
+        Date.parse(entry.collectedAt)>=Date.parse(auth.signedAt) &&
+        Date.parse(entry.collectedAt)<Date.parse(auth.expiresAt));
     }
   }
   const findings=input.findings||[];
@@ -58,6 +61,11 @@ function validate(input,stage='delivery',now=new Date().toISOString()){
     mark('DELIVERABLES_INCOMPLETE',object(out)&&str(out.scopeDocumentRef)&&str(out.coverageMatrixRef)&&str(out.executiveReportRef)&&str(out.remediationBacklogRef)&&str(out.handoffReceiptRef));
     const qa=input.qa||{};
     mark('QA_NOT_APPROVED',object(qa)&&qa.status==='APPROVED'&&str(qa.reviewerRole)&&str(qa.approvalReference)&&time(qa.approvedAt) && Date.parse(qa.approvedAt)<=Date.parse(now));
+    mark('QA_CHRONOLOGY_INVALID',time(qa.approvedAt) && time(auth.signedAt) &&
+      Date.parse(qa.approvedAt)>=Date.parse(auth.signedAt) &&
+      arr(evidence) && evidence.length>0 &&
+      evidence.every(e=>object(e)&&time(e.collectedAt) &&
+        Date.parse(qa.approvedAt)>=Date.parse(e.collectedAt)));
   }
   const acceptance=input.customerAcceptance||{};
   if(stage==='accepted'){
