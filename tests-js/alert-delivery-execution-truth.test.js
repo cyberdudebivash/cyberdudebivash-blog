@@ -60,6 +60,26 @@ test('workflow never reports successful completion when customer operations were
   assert.match(yaml, /persist-credentials:\s*false/);
 });
 
+test('last-step attestation rejects a skipped evaluator or delivery processor', () => {
+  const yaml = fs.readFileSync(path.resolve(__dirname, '../.github/workflows/alert-delivery.yml'), 'utf8');
+  const evaluator = yaml.indexOf('id: evaluation');
+  const delivery = yaml.indexOf('id: delivery');
+  const attestation = yaml.indexOf('P0 record evaluated and processed delivery steps');
+  assert.ok(evaluator >= 0 && delivery > evaluator && attestation > delivery);
+  assert.match(yaml, /if:\s*\$\{\{ always\(\) \}\}/);
+  assert.match(yaml, /EVALUATION_OUTCOME:\s*\$\{\{ steps\.evaluation\.outcome \}\}/);
+  assert.match(yaml, /DELIVERY_OUTCOME:\s*\$\{\{ steps\.delivery\.outcome \}\}/);
+  assert.match(yaml, /"\$EVALUATION_OUTCOME" != "success"/);
+  assert.match(yaml, /"\$DELIVERY_OUTCOME" != "success"/);
+  assert.match(yaml, /P0 Alert Execution Incomplete/);
+  assert.match(yaml, /exit 1/);
+  assert.match(yaml, /NOT proof any customer received an alert/);
+  // Negative control: dropping the outcome check is forbidden even if the
+  // preflight still runs and ordinary CI jobs pass.
+  const unsafe = yaml.replace(/"\$DELIVERY_OUTCOME" != "success"/, '"ignored" == "ignored"');
+  assert.equal(/"\$DELIVERY_OUTCOME" != "success"/.test(unsafe), false);
+});
+
 test('negative control: removal of the gate fails the acceptance contract', () => {
   const yaml = fs.readFileSync(path.resolve(__dirname, '../.github/workflows/alert-delivery.yml'), 'utf8');
   const validate = s => s.includes('run: node scripts/alert-delivery-execution-gate.cjs') &&
