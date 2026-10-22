@@ -203,7 +203,7 @@ describe('handleScheduled — default-deny shared-account cron budget boundary',
     const result=await handleScheduled({cron:'*/30 * * * *'},
       {DB:db,CDB_SOC_CRON_ENABLED:'true'},{},deps);
     assert.equal(result.status,'bounded_execution');
-    assert.deepEqual(calls,[['bind',db],['evaluate',{batchLimit:10}],['deliver',{limit:10}]]);
+    assert.deepEqual(calls,[['bind',db],['evaluate',{batchLimit:10,boundedScan:true}],['deliver',{limit:10}]]);
     assert.deepEqual(result.evaluation,{evaluated:3});
     assert.deepEqual(result.delivery,{delivered:2});
   });
