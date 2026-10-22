@@ -17,7 +17,6 @@ on:
 
 permissions:
   contents: read
-  actions: write
 
 concurrency:
   group: production-drift-reconciler
@@ -25,82 +24,17 @@ concurrency:
 
 jobs:
   reconcile:
-    name: "Reconcile main with Cloudflare production"
+    name: "Read-only drift assessment — operator-approved releases only"
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     steps:
-      - name: "Compare main with latest fully certified production deploy"
-        id: drift
-        shell: bash
+      - name: "Read source-of-truth release policy"
+        uses: actions/checkout@v5
+        with:
+          ref: main
+          persist-credentials: false
+      - name: "Compare fully certified deploy with main (no mutation)"
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          api="https://api.github.com/repos/$GITHUB_REPOSITORY"
-          auth=(-H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28")
-
-          main_json="$(curl -fsS "${auth[@]}" "$api/commits/main")"
-          main_sha="$(jq -r '.sha // empty' <<<"$main_json")"
-          test -n "$main_sha" || { echo "::error::Unable to resolve main SHA"; exit 1; }
-
-          runs_json="$(curl -fsS "${auth[@]}" "$api/actions/workflows/cloudflare-production-deploy.yml/runs?branch=main&per_page=20")"
-          deployed_sha="$(jq -r '[.workflow_runs[] | select(.status=="completed" and .conclusion=="success")][0].head_sha // empty' <<<"$runs_json")"
-
-          echo "main_sha=$main_sha" >> "$GITHUB_OUTPUT"
-          echo "deployed_sha=$deployed_sha" >> "$GITHUB_OUTPUT"
-
-          if [ "$main_sha" = "$deployed_sha" ]; then
-            echo "drift=false" >> "$GITHUB_OUTPUT"
-            echo "Production already matches main: $main_sha"
-            exit 0
-          fi
-
-          existing="$(jq -r --arg sha "$main_sha" '[.workflow_runs[] | select(.head_sha==$sha and (.status=="queued" or .status=="in_progress"))] | length' <<<"$runs_json")"
-          if [ "$existing" -gt 0 ]; then
-            echo "drift=false" >> "$GITHUB_OUTPUT"
-            echo "A production deployment for current main is already queued/running: $main_sha"
-            exit 0
-          fi
-
-          # Do not auto-dispatch after a completed failed deploy/certification.
-          # The production deploy may have uploaded and activated the Worker
-          # before a post-deploy assertion failed. Automatically retrying it
-          # for every high-frequency publisher commit wastes Actions/Cloudflare
-          # capacity and can mutate DNS repeatedly without resolving the
-          # underlying customer contract. Require one operator-reviewed
-          # workflow_dispatch to re-establish a successful certified baseline.
-          last_completed="$(jq -r '[.workflow_runs[] | select(.status=="completed")][0].conclusion // empty' <<<"$runs_json")"
-          last_run_url="$(jq -r '[.workflow_runs[] | select(.status=="completed")][0].html_url // empty' <<<"$runs_json")"
-          if [ -n "$last_completed" ] && [ "$last_completed" != "success" ]; then
-            echo "drift=blocked" >> "$GITHUB_OUTPUT"
-            echo "blocked_run=$last_run_url" >> "$GITHUB_OUTPUT"
-            echo "::warning::Production deployment certification failed ($last_completed). Automatic redeploy paused to prevent a failure loop. Investigate $last_run_url; require manually reviewed recovery and an independently successful certification."
-            exit 0
-          fi
-
-          echo "drift=true" >> "$GITHUB_OUTPUT"
-          echo "::notice::Production drift detected. main=$main_sha certified=${deployed_sha:-none}"
-
-      - name: "Dispatch Cloudflare production deployment"
-        if: steps.drift.outputs.drift == 'true'
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-          MAIN_SHA: ${{ steps.drift.outputs.main_sha }}
-        run: |
-          set -euo pipefail
-          api="https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/cloudflare-production-deploy.yml/dispatches"
-          payload='{"ref":"main"}'
-          curl -fsS -X POST             -H "Authorization: Bearer $GH_TOKEN"             -H "Accept: application/vnd.github+json"             -H "X-GitHub-Api-Version: 2022-11-28"             -H "Content-Type: application/json"             --data "$payload"             "$api"
-          echo "Dispatched production deploy for main SHA: $MAIN_SHA"
-
-      - name: "Reconciliation summary"
-        shell: bash
-        run: |
-          echo "### Production drift reconciliation" >> "$GITHUB_STEP_SUMMARY"
-          echo "- main: \`${{ steps.drift.outputs.main_sha }}\`" >> "$GITHUB_STEP_SUMMARY"
-          echo "- latest fully certified deploy: \`${{ steps.drift.outputs.deployed_sha || 'none' }}\`" >> "$GITHUB_STEP_SUMMARY"
-          echo "- dispatch decision: \`${{ steps.drift.outputs.drift }}\` (blocked = operator review required)" >> "$GITHUB_STEP_SUMMARY"
-          echo "- last failed deploy requiring review: ${{ steps.drift.outputs.blocked_run || 'none' }}" >> "$GITHUB_STEP_SUMMARY"
+        run: node scripts/production-drift-policy.cjs

@@ -99,6 +99,8 @@ jobs:
         run: python3 -m unittest -v tests.test_soc_evidence_read_budget
       - name: Verify native D1 rehearsal cannot target remote production
         run: node --test tests-js/soc-native-d1-local-certify.test.js
+      - name: P0 — Verify Cloudflare release control is manual-only and drift comparisons fail closed
+        run: node --test tests-js/production-drift-safety.test.js
       - name: Rehearse complete migrations and quota against Wrangler local D1 only
         run: node scripts/soc-native-d1-local-certify.cjs
       - name: Validate production entrypoint syntax
