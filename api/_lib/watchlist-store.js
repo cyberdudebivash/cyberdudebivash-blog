@@ -355,6 +355,22 @@ async function getAllWatchedEntityKeys() {
   return rows.map(r => ({ entityType: r.entity_type, entityId: r.entity_id }));
 }
 
+// Central SQL contracts: queried by production and by offline native
+// SQLite cost-plan tests. A test may inspect the exact SQL used at runtime,
+// never a copy that can drift from the deployed query.
+const SOC_WATCH_WINDOW_FIRST_SQL =
+  'SELECT entity_type, entity_id FROM watchlist_entities ORDER BY entity_type, entity_id LIMIT ?';
+const SOC_WATCH_WINDOW_SEEK_SQL =
+  'SELECT entity_type, entity_id FROM watchlist_entities WHERE (entity_type, entity_id) > (?, ?) ORDER BY entity_type, entity_id LIMIT ?';
+const SOC_CRON_MEMBERSHIP_PROBE_SQL =
+  'SELECT watchlist_id FROM watchlist_entities WHERE entity_type = ? AND entity_id = ? LIMIT ?';
+const SOC_CRON_ACTIVE_WATCHERS_SQL =
+  `SELECT we.watchlist_id, w.owner_id
+     FROM watchlist_entities we
+     JOIN watchlists w ON w.id = we.watchlist_id
+     WHERE we.entity_type = ? AND we.entity_id = ? AND w.status != 'paused'
+     LIMIT ?`;
+
 // Fixed-size, index-ordered raw membership window for the optional SOC
 // scheduled path. NEVER DISTINCT/GROUP BY or COUNT(*) here: duplicate
 // memberships are handled in memory and still count against rowLimit.
@@ -370,9 +386,7 @@ async function getWatchedEntityWindow({ after = null, rowLimit = 128 } = {}) {
       !after.entityType || typeof after.entityId !== 'string' || !after.entityId)) {
     throw new TypeError('Invalid SOC watchlist keyset cursor');
   }
-  const query = after
-    ? 'SELECT entity_type, entity_id FROM watchlist_entities WHERE (entity_type, entity_id) > (?, ?) ORDER BY entity_type, entity_id LIMIT ?'
-    : 'SELECT entity_type, entity_id FROM watchlist_entities ORDER BY entity_type, entity_id LIMIT ?';
+  const query = after ? SOC_WATCH_WINDOW_SEEK_SQL : SOC_WATCH_WINDOW_FIRST_SQL;
   const params = after ? [after.entityType, after.entityId, rowLimit] : [rowLimit];
   const rows = await d1.query(query, params);
   return rows.map(r => ({ entityType: r.entity_type, entityId: r.entity_id }));
@@ -388,7 +402,7 @@ const SOC_CRON_MAX_WATCHLIST_MEMBERSHIPS = 10;
 async function getSocCronWatchersCostGuard(entityType, entityId) {
   const params = [entityType, entityId, SOC_CRON_MAX_WATCHLIST_MEMBERSHIPS + 1];
   const membership = await d1.query(
-    'SELECT watchlist_id FROM watchlist_entities WHERE entity_type = ? AND entity_id = ? LIMIT ?',
+    SOC_CRON_MEMBERSHIP_PROBE_SQL,
     params
   );
   if (membership.length > SOC_CRON_MAX_WATCHLIST_MEMBERSHIPS) {
@@ -396,11 +410,7 @@ async function getSocCronWatchersCostGuard(entityType, entityId) {
   }
   if (membership.length === 0) return { allowed: true, watchers: [] };
   const rows = await d1.query(
-    `SELECT we.watchlist_id, w.owner_id
-     FROM watchlist_entities we
-     JOIN watchlists w ON w.id = we.watchlist_id
-     WHERE we.entity_type = ? AND we.entity_id = ? AND w.status != 'paused'
-     LIMIT ?`,
+    SOC_CRON_ACTIVE_WATCHERS_SQL,
     params
   );
   if (rows.length > SOC_CRON_MAX_WATCHLIST_MEMBERSHIPS) {
@@ -493,6 +503,10 @@ module.exports = {
   getWatchersForEntity,
   getSocCronWatchersCostGuard,
   SOC_CRON_MAX_WATCHLIST_MEMBERSHIPS,
+  SOC_WATCH_WINDOW_FIRST_SQL,
+  SOC_WATCH_WINDOW_SEEK_SQL,
+  SOC_CRON_MEMBERSHIP_PROBE_SQL,
+  SOC_CRON_ACTIVE_WATCHERS_SQL,
   markEvaluated,
   appendToOwnerFeed,
   getOwnerFeedPage,
