@@ -137,15 +137,16 @@ function createSocEventReceiptService({nativeD1,resolveSecret,now=()=>Date.now()
     try {
       const result=await session.prepare(
         'INSERT INTO soc_event_receipts '+
-        '(tenant_id,event_id,connector_id,source_event_at,received_at,digest_sha256,created_at,source_signed_at,attestation_sha256,signing_key_id) '+
-        'VALUES(?,?,?,?,?,?,?,?,?,?)'
+        '(tenant_id,event_id,connector_id,source_event_at,received_at,digest_sha256,created_at,source_signed_at,attestation_sha256,signing_key_id,source_event_id) '+
+        'VALUES(?,?,?,?,?,?,?,?,?,?,?)'
       ).bind(
         envelope.tenantId,id,envelope.connectorId,envelope.eventTime,
-        receivedAt,envelope.payloadSha256,receivedAt,envelope.signedAt,attestationSha256,envelope.keyId
+        receivedAt,envelope.payloadSha256,receivedAt,envelope.signedAt,attestationSha256,envelope.keyId,envelope.sourceEventId
       ).run();
       if (!result || result.success!==true) deny('RECEIPT_REJECTED',409);
     } catch (_) {
-      // Final D1 trigger independently enforces active signing key at INSERT.
+      // Final D1 trigger independently enforces active signing key and
+      // the original signed opaque source ID at INSERT.
       // Reject replayed source IDs and trigger failures. Never silently
       // treat duplicate/rejected events as newly ingested security evidence.
       deny('RECEIPT_REJECTED',409);
