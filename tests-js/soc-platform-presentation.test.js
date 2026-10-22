@@ -98,4 +98,9 @@ test('all public HTML receives the safe SOC renderer but JSON evidence is not re
   assert.equal(renameUi('This Blog'),'SENTINEL APEX SOC');
   const manifest=JSON.parse(source('site.webmanifest'));
   assert.match(manifest.name,/SENTINEL APEX SOC/);
+  assert.match(source('llms.txt'),/^# SENTINEL APEX SOC/m);
+  assert.match(source('llms-full.txt'),/^# SENTINEL APEX SOC/m);
+  assert.match(source('robots.txt'),/^# SENTINEL APEX SOC/m);
+  assert.match(source('rss.xml'),/<title>SENTINEL APEX SOC — Hybrid Security Operations/);
+  assert.match(source('generate-rss.js'),/SENTINEL APEX SOC — Hybrid Security Operations/);
 });
