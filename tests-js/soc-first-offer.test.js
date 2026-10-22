@@ -33,14 +33,14 @@ test('sales promise fail-closed: no checkout, false acceptance, SOC 2 attestatio
   assert.match(page,/no payment is collected here/i);
   assert.match(page,/not an active 24\/7 monitoring service/i);
   assert.match(page,/No autonomous host isolation/i);
-  assert.match(page,/requires? .*writing before work begins/i);
+  assert.match(page,/in writing before work begins/i);
   assert.match(page,/mailto:contact@cyberdudebivash\.in\?subject=/);
   assert.match(page,/Do not send credentials, logs, personal data/i);
 });
 test('written acceptance, evidence inventories, signed scope and service exclusions are explicit',()=>{
   const doc=source('docs/commercial/SOC-FIRST-SELLABLE-SERVICE-2026-10-22.md');
   for(const marker of ['Signed scope and rules of engagement',
-    'Evidence inventory','Triage and detection quality matrix','Executive-ready report',
+    'coverage and evidence inventory','Triage and detection quality matrix','Executive-ready report',
     'Handoff and acceptance receipt','NO-GO for managed SOC subscriptions','NOT VERIFIED']){
     assert.ok(doc.includes(marker),'missing commercial guard: '+marker);
   }
