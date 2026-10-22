@@ -8,6 +8,11 @@ const ROOT = path.resolve(__dirname, '..');
 const CUSTOMER_SOURCE = Object.freeze([
   'index.html', 'about.html', 'terms.html', 'privacy.html', 'pricing.html', 'contact.html',
   'faq.html', 'search.html', 'api.html', 'security-disclosure.html',
+  'intel/index.html', 'malware/index.html', 'breaking/index.html',
+  'research/index.html', 'detections/index.html', 'ai-security/index.html',
+  'ai-security/services.html', 'intelligence.html',
+  'research/exploitation-velocity-index.html',
+  'research/kev-exploitation-concentration-2026.html',
   'generate-intelligence-hub.js', 'build-research.js',
   'build-evi-page.js', 'build-detections-page.js',
 ]);
@@ -74,5 +79,18 @@ test('P0 source and customer build both preserve correct seller identity', () =>
     assert.doesNotMatch(html,/"@type"\s*:\s*"Corporation"/i,label);
     assert.match(html,/CYBERDUDEBIVASH ECOSYSTEM/,label);
     assert.equal((html.match(/id="reports"/g)||[]).length,1,label+' reports landmark must be unique');
+  }
+});
+
+test('P0 AI security service structured data advertises the correct sole proprietor trading name', () => {
+  const html=read('ai-security/services.html');
+  const blocks=[...html.matchAll(/<script\s+type=["']application\/ld\+json["']>([\s\S]*?)<\/script>/gi)]
+    .map(m=>JSON.parse(m[1]));
+  assert.ok(blocks.length,'service structured metadata missing');
+  const services=blocks.filter(v=>v['@type']==='Service');
+  assert.ok(services.length,'Service JSON-LD must exist');
+  for(const service of services){
+    assert.equal(service.provider?.name,'CYBERDUDEBIVASH ECOSYSTEM');
+    assert.notEqual(service.provider?.['@type'],'Corporation');
   }
 });
