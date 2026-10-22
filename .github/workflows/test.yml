@@ -97,6 +97,8 @@ jobs:
         run: python3 -m unittest -v tests.test_soc_original_event_identity
       - name: Validate SOC atomic evidence source read quota (offline SQLite)
         run: python3 -m unittest -v tests.test_soc_evidence_read_budget
+      - name: P0 — Alert delivery must never pass without execution
+        run: node --test tests-js/alert-delivery-execution-truth.test.js
       - name: Verify native D1 rehearsal cannot target remote production
         run: node --test tests-js/soc-native-d1-local-certify.test.js
       - name: P0 — Verify Cloudflare release control is manual-only and drift comparisons fail closed
