@@ -200,7 +200,7 @@ footer a{color:var(--apex-cyan);text-decoration:none}
   </div>
 </main>
 <footer>
-  &copy; 2026 CyberDudeBivash Pvt. Ltd. · Derived from CISA KEV (public domain) under CC BY 4.0 · <a href="/about.html">About</a> · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a> · <a href="/contact.html">Contact</a>
+  &copy; 2026 CYBERDUDEBIVASH ECOSYSTEM · Derived from CISA KEV (public domain) under CC BY 4.0 · <a href="/about.html">About</a> · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a> · <a href="/contact.html">Contact</a>
 </footer>
 </body>
 </html>`;
