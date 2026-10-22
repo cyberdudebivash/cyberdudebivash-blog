@@ -142,5 +142,7 @@ jobs:
         run: npm ci --legacy-peer-deps --ignore-scripts --no-audit --no-fund
       - name: "Build exactly the Cloudflare allowlisted static assets"
         run: npm run build:cloudflare
+      - name: "Certify SOC identity across every built HTML asset"
+        run: node scripts/audit-soc-published-ui.cjs dist-public
       - name: "Hard fail on any post-branding customer route marker drift"
         run: node scripts/preflight-customer-route-markers.cjs dist-public

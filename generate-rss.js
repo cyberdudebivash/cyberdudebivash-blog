@@ -15,10 +15,10 @@ const POSTS_DIR   = path.join(__dirname, 'posts');
 const OUTPUT_FILE = path.join(__dirname, 'rss.xml');
 const MAX_ITEMS   = 50;
 const FEED_CONFIG = {
-  title:       'CyberDudeBivash SENTINEL APEX — Cyber Threat Intelligence',
+  title:       'SENTINEL APEX SOC — Hybrid Security Operations + CTI Intelligence',
   link:        BASE_URL,
   feedUrl:     `${BASE_URL}/rss.xml`,
-  description: 'Real-time cybersecurity threat intelligence: CVE analysis, zero-day exploits, ransomware tracking, APT campaigns, IOCs, YARA rules & enterprise defense strategies.',
+  description: 'SENTINEL APEX SOC source-attributed CTI: vulnerability intelligence, threat actor analysis, detection guidance, hunting research and incident readiness.',
   language:    'en-us',
   copyright:   `Copyright ${new Date().getFullYear()} CyberDudeBivash. All rights reserved.`,
   managingEditor: 'bivash@cyberdudebivash.com (CyberDudeBivash)',
