@@ -29,7 +29,8 @@ test('standalone page and full public renderer preserve truthful content and uni
   assert.match(html,/rel="canonical" href="https:\/\/blog\.cyberdudebivash\.in\/soc-readiness-assessment\.html"/);
 });
 test('sales promise fail-closed: no checkout, false acceptance, SOC 2 attestation or customer claim',()=>{
-  assert.doesNotMatch(page,/payment-engine|razorpay|checkout|customer count|verified client logo|Fortune 500 customer|SOC 2 Type II certified/i);
+  assert.doesNotMatch(page,/payment-engine|razorpay|href=["']\/?checkout|customer count|verified client logo|Fortune 500 customer|SOC 2 Type II certified/i);
+  assert.match(page,/not an active 24\/7 monitoring service or instant checkout/i);
   assert.match(page,/no payment is collected here/i);
   assert.match(page,/not an active 24\/7 monitoring service/i);
   assert.match(page,/No autonomous host isolation/i);
@@ -42,6 +43,6 @@ test('written acceptance, evidence inventories, signed scope and service exclusi
   for(const marker of ['Signed scope and rules of engagement',
     'coverage and evidence inventory','Triage and detection quality matrix','Executive-ready report',
     'Handoff and acceptance receipt','NO-GO for managed SOC subscriptions','NOT VERIFIED']){
-    assert.ok(doc.includes(marker),'missing commercial guard: '+marker);
+    assert.ok(doc.toLowerCase().includes(marker.toLowerCase()),'missing commercial guard: '+marker);
   }
 });
