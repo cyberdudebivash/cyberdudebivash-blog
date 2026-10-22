@@ -17,7 +17,7 @@ test('read-only drift reconciler blocks a failed manual deployment and cannot re
 });
 
 test('only explicit operator dispatch can enter the production deployment job', () => {
-  assert.match(deploy, /jobs:\s*\n  deploy:[\s\S]{0,350}?if: \$\{\{ github\.event_name == 'workflow_dispatch' \}\}/);
+  assert.match(deploy, /jobs:\s*\n  deploy:[\s\S]{0,350}?if: \$\{\{ github\.event_name == 'workflow_dispatch' && github\.ref == 'refs/heads/main' \}\}/);
   assert.match(deploy, /environment: production/);
   assert.match(drift, /permissions:\s*\n  contents: read\n  actions: read/);
   assert.doesNotMatch(drift, /curl[^\n]*-X POST|actions: write/);
