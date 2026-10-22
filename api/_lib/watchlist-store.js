@@ -396,11 +396,11 @@ async function getSocCronWatchersCostGuard(entityType, entityId) {
   }
   if (membership.length === 0) return { allowed: true, watchers: [] };
   const rows = await d1.query(
-    \`SELECT we.watchlist_id, w.owner_id
+    `SELECT we.watchlist_id, w.owner_id
      FROM watchlist_entities we
      JOIN watchlists w ON w.id = we.watchlist_id
      WHERE we.entity_type = ? AND we.entity_id = ? AND w.status != 'paused'
-     LIMIT ?\`,
+     LIMIT ?`,
     params
   );
   if (rows.length > SOC_CRON_MAX_WATCHLIST_MEMBERSHIPS) {
