@@ -22,6 +22,9 @@ const PLAN=Object.freeze({
   r2StandardStorageGbMonth:10,
   r2ClassA:1000000,
   r2ClassB:10000000,
+  // AI Security Hub deploy configuration includes scan-jobs producer/consumer.
+  // Cloudflare bills Queues by operations (write, read, delete, retries).
+  queuesStandardOperations:1000000,
   workersLogEvents:20000000
 });
 const STOCK=new Set(['d1StorageGbMonth','kvStorageGbMonth','r2StandardStorageGbMonth']);
