@@ -31,6 +31,21 @@ jobs:
     timeout-minutes: 10
 
     steps:
+      - name: "Checkout complete history for audited drift comparison"
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: "Set up pinned Node runtime"
+        uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: "Load locked policy dependencies"
+        run: npm ci --legacy-peer-deps --ignore-scripts --no-audit --no-fund
+
       - name: "Compare main with latest fully certified production deploy"
         id: drift
         shell: bash
@@ -80,8 +95,36 @@ jobs:
             exit 0
           fi
 
-          echo "drift=true" >> "$GITHUB_OUTPUT"
-          echo "::notice::Production drift detected. main=$main_sha certified=${deployed_sha:-none}"
+          # A missing/unknown successful baseline cannot justify auto deployment.
+          # git diff uses complete locally fetched history; --no-renames includes
+          # deleted production sources even when moved under a docs-only path.
+          if [ -z "$deployed_sha" ] || ! git cat-file -e "$deployed_sha^{commit}" 2>/dev/null \
+            || ! git merge-base --is-ancestor "$deployed_sha" "$main_sha"; then
+            echo "drift=blocked" >> "$GITHUB_OUTPUT"
+            echo "::warning::No complete, ancestral certified deployment baseline; operator review required."
+            exit 0
+          fi
+          changes="$(mktemp)"
+          trap 'rm -f "$changes"' EXIT
+          git diff --no-renames --name-only -z "$deployed_sha" "$main_sha" > "$changes"
+          set +e
+          node scripts/production-drift-policy.js "$changes"
+          decision=$?
+          set -e
+          case "$decision" in
+            0)
+              echo "drift=false" >> "$GITHUB_OUTPUT"
+              echo "::notice::Main differs from certified SHA only by explicitly excluded non-production changes."
+              ;;
+            10)
+              echo "drift=true" >> "$GITHUB_OUTPUT"
+              echo "::notice::Production-affecting source drift confirmed against deployment allowlist."
+              ;;
+            *)
+              echo "drift=blocked" >> "$GITHUB_OUTPUT"
+              echo "::warning::Drift classification failed or contains unknown paths; operator review required."
+              ;;
+          esac
 
       - name: "Dispatch Cloudflare production deployment"
         if: steps.drift.outputs.drift == 'true'
