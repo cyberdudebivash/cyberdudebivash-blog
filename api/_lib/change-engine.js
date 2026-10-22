@@ -214,29 +214,44 @@ async function evaluateEntity({ entityType, entityId, intel, graph, reportsIndex
   }
 
   const created = [];
+  let replayedEvents = 0;
   for (const event of events) {
     const result = await persistEventIfNew(event);
-    if (!result.created) continue; // replay-safe, no duplicate fan-out
+    // An event_id is idempotent, but event insertion and per-owner fanout
+    // are NOT an atomic D1 transaction. A prior run can crash after the
+    // event INSERT and before all feeds/notification jobs are written.
+    // Re-drive the unfinished event against the current watchers until
+    // the snapshot commits. Feed inserts and notification job inserts
+    // each use their own (owner,event[,channel]) idempotency keys.
+    // Use the persisted payload on replay rather than regenerating
+    // divergent timestamps or customer-facing details for the same ID.
+    const fanoutEvent = result.created ? event : await getEventById(event.event_id);
+    if (!fanoutEvent) {
+      throw new Error('SOC_EVENT_REPLAY_PAYLOAD_MISSING');
+    }
     const watchers = socCronWatchers === null
       ? await store.getWatchersForEntity(entityType, entityId)
       : socCronWatchers;
     for (const w of watchers) {
-      await store.appendToOwnerFeed(w.ownerId, event.event_id, Date.parse(event.observed_at) || Date.now());
-      // Enqueue-only (see notification-dispatch.js's module docstring) --
-      // never blocks change detection on email/webhook network I/O.
-      // Failure here must never break the feed fan-out that already
-      // succeeded above; a swallowed dispatch error just means this
-      // owner's notification isn't enqueued this cycle, not that the
-      // watchlist itself is broken.
-      await notificationDispatch.dispatchNewEvent({ ownerId: w.ownerId, watchlistId: w.watchlistId, event }).catch(() => {});
+      await store.appendToOwnerFeed(w.ownerId, fanoutEvent.event_id,
+        Date.parse(fanoutEvent.observed_at) || Date.now());
+      // Enqueue-only, never send network email/webhooks here. Do NOT
+      // swallow D1 enqueue failures: doing so would advance the snapshot,
+      // lose the pending job forever, and falsely mark alert delivery green.
+      // Throw before snapshot commit so the next run replays this event.
+      await notificationDispatch.dispatchNewEvent({
+        ownerId: w.ownerId, watchlistId: w.watchlistId, event: fanoutEvent,
+      });
     }
-    created.push(event);
+    if (result.created) created.push(event);
+    else replayedEvents++;
   }
 
   await saveSnapshot(entityType, entityId, currentState, fingerprint);
   return {
     status: created.length ? 'changed' : 'unchanged', entityType, entityId, events: created,
-    ...(socCronWatchers === null ? {} : { fanout_pairs: created.length * socCronWatchers.length }),
+    replayed_events: replayedEvents,
+    ...(socCronWatchers === null ? {} : { fanout_pairs: (created.length + replayedEvents) * socCronWatchers.length }),
   };
 }
 
