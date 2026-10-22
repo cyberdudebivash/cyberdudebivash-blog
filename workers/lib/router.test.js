@@ -207,6 +207,16 @@ describe('handleScheduled — default-deny shared-account cron budget boundary',
     assert.deepEqual(result.evaluation,{evaluated:3});
     assert.deepEqual(result.delivery,{delivered:2});
   });
+  test('cost guard rejection is visible in the aggregate scheduled status', async () => {
+    const deps={
+      changeEngine:{evaluateWatchedEntities:async()=>({fanout_blocked:1,event_budget_blocked:0})},
+      notificationDispatch:{processDueDeliveries:async()=>({delivered:0})},
+      d1:{setD1Binding:()=>{}},
+    };
+    const out=await handleScheduled({}, {DB:{},CDB_SOC_CRON_ENABLED:'true'}, {}, deps);
+    assert.equal(out.status,'partial_cost_guard');
+    assert.equal(out.evaluation.fanout_blocked,1);
+  });
   test('boolean, uppercase, and other values fail closed',async()=>{
     for(const value of [true,'TRUE','1',false,'false',null,undefined]){
       const deps={changeEngine:{evaluateWatchedEntities:async()=>{throw Error('called unexpectedly')}}};
