@@ -25,8 +25,12 @@
  *
  * Bounded and cursor-resumable (see change-engine.js's own header): a run
  * only processes up to --batch watched entities before persisting its
- * cursor and exiting, so repeated invocations sweep the full watched set
- * over time without ever scanning the full intelligence corpus.
+ * cursor and exiting. The GitHub publisher now retrieves at most 1,025 RAW
+ * watchlist membership index rows (1,024 supported + 1 overload sentinel)
+ * and fails closed on larger membership sets before cursor/event mutation.
+ * That is a pre-revenue financial safety ceiling, not a promise that all
+ * customers receive timely alerts or that account-wide D1 usage is free.
+ * A reviewed keyset publisher is required before lifting this ceiling.
  */
 'use strict';
 

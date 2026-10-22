@@ -298,7 +298,7 @@ async function evaluateWatchedEntities({ batchLimit = DEFAULT_BATCH_LIMIT, bound
   } else {
     // Keep the existing GitHub alert-delivery publisher's cursor and
     // observability semantics unchanged until separately reviewed.
-    const watched = (await store.getAllWatchedEntityKeys())
+    const watched = (await store.getBoundedLegacyWatchedEntityKeys())
       .sort((a, b) => (a.entityType + a.entityId).localeCompare(b.entityType + b.entityId));
     watchedTotal = watched.length;
     if (watched.length > 0) {

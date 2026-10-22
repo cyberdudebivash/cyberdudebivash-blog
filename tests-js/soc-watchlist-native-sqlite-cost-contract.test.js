@@ -14,7 +14,8 @@ const {
   SOC_WATCH_WINDOW_SEEK_SQL,
   SOC_CRON_MEMBERSHIP_PROBE_SQL,
   SOC_CRON_ACTIVE_WATCHERS_SQL,
-  SOC_CRON_MAX_WATCHLIST_MEMBERSHIPS
+  SOC_CRON_MAX_WATCHLIST_MEMBERSHIPS,
+  GITHUB_WATCHLIST_MAX_RAW_MEMBERSHIPS
 } = require('../api/_lib/watchlist-store');
 
 const root = path.resolve(__dirname, '..');
@@ -149,5 +150,35 @@ test('keyset cursor remains isolated from legacy numeric publisher cursor', () =
     assert.equal(db.prepare('SELECT cursor FROM watchlist_eval_state WHERE id=1').get().cursor, 13);
     assert.equal(db.prepare('SELECT entity_id FROM watchlist_eval_keyset_state WHERE id=1').get().entity_id,
       'CVE-2026-9002');
+  } finally { db.close(); }
+});
+
+
+test('legacy GitHub publisher now limits raw index rows before any cursor or event mutation', () => {
+  const db = seededDatabase();
+  try {
+    assert.equal(GITHUB_WATCHLIST_MAX_RAW_MEMBERSHIPS, 1024);
+    const sql = SOC_WATCH_WINDOW_FIRST_SQL;
+    const plan = explain(db, sql, [GITHUB_WATCHLIST_MAX_RAW_MEMBERSHIPS + 1]).join('\n');
+    assert.match(plan, /USING COVERING INDEX idx_watchlist_entities_reverse/);
+    assert.doesNotMatch(sql, /DISTINCT|COUNT\s*\(|OFFSET/i);
+    const rows = db.prepare(sql).all(GITHUB_WATCHLIST_MAX_RAW_MEMBERSHIPS + 1);
+    assert.equal(rows.length, 1025);
+    const source = read('api/_lib/change-engine.js');
+    const store = read('api/_lib/watchlist-store.js');
+    assert.match(source, /await store\.getBoundedLegacyWatchedEntityKeys\(\)/);
+    assert.doesNotMatch(source, /await store\.getAllWatchedEntityKeys\(\)/);
+    assert.match(store, /GITHUB_WATCHLIST_RAW_MEMBERSHIP_BUDGET_EXCEEDED/);
+    // The separate optional SOC Cron path must retain its keyset scan.
+    assert.match(source, /await store\.getWatchedEntityWindow\(/);
+  } finally { db.close(); }
+});
+
+test('legacy GitHub index-scan acceptance fails after removal of the covering reverse index', () => {
+  const db = seededDatabase();
+  try {
+    db.exec('DROP INDEX idx_watchlist_entities_reverse');
+    const plan = explain(db, SOC_WATCH_WINDOW_FIRST_SQL, [1025]).join('\n');
+    assert.doesNotMatch(plan, /idx_watchlist_entities_reverse/);
   } finally { db.close(); }
 });
