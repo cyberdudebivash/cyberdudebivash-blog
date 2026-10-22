@@ -23,7 +23,7 @@ function fixture({actor='analyst',exists=true,reviewed=false,verify=true,auth=tr
             detection_id:DET,event_id:'evt_'+'c'.repeat(64),
             evidence_state:state,review_version:version,
             digest_sha256:DIGEST,attestation_sha256:ATTEST,
-            connector_id:'edr',signing_key_id:'key-20261021',
+            connector_id:'edr',signing_key_id:'key-20261021',source_event_id:'edr-provider-event-001',
             source_event_at:'2026-10-21T15:59:00.000Z',
           }:null;
           throw Error('Unexpected SQL: '+sql);
@@ -84,7 +84,7 @@ describe('SOC detection human review — trusted evidence and tenant boundaries'
     const evidence=f.verifySourceEvidence.mock.calls[0][0];
     expect(evidence).toEqual(expect.objectContaining({
       tenantId:TENANT,digestSha256:DIGEST,attestationSha256:ATTEST,
-      signingKeyId:'key-20261021',
+      signingKeyId:'key-20261021',sourceEventId:'edr-provider-event-001',
     }));
     const write=f.calls.find(c=>c.sql.startsWith('UPDATE soc_detections'));
     expect(write.sql).toContain("evidence_state='SOURCE_REPORTED'");
