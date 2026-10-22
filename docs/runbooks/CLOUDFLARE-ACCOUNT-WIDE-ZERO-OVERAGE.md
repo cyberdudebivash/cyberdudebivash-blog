@@ -4,6 +4,31 @@
 **Classification:** Release-control evidence, NOT a claim that the account has spare headroom  
 **Applies:** All Workers and Pages Functions, D1, KV, R2, telemetry/logging, and other chargeable resources in the **same Cloudflare billing account**. The SOC is just one workload.
 
+## SOC scheduled-runtime fail-closed policy
+
+The SOC Worker retains its previously configured 30-minute Cron Trigger. The
+handler is **default denied**: unless the runtime variable
+`CDB_SOC_CRON_ENABLED` is exactly the string `true`, no D1 access,
+watchlist evaluation or notification delivery is performed by the scheduled
+handler. An enabled handler also requires the native `DB` binding and
+limits each invocation to at most **10 entity evaluations** and **10
+notification deliveries**, instead of prior 200/100 defaults.
+
+**Important limitation:** an existing Cloudflare cron invocation itself still
+consumes a Worker invocation, even when downstream work is disabled.
+Additionally, `getAllWatchedEntityKeys()` currently reads the full watched
+entity index before the 10-entity application batch is chosen. Therefore the
+enabled path is **not certified for large watchlists** and must remain disabled
+until the operator has established database-row scan bounds, tenant and
+quota authorization, actual account-wide D1 headroom, and an accepted
+schedule/runbook. Switching the flag on without these gates violates the
+zero-overage mandate. This setting is an operational enablement boundary,
+not a billing hard cap.
+
+Do not insert a default `true` value in `wrangler.jsonc`, do not increase
+cron frequency and do not add new Workers, D1, Queues, R2 or other chargeable
+resources to enable this feature during pre-revenue operations.
+
 ## Production financial rule
 
 **No new variable-usage charge is authorized.** Keep existing subscribed base-plan charges distinct from variable overages. The same included allowances are shared by all eligible workloads in the billing account, not replenished for each platform. Never assume "under limit" based on one Worker's dashboard, its requests, or old billing screenshots.
