@@ -4,7 +4,7 @@
 # No Cloudflare API/Worker/D1 calls, no force push, no non-FF history changes.
 set -euo pipefail
 
-if [[ "\${GITHUB_ACTIONS:-}" != "true" || -z "\${GITHUB_WORKSPACE:-}" ||
+if [[ "${GITHUB_ACTIONS:-}" != "true" || -z "${GITHUB_WORKSPACE:-}" ||
       "$(pwd -P)" != "$(cd "$GITHUB_WORKSPACE" && pwd -P)" ]]; then
   echo "::error title=Unsafe Publishing Context::Only the ephemeral GitHub Actions checkout is permitted."
   exit 1
@@ -39,7 +39,7 @@ check_outputs() {
 }
 
 stage_commit_if_changed() {
-  git add -- "\${GENERATED_PATHS[@]}"
+  git add -- "${GENERATED_PATHS[@]}"
   if git diff --cached --quiet; then
     echo "PASS: latest main already contains equivalent generated outputs; nothing to publish."
     return 1
