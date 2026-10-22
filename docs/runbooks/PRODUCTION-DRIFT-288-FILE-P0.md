@@ -10,11 +10,11 @@ GitHub compare API, last claimed successful manually approved deploy
 |---|---:|
 | Commits ahead | 123 |
 | Changed files (complete response at checkpoint) | 288 |
-| Files matching production deployment paths | 215 |
-| Known nonproduction paths | 44 |
+| Files matching production deployment paths | 228 |
+| Known nonproduction paths | 31 |
 | Unclassified paths | 29 |
 
-This GitHub comparison is **not** evidence that the last manually approved
+Classification was reverified by invoking the exact repository\n\`deployPaths()\` and \`classify()\` functions against GitHub's 288-file\ncompare response. The original draft used an inconsistent ad hoc count\nthat has been corrected here.\n\nThis GitHub comparison is **not** evidence that the last manually approved
 workflow reached its final live-site acceptance step, that its SHA is the
 actual Cloudflare Worker version, or that the build is deployable today.
 The 288-file comparison is close to GitHub's 300-file comparison ceiling:
@@ -80,7 +80,7 @@ privacy/data/retention and D1-migration review.
    paths, changes after the checkpoint, and any diff truncation.
 2. Review all unclassified source paths before any rule changes. Changing
    path taxonomy alone must NEVER authorize production deployment; the
-   215 previously detected production changes still require manual
+   228 previously detected production changes still require manual
    release, verified Cloudflare billing headroom and customer parity.
 3. Validate old and new Cloudflare Worker module/assets graphs and D1
    migration prerequisites from a frozen reviewed commit.
