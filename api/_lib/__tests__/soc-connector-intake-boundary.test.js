@@ -73,7 +73,8 @@ test('real HMAC and encrypted key produce an audited tenant-scoped source receip
   expect(insert).toContain('INSERT INTO soc_event_receipts');
   const params=h.bind.mock.calls[1];
   expect(params[0]).toBe('acme');
-  expect(params.at(-1)).toBe('key-20261021');
+  expect(params.at(-2)).toBe('key-20261021');
+  expect(params.at(-1)).toBe('source-evt-20261021-101');
   expect(JSON.stringify(receipt)).not.toContain(SECRET.toString('hex'));
 });
 
