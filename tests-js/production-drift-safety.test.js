@@ -18,7 +18,7 @@ function compare(files) {
 function state(files) { return classify(compare(files), BASE, HEAD, paths).state; }
 
 test('production workflow cannot deploy on push or schedule', () => {
-  assert.match(deploy,/\n  deploy:[\s\S]{0,350}?if: \$\{\{ github\.event_name == 'workflow_dispatch' && github\.ref == 'refs/heads/main' \}\}/);
+  assert.match(deploy,/\n  deploy:[\s\S]{0,350}?if: \$\{\{ github\.event_name == 'workflow_dispatch' && github\.ref == 'refs\/heads\/main' \}\}/);
 });
 test('reconciler has no write permission or dispatch operation', () => {
   assert.match(monitor,/permissions:\s*\n  contents: read\n  actions: read/);
