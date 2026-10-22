@@ -124,30 +124,18 @@ jobs:
         with:
           node-version: "24"
 
-      - name: "🔍 Check required secrets are configured"
-        id: preflight
+      # If any mandatory credential is absent, fail BEFORE contacting D1.
+      # A success exit code must require execution of BOTH customer operations.
+      - name: "🔍 P0 alert delivery readiness — fail closed"
         env:
           HAS_REDIS_URL: ${{ secrets.UPSTASH_REDIS_REST_URL != '' }}
           HAS_REDIS_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN != '' }}
           HAS_CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
           HAS_CF_DB: ${{ secrets.CLOUDFLARE_D1_DATABASE_ID != '' }}
           HAS_CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
-        run: |
-          if [ "$HAS_REDIS_URL" = "true" ] && [ "$HAS_REDIS_TOKEN" = "true" ]; then
-            echo "redis_ready=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "redis_ready=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::Watchlist change evaluation AND alert delivery both skipped — UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN are not configured as GitHub Actions repository secrets. Same values already used in the Cloudflare Worker environment (a different secret store) need to be added here too before this workflow can run."
-          fi
-          if [ "$HAS_CF_ACCOUNT" = "true" ] && [ "$HAS_CF_DB" = "true" ] && [ "$HAS_CF_TOKEN" = "true" ]; then
-            echo "d1_ready=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "d1_ready=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::Watchlist change evaluation AND alert delivery both skipped — CLOUDFLARE_ACCOUNT_ID / CLOUDFLARE_D1_DATABASE_ID / CLOUDFLARE_API_TOKEN are not configured as GitHub Actions repository secrets yet. Both steps now depend on D1 (watchlists/change-detection as of the Cloudflare-Only Runtime Completion v2 tranche, delivery state since PR #138)."
-          fi
+        run: node scripts/alert-delivery-execution-gate.cjs
 
       - name: "🔎 Evaluate watchlist changes"
-        if: steps.preflight.outputs.redis_ready == 'true' && steps.preflight.outputs.d1_ready == 'true'
         env:
           UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
           UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
@@ -157,7 +145,6 @@ jobs:
         run: node scripts/evaluate-watchlist-changes.js
 
       - name: "📨 Deliver due alerts"
-        if: steps.preflight.outputs.redis_ready == 'true' && steps.preflight.outputs.d1_ready == 'true'
         env:
           UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
           UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
