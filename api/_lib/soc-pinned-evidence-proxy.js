@@ -116,11 +116,12 @@ async function readLimited(response,maxBytes,signal) {
  * fetcher: native Workerd fetch; test injection supported (NO public wiring).
  */
 function createSocPinnedEvidenceProxy({
-  bindings,resolveToken,fetcher=globalThis.fetch,
+  bindings,resolveToken,admitRead,fetcher=globalThis.fetch,
   maxBytes=262144,timeoutMs=6000,
 }={}){
   if(!Array.isArray(bindings) || !bindings.length || bindings.length>32 ||
-     typeof resolveToken!=='function' || typeof fetcher!=='function' ||
+     typeof resolveToken!=='function' || typeof admitRead!=='function' ||
+     typeof fetcher!=='function' ||
      !Number.isSafeInteger(maxBytes) || maxBytes<1 || maxBytes>1048576 ||
      !Number.isSafeInteger(timeoutMs) || timeoutMs<100 || timeoutMs>30000)
     deny('SOURCE_PROXY_NOT_CONFIGURED');
@@ -154,6 +155,23 @@ function createSocPinnedEvidenceProxy({
       },timeoutMs);
     });
     const work=async()=>{
+      // Charge one authoritative D1 admission BEFORE resolving any credentials
+      // or making any outbound request. An unavailable limiter fails closed.
+      let grant;
+      try{
+        grant=await admitRead(Object.freeze({
+          tenantId:binding.tenantId,connectorId:binding.connectorId,
+          sourceEventId:scope.sourceEventId,
+        }));
+      }catch(error){
+        if(error && (error.code==='SOURCE_BUDGET_DENIED' ||
+            error.code==='SOURCE_BUDGET_SCOPE_INVALID'))
+          deny('SOURCE_READ_QUOTA_REJECTED');
+        deny('SOURCE_READ_QUOTA_UNAVAILABLE');
+      }
+      if(!grant || grant.admitted!==true)
+        deny('SOURCE_READ_QUOTA_REJECTED');
+      if(controller.signal.aborted)deny('SOURCE_FETCH_ABORTED');
       let token;
       try { token=tokenValue(await resolveToken(binding.tenantId,binding.connectorId)); }
       catch(_){deny('SOURCE_CREDENTIAL_UNAVAILABLE');}
