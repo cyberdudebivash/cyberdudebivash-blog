@@ -64,6 +64,15 @@ test('negative: cross-tenant evidence must not contribute to any report',()=>blo
 test('negative: every evidence artifact must carry source hash',()=>blocks('EVIDENCE_METADATA_INVALID',m=>m.evidence[0].sha256='missing'));
 test('negative: raw customer evidence cannot be embedded in manifest',()=>blocks('EVIDENCE_METADATA_INVALID',m=>m.evidence[0].rawContent='untrusted raw provider event'));
 test('negative: duplicate evidence IDs rejected',()=>blocks('EVIDENCE_ID_INVALID_OR_DUPLICATE',m=>m.evidence.push({...m.evidence[0]})));
+test('negative: public evidence URL cannot be used as a private reference',()=>blocks('EVIDENCE_METADATA_INVALID',m=>m.evidence[0].privateReference='https://example.test/public/incident.json'));
+test('negative: token-bearing query cannot be used as an evidence reference',()=>blocks('EVIDENCE_METADATA_INVALID',m=>m.evidence[0].privateReference='private-blob?token=unsafe'));
+test('negative: authorization expiry does not use a fixed reference date by default',()=>{
+  const m=sample();
+  m.authorization.expiresAt='2020-01-01T00:00:00Z';
+  const got=validate(m,'preflight');
+  assert.ok(got.codes.includes('AUTHORIZATION_NOT_APPROVED'));
+});
+
 test('negative: confirmed finding requires at least one approved evidence locator',()=>blocks('FINDING_EVIDENCE_INVALID',m=>m.findings[0].evidenceIds=[]));
 test('negative: unknown evidence IDs are not silently accepted',()=>blocks('FINDING_EVIDENCE_INVALID',m=>m.findings[0].evidenceIds=['E-other-unknown']));
 test('negative: duplicate finding IDs rejected',()=>blocks('FINDING_ID_INVALID_OR_DUPLICATE',m=>m.findings.push({...m.findings[0]})));
