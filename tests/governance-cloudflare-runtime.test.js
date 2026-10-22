@@ -152,15 +152,15 @@ describe('Cloudflare Runtime Dependency Guard', () => {
         'HAS_CF_DB', 'HAS_CF_TOKEN'
       ];
       for (const key of requiredFlags) {
-        expect(gate.env[key]).toMatch(/^\\$\\{\\{ secrets\\.[A-Z0-9_]+ != '' \\}\\}$/);
+        expect(gate.env[key]).toMatch(/^\$\{\{ secrets\.[A-Z0-9_]+ != '' \}\}$/);
       }
       for (const step of [gate, steps[evaluateIndex], steps[deliveryIndex]]) {
         expect(step.if).toBeUndefined();
         expect(step['continue-on-error']).not.toBe(true);
       }
       const script = read('scripts/alert-delivery-execution-gate.cjs');
-      expect(script).toMatch(/process\\.exitCode\\s*=\\s*1/);
-      expect(script).toMatch(/env\\[flag\\]\\s*!==\\s*'true'/);
+      expect(script).toMatch(/process\.exitCode\s*=\s*1/);
+      expect(script).toMatch(/env\[flag\]\s*!==\s*'true'/);
     });
   });
 
