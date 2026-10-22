@@ -14,7 +14,7 @@ MIGRATIONS=[
     (ROOT/"migrations"/f"{i:04d}_{name}.sql").read_text(encoding="utf8")
     for i,name in [
         (9,"soc_tenant_control_plane"),(10,"soc_incident_audit_invariants"),
-        (11,"soc_auth_sessions"),(12,"soc_event_receipt_integrity"),
+        (11,"soc_auth_session_authority"),(12,"soc_event_receipt_integrity"),
         (13,"soc_connector_key_lifecycle"),(14,"soc_detection_review_provenance"),
         (15,"soc_original_event_identity"),(16,"soc_evidence_read_budget"),
     ]
