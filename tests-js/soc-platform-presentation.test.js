@@ -102,7 +102,7 @@ test('all public HTML receives the safe SOC renderer but JSON evidence is not re
 
 test('P0 privacy: public SOC homepage JSON-LD omits standalone proprietor PAN', () => {
   for (const html of [source('index.html'), build(source('index.html'))]) {
-    const blocks = [...html.matchAll(/<script\\s+type="application\\/ld\\+json">([\\s\\S]*?)<\\/script>/g)]
+    const blocks = [...html.matchAll(/<script\s+type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
       .map(match => JSON.parse(match[1]));
     assert.ok(blocks.length > 0, 'expected structured metadata');
     const organizations = blocks.flatMap(block =>
