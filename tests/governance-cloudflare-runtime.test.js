@@ -137,15 +137,30 @@ describe('Cloudflare Runtime Dependency Guard', () => {
     // state). A regression here would silently re-open the "D1-independent
     // evaluate path" that existed before this tranche and no longer
     // reflects reality.
-    test('both evaluate and deliver steps require redis_ready AND d1_ready', () => {
+    test('both customer steps follow a fail-closed Redis+D1 secret presence gate and cannot silently skip', () => {
       const doc = yaml.load(read('.github/workflows/alert-delivery.yml'));
       const steps = doc.jobs['alert-delivery'].steps;
-      const gated = steps.filter(s => typeof s.if === 'string' && /steps\.preflight\.outputs/.test(s.if));
-      expect(gated.length).toBeGreaterThanOrEqual(2);
-      for (const step of gated) {
-        expect(step.if).toMatch(/redis_ready == 'true'/);
-        expect(step.if).toMatch(/d1_ready == 'true'/);
+      const gateIndex = steps.findIndex(s => s.run === 'node scripts/alert-delivery-execution-gate.cjs');
+      const evaluateIndex = steps.findIndex(s => s.run === 'node scripts/evaluate-watchlist-changes.js');
+      const deliveryIndex = steps.findIndex(s => s.run === 'node scripts/deliver-watchlist-notifications.js --limit=50');
+      expect(gateIndex).toBeGreaterThan(-1);
+      expect(evaluateIndex).toBeGreaterThan(gateIndex);
+      expect(deliveryIndex).toBeGreaterThan(evaluateIndex);
+      const gate = steps[gateIndex];
+      const requiredFlags = [
+        'HAS_REDIS_URL', 'HAS_REDIS_TOKEN', 'HAS_CF_ACCOUNT',
+        'HAS_CF_DB', 'HAS_CF_TOKEN'
+      ];
+      for (const key of requiredFlags) {
+        expect(gate.env[key]).toMatch(/^\\$\\{\\{ secrets\\.[A-Z0-9_]+ != '' \\}\\}$/);
       }
+      for (const step of [gate, steps[evaluateIndex], steps[deliveryIndex]]) {
+        expect(step.if).toBeUndefined();
+        expect(step['continue-on-error']).not.toBe(true);
+      }
+      const script = read('scripts/alert-delivery-execution-gate.cjs');
+      expect(script).toMatch(/process\\.exitCode\\s*=\\s*1/);
+      expect(script).toMatch(/env\\[flag\\]\\s*!==\\s*'true'/);
     });
   });
 
