@@ -144,6 +144,9 @@ concurrency:
 
 jobs:
   deploy:
+    # P0 #381: only an explicit operator workflow_dispatch may mutate Cloudflare.
+    # Push events can evaluate workflows, but may never run the deploy job.
+    if: ${{ github.event_name == 'workflow_dispatch' }}
     name: "Build, deploy and certify blog.cyberdudebivash.in"
     runs-on: ubuntu-latest
     timeout-minutes: 30
