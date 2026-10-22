@@ -91,3 +91,19 @@ test('negative: unknown or malformed schema/stage must fail closed',()=>{
   assert.equal(validate(null,'preflight',TODAY).ok,false);
   blocks('SCHEMA_INVALID',m=>m.schemaVersion='unknown','preflight');
 });
+
+test('controlled customer report template requires evidence, confidence and real human signoff',()=>{
+  const text=fs.readFileSync(path.join(__dirname,'../docs/commercial/templates/SOC-READINESS-CUSTOMER-REPORT.template.md'),'utf8');
+  for(const heading of ['Executive decision summary','Authorized scope and non-goals',
+    'Evidence inventory and provenance','Telemetry and detection coverage assessment',
+    'Findings and confidence','Detection engineering recommendations',
+    'Remediation and acceptance backlog','QA, customer delivery and acceptance',
+    'Retention, access removal and closure']){
+    assert.ok(text.includes(heading),'report template missing '+heading);
+  }
+  assert.match(text,/NOT A CUSTOMER ASSESSMENT/);
+  assert.match(text,/NOT VERIFIED/);
+  assert.match(text,/DRAFT — REQUIRES CUSTOMER TELEMETRY VALIDATION/);
+  assert.match(text,/Do not claim customer acceptance/);
+  assert.doesNotMatch(text,/customer\.example\.com|test-secret-token|SOC 2 Type II certified/i);
+});
