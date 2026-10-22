@@ -67,6 +67,11 @@ test('P0 homepage structured data has one authoritative non-corporate organizati
   assert.equal(organizations.length,1,'duplicate legal entity schema risks inconsistent public identity');
   assert.equal(organizations[0]['@type'],'Organization');
   assert.match(organizations[0].name,/CYBERDUDEBIVASH ECOSYSTEM/);
+  const organizationIdentifiers=organizations[0].identifier||[];
+  assert.ok(organizationIdentifiers.some(v=>v.propertyID==='BHASKAR Profile ID'),
+    'BHASKAR registration may be represented as a BHASKAR profile');
+  assert.ok(organizationIdentifiers.every(v=>v.propertyID!=='Startup India Recognition ID'),
+    'BHASKAR profile is not itself proof of DPIIT Startup Recognition');
   assert.ok(nodes.every(node=>node['@type']!=='Corporation'),
     'sole proprietorship may not be represented as incorporated');
 });
