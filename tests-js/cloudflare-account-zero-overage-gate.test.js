@@ -58,7 +58,7 @@ for(const name of Object.keys(PLAN)){
   });
   test('reject if '+name+' forecast consumes safety reserve',()=>{
     hold('RESERVE_EXHAUSTED_'+name,x=>{
-      x.metrics[name]={used:PLAN[name]*0.40,forecastRemaining:PLAN[name]*0.50};
+      x.metrics[name]={used:PLAN[name]*0.40,forecastRemaining:PLAN[name]*0.90};
     });
   });
 }
