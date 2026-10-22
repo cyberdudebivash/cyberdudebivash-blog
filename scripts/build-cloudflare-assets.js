@@ -19,7 +19,7 @@ const PUBLIC_DIRS = [
 ];
 
 const PUBLIC_ROOT_FILES = [
-  'soc-preview.html', 'soc.html',
+  'soc-preview.html', 'soc.html', 'soc-readiness-assessment.html',
   'about.html', 'api-dashboard.html', 'api.html', 'archive.html',
   'buy.html', 'contact.html', 'customer-assurance.html', 'service-status.html', 'customer-incident-response.html', 'enterprise-onboarding.html', 'cti-delivery-acceptance.html', 'enterprise.html', 'faq.html', 'index.html',
   'intelligence.html', 'leads.html', 'mitre-attack-detection.html', 'newsletter.html',
