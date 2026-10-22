@@ -131,6 +131,7 @@ jobs:
         run: node scripts/alert-delivery-execution-gate.cjs
 
       - name: "🔎 Evaluate watchlist changes"
+        id: evaluation
         env:
           UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
           UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
@@ -140,6 +141,7 @@ jobs:
         run: node scripts/evaluate-watchlist-changes.js
 
       - name: "📨 Deliver due alerts"
+        id: delivery
         env:
           UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
           UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
@@ -149,3 +151,18 @@ jobs:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         run: node scripts/deliver-watchlist-notifications.js --limit=50
 
+      # Force an explicit truthful outcome, including when a future edit
+      # accidentally skips either customer operation or makes it conditional.
+      - name: "P0 record evaluated and processed delivery steps"
+        if: ${{ always() }}
+        env:
+          EVALUATION_OUTCOME: ${{ steps.evaluation.outcome }}
+          DELIVERY_OUTCOME: ${{ steps.delivery.outcome }}
+        run: |
+          if [ "$EVALUATION_OUTCOME" != "success" ] || [ "$DELIVERY_OUTCOME" != "success" ]; then
+            echo "::error title=P0 Alert Execution Incomplete::Evaluation and delivery processing must both finish successfully; customer alerts NOT CERTIFIED."
+            echo "P0 alert processing incomplete. Evaluation outcome: $EVALUATION_OUTCOME; delivery outcome: $DELIVERY_OUTCOME." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          echo "PASS: watchlist evaluation and due-delivery processing commands completed." >> "$GITHUB_STEP_SUMMARY"
+          echo "This is NOT proof any customer received an alert; check per-channel delivery receipts independently." >> "$GITHUB_STEP_SUMMARY"
