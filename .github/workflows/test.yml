@@ -97,6 +97,10 @@ jobs:
         run: python3 -m unittest -v tests.test_soc_original_event_identity
       - name: Validate SOC atomic evidence source read quota (offline SQLite)
         run: python3 -m unittest -v tests.test_soc_evidence_read_budget
+      - name: Verify native D1 rehearsal cannot target remote production
+        run: node --test tests-js/soc-native-d1-local-certify.test.js
+      - name: Rehearse complete migrations and quota against Wrangler local D1 only
+        run: node scripts/soc-native-d1-local-certify.cjs
       - name: Validate production entrypoint syntax
         run: node --check fetch-live-intel.js
       - name: Enterprise CTI reader v14 layout and accessibility regressions
