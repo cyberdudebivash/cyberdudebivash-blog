@@ -93,10 +93,12 @@ test('drift gate blocks unknown paths even when production files also changed', 
     assert.strictEqual(classify(changed).decision, 'blocked', changed.join(','));
   }
 });
-test('drift workflow must validate ancestry and complete diff before conditional dispatch', () => {
+test('drift monitor is read-only and a push cannot execute Cloudflare deployment', () => {
   const yaml = readFileSync(join(__dirname, '..', '.github/workflows/production-drift-reconcile.yml'), 'utf8');
-  for (const marker of ['fetch-depth: 0', 'merge-base --is-ancestor', 'git diff --no-renames --name-only -z', 'scripts/production-drift-policy.js', 'drift=blocked', "steps.drift.outputs.drift == 'true'"]) {
-    assert.ok(yaml.includes(marker), marker);
-  }
-  assert.ok(yaml.indexOf('scripts/production-drift-policy.js') < yaml.indexOf('Dispatch Cloudflare production deployment'));
+  const deployment = readFileSync(join(__dirname, '..', '.github/workflows/cloudflare-production-deploy.yml'), 'utf8');
+  assert.match(yaml, /node scripts\/production-drift-policy\.cjs/);
+  assert.match(yaml, /permissions:\s*\n  contents: read/);
+  assert.doesNotMatch(yaml, /actions: write|\/dispatches|Dispatch Cloudflare production deployment/);
+  assert.match(deployment, /jobs:\s*\n  deploy:[\s\S]{0,350}?if: \$\{\{ github\.event_name == 'workflow_dispatch' \}\}/);
+  assert.match(deployment, /environment: production/);
 });
