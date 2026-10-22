@@ -45,6 +45,9 @@
 // Preserve the existing 100-job no-argument default.
 const MAX_GITHUB_DELIVERY_LIMIT = 100;
 function parseLimitArg(argv) {
+  if (argv.some(a => a !== '--limit' && !a.startsWith('--limit='))) {
+    throw new RangeError('Invalid delivery CLI argument; only --limit=N is supported');
+  }
   const matches = argv.filter(a => a === '--limit' || a.startsWith('--limit='));
   if (matches.length === 0) return undefined;
   if (matches.length !== 1 || !/^--limit=[1-9][0-9]*$/.test(matches[0])) {
