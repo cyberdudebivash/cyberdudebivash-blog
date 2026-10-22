@@ -34,7 +34,7 @@ alter Cloudflare.
 - `.github/workflows/intelligence-hub.yml`
 - `.github/workflows/workflow-security-gate.yml`
 
-### Source generators and live/customer control scripts (12)
+### Source generators and live/customer control scripts (13)
 - `build-detections-page.js`
 - `build-evi-page.js`
 - `build-research.js`
@@ -49,7 +49,7 @@ alter Cloudflare.
 - `scripts/soc-readiness-delivery-gate.cjs`
 - `scripts/verify-existing-cloudflare-domain.cjs`
 
-### Datastore, state and migration (7)
+### Datastore, state and migration (6)
 - `ai-security-intel-memory.json`
 - `ai-security-intel-state.json`
 - `data/ioc-store.json`
