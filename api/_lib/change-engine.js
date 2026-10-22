@@ -69,6 +69,9 @@ const { detectChanges } = require('./change-detector');
 const notificationDispatch = require('./notification-dispatch');
 
 const DEFAULT_BATCH_LIMIT = 200;
+// Pre-revenue SOC Cron only; these do not replace account-wide Cloudflare billing verification.
+const SOC_CRON_MAX_EVENTS_PER_ENTITY = 2;
+const SOC_CRON_MAX_FANOUT_PAIRS_PER_RUN = 40;
 
 function loadIntelLib() {
   // Lazy require: avoids a require-cycle at module-load time (intel.js
@@ -161,7 +164,7 @@ async function saveSnapshot(entityType, entityId, state, fingerprint) {
 // entity is re-found) like everything just reappeared as "new". Unchanged
 // from the Redis version -- this safety property is this function's own
 // logic, not a function of the backing store.
-async function evaluateEntity({ entityType, entityId, intel, graph, reportsIndexData }) {
+async function evaluateEntity({ entityType, entityId, intel, graph, reportsIndexData, socCronWatchers = null, socCronRemainingPairs = null }) {
   let currentState = null;
 
   if (entityType === 'cve') {
@@ -196,12 +199,27 @@ async function evaluateEntity({ entityType, entityId, intel, graph, reportsIndex
   }
 
   const { events } = detectChanges({ entityType, before: prior.state, after: currentState });
+  // Preflight before persisting the first event or advancing its snapshot:
+  // partial event/fan-out writes would not be replayable because event IDs
+  // are idempotent. Block an entire excessive change set, not a suffix.
+  if (socCronWatchers !== null) {
+    if (!Array.isArray(socCronWatchers) ||
+        !Number.isSafeInteger(socCronRemainingPairs) || socCronRemainingPairs < 0) {
+      throw new TypeError('Invalid SOC Cron fanout budget');
+    }
+    if (events.length > SOC_CRON_MAX_EVENTS_PER_ENTITY ||
+        events.length * socCronWatchers.length > socCronRemainingPairs) {
+      return { status: 'cost_blocked', entityType, entityId, events: [] };
+    }
+  }
 
   const created = [];
   for (const event of events) {
     const result = await persistEventIfNew(event);
     if (!result.created) continue; // replay-safe, no duplicate fan-out
-    const watchers = await store.getWatchersForEntity(entityType, entityId);
+    const watchers = socCronWatchers === null
+      ? await store.getWatchersForEntity(entityType, entityId)
+      : socCronWatchers;
     for (const w of watchers) {
       await store.appendToOwnerFeed(w.ownerId, event.event_id, Date.parse(event.observed_at) || Date.now());
       // Enqueue-only (see notification-dispatch.js's module docstring) --
@@ -216,7 +234,10 @@ async function evaluateEntity({ entityType, entityId, intel, graph, reportsIndex
   }
 
   await saveSnapshot(entityType, entityId, currentState, fingerprint);
-  return { status: created.length ? 'changed' : 'unchanged', entityType, entityId, events: created };
+  return {
+    status: created.length ? 'changed' : 'unchanged', entityType, entityId, events: created,
+    ...(socCronWatchers === null ? {} : { fanout_pairs: created.length * socCronWatchers.length }),
+  };
 }
 
 /* ───────────────────────── bounded batch driver ───────────────────────── */
@@ -299,21 +320,45 @@ async function evaluateWatchedEntities({ batchLimit = DEFAULT_BATCH_LIMIT, bound
     watched_entities_total: watchedTotal,
     evaluated: 0, changed: 0, baseline: 0, unchanged: 0, load_failed: 0, unsupported: 0,
     events_created: 0, watchlists_touched: 0,
+    ...(boundedScan ? { fanout_pairs: 0, fanout_blocked: 0, event_budget_blocked: 0, skipped_no_active_watchers: 0 } : {}),
   };
   if (batch.length === 0) return results;
 
   const touchedWatchlists = new Set();
 
   for (const { entityType, entityId } of batch) {
-    const outcome = await evaluateEntity({ entityType, entityId, intel, graph, reportsIndexData });
+    // The Cron uses a bounded raw-membership probe and bounded joined result.
+    // If a shared entity has >10 memberships (paused ones count), reject
+    // BEFORE any snapshot/event/feed write. Legacy GitHub publishing does
+    // not use this optional preflight.
+    let socCronWatchers = null;
+    if (boundedScan) {
+      const guard = await store.getSocCronWatchersCostGuard(entityType, entityId);
+      if (!guard.allowed) { results.fanout_blocked++; continue; }
+      socCronWatchers = guard.watchers;
+      if (socCronWatchers.length === 0) {
+        results.skipped_no_active_watchers++;
+        continue;
+      }
+    }
+    const outcome = await evaluateEntity({
+      entityType, entityId, intel, graph, reportsIndexData,
+      ...(boundedScan ? {
+        socCronWatchers,
+        socCronRemainingPairs: SOC_CRON_MAX_FANOUT_PAIRS_PER_RUN - results.fanout_pairs,
+      } : {}),
+    });
     results.evaluated++;
+    if (outcome.status === 'cost_blocked') { results.event_budget_blocked++; continue; }
+    if (boundedScan) results.fanout_pairs += outcome.fanout_pairs || 0;
     if (outcome.status === 'load_failed') { results.load_failed++; continue; }
     if (outcome.status === 'unsupported_type') { results.unsupported++; continue; }
     if (outcome.status === 'baseline_established') results.baseline++;
     else if (outcome.status === 'changed') { results.changed++; results.events_created += outcome.events.length; }
     else results.unchanged++;
 
-    const watchers = await store.getWatchersForEntity(entityType, entityId);
+    const watchers = boundedScan ? socCronWatchers
+      : await store.getWatchersForEntity(entityType, entityId);
     for (const w of watchers) touchedWatchlists.add(w.watchlistId);
   }
 
