@@ -408,13 +408,20 @@ function createFakeD1() {
       }
       return { rows };
     }
+    if (sql.startsWith('SELECT watchlist_id FROM watchlist_entities WHERE entity_type = ? AND entity_id = ? LIMIT ?')) {
+      const [entityType, entityId, limit] = p;
+      return { rows: watchlistEntities
+        .filter(e => e.entity_type === entityType && e.entity_id === entityId)
+        .slice(0, limit).map(e => ({ watchlist_id: e.watchlist_id })) };
+    }
     if (sql.includes('JOIN watchlists w ON w.id = we.watchlist_id')) {
       const [entityType, entityId] = p;
       const rows = watchlistEntities
         .filter(e => e.entity_type === entityType && e.entity_id === entityId)
         .map(e => ({ watchlist_id: e.watchlist_id, watchlist: watchlists.get(e.watchlist_id) }))
         .filter(x => x.watchlist && x.watchlist.status !== 'paused')
-        .map(x => ({ watchlist_id: x.watchlist_id, owner_id: x.watchlist.owner_id }));
+        .map(x => ({ watchlist_id: x.watchlist_id, owner_id: x.watchlist.owner_id }))
+        .slice(0, sql.includes('LIMIT ?') ? p[2] : undefined);
       return { rows };
     }
 
