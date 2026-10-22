@@ -14,7 +14,12 @@ GitHub compare API, last claimed successful manually approved deploy
 | Known nonproduction paths | 31 |
 | Unclassified paths | 29 |
 
-Classification was reverified by invoking the exact repository\n\`deployPaths()\` and \`classify()\` functions against GitHub's 288-file\ncompare response. The original draft used an inconsistent ad hoc count\nthat has been corrected here.\n\nThis GitHub comparison is **not** evidence that the last manually approved
+Classification was reverified by invoking the exact repository
+`deployPaths()` and `classify()` functions against GitHub's 288-file
+compare response. The original draft used an inconsistent ad hoc count
+that has been corrected here.
+
+This GitHub comparison is **not** evidence that the last manually approved
 workflow reached its final live-site acceptance step, that its SHA is the
 actual Cloudflare Worker version, or that the build is deployable today.
 The 288-file comparison is close to GitHub's 300-file comparison ceiling:
