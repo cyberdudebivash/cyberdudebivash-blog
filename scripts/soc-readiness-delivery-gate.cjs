@@ -10,8 +10,9 @@ const fs=require('node:fs');
 const VALID_STAGES=new Set(['preflight','delivery','accepted']);
 const PLACEHOLDER=/^(?:__REQUIRED__|TBD|PLACEHOLDER|UNKNOWN|NOT_VERIFIED)$/i;
 const SHA256=/^[a-f0-9]{64}$/i;
+const privateRef=v=>typeof v==='string' && v.length>0 && v.length<=512 && !PLACEHOLDER.test(v.trim()) && !/^(?:https?:|mailto:|javascript:|data:)/i.test(v.trim()) && !/@|\?|[&](?:token|key|sig|secret|password)=/i.test(v);
 const ISO=/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$/;
-function validate(input,stage='delivery',now='2026-10-22T00:00:00.000Z'){
+function validate(input,stage='delivery',now=new Date().toISOString()){
   const errors=[];
   const mark=(code,condition)=>{if(!condition)errors.push(code);};
   const object=v=>v!==null && typeof v==='object' && !Array.isArray(v);
@@ -34,7 +35,7 @@ function validate(input,stage='delivery',now='2026-10-22T00:00:00.000Z'){
     for(const entry of evidence){
       if(!object(entry)||!/^E-[A-Za-z0-9_-]{2,64}$/.test(entry.id||'')||refs.has(entry.id)) {errors.push('EVIDENCE_ID_INVALID_OR_DUPLICATE');continue;}
       refs.add(entry.id);
-      mark('EVIDENCE_METADATA_INVALID',str(entry.sourceType)&&str(entry.privateReference)&&SHA256.test(entry.sha256||'') && time(entry.collectedAt) && Date.parse(entry.collectedAt)<=Date.parse(now) && entry.tenantReference===scope.tenantReference && entry.rawContent===undefined);
+      mark('EVIDENCE_METADATA_INVALID',str(entry.sourceType)&&privateRef(entry.privateReference)&&SHA256.test(entry.sha256||'') && time(entry.collectedAt) && Date.parse(entry.collectedAt)<=Date.parse(now) && entry.tenantReference===scope.tenantReference && entry.rawContent===undefined);
     }
   }
   const findings=input.findings||[];
