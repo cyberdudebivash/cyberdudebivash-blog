@@ -17,6 +17,21 @@ const CONNECTOR=/^[A-Za-z0-9_.:-]{1,128}$/;
 const SOURCE=/^[A-Za-z0-9_.:-]{1,128}$/;
 const WINDOW_SECONDS=300;
 
+const ADMIT_SQL=[
+  'INSERT INTO soc_evidence_read_windows',
+  '(tenant_id,connector_id,window_start_epoch,consumed,last_admitted_epoch)',
+  'SELECT c.tenant_id,c.connector_id,?,1,?',
+  'FROM soc_connectors c',
+  'JOIN soc_tenants t ON t.tenant_id=c.tenant_id',
+  'WHERE c.tenant_id=? AND c.connector_id=?',
+  "AND c.state='APPROVED' AND t.status='ACTIVE'",
+  'ON CONFLICT(tenant_id,connector_id,window_start_epoch)',
+  'DO UPDATE SET consumed=soc_evidence_read_windows.consumed+1,',
+  'last_admitted_epoch=excluded.last_admitted_epoch',
+  'WHERE soc_evidence_read_windows.consumed < ?',
+  'RETURNING consumed',
+].join(' ');
+
 class SocEvidenceReadBudgetError extends Error {
   constructor(code) {super(code);this.name='SocEvidenceReadBudgetError';this.code=code;}
 }
@@ -47,22 +62,8 @@ function createSocEvidenceReadBudget({
     if(!session||typeof session.prepare!=='function')
       deny('SOURCE_BUDGET_UNAVAILABLE');
 
-    const sql=[
-      'INSERT INTO soc_evidence_read_windows',
-      '(tenant_id,connector_id,window_start_epoch,consumed,last_admitted_epoch)',
-      'SELECT c.tenant_id,c.connector_id,?,1,?',
-      'FROM soc_connectors c',
-      'JOIN soc_tenants t ON t.tenant_id=c.tenant_id',
-      'WHERE c.tenant_id=? AND c.connector_id=?',
-      "AND c.state='APPROVED' AND t.status='ACTIVE'",
-      'ON CONFLICT(tenant_id,connector_id,window_start_epoch)',
-      'DO UPDATE SET consumed=soc_evidence_read_windows.consumed+1,',
-      'last_admitted_epoch=excluded.last_admitted_epoch',
-      'WHERE soc_evidence_read_windows.consumed < ?',
-      'RETURNING consumed',
-    ].join(' ');
     let row;
-    try{row=await session.prepare(sql)
+    try{row=await session.prepare(ADMIT_SQL)
       .bind(start,seconds,tenantId,connectorId,limitPerWindow).first();}
     catch(_){deny('SOURCE_BUDGET_UNAVAILABLE');}
     if(!row)deny('SOURCE_BUDGET_DENIED');
@@ -77,4 +78,4 @@ function createSocEvidenceReadBudget({
 
   return Object.freeze({admitRead});
 }
-module.exports={createSocEvidenceReadBudget,SocEvidenceReadBudgetError};
+module.exports={createSocEvidenceReadBudget,SocEvidenceReadBudgetError,ADMIT_SQL};
