@@ -186,13 +186,13 @@ async function run() {
     // dump. All filenames here already passed the safe-path parser.
     ...(result.unknown?.length ? [
       '- **Unclassified path review required:**',
-      ...result.unknown.slice(0, 30).map(name => '  - \`' + name + '\`'),
+      ...result.unknown.slice(0, 30).map(name => '  - `' + name + '`'),
       ...(result.unknown.length > 30
         ? ['  - ... plus ' + (result.unknown.length - 30) + ' additional unclassified paths'] : []),
     ] : []),
     ...(result.production?.length ? [
       '- **Production changes detected (sample, never a deployment approval):**',
-      ...result.production.slice(0, 12).map(name => '  - \`' + name + '\`'),
+      ...result.production.slice(0, 12).map(name => '  - `' + name + '`'),
       ...(result.production.length > 12
         ? ['  - ... plus ' + (result.production.length - 12) + ' additional production paths'] : []),
     ] : []),
