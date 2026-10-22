@@ -1,3 +1,7 @@
+> **P0 OPERATOR OVERRIDE — 22 OCTOBER 2026.** Sections below describe the **historical** automatic deployment model as of 2026-10-01. They are **not the authorized current release policy**. The production Cloudflare deploy job now requires explicit `workflow_dispatch` from `refs/heads/main`, plus protected `production` environment approval. The drift reconciler is READ-ONLY and MUST NOT dispatch. Before ANY manual deployment (GitHub Actions OR local Windows PowerShell), run `node scripts/cloudflare-account-zero-overage-gate.cjs` using a fresh private all-platform billing attestation. If unavailable, stale, unsupported, over forecast allowance, or under 20% reserve, **HOLD**. Domain binding and legacy DNS checks must precede Wrangler. No DNS mutation is permitted in routine releases. The live first-offer route is still unverified (#398). Read `OPERATIONS.md`, `docs/runbooks/CLOUDFLARE-ACCOUNT-WIDE-ZERO-OVERAGE.md`, #404 before proceeding. Do not follow legacy automatic-deploy instructions below.
+
+---
+
 # Production Deploy Triggers
 
 ## Invariant
