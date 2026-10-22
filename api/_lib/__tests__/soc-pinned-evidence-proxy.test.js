@@ -25,18 +25,19 @@ function response(body=PAYLOAD,overrides={}){
     },
   });
 }
-function fixture({bindings=[BINDING],credential=TOKEN,fetchImpl}={}){
+function fixture({bindings=[BINDING],credential=TOKEN,fetchImpl,admission}={}){
   const resolveToken=jest.fn(async()=>credential);
+  const admitRead=jest.fn(admission|| (async()=>({admitted:true})));
   const fetcher=jest.fn(fetchImpl|| (async()=>response()));
   const {readAuthorizedEvent}=createSocPinnedEvidenceProxy({
-    bindings,resolveToken,fetcher,maxBytes:2048,timeoutMs:350,
+    bindings,resolveToken,admitRead,fetcher,maxBytes:2048,timeoutMs:350,
   });
   const signal=new AbortController().signal;
   const request=Object.freeze({
     tenantId:'acme',connectorId:'edr-main',
     sourceEventId:SOURCE,signal,
   });
-  return {readAuthorizedEvent,resolveToken,fetcher,request};
+  return {readAuthorizedEvent,resolveToken,admitRead,fetcher,request};
 }
 
 describe('SOC pinned evidence network proxy — source-only trust boundary',()=>{
@@ -114,7 +115,8 @@ describe('SOC pinned evidence network proxy — source-only trust boundary',()=>
       {...BINDING,endpoint:'https://evidence.example/'},
     ]]){
       expect(()=>createSocPinnedEvidenceProxy({
-        bindings,resolveToken:async()=>TOKEN,fetcher:async()=>response(),
+        bindings,resolveToken:async()=>TOKEN,admitRead:async()=>({admitted:true}),
+        fetcher:async()=>response(),
       })).toThrow();
     }
   });
@@ -226,5 +228,59 @@ describe('SOC pinned evidence network proxy — source-only trust boundary',()=>
     source.endpoint='https://evil.example/v1/events';
     await f.readAuthorizedEvent(f.request);
     expect(f.fetcher.mock.calls[0][0]).toMatch(/^https:\/\/evidence\.example\/v1\/events\?/);
+  });
+});
+
+
+describe('P0 durable source-read admission before credentials',()=>{
+  test('fails construction if D1-based admission hook is absent',()=>{
+    expect(()=>createSocPinnedEvidenceProxy({
+      bindings:[BINDING],resolveToken:async()=>TOKEN,fetcher:async()=>response(),
+    })).toThrow('SOURCE_PROXY_NOT_CONFIGURED');
+  });
+  test('admission runs before resolving provider token',async()=>{
+    const events=[];
+    const f=fixture({admission:async()=>{events.push('quota');return {admitted:true};}});
+    f.resolveToken.mockImplementation(async()=>{events.push('credential');return TOKEN;});
+    f.fetcher.mockImplementation(async()=>{events.push('fetch');return response();});
+    await f.readAuthorizedEvent(f.request);
+    expect(events).toEqual(['quota','credential','fetch']);
+    expect(f.admitRead).toHaveBeenCalledWith({
+      tenantId:'acme',connectorId:'edr-main',sourceEventId:SOURCE,
+    });
+    expect(Object.isFrozen(f.admitRead.mock.calls[0][0])).toBe(true);
+  });
+  test('quota exhausted fails closed with zero credential or network activity',async()=>{
+    const f=fixture({admission:async()=>{throw {code:'SOURCE_BUDGET_DENIED'};}});
+    await expect(f.readAuthorizedEvent(f.request)).rejects.toMatchObject({
+      code:'SOURCE_READ_QUOTA_REJECTED',
+    });
+    expect(f.resolveToken).not.toHaveBeenCalled();
+    expect(f.fetcher).not.toHaveBeenCalled();
+  });
+  test('primary D1 unavailable fails closed rather than using local allowance',async()=>{
+    const f=fixture({admission:async()=>{throw Error('database unavailable secret');}});
+    await expect(f.readAuthorizedEvent(f.request)).rejects.toMatchObject({
+      code:'SOURCE_READ_QUOTA_UNAVAILABLE',
+    });
+    expect(f.resolveToken).not.toHaveBeenCalled();
+    expect(f.fetcher).not.toHaveBeenCalled();
+  });
+  test('false or undefined quota grants cannot fetch',async()=>{
+    for(const admission of [
+      async()=>undefined,async()=>false,async()=>({admitted:false}),
+    ]){
+      const f=fixture({admission});
+      await expect(f.readAuthorizedEvent(f.request)).rejects.toMatchObject({
+        code:'SOURCE_READ_QUOTA_REJECTED',
+      });
+      expect(f.fetcher).not.toHaveBeenCalled();
+    }
+  });
+  test('unauthorized binding cannot consume another tenants read budget',async()=>{
+    const f=fixture();
+    await expect(f.readAuthorizedEvent({...f.request,tenantId:'contoso'}))
+      .rejects.toMatchObject({code:'SOURCE_NOT_ENROLLED'});
+    expect(f.admitRead).not.toHaveBeenCalled();
   });
 });
