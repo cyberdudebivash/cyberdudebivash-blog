@@ -273,6 +273,49 @@ describe('evaluateWatchedEntities — bounded, cursor-resumable batch (Phase 48/
 });
 
 
+describe('P0 GitHub legacy evaluation: bounded raw D1 enumeration, unchanged numeric cursor', () => {
+  test('deduplicates multiple memberships and retains existing customer evaluation semantics', async () => {
+    const id = 'CVE-2026-7001';
+    fakeCves[id] = { cvss: 7.0 };
+    await watchCve('usr_a', id);
+    await watchCve('usr_b', id);
+    const keys = await store.getBoundedLegacyWatchedEntityKeys();
+    expect(keys).toEqual([{ entityType: 'cve', entityId: id }]);
+    const result = await engine.evaluateWatchedEntities({ batchLimit: 200 });
+    expect(result.watched_entities_total).toBe(1);
+    expect(result.evaluated).toBe(1);
+    expect(result.baseline).toBe(1);
+  });
+
+  test('exact raw 1024 membership threshold is accepted and 1025 fails BEFORE any cursor/snapshot/event writes', async () => {
+    const all = global.__fakeD1ForTest._dump().watchlistEntities;
+    const id = 'CVE-2026-7002';
+    fakeCves[id] = { cvss: 6.1 };
+    for (let i = 0; i < store.GITHUB_WATCHLIST_MAX_RAW_MEMBERSHIPS; i++) {
+      all.push({ watchlist_id: 'wl_fixture_' + i, entity_type: 'cve', entity_id: id });
+    }
+    const keys = await store.getBoundedLegacyWatchedEntityKeys();
+    expect(keys).toEqual([{ entityType: 'cve', entityId: id }]);
+    all.push({ watchlist_id: 'wl_extra', entity_type: 'cve', entity_id: id });
+    await expect(store.getBoundedLegacyWatchedEntityKeys())
+      .rejects.toThrow('GITHUB_WATCHLIST_RAW_MEMBERSHIP_BUDGET_EXCEEDED');
+    await expect(engine.evaluateWatchedEntities({ batchLimit: 1 }))
+      .rejects.toThrow('GITHUB_WATCHLIST_RAW_MEMBERSHIP_BUDGET_EXCEEDED');
+    expect(await engine.loadSnapshot('cve', id)).toBeNull();
+    const state = global.__fakeD1ForTest._dump();
+    expect(state.changeEvents.size).toBe(0);
+  });
+
+  test('bounded enumeration is independent from optional SOC Cron keyset state', async () => {
+    const id = 'CVE-2026-7003';
+    fakeCves[id] = { cvss: 5.0 };
+    await watchCve('usr_a', id);
+    const first = await engine.evaluateWatchedEntities({ batchLimit: 1 });
+    const second = await engine.evaluateWatchedEntities({ batchLimit: 1 });
+    expect([first.baseline, second.unchanged]).toEqual([1, 1]);
+  });
+});
+
 describe('SOC bounded keyset watchlist sweep (migration 0017)', () => {
   test('bounded sweep deduplicates watchers, advances and wraps', async () => {
     for (let i = 1; i <= 5; i++) {
