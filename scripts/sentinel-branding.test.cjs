@@ -94,7 +94,11 @@ test('Cloudflare asset builder cannot bypass SENTINEL APEX branding', () => {
 
   assert.ok(builder.includes("require('./sentinel-branding.cjs')"), 'Cloudflare asset builder must load the branding transformer');
   assert.ok(
-    builder.includes("brandHtml(out, 'SENTINEL APEX Research Blog / Intel Factory')"),
-    'Cloudflare asset builder must apply the canonical Blog / Intel Factory identity',
+    builder.includes("brandHtml(injectSocPresentation(out), 'SENTINEL APEX SOC — Hybrid SOC + CTI')"),
+    'Cloudflare asset builder must apply the canonical SOC + CTI platform identity',
+  );
+  assert.ok(
+    builder.includes("require('./soc-platform-presentation.cjs')"),
+    'Every published HTML page must pass through the SOC UI identity and navigation renderer',
   );
 });
