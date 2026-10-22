@@ -272,6 +272,58 @@ describe('evaluateWatchedEntities — bounded, cursor-resumable batch (Phase 48/
   });
 });
 
+
+describe('SOC bounded keyset watchlist sweep (migration 0017)', () => {
+  test('bounded sweep deduplicates watchers, advances and wraps', async () => {
+    for (let i = 1; i <= 5; i++) {
+      const id = 'CVE-2026-' + String(i).padStart(4, '0');
+      fakeCves[id] = { cvss: 5.0 };
+      await watchCve('usr_a', id, 'L' + i);
+    }
+    await watchCve('usr_b', 'CVE-2026-0001', 'Duplicate watcher');
+    const first = await engine.evaluateWatchedEntities({ batchLimit: 2, boundedScan: true });
+    const second = await engine.evaluateWatchedEntities({ batchLimit: 2, boundedScan: true });
+    const third = await engine.evaluateWatchedEntities({ batchLimit: 2, boundedScan: true });
+    expect([first.evaluated, second.evaluated, third.evaluated]).toEqual([2, 2, 1]);
+    expect([first.watched_entities_total, second.watched_entities_total]).toEqual([null, null]);
+    for (let i = 1; i <= 5; i++) {
+      expect(await engine.loadSnapshot('cve', 'CVE-2026-' + String(i).padStart(4, '0'))).not.toBeNull();
+    }
+    const wrapped = await engine.evaluateWatchedEntities({ batchLimit: 2, boundedScan: true });
+    expect(wrapped.evaluated).toBe(2);
+  });
+
+  test('empty bounded database window never evaluates or writes', async () => {
+    const out = await engine.evaluateWatchedEntities({ batchLimit: 10, boundedScan: true });
+    expect(out.evaluated).toBe(0);
+    expect(out.watched_entities_total).toBe(0);
+  });
+
+  test('invalid Cron batch sizes are blocked before database access', async () => {
+    for (const batchLimit of [0, 11, 200, -1, 1.5, NaN, Infinity, '10']) {
+      await expect(engine.evaluateWatchedEntities({ batchLimit, boundedScan: true }))
+        .rejects.toThrow('batchLimit 1..10');
+    }
+  });
+
+  test('index scanner returns no more than the fixed raw SQL window', async () => {
+    const all = global.__fakeD1ForTest._dump().watchlistEntities;
+    for (let i = 1; i <= 300; i++) {
+      all.push({ watchlist_id: 'wl_test', entity_type: 'cve',
+        entity_id: 'CVE-2026-' + String(i).padStart(4, '0') });
+    }
+    expect((await store.getWatchedEntityWindow()).length).toBe(128);
+    expect((await store.getWatchedEntityWindow({
+      after: { entityType: 'cve', entityId: 'CVE-2026-0200' }, rowLimit: 20
+    })).map(e => e.entityId)).toEqual(
+      Array.from({ length: 20 }, (_, i) => 'CVE-2026-' + String(i + 201).padStart(4, '0'))
+    );
+    await expect(store.getWatchedEntityWindow({ rowLimit: 129 })).rejects.toThrow('1..128');
+    await expect(store.getWatchedEntityWindow({ after: { entityType: 'cve' } }))
+      .rejects.toThrow('Invalid SOC watchlist keyset cursor');
+  });
+});
+
 describe('schema version change (Phase 30)', () => {
   test('a stored snapshot from an older schema version is treated as if no snapshot existed -- re-baselined, zero events, never a false mass-change', async () => {
     fakeCves['CVE-2026-1212'] = { cvss: 5.0, threat_level: 'medium', cisa_kev: false, exploited: false };
