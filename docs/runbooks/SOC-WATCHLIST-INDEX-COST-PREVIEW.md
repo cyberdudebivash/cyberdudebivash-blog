@@ -43,3 +43,15 @@ The optional Cron rejects an entire entity's change set **before writing any of 
 - Run Jest `api/_lib/__tests__/change-engine.test.js`, watcher store tests and `workers/lib/router.test.js`; require passing exact-head CI.
 - Reconcile a freshly observed whole-account Cloudflare bill and forecast at <=80% of each actual included allowance, including AI Hub, Threat Intel, Academy, NILACHALA, SOC, all other Workers, Queues, Logs, D1, KV, R2 and any paid add-ons. Independently verify actual plan entitlements and live schedules.
 - **Keep `CDB_SOC_CRON_ENABLED` unset; no D1 migrations, deployments, schedule activation, DNS migration, plan changes, customer charges or paid service additions are authorized by this source PR.**
+
+## Phase III — Native SQLite query-plan regression gate
+
+The standard Build Verification job now runs:
+
+    node --test tests-js/soc-watchlist-native-sqlite-cost-contract.test.js
+
+The test executes the actual checked-in D1-compatible migrations 0002 and 0017 **locally in an in-memory native SQLite database** using the Node.js 22 built-in SQLite implementation. No Cloudflare credentials, endpoints, D1 allocations or billable operations are used.
+
+Production and tests share exported, literal query constants from watchlist-store.js. The acceptance suite checks the presence of the existing reverse index, indexed membership probes, keyed watcher joins, 10/11 raw-membership boundary, mostly-paused membership handling, 128-row first/seek windows, independent numeric-vs-keyset cursors and a negative control where the reverse index is dropped. A native query planner regression now fails the PR Build Verification CI stage rather than passing on mocked D1 assumptions.
+
+**Strict evidence boundary:** Native SQLite EXPLAIN QUERY PLAN and returned-row caps are *not* Cloudflare D1 billing meter observations. No code may claim a specific billable rows_read or rows_written amount based solely on this suite. Real Cloudflare D1 billing headroom and task-wide fan-out worst-case bounds remain unverified. No Cron activation or first customer service GO is authorized by these tests. GitHub CI requires independent confirmation of the exact head SHA before source merge.
