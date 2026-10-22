@@ -180,7 +180,7 @@ async function handleScheduled(controller, env, ctx, deps = {}) {
   setD1Binding(env.DB);
 
   const startedAt = Date.now();
-  const evaluation = await evaluateWatchedEntities({ batchLimit: CRON_EVALUATION_LIMIT });
+  const evaluation = await evaluateWatchedEntities({ batchLimit: CRON_EVALUATION_LIMIT, boundedScan: true });
   const delivery = await processDueDeliveries({ limit: CRON_DELIVERY_LIMIT });
   const summary = {
     trigger: 'cloudflare_cron', cron,
