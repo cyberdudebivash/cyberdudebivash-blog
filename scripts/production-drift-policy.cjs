@@ -134,6 +134,37 @@ async function apiRead(route, token, repository) {
   return response.json();
 }
 
+function renderDriftSummary(head, base, result) {
+  return [
+    '### SENTINEL APEX production drift — read-only release control',
+    '- main commit: `' + head + '`',
+    '- last successful approved deploy: `' + (base || 'unavailable') + '`',
+    '- decision: **' + result.state + '**',
+    '- reason: ' + (result.reason || 'complete commit/file comparison evaluated'),
+    '- production-affecting files: ' + (result.production?.length || 0),
+    '- known nonproduction files: ' + (result.benign?.length || 0),
+    '- unknown files: ' + (result.unknown?.length || 0),
+    '- total compared changed files: ' + (result.compared_files ?? 'not certified'),
+    // Evidence listing is deliberately bounded, not a broad GitHub API
+    // dump. All filenames here already passed the safe-path parser.
+    ...(result.unknown?.length ? [
+      '- **Unclassified path review required:**',
+      ...result.unknown.slice(0, 30).map(name => '  - `' + name + '`'),
+      ...(result.unknown.length > 30
+        ? ['  - ... plus ' + (result.unknown.length - 30) + ' additional unclassified paths'] : []),
+    ] : []),
+    ...(result.production?.length ? [
+      '- **Production changes detected (sample, never a deployment approval):**',
+      ...result.production.slice(0, 12).map(name => '  - `' + name + '`'),
+      ...(result.production.length > 12
+        ? ['  - ... plus ' + (result.production.length - 12) + ' additional production paths'] : []),
+    ] : []),
+    '- **No deployment or workflow dispatch is performed by this monitor.**',
+    '- Manual release and independent postdeploy certification required.',
+    '',
+  ].join('\n');
+}
+
 async function run() {
   const token = process.env.GH_TOKEN || '';
   const repository = process.env.GITHUB_REPOSITORY || '';
@@ -172,34 +203,7 @@ async function run() {
       result = classify(compare, base, head, paths);
     }
   }
-  const summary = [
-    '### SENTINEL APEX production drift — read-only release control',
-    '- main commit: `' + head + '`',
-    '- last successful approved deploy: `' + (base || 'unavailable') + '`',
-    '- decision: **' + result.state + '**',
-    '- reason: ' + (result.reason || 'complete commit/file comparison evaluated'),
-    '- production-affecting files: ' + (result.production?.length || 0),
-    '- known nonproduction files: ' + (result.benign?.length || 0),
-    '- unknown files: ' + (result.unknown?.length || 0),
-    '- total compared changed files: ' + (result.compared_files ?? 'not certified'),
-    // Evidence listing is deliberately bounded, not a broad GitHub API
-    // dump. All filenames here already passed the safe-path parser.
-    ...(result.unknown?.length ? [
-      '- **Unclassified path review required:**',
-      ...result.unknown.slice(0, 30).map(name => '  - `' + name + '`'),
-      ...(result.unknown.length > 30
-        ? ['  - ... plus ' + (result.unknown.length - 30) + ' additional unclassified paths'] : []),
-    ] : []),
-    ...(result.production?.length ? [
-      '- **Production changes detected (sample, never a deployment approval):**',
-      ...result.production.slice(0, 12).map(name => '  - `' + name + '`'),
-      ...(result.production.length > 12
-        ? ['  - ... plus ' + (result.production.length - 12) + ' additional production paths'] : []),
-    ] : []),
-    '- **No deployment or workflow dispatch is performed by this monitor.**',
-    '- Manual release and independent postdeploy certification required.',
-    '',
-  ].join('\n');
+  const summary = renderDriftSummary(head, base, result);
   if (process.env.GITHUB_STEP_SUMMARY) {
     fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary);
   }
@@ -213,4 +217,4 @@ if (require.main === module) {
     process.exitCode = 1;
   });
 }
-module.exports = { deployPaths, pathMatches, isKnownBenignPath, classify };
+module.exports = { deployPaths, pathMatches, isKnownBenignPath, classify, renderDriftSummary };
