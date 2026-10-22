@@ -22,6 +22,13 @@ From a clean checkout of the reviewed commit, using the locked dependencies:
 ```powershell
 npm ci --ignore-scripts --no-fund --legacy-peer-deps
 if ($LASTEXITCODE -ne 0) { throw 'Dependency installation failed' }
+# STRICT P0: Account-wide zero-overage evidence is mandatory, including
+# every Worker/Pages, D1, R2, KV, Queues and logging workload in the same account.
+# Set these two variables through private, operator-approved controls only:
+#   CLOUDFLARE_ACCOUNT_ID
+#   CDB_CF_ACCOUNT_BUDGET_ATTESTATION (fresh, owner-reviewed JSON)
+node scripts/cloudflare-account-zero-overage-gate.cjs
+if ($LASTEXITCODE -ne 0) { throw 'HOLD: Shared Cloudflare account budget and headroom unverified' }
 npm run check:cloudflare
 if ($LASTEXITCODE -ne 0) { throw 'Cloudflare security gate failed' }
 npm run test:ci
@@ -37,12 +44,28 @@ or relax evidence gates to test a hosting cleanup.
 
 ## Authenticated deployment
 
+A successful local dry-run, clean GitHub PR or static build never overrides
+the account-wide budget HOLD. Release snapshots must be no older than 2 hours,
+show zero forecast variable-usage overage, and retain a 20% safety reserve
+across account-wide Workers requests/CPU, D1, KV, R2, Queues and logs.
+Unmodeled billable services (including a possibly active visitors Durable
+Object or Workers AI fallback) require explicit verified costing before
+attesting them as zero. See
+`docs/runbooks/CLOUDFLARE-ACCOUNT-WIDE-ZERO-OVERAGE.md` and P0 #404.
+Do not paste credentials, raw usage or private approval receipts into issues.
+
 Before deploying, identify the existing Worker, its account, current version,
 production route/custom-domain configuration, D1 database identity and R2
 binding in the authenticated Cloudflare account. Record current plan limits
-and actual usage. The checked-in wrangler.jsonc intentionally has no production
-route or D1 database_id. Do not invent these values or create replacement
-resources. Use the existing validated production configuration and bindings.
+and actual usage. The checked-in wrangler.jsonc now specifies the intended
+`blog.cyberdudebivash.in` Custom Domain and D1 database name, but a
+checked-in route declaration does **not** prove that the live Cloudflare
+account already has an enabled matching Worker domain. Do not invent D1
+database IDs, create replacement storage, or use a routine content release to
+migrate DNS. Require the read-only
+`node scripts/verify-existing-cloudflare-domain.cjs` check and the separate
+legacy DNS conflict check **before** any Wrangler mutation. Preserve existing
+production bindings and record rollback identity.
 
 Set runtime secrets through the Worker secret store; keep Blogger/pipeline
 credentials in GitHub Actions secrets. Do not expose either in build output.

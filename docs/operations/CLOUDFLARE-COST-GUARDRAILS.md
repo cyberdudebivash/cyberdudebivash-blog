@@ -1,3 +1,7 @@
+> **2026-10-22 FINOPS UPDATE:** The October 1 inventory below is historical and is **not** evidence of available headroom in today's shared Cloudflare billing cycle. Multiple platforms share Workers/D1/KV/R2/Queues and log allocations. PR #402 merged a 20%-reserve offline account-wide release gate and 10% sampled SOC Worker logging. Follow-up PR #403 has merged with Queues operations and additive storage usage forecasting after exact-head CI passed. A local manual deploy must also run `node scripts/cloudflare-account-zero-overage-gate.cjs` before Cloudflare mutation. **No authenticated current-account usage, invoice or overage projection has been verified in this conversation, so account-financial GO is BLOCKED.** Full policy: `docs/runbooks/CLOUDFLARE-ACCOUNT-WIDE-ZERO-OVERAGE.md` and P0 issue #404. Source changes do not create a billing hard cap.
+
+---
+
 # Cloudflare Cost Guardrails
 
 **Principle: no overage by design.** The platform is pre-revenue. A change that adds recurring Cloudflare workload must show it fits the included allowance, or it does not ship.
