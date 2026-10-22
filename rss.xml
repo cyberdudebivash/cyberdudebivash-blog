@@ -14,7 +14,7 @@
     <copyright>Copyright 2026 CyberDudeBivash. All rights reserved.</copyright>
     <managingEditor>bivash@cyberdudebivash.com (CyberDudeBivash)</managingEditor>
     <webMaster>bivash@cyberdudebivash.com (CyberDudeBivash)</webMaster>
-    <lastBuildDate>Thu, 22 Oct 2026 12:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 22 Oct 2026 19:24:47 GMT</lastBuildDate>
     <pubDate>Thu, 22 Oct 2026 12:00:00 +0000</pubDate>
     <ttl>60</ttl>
     <category>Cybersecurity</category>
@@ -31,6 +31,135 @@
       <height>144</height>
     </image>
 
+    <item>
+    <title><![CDATA[Pillow: Bundled libopenjp2 2.5.4 in all wheels since 11.1.0 carries OSV-2025-219 heap-buffer-overflow write reachable from Image.open().load()]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/pillow-bundled-libopenjp2-2-5-4-in-all-wheels-since-11-1-0.html</link>
+    <description><![CDATA[Score 69/100 HIGH — CVSS 8.1 — ### Summary Every Pillow wheel from 11.1.0 onward bundles a libopenjp2 containing a heap-buffer-overflow **write** that is fixed upstream on master but has never appeared in an OpenJPEG release. See https://osv.dev/vulnerability/OSV-2025-219 Because the wheel bundles its own copy, a patched host OS . Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Thu, 22 Oct 2026 19:24:47 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/pillow-bundled-libopenjp2-2-5-4-in-all-wheels-since-11-1-0.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[GraphQL-core: Denial of service via quadratic complexity in the OverlappingFieldsCanBeMerged validation rule]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-75507-pip-graphql-core.html</link>
+    <description><![CDATA[Score 68/100 HIGH — CVSS 7.5 — ### Summary The `OverlappingFieldsCanBeMerged` validation rule can be driven into quadratic — and
+in the worst case `O(n²·m²)` — running time by a small, highly compressible query. A
+single 364 KB document can occupy one CPU core for over five minutes during
+*validation*, before any resolver runs. B. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Thu, 22 Oct 2026 19:24:47 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-75507-pip-graphql-core.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[GitPython validates a submodule's ".git" path only after cloning into it (RCE)]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-114145-pip-gitpython.html</link>
+    <description><![CDATA[Score 61/100 MEDIUM — CVSS 7.5 — ### Summary `create_submodule(name, path, url)` clones a submodule into the repo's own `.git`
+directory before it rejects the path. A `path` of ".git/hooks" is accepted by the
+pre-clone check, so the submodule is cloned straight into the live hooks directory,
+and a file named `post-checkout` in the . Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Thu, 22 Oct 2026 19:24:47 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-114145-pip-gitpython.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[toml-node: Uncontrolled resource consumption (CPU DoS) via unbounded-length integer literals in toml.parse()]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-114144-npm-toml.html</link>
+    <description><![CDATA[Score 61/100 MEDIUM — CVSS 7.5 — ### Summary
+`toml.parse()` converts integer literals (hex, octal, binary, and decimal) to `BigInt` without first bounding the length of the digit sequence. Since `BigInt(string)` construction from a very long numeric string runs in super-linear time, a single small, well-formed TOML document contain. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Thu, 22 Oct 2026 19:24:47 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-114144-npm-toml.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[GraphQL-core: Denial of service via comment tokens bypassing the parser's max_tokens limit]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-75508-pip-graphql-core.html</link>
+    <description><![CDATA[Score 61/100 MEDIUM — CVSS 7.5 — ### Summary The parser's `max_tokens` limit — the documented defence against oversized GraphQL
+documents — did not count comment tokens. A document padded with comments could
+therefore pass a `max_tokens` check of any size while still allocating one `Token`
+object per comment, all of which stay reac. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Thu, 22 Oct 2026 19:24:47 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-75508-pip-graphql-core.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Two CVSS 9.0 Linux KSMBD RCE Flaws Disclosed on Public Mailing Lists Before Kernel Fixes]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/two-cvss-9-0-linux-ksmbd-rce-flaws-disclosed-on-public-maili.html</link>
+    <description><![CDATA[Score 59/100 MEDIUM — CVSS 9 — Linux servers running KSMBD, the kernel's built-in SMB server, are exposed to two publicly reported remote code execution flaws rated 9.0 by Trend Micro's Zero Day Initiative, with no fix yet in the mainline kernel. One of them, ZDI-CAN-33774, can be triggered before any network authentication. The . Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Thu, 22 Oct 2026 19:24:47 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/two-cvss-9-0-linux-ksmbd-rce-flaws-disclosed-on-public-maili.html</guid>
+    <category>Threat Intelligence</category>
+    <category>ZERO_DAY</category>
+  </item>
+  <item>
+    <title><![CDATA[toml-node: Quadratic-complexity DoS via many array-of-tables headers in toml.parse()]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-114141-npm-toml.html</link>
+    <description><![CDATA[Score 45/100 MEDIUM — CVSS 0 — ## Summary `toml.parse()` is vulnerable to a quadratic-complexity (O(n²)) denial-of-service via many
+array-of-tables (`[[name]]`) headers. `addTableArray()` in `lib/compiler.js` rescans two
+entire bookkeeping Sets on every `[[name]]` header without pruning unrelated or distinct
+entries, so a documen. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Thu, 22 Oct 2026 19:24:47 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-114141-npm-toml.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[toml-node: Quadratic-complexity DoS via long dotted keys or table paths in toml.parse()]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-114143-npm-toml.html</link>
+    <description><![CDATA[Score 45/100 MEDIUM — CVSS 0 — ## Summary `toml.parse()` is vulnerable to a quadratic-complexity (O(n²)) denial-of-service via a single
+long dotted key, table header, or inline-table key. A ~100KB crafted document causes a
+multi-second synchronous hang; a ~200KB document crashes the Node.js process outright with an
+uncatchable ou. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Thu, 22 Oct 2026 19:24:47 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-114143-npm-toml.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[Arista patches new VeloCloud Orchestrator zero-day exploited in attacks]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/arista-patches-new-velocloud-orchestrator-zero-day-exploited.html</link>
+    <description><![CDATA[Score 41/100 LOW — CVSS 0 — Arista Networks released security updates to patch an actively exploited zero-day vulnerability affecting VeloCloud Orchestrator (VCO) On-Prem deployments. [...]. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Thu, 22 Oct 2026 19:24:47 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/arista-patches-new-velocloud-orchestrator-zero-day-exploited.html</guid>
+    <category>Threat Intelligence</category>
+    <category>ZERO_DAY</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-115329 - Lotus through 0.10.2 Cross-Organization IDOR via SubscriptionViewSet]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-115329.html</link>
+    <description><![CDATA[Score 36/100 LOW — CVSS 5.9 — CVE-2026-115329 - Lotus through 0.10.2 Cross-Organization IDOR via SubscriptionViewSet. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Thu, 22 Oct 2026 19:24:47 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-115329.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[CVE-2026-115333 - Lotus through 0.10.2 Improper Authentication via Event Ingestion API Key Prefix]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-115333.html</link>
+    <description><![CDATA[Score 36/100 LOW — CVSS 5.9 — CVE-2026-115333 - Lotus through 0.10.2 Improper Authentication via Event Ingestion API Key Prefix. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Thu, 22 Oct 2026 19:24:47 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-115333.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
+  <item>
+    <title><![CDATA[GraphQL Tools: Prototype pollution in mergeIncrementalResult via non-primitive path segments]]></title>
+    <link>https://blog.cyberdudebivash.in/posts/cve-2026-114604-npm-graphql-tools-utils.html</link>
+    <description><![CDATA[Score 35/100 LOW — CVSS 0 — ## Report metadata | Field | Value |
+| --- | --- |
+| Package | `@graphql-tools/utils` (npm, `pkg:github/ardatan/graphql-tools`) |
+| Repository | https://github.com/ardatan/graphql-tools |
+| Component | `mergeIncrementalResult` / `setObjectKeyPath` (`packages/utils/src/mergeIncrementalResult.ts`) |
+|. Full analysis, Sigma/YARA rules, IOCs, Attack Chain by CYBERDUDEBIVASH SENTINEL APEX v4.0.]]></description>
+    <pubDate>Thu, 22 Oct 2026 19:24:47 GMT</pubDate>
+    <guid isPermaLink="true">https://blog.cyberdudebivash.in/posts/cve-2026-114604-npm-graphql-tools-utils.html</guid>
+    <category>Threat Intelligence</category>
+    <category>CVE_REPORT</category>
+  </item>
   <item>
     <title>Authorities disrupt nearly 11,000 cybercrime networks in Africa</title>
     <link>https://blog.cyberdudebivash.in/posts/authorities-disrupt-nearly-11-000-cybercrime-networks-in-afr.html</link>
