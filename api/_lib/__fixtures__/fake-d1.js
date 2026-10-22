@@ -46,6 +46,7 @@ function createFakeD1() {
   const changeEvents = new Map(); // event_id -> row
   const ownerFeed = []; // { owner_id, event_id, observed_at_ms }
   let evalCursor = null; // null until first write, matching "no row yet"
+  let evalKeyset = null; // bounded SOC Cron keyset, migration 0017
   let nextWlAuditId = 1;
 
   // Defense Profiles (Customer Telemetry & Environment-Aware Defense
@@ -384,6 +385,20 @@ function createFakeD1() {
       lastAffected = before - watchlistEntities.length;
       return { rows: [] };
     }
+    // SOC cron raw index window; duplicates consume the LIMIT.
+    if (sql.startsWith('SELECT entity_type, entity_id FROM watchlist_entities ORDER BY entity_type, entity_id LIMIT ?') ||
+        sql.startsWith('SELECT entity_type, entity_id FROM watchlist_entities WHERE (entity_type, entity_id) > (?, ?) ORDER BY entity_type, entity_id LIMIT ?')) {
+      const seek = sql.includes(' WHERE (entity_type, entity_id) > (?, ?)');
+      const [type, id, limit] = seek ? p : [null, null, p[0]];
+      const cmp = (a, b) => a < b ? -1 : a > b ? 1 : 0;
+      const rows = watchlistEntities
+        .filter(e => !seek || cmp(e.entity_type, type) > 0 ||
+          (e.entity_type === type && cmp(e.entity_id, id) > 0))
+        .sort((a, b) => cmp(a.entity_type, b.entity_type) || cmp(a.entity_id, b.entity_id))
+        .slice(0, limit)
+        .map(e => ({ entity_type: e.entity_type, entity_id: e.entity_id }));
+      return { rows };
+    }
     if (sql.startsWith('SELECT DISTINCT entity_type, entity_id FROM watchlist_entities')) {
       const seen = new Set();
       const rows = [];
@@ -493,6 +508,14 @@ function createFakeD1() {
 
     /* ── watchlist_eval_state ────────────────────────────────────── */
 
+    if (sql.startsWith('SELECT entity_type, entity_id FROM watchlist_eval_keyset_state WHERE id = 1')) {
+      return { rows: evalKeyset ? [{ ...evalKeyset }] : [] };
+    }
+    if (sql.startsWith('INSERT INTO watchlist_eval_keyset_state (id, entity_type, entity_id)')) {
+      evalKeyset = { entity_type: p[0], entity_id: p[1] };
+      lastAffected = 1;
+      return { rows: [] };
+    }
     if (sql.startsWith('SELECT cursor FROM watchlist_eval_state WHERE id = 1')) {
       return { rows: evalCursor === null ? [] : [{ cursor: evalCursor }] };
     }
@@ -1108,7 +1131,7 @@ function createFakeD1() {
       nextLogId = 1; nextDeadLetterId = 1; nextAuditId = 1; lastAffected = 0;
       watchlists.clear(); watchlistEntities.length = 0; watchlistAuditLog.length = 0;
       entitySnapshots.clear(); changeEvents.clear(); ownerFeed.length = 0;
-      evalCursor = null; nextWlAuditId = 1;
+      evalCursor = null; evalKeyset = null; nextWlAuditId = 1;
       defenseProfiles.clear(); defenseProfileTechnologies.length = 0;
       defenseProfileTelemetry.length = 0; defenseProfileAuditLog.length = 0; nextDpAuditId = 1;
       siemConnectors.clear(); siemConnectorAuditLog.length = 0; nextConnAuditId = 1;
