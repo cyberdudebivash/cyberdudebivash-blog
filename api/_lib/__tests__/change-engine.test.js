@@ -324,6 +324,84 @@ describe('SOC bounded keyset watchlist sweep (migration 0017)', () => {
   });
 });
 
+
+describe('SOC Cron pre-revenue fanout guard (source only; default disabled)', () => {
+  test('eleven memberships for one entity block before snapshot, event or notification mutation', async () => {
+    const id = 'CVE-2026-5101';
+    fakeCves[id] = { cvss: 5.0, threat_level: 'medium' };
+    for (let i = 0; i < 11; i++) await watchCve('usr_' + i, id, 'L' + i);
+    const result = await engine.evaluateWatchedEntities({ batchLimit: 10, boundedScan: true });
+    expect(result.fanout_blocked).toBe(1);
+    expect(result.evaluated).toBe(0);
+    expect(result.fanout_pairs).toBe(0);
+    expect(await engine.loadSnapshot('cve', id)).toBeNull();
+    expect(global.__fakeD1ForTest._dump().changeEvents.size).toBe(0);
+  });
+
+  test('paused-only membership does not cause baseline writes in optional SOC Cron', async () => {
+    const id = 'CVE-2026-5102';
+    fakeCves[id] = { cvss: 5.0 };
+    const watchlistId = await watchCve('usr_paused', id, 'Paused');
+    await store.updateWatchlist(watchlistId, 'usr_paused', { status: 'paused' });
+    const result = await engine.evaluateWatchedEntities({ batchLimit: 10, boundedScan: true });
+    expect(result.skipped_no_active_watchers).toBe(1);
+    expect(result.evaluated).toBe(0);
+    expect(await engine.loadSnapshot('cve', id)).toBeNull();
+  });
+
+  test('an oversized detected change set is blocked BEFORE any event or snapshot write', async () => {
+    const id = 'CVE-2026-5103';
+    fakeCves[id] = { cvss: 5.0, threat_level: 'medium', cisa_kev: false, exploited: false };
+    await watchCve('usr_budget', id);
+    await engine.evaluateWatchedEntities({ batchLimit: 10, boundedScan: true });
+    const before = await engine.loadSnapshot('cve', id);
+    fakeCves[id] = { ...fakeCves[id], cvss: 9.8, cisa_kev: true };
+    const result = await engine.evaluateWatchedEntities({ batchLimit: 10, boundedScan: true });
+    expect(result.event_budget_blocked).toBe(1);
+    expect(result.events_created).toBe(0);
+    expect(result.fanout_pairs).toBe(0);
+    expect(global.__fakeD1ForTest._dump().changeEvents.size).toBe(0);
+    expect((await engine.loadSnapshot('cve', id)).fingerprint).toBe(before.fingerprint);
+  });
+
+  test('two legitimate events with one watcher remain deliverable within budget', async () => {
+    const id = 'CVE-2026-5104';
+    fakeCves[id] = { cvss: 5.0, threat_level: 'medium', cisa_kev: false, exploited: false };
+    await watchCve('usr_safe', id);
+    await engine.evaluateWatchedEntities({ batchLimit: 10, boundedScan: true });
+    fakeCves[id] = { ...fakeCves[id], cisa_kev: true };
+    const result = await engine.evaluateWatchedEntities({ batchLimit: 10, boundedScan: true });
+    expect(result.changed).toBe(1);
+    expect(result.events_created).toBe(2);
+    expect(result.fanout_pairs).toBe(2);
+    expect(result.event_budget_blocked).toBe(0);
+    const feed = await store.getOwnerFeedPage('usr_safe', { limit: 10 });
+    expect(feed.eventIds).toHaveLength(2);
+  });
+
+  test('run-wide 40-pair budget blocks the third entity without partially writing its changes', async () => {
+    for (let n = 1; n <= 3; n++) {
+      const id = 'CVE-2026-520' + n;
+      fakeCves[id] = { cvss: 5.0, threat_level: 'medium', cisa_kev: false, exploited: false };
+      for (let k = 1; k <= 10; k++) await watchCve('usr_' + n + '_' + k, id, 'L' + k);
+    }
+    const initial = await engine.evaluateWatchedEntities({ batchLimit: 10, boundedScan: true });
+    expect(initial.baseline).toBe(3);
+    const thirdBefore = await engine.loadSnapshot('cve', 'CVE-2026-5203');
+    for (let n = 1; n <= 3; n++) {
+      const id = 'CVE-2026-520' + n;
+      fakeCves[id] = { ...fakeCves[id], cisa_kev: true };
+    }
+    const result = await engine.evaluateWatchedEntities({ batchLimit: 10, boundedScan: true });
+    expect(result.fanout_pairs).toBe(40);
+    expect(result.changed).toBe(2);
+    expect(result.event_budget_blocked).toBe(1);
+    expect(result.events_created).toBe(4);
+    expect(global.__fakeD1ForTest._dump().changeEvents.size).toBe(4);
+    expect((await engine.loadSnapshot('cve', 'CVE-2026-5203')).fingerprint).toBe(thirdBefore.fingerprint);
+  });
+});
+
 describe('schema version change (Phase 30)', () => {
   test('a stored snapshot from an older schema version is treated as if no snapshot existed -- re-baselined, zero events, never a false mass-change', async () => {
     fakeCves['CVE-2026-1212'] = { cvss: 5.0, threat_level: 'medium', cisa_kev: false, exploited: false };
