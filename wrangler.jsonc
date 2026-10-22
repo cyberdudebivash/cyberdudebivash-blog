@@ -28,7 +28,10 @@
   ],
 
   "observability": {
-    "enabled": true
+    "enabled": true,
+    // Bounded operational telemetry: 10% head sampling reduces paid log
+    // ingestion. Do not use sampled platform logs as customer SOC evidence.
+    "head_sampling_rate": 0.1
   },
 
   // Canonical customer/control-plane D1 database. The migration directory now
