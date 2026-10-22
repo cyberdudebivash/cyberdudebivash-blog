@@ -230,36 +230,77 @@ async function evaluateEntity({ entityType, entityId, intel, graph, reportsIndex
 // cheap to simply skip and revisit next run. Unchanged logic from the
 // Redis version; only the cursor's own storage moved (a single-row D1
 // table, watchlist_eval_state, replacing the watchlist_eval:cursor key).
-async function evaluateWatchedEntities({ batchLimit = DEFAULT_BATCH_LIMIT } = {}) {
+async function evaluateWatchedEntities({ batchLimit = DEFAULT_BATCH_LIMIT, boundedScan = false } = {}) {
   const intel = loadIntelLib();
   const graph = intel.loadGraph();
   const reportsIndexData = intel.loadJSON(intel.PATHS.reportsIndex);
 
-  const watched = (await store.getAllWatchedEntityKeys())
-    .sort((a, b) => (a.entityType + a.entityId).localeCompare(b.entityType + b.entityId));
+  let batch = [];
+  let watchedTotal = null;
+  if (boundedScan) {
+    // Hard cap on raw index entries, distinct from the customer-facing
+    // batchLimit. An unbounded DISTINCT query would still bill D1 rows.
+    if (!Number.isSafeInteger(batchLimit) || batchLimit < 1 || batchLimit > 10) {
+      throw new RangeError('SOC bounded scan requires batchLimit 1..10');
+    }
+    // Deliberately independent from the legacy GitHub publisher's numeric
+    // cursor. If migration 0017 is absent, D1 throws and cron fails closed.
+    const rows = await d1.query(
+      'SELECT entity_type, entity_id FROM watchlist_eval_keyset_state WHERE id = 1', []);
+    const saved = rows[0];
+    const after = saved ? { entityType: saved.entity_type, entityId: saved.entity_id } : null;
+    let window = await store.getWatchedEntityWindow({ after, rowLimit: 128 });
+    if (window.length === 0 && after) {
+      // Cursor was at the end or its entity was removed. Wrap exactly once.
+      window = await store.getWatchedEntityWindow({ rowLimit: 128 });
+    }
+    const seen = new Set();
+    for (const entity of window) {
+      const key = JSON.stringify([entity.entityType, entity.entityId]);
+      if (seen.has(key)) continue;
+      seen.add(key);
+      batch.push(entity);
+      if (batch.length === batchLimit) break;
+    }
+    // No full-table COUNT query: unknown rather than a fabricated total.
+    // A zero window after wrapping is the only authoritative zero.
+    if (batch.length === 0) watchedTotal = 0;
+    if (batch.length > 0) {
+      const last = batch[batch.length - 1];
+      // Persist before evaluation, as with the original skip-on-error
+      // cursor, so one failing entity cannot wedge every future cycle.
+      await d1.run(
+        'INSERT INTO watchlist_eval_keyset_state (id, entity_type, entity_id) VALUES (1, ?, ?) ON CONFLICT(id) DO UPDATE SET entity_type = excluded.entity_type, entity_id = excluded.entity_id',
+        [last.entityType, last.entityId]
+      );
+    }
+  } else {
+    // Keep the existing GitHub alert-delivery publisher's cursor and
+    // observability semantics unchanged until separately reviewed.
+    const watched = (await store.getAllWatchedEntityKeys())
+      .sort((a, b) => (a.entityType + a.entityId).localeCompare(b.entityType + b.entityId));
+    watchedTotal = watched.length;
+    if (watched.length > 0) {
+      const cursorRows = await d1.query('SELECT cursor FROM watchlist_eval_state WHERE id = 1', []);
+      let cursor = cursorRows[0] ? cursorRows[0].cursor : 0;
+      if (!Number.isFinite(cursor) || cursor < 0) cursor = 0;
+      cursor = cursor % watched.length;
+      const batchSize = Math.min(batchLimit, watched.length);
+      for (let i = 0; i < batchSize; i++) batch.push(watched[(cursor + i) % watched.length]);
+      const nextCursor = (cursor + batchSize) % watched.length;
+      await d1.run(
+        'INSERT INTO watchlist_eval_state (id, cursor) VALUES (1, ?) ON CONFLICT(id) DO UPDATE SET cursor = excluded.cursor',
+        [nextCursor]
+      );
+    }
+  }
 
   const results = {
-    watched_entities_total: watched.length,
+    watched_entities_total: watchedTotal,
     evaluated: 0, changed: 0, baseline: 0, unchanged: 0, load_failed: 0, unsupported: 0,
     events_created: 0, watchlists_touched: 0,
   };
-  if (watched.length === 0) return results;
-
-  const cursorRows = await d1.query('SELECT cursor FROM watchlist_eval_state WHERE id = 1', []);
-  let cursor = cursorRows[0] ? cursorRows[0].cursor : 0;
-  if (!Number.isFinite(cursor) || cursor < 0) cursor = 0;
-  cursor = cursor % watched.length;
-
-  const batchSize = Math.min(batchLimit, watched.length);
-  const batch = [];
-  for (let i = 0; i < batchSize; i++) batch.push(watched[(cursor + i) % watched.length]);
-
-  const nextCursor = (cursor + batchSize) % watched.length;
-  await d1.run(
-    `INSERT INTO watchlist_eval_state (id, cursor) VALUES (1, ?)
-     ON CONFLICT(id) DO UPDATE SET cursor = excluded.cursor`,
-    [nextCursor]
-  );
+  if (batch.length === 0) return results;
 
   const touchedWatchlists = new Set();
 

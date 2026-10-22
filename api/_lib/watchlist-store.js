@@ -355,6 +355,29 @@ async function getAllWatchedEntityKeys() {
   return rows.map(r => ({ entityType: r.entity_type, entityId: r.entity_id }));
 }
 
+// Fixed-size, index-ordered raw membership window for the optional SOC
+// scheduled path. NEVER DISTINCT/GROUP BY or COUNT(*) here: duplicate
+// memberships are handled in memory and still count against rowLimit.
+// With the existing (entity_type, entity_id) covering index, the query
+// can seek past a key without enumerating the full account watchlist.
+// This bounds returned/scanned index entries in the window, NOT fan-out
+// work later performed for highly popular entities.
+async function getWatchedEntityWindow({ after = null, rowLimit = 128 } = {}) {
+  if (!Number.isSafeInteger(rowLimit) || rowLimit < 1 || rowLimit > 128) {
+    throw new RangeError('SOC watched-entity D1 index window must be 1..128');
+  }
+  if (after !== null && (!after || typeof after.entityType !== 'string' ||
+      !after.entityType || typeof after.entityId !== 'string' || !after.entityId)) {
+    throw new TypeError('Invalid SOC watchlist keyset cursor');
+  }
+  const query = after
+    ? 'SELECT entity_type, entity_id FROM watchlist_entities WHERE (entity_type, entity_id) > (?, ?) ORDER BY entity_type, entity_id LIMIT ?'
+    : 'SELECT entity_type, entity_id FROM watchlist_entities ORDER BY entity_type, entity_id LIMIT ?';
+  const params = after ? [after.entityType, after.entityId, rowLimit] : [rowLimit];
+  const rows = await d1.query(query, params);
+  return rows.map(r => ({ entityType: r.entity_type, entityId: r.entity_id }));
+}
+
 // Global event -> customer match. Returns only watchlists whose status is
 // not 'paused' -- pausing a watchlist stops new matches without deleting
 // membership or history. Never reveals one customer's watch to another
@@ -432,6 +455,7 @@ module.exports = {
   addEntity,
   removeEntity,
   getAllWatchedEntityKeys,
+  getWatchedEntityWindow,
   getWatchersForEntity,
   markEvaluated,
   appendToOwnerFeed,
