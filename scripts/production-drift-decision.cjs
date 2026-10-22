@@ -36,7 +36,7 @@ function sourcePatterns(raw=fs.readFileSync(WORKFLOW,'utf8')){
   if(typeof raw!=='string')throw Error('DEPLOY_WORKFLOW_UNKNOWN');
   const lines=raw.split(/\r?\n/);
   const push=lines.findIndex(x=>x==='  push:');
-  if(push<0||lines[0]!==lines[0])throw Error('DEPLOY_WORKFLOW_UNKNOWN');
+  if(push<0||lines.indexOf('on:')<0)throw Error('DEPLOY_WORKFLOW_UNKNOWN');
   const tail=lines.slice(push+1);
   const branches=tail.findIndex(x=>x==='    branches: [main]');
   const paths=tail.findIndex(x=>x==='    paths:');
@@ -105,10 +105,10 @@ function gitDecision(base,head,patterns=sourcePatterns()){
     const buf=git(['diff','--no-renames','--name-only','-z',base,head,'--']);
     if(buf.length>0 && buf[buf.length-1]!==0)
       return Object.freeze({decision:'blocked',reason:'DIFF_TRUNCATED'});
-    const files=buf.length?buf.subarray(0,-1).toString('utf8').split('\0'):[];
-    if(files.some(v=>Buffer.from(v,'utf8').includes(0xef) && v.includes('\ufffd')))
-      return Object.freeze({decision:'blocked',reason:'INVALID_DIFF_ENCODING'});
-    return classify(files,patterns);
+    let decoded;
+    try{decoded=new TextDecoder('utf-8',{fatal:true}).decode(buf.subarray(0,buf.length?buf.length-1:0));}
+    catch(_){return Object.freeze({decision:'blocked',reason:'INVALID_DIFF_ENCODING'});}
+    return classify(decoded?decoded.split('\0'):[],patterns);
   }catch(_){return Object.freeze({decision:'blocked',reason:'GIT_HISTORY_UNVERIFIED'});}
 }
 if(require.main===module){
