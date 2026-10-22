@@ -52,7 +52,7 @@ function assess(spec,result){
   if(spec.path==='/soc-readiness-assessment.html'){
     fail('ENQUIRY_LINK_MISSING',result.body.includes('mailto:contact@cyberdudebivash.in?subject='));
     fail('FALSE_CHECKOUT',!/href=["'][^"']*(?:checkout|buy\.html)/i.test(result.body));
-    fail('FALSE_SERVICE_STATUS',!/Not a managed 24\/7 service today/i.test(result.body) || result.body.includes('not an active 24/7 monitoring service'));
+    fail('SERVICE_BOUNDARY_MISSING',result.body.includes('not an active 24/7 monitoring service'));
     fail('CANONICAL_INCORRECT',result.body.includes('href="'+ORIGIN+spec.path+'"'));
   }
   return [...new Set(errors)].sort();
