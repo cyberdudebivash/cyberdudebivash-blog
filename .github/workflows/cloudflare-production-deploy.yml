@@ -230,6 +230,22 @@ jobs:
           set -euo pipefail
           node scripts/verify-existing-cloudflare-domain.cjs
 
+      - name: "P0 precondition — verify no legacy DNS origin before Wrangler mutation"
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          api="https://api.cloudflare.com/client/v4"
+          auth=(-H "Authorization: Bearer $CLOUDFLARE_API_TOKEN")
+          zone_json="$(curl -fsS "${auth[@]}" "$api/zones?name=cyberdudebivash.in&status=active")"
+          zone_id="$(jq -r 'if (.result|length)==1 then .result[0].id else empty end' <<<"$zone_json")"
+          test -n "$zone_id"
+          dns_json="$(curl -fsS "${auth[@]}" "$api/zones/$zone_id/dns_records?name=blog.cyberdudebivash.in&per_page=100")"
+          vercel_refs="$(jq '[.result[] | select((.content // "" | ascii_downcase) | contains("vercel"))] | length' <<<"$dns_json")"
+          test "$vercel_refs" -eq 0 || { echo "::error::Legacy Vercel DNS target is still present"; exit 1; }
+          echo "PASS: NO_LEGACY_VERCEL_DNS_BEFORE_WORKER_DEPLOY"
+
       - name: "Deploy Worker assets to the existing, approved domain"
         shell: bash
         env:
