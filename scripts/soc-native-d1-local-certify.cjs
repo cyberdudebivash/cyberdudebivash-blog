@@ -30,7 +30,7 @@ function safeInvocation(kind,conf,state,extra=[]){
   const verb=kind==='migrate'?['d1','migrations','apply',NAME]:
     ['d1','execute',NAME];
   const args=[...verb,'--local','--config',conf,'--persist-to',state,
-    ...(kind==='migrate'?['--yes']:['--json']),...extra];
+    ...(kind==='migrate'?[]:['--json']),...extra];
   assert.ok(args.includes('--local')&&!args.includes('--remote')&&
     !args.includes('--preview')&&!args.includes('--env'));
   return args;
@@ -55,9 +55,10 @@ function wrangler(args){
 function parseRows(out){
   let data;
   try{data=JSON.parse(out.trim());}catch(_){throw Error('Local Wrangler JSON result not parseable');}
-  if(!Array.isArray(data)||data.length!==1||data[0].success!==true||
-     !Array.isArray(data[0].results))throw Error('Invalid local Wrangler D1 JSON result');
-  return data[0].results;
+  if(!Array.isArray(data)||!data.length||
+     data.some(row=>row.success!==true||!Array.isArray(row.results)))
+    throw Error('Invalid local Wrangler D1 JSON result');
+  return data[data.length-1].results;
 }
 function execute(conf,state,sql){
   return parseRows(wrangler(safeInvocation('execute',conf,state,['--command',sql])));
