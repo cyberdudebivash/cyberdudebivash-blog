@@ -2,12 +2,12 @@
   "platform": "CYBERDUDEBIVASH SENTINEL APEX — AI Security Intelligence Division",
   "endpoint": "/api/intel/ai-security.json",
   "doctrine": "Sentinel-APEX/prompts/ai-security-master-prompt.md",
-  "generated": "2026-10-22T11:38:03.171Z",
+  "generated": "2026-10-22T17:02:56.712Z",
   "disclaimer": "Evidence-graded AI security intelligence. Confidence and evidence labels attached per item. Community leads are corroborated before publication.",
   "stats": {
     "published": 11,
     "p1": 0,
-    "leadsHeld": 6,
+    "leadsHeld": 7,
     "analystReports": 0,
     "sourcesOk": 4,
     "sourcesTotal": 6,
@@ -29,19 +29,19 @@
         "error": null
       },
       {
-        "name": "r/MachineLearning",
-        "key": "reddit_ml",
-        "tier": 3,
-        "status": "ok",
-        "items": 25,
-        "error": null
-      },
-      {
         "name": "GitHub Security Advisories",
         "key": "ghsa",
         "tier": 1,
         "status": "ok",
         "items": 60,
+        "error": null
+      },
+      {
+        "name": "r/MachineLearning",
+        "key": "reddit_ml",
+        "tier": 3,
+        "status": "ok",
+        "items": 25,
         "error": null
       },
       {
@@ -61,7 +61,7 @@
         "error": "This operation was aborted"
       }
     ],
-    "runtimeMs": 15074
+    "runtimeMs": 15366
   },
   "frameworks": {
     "owasp_llm_top10": {
@@ -90,62 +90,6 @@
   },
   "count": 11,
   "items": [
-    {
-      "id": "5bbe5643923d6d39",
-      "title": "djust: Arbitrary absolute-path file read in the find_handlers_for_template MCP tool",
-      "url": "https://github.com/advisories/GHSA-r57g-mc79-8hj2",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-10-21T17:21:15Z",
-      "cve": "CVE-2026-113731",
-      "severity": "low",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "agent_tool",
-          "label": "Agentic / Tool / MCP Exploitation"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM06",
-          "name": "Sensitive Information Disclosure / Excessive Agency"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0053",
-          "name": "LLM Plugin Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": true,
-          "mcp": true,
-          "rag": true,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "high"
-      },
-      "enterprise_impact": {
-        "score": 45,
-        "priority": "P2"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
-        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
-      },
-      "has_analyst_report": false
-    },
     {
       "id": "d7eb0a0bb6ebace8",
       "title": "Prompt Injection Through Forensic Evidence: A Taxonomy and Proof of Concept of Anti-Forensic Attacks on LLM-Assisted Digital Investigations",
@@ -435,6 +379,62 @@
       "detection": {
         "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
         "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
+      },
+      "has_analyst_report": false
+    },
+    {
+      "id": "3aedc7eadeb84fe2",
+      "title": "DOMPurify: SMIL attributeName=href guard is skipped when PARSER_MEDIA_TYPE is application/xhtml+xml",
+      "url": "https://github.com/advisories/GHSA-c6gr-qvv4-5v3f",
+      "source": "GitHub Security Advisories",
+      "tier": 1,
+      "published": "2026-10-22T16:24:23Z",
+      "cve": null,
+      "severity": "low",
+      "cvss": null,
+      "evidence_label": "VERIFIED_ADVISORY",
+      "categories": [
+        {
+          "id": "infra",
+          "label": "AI Infrastructure / Inference Server"
+        }
+      ],
+      "owasp_llm": [
+        {
+          "id": "LLM05",
+          "name": "Supply Chain Vulnerabilities"
+        }
+      ],
+      "mitre_atlas": [
+        {
+          "id": "AML.T0010",
+          "name": "ML Supply Chain Compromise"
+        }
+      ],
+      "agent_risk": {
+        "flags": {
+          "agentic": false,
+          "mcp": false,
+          "rag": true,
+          "tool_use": false,
+          "supply_chain": false
+        },
+        "level": "elevated"
+      },
+      "enterprise_impact": {
+        "score": 10,
+        "priority": "P3"
+      },
+      "confidence": {
+        "source": "HIGH",
+        "evidence": "MODERATE",
+        "overall": "HIGH",
+        "rationale": "Authoritative source (GitHub Security Advisories)."
+      },
+      "corroboration": 1,
+      "detection": {
+        "detect": "Expose-check inference servers (Triton/vLLM/Ollama/MLflow/Ray) for unauthenticated management endpoints.",
+        "hunt": "Shodan/asset-inventory sweep for AI infra bound to 0.0.0.0 without auth."
       },
       "has_analyst_report": false
     },
