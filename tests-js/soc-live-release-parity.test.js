@@ -49,6 +49,14 @@ test('negative: old private-limited JSON-LD organization rejected',()=>{
   const spec=ROUTES.find(x=>x.path==='/contact.html');
   assert.ok(assess(spec,response(fixture(spec)+'<script type="application/ld+json">{"name":"CYBERDUDEBIVASH PRIVATE LIMITED"}</script>')).includes('FALSE_INCORPORATION_CLAIM'));
 });
+test('negative: homepage rejects obsolete proprietor incorporation and Corporation schema',()=>{
+  const spec=ROUTES.find(x=>x.path==='/');
+  const baseline=fixture(spec);
+  assert.ok(assess(spec,response(baseline+'<footer>CyberDudeBivash Pvt. Ltd.</footer>'))
+    .includes('FALSE_INCORPORATION_CLAIM'));
+  assert.ok(assess(spec,response(baseline+'<script type="application/ld+json">{"@type":"Corporation"}</script>'))
+    .includes('INCORPORATED_STRUCTURED_IDENTITY'));
+});
 test('negative: PAN property on homepage fails without logging its value',()=>{
   const spec=ROUTES.find(x=>x.path==='/');
   const bad=fixture(spec)+'<script type="application/ld+json">{"propertyID":"PAN","value":"REDACTED"}</script>';
