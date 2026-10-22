@@ -21,7 +21,7 @@ test('production workflow cannot deploy on push or schedule', () => {
   assert.match(deploy,/\n  deploy:[\s\S]{0,350}?if: \$\{\{ github\.event_name == 'workflow_dispatch' \}\}/);
 });
 test('reconciler has no write permission or dispatch operation', () => {
-  assert.match(monitor,/permissions:\s*\n  contents: read/);
+  assert.match(monitor,/permissions:\s*\n  contents: read\n  actions: read/);
   assert.doesNotMatch(monitor,/actions: write|\/dispatches|workflow_dispatch.*ref.*main/);
   assert.match(monitor,/node scripts\/production-drift-policy\.cjs/);
 });
