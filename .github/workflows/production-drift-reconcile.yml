@@ -59,6 +59,10 @@ jobs:
           main_json="$(curl -fsS "${auth[@]}" "$api/commits/main")"
           main_sha="$(jq -r '.sha // empty' <<<"$main_json")"
           test -n "$main_sha" || { echo "::error::Unable to resolve main SHA"; exit 1; }
+          # workflow_run can check out an older default-branch snapshot.
+          # Ensure the API-selected main commit is locally available before diff.
+          git fetch --no-tags origin main
+          git cat-file -e "$main_sha^{commit}" || { echo "::error::Current main commit unavailable locally"; exit 1; }
 
           runs_json="$(curl -fsS "${auth[@]}" "$api/actions/workflows/cloudflare-production-deploy.yml/runs?branch=main&per_page=20")"
           deployed_sha="$(jq -r '[.workflow_runs[] | select(.status=="completed" and .conclusion=="success")][0].head_sha // empty' <<<"$runs_json")"
