@@ -67,17 +67,12 @@ name: "📨 SENTINEL APEX — Watchlist Alert Delivery"
 #   - CLOUDFLARE_ACCOUNT_ID / CLOUDFLARE_D1_DATABASE_ID /
 #     CLOUDFLARE_API_TOKEN -- gates BOTH steps' own D1-backed state
 #     (watchlists/snapshots/events for evaluate; delivery jobs/log for
-#     deliver) via api/_lib/d1.js's REST API transport (this script runs
-#     under plain Node, never inside a Worker, so it always uses the REST
-#     path, never the native env.DB binding). As of this workflow's
-#     update it is UNVERIFIED/likely NOT YET configured as GitHub Actions
-#     repository secrets (this sandbox has no authenticated Cloudflare
-#     account access to provision a real D1 database or mint an API
-#     token in the first place -- `wrangler whoami` -> not authenticated,
-#     confirmed before this change). If unset, BOTH steps now skip with a
-#     visible warning rather than failing confusingly on every scheduled
-#     run -- there is no longer a "D1-independent" evaluate path once
-#     watchlists/change-detection depend on D1 too.
+#     deliver) via api/_lib/d1.js's REST transport. This workflow uses Node,
+#     not the native Worker env.DB binding. Missing credentials now fail
+#     closed BEFORE evaluation or delivery and mark this job red, not green.
+#     This preflight proves secret presence only; it does not prove that
+#     credentials work, notifications reach recipients or any other
+#     Cloudflare Cron execution path is healthy.
 # RESEND_API_KEY is passed through if configured but not required --
 # deliver-watchlist-notifications.js already handles its absence
 # gracefully (email deliveries fail soft as EMAIL_NOT_CONFIGURED and
@@ -124,30 +119,19 @@ jobs:
         with:
           node-version: "24"
 
-      - name: "🔍 Check required secrets are configured"
-        id: preflight
+      # If any mandatory credential is absent, fail BEFORE contacting D1.
+      # A success exit code must require execution of BOTH customer operations.
+      - name: "🔍 P0 alert delivery readiness — fail closed"
         env:
           HAS_REDIS_URL: ${{ secrets.UPSTASH_REDIS_REST_URL != '' }}
           HAS_REDIS_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN != '' }}
           HAS_CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
           HAS_CF_DB: ${{ secrets.CLOUDFLARE_D1_DATABASE_ID != '' }}
           HAS_CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
-        run: |
-          if [ "$HAS_REDIS_URL" = "true" ] && [ "$HAS_REDIS_TOKEN" = "true" ]; then
-            echo "redis_ready=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "redis_ready=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::Watchlist change evaluation AND alert delivery both skipped — UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN are not configured as GitHub Actions repository secrets. Same values already used in the Cloudflare Worker environment (a different secret store) need to be added here too before this workflow can run."
-          fi
-          if [ "$HAS_CF_ACCOUNT" = "true" ] && [ "$HAS_CF_DB" = "true" ] && [ "$HAS_CF_TOKEN" = "true" ]; then
-            echo "d1_ready=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "d1_ready=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::Watchlist change evaluation AND alert delivery both skipped — CLOUDFLARE_ACCOUNT_ID / CLOUDFLARE_D1_DATABASE_ID / CLOUDFLARE_API_TOKEN are not configured as GitHub Actions repository secrets yet. Both steps now depend on D1 (watchlists/change-detection as of the Cloudflare-Only Runtime Completion v2 tranche, delivery state since PR #138)."
-          fi
+        run: node scripts/alert-delivery-execution-gate.cjs
 
       - name: "🔎 Evaluate watchlist changes"
-        if: steps.preflight.outputs.redis_ready == 'true' && steps.preflight.outputs.d1_ready == 'true'
+        id: evaluation
         env:
           UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
           UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
@@ -157,7 +141,7 @@ jobs:
         run: node scripts/evaluate-watchlist-changes.js
 
       - name: "📨 Deliver due alerts"
-        if: steps.preflight.outputs.redis_ready == 'true' && steps.preflight.outputs.d1_ready == 'true'
+        id: delivery
         env:
           UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
           UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
@@ -167,3 +151,18 @@ jobs:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         run: node scripts/deliver-watchlist-notifications.js --limit=50
 
+      # Force an explicit truthful outcome, including when a future edit
+      # accidentally skips either customer operation or makes it conditional.
+      - name: "P0 record evaluated and processed delivery steps"
+        if: ${{ always() }}
+        env:
+          EVALUATION_OUTCOME: ${{ steps.evaluation.outcome }}
+          DELIVERY_OUTCOME: ${{ steps.delivery.outcome }}
+        run: |
+          if [ "$EVALUATION_OUTCOME" != "success" ] || [ "$DELIVERY_OUTCOME" != "success" ]; then
+            echo "::error title=P0 Alert Execution Incomplete::Evaluation and delivery processing must both finish successfully; customer alerts NOT CERTIFIED."
+            echo "P0 alert processing incomplete. Evaluation outcome: $EVALUATION_OUTCOME; delivery outcome: $DELIVERY_OUTCOME." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          echo "PASS: watchlist evaluation and due-delivery processing commands completed." >> "$GITHUB_STEP_SUMMARY"
+          echo "This is NOT proof any customer received an alert; check per-channel delivery receipts independently." >> "$GITHUB_STEP_SUMMARY"
