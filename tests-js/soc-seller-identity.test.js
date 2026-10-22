@@ -27,6 +27,14 @@ test('negative controls: detect both long and abbreviated false incorporated nam
   assert.equal(checkIdentity('CyberDudeBivash ECOSYSTEM'),0);
   assert.equal(checkIdentity('SENTINEL APEX SOC'),0);
 });
+test('legal/source text preserves sentence boundaries after correcting incorporated seller name', () => {
+  for (const file of ['about.html', 'terms.html']) {
+    assert.doesNotMatch(read(file), /CYBERDUDEBIVASH ECOSYSTEM (?:We|You)\b/,
+      file + ' has a missing sentence boundary');
+  }
+  assert.match(read('about.html'), /operated by CYBERDUDEBIVASH ECOSYSTEM\. We monitor/);
+  assert.match(read('terms.html'), /Platform content is © CYBERDUDEBIVASH ECOSYSTEM\. You may quote/);
+});
 test('business contact metadata retains the recognized ecosystem trading identity', () => {
   const html=read('contact.html');
   const source=html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
