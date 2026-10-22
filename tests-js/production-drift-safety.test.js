@@ -3,7 +3,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { deployPaths, classify } = require('../scripts/production-drift-policy.cjs');
+const { deployPaths, classify, renderDriftSummary } = require('../scripts/production-drift-policy.cjs');
 
 const root = path.resolve(__dirname, '..');
 const deploy = fs.readFileSync(path.join(root,'.github/workflows/cloudflare-production-deploy.yml'),'utf8');
@@ -71,4 +71,66 @@ test('negative control: feature-branch dispatch must not reach production', () =
   assert.ok(jobBlock.includes("github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'"));
   assert.ok(jobBlock.includes('environment: production'));
   assert.doesNotMatch(jobBlock,/refs\/tags\//);
+});
+
+
+test('P0 regression: mixed 288-file drift retains 215 production, 44 benign and 29 unknown paths', () => {
+  const production = Array.from({ length: 215 }, (_, i) => 'api/intel/cve/fixture-' + i + '.json');
+  const benign = Array.from({ length: 44 }, (_, i) => 'docs/release-evidence/fixture-' + i + '.md');
+  const unknown = Array.from({ length: 29 }, (_, i) => 'scripts/operator-unclassified-' + i + '.cjs');
+  const files = [...production, ...benign, ...unknown];
+  const r = classify(compare(files), BASE, HEAD, paths);
+  assert.equal(r.state, 'blocked');
+  assert.equal(r.reason, 'unrecognized changed files require source review');
+  assert.equal(r.compared_files, 288);
+  assert.equal(r.production.length, 215);
+  assert.equal(r.benign.length, 44);
+  assert.equal(r.unknown.length, 29);
+  assert.equal(r.production[0], 'api/intel/cve/fixture-0.json');
+  const summary = renderDriftSummary(HEAD, BASE, r);
+  assert.match(summary, /decision: \*\*blocked\*\*/);
+  assert.match(summary, /production-affecting files: 215/);
+  assert.match(summary, /known nonproduction files: 44/);
+  assert.match(summary, /unknown files: 29/);
+  assert.match(summary, /total compared changed files: 288/);
+  assert.match(summary, /scripts\/operator-unclassified-0\.cjs/);
+  assert.match(summary, /api\/intel\/cve\/fixture-0\.json/);
+  assert.match(summary, /plus 203 additional production paths/);
+  assert.match(summary, /No deployment or workflow dispatch/);
+});
+
+test('P0 negative control: unknown review cannot authorize deployment or conceal production changes', () => {
+  const files = ['workers/entry.js', 'index.html', 'scripts/unknown-sensitive.cjs', 'docs/runbook.md'];
+  const initial = classify(compare(files), BASE, HEAD, paths);
+  assert.equal(initial.state, 'blocked');
+  assert.deepEqual(initial.production, ['index.html', 'workers/entry.js']);
+  assert.deepEqual(initial.unknown, ['scripts/unknown-sensitive.cjs']);
+  assert.deepEqual(initial.benign, ['docs/runbook.md']);
+  // Even after an explicitly reviewed path becomes known-nonproduction,
+  // the existing changes to Worker and homepage REQUIRE manual release.
+  const reviewed = classify(compare(['workers/entry.js', 'index.html', 'docs/reviewed.md', 'docs/runbook.md']),
+    BASE, HEAD, paths);
+  assert.equal(reviewed.state, 'manual_release_required');
+  assert.equal(reviewed.production.length, 2);
+  assert.equal(reviewed.unknown.length, 0);
+  assert.match(renderDriftSummary(HEAD, BASE, reviewed), /production-affecting files: 2/);
+});
+
+test('P0 summary bounds large unclassified path lists without hiding the total', () => {
+  const unknown = Array.from({ length: 60 }, (_, i) => 'unclassified-fixture-' + i + '.cjs');
+  const result = classify(compare(unknown), BASE, HEAD, paths);
+  assert.equal(result.state, 'blocked');
+  const summary = renderDriftSummary(HEAD, BASE, result);
+  assert.match(summary, /unknown files: 60/);
+  assert.match(summary, /plus 30 additional unclassified paths/);
+  assert.doesNotMatch(summary, /unclassified-fixture-59\.cjs/);
+});
+
+test('P0 incomplete comparison still hard blocks and never represents a verified zero baseline', () => {
+  const bad = compare(['index.html']); delete bad.files;
+  const result = classify(bad, BASE, HEAD, paths);
+  assert.equal(result.state, 'blocked');
+  const summary = renderDriftSummary(HEAD, BASE, result);
+  assert.match(summary, /total compared changed files: not certified/);
+  assert.match(summary, /decision: \*\*blocked\*\*/);
 });
