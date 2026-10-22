@@ -378,6 +378,40 @@ async function getWatchedEntityWindow({ after = null, rowLimit = 128 } = {}) {
   return rows.map(r => ({ entityType: r.entity_type, entityId: r.entity_id }));
 }
 
+// Optional SOC Cron preflight only. Probe raw membership (including paused
+// watchlists) with LIMIT 11 BEFORE joining: a popular/mostly-paused entity
+// must not force a potentially large joined read merely to establish that
+// it is too expensive for the pre-revenue Cron. Reject >10 without partial
+// fan-out. The second join is also LIMIT 11 to detect membership races.
+// The existing publisher's unbounded getWatchersForEntity stays unchanged.
+const SOC_CRON_MAX_WATCHLIST_MEMBERSHIPS = 10;
+async function getSocCronWatchersCostGuard(entityType, entityId) {
+  const params = [entityType, entityId, SOC_CRON_MAX_WATCHLIST_MEMBERSHIPS + 1];
+  const membership = await d1.query(
+    'SELECT watchlist_id FROM watchlist_entities WHERE entity_type = ? AND entity_id = ? LIMIT ?',
+    params
+  );
+  if (membership.length > SOC_CRON_MAX_WATCHLIST_MEMBERSHIPS) {
+    return { allowed: false, watchers: [], reason: 'membership_limit' };
+  }
+  if (membership.length === 0) return { allowed: true, watchers: [] };
+  const rows = await d1.query(
+    `SELECT we.watchlist_id, w.owner_id
+     FROM watchlist_entities we
+     JOIN watchlists w ON w.id = we.watchlist_id
+     WHERE we.entity_type = ? AND we.entity_id = ? AND w.status != 'paused'
+     LIMIT ?`,
+    params
+  );
+  if (rows.length > SOC_CRON_MAX_WATCHLIST_MEMBERSHIPS) {
+    return { allowed: false, watchers: [], reason: 'concurrent_membership_growth' };
+  }
+  return {
+    allowed: true,
+    watchers: rows.map(w => ({ watchlistId: w.watchlist_id, ownerId: w.owner_id }))
+  };
+}
+
 // Global event -> customer match. Returns only watchlists whose status is
 // not 'paused' -- pausing a watchlist stops new matches without deleting
 // membership or history. Never reveals one customer's watch to another
@@ -457,6 +491,8 @@ module.exports = {
   getAllWatchedEntityKeys,
   getWatchedEntityWindow,
   getWatchersForEntity,
+  getSocCronWatchersCostGuard,
+  SOC_CRON_MAX_WATCHLIST_MEMBERSHIPS,
   markEvaluated,
   appendToOwnerFeed,
   getOwnerFeedPage,
