@@ -1,0 +1,71 @@
+{
+  "schema": "sentinel-apex.intelligence/1.0",
+  "id": "SENTINELAPEX-bd2391872d82",
+  "title": "FBI and CISA Warn of SafePay Ransomware Attacks on 600 Organizations",
+  "generated": "2026-10-23T06:22:59.633Z",
+  "severity": "LOW",
+  "cvss": null,
+  "cisa_kev": false,
+  "exploited": false,
+  "cves": [],
+  "vendor": null,
+  "product": null,
+  "mitre_attack": [
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "initial-access",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "T1133",
+      "name": "External Remote Services",
+      "tactic": "initial-access",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": "impact",
+      "confidence": "HIGH"
+    }
+  ],
+  "iocs": [],
+  "detections": {
+    "sigma": [],
+    "kql": [],
+    "splunk": [],
+    "osquery": [],
+    "suricata": []
+  },
+  "assessment": {
+    "verified_facts": [
+      "3 MITRE ATT&CK technique(s) evidenced in the source material."
+    ],
+    "analyst_assessments": [
+      {
+        "confidence": "HIGH",
+        "text": "Activity is consistent with a ransomware operation — data encryption and/or recovery inhibition (shadow-copy deletion) was observed."
+      }
+    ],
+    "intelligence_gaps": [
+      "No confirmed public IOCs are available at report time; detection currently relies on behavioral analytics.",
+      "No authoritative CVSS score is available at report time.",
+      "In-the-wild exploitation is unconfirmed as of this report.",
+      "Attribution to a specific threat actor is not established by the available evidence."
+    ],
+    "forward_outlook": [
+      {
+        "confidence": "MEDIUM",
+        "text": "Double-extortion and data-leak-site activity is anticipated to accompany encryption events."
+      }
+    ]
+  },
+  "correlations": [
+    "Technique T1133 was previously observed with: Qilin",
+    "Technique T1486 was previously observed with: Qilin, Cl0p, LockBit, ALPHV/BlackCat, Akira",
+    "Related prior intelligence: fbi-and-cisa-warn-of-safepay-ransomware-attacks-on-600-organ (3 shared entities)"
+  ],
+  "source": null,
+  "provider": "CYBERDUDEBIVASH SENTINEL APEX"
+}
