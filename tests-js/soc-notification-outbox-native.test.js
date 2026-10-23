@@ -124,7 +124,7 @@ test('customer pause/removal/ownership mismatch cancels rather than leaking aler
     }finally{f.close()}
   }
 });
-test('enqueue failure after feed write replays once using stable delivery identity',async()=>{
+test('ambiguous replay after a partial enqueue blocks without falsely claiming completion',async()=>{
   const f=fixture();
   try{
     const e=f.ev(),w=f.add();f.events.set(e.event_id,e);
@@ -133,18 +133,56 @@ test('enqueue failure after feed write replays once using stable delivery identi
     f.setDispatch(async a=>{
       calls++;f.deliveries.add(a.ownerId+'|'+a.event.event_id+'|email');
       if(calls===1)throw new Error('private provider error');
+      // The pending delivery ID already exists; a terminal job might also
+      // have been deleted after an external send. Neither is a receipt.
       return {enqueued:false,channels:['email']};
     });
     const failed=await f.make().reconcile();
     assert.equal(failed.retry,1);assert.equal(failed.errors,1);
     assert.equal(f.row().last_error_code,'ENQUEUE_EXCEPTION');
-    assert.equal(f.deliveries.size,1);
     f.advance(61_000);
-    const retried=await f.make().reconcile();
-    assert.equal(retried.complete,1);assert.equal(retried.errors,0);
-    assert.equal(f.row().state,'complete');
-    assert.equal(f.feed.size,1);assert.equal(f.deliveries.size,1);assert.equal(calls,2);
+    const replay=await f.make().reconcile();
+    assert.equal(replay.complete,0);assert.equal(replay.blocked,1);
+    assert.equal(replay.errors,1);
+    assert.equal(f.row().state,'blocked');
+    assert.equal(f.row().last_error_code,'DELIVERY_STATE_AMBIGUOUS');
+    assert.equal(f.feed.size,1);assert.equal(f.deliveries.size,1);
+    assert.equal(calls,2);
+    f.advance(3_700_000);
+    assert.equal((await f.make().reconcile()).selected,0);
+    assert.equal(calls,2,'ambiguous replay must not schedule another send');
   }finally{f.close()}
+});
+test('already-existing channel delivery cannot be certified from enqueue=false',async()=>{
+  const f=fixture();
+  try{
+    const e=f.ev(),w=f.add();f.events.set(e.event_id,e);
+    await f.make().stageEventFanout({event:e,watchers:[w]});
+    f.setDispatch(async()=>({enqueued:false,channels:['webhook']}));
+    const result=await f.make().reconcile();
+    assert.equal(result.blocked,1);assert.equal(result.complete,0);
+    assert.equal(result.errors,1);
+    assert.equal(f.row().state,'blocked');
+  }finally{f.close()}
+});
+test('explicitly disabled channels are skipped; malformed dispatch responses block',async()=>{
+  for(const variant of ['disabled','malformed']){
+    const f=fixture();
+    try{
+      const e=f.ev(),w=f.add();f.events.set(e.event_id,e);
+      await f.make().stageEventFanout({event:e,watchers:[w]});
+      f.setDispatch(async()=>variant==='disabled'?{enqueued:false}:{});
+      const result=await f.make().reconcile();
+      if(variant==='disabled'){
+        assert.equal(result.skipped,1);assert.equal(result.errors,0);
+        assert.equal(f.row().state,'skipped');
+      }else{
+        assert.equal(result.blocked,1);assert.equal(result.errors,1);
+        assert.equal(f.row().state,'blocked');
+      }
+      assert.equal(result.complete,0);
+    }finally{f.close()}
+  }
 });
 test('lease prevents competing claim and expired lease is recovered without duplication',async()=>{
   const f=fixture();
