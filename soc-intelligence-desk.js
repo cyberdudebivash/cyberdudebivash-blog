@@ -123,6 +123,7 @@
     function setStatus(state, detail) {
       var indicator = shell.querySelector('[data-desk-state]');
       if (indicator) { indicator.dataset.state = state; indicator.textContent = state; }
+      text(shell, '[data-desk-state-summary]', state);
       text(shell, '[data-desk-status-detail]', detail);
     }
     function fetchFeed() {
