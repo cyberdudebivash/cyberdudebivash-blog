@@ -127,6 +127,26 @@ test('new or unreviewed operational inputs remain BLOCKED (no broad migration, l
   }
 });
 
+test('future correctly timestamped publisher runs stay operational, not benign, and bogus names stay blocked', () => {
+  const generated = 'logs/run-20261024-090045.json';
+  const result = classify(compare([generated]), BASE, HEAD, paths);
+  assert.equal(result.state, 'manual_release_required');
+  assert.deepEqual(result.operational, [generated]);
+  assert.deepEqual(result.benign, []);
+  assert.deepEqual(result.unknown, []);
+  for (const suspicious of [
+    'logs/run-20261024-999999.json',
+    'logs/run-20261024-120099.json',
+    'logs/run-20261024-120000.js',
+    'logs/other-20261024-120000.json',
+    'logs/run-20261024-120000.json.old',
+  ]) {
+    const denied = classify(compare([suspicious]), BASE, HEAD, paths);
+    assert.equal(denied.state, 'blocked', suspicious);
+    assert.ok(denied.unknown.includes(suspicious));
+  }
+});
+
 test('only historic logs can be benign; scheduled delivery and migrations cannot', () => {
   const logs = classify(compare(P0_REVIEWED_HISTORICAL_LOGS), BASE, HEAD, paths);
   assert.equal(logs.state, 'nonproduction_only');
