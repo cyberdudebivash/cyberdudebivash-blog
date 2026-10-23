@@ -99,6 +99,9 @@ jobs:
         run: python3 -m unittest -v tests.test_soc_evidence_read_budget
       - name: P0 FinOps — SQL-index and watcher-cost contract against offline native SQLite
         run: node --test tests-js/soc-watchlist-native-sqlite-cost-contract.test.js
+
+      - name: Verify legacy alert fan-out release-cost gates
+        run: node --test tests-js/legacy-watchlist-fanout-cost-contract.test.js
       - name: P0 — Race-safe intelligence hub publisher offline integration test
         run: node --test tests-js/intelligence-hub-publish-race.test.js
       - name: P0 — Bounded delivery and backlog truth negative controls

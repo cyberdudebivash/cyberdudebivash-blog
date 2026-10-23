@@ -69,7 +69,7 @@ const { detectChanges } = require('./change-detector');
 const notificationDispatch = require('./notification-dispatch');
 
 const DEFAULT_BATCH_LIMIT = 200;
-// Pre-revenue SOC Cron only; these do not replace account-wide Cloudflare billing verification.
+// Shared pre-revenue SOC and legacy GitHub bridge limits; neither replaces account-wide Cloudflare billing verification.
 const SOC_CRON_MAX_EVENTS_PER_ENTITY = 2;
 const SOC_CRON_MAX_FANOUT_PAIRS_PER_RUN = 40;
 
@@ -320,45 +320,38 @@ async function evaluateWatchedEntities({ batchLimit = DEFAULT_BATCH_LIMIT, bound
     watched_entities_total: watchedTotal,
     evaluated: 0, changed: 0, baseline: 0, unchanged: 0, load_failed: 0, unsupported: 0,
     events_created: 0, watchlists_touched: 0,
-    ...(boundedScan ? { fanout_pairs: 0, fanout_blocked: 0, event_budget_blocked: 0, skipped_no_active_watchers: 0 } : {}),
+    fanout_pairs: 0, fanout_blocked: 0, event_budget_blocked: 0, skipped_no_active_watchers: 0,
   };
   if (batch.length === 0) return results;
 
   const touchedWatchlists = new Set();
 
   for (const { entityType, entityId } of batch) {
-    // The Cron uses a bounded raw-membership probe and bounded joined result.
-    // If a shared entity has >10 memberships (paused ones count), reject
-    // BEFORE any snapshot/event/feed write. Legacy GitHub publishing does
-    // not use this optional preflight.
-    let socCronWatchers = null;
-    if (boundedScan) {
-      const guard = await store.getSocCronWatchersCostGuard(entityType, entityId);
-      if (!guard.allowed) { results.fanout_blocked++; continue; }
-      socCronWatchers = guard.watchers;
-      if (socCronWatchers.length === 0) {
-        results.skipped_no_active_watchers++;
-        continue;
-      }
+    // Both schedulers share the indexed membership preflight. Avoid
+    // unbounded watcher JOINs, event creation and irreversible snapshot
+    // advancement when pre-revenue fan-out budgets are exhausted.
+    const guard = await store.getSocCronWatchersCostGuard(entityType, entityId);
+    if (!guard.allowed) { results.fanout_blocked++; continue; }
+    const socCronWatchers = guard.watchers;
+    if (socCronWatchers.length === 0) {
+      results.skipped_no_active_watchers++;
+      continue;
     }
     const outcome = await evaluateEntity({
       entityType, entityId, intel, graph, reportsIndexData,
-      ...(boundedScan ? {
-        socCronWatchers,
-        socCronRemainingPairs: SOC_CRON_MAX_FANOUT_PAIRS_PER_RUN - results.fanout_pairs,
-      } : {}),
+      socCronWatchers,
+      socCronRemainingPairs: SOC_CRON_MAX_FANOUT_PAIRS_PER_RUN - results.fanout_pairs,
     });
     results.evaluated++;
     if (outcome.status === 'cost_blocked') { results.event_budget_blocked++; continue; }
-    if (boundedScan) results.fanout_pairs += outcome.fanout_pairs || 0;
+    results.fanout_pairs += outcome.fanout_pairs || 0;
     if (outcome.status === 'load_failed') { results.load_failed++; continue; }
     if (outcome.status === 'unsupported_type') { results.unsupported++; continue; }
     if (outcome.status === 'baseline_established') results.baseline++;
     else if (outcome.status === 'changed') { results.changed++; results.events_created += outcome.events.length; }
     else results.unchanged++;
 
-    const watchers = boundedScan ? socCronWatchers
-      : await store.getWatchersForEntity(entityType, entityId);
+    const watchers = socCronWatchers;
     for (const w of watchers) touchedWatchlists.add(w.watchlistId);
   }
 
