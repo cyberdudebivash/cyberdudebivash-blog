@@ -76,10 +76,22 @@ function assess(route, html) {
       errors.push('MANAGED_SERVICE_BOUNDARY_MISSING');
   }
   if (route === '/soc-readiness-assessment.html') {
-    if (!html.includes('not an active 24/7 monitoring service'))
+    // The scope limitation must be customer-visible; metadata cannot satisfy it.
+    if (!copy.includes('not an active 24/7 monitoring service'))
       errors.push('SERVICE_BOUNDARY_MISSING');
-    if (!html.includes('contact@cyberdudebivash.in'))
-      errors.push('ENQUIRY_CONTACT_MISSING');
+    // An email address in a comment, script or unrelated text is not an enquiry CTA.
+    const bodyMarkup = html.match(/<body\b[^>]*>([\s\S]*?)<\/body\s*>/i)?.[1] || '';
+    const linkMarkup = bodyMarkup
+      .replace(/<!--[\s\S]*?-->/g, ' ')
+      .replace(/<(?:script|style|template|noscript)\b[^>]*>[\s\S]*?<\/(?:script|style|template|noscript)\s*>/gi, ' ');
+    const enquiryLink = tags(linkMarkup, 'a').some(tag => {
+      const href = attribute(tag, 'href') || '';
+      return /^mailto:contact@cyberdudebivash\.in(?:\?|$)/i.test(href) &&
+        !/\s(?:hidden|inert)(?:\s|=|>)/i.test(tag) &&
+        !/\saria-hidden\s*=\s*["']true["']/i.test(tag) &&
+        !/\sstyle\s*=\s*["'][^"']*(?:display\s*:\s*none|visibility\s*:\s*hidden)/i.test(tag);
+    });
+    if (!enquiryLink) errors.push('ENQUIRY_CONTACT_MISSING');
   }
   return errors;
 }
