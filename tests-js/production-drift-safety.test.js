@@ -42,6 +42,101 @@ for(const [label,files,expected] of [
   ['mixed production plus docs',['index.html','docs/readme.md'],'manual_release_required'],
   ['unexpected root file',['scripts/unknown-builder.js'],'blocked'],
 ]) test(label,()=>assert.equal(state(files),expected));
+
+// Reproduces the EXACT 41 unknown changed paths from the 23 Oct 2026
+// c77ec9a4-vs-365c89f3 independently verified whole-Git-tree comparison.
+// Expected: reviewed operational changes still require release acceptance;
+// the twelve inspected historical log paths alone do not authorize a deploy.
+const P0_REVIEWED_OPERATIONAL_PATHS = [
+  '.github/workflows/alert-delivery.yml',
+  '.github/workflows/intelligence-hub.yml',
+  '.github/workflows/workflow-security-gate.yml',
+  'OPERATIONS.md',
+  'ai-security-intel-memory.json',
+  'ai-security-intel-state.json',
+  'intel-memory.json',
+  'data/ioc-store.json',
+  'data/published_posts.json',
+  'build-detections-page.js',
+  'build-evi-page.js',
+  'build-research.js',
+  'generate-intelligence-hub.js',
+  'generate-rss.js',
+  'migrations/0017_soc_bounded_watchlist_eval.sql',
+  'migrations/0018_soc_notification_outbox.sql',
+  'scripts/alert-delivery-execution-gate.cjs',
+  'scripts/audit-soc-published-ui.cjs',
+  'scripts/check-cloudflare-runtime.js',
+  'scripts/cloudflare-account-zero-overage-gate.cjs',
+  'scripts/deliver-watchlist-notifications.js',
+  'scripts/evaluate-watchlist-changes.js',
+  'scripts/publish-intelligence-hub.sh',
+  'scripts/reconcile-soc-notification-outbox.js',
+  'scripts/soc-domain-release-gate.cjs',
+  'scripts/soc-hostname-truth-gate.cjs',
+  'scripts/soc-live-release-parity.cjs',
+  'scripts/soc-readiness-delivery-gate.cjs',
+  'scripts/verify-existing-cloudflare-domain.cjs',
+];
+const P0_REVIEWED_HISTORICAL_LOGS = [
+  'logs/run-20261022-073736.json',
+  'logs/run-20261022-100859.json',
+  'logs/run-20261022-131441.json',
+  'logs/run-20261022-151526.json',
+  'logs/run-20261022-180407.json',
+  'logs/run-20261022-191412.json',
+  'logs/run-20261022-214114.json',
+  'logs/run-20261022-221856.json',
+  'logs/run-20261023-001210.json',
+  'logs/run-20261023-012847.json',
+  'logs/run-20261023-072845.json',
+  'logs/run-20261023-132648.json',
+];
+
+test('P0 41 full-tree unclassified paths are explicitly accounted for without green release approval', () => {
+  const all = [...P0_REVIEWED_OPERATIONAL_PATHS, ...P0_REVIEWED_HISTORICAL_LOGS];
+  assert.equal(all.length, 41);
+  const result = classify(compare([...all, 'workers/entry.js']), BASE, HEAD, paths);
+  assert.equal(result.state, 'manual_release_required');
+  assert.deepEqual(result.unknown, []);
+  assert.equal(result.production.length, 1);
+  assert.equal(result.operational.length, 29);
+  assert.equal(result.benign.length, 12);
+  const summary = renderDriftSummary(HEAD, BASE, result);
+  assert.match(summary, /decision: \*\*manual_release_required\*\*/);
+  assert.match(summary, /reviewed operational\/release-control changes: 29/);
+  assert.match(summary, /Monitoring completed; status manual_release_required is NOT proof of deployment/);
+  assert.match(summary, /Manual release and independent postdeploy certification required/);
+  assert.match(summary, /No deployment or workflow dispatch/);
+});
+
+test('new or unreviewed operational inputs remain BLOCKED (no broad migration, logs or scripts exclusions)', () => {
+  const surprises = [
+    'migrations/0019_new_customer_change.sql',
+    '.github/workflows/new-alert-bypass.yml',
+    'scripts/new-billing-processor.cjs',
+    'logs/run-20261023-999999.json',
+    'data/new-alert-pipeline-state.json',
+    'operator-secrets.json',
+  ];
+  for (const file of surprises) {
+    const result = classify(compare(['workers/entry.js', file]), BASE, HEAD, paths);
+    assert.equal(result.state, 'blocked', file);
+    assert.ok(result.unknown.includes(file), file);
+    assert.equal(result.production.length, 1, 'existing production drift must stay visible');
+  }
+});
+
+test('only historic logs can be benign; scheduled delivery and migrations cannot', () => {
+  const logs = classify(compare(P0_REVIEWED_HISTORICAL_LOGS), BASE, HEAD, paths);
+  assert.equal(logs.state, 'nonproduction_only');
+  assert.equal(logs.benign.length, 12);
+  const operational = classify(compare(P0_REVIEWED_OPERATIONAL_PATHS), BASE, HEAD, paths);
+  assert.equal(operational.state, 'manual_release_required');
+  assert.equal(operational.operational.length, 29);
+  assert.equal(operational.production.length, 0);
+});
+
 test('renaming a production file requires a release', () => {
   const c=compare([]); c.files=[{filename:'docs/retired.md',previous_filename:'index.html',status:'renamed'}];
   assert.equal(classify(c,BASE,HEAD,paths).state,'manual_release_required');
