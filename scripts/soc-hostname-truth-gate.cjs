@@ -55,7 +55,7 @@ function assess(route, html) {
   const errors = [];
   // A head-only or malformed response cannot pass legal copy checks.
   // Brand text inside comments, scripts or metadata is not customer-visible.
-  const hasBody = /<body\\b[^>]*>[\\s\\S]*?<\\/body\\s*>/i.test(html);
+  const hasBody = /<body\b[^>]*>[\s\S]*?<\/body\s*>/i.test(html);
   const copy = hasBody ? visibleBodyText(html) : '';
   if (!hasBody || !copy) errors.push('VISIBLE_BODY_MISSING');
   if (canonical.length !== 1 || canonical[0] !== expected) errors.push('SOC_CANONICAL_MISMATCH');
