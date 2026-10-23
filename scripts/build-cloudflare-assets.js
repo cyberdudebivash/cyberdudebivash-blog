@@ -36,7 +36,7 @@ const PUBLIC_ROOT_FILES = [
   'live-feed-widget.js', 'monetization.js', 'payment-engine.js',
   'payment-flow.js', 'intel-plans.js', 'revenue-conversion-v19.js', 'revenue-cta-block.js',
   'security-engine.js', 'seo-engine.js', 'ux-controller.js', 'apex-command-center.js', 'customer-experience.js', 'runtime-state.js',
-  'soc-platform-ui.css', 'soc-cti-console.css', 'soc-triage-workspace.js', 'soc-taxonomy-pivots.js', 'soc-hybrid-workspace.js', 'soc-evidence-drawer.js',
+  'soc-platform-ui.css', 'soc-cti-console.css', 'soc-intelligence-desk.css', 'soc-intelligence-desk.js', 'soc-triage-workspace.js', 'soc-taxonomy-pivots.js', 'soc-hybrid-workspace.js', 'soc-evidence-drawer.js',
   'apple-touch-icon.png', 'brand-logo.svg', 'favicon.ico', 'favicon.svg',
   'icon-192.png', 'icon-512.png', 'og-image.png',
   'og-sentinel-apex-threat-intel-v1.jpg', 'og-sentinel-apex-intel-factory-v1.jpg', 'site.webmanifest',
