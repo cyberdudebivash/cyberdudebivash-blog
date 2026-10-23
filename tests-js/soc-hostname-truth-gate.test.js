@@ -50,3 +50,27 @@ test('unsupported SOC service and certification statements are rejected', () => 
   const errors = assess('/', fixture('/', {extra:'SOC 2 Type II certified'}));
   assert.ok(errors.includes('UNSUPPORTED_SERVICE_OR_CERTIFICATION'));
 });
+
+test('visible Terms legacy hostname blocks release while historical image URL remains allowed', () => {
+  const clean = fixture('/terms.html', {extra:'<img src="https://blog.cyberdudebivash.in/og-image.png" alt="Legacy CTI artwork">'});
+  assert.deepEqual(assess('/terms.html', clean), []);
+  const stale = fixture('/terms.html', {extra:'<p class="sub">Effective date · blog.cyberdudebivash.in</p>'});
+  assert.ok(assess('/terms.html', stale).includes('LEGACY_VISIBLE_LEGAL_HOST'));
+});
+test('About page must not assert unsupported around-the-clock monitoring or retired social identity', () => {
+  const stale = fixture('/about.html', {
+    extra:'<p>We monitor official vulnerability authorities and global security reporting around the clock.</p>' +
+      '<p>X / Twitter: @cdbsentinelapex</p>'
+  });
+  const errors = assess('/about.html', stale);
+  assert.ok(errors.includes('UNVERIFIED_CONTINUOUS_MONITORING_COPY'));
+  assert.ok(errors.includes('RETIRED_SOCIAL_IDENTITY'));
+});
+test('About page must explicitly bound managed customer monitoring availability', () => {
+  const stale = fixture('/about.html').replace('not an active 24/7 monitoring service', '');
+  assert.ok(assess('/about.html', stale).includes('MANAGED_SERVICE_BOUNDARY_MISSING'));
+  const scoped = fixture('/about.html', {
+    extra:'Continuous managed customer monitoring and incident response are not offered without a separately approved service agreement and operational acceptance.'
+  }).replace('not an active 24/7 monitoring service', '');
+  assert.ok(!assess('/about.html', scoped).includes('MANAGED_SERVICE_BOUNDARY_MISSING'));
+});
