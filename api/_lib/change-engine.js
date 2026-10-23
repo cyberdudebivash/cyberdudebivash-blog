@@ -67,6 +67,7 @@ const { detectChanges } = require('./change-detector');
 // top-level), so only one side of the pair needs to defer -- see that
 // module's loadChangeEngine() docstring for the full reasoning.
 const notificationDispatch = require('./notification-dispatch');
+const socOutbox = require('./soc-notification-outbox');
 
 const DEFAULT_BATCH_LIMIT = 200;
 // Shared pre-revenue SOC and legacy GitHub bridge limits; neither replaces account-wide Cloudflare billing verification.
@@ -213,11 +214,33 @@ async function evaluateEntity({ entityType, entityId, intel, graph, reportsIndex
     }
   }
 
+  // RELEASE GATE (default OFF): all owner-specific notification intents
+  // must be durably staged BEFORE persisting an event/snapshot. If the
+  // D1 outbox table is not migrated or a staging write fails, abort before
+  // any new change_event row is created. The reconciler later writes both
+  // the owner feed and idempotent notification delivery job.
+  const outboxEnabled = socOutbox.isEnabled();
+  let notificationOutboxStaged = 0;
+  if (outboxEnabled) {
+    if (socCronWatchers === null) throw new Error('SOC_OUTBOX_REQUIRES_BOUNDED_WATCHERS');
+    const writer = socOutbox.productionOutbox();
+    for (const event of events) {
+      const staged = await writer.stageEventFanout({ event, watchers: socCronWatchers });
+      notificationOutboxStaged += staged.staged;
+    }
+  }
+
   const created = [];
   let enqueueFailures = 0;
   for (const event of events) {
     const result = await persistEventIfNew(event);
     if (!result.created) continue; // replay-safe, no duplicate fan-out
+    if (outboxEnabled) {
+      // Reconciliation handles per-owner feed and notification enqueue
+      // behind a tenant-checked, lease-claimed durable intent.
+      created.push(event);
+      continue;
+    }
     const watchers = socCronWatchers === null
       ? await store.getWatchersForEntity(entityType, entityId)
       : socCronWatchers;
@@ -244,6 +267,7 @@ async function evaluateEntity({ entityType, entityId, intel, graph, reportsIndex
   return {
     status: created.length ? 'changed' : 'unchanged', entityType, entityId, events: created,
     notification_enqueue_failures: enqueueFailures,
+    notification_outbox_staged: notificationOutboxStaged,
     ...(socCronWatchers === null ? {} : { fanout_pairs: created.length * socCronWatchers.length }),
   };
 }
@@ -329,7 +353,7 @@ async function evaluateWatchedEntities({ batchLimit = DEFAULT_BATCH_LIMIT, bound
     evaluated: 0, changed: 0, baseline: 0, unchanged: 0, load_failed: 0, unsupported: 0,
     events_created: 0, watchlists_touched: 0,
     fanout_pairs: 0, fanout_blocked: 0, event_budget_blocked: 0, skipped_no_active_watchers: 0,
-    notification_enqueue_failures: 0,
+    notification_enqueue_failures: 0, notification_outbox_staged: 0,
   };
   if (batch.length === 0) return results;
 
@@ -353,6 +377,7 @@ async function evaluateWatchedEntities({ batchLimit = DEFAULT_BATCH_LIMIT, bound
     });
     results.evaluated++;
     results.notification_enqueue_failures += outcome.notification_enqueue_failures || 0;
+    results.notification_outbox_staged += outcome.notification_outbox_staged || 0;
     if (outcome.status === 'cost_blocked') { results.event_budget_blocked++; continue; }
     results.fanout_pairs += outcome.fanout_pairs || 0;
     if (outcome.status === 'load_failed') { results.load_failed++; continue; }
