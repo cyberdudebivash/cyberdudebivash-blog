@@ -18,6 +18,8 @@ for (const name of Object.keys({ ...pkg.dependencies, ...pkg.devDependencies }))
 
 const wrangler = fs.readFileSync(path.join(root, 'wrangler.jsonc'), 'utf8');
 assert.match(wrangler, /"pattern"\s*:\s*"blog\.cyberdudebivash\.in"/, 'Production Worker Custom Domain is missing');
+assert.match(wrangler, /"pattern"\s*:\s*"soc\.cyberdudebivash\.in"/,
+  'SOC Worker Custom Domain is missing');
 assert.match(wrangler, /"custom_domain"\s*:\s*true/, 'Production Worker must own the hostname as a Custom Domain');
 assert.doesNotMatch(wrangler, /blog\.cyberdudebivash\.in\/\*/, 'Legacy Worker Route must not replace the Custom Domain');
 assert.doesNotMatch(wrangler, /vercel/i, 'Retired Vercel origin reference reintroduced into Wrangler config');
