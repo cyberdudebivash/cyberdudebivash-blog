@@ -24,7 +24,7 @@ const PRUNE_SQL = "DELETE FROM soc_notification_outbox WHERE rowid IN (SELECT ro
 const validId = x => typeof x === 'string' && x.length > 0 && x.length <= 256;
 const key = row => [row.event_id,row.watchlist_id,row.owner_id];
 const isEnabled = () => process.env.CDB_SOC_OUTBOX_ENABLED === 'true';
-function createOutbox({ d1, getEvent, getWatchlist, listEntities, dispatch,
+function createOutbox({ d1, getEvent, getWatchlist, listEntities, appendToFeed, dispatch,
   now = () => Date.now(), token = () => crypto.randomBytes(16).toString('hex'),
   enabled = false } = {}) {
   function guard() {
@@ -69,7 +69,7 @@ function createOutbox({ d1, getEvent, getWatchlist, listEntities, dispatch,
     guard();
     if (!Number.isSafeInteger(limit) || limit < 1 || limit > MAX_RECONCILE_JOBS)
       throw new RangeError('SOC_OUTBOX_LIMIT_1_TO_5');
-    if (![getEvent,getWatchlist,listEntities,dispatch].every(x => typeof x === 'function'))
+    if (![getEvent,getWatchlist,listEntities,appendToFeed,dispatch].every(x => typeof x === 'function'))
       throw new Error('SOC_OUTBOX_DEPENDENCIES_UNAVAILABLE');
     const at = now();
     const due = await d1.query(DUE_SQL,[at,limit]);
@@ -107,6 +107,10 @@ function createOutbox({ d1, getEvent, getWatchlist, listEntities, dispatch,
             !entities.entities.some(e => e.type === event.entity_type && e.id === event.entity_id)) {
           await finish(row,claimToken,'skipped'); tally.skipped++; continue;
         }
+        // Feed insertion itself must be replayed: event persistence may
+        // have succeeded before an interrupted per-owner feed write.
+        // Existing owner_feed unique key makes repeated inserts idempotent.
+        await appendToFeed(row.owner_id,event.event_id,Date.parse(event.observed_at) || now());
         // Stable notification delivery IDs make repeated INSERTs idempotent.
         // This enqueues only, never sends an email/webhook from this module.
         const result = await dispatch({ ownerId:row.owner_id, watchlistId:row.watchlist_id, event });
@@ -142,6 +146,7 @@ function productionOutbox() {
     getEvent:eventId => require('./change-engine').getEventById(eventId),
     getWatchlist:(watchlistId,ownerId) => store.getWatchlist(watchlistId,ownerId),
     listEntities:(watchlistId,ownerId) => store.listEntities(watchlistId,ownerId),
+    appendToFeed:(ownerId,eventId,atMs) => store.appendToOwnerFeed(ownerId,eventId,atMs),
     dispatch:args => notifier.dispatchNewEvent(args),
   });
 }
