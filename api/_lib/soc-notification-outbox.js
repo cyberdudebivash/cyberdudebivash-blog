@@ -127,7 +127,17 @@ function createOutbox({ d1, getEvent, getWatchlist, listEntities, appendToFeed, 
         // A duplicate delivery_id can mean a pending job OR a job that was
         // already sent and deleted. Without a durable per-channel terminal
         // ledger, a second enqueue is unsafe and must not be called success.
-        const result = await dispatch({ ownerId:row.owner_id, watchlistId:row.watchlist_id, event });
+        let result;
+        try {
+          result = await dispatch({ ownerId:row.owner_id, watchlistId:row.watchlist_id, event });
+        } catch (_) {
+          // The enqueue may have committed before the exception. Automatic
+          // replay could recreate a terminal job after a provider send.
+          await blockAmbiguous(row,claimToken);
+          tally.blocked++;
+          tally.errors++;
+          continue;
+        }
         if (result && result.enqueued === true) {
           await finish(row,claimToken,'complete');
           tally.complete++;
