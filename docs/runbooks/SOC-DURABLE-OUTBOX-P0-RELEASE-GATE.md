@@ -47,7 +47,9 @@ webhook credentials, signing secrets or the event payload.
 - **Ambiguous enqueue fail-closed control:** if dispatch reports eligible
   channels but `enqueued=false`, the intent is marked `blocked` with
   `DELIVERY_STATE_AMBIGUOUS`, not `complete` and not automatically retried.
-  A missing/malformed dispatch result is likewise blocked. This prevents
+  A missing/malformed dispatch result **or a dispatch exception after a
+  possible partial enqueue** is likewise blocked without automatic replay.
+  This prevents
   false-green source acceptance when a pending job already exists or a
   previously delivered terminal job has been deleted. A verified first
   enqueue can mark the *outbox intent* complete, but not external delivery.
