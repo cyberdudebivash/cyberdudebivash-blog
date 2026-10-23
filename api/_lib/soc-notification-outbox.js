@@ -72,10 +72,13 @@ function createOutbox({ d1, getEvent, getWatchlist, listEntities, appendToFeed, 
     if (![getEvent,getWatchlist,listEntities,appendToFeed,dispatch].every(x => typeof x === 'function'))
       throw new Error('SOC_OUTBOX_DEPENDENCIES_UNAVAILABLE');
     const at = now();
-    const due = await d1.query(DUE_SQL,[at,limit]);
-    const room = limit-due.length;
-    const expired = room ? await d1.query(EXPIRED_SQL,[at,room]) : [];
-    const rows = [...due,...expired];
+    // Reserve one lease-recovery slot under sustained pending backlog.
+    // Otherwise a permanently full due queue can starve crashed claims.
+    // Both queries have indexed predicates and preserve the total limit.
+    const expired = await d1.query(EXPIRED_SQL,[at,1]);
+    const room = limit-expired.length;
+    const due = room ? await d1.query(DUE_SQL,[at,room]) : [];
+    const rows = [...expired,...due];
     const tally = { selected:rows.length, claimed:0, complete:0, skipped:0,
       retry:0, blocked:0, claim_contended:0, errors:0 };
     for (const row of rows) {
