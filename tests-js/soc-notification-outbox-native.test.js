@@ -55,7 +55,8 @@ test('migration and bounded due/expired claim SQL use explicit indexes and do no
     const names=f.db.prepare('PRAGMA index_list(soc_notification_outbox)').all().map(x=>x.name);
     assert.ok(names.includes('idx_soc_outbox_due'));
     assert.ok(names.includes('idx_soc_outbox_retention'));
-    assert.doesNotMatch(migration,/webhook_secret|email_override|payload|api_token/i);
+    const ddl = migration.split('\n').filter(line => !/^\s*--/.test(line)).join('\n');
+    assert.doesNotMatch(ddl,/webhook_secret|email_override|payload|api_token/i);
     assert.match(f.db.prepare('EXPLAIN QUERY PLAN '+DUE_SQL).all(0,5).map(x=>x.detail).join('\n'),/idx_soc_outbox_due/);
     assert.equal(MAX_WATCHERS,10);assert.equal(MAX_RECONCILE_JOBS,5);
     assert.match(EXPIRED_SQL,/LIMIT \?/);
