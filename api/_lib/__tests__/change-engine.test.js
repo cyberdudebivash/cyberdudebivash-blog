@@ -195,6 +195,71 @@ describe('P0 SOC notification enqueue failure truth', () => {
   });
 });
 
+describe('P0 SOC gated durable outbox — event-before-queue regression guard', () => {
+  test('failed staging refuses event persistence and preserves last canonical snapshot', async () => {
+    const outbox = require('../soc-notification-outbox');
+    const id = 'CVE-2026-7441';
+    fakeCves[id] = {cvss:7.0, cisa_kev:false, exploited:false};
+    const watchlistId = await watchCve('usr_a',id);
+    const watchers = [{ownerId:'usr_a',watchlistId}];
+    const intel = require('../intel');
+    const params = {entityType:'cve',entityId:id,intel,graph:fakeGraph,
+      reportsIndexData:fakeReportsIndex,socCronWatchers:watchers,socCronRemainingPairs:40};
+    await engine.evaluateEntity(params);
+    const before = await engine.loadSnapshot('cve',id);
+    fakeCves[id] = {...fakeCves[id],cisa_kev:true};
+    const previous = process.env.CDB_SOC_OUTBOX_ENABLED;
+    process.env.CDB_SOC_OUTBOX_ENABLED='true';
+    const spy = jest.spyOn(outbox,'productionOutbox').mockReturnValue({
+      stageEventFanout:jest.fn().mockRejectedValue(new Error('SOC_D1_WRITE_FAIL')),
+    });
+    try {
+      await expect(engine.evaluateEntity(params)).rejects.toThrow('SOC_D1_WRITE_FAIL');
+      expect((await engine.loadSnapshot('cve',id))).toEqual(before);
+      expect(global.__fakeD1ForTest._dump().changeEvents.size).toBe(0);
+      expect(spy).toHaveBeenCalledTimes(1);
+    } finally {
+      spy.mockRestore();
+      if (previous===undefined) delete process.env.CDB_SOC_OUTBOX_ENABLED;
+      else process.env.CDB_SOC_OUTBOX_ENABLED=previous;
+    }
+  });
+
+  test('successfully staged intent defers owner-feed and notification writes to the reconciler', async () => {
+    const outbox = require('../soc-notification-outbox');
+    const dispatch = require('../notification-dispatch');
+    const id='CVE-2026-7442';
+    fakeCves[id]={cvss:6.0,cisa_kev:false,exploited:false};
+    const watchlistId=await watchCve('usr_a',id);
+    const watchers=[{ownerId:'usr_a',watchlistId}];
+    const intel=require('../intel');
+    const params={entityType:'cve',entityId:id,intel,graph:fakeGraph,
+      reportsIndexData:fakeReportsIndex,socCronWatchers:watchers,socCronRemainingPairs:40};
+    await engine.evaluateEntity(params);
+    fakeCves[id]={...fakeCves[id],cisa_kev:true};
+    const previous=process.env.CDB_SOC_OUTBOX_ENABLED;
+    process.env.CDB_SOC_OUTBOX_ENABLED='true';
+    const stage=jest.fn().mockResolvedValue({staged:1,created:1});
+    const stageSpy=jest.spyOn(outbox,'productionOutbox').mockReturnValue({stageEventFanout:stage});
+    const dispatchSpy=jest.spyOn(dispatch,'dispatchNewEvent');
+    try {
+      const result=await engine.evaluateEntity(params);
+      expect(result.status).toBe('changed');
+      expect(result.events.length).toBeGreaterThan(0);
+      expect(result.notification_outbox_staged).toBe(result.events.length);
+      expect(stage).toHaveBeenCalledTimes(result.events.length);
+      expect(dispatchSpy).not.toHaveBeenCalled();
+      const feed=await store.getOwnerFeedPage('usr_a');
+      expect(feed.total).toBe(0);
+      expect(global.__fakeD1ForTest._dump().changeEvents.size).toBe(result.events.length);
+    } finally {
+      stageSpy.mockRestore();dispatchSpy.mockRestore();
+      if (previous===undefined) delete process.env.CDB_SOC_OUTBOX_ENABLED;
+      else process.env.CDB_SOC_OUTBOX_ENABLED=previous;
+    }
+  });
+});
+
 describe('catastrophic data-loss protection (Phase 72)', () => {
   test('a canonical load failure on a previously-known entity leaves the snapshot untouched and emits nothing', async () => {
     fakeCves['CVE-2026-5555'] = {
