@@ -161,6 +161,29 @@ test('lease prevents competing claim and expired lease is recovered without dupl
     assert.equal(result.complete,1);assert.equal(f.feed.size,1);
   }finally{f.close()}
 });
+test('expired claim receives recovery capacity even when five pending jobs exist',async()=>{
+  const f=fixture();
+  try{
+    const w=f.add();
+    const first=f.ev('evt-expired');f.events.set(first.event_id,first);
+    await f.make().stageEventFanout({event:first,watchers:[w]});
+    const at=f.now();
+    assert.equal(f.db.prepare(CLAIM_SQL).run('crashed-owner',at+90_000,at,
+      first.event_id,w.watchlistId,w.ownerId,at,at).changes,1);
+    for(let i=0;i<5;i++){
+      const event=f.ev('evt-pending-'+i);f.events.set(event.event_id,event);
+      await f.make().stageEventFanout({event,watchers:[w]});
+    }
+    f.advance(91_000);
+    const result=await f.make().reconcile({limit:5});
+    assert.equal(result.selected,5);
+    assert.equal(result.complete,5);
+    const expired=f.db.prepare('SELECT state FROM soc_notification_outbox WHERE event_id=?').get(first.event_id);
+    assert.equal(expired.state,'complete','expired lease must not starve behind pending backlog');
+    const left=f.db.prepare("SELECT count(*) AS n FROM soc_notification_outbox WHERE state='pending'").get().n;
+    assert.equal(left,1);
+  }finally{f.close()}
+});
 test('persistent failures exhaust five claims and block with retained evidence',async()=>{
   const f=fixture();
   try{
