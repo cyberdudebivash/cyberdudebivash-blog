@@ -241,6 +241,22 @@ describe('build-cloudflare-assets', () => {
     assert.match(home, /"@id": "https:\/\/soc\.cyberdudebivash\.in\/#website"/);
   });
 
+  test('SOC premium desk and shared navigation are present in the generated production assets', () => {
+    const html = fs.readFileSync(path.join(OUT, 'soc.html'), 'utf8');
+    const home = fs.readFileSync(path.join(OUT, 'index.html'), 'utf8');
+    assert.match(html, /href="\/soc-intelligence-desk\.css\?v=20261023-ux1"/);
+    assert.match(html, /src="\/runtime-state\.js\?v=20261023-ux1"/);
+    assert.match(html, /src="\/soc-intelligence-desk\.js\?v=20261023-ux1"/);
+    assert.match(html, /id="soc-intelligence-desk"/);
+    assert.match(html, /data-desk-export disabled/);
+    assert.match(home, /href="\/soc\.html#soc-intelligence-desk"/,
+      'global production navigation does not surface the SOC desk');
+    for (const name of ['soc-intelligence-desk.js', 'soc-intelligence-desk.css']) {
+      assert.ok(fs.statSync(path.join(OUT, name)).size > 1000,
+        name + ' missing from allowlisted production output');
+    }
+  });
+
   test('no output path matches a prohibited directory segment or filename', () => {
     const offenders = outputFiles.filter(isProhibited);
     assert.deepEqual(offenders, [], `prohibited paths leaked into dist-public/:\n${offenders.join('\n')}`);
