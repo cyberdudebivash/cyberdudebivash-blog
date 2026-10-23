@@ -37,10 +37,17 @@ describe('SOC foundation release boundary', () => {
     expect(preview).not.toMatch(/<form\b|checkout\.razorpay\.com|ANALYST_KEYS/i);
   });
 
-  test('Cloudflare static bundle only includes a specifically allowlisted preview', () => {
+  test('Preview is allowlisted and additive SOC hostname preserves the legacy CTI domain', () => {
     expect(manifest).toMatch(/['"]soc-preview\.html['"]/);
-    expect(wrangler).toMatch(/"pattern"\s*:\s*"blog\.cyberdudebivash\.in"/);
-    expect(wrangler).not.toMatch(/"pattern"\s*:\s*"soc\.cyberdudebivash\.in"/);
+    // A second Worker custom-domain mapping is not a completed cutover:
+    // legacy CTI remains mapped; the SOC hostname has its own release gates.
+    const legacyRoutes = wrangler.match(/"pattern"\s*:\s*"blog\.cyberdudebivash\.in"/g) || [];
+    const socRoutes = wrangler.match(/"pattern"\s*:\s*"soc\.cyberdudebivash\.in"/g) || [];
+    expect(legacyRoutes).toHaveLength(1);
+    expect(socRoutes).toHaveLength(1);
+    expect(wrangler).not.toMatch(/"pattern"\s*:\s*"\*\.cyberdudebivash\.in"/);
+    // Domain configuration alone does not prove canonical, legal,
+    // tenant-isolation or production deployment acceptance.
   });
 
   test('Architecture forbids tenant leaks and domain cutover before proof', () => {
