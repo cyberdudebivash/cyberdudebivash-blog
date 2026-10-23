@@ -77,7 +77,7 @@ test('About page must explicitly bound managed customer monitoring availability'
 
 test('missing body or head-only legal response fails closed', () => {
   const terms = fixture('/terms.html');
-  const headOnly = terms.replace(/<body>[\\s\\S]*?<\\/body>/, '');
+  const headOnly = terms.replace(/<body>[\s\S]*?<\/body>/, '');
   const errors = assess('/terms.html', headOnly);
   assert.ok(errors.includes('VISIBLE_BODY_MISSING'));
   assert.ok(errors.includes('SELLER_IDENTITY_MISSING'));
@@ -94,7 +94,7 @@ test('legal seller must appear in visible copy, not just hidden markup', () => {
 
 test('all SOC routes reject missing visible body independently of metadata', () => {
   for (const route of ROUTES) {
-    const html = fixture(route).replace(/<body>[\\s\\S]*?<\\/body>/, '');
+    const html = fixture(route).replace(/<body>[\s\S]*?<\/body>/, '');
     assert.ok(assess(route, html).includes('VISIBLE_BODY_MISSING'), route);
   }
 });
