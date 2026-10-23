@@ -7,12 +7,13 @@
 <meta name="description" content="SENTINEL APEX SOC — intelligence-led hybrid SOC and CTI platform for source-attributed threat intelligence, detection engineering, threat hunting, incident readiness and scoped enterprise SOC assessments.">
 <meta name="robots" content="index,follow">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="canonical" href="https://blog.cyberdudebivash.in/soc.html">
+<link rel="canonical" href="https://soc.cyberdudebivash.in/soc.html">
 <meta property="og:title" content="SENTINEL APEX SOC | Hybrid Security Operations + Threat Intelligence">
 <meta property="og:description" content="One connected workspace for CTI, threat hunting, detection engineering, incident readiness and transparent customer assurance.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://blog.cyberdudebivash.in/soc.html">
+<meta property="og:url" content="https://soc.cyberdudebivash.in/soc.html">
 <title>SENTINEL APEX SOC | Hybrid Security Operations &amp; CTI Platform</title>
+<link rel="stylesheet" href="/soc-intelligence-desk.css?v=20261023-ux1">
 <style>
 :root{--bg:#06121c;--panel:#0b2230;--edge:#244456;--ink:#edfaff;--muted:#afc5d0;--mint:#50ebd6;--blue:#6dbaf2;--lime:#b5f18b}
 *{box-sizing:border-box}
@@ -83,7 +84,7 @@ footer{border-top:1px solid #264553;background:#06121c;padding:30px 0;color:#a1b
       <div class="kicker">SENTINEL APEX SOC · INTELLIGENCE-LED DEFENSE</div>
       <h1 id="headline">See the threat.<br><span>Build the response.</span></h1>
       <p class="lead">A unified Hybrid SOC + CTI platform connecting source-attributed threat intelligence, detection engineering, analyst hunting, incident readiness, and customer assurance—built for security teams that need defensible evidence, not decorative dashboards.</p>
-      <div class="actions"><a class="button" href="/soc-readiness-assessment.html">Request a SOC Assessment ↗</a><a class="button ghost" href="/intel/">Explore Threat Intelligence</a></div>
+      <div class="actions"><a class="button" href="/soc-readiness-assessment.html">Request a SOC Assessment ↗</a><a class="button ghost" href="#soc-intelligence-desk">Open Intelligence Desk</a><a class="button ghost" href="/intel/">Explore CTI Archive</a></div>
       <div class="truth">Platform scope: CTI research, detection guidance and SOC readiness workflows are presented here. Fully managed customer monitoring and incident response require individually authorized onboarding and agreed service terms. SOC 2 alignment is not a certified SOC 2 audit.</div>
     </div>
     <div class="screen" aria-label="SOC platform capability overview, not live incident counts">
@@ -103,6 +104,58 @@ footer{border-top:1px solid #264553;background:#06121c;padding:30px 0;color:#a1b
     </div>
   </section>
 </div>
+<section class="soc-desk" id="soc-intelligence-desk" aria-labelledby="soc-desk-title">
+ <div class="wrap">
+  <div class="soc-desk__top">
+   <div>
+    <div class="soc-desk__overline">ANALYST WORKSPACE / PUBLIC CTI</div>
+    <h2 id="soc-desk-title">Intelligence you can inspect.<br>Signals you can trace.</h2>
+    <p class="soc-desk__intro">Explore the latest available first-party CTI snapshot with transparent feed freshness, source identity, severity filters and report links. This is research intelligence, not customer endpoint telemetry.</p>
+   </div>
+   <button class="soc-desk__refresh" type="button" data-desk-refresh aria-label="Refresh public threat intelligence snapshot">↻ Refresh snapshot</button>
+  </div>
+  <div class="soc-desk__statebar" role="status" aria-live="polite" aria-atomic="true">
+   <span class="soc-desk__state" data-desk-state data-state="CHECKING">CHECKING</span>
+   <span data-desk-status-detail>Checking the first-party feed; freshness has not been verified.</span>
+   <span class="soc-desk__timestamp" data-desk-published>Feed timestamp not established</span>
+  </div>
+  <div class="soc-desk__metrics" aria-label="Public feed snapshot summary">
+   <div class="soc-desk__metric"><span class="soc-desk__metric-label">Pipeline freshness</span><strong class="soc-desk__metric-value" data-desk-state-summary>Not verified</strong><span class="soc-desk__metric-help">Derived from published feed timestamp</span></div>
+   <div class="soc-desk__metric"><span class="soc-desk__metric-label">Records loaded</span><strong class="soc-desk__metric-value" data-desk-sample>—</strong><span class="soc-desk__metric-help">Current feed sample; not total incidents</span></div>
+   <div class="soc-desk__metric"><span class="soc-desk__metric-label">Exploitation flagged</span><strong class="soc-desk__metric-value" data-desk-exploited-count>—</strong><span class="soc-desk__metric-help">Feed-reported attribute; not validated alerts</span></div>
+   <div class="soc-desk__metric"><span class="soc-desk__metric-label">Named feed sources</span><strong class="soc-desk__metric-value" data-desk-sources>—</strong><span class="soc-desk__metric-help">Distinct labels in current feed sample</span></div>
+  </div>
+  <div class="soc-desk__surface">
+   <div class="soc-desk__toolbar" role="search" aria-label="Filter public intelligence records">
+    <label>Search intelligence
+     <input type="search" data-desk-search placeholder="Search CVE, report title or publisher" autocomplete="off" maxlength="120">
+    </label>
+    <label>Severity in feed
+     <select data-desk-severity>
+      <option value="all">All severity labels</option>
+      <option value="CRITICAL">Critical</option>
+      <option value="HIGH">High</option>
+      <option value="MEDIUM">Medium</option>
+      <option value="LOW">Low</option>
+     </select>
+    </label>
+    <label class="soc-desk__checkbox"><input type="checkbox" data-desk-exploited> Exploitation flagged</label>
+   </div>
+   <div class="soc-desk__results-top">
+    <h3>Source-linked intelligence records <span class="soc-desk__overline" data-desk-count>0</span></h3>
+    <p data-desk-visible>Loading available public intelligence records…</p>
+   </div>
+   <ol class="soc-desk__results" data-desk-records aria-label="Filtered public CTI reports"></ol>
+   <p class="soc-desk__empty" data-desk-empty hidden>No matching records in the current feed snapshot. This does not establish absence of threats in any customer environment.</p>
+   <div class="soc-desk__foot">
+    <p><strong>Evidence boundary:</strong> Source attribution, severity and exploitation flags originate from the published CTI feed. They are not customer incidents, human-validated exploitation proof, managed SOC SLAs or SOC 2 attestation.</p>
+    <a href="/intel/">Open full CTI archive ↗</a>
+    <a href="/customer-assurance.html">Review assurance scope ↗</a>
+   </div>
+  </div>
+ </div>
+</section>
+
 <section class="section section-alt" id="capabilities" aria-labelledby="capabilities-title">
 <div class="wrap">
   <div class="eyebrow">01 / Operational Capabilities</div>
@@ -161,5 +214,7 @@ footer{border-top:1px solid #264553;background:#06121c;padding:30px 0;color:#a1b
 <footer><div class="wrap footer-flex"><span>© CYBERDUDEBIVASH ECOSYSTEM · SENTINEL APEX SOC</span>
   <div class="footer-links"><a href="/">Threat Intelligence</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/security-disclosure.html">Security Disclosure</a><a href="/contact.html">Contact</a></div>
 </div></footer>
+<script src="/runtime-state.js?v=20261023-ux1" defer></script>
+<script src="/soc-intelligence-desk.js?v=20261023-ux1" defer></script>
 </body>
 </html>
