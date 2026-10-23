@@ -179,12 +179,15 @@ test('SOC RSS projection updates navigational links without changing entry GUID'
   const xml = '<rss><channel><link>https://blog.cyberdudebivash.in</link>' +
     '<atom:link rel="self" href="https://blog.cyberdudebivash.in/rss.xml"/>' +
     '<item><link>https://blog.cyberdudebivash.in/posts/post.html</link>' +
-    '<guid>https://blog.cyberdudebivash.in/posts/post.html</guid></item></channel></rss>';
+    '<guid>https://blog.cyberdudebivash.in/posts/post.html</guid>' +
+    '<description><![CDATA[Source <link>https://blog.cyberdudebivash.in/ remains historical]]></description>' +
+    '</item></channel></rss>';
   const output = rewritePublicRssMetadata(xml);
   assert.match(output, /<link>https:\/\/soc\.cyberdudebivash\.in<\/link>/);
   assert.match(output, /href="https:\/\/soc\.cyberdudebivash\.in\/rss\.xml"/);
   assert.match(output, /<link>https:\/\/soc\.cyberdudebivash\.in\/posts\/post\.html<\/link>/);
   assert.match(output, /<guid>https:\/\/blog\.cyberdudebivash\.in\/posts\/post\.html<\/guid>/);
+  assert.match(output, /<!\[CDATA\[Source <link>https:\/\/blog\.cyberdudebivash\.in\//);
   assert.equal(rewritePublicRssMetadata(output), output);
 });
 
