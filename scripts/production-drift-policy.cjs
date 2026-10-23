@@ -21,6 +21,72 @@ const BENIGN_FILES = new Set([
 ]);
 const BENIGN_SCRIPT_TEST = /^scripts\/[A-Za-z0-9._/-]+\.(?:test|spec)\.(?:cjs|mjs|js)$/;
 
+/**
+ * Audited 2026-10-23 against COMPLETE, independently verified immutable Git
+ * trees (base 365c89f3, main c77ec9a4). These are operational/CTI pipeline,
+ * scheduler, migration, customer-delivery and release-gate inputs.
+ *
+ * They do not all ship inside a Cloudflare Worker bundle. They MUST NOT be
+ * downgraded to documentation, test fixtures or successful deployment proof.
+ * Changes require operator-reviewed acceptance, even if no Worker deploy is
+ * appropriate. Future unlisted scripts, workflows or migrations remain BLOCKED.
+ */
+const REVIEWED_OPERATIONAL_FILES = new Set([
+  '.github/workflows/alert-delivery.yml',
+  '.github/workflows/intelligence-hub.yml',
+  '.github/workflows/workflow-security-gate.yml',
+  'OPERATIONS.md',
+  'ai-security-intel-memory.json',
+  'ai-security-intel-state.json',
+  'intel-memory.json',
+  'data/ioc-store.json',
+  'data/published_posts.json',
+  'build-detections-page.js',
+  'build-evi-page.js',
+  'build-research.js',
+  'generate-intelligence-hub.js',
+  'generate-rss.js',
+  'migrations/0017_soc_bounded_watchlist_eval.sql',
+  'migrations/0018_soc_notification_outbox.sql',
+  'scripts/alert-delivery-execution-gate.cjs',
+  'scripts/audit-soc-published-ui.cjs',
+  'scripts/check-cloudflare-runtime.js',
+  'scripts/cloudflare-account-zero-overage-gate.cjs',
+  'scripts/deliver-watchlist-notifications.js',
+  'scripts/evaluate-watchlist-changes.js',
+  'scripts/publish-intelligence-hub.sh',
+  'scripts/reconcile-soc-notification-outbox.js',
+  'scripts/soc-domain-release-gate.cjs',
+  'scripts/soc-hostname-truth-gate.cjs',
+  'scripts/soc-live-release-parity.cjs',
+  'scripts/soc-readiness-delivery-gate.cjs',
+  'scripts/verify-existing-cloudflare-domain.cjs',
+]);
+
+/**
+ * Exact historical execution evidence inspected as JSON under logs/. Do not
+ * allowlist logs/** or arbitrary newly written logs: unexpected artifacts
+ * might include operational state, private values or production inputs.
+ */
+const REVIEWED_HISTORICAL_LOGS = new Set([
+  'logs/run-20261022-073736.json',
+  'logs/run-20261022-100859.json',
+  'logs/run-20261022-131441.json',
+  'logs/run-20261022-151526.json',
+  'logs/run-20261022-180407.json',
+  'logs/run-20261022-191412.json',
+  'logs/run-20261022-214114.json',
+  'logs/run-20261022-221856.json',
+  'logs/run-20261023-001210.json',
+  'logs/run-20261023-012847.json',
+  'logs/run-20261023-072845.json',
+  'logs/run-20261023-132648.json',
+]);
+
+function isReviewedOperationalPath(file) {
+  return REVIEWED_OPERATIONAL_FILES.has(file);
+}
+
 function deployPaths(source) {
   const lines = source.split(/\r?\n/);
   let foundPush = false;
@@ -52,7 +118,7 @@ function isProductionPath(file, patterns) {
 }
 
 function isKnownBenignPath(file) {
-  return BENIGN_FILES.has(file) ||
+  return BENIGN_FILES.has(file) || REVIEWED_HISTORICAL_LOGS.has(file) ||
     BENIGN_PREFIXES.some(prefix => file.startsWith(prefix)) ||
     BENIGN_SCRIPT_TEST.test(file);
 }
@@ -91,7 +157,7 @@ function classifyChangedFiles(files, patterns) {
   if (!Array.isArray(files)) return {
     state: 'blocked', reason: 'changed file list unavailable'
   };
-  const affected=[], unknown=[], benign=[];
+  const affected=[], operational=[], unknown=[], benign=[];
   for (const file of files) {
     if (!file || typeof file.filename !== 'string' ||
         !/^(added|modified|removed|renamed|changed|copied)$/.test(file.status) ||
@@ -103,6 +169,7 @@ function classifyChangedFiles(files, patterns) {
       if (!/^(?!\/)(?!.*\.\.)(?!.*\\)[\w.@+/-]+$/.test(name))
         return {state:'blocked',reason:'unsafe filename in comparison'};
       if (isProductionPath(name,patterns)) affected.push(name);
+      else if (isReviewedOperationalPath(name)) operational.push(name);
       else if (isKnownBenignPath(name)) benign.push(name);
       else unknown.push(name);
     }
@@ -110,12 +177,13 @@ function classifyChangedFiles(files, patterns) {
   const reviewed = {
     compared_files:files.length,
     production:[...new Set(affected)].sort(),
+    operational:[...new Set(operational)].sort(),
     benign:[...new Set(benign)].sort(),
     unknown:[...new Set(unknown)].sort(),
   };
   if (reviewed.unknown.length)
     return {state:'blocked',reason:'unrecognized changed files require source review',...reviewed};
-  if (reviewed.production.length)
+  if (reviewed.production.length || reviewed.operational.length)
     return {state:'manual_release_required',...reviewed};
   return {state:'nonproduction_only',...reviewed};
 }
@@ -207,6 +275,7 @@ function renderDriftSummary(head, base, result) {
     '- decision: **' + result.state + '**',
     '- reason: ' + (result.reason || 'complete commit/file comparison evaluated'),
     '- production-affecting files: ' + (result.production?.length || 0),
+    '- reviewed operational/release-control changes: ' + (result.operational?.length || 0),
     '- known nonproduction files: ' + (result.benign?.length || 0),
     '- unknown files: ' + (result.unknown?.length || 0),
     '- total compared changed files: ' + (result.compared_files ?? 'not certified'),
@@ -219,6 +288,12 @@ function renderDriftSummary(head, base, result) {
       ...(result.unknown.length > 30
         ? ['  - ... plus ' + (result.unknown.length - 30) + ' additional unclassified paths'] : []),
     ] : []),
+    ...(result.operational?.length ? [
+      '- **Operational/release-control changes (operator review required):**',
+      ...result.operational.slice(0, 12).map(name => '  - \x60' + name + '\x60'),
+      ...(result.operational.length > 12
+        ? ['  - ... plus ' + (result.operational.length - 12) + ' additional operational paths'] : []),
+    ] : []),
     ...(result.production?.length ? [
       '- **Production changes detected (sample, never a deployment approval):**',
       ...result.production.slice(0, 12).map(name => '  - `' + name + '`'),
@@ -226,6 +301,7 @@ function renderDriftSummary(head, base, result) {
         ? ['  - ... plus ' + (result.production.length - 12) + ' additional production paths'] : []),
     ] : []),
     '- **No deployment or workflow dispatch is performed by this monitor.**',
+    '- Monitoring completed; status manual_release_required is NOT proof of deployment.',
     '- Manual release and independent postdeploy certification required.',
     '',
   ].join('\n');
@@ -301,4 +377,5 @@ if (require.main === module) {
     process.exitCode = 1;
   });
 }
-module.exports = { deployPaths, pathMatches, isKnownBenignPath, classify, classifyVerifiedGitTrees, renderDriftSummary };
+module.exports = { deployPaths, pathMatches, isKnownBenignPath, isReviewedOperationalPath,
+  classify, classifyVerifiedGitTrees, renderDriftSummary };
