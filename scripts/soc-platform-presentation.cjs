@@ -15,7 +15,7 @@ const SHELL=[
 '   <span class="soc-unified-shell__name"><strong>SENTINEL APEX <em>SOC</em></strong><small>HYBRID SECURITY OPERATIONS + THREAT INTELLIGENCE</small></span>',
 '  </a>',
 '  <nav class="soc-unified-shell__nav" aria-label="SOC operational modules">',
-'   <a href="/soc.html">Overview</a><a href="/intel/">Threat Intelligence</a>',
+'   <a href="/soc.html#soc-intelligence-desk">SOC Intelligence Desk</a><a href="/intel/">Threat Intelligence</a>',
 '   <a href="/hunts.html">Threat Hunting</a><a href="/detections/">Detections</a>',
 '   <a href="/customer-incident-response.html">Incident Readiness</a>',
 '   <a href="/customer-assurance.html">Assurance</a>',
