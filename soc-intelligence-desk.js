@@ -66,6 +66,24 @@
         .filter(function (x) { return x !== 'source not supplied'; })).size
     };
   }
+
+  function csvCell(value) {
+    var v = String(value == null ? '' : value).replace(/[\u0000-\u001f]/g, ' ').slice(0, 400);
+    if (/^\s*[=+\-@]/.test(v)) v = "'" + v;
+    return '"' + v.replace(/"/g, '""') + '"';
+  }
+  function buildCsv(records) {
+    var header = ['ID', 'Title', 'Feed severity', 'Feed source', 'Exploitation flagged', 'Record date', 'Report URL'];
+    var rows = records.slice(0, 100).map(function (record) {
+      return [record.id, record.title, record.severity, record.source,
+        record.exploited ? 'Yes (feed-reported)' : 'No', record.date,
+        record.href ? 'https://soc.cyberdudebivash.in' + record.href : 'Not verified'];
+    });
+    return [header].concat(rows).map(function (row) {
+      return row.map(csvCell).join(',');
+    }).join('\r\n') + '\r\n';
+  }
+
   function text(root, selector, value) {
     var el = root.querySelector(selector);
     if (el) el.textContent = String(value);
@@ -108,6 +126,7 @@
     var severity = shell.querySelector('[data-desk-severity]');
     var exploited = shell.querySelector('[data-desk-exploited]');
     var refresh = shell.querySelector('[data-desk-refresh]');
+    var exportButton = shell.querySelector('[data-desk-export]');
     if (!list || !search || !severity || !exploited || !refresh) return;
     var records = [];
     function show() {
@@ -117,6 +136,7 @@
       list.replaceChildren(frag);
       text(shell, '[data-desk-count]', String(subset.length));
       text(shell, '[data-desk-visible]', 'Showing ' + Math.min(LIMIT, subset.length) + ' of ' + subset.length + ' matching feed records.');
+      if (exportButton) exportButton.disabled = subset.length === 0;
       var empty = shell.querySelector('[data-desk-empty]');
       if (empty) empty.hidden = subset.length > 0;
     }
@@ -164,9 +184,23 @@
     severity.addEventListener('change', show);
     exploited.addEventListener('change', show);
     refresh.addEventListener('click', fetchFeed);
+    if (exportButton) exportButton.addEventListener('click', function () {
+      var subset = filterRecords(records, search.value, severity.value, exploited.checked);
+      if (!subset.length) return;
+      var blob = new Blob([buildCsv(subset)], { type: 'text/csv;charset=utf-8' });
+      var href = URL.createObjectURL(blob);
+      try {
+        var a = document.createElement('a');
+        a.href = href; a.download = 'sentinel-apex-soc-public-cti.csv';
+        a.hidden = true;
+        document.body.appendChild(a);
+        a.click(); a.remove();
+      } finally { URL.revokeObjectURL(href); }
+    });
     show();
     fetchFeed();
   }
   return { ENDPOINT: ENDPOINT, LIMIT: LIMIT, safeRecordHref: safeRecordHref,
-    normalizeRecords: normalizeRecords, filterRecords: filterRecords, metrics: metrics, boot: boot };
+    normalizeRecords: normalizeRecords, filterRecords: filterRecords, metrics: metrics,
+    csvCell: csvCell, buildCsv: buildCsv, boot: boot };
 });
