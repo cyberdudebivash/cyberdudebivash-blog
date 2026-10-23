@@ -16,7 +16,7 @@
   /* ═══════════════════════════════════════════════════════════════
      CONFIG
   ═══════════════════════════════════════════════════════════════ */
-  const SITE = 'https://blog.cyberdudebivash.in';
+  const SITE = 'https://soc.cyberdudebivash.in';
   const BRAND = 'CyberDudeBivash — CYBERDUDEBIVASH SENTINEL APEX';
 
   // Internal link map: keyword → { url, title, track }

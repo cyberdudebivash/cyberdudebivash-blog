@@ -11,7 +11,7 @@ function staticMarkupOnly(html) {
     .replace(/<script\b[\s\S]*?<\/script>/gi, '')
     .replace(/<style\b[\s\S]*?<\/style>/gi, '');
 }
-const { build, countFiles, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure, hasUndefinedMetadataArtifacts, LEGACY_COMMERCIAL_COPY, neutralizeLegacyCommercialCopy, findUnsupportedPublicClaims } = require('./build-cloudflare-assets');
+const { build, countFiles, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure, hasUndefinedMetadataArtifacts, LEGACY_COMMERCIAL_COPY, neutralizeLegacyCommercialCopy, findUnsupportedPublicClaims, rewritePublicSeoMetadata, rewritePublicRssMetadata } = require('./build-cloudflare-assets');
 
 // Mirrors Cloudflare's own documented splat semantics for a _headers
 // pattern: "a splat pattern -- signified by an asterisk (*) -- will
@@ -151,6 +151,46 @@ test('legacy commercial copy converges on the current generator wording and neve
   assert.deepEqual(findUnsupportedPublicClaims('<p>Get pre-disclosure threat intelligence</p>'), ['pre-disclosure offer']);
 });
 
+
+test('SOC canonical projection rewrites only crawler metadata, not historical or operational URLs', () => {
+  const source = [
+    '<link rel="canonical" href="https://blog.cyberdudebivash.in/posts/sample.html">',
+    '<meta property="og:url" content="https://blog.cyberdudebivash.in/posts/sample.html">',
+    '<meta property="og:image" content="https://blog.cyberdudebivash.in/photo.jpg">',
+    '<meta name="twitter:url" content="https://blog.cyberdudebivash.in/posts/sample.html">',
+    '<script type="application/ld+json">{"url":"https://blog.cyberdudebivash.in/posts/sample.html"}</script>',
+    '<script>const callback="https://blog.cyberdudebivash.in/api/v1/billing/razorpay-webhook";</script>',
+    '<p>Historical source: https://blog.cyberdudebivash.in/posts/sample.html</p>',
+    '<a href="https://blog.cyberdudebivash.in/api.html">Legacy API link</a>',
+  ].join('\n');
+  const output = rewritePublicSeoMetadata(source);
+  assert.match(output, /rel="canonical" href="https:\/\/soc\.cyberdudebivash\.in\/posts\/sample\.html"/);
+  assert.match(output, /property="og:url" content="https:\/\/soc\.cyberdudebivash\.in\/posts\/sample\.html"/);
+  assert.match(output, /property="og:image" content="https:\/\/soc\.cyberdudebivash\.in\/photo\.jpg"/);
+  assert.match(output, /twitter:url" content="https:\/\/soc\.cyberdudebivash\.in/);
+  assert.match(output, /"url":"https:\/\/soc\.cyberdudebivash\.in\/posts\/sample\.html"/);
+  assert.match(output, /const callback="https:\/\/blog\.cyberdudebivash\.in\/api\/v1\/billing\/razorpay-webhook"/);
+  assert.match(output, /Historical source: https:\/\/blog\.cyberdudebivash\.in/);
+  assert.match(output, /href="https:\/\/blog\.cyberdudebivash\.in\/api\.html"/);
+  assert.equal(rewritePublicSeoMetadata(output), output);
+});
+
+test('SOC RSS projection updates navigational links without changing entry GUID', () => {
+  const xml = '<rss><channel><link>https://blog.cyberdudebivash.in</link>' +
+    '<atom:link rel="self" href="https://blog.cyberdudebivash.in/rss.xml"/>' +
+    '<item><link>https://blog.cyberdudebivash.in/posts/post.html</link>' +
+    '<guid>https://blog.cyberdudebivash.in/posts/post.html</guid>' +
+    '<description><![CDATA[Source <link>https://blog.cyberdudebivash.in/ remains historical]]></description>' +
+    '</item></channel></rss>';
+  const output = rewritePublicRssMetadata(xml);
+  assert.match(output, /<link>https:\/\/soc\.cyberdudebivash\.in<\/link>/);
+  assert.match(output, /href="https:\/\/soc\.cyberdudebivash\.in\/rss\.xml"/);
+  assert.match(output, /<link>https:\/\/soc\.cyberdudebivash\.in\/posts\/post\.html<\/link>/);
+  assert.match(output, /<guid>https:\/\/blog\.cyberdudebivash\.in\/posts\/post\.html<\/guid>/);
+  assert.match(output, /<!\[CDATA\[Source <link>https:\/\/blog\.cyberdudebivash\.in\//);
+  assert.equal(rewritePublicRssMetadata(output), output);
+});
+
 describe('build-cloudflare-assets', () => {
   let outputFiles;
 
@@ -161,6 +201,44 @@ describe('build-cloudflare-assets', () => {
     const count = countFiles(outDir);
     assert.ok(count > 100, `expected a substantial file count, got ${count}`);
     outputFiles = walk(outDir).map(f => path.relative(outDir, f).replace(/\\/g, '/'));
+  });
+
+
+  test('generated crawler metadata, robots, sitemap and RSS converge on SOC', () => {
+    const origin = 'https://soc.cyberdudebivash.in';
+    const sitemap = fs.readFileSync(path.join(OUT, 'sitemap.xml'), 'utf8');
+    const robots = fs.readFileSync(path.join(OUT, 'robots.txt'), 'utf8');
+    const rss = fs.readFileSync(path.join(OUT, 'rss.xml'), 'utf8');
+    assert.match(robots, /Sitemap: https:\/\/soc\.cyberdudebivash\.in\/sitemap\.xml/);
+    assert.ok(!/<loc>https:\/\/blog\.cyberdudebivash\.in/i.test(sitemap),
+      'legacy canonical leaked into sitemap');
+    assert.match(sitemap, /<loc>https:\/\/soc\.cyberdudebivash\.in\/<\/loc>/);
+    assert.match(rss, /<atom:link\b[^>]*href="https:\/\/soc\.cyberdudebivash\.in\/rss\.xml"/);
+    let checked = 0;
+    for (const rel of outputFiles.filter(f => f.endsWith('.html'))) {
+      const html = fs.readFileSync(path.join(OUT, rel), 'utf8');
+      const match = html.match(/<link\b[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)/i);
+      if (!match) continue;
+      checked++;
+      const canonical = new URL(match[1]);
+      if (canonical.hostname === 'blog.cyberdudebivash.in') {
+        assert.fail(rel + ' retains a legacy crawler canonical');
+      }
+      if (canonical.origin === origin &&
+          !/^(?:admin-|review-queue|leads|customer-library|order-confirmation)\.html$/i.test(rel) &&
+          !/<meta\b[^>]*name=["']robots["'][^>]*content=["'][^"']*noindex/i.test(html)) {
+        // Match buildPublicSitemap()'s intentional trailing-slash policy.
+        canonical.hash = '';
+        const sitemapUrl = canonical.toString().replace(/\/$/, rel === 'index.html' ? '/' : '')
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        assert.ok(sitemap.includes('<loc>' + sitemapUrl + '</loc>'),
+          rel + ' not reflected in sitemap; validate canonical alias policy');
+      }
+    }
+    assert.ok(checked > 10, 'too few generated canonical pages reviewed');
+    const home = fs.readFileSync(path.join(OUT, 'index.html'), 'utf8');
+    assert.match(home, /property="og:url" content="https:\/\/soc\.cyberdudebivash\.in\/"/);
+    assert.match(home, /"@id": "https:\/\/soc\.cyberdudebivash\.in\/#website"/);
   });
 
   test('no output path matches a prohibited directory segment or filename', () => {
@@ -228,7 +306,7 @@ test('legitimate content containing prohibited words as substrings is not flagge
   test('all internal links in public HTML resolve to a built asset or Worker route', () => {
     const files = new Set(outputFiles);
     const offenders = [];
-    const publicOrigin = 'https://blog.cyberdudebivash.in';
+    const publicOrigins = new Set(['https://blog.cyberdudebivash.in', 'https://soc.cyberdudebivash.in']);
 
     function existsAsPublicPath(requestPath) {
       const route = resolveRoute(requestPath);
@@ -257,7 +335,7 @@ test('legitimate content containing prohibited words as substrings is not flagge
         if (/^https?:\/\//i.test(raw)) {
           let url;
           try { url = new URL(raw); } catch { offenders.push(rel + ' -> malformed URL: ' + raw); continue; }
-          if (url.origin !== publicOrigin) continue;
+          if (!publicOrigins.has(url.origin)) continue;
           requestPath = url.pathname;
         } else if (raw.startsWith('/')) {
           requestPath = raw.split(/[?#]/, 1)[0];

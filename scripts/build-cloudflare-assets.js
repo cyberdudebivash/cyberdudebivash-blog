@@ -224,7 +224,7 @@ function synthesizeMissingCvePages(outDir) {
     if (fs.existsSync(dest)) continue;
     const html = validatePublicHtmlStructure(renderCvePageFromJson(id, path.join(intelDir, name), 'api/intel/cve/' + name), 'api/intel/cve/' + name);
     fs.mkdirSync(path.dirname(dest), { recursive: true });
-    fs.writeFileSync(dest, injectCustomerExperience(html));
+    fs.writeFileSync(dest, injectCustomerExperience(rewritePublicSeoMetadata(html)));
     created.push('cve/' + id + '.html');
   }
   return created;
@@ -305,6 +305,40 @@ function findUnsupportedPublicClaims(html) {
   return UNSUPPORTED_PUBLIC_CLAIMS.filter(([, re]) => re.test(text)).map(([label]) => label);
 }
 
+
+// SOC canonical projection applies only to public SEO metadata. Historical
+// research text, citations, payment/API URLs and technical content remain intact.
+const LEGACY_SOC_ORIGIN = 'https://blog.cyberdudebivash.in';
+const CANONICAL_SOC_ORIGIN = 'https://soc.cyberdudebivash.in';
+
+function rewritePublicSeoMetadata(html) {
+  const changeOrigin = value => value.split(LEGACY_SOC_ORIGIN).join(CANONICAL_SOC_ORIGIN);
+  return String(html)
+    .replace(/<link\b[^>]*>/gi, tag =>
+      /\brel\s*=\s*(["'])(?:canonical|alternate)\1/i.test(tag) &&
+      /\bhref\s*=\s*(["'])https:\/\/blog\.cyberdudebivash\.in\//i.test(tag)
+        ? changeOrigin(tag) : tag)
+    .replace(/<meta\b[^>]*>/gi, tag =>
+      /\b(?:property|name)\s*=\s*(["'])(?:og:url|twitter:url|og:image|og:image:secure_url|twitter:image)\1/i.test(tag)
+        ? changeOrigin(tag) : tag)
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, tag =>
+      /^<script\b[^>]*\btype\s*=\s*(["'])application\/ld\+json\1/i.test(tag)
+        ? changeOrigin(tag) : tag);
+}
+
+function rewritePublicRssMetadata(xml) {
+  // RSS entry links follow the new public site. GUIDs, historical item text,
+  // timestamps and vendor webhooks remain byte-for-byte intact.
+  return String(xml).split(/(<!\[CDATA\[[\s\S]*?\]\]>)/g)
+    .map(chunk => chunk.startsWith('<![CDATA[') ? chunk : chunk
+      .replace(/(<link>)https:\/\/blog\.cyberdudebivash\.in/gi,
+        (_, prefix) => prefix + CANONICAL_SOC_ORIGIN)
+      .replace(/<atom:link\b[^>]*>/gi, tag =>
+        /\brel\s*=\s*(["'])self\1/i.test(tag)
+          ? tag.split(LEGACY_SOC_ORIGIN).join(CANONICAL_SOC_ORIGIN) : tag))
+    .join('');
+}
+
 function copyFileForPublicBuild(src, dest) {
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   if (src.toLowerCase().endsWith('.html')) {
@@ -320,7 +354,9 @@ function copyFileForPublicBuild(src, dest) {
     // SEO metadata and historic publish date remain intact in source control.
     const { decorateLegacyPost } = require('./cti-archive-v14');
     const html = validatePublicHtmlStructure(decorateLegacyPost(repairedHtml,rel), rel);
-    fs.writeFileSync(dest, injectCustomerExperience(html));
+    fs.writeFileSync(dest, injectCustomerExperience(rewritePublicSeoMetadata(html)));
+  } else if (path.basename(src).toLowerCase() === 'rss.xml') {
+    fs.writeFileSync(dest, rewritePublicRssMetadata(fs.readFileSync(src, 'utf8')));
   } else if (src.toLowerCase().endsWith('.json')) {
     fs.writeFileSync(dest, correctPublicIntelJson(fs.readFileSync(src, 'utf8')));
   } else {
@@ -425,7 +461,7 @@ function listHtmlFiles(dir, prefix = '') {
 }
 
 function buildPublicSitemap(outDir) {
-  const canonicalHost = 'https://blog.cyberdudebivash.in';
+  const canonicalHost = 'https://soc.cyberdudebivash.in';
   const seen = new Set();
   const urls = [];
 
@@ -505,4 +541,4 @@ if (require.main === module) {
   console.log(`dist-public/ built: ${countFiles(out)} files`);
 }
 
-module.exports = { build, countFiles, buildPublicSitemap, listHtmlFiles, PUBLIC_DIRS, PUBLIC_ROOT_FILES, ROOT, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure, hasUndefinedMetadataArtifacts, repairLegacyCveHtml, CX_CSS, CX_JS, LEGACY_COMMERCIAL_COPY, RETIRED_PLAN_PRICE_COPY, UNSUPPORTED_PUBLIC_CLAIMS, neutralizeLegacyCommercialCopy, findUnsupportedPublicClaims, correctPublicIntelJson, applyLegacyCvssCorrection, synthesizeMissingCvePages, renderCvePageFromJson, stripUnprovenGraphIocs };
+module.exports = { build, countFiles, buildPublicSitemap, listHtmlFiles, PUBLIC_DIRS, PUBLIC_ROOT_FILES, ROOT, OUT, HEADERS_FILE_CONTENT, injectCustomerExperience, validatePublicHtmlStructure, hasUndefinedMetadataArtifacts, repairLegacyCveHtml, CX_CSS, CX_JS, LEGACY_COMMERCIAL_COPY, RETIRED_PLAN_PRICE_COPY, UNSUPPORTED_PUBLIC_CLAIMS, neutralizeLegacyCommercialCopy, findUnsupportedPublicClaims, correctPublicIntelJson, rewritePublicSeoMetadata, rewritePublicRssMetadata, applyLegacyCvssCorrection, synthesizeMissingCvePages, renderCvePageFromJson, stripUnprovenGraphIocs };
