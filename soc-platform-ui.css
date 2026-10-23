@@ -35,3 +35,23 @@
 @media(max-width:720px){.soc-unified-shell__inner{gap:8px;padding:10px 13px}.soc-unified-shell__mark{width:34px;height:34px;font-size:21px}.soc-unified-shell__name strong{font-size:13px}.soc-unified-shell__name small{font-size:8px}.soc-unified-shell__action{font-size:11px;white-space:normal;max-width:145px;line-height:1.25}.soc-unified-shell__nav{flex-wrap:nowrap;overflow-x:auto;gap:22px;overscroll-behavior-inline:contain;scrollbar-width:thin;padding:0 0 2px}.soc-unified-shell__nav a{flex-shrink:0;font-size:12px}.soc-launch__inside{grid-template-columns:1fr}.soc-launch{margin-top:10px;padding:0 10px}}
 @media(prefers-reduced-motion:reduce){.soc-unified-shell *{transition:none!important;animation:none!important}}
 @media(forced-colors:active){.soc-unified-shell,.soc-launch__inside{border:1px solid CanvasText}}
+
+
+/* Customer-grade shared shell refinement: visible primary SOC work surface
+   throughout the site, with no changes to auth, routes or revenue handlers. */
+.soc-unified-shell{background:linear-gradient(110deg,#071724f9,#0a2531f9);border-bottom-color:#336477}
+.soc-unified-shell__inner{max-width:1680px}
+.soc-unified-shell__nav a{border-radius:6px 6px 0 0;letter-spacing:.005em}
+.soc-unified-shell__nav a[href^="/soc.html#"]{color:#b4f6eb!important;font-weight:850}
+.soc-unified-shell__nav a[href^="/soc.html#"]:before{content:"";display:inline-block;width:6px;height:6px;background:#63efcf;border-radius:50%;margin-right:8px;box-shadow:0 0 0 3px rgba(99,239,207,.10)}
+.soc-unified-shell__nav a:hover{background:rgba(66,205,194,.07)}
+.soc-unified-shell__action{min-height:48px;transition:filter .16s ease,transform .16s ease}
+.soc-unified-shell__action:hover{filter:brightness(1.05);transform:translateY(-1px)}
+@media(max-width:720px){
+ .soc-unified-shell__nav{scroll-snap-type:x proximity;padding:2px 0 7px}
+ .soc-unified-shell__nav a{scroll-snap-align:start;min-height:44px}
+ .soc-unified-shell__action{min-height:44px}
+}
+@media(prefers-reduced-motion:reduce){
+ .soc-unified-shell__action:hover{transform:none}
+}
