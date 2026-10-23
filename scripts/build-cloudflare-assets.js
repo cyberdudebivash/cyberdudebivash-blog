@@ -329,12 +329,14 @@ function rewritePublicSeoMetadata(html) {
 function rewritePublicRssMetadata(xml) {
   // RSS entry links follow the new public site. GUIDs, historical item text,
   // timestamps and vendor webhooks remain byte-for-byte intact.
-  return String(xml)
-    .replace(/(<link>)https:\/\/blog\.cyberdudebivash\.in/gi,
-      (_, prefix) => prefix + CANONICAL_SOC_ORIGIN)
-    .replace(/<atom:link\b[^>]*>/gi, tag =>
-      /\brel\s*=\s*(["'])self\1/i.test(tag)
-        ? tag.split(LEGACY_SOC_ORIGIN).join(CANONICAL_SOC_ORIGIN) : tag);
+  return String(xml).split(/(<!\[CDATA\[[\s\S]*?\]\]>)/g)
+    .map(chunk => chunk.startsWith('<![CDATA[') ? chunk : chunk
+      .replace(/(<link>)https:\/\/blog\.cyberdudebivash\.in/gi,
+        (_, prefix) => prefix + CANONICAL_SOC_ORIGIN)
+      .replace(/<atom:link\b[^>]*>/gi, tag =>
+        /\brel\s*=\s*(["'])self\1/i.test(tag)
+          ? tag.split(LEGACY_SOC_ORIGIN).join(CANONICAL_SOC_ORIGIN) : tag))
+    .join('');
 }
 
 function copyFileForPublicBuild(src, dest) {
