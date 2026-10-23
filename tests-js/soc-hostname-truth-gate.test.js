@@ -8,7 +8,7 @@ function fixture(route, {canonical = ORIGIN + route, og = ORIGIN + route, extra 
     '<link rel="canonical" href="' + canonical + '">' +
     '<meta property="og:url" content="' + og + '">' +
     '</head><body>CYBERDUDEBIVASH ECOSYSTEM ' +
-    'not an active 24/7 monitoring service contact@cyberdudebivash.in ' +
+    'not an active 24/7 monitoring service <a href="mailto:contact@cyberdudebivash.in">Request a scoped proposal</a> ' +
     extra + '</body></html>';
 }
 test('approved SOC identity fixtures pass on all routes', () => {
@@ -97,4 +97,25 @@ test('all SOC routes reject missing visible body independently of metadata', () 
     const html = fixture(route).replace(/<body>[\s\S]*?<\/body>/, '');
     assert.ok(assess(route, html).includes('VISIBLE_BODY_MISSING'), route);
   }
+});
+
+test('assessment scope limitation must appear in body copy, not just scripts', () => {
+  const route = '/soc-readiness-assessment.html';
+  const html = fixture(route).replace('not an active 24/7 monitoring service',
+    '<script>not an active 24/7 monitoring service</script>');
+  assert.ok(assess(route, html).includes('SERVICE_BOUNDARY_MISSING'));
+});
+test('assessment enquiry requires a usable mailto anchor in body', () => {
+  const route = '/soc-readiness-assessment.html';
+  const good = fixture(route);
+  assert.deepEqual(assess(route, good), []);
+  const naked = good.replace('<a href="mailto:contact@cyberdudebivash.in">Request a scoped proposal</a>',
+    'contact@cyberdudebivash.in');
+  assert.ok(assess(route, naked).includes('ENQUIRY_CONTACT_MISSING'));
+  const scriptOnly = good.replace('<a href="mailto:contact@cyberdudebivash.in">Request a scoped proposal</a>',
+    '<script>\"mailto:contact@cyberdudebivash.in\"</script>');
+  assert.ok(assess(route, scriptOnly).includes('ENQUIRY_CONTACT_MISSING'));
+  const hidden = good.replace('<a href="mailto:contact@cyberdudebivash.in"',
+    '<a hidden href="mailto:contact@cyberdudebivash.in"');
+  assert.ok(assess(route, hidden).includes('ENQUIRY_CONTACT_MISSING'));
 });
