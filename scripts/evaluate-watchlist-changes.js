@@ -72,7 +72,11 @@ async function main() {
   console.log(`[WATCHLIST-EVAL]   events created:          ${results.events_created}`);
   console.log(`[WATCHLIST-EVAL]   load failures (skipped): ${results.load_failed}`);
   console.log(`[WATCHLIST-EVAL]   watchlists touched:      ${results.watchlists_touched}`);
+  console.log(`[WATCHLIST-EVAL]   enqueue exceptions:     ${results.notification_enqueue_failures || 0}`);
   console.log(`[WATCHLIST-EVAL]   elapsed: ${elapsedMs}ms`);
+  if ((results.notification_enqueue_failures || 0) > 0) {
+    throw new Error('NOTIFICATION_ENQUEUE_INCOMPLETE: customer notification delivery is NOT certified');
+  }
 }
 
 if (require.main === module) {

@@ -146,6 +146,55 @@ describe('idempotency and replay safety (Phase 31/32/70)', () => {
   });
 });
 
+describe('P0 SOC notification enqueue failure truth', () => {
+  test('enqueue exception is counted without hiding other feed updates, while replay limitations remain explicit', async () => {
+    const dispatch = require('../notification-dispatch');
+    const id = 'CVE-2026-7111';
+    fakeCves[id] = { cvss: 5.0, threat_level: 'medium', cisa_kev: false, exploited: false };
+    await watchCve('usr_a', id);
+    await watchCve('usr_b', id);
+    const intel = require('../intel');
+    await engine.evaluateEntity({ entityType: 'cve', entityId: id, intel, graph: fakeGraph, reportsIndexData: fakeReportsIndex });
+    fakeCves[id] = { ...fakeCves[id], cisa_kev: true };
+    const spy = jest.spyOn(dispatch, 'dispatchNewEvent').mockRejectedValue(new Error('provider detail must not appear'));
+    try {
+      const outcome = await engine.evaluateEntity({ entityType: 'cve', entityId: id, intel, graph: fakeGraph, reportsIndexData: fakeReportsIndex });
+      expect(outcome.status).toBe('changed');
+      expect(outcome.events.length).toBeGreaterThan(0);
+      expect(outcome.notification_enqueue_failures).toBe(outcome.events.length * 2);
+      for (const owner of ['usr_a', 'usr_b']) {
+        const feed = await store.getOwnerFeedPage(owner);
+        expect(feed.total).toBe(outcome.events.length);
+      }
+      const repeat = await engine.evaluateEntity({ entityType: 'cve', entityId: id, intel, graph: fakeGraph, reportsIndexData: fakeReportsIndex });
+      expect(repeat.status).toBe('unchanged');
+      expect(repeat.events).toHaveLength(0);
+      // This test demonstrates that counting the failure does NOT repair
+      // an already persisted event's missing notifications.
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
+  test('batch driver surfaces queueing exceptions to the GitHub job', async () => {
+    const dispatch = require('../notification-dispatch');
+    const id = 'CVE-2026-7112';
+    fakeCves[id] = { cvss: 4.0, cisa_kev: false, exploited: false };
+    await watchCve('usr_a', id);
+    await engine.evaluateWatchedEntities({ batchLimit: 1 });
+    fakeCves[id] = { ...fakeCves[id], cisa_kev: true };
+    const spy = jest.spyOn(dispatch, 'dispatchNewEvent').mockRejectedValue(new Error('enqueue unavailable'));
+    try {
+      const result = await engine.evaluateWatchedEntities({ batchLimit: 1 });
+      expect(result.changed).toBe(1);
+      expect(result.events_created).toBeGreaterThan(0);
+      expect(result.notification_enqueue_failures).toBeGreaterThan(0);
+    } finally {
+      spy.mockRestore();
+    }
+  });
+});
+
 describe('catastrophic data-loss protection (Phase 72)', () => {
   test('a canonical load failure on a previously-known entity leaves the snapshot untouched and emits nothing', async () => {
     fakeCves['CVE-2026-5555'] = {
