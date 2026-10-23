@@ -64,7 +64,7 @@ const REVIEWED_OPERATIONAL_FILES = new Set([
 ]);
 
 /**
- * Exact historical execution evidence inspected as JSON under logs/. Do not
+ * Exact historical, named execution-artifact paths from verified Git trees. Do not
  * allowlist logs/** or arbitrary newly written logs: unexpected artifacts
  * might include operational state, private values or production inputs.
  */
@@ -368,6 +368,11 @@ async function run() {
     fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary);
   }
   process.stdout.write(summary);
+  if (result.state === 'manual_release_required') {
+    // Workflow success means classification finished; it never means the
+    // release was deployed or that customers were certified.
+    process.stdout.write('::warning title=SOC Production Release Pending::Read-only drift assessment completed, but audited production/operational changes remain unreleased. Operator-approved release and postdeploy certification required.\n');
+  }
   if (result.state === 'blocked') process.exitCode = 1;
 }
 
