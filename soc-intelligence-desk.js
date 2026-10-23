@@ -195,7 +195,7 @@
         a.hidden = true;
         document.body.appendChild(a);
         a.click(); a.remove();
-      } finally { URL.revokeObjectURL(href); }
+      } finally { root.setTimeout(function () { URL.revokeObjectURL(href); }, 5000); }
     });
     show();
     fetchFeed();
