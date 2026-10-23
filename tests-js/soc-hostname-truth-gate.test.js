@@ -74,3 +74,27 @@ test('About page must explicitly bound managed customer monitoring availability'
   }).replace('not an active 24/7 monitoring service', '');
   assert.ok(!assess('/about.html', scoped).includes('MANAGED_SERVICE_BOUNDARY_MISSING'));
 });
+
+test('missing body or head-only legal response fails closed', () => {
+  const terms = fixture('/terms.html');
+  const headOnly = terms.replace(/<body>[\\s\\S]*?<\\/body>/, '');
+  const errors = assess('/terms.html', headOnly);
+  assert.ok(errors.includes('VISIBLE_BODY_MISSING'));
+  assert.ok(errors.includes('SELLER_IDENTITY_MISSING'));
+});
+
+test('legal seller must appear in visible copy, not just hidden markup', () => {
+  const terms = fixture('/terms.html');
+  const hidden = terms.replace('CYBERDUDEBIVASH ECOSYSTEM',
+    '<script type="application/ld+json">{"name":"CYBERDUDEBIVASH ECOSYSTEM"}</script>');
+  const errors = assess('/terms.html', hidden);
+  assert.ok(errors.includes('SELLER_IDENTITY_MISSING'));
+  assert.ok(!errors.includes('VISIBLE_BODY_MISSING'));
+});
+
+test('all SOC routes reject missing visible body independently of metadata', () => {
+  for (const route of ROUTES) {
+    const html = fixture(route).replace(/<body>[\\s\\S]*?<\\/body>/, '');
+    assert.ok(assess(route, html).includes('VISIBLE_BODY_MISSING'), route);
+  }
+});
