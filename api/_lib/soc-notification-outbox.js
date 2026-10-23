@@ -11,7 +11,7 @@ const MAX_RECONCILE_JOBS = 5;
 const MAX_ATTEMPTS = 5;
 const LEASE_MS = 90_000;
 const BACKOFF_MS = [60_000,300_000,900_000,1_800_000,3_600_000];
-const ERROR_CODES = new Set(['EVENT_NOT_AVAILABLE','ENQUEUE_EXCEPTION','ATTEMPTS_EXHAUSTED']);
+const ERROR_CODES = new Set(['EVENT_NOT_AVAILABLE','ENQUEUE_EXCEPTION','ATTEMPTS_EXHAUSTED','DELIVERY_STATE_AMBIGUOUS']);
 const INSERT_SQL = "INSERT INTO soc_notification_outbox (event_id,watchlist_id,owner_id,state,attempt_count,next_attempt_ms,created_at_ms,updated_at_ms) VALUES (?, ?, ?, 'pending', 0, ?, ?, ?) ON CONFLICT(event_id,watchlist_id,owner_id) DO NOTHING";
 const DUE_SQL = "SELECT event_id,watchlist_id,owner_id FROM soc_notification_outbox WHERE state='pending' AND next_attempt_ms <= ? ORDER BY next_attempt_ms,created_at_ms LIMIT ?";
 const EXPIRED_SQL = "SELECT event_id,watchlist_id,owner_id FROM soc_notification_outbox WHERE state='claimed' AND lease_expires_ms <= ? ORDER BY lease_expires_ms LIMIT ?";
@@ -65,6 +65,15 @@ function createOutbox({ d1, getEvent, getWatchlist, listEntities, appendToFeed, 
     if (changed !== 1) throw new Error('SOC_OUTBOX_STALE_CLAIM');
     return state;
   }
+  // A duplicate delivery job is not proof of delivery: terminal jobs are
+  // deleted, so a replay after an external send can recreate the same job.
+  // Quarantine ambiguous enqueue outcomes rather than falsely completing
+  // the outbox intent or automatically retrying a potential duplicate send.
+  async function blockAmbiguous(row, claimToken) {
+    const changed = await d1.runMutationWithChanges(RETRY_SQL,
+      ['blocked',now(),'DELIVERY_STATE_AMBIGUOUS',now(),...key(row),claimToken]);
+    if (changed !== 1) throw new Error('SOC_OUTBOX_STALE_CLAIM');
+  }
   async function reconcile({ limit = MAX_RECONCILE_JOBS } = {}) {
     guard();
     if (!Number.isSafeInteger(limit) || limit < 1 || limit > MAX_RECONCILE_JOBS)
@@ -114,13 +123,26 @@ function createOutbox({ d1, getEvent, getWatchlist, listEntities, appendToFeed, 
         // have succeeded before an interrupted per-owner feed write.
         // Existing owner_feed unique key makes repeated inserts idempotent.
         await appendToFeed(row.owner_id,event.event_id,Date.parse(event.observed_at) || now());
-        // Stable notification delivery IDs make repeated INSERTs idempotent.
-        // This enqueues only, never sends an email/webhook from this module.
+        // This enqueues only; external email/webhook receipts are separate.
+        // A duplicate delivery_id can mean a pending job OR a job that was
+        // already sent and deleted. Without a durable per-channel terminal
+        // ledger, a second enqueue is unsafe and must not be called success.
         const result = await dispatch({ ownerId:row.owner_id, watchlistId:row.watchlist_id, event });
-        const state = result && (result.enqueued ||
-          (Array.isArray(result.channels) && result.channels.length)) ? 'complete' : 'skipped';
-        await finish(row,claimToken,state);
-        tally[state]++;
+        if (result && result.enqueued === true) {
+          await finish(row,claimToken,'complete');
+          tally.complete++;
+        } else if (result && result.enqueued === false &&
+                   (!Array.isArray(result.channels) || result.channels.length === 0)) {
+          // No eligible channels: no customer send is expected.
+          await finish(row,claimToken,'skipped');
+          tally.skipped++;
+        } else {
+          // Includes enqueued=false with eligible channels, and malformed
+          // provider responses. Do not retry automatically or assert receipt.
+          await blockAmbiguous(row,claimToken);
+          tally.blocked++;
+          tally.errors++;
+        }
       } catch (_) {
         // Crash after creating a delivery job and before COMPLETE is safe:
         // recovery uses the same per-(owner,event,channel) delivery ID.
