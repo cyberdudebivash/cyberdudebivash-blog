@@ -221,12 +221,15 @@ describe('build-cloudflare-assets', () => {
       if (canonical.hostname === 'blog.cyberdudebivash.in') {
         assert.fail(rel + ' retains a legacy crawler canonical');
       }
-      if (canonical.origin === origin) {
-        assert.ok(sitemap.includes('<loc>' + canonical.toString().replace(/&/g, '&amp;') + '</loc>') ||
-          /(?:admin|review|order-confirmation|customer-library)/i.test(rel) ||
-          /noindex/i.test(html) ||
-          canonical.search.length > 0,
-        rel + ' not reflected in sitemap; validate canonical alias policy');
+      if (canonical.origin === origin &&
+          !/^(?:admin-|review-queue|leads|customer-library|order-confirmation)\.html$/i.test(rel) &&
+          !/<meta\b[^>]*name=["']robots["'][^>]*content=["'][^"']*noindex/i.test(html)) {
+        // Match buildPublicSitemap()'s intentional trailing-slash policy.
+        canonical.hash = '';
+        const sitemapUrl = canonical.toString().replace(/\/$/, rel === 'index.html' ? '/' : '')
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        assert.ok(sitemap.includes('<loc>' + sitemapUrl + '</loc>'),
+          rel + ' not reflected in sitemap; validate canonical alias policy');
       }
     }
     assert.ok(checked > 10, 'too few generated canonical pages reviewed');
