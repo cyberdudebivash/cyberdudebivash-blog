@@ -83,8 +83,13 @@ const REVIEWED_HISTORICAL_LOGS = new Set([
   'logs/run-20261023-132648.json',
 ]);
 
+// Newly generated publisher evidence must never become an undocumented source
+// bypass. A STRICT run-timestamp filename may be reviewed as operational,
+// never as benign. Unexpected/malformed log names still block the release.
+const PUBLISHER_RUN_EVIDENCE = /^logs\/run-20\d{6}-(?:[01]\d|2[0-3])[0-5]\d[0-5]\d\.json$/;
 function isReviewedOperationalPath(file) {
-  return REVIEWED_OPERATIONAL_FILES.has(file);
+  return REVIEWED_OPERATIONAL_FILES.has(file) ||
+    (PUBLISHER_RUN_EVIDENCE.test(file) && !REVIEWED_HISTORICAL_LOGS.has(file));
 }
 
 function deployPaths(source) {
