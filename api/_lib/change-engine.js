@@ -214,6 +214,7 @@ async function evaluateEntity({ entityType, entityId, intel, graph, reportsIndex
   }
 
   const created = [];
+  let enqueueFailures = 0;
   for (const event of events) {
     const result = await persistEventIfNew(event);
     if (!result.created) continue; // replay-safe, no duplicate fan-out
@@ -224,11 +225,17 @@ async function evaluateEntity({ entityType, entityId, intel, graph, reportsIndex
       await store.appendToOwnerFeed(w.ownerId, event.event_id, Date.parse(event.observed_at) || Date.now());
       // Enqueue-only (see notification-dispatch.js's module docstring) --
       // never blocks change detection on email/webhook network I/O.
-      // Failure here must never break the feed fan-out that already
-      // succeeded above; a swallowed dispatch error just means this
-      // owner's notification isn't enqueued this cycle, not that the
-      // watchlist itself is broken.
-      await notificationDispatch.dispatchNewEvent({ ownerId: w.ownerId, watchlistId: w.watchlistId, event }).catch(() => {});
+      // An enqueue exception must not prevent other owners' feed inserts,
+      // but it MUST be reported. This event is already persisted; replay
+      // currently skips its fan-out, so do not claim reliable notification.
+      // Never expose owner IDs, event payloads or channel credentials.
+      try {
+        await notificationDispatch.dispatchNewEvent({
+          ownerId: w.ownerId, watchlistId: w.watchlistId, event,
+        });
+      } catch (_) {
+        enqueueFailures++;
+      }
     }
     created.push(event);
   }
@@ -236,6 +243,7 @@ async function evaluateEntity({ entityType, entityId, intel, graph, reportsIndex
   await saveSnapshot(entityType, entityId, currentState, fingerprint);
   return {
     status: created.length ? 'changed' : 'unchanged', entityType, entityId, events: created,
+    notification_enqueue_failures: enqueueFailures,
     ...(socCronWatchers === null ? {} : { fanout_pairs: created.length * socCronWatchers.length }),
   };
 }
@@ -321,6 +329,7 @@ async function evaluateWatchedEntities({ batchLimit = DEFAULT_BATCH_LIMIT, bound
     evaluated: 0, changed: 0, baseline: 0, unchanged: 0, load_failed: 0, unsupported: 0,
     events_created: 0, watchlists_touched: 0,
     fanout_pairs: 0, fanout_blocked: 0, event_budget_blocked: 0, skipped_no_active_watchers: 0,
+    notification_enqueue_failures: 0,
   };
   if (batch.length === 0) return results;
 
@@ -343,6 +352,7 @@ async function evaluateWatchedEntities({ batchLimit = DEFAULT_BATCH_LIMIT, bound
       socCronRemainingPairs: SOC_CRON_MAX_FANOUT_PAIRS_PER_RUN - results.fanout_pairs,
     });
     results.evaluated++;
+    results.notification_enqueue_failures += outcome.notification_enqueue_failures || 0;
     if (outcome.status === 'cost_blocked') { results.event_budget_blocked++; continue; }
     results.fanout_pairs += outcome.fanout_pairs || 0;
     if (outcome.status === 'load_failed') { results.load_failed++; continue; }
