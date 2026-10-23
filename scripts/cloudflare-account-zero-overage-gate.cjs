@@ -28,6 +28,14 @@ const PLAN=Object.freeze({
   workersLogEvents:20000000
 });
 const STOCK=new Set(['d1StorageGbMonth','kvStorageGbMonth','r2StandardStorageGbMonth']);
+// Stable inventory identifiers: an attestation cannot omit a known ecosystem
+// workload while still passing a superficial three-platform count.
+const REQUIRED_PLATFORMS=Object.freeze([
+  'sentinel-apex-threat-intel',
+  'sentinel-apex-ai-security-hub',
+  'sentinel-apex-soc',
+  'nilachala-devotional'
+]);
 const MAX_ATTESTATION_AGE_MS=2*60*60*1000;
 const SAFETY_RATIO=0.80;
 const FORECAST_BUFFER=1.25;
@@ -48,7 +56,8 @@ function assess(input, accountId,now=new Date().toISOString()){
   fail('SHARED_ACCOUNT_NOT_ATTESTED',input.accountScope==='ALL_PLATFORMS_SINGLE_CLOUDFLARE_ACCOUNT'&&
     input.accountCoverageConfirmed===true&&input.allActiveMeteredServicesReviewed===true&&
     Array.isArray(input.reviewedPlatforms)&&input.reviewedPlatforms.length>=3&&
-    input.reviewedPlatforms.every(isRef)&&new Set(input.reviewedPlatforms).size===input.reviewedPlatforms.length);
+    input.reviewedPlatforms.every(isRef)&&new Set(input.reviewedPlatforms).size===input.reviewedPlatforms.length&&
+    REQUIRED_PLATFORMS.every(id=>input.reviewedPlatforms.includes(id)));
   fail('ACCOUNT_BINDING_INVALID',typeof accountId==='string'&&/^[a-f0-9]{32}$/i.test(accountId)&&
     input.accountFingerprintSha256===sha256(accountId.toLowerCase()));
   fail('SOURCE_AND_APPROVAL_NOT_VERIFIED',input.source==='cloudflare-account-billing-and-service-metrics'&&
@@ -115,4 +124,4 @@ if(require.main===module){
     }
   }
 }
-module.exports={assess,PLAN,SAFETY_RATIO,FORECAST_BUFFER,PRICE_REVIEW_CUTOFF};
+module.exports={assess,PLAN,REQUIRED_PLATFORMS,SAFETY_RATIO,FORECAST_BUFFER,PRICE_REVIEW_CUTOFF};
