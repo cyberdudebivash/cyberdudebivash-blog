@@ -90,13 +90,13 @@ function createOutbox({ d1, getEvent, getWatchlist, listEntities, appendToFeed, 
       const attempts = Number(saved[0].attempt_count);
       if (attempts > MAX_ATTEMPTS) {
         const state = await retry(row,claimToken,'ATTEMPTS_EXHAUSTED',attempts);
-        tally[state]++; tally.errors++; continue;
+        tally[state === 'pending' ? 'retry' : 'blocked']++; tally.errors++; continue;
       }
       try {
         const event = await getEvent(row.event_id);
         if (!event) {
           const state = await retry(row,claimToken,'EVENT_NOT_AVAILABLE',attempts);
-          tally[state]++; tally.errors++; continue;
+          tally[state === 'pending' ? 'retry' : 'blocked']++; tally.errors++; continue;
         }
         const owned = await getWatchlist(row.watchlist_id,row.owner_id);
         if (!owned || !owned.watchlist || owned.watchlist.status !== 'active') {
@@ -122,7 +122,7 @@ function createOutbox({ d1, getEvent, getWatchlist, listEntities, appendToFeed, 
         // Crash after creating a delivery job and before COMPLETE is safe:
         // recovery uses the same per-(owner,event,channel) delivery ID.
         const state = await retry(row,claimToken,'ENQUEUE_EXCEPTION',attempts);
-        tally[state]++; tally.errors++;
+        tally[state === 'pending' ? 'retry' : 'blocked']++; tally.errors++;
       }
     }
     return tally;
