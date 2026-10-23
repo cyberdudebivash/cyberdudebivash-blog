@@ -79,44 +79,83 @@ function classify(compare, expectedBase, expectedHead, patterns) {
       compare.files.length >= 300) {
     return { state: 'blocked', reason: 'comparison incomplete, divergent, or truncated' };
   }
-  const affected = [];
-  const unknown = [];
-  const benign = [];
-  for (const file of compare.files) {
-    if (!file || typeof file.filename !== 'string' ||
-        !/^(added|modified|removed|renamed|changed|copied)$/.test(file.status) ||
-        (file.status === 'renamed' && typeof file.previous_filename !== 'string')) {
-      return { state: 'blocked', reason: 'unrecognized file-change structure' };
+  return classifyChangedFiles(compare.files, patterns);
+}
+
+/**
+ * Shared strict filename classification for GitHub Compare and VERIFIED full
+ * tree diffs. Renames in a tree diff appear as remove+add, classifying both
+ * old and new paths. Never silently downgrade an unknown source file.
+ */
+function classifyChangedFiles(files, patterns) {
+  if (!Array.isArray(files)) return {
+    state: 'blocked', reason: 'changed file list unavailable'
+  };
+  
+}
+
+/**
+ * GitHub Compare limits files to 300 and may not provide the complete
+ * history near its 250-commit page ceiling. Trust its lineage ONLY after
+ * validating exact base, merge-base, end SHA and complete commit listing.
+ * Whole-tree fallback is forbidden for incomplete ancestry.
+ */
+function verifiedAncestry(compare, base, head) {
+  return !!(compare && compare.status === 'ahead' &&
+    compare.base_commit?.sha === base &&
+    compare.merge_base_commit?.sha === base &&
+    compare.commits?.at(-1)?.sha === head &&
+    compare.ahead_by === compare.total_commits &&
+    compare.behind_by === 0 &&
+    Number.isSafeInteger(compare.total_commits) &&
+    compare.total_commits >= 1 && compare.total_commits < 250 &&
+    Array.isArray(compare.commits) &&
+    compare.commits.length === compare.total_commits);
+}
+
+function classifyVerifiedGitTrees(compare, base, head, patterns, baseTree, headTree) {
+  const blocked = reason => ({state:'blocked',reason});
+  if (!/^[a-f0-9]{40}$/.test(base||'') ||
+      !/^[a-f0-9]{40}$/.test(head||'') ||
+      !Array.isArray(patterns) || patterns.length < 20 ||
+      !verifiedAncestry(compare,base,head))
+    return blocked('full-tree ancestry not independently verified');
+  const expectedOld = compare.base_commit?.commit?.tree?.sha;
+  const expectedNew = compare.commits?.at(-1)?.commit?.tree?.sha;
+  const isSha = value => /^[a-f0-9]{40}$/.test(value||'');
+  if (!isSha(expectedOld) || !isSha(expectedNew) ||
+      baseTree?.sha !== expectedOld || headTree?.sha !== expectedNew)
+    return blocked('full-tree object SHA does not match verified commits');
+  const read = tree => {
+    if (tree.truncated !== false || !Array.isArray(tree.tree) ||
+        !tree.tree.length || tree.tree.length > 100000) return null;
+    const blobs=new Map();
+    const paths=new Set();
+    for (const item of tree.tree) {
+      if (!item || typeof item.path !== 'string' || !item.path ||
+          paths.has(item.path) || !isSha(item.sha) ||
+          !/^(?:040000|100644|100755|120000|160000)$/.test(item.mode) ||
+          !['tree','blob','commit'].includes(item.type) ||
+          (item.type==='tree') !== (item.mode==='040000') ||
+          (item.type==='commit') !== (item.mode==='160000'))
+        return null;
+      paths.add(item.path);
+      if (item.type!=='tree') blobs.set(item.path,item.mode+':'+item.sha);
     }
-    const names = file.status === 'renamed' ?
-      [file.filename, file.previous_filename] : [file.filename];
-    for (const name of names) {
-      if (!/^(?!\/)(?!.*\.\.)(?!.*\\)[\w.@+/-]+$/.test(name)) {
-        return { state: 'blocked', reason: 'unsafe filename in comparison' };
-      }
-      if (isProductionPath(name, patterns)) affected.push(name);
-      else if (isKnownBenignPath(name)) benign.push(name);
-      else unknown.push(name);
-    }
-  }
-  // A hard release block must NEVER suppress the already-detected
-  // production changes. Previous code reported "production-affecting: 0"
-  // when even one unknown path existed, despite dozens of changed Worker
-  // and customer-facing files. Preserve every category for the operator.
-  const reviewed = {
-    compared_files: compare.files.length,
-    production: [...new Set(affected)].sort(),
-    benign: [...new Set(benign)].sort(),
-    unknown: [...new Set(unknown)].sort(),
+    return blobs;
   };
-  if (reviewed.unknown.length) return {
-    state: 'blocked', reason: 'unrecognized changed files require source review',
-    ...reviewed,
-  };
-  if (reviewed.production.length) return {
-    state: 'manual_release_required', ...reviewed,
-  };
-  return { state: 'nonproduction_only', ...reviewed };
+  const older=read(baseTree),newer=read(headTree);
+  if (!older || !newer) return blocked('full-tree payload truncated or malformed');
+  const changed=[];
+  for (const [name,identity] of older)
+    if (!newer.has(name)) changed.push({filename:name,status:'removed'});
+    else if (newer.get(name)!==identity) changed.push({filename:name,status:'modified'});
+  for (const name of newer.keys())
+    if (!older.has(name)) changed.push({filename:name,status:'added'});
+  // Never use the 300-file response to classify a large release.
+  const result=classifyChangedFiles(changed,patterns);
+  return {...result,comparison_source:'verified_full_git_trees',
+    baseline_tree_files:older.size,current_tree_files:newer.size};
 }
 
 async function apiRead(route, token, repository) {
@@ -145,6 +184,7 @@ function renderDriftSummary(head, base, result) {
     '- known nonproduction files: ' + (result.benign?.length || 0),
     '- unknown files: ' + (result.unknown?.length || 0),
     '- total compared changed files: ' + (result.compared_files ?? 'not certified'),
+    '- comparison source: ' + (result.comparison_source || 'GitHub Compare API'),
     // Evidence listing is deliberately bounded, not a broad GitHub API
     // dump. All filenames here already passed the safe-path parser.
     ...(result.unknown?.length ? [
@@ -200,7 +240,25 @@ async function run() {
       result = { state: 'no_drift', files: 0 };
     } else {
       const compare = await apiRead('/compare/' + base + '...' + head, token, repository);
-      result = classify(compare, base, head, paths);
+      if (Array.isArray(compare.files) && compare.files.length >= 300) {
+        // GitHub Compare cannot certify a 300-file inventory. Get both
+        // immutable commit trees. Any truncated/malformed tree fails closed.
+        const oldSha = compare.base_commit?.commit?.tree?.sha;
+        const newSha = compare.commits?.at(-1)?.commit?.tree?.sha;
+        if (!verifiedAncestry(compare,base,head) ||
+            !/^[a-f0-9]{40}$/.test(oldSha||'') ||
+            !/^[a-f0-9]{40}$/.test(newSha||'')) {
+          result = {state:'blocked',reason:'full-tree fallback ancestry invalid'};
+        } else {
+          const [older,newer] = await Promise.all([
+            apiRead('/git/trees/' + oldSha + '?recursive=1',token,repository),
+            apiRead('/git/trees/' + newSha + '?recursive=1',token,repository),
+          ]);
+          result = classifyVerifiedGitTrees(compare,base,head,paths,older,newer);
+        }
+      } else {
+        result = classify(compare,base,head,paths);
+      }
     }
   }
   const summary = renderDriftSummary(head, base, result);
@@ -217,4 +275,4 @@ if (require.main === module) {
     process.exitCode = 1;
   });
 }
-module.exports = { deployPaths, pathMatches, isKnownBenignPath, classify, renderDriftSummary };
+module.exports = { deployPaths, pathMatches, isKnownBenignPath, classify, classifyVerifiedGitTrees, renderDriftSummary };
