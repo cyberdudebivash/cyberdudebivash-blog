@@ -21,5 +21,9 @@ CREATE TABLE IF NOT EXISTS soc_notification_outbox (
 );
 CREATE INDEX IF NOT EXISTS idx_soc_outbox_due
   ON soc_notification_outbox (state, next_attempt_ms, created_at_ms);
+-- Explicit lease-expiry seek. A state-only index may scan ALL claimed
+-- rows before satisfying the expiry predicate despite LIMIT 5.
+CREATE INDEX IF NOT EXISTS idx_soc_outbox_expired
+  ON soc_notification_outbox (state, lease_expires_ms);
 CREATE INDEX IF NOT EXISTS idx_soc_outbox_retention
   ON soc_notification_outbox (state, updated_at_ms);
