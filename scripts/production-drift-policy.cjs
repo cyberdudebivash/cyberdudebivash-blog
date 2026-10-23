@@ -91,7 +91,33 @@ function classifyChangedFiles(files, patterns) {
   if (!Array.isArray(files)) return {
     state: 'blocked', reason: 'changed file list unavailable'
   };
-  
+  const affected=[], unknown=[], benign=[];
+  for (const file of files) {
+    if (!file || typeof file.filename !== 'string' ||
+        !/^(added|modified|removed|renamed|changed|copied)$/.test(file.status) ||
+        (file.status === 'renamed' && typeof file.previous_filename !== 'string'))
+      return {state:'blocked',reason:'unrecognized file-change structure'};
+    const names = file.status==='renamed' ?
+      [file.filename,file.previous_filename] : [file.filename];
+    for (const name of names) {
+      if (!/^(?!\/)(?!.*\.\.)(?!.*\\)[\w.@+/-]+$/.test(name))
+        return {state:'blocked',reason:'unsafe filename in comparison'};
+      if (isProductionPath(name,patterns)) affected.push(name);
+      else if (isKnownBenignPath(name)) benign.push(name);
+      else unknown.push(name);
+    }
+  }
+  const reviewed = {
+    compared_files:files.length,
+    production:[...new Set(affected)].sort(),
+    benign:[...new Set(benign)].sort(),
+    unknown:[...new Set(unknown)].sort(),
+  };
+  if (reviewed.unknown.length)
+    return {state:'blocked',reason:'unrecognized changed files require source review',...reviewed};
+  if (reviewed.production.length)
+    return {state:'manual_release_required',...reviewed};
+  return {state:'nonproduction_only',...reviewed};
 }
 
 /**
