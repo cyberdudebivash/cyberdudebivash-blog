@@ -18,6 +18,15 @@ test('the production deploy push filter covers every production runtime input', 
   assert.deepStrictEqual(missing, [], `uncovered runtime inputs:\n${missing.join('\n')}`);
 });
 
+test('P0 SOC intelligence desk assets are independently covered by release input filters', () => {
+  for (const file of ['soc-intelligence-desk.css', 'soc-intelligence-desk.js']) {
+    assert.ok(requiredInputs().includes(file), 'missing from public build allowlist: ' + file);
+    assert.ok(matchesAny(file, paths), 'production trigger does not cover: ' + file);
+    assert.ok(uncovered(paths.filter(p => p !== file)).includes(file),
+      'dropping this exact asset trigger must fail closed: ' + file);
+  }
+});
+
 test('actual .cjs branding module is covered without an invented .cjs.js path', () => {
   const inputs = requiredInputs();
   assert.ok(inputs.includes('scripts/sentinel-branding.cjs'));

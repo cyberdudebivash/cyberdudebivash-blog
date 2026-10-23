@@ -26,7 +26,9 @@ test('standalone page and full public renderer preserve truthful content and uni
   assert.match(html,/Request a Scoped Proposal/);
   assert.match(html,/customer-assurance\.html/);
   assert.match(html,/enterprise-onboarding\.html/);
-  assert.match(html,/rel="canonical" href="https:\/\/blog\.cyberdudebivash\.in\/soc-readiness-assessment\.html"/);
+  assert.match(html,/rel="canonical" href="https:\/\/soc\.cyberdudebivash\.in\/soc-readiness-assessment\.html"/);
+  assert.doesNotMatch(html,/rel="canonical" href="https:\/\/blog\.cyberdudebivash\.in\//);
+  assert.match(html,/property="og:url" content="https:\/\/soc\.cyberdudebivash\.in\/soc-readiness-assessment\.html"/);
 });
 test('sales promise fail-closed: no checkout, false acceptance, SOC 2 attestation or customer claim',()=>{
   assert.doesNotMatch(page,/payment-engine|razorpay|href=["']\/?checkout|customer count|verified client logo|Fortune 500 customer|SOC 2 Type II certified/i);
