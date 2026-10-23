@@ -44,6 +44,14 @@ webhook credentials, signing secrets or the event payload.
   and idempotently queues eligible email/webhook channels.
 - A disabled channel, paused/deleted watchlist or removed membership
   yields a **skipped** terminal intent, never customer delivery.
+- **Ambiguous enqueue fail-closed control:** if dispatch reports eligible
+  channels but `enqueued=false`, the intent is marked `blocked` with
+  `DELIVERY_STATE_AMBIGUOUS`, not `complete` and not automatically retried.
+  A missing/malformed dispatch result is likewise blocked. This prevents
+  false-green source acceptance when a pending job already exists or a
+  previously delivered terminal job has been deleted. A verified first
+  enqueue can mark the *outbox intent* complete, but not external delivery.
+  Operator review of durable per-channel receipts is still mandatory.
 - Retries exceptional work with bounded backoff and stable claim tokens;
   at 5 unsuccessful attempts, marks a **blocked incident** for review.
   Errors cause the manual CLI to fail rather than claim successful service.
@@ -75,6 +83,13 @@ Existing Jest / E2E / governance / security checks remain mandatory.
   disaster recovery, vulnerability management and operational SOC 2 control
   performance still require evidence.
 - Successful enqueue is NOT proof of email/webhook send or external receipt.
+  The underlying notification_delivery_jobs table deletes terminal jobs;
+  its stable delivery ID alone is NOT a durable per-channel deduplication
+  ledger. A crash after an external provider accepts a send but before
+  recording its receipt remains an unresolved duplicate-delivery risk.
+  Do not enable customer alerts until a durable channel-intent/receipt
+  design and provider-specific idempotency or documented at-least-once
+  delivery policy have passed independent acceptance.
   This branch does not enable delivery providers or establish an SLA.
 - This source PR does not migrate old events or recover prior customer
   omissions. That requires separate forensic reconciliation with consent
