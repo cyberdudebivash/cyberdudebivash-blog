@@ -124,33 +124,28 @@ test('customer pause/removal/ownership mismatch cancels rather than leaking aler
     }finally{f.close()}
   }
 });
-test('ambiguous replay after a partial enqueue blocks without falsely claiming completion',async()=>{
+test('dispatch exception after partial enqueue quarantines without automatic duplicate replay',async()=>{
   const f=fixture();
   try{
     const e=f.ev(),w=f.add();f.events.set(e.event_id,e);
     await f.make().stageEventFanout({event:e,watchers:[w]});
     let calls=0;
     f.setDispatch(async a=>{
-      calls++;f.deliveries.add(a.ownerId+'|'+a.event.event_id+'|email');
-      if(calls===1)throw new Error('private provider error');
-      // The pending delivery ID already exists; a terminal job might also
-      // have been deleted after an external send. Neither is a receipt.
-      return {enqueued:false,channels:['email']};
+      calls++;
+      f.deliveries.add(a.ownerId+'|'+a.event.event_id+'|email');
+      // A delivery job may have committed before this exception.
+      throw new Error('private provider error');
     });
     const failed=await f.make().reconcile();
-    assert.equal(failed.retry,1);assert.equal(failed.errors,1);
-    assert.equal(f.row().last_error_code,'ENQUEUE_EXCEPTION');
-    f.advance(61_000);
-    const replay=await f.make().reconcile();
-    assert.equal(replay.complete,0);assert.equal(replay.blocked,1);
-    assert.equal(replay.errors,1);
-    assert.equal(f.row().state,'blocked');
+    assert.equal(failed.blocked,1);assert.equal(failed.retry,0);
+    assert.equal(failed.complete,0);assert.equal(failed.errors,1);
     assert.equal(f.row().last_error_code,'DELIVERY_STATE_AMBIGUOUS');
+    assert.equal(f.row().state,'blocked');
     assert.equal(f.feed.size,1);assert.equal(f.deliveries.size,1);
-    assert.equal(calls,2);
+    assert.equal(calls,1);
     f.advance(3_700_000);
     assert.equal((await f.make().reconcile()).selected,0);
-    assert.equal(calls,2,'ambiguous replay must not schedule another send');
+    assert.equal(calls,1,'ambiguous enqueue must not trigger a second send');
   }finally{f.close()}
 });
 test('already-existing channel delivery cannot be certified from enqueue=false',async()=>{
