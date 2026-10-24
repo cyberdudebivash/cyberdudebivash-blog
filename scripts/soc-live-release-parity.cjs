@@ -60,6 +60,10 @@ function assess(spec,result){
     if(!result.body.includes(marker))errors.push('REQUIRED_MARKER_MISSING');
   }
   fail('SOFT_404',!/<title[^>]*>\s*(?:404|not found)\b/i.test(result.body));
+  // A head-only page can carry correct SEO tags and markers but offers no
+  // customer-visible legal disclosure or service boundary.
+  const visible=visibleCopy(result.body);
+  fail('VISIBLE_BODY_MISSING',Boolean(visible));
   const heads=result.body.match(/<head\b[^>]*>[\s\S]*?<\/head\s*>/gi)||[];
   const bodyOffset=result.body.search(/<body\b/i);
   const head=heads.length===1 &&
@@ -94,9 +98,21 @@ function assess(spec,result){
     fail('PERSONAL_PAN_METADATA',!personalPanStructured.test(result.body));
   }
   if(spec.path==='/soc-readiness-assessment.html'){
-    fail('ENQUIRY_LINK_MISSING',result.body.includes('mailto:contact@cyberdudebivash.in?subject='));
+    // Only a usable customer-facing anchor establishes a proposal CTA.
+    // A mailto string in a script, comment or hidden anchor is insufficient.
+    const bodyMarkup=result.body.match(/<body\b[^>]*>([\s\S]*?)<\/body\s*>/i)?.[1]||'';
+    const activeMarkup=bodyMarkup.replace(/<!--[\s\S]*?-->/g,' ')
+      .replace(/<(?:script|style|template|noscript)\b[^>]*>[\s\S]*?<\/(?:script|style|template|noscript)\s*>/gi,' ');
+    const enquiry=seoTags(activeMarkup,'a').some(tag=>{
+      const href=seoAttribute(tag,'href')||'';
+      return /^mailto:contact@cyberdudebivash\.in\?subject=\S+/i.test(href) &&
+        !/\s(?:hidden|inert)(?:\s|=|>)/i.test(tag) &&
+        !/\saria-hidden\s*=\s*["']true["']/i.test(tag) &&
+        !/\sstyle\s*=\s*["'][^"']*(?:display\s*:\s*none|visibility\s*:\s*hidden)/i.test(tag);
+    });
+    fail('ENQUIRY_LINK_MISSING',enquiry);
     fail('FALSE_CHECKOUT',!/href=["'][^"']*(?:checkout|buy\.html)/i.test(result.body));
-    fail('SERVICE_BOUNDARY_MISSING',result.body.includes('not an active 24/7 monitoring service'));
+    fail('SERVICE_BOUNDARY_MISSING',visible.includes('not an active 24/7 monitoring service'));
   }
   return [...new Set(errors)].sort();
 }
