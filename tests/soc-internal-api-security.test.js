@@ -70,3 +70,15 @@ test('SOC dashboard and frontend must fail closed on cross-analyst access and un
   expect(html).toContain("value ?? '—'");
   expect(html).not.toContain('${stats.totalCases ?? 0}');
 });
+
+test('P0 analyst search does not route through global Redis indexes without internal lead authorization',()=>{
+  const code=fs.readFileSync(path.join(root,'api/v1/workbench/search.js'),'utf8');
+  const html=fs.readFileSync(path.join(root,'workbench.html'),'utf8');
+  expect(code).toContain("SEARCH_SCOPE_FORBIDDEN");
+  expect(code).toContain("canAccessInvestigation(caller, invest)");
+  expect(code).toContain("investigations:assigned:");
+  expect(code).toContain("scope: lead ? 'internal_lead' : 'self'");
+  expect(html).toContain("Search restricted to investigations assigned to your analyst identity.");
+  expect(html).toContain("const internalLead = workbenchScope === 'internal_lead'");
+  expect(html).toContain('disabled');
+});
