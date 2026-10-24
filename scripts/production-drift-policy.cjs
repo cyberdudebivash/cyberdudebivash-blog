@@ -205,28 +205,35 @@ function classifyChangedFiles(files, patterns) {
  * validating exact base, merge-base, end SHA and complete commit listing.
  * Whole-tree fallback is forbidden for incomplete ancestry.
  */
-function verifiedAncestry(compare, base, head) {
-  return !!(compare && compare.status === 'ahead' &&
-    compare.base_commit?.sha === base &&
-    compare.merge_base_commit?.sha === base &&
-    compare.commits?.at(-1)?.sha === head &&
+function verifiedAncestry(compare, base, head, headCommit = null) {
+  const anchored = !!(headCommit && headCommit.sha === head &&
+    /^[a-f0-9]{40}$/.test(headCommit.commit?.tree?.sha || ''));
+  // Compare's server-computed merge base proves base is an ancestor.
+  // At 250+ commits its listing is truncated: do NOT trust the last returned
+  // commit as head. Independently fetch the exact immutable head commit.
+  const historyValid = anchored || (compare?.commits?.at(-1)?.sha === head &&
     compare.ahead_by === compare.total_commits &&
-    compare.behind_by === 0 &&
     Number.isSafeInteger(compare.total_commits) &&
     compare.total_commits >= 1 && compare.total_commits < 250 &&
     Array.isArray(compare.commits) &&
     compare.commits.length === compare.total_commits);
+  return !!(compare && compare.status === 'ahead' &&
+    compare.base_commit?.sha === base &&
+    compare.merge_base_commit?.sha === base &&
+    compare.behind_by === 0 && historyValid);
 }
 
-function classifyVerifiedGitTrees(compare, base, head, patterns, baseTree, headTree) {
+function classifyVerifiedGitTrees(compare, base, head, patterns, baseTree, headTree, headCommit = null) {
   const blocked = reason => ({state:'blocked',reason});
   if (!/^[a-f0-9]{40}$/.test(base||'') ||
       !/^[a-f0-9]{40}$/.test(head||'') ||
       !Array.isArray(patterns) || patterns.length < 20 ||
-      !verifiedAncestry(compare,base,head))
+      !verifiedAncestry(compare,base,head,headCommit))
     return blocked('full-tree ancestry not independently verified');
   const expectedOld = compare.base_commit?.commit?.tree?.sha;
-  const expectedNew = compare.commits?.at(-1)?.commit?.tree?.sha;
+  const expectedNew = headCommit
+    ? headCommit.commit?.tree?.sha
+    : compare.commits?.at(-1)?.commit?.tree?.sha;
   const isSha = value => /^[a-f0-9]{40}$/.test(value||'');
   if (!isSha(expectedOld) || !isSha(expectedNew) ||
       baseTree?.sha !== expectedOld || headTree?.sha !== expectedNew)
@@ -357,8 +364,12 @@ async function run() {
         // GitHub Compare cannot certify a 300-file inventory. Get both
         // immutable commit trees. Any truncated/malformed tree fails closed.
         const oldSha = compare.base_commit?.commit?.tree?.sha;
-        const newSha = compare.commits?.at(-1)?.commit?.tree?.sha;
-        if (!verifiedAncestry(compare,base,head) ||
+        // Fetch the exact HEAD commit independently. GitHub Compare's commit
+        // list is capped at the 250-commit boundary; its last element is not
+        // a reliable identity anchor once the change history grows.
+        const headCommit = await apiRead('/commits/' + head, token, repository);
+        const newSha = headCommit?.commit?.tree?.sha;
+        if (!verifiedAncestry(compare,base,head,headCommit) ||
             !/^[a-f0-9]{40}$/.test(oldSha||'') ||
             !/^[a-f0-9]{40}$/.test(newSha||'')) {
           result = {state:'blocked',reason:'full-tree fallback ancestry invalid'};
@@ -367,7 +378,7 @@ async function run() {
             apiRead('/git/trees/' + oldSha + '?recursive=1',token,repository),
             apiRead('/git/trees/' + newSha + '?recursive=1',token,repository),
           ]);
-          result = classifyVerifiedGitTrees(compare,base,head,paths,older,newer);
+          result = classifyVerifiedGitTrees(compare,base,head,paths,older,newer,headCommit);
         }
       } else {
         result = classify(compare,base,head,paths);
