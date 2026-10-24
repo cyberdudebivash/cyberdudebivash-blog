@@ -11,7 +11,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const crypto=require('node:crypto');
 
-const ORIGIN='https://blog.cyberdudebivash.in';
+const ORIGIN='https://soc.cyberdudebivash.in';
 const MAX_HTML=3_000_000;
 const ROUTES=Object.freeze([
   {path:'/', markers:['SENTINEL APEX SOC'],legal:true},
@@ -27,6 +27,15 @@ const badCompany=/\bCyberDudeBivash\s+(?:Private\s+Limited|Pvt\.?\s*Ltd\.?)\b/i;
 const personalPanStructured=/"propertyID"\s*:\s*"PAN"/i;
 const BLOCKED_COPY=/\b(?:SOC 2 Type II certified|24\/7 managed SOC is live)\b/i;
 const sha=v=>crypto.createHash('sha256').update(v).digest('hex');
+// SEO identity is owned by the SOC customer hostname, not the legacy CTI
+// origin. A body-injected or duplicate tag must never satisfy release parity.
+function seoAttribute(tag,name){
+  const match=tag.match(new RegExp('(?:^|\\s)'+name+'\\s*=\\s*(?:"([^"]*)"|\\x27([^\\x27]*)\\x27)','i'));
+  return match ? (match[1] ?? match[2]) : null;
+}
+function seoTags(head,element){
+  return head.match(new RegExp('<'+element+'\\b[^>]*>','gi'))||[];
+}
 function assess(spec,result){
   const errors=[];
   const fail=(code,predicate)=>{if(!predicate)errors.push(code)};
@@ -42,6 +51,20 @@ function assess(spec,result){
     if(!result.body.includes(marker))errors.push('REQUIRED_MARKER_MISSING');
   }
   fail('SOFT_404',!/<title[^>]*>\s*(?:404|not found)\b/i.test(result.body));
+  const heads=result.body.match(/<head\b[^>]*>[\s\S]*?<\/head\s*>/gi)||[];
+  const bodyOffset=result.body.search(/<body\b/i);
+  const head=heads.length===1 &&
+    (bodyOffset<0||result.body.indexOf(heads[0])<bodyOffset)?heads[0]:'';
+  fail('DOCUMENT_HEAD_MISSING_OR_AMBIGUOUS',Boolean(head));
+  const expected=ORIGIN+spec.path;
+  const canonical=seoTags(head,'link')
+    .filter(tag=>(seoAttribute(tag,'rel')||'').toLowerCase().split(/\s+/).includes('canonical'))
+    .map(tag=>seoAttribute(tag,'href'));
+  const ogUrls=seoTags(head,'meta')
+    .filter(tag=>(seoAttribute(tag,'property')||'').toLowerCase()==='og:url')
+    .map(tag=>seoAttribute(tag,'content'));
+  fail('CANONICAL_INCORRECT',canonical.length===1&&canonical[0]===expected);
+  fail('OG_URL_INCORRECT',ogUrls.length===1&&ogUrls[0]===expected);
   fail('UNSUPPORTED_COMMERCIAL_CLAIM',!BLOCKED_COPY.test(result.body));
   if(spec.legal){
     fail('FALSE_INCORPORATION_CLAIM',!badCompany.test(result.body));
@@ -54,8 +77,6 @@ function assess(spec,result){
     fail('ENQUIRY_LINK_MISSING',result.body.includes('mailto:contact@cyberdudebivash.in?subject='));
     fail('FALSE_CHECKOUT',!/href=["'][^"']*(?:checkout|buy\.html)/i.test(result.body));
     fail('SERVICE_BOUNDARY_MISSING',result.body.includes('not an active 24/7 monitoring service'));
-    const canonical=result.body.match(/<link\b[^>]*\brel=["']canonical["'][^>]*>/i);
-    fail('CANONICAL_INCORRECT',!!canonical && canonical[0].includes('href="'+ORIGIN+spec.path+'"'));
   }
   return [...new Set(errors)].sort();
 }
@@ -123,4 +144,4 @@ if(require.main===module){
     console.error('HOLD SOC_RELEASE_PARITY '+message);process.exitCode=1;
   });
 }
-module.exports={ROUTES,assess,compareBuildLive,localAssetPath};
+module.exports={ORIGIN,ROUTES,assess,compareBuildLive,localAssetPath};
