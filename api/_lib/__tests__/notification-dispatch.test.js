@@ -519,4 +519,36 @@ describe('processDueDeliveries — the sender (first attempt and retries share o
     const recovered = await dispatch.processDueDeliveries({ limit: 10 });
     expect(recovered.delivered).toBe(1);
   });
+
+  test('stale successful provider response never creates a false delivered receipt', async () => {
+    await notify.updatePreferences('usr_a', { email_override: 'a@example.com' });
+    fakeEvents['evt_1'] = makeEvent();
+    await dispatch.dispatchNewEvent({ ownerId: 'usr_a', watchlistId: null, event: fakeEvents['evt_1'] });
+    const spy = jest.spyOn(notify, 'recordAttemptOutcome').mockResolvedValueOnce('unresolved');
+    try {
+      const result = await dispatch.processDueDeliveries({ limit: 1 });
+      expect(result.attempts).toBe(1);
+      expect(result.unresolved).toBe(1);
+      expect(result.delivered).toBe(0);
+      expect(await notify.listDeliveries('usr_a', { limit: 10 })).toHaveLength(0);
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
+  test('missing-event stale claim does not fabricate a failed delivery receipt', async () => {
+    await notify.updatePreferences('usr_a', { email_override: 'a@example.com' });
+    await notify.enqueuePendingDelivery({ ownerId: 'usr_a', eventId: 'evt_missing', watchlistId: null, channels: ['email'] });
+    const spy = jest.spyOn(notify, 'recordAttemptOutcome').mockResolvedValueOnce('unresolved');
+    try {
+      const result = await dispatch.processDueDeliveries({ limit: 1 });
+      expect(result.attempts).toBe(1);
+      expect(result.unresolved).toBe(1);
+      expect(result.dead_lettered).toBe(0);
+      expect(await notify.listDeliveries('usr_a', { limit: 10 })).toHaveLength(0);
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
 });

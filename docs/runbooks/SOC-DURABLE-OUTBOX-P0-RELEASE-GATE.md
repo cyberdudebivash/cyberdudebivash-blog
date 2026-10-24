@@ -39,13 +39,37 @@ webhook credentials, signing secrets or the event payload.
   Invocation with no args performs NO D1/network operation.
 - Selects at most **5** due intents, using indexed pending and expired
   claim windows, with conditional atomic claim and 90-second lease.
+  **Expired claims are quarantined** as `DELIVERY_STATE_AMBIGUOUS`, not
+  re-dispatched: the crashed worker may have enqueued a job or reached a
+  provider before its acknowledgement was recorded. This conservatively
+  blocks some pre-dispatch crashes until manual review; it avoids an
+  unsupported exactly-once delivery claim.
 - Reads canonical event, proves watchlist belongs to the intended owner,
   is active and still includes that entity, then replays the owner feed
   and idempotently queues eligible email/webhook channels.
-- A disabled channel, paused/deleted watchlist or removed membership
-  yields a **skipped** terminal intent, never customer delivery.
-- Retries exceptional work with bounded backoff and stable claim tokens;
+- A **confirmed explicit opt-out of both notification channels**, paused/deleted
+  watchlist or removed membership yields a **skipped** terminal intent.
+  Missing account email, incomplete enabled webhook, or legacy ambiguous
+  `enqueued=false` without a verified `ALL_CHANNELS_DISABLED` reason
+  must instead be **blocked**, never silently treated as customer opt-out.
+- **Ambiguous enqueue fail-closed control:** if dispatch reports eligible
+  channels but `enqueued=false`, the intent is marked `blocked` with
+  `DELIVERY_STATE_AMBIGUOUS`, not `complete` and not automatically retried.
+  A missing/malformed dispatch result **or a dispatch exception after a
+  possible partial enqueue** is likewise blocked without automatic replay.
+  An `enqueued=true` result must include nonempty recognized channel names.
+  Multi-channel enqueue acknowledgements must prove **every eligible channel was newly inserted**. The underlying queue's `created=true` only means *at least one* insert succeeded; a partially pre-existing email/webhook pair is ambiguous and must be quarantined, not reported complete.
+  A failure to persist `complete` after dispatch is also ambiguous and
+  must not be retried automatically.
+  This prevents
+  false-green source acceptance when a pending job already exists or a
+  previously delivered terminal job has been deleted. A verified first
+  enqueue can mark the *outbox intent* complete, but not external delivery.
+  Operator review of durable per-channel receipts is still mandatory.
+- Retries **pre-dispatch** exceptional work with bounded backoff and stable claim tokens;
   at 5 unsuccessful attempts, marks a **blocked incident** for review.
+  After the dispatch boundary, including failure to persist a successful
+  enqueue acknowledgement, it quarantines immediately; no automatic retry.
   Errors cause the manual CLI to fail rather than claim successful service.
 - Optional `--prune-completed` removes only up to 5 completed/skipped
   intents older than 30 days. It never deletes pending, claimed or
@@ -58,7 +82,7 @@ Mandatory `node --test tests-js/soc-notification-outbox-native.test.js`
 runs SQLite migration and real SQL statements on Node 22's native SQLite;
 includes index plan, idempotent staging, duplicate memberships, false-green
 negative gate, missing event recovery, tenant status/membership enforcement,
-one-time delivery identity after partial failure, lease expiry recovery,
+one-time delivery identity after partial failure, expired-lease quarantine,
 bounded retry dead-letter, terminal-only retention and manual CLI safety.
 Existing Jest / E2E / governance / security checks remain mandatory.
 
@@ -75,6 +99,13 @@ Existing Jest / E2E / governance / security checks remain mandatory.
   disaster recovery, vulnerability management and operational SOC 2 control
   performance still require evidence.
 - Successful enqueue is NOT proof of email/webhook send or external receipt.
+  The underlying notification_delivery_jobs table deletes terminal jobs;
+  its stable delivery ID alone is NOT a durable per-channel deduplication
+  ledger. A crash after an external provider accepts a send but before
+  recording its receipt remains an unresolved duplicate-delivery risk.
+  Do not enable customer alerts until a durable channel-intent/receipt
+  design and provider-specific idempotency or documented at-least-once
+  delivery policy have passed independent acceptance.
   This branch does not enable delivery providers or establish an SLA.
 - This source PR does not migrate old events or recover prior customer
   omissions. That requires separate forensic reconciliation with consent
