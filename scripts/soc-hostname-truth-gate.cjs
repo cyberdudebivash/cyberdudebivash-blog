@@ -17,8 +17,16 @@ const ROUTES = Object.freeze([
   '/soc-readiness-assessment.html',
   '/about.html',
   '/terms.html',
+  '/privacy.html',
+  '/security-disclosure.html',
+  '/contact.html',
 ]);
-const LEGAL_ROUTES = new Set(['/about.html', '/terms.html']);
+// Customer-visible legal and contact identity must be independently checked,
+// not inferred from the homepage or older, blog-hosted metadata.
+const LEGAL_ROUTES = new Set([
+  '/about.html', '/terms.html', '/privacy.html',
+  '/security-disclosure.html', '/contact.html',
+]);
 const UNSUPPORTED = /\b(?:SOC 2 Type II certified|24\/7 managed SOC is live)\b/i;
 const INCORPORATED = /\bCyberDudeBivash\s+(?:Private\s+Limited|Pvt\.?\s*Ltd\.?)\b/i;
 
