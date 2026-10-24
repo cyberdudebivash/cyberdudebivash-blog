@@ -338,7 +338,7 @@ async function processDueDeliveries({ limit = 100 } = {}) {
     // Additive fields -- kept alongside the field names above so
     // scripts/deliver-watchlist-notifications.js's existing console.log
     // lines keep working unchanged (Principle 5).
-    claimed: 0, skipped_claimed_elsewhere: 0, cancelled: 0,
+    claimed: 0, skipped_claimed_elsewhere: 0, cancelled: 0, unresolved: 0,
   };
 
   const groups = new Map();
@@ -395,10 +395,14 @@ async function processDueDeliveries({ limit = 100 } = {}) {
         // after retries, same as any other failure) rather than throwing.
         if (!event) {
           const disposition = await notify.recordAttemptOutcome({ deliveryId: job.delivery_id, claimToken: claim.claimToken, success: false });
-          await notify.recordDelivery(group.owner_id, {
-            channel, eventId: group.event_id, watchlistId: group.watchlist_id,
-            status: 'failed', error: 'EVENT_NOT_FOUND', attempt: job.attempt_count,
-          });
+          if (disposition !== 'unresolved') {
+            await notify.recordDelivery(group.owner_id, {
+              channel, eventId: group.event_id, watchlistId: group.watchlist_id,
+              status: 'failed', error: 'EVENT_NOT_FOUND', attempt: job.attempt_count,
+            });
+          } else {
+            results.unresolved++;
+          }
           results.attempts++;
           if (disposition === 'retrying') results.retried++;
           else if (disposition === 'dead_lettered') results.dead_lettered++;
@@ -426,11 +430,18 @@ async function processDueDeliveries({ limit = 100 } = {}) {
           deliveryId: job.delivery_id, claimToken: claim.claimToken,
           success: outcome.success, retryable: outcome.retryable, retryAfterSeconds: outcome.retryAfterSeconds,
         });
-        await notify.recordDelivery(group.owner_id, {
-          channel, eventId: group.event_id, watchlistId: group.watchlist_id,
-          status: outcome.success ? 'delivered' : 'failed', error: outcome.error,
-          attempt: job.attempt_count + 1,
-        });
+        // A stale claim or failed conditional D1 write can return 'unresolved'
+        // even after a provider accepted the request. Never create a false
+        // terminal customer-facing receipt for a transition we did not own.
+        if (disposition !== 'unresolved') {
+          await notify.recordDelivery(group.owner_id, {
+            channel, eventId: group.event_id, watchlistId: group.watchlist_id,
+            status: outcome.success ? 'delivered' : 'failed', error: outcome.error,
+            attempt: job.attempt_count + 1,
+          });
+        } else {
+          results.unresolved++;
+        }
         if (disposition === 'delivered') results.delivered++;
         else if (disposition === 'retrying') results.retried++;
         else if (disposition === 'dead_lettered') results.dead_lettered++;
