@@ -130,6 +130,20 @@ class InvestigationManager {
       throw new Error('SOC_INVESTIGATION_REASSIGNMENT_NOT_READY');
     }
 
+    // P0 #462: status and priority have separate Redis sorted-set indexes.
+    // Non-atomic hash-only transitions leave old memberships and omit new ones.
+    // Fail closed until an atomic update/reconciliation design is certified.
+    if (Object.prototype.hasOwnProperty.call(updates, 'status') &&
+        updates.status !== investigation.status) {
+      throw new Error('SOC_INVESTIGATION_STATUS_TRANSITION_NOT_READY');
+    }
+    if (Object.prototype.hasOwnProperty.call(updates, 'priority')) {
+      const requestedPriority = INVESTIGATION_PRIORITY[updates.priority] || investigation.priority;
+      if (Number(requestedPriority) !== Number(investigation.priority)) {
+        throw new Error('SOC_INVESTIGATION_PRIORITY_TRANSITION_NOT_READY');
+      }
+    }
+
     // Update allowed fields
     const allowed = ['title', 'description', 'priority', 'status', 'assignee'];
     const updateData = {};
