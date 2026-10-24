@@ -38,3 +38,25 @@ test('reject reassignment before mutation', async () => {
     /SOC_INVESTIGATION_REASSIGNMENT_NOT_READY/);
   assert.equal(writes.length, 0);
 });
+
+test('unchanged assignee permits metadata update', async () => {
+  const { manager, writes } = fixture();
+  // Avoid external audit dependency: this test verifies the Redis mutation boundary.
+  manager.recordInvestigationAudit = async () => {};
+  const result = await manager.updateInvestigation('case-1', {
+    assignee: 'analyst-a', title: 'Updated title',
+  });
+  assert.equal(result.assignee, 'analyst-a');
+  assert.equal(result.title, 'Updated title');
+  assert.equal(writes.length, 1);
+  assert.equal(writes[0][0], 'investigation:case-1');
+});
+
+test('metadata-only update preserves assignee', async () => {
+  const { manager, writes } = fixture();
+  manager.recordInvestigationAudit = async () => {};
+  const result = await manager.updateInvestigation('case-1', { description: 'New detail' });
+  assert.equal(result.assignee, 'analyst-a');
+  assert.equal(result.description, 'New detail');
+  assert.equal(writes.length, 1);
+});
