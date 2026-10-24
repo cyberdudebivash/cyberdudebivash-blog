@@ -47,8 +47,9 @@ class InvestigationManager {
       version: 1,
     };
 
-    // #455: prevent two create attempts for the same caller-supplied identity
-    // from silently diverging. Creation still needs transactional index recovery.
+    // #455: creation writes the record and indexes in separate Redis operations.
+    // A failed intermediate write can leave incomplete index membership;
+    // transactional or idempotent reconciliation is required before release.
     const investKey = `investigation:${investigationId}`;
     await this.redis.hset(investKey, Object.entries(investigation).flat());
     await this.redis.expire(investKey, 31536000);
