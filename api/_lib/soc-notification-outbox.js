@@ -11,7 +11,7 @@ const MAX_RECONCILE_JOBS = 5;
 const MAX_ATTEMPTS = 5;
 const LEASE_MS = 90_000;
 const BACKOFF_MS = [60_000,300_000,900_000,1_800_000,3_600_000];
-const ERROR_CODES = new Set(['EVENT_NOT_AVAILABLE','ENQUEUE_EXCEPTION','ATTEMPTS_EXHAUSTED','DELIVERY_STATE_AMBIGUOUS']);
+const ERROR_CODES = new Set(['EVENT_NOT_AVAILABLE','ENQUEUE_EXCEPTION','ATTEMPTS_EXHAUSTED','DELIVERY_STATE_AMBIGUOUS','DEPENDENCY_STATE_UNKNOWN']);
 const INSERT_SQL = "INSERT INTO soc_notification_outbox (event_id,watchlist_id,owner_id,state,attempt_count,next_attempt_ms,created_at_ms,updated_at_ms) VALUES (?, ?, ?, 'pending', 0, ?, ?, ?) ON CONFLICT(event_id,watchlist_id,owner_id) DO NOTHING";
 const DUE_SQL = "SELECT event_id,watchlist_id,owner_id FROM soc_notification_outbox WHERE state='pending' AND next_attempt_ms <= ? ORDER BY next_attempt_ms,created_at_ms LIMIT ?";
 const EXPIRED_SQL = "SELECT event_id,watchlist_id,owner_id FROM soc_notification_outbox WHERE state='claimed' AND lease_expires_ms <= ? ORDER BY lease_expires_ms LIMIT ?";
@@ -119,12 +119,31 @@ function createOutbox({ d1, getEvent, getWatchlist, listEntities, appendToFeed, 
           tally[state === 'pending' ? 'retry' : 'blocked']++; tally.errors++; continue;
         }
         const owned = await getWatchlist(row.watchlist_id,row.owner_id);
-        if (!owned || !owned.watchlist || owned.watchlist.status !== 'active') {
+        // A verified NOT_FOUND or explicit pause is an authorized cancellation.
+        // Missing/error-shaped dependency responses are NOT proof of customer
+        // opt-out: retry pre-dispatch and eventually block with incident evidence.
+        if (owned && owned.error === 'NOT_FOUND' && !owned.watchlist) {
+          await finish(row,claimToken,'skipped'); tally.skipped++; continue;
+        }
+        if (!owned || owned.error || !owned.watchlist ||
+            !['active','paused'].includes(owned.watchlist.status)) {
+          const state = await retry(row,claimToken,'DEPENDENCY_STATE_UNKNOWN',attempts);
+          tally[state === 'pending' ? 'retry' : 'blocked']++; tally.errors++; continue;
+        }
+        if (owned.watchlist.status === 'paused') {
           await finish(row,claimToken,'skipped'); tally.skipped++; continue;
         }
         const entities = await listEntities(row.watchlist_id,row.owner_id);
-        if (!entities || !Array.isArray(entities.entities) ||
-            !entities.entities.some(e => e.type === event.entity_type && e.id === event.entity_id)) {
+        if (entities && entities.error === 'NOT_FOUND' && !entities.entities) {
+          // A concurrent removal is explicitly confirmed by the owner-scoped
+          // membership lookup. No customer delivery should be emitted.
+          await finish(row,claimToken,'skipped'); tally.skipped++; continue;
+        }
+        if (!entities || entities.error || !Array.isArray(entities.entities)) {
+          const state = await retry(row,claimToken,'DEPENDENCY_STATE_UNKNOWN',attempts);
+          tally[state === 'pending' ? 'retry' : 'blocked']++; tally.errors++; continue;
+        }
+        if (!entities.entities.some(e => e && e.type === event.entity_type && e.id === event.entity_id)) {
           await finish(row,claimToken,'skipped'); tally.skipped++; continue;
         }
         // Feed insertion itself must be replayed: event persistence may

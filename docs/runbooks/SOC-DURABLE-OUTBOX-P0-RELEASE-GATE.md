@@ -66,6 +66,15 @@ webhook credentials, signing secrets or the event payload.
   previously delivered terminal job has been deleted. A verified first
   enqueue can mark the *outbox intent* complete, but not external delivery.
   Operator review of durable per-channel receipts is still mandatory.
+- Owner-scoped watchlist and entity membership checks only mark `skipped`
+  for a confirmed `NOT_FOUND`, an explicitly `paused` watchlist, or an
+  authenticated active list that no longer includes the event entity.
+  Missing/malformed dependency responses and other error codes must **not**
+  be interpreted as consent withdrawal: they retry before the outbound
+  dispatch boundary with `DEPENDENCY_STATE_UNKNOWN`, then block after
+  the bounded attempt ceiling. SQLite negative controls cover those
+  responses, recovery and incident retention. This is not a native D1
+  availability or recipient delivery certification.
 - Retries **pre-dispatch** exceptional work with bounded backoff and stable claim tokens;
   at 5 unsuccessful attempts, marks a **blocked incident** for review.
   After the dispatch boundary, including failure to persist a successful
