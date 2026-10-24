@@ -24,7 +24,7 @@ test('legacy blog canonical fails even when page otherwise appears healthy', () 
 test('missing and duplicated canonical/OG identity fail closed', () => {
   const html = fixture('/').replace(/<link rel="canonical"[^>]*>/, '');
   assert.ok(assess('/', html).includes('SOC_CANONICAL_MISMATCH'));
-  const duplicated = fixture('/') + '<meta property="og:url" content="' + ORIGIN + '/">';
+  const duplicated = fixture('/').replace('</head>', '<meta property="og:url" content="' + ORIGIN + '/"></head>');
   assert.ok(assess('/', duplicated).includes('SOC_OG_URL_MISMATCH'));
 });
 test('legacy legal seller and false incorporation are rejected', () => {
