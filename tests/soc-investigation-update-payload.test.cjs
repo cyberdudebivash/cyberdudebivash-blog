@@ -60,3 +60,24 @@ test('metadata-only update preserves assignee', async () => {
   assert.equal(result.description, 'New detail');
   assert.equal(writes.length, 1);
 });
+
+test('Redis update failure propagates without claiming success', async () => {
+  const { manager, writes } = fixture();
+  manager.redis.hset = async (...args) => {
+    writes.push(args);
+    throw new Error('INJECTED_REDIS_WRITE_FAILURE');
+  };
+  let auditCalls = 0;
+  manager.recordInvestigationAudit = async () => { auditCalls += 1; };
+  await assert.rejects(manager.updateInvestigation('case-1', { title: 'Cannot commit' }),
+    /INJECTED_REDIS_WRITE_FAILURE/);
+  assert.equal(writes.length, 1);
+  assert.equal(auditCalls, 0);
+});
+
+test('unassignment is rejected before Redis mutation', async () => {
+  const { manager, writes } = fixture();
+  await assert.rejects(manager.updateInvestigation('case-1', { assignee: 'unassigned' }),
+    /SOC_INVESTIGATION_REASSIGNMENT_NOT_READY/);
+  assert.equal(writes.length, 0);
+});
