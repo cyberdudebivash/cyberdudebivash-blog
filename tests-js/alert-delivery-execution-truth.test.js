@@ -96,7 +96,7 @@ test('alert runner installs lockfile-defined runtime dependencies before evaluat
   const lock = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../package-lock.json'), 'utf8'));
   const preflight = 'run: node scripts/alert-delivery-execution-gate.cjs';
   const install = 'npm ci --omit=dev --legacy-peer-deps --ignore-scripts --no-audit --no-fund';
-  const moduleLoad = 'require(\\'js-yaml\\'); require(\\'./api/_lib/change-engine\\'); require(\\'./api/_lib/notification-dispatch\\')';
+  const moduleLoad = "require('js-yaml'); require('./api/_lib/change-engine'); require('./api/_lib/notification-dispatch')";
   const evaluate = 'run: node scripts/evaluate-watchlist-changes.js';
   const deliver = 'run: node scripts/deliver-watchlist-notifications.js --limit=50';
   const safe = content =>
