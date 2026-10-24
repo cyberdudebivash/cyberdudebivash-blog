@@ -66,6 +66,20 @@ webhook credentials, signing secrets or the event payload.
   previously delivered terminal job has been deleted. A verified first
   enqueue can mark the *outbox intent* complete, but not external delivery.
   Operator review of durable per-channel receipts is still mandatory.
+- Persisted canonical event reads must match the claimed `event_id`, use a
+  supported `cve`/`campaign` type, contain a nonempty entity ID and a
+  parseable observation timestamp. An invalid event payload is **not** proof
+  that a customer removed the entity: retry pre-dispatch with
+  `EVENT_PAYLOAD_INVALID` and retain blocked incident evidence at the
+  retry ceiling. Every entry returned in an owner-scoped entity membership
+  array must have a supported type and nonempty ID; malformed arrays
+  similarly retry instead of terminally skipping alerts.
+- A returned owner-scoped watchlist must also carry an `id` exactly equal
+  to the claimed `watchlist_id`; a missing or mismatched ID is uncertain
+  dependency state, not authorization to skip, pause or dispatch. Native
+  SQLite negatives cover wrong/missing identities and wrong paused IDs. Native SQLite
+  negatives exercise scalar/array/wrong-event payloads, corrupt/mixed
+  membership rows and later recovery. This does not certify external sends.
 - Owner-scoped watchlist and entity membership checks only mark `skipped`
   for a confirmed `NOT_FOUND`, an explicitly `paused` watchlist, or an
   authenticated active list that no longer includes the event entity.

@@ -30,7 +30,7 @@ function fixture() {
     getEvent:async id => events.get(id)||null,
     getWatchlist:async (wl,owner) => {
       const state=owners.get(owner+'|'+wl);
-      return state ? {watchlist:{status:state}} : {error:'NOT_FOUND'};
+      return state ? {watchlist:{id:wl,status:state}} : {error:'NOT_FOUND'};
     },
     listEntities:async (wl,owner) => ({
       entities:memberships.get(owner+'|'+wl)||[]
@@ -125,11 +125,94 @@ test('customer pause/removal/ownership mismatch cancels rather than leaking aler
     }finally{f.close()}
   }
 });
+
+test('corrupt canonical event is never mistaken for an unsubscribed customer',async()=>{
+  const invalidEvents=[
+    ['wrong-event-id',e=>({...e,event_id:'evt-other'})],
+    ['unsupported-entity-type',e=>({...e,entity_type:'other'})],
+    ['missing-entity-id',e=>({...e,entity_id:''})],
+    ['invalid-observation-time',e=>({...e,observed_at:'not-a-timestamp'})],
+    ['missing-payload',()=>({})],
+    ['array-payload',()=>[]],
+    ['scalar-payload',()=>42],
+  ];
+  for(const [label,mutate] of invalidEvents){
+    const f=fixture();
+    try{
+      const event=f.ev(),watcher=f.add();
+      f.events.set(event.event_id,event);
+      await f.make().stageEventFanout({event,watchers:[watcher]});
+      const result=await f.make(true,{getEvent:async()=>mutate(event)}).reconcile({limit:1});
+      assert.equal(result.retry,1,label);
+      assert.equal(result.skipped,0,label);
+      assert.equal(result.errors,1,label);
+      assert.equal(f.row().last_error_code,'EVENT_PAYLOAD_INVALID',label);
+      assert.equal(f.feed.size,0,label);
+      assert.equal(f.deliveries.size,0,label);
+      f.advance(61_000);
+      const recovered=await f.make().reconcile({limit:1});
+      assert.equal(recovered.complete,1,label+' should recover on valid event read');
+      assert.equal(f.deliveries.size,1,label);
+    }finally{f.close()}
+  }
+});
+test('malformed owner-scoped membership rows retain notification intent for retry',async()=>{
+  const malformed=[
+    ['null-row',[null]],
+    ['missing-fields',[{}]],
+    ['bad-type',[{type:'invalid',id:'CVE-2026-0123'}]],
+    ['empty-id',[{type:'cve',id:''}]],
+    ['valid-plus-corrupt',[{type:'cve',id:'CVE-2026-0123'},null]],
+  ];
+  for(const [label,rows] of malformed){
+    const f=fixture();
+    try{
+      const event=f.ev(),watcher=f.add();f.events.set(event.event_id,event);
+      await f.make().stageEventFanout({event,watchers:[watcher]});
+      const result=await f.make(true,{
+        listEntities:async()=>({entities:rows})
+      }).reconcile({limit:1});
+      assert.equal(result.retry,1,label);
+      assert.equal(result.skipped,0,label);
+      assert.equal(result.complete,0,label);
+      assert.equal(f.row().last_error_code,'DEPENDENCY_STATE_UNKNOWN',label);
+      assert.equal(f.feed.size,0,label);
+      assert.equal(f.deliveries.size,0,label);
+      f.advance(61_000);
+      const recovered=await f.make().reconcile({limit:1});
+      assert.equal(recovered.complete,1,label+' should recover on valid membership read');
+      assert.equal(f.deliveries.size,1,label);
+    }finally{f.close()}
+  }
+});
+test('persistent invalid persisted event blocks with incident evidence after five attempts',async()=>{
+  const f=fixture();
+  try{
+    const event=f.ev(),watcher=f.add();
+    await f.make().stageEventFanout({event,watchers:[watcher]});
+    for(let attempt=0;attempt<5;attempt++){
+      const result=await f.make(true,{getEvent:async()=>({...event,event_id:'wrong-event'})})
+        .reconcile({limit:1});
+      assert.equal(result.errors,1);
+      assert.equal(result.skipped,0);
+      f.advance(3_700_000);
+    }
+    assert.equal(f.row().state,'blocked');
+    assert.equal(f.row().attempt_count,5);
+    assert.equal(f.row().last_error_code,'EVENT_PAYLOAD_INVALID');
+    assert.equal(f.feed.size,0);
+    assert.equal(f.deliveries.size,0);
+    assert.equal((await f.make().reconcile()).selected,0);
+  }finally{f.close()}
+});
 test('unknown owner or entity-membership state never silently cancels customer notification',async()=>{
   const scenarios=[
     ['missing-owner-response',{getWatchlist:async()=>null}],
     ['unexpected-owner-error',{getWatchlist:async()=>({error:'D1_TEMPORARY_FAILURE'})}],
-    ['invalid-owner-state',{getWatchlist:async()=>({watchlist:{status:'not-a-valid-state'}})}],
+    ['invalid-owner-state',{getWatchlist:async()=>({watchlist:{id:'watchlist-1',status:'not-a-valid-state'}})}],
+    ['wrong-owner-scoped-watchlist',{getWatchlist:async()=>({watchlist:{id:'another-watchlist',status:'active'}})}],
+    ['missing-watchlist-identity',{getWatchlist:async()=>({watchlist:{status:'active'}})}],
+    ['wrong-paused-watchlist',{getWatchlist:async()=>({watchlist:{id:'another-watchlist',status:'paused'}})}],
     ['missing-entity-response',{listEntities:async()=>null}],
     ['unexpected-entity-error',{listEntities:async()=>({error:'D1_TEMPORARY_FAILURE'})}],
     ['malformed-entity-memberships',{listEntities:async()=>({entities:{}})}],
