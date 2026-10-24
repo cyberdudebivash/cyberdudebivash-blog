@@ -49,7 +49,12 @@ function createOutbox({ d1, getEvent, getWatchlist, listEntities, appendToFeed, 
       // Previously staged rows remain idempotently retryable.
       const affected = await d1.runMutationWithChanges(INSERT_SQL,
         [event.event_id,w.watchlistId,w.ownerId,at,at,at]);
-      if (affected > 0) created++;
+      // INSERT ... ON CONFLICT DO NOTHING affects exactly zero or one row.
+      // Never treat a malformed or multi-row receipt as successful staging:
+      // callers must not persist the event after an unverified fanout write.
+      if (affected !== 0 && affected !== 1)
+        throw new Error('SOC_OUTBOX_STAGE_RECEIPT_INVALID');
+      if (affected === 1) created++;
     }
     return { staged: unique.size, created };
   }
