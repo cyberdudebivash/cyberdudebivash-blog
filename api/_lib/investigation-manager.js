@@ -371,7 +371,12 @@ class InvestigationManager {
     const investigations = [];
     for (const id of investigationIds) {
       const invest = await this.getInvestigation(id);
-      if (invest) investigations.push(invest);
+      // Redis sorted-set membership may be stale after reassignment or status
+      // transitions. Never authorize a worklist result using its index alone.
+      if (!invest) continue;
+      if (filters.assignee && invest.assignee !== filters.assignee) continue;
+      if (filters.status && invest.status !== filters.status) continue;
+      investigations.push(invest);
     }
 
     return investigations;
