@@ -13,11 +13,11 @@ const path = require('node:path');
 const ROOT = path.resolve(__dirname, '..');
 const DEPLOY_WORKFLOW = path.join(ROOT, '.github/workflows/cloudflare-production-deploy.yml');
 const BENIGN_PREFIXES = Object.freeze(['docs/', 'tests/', 'tests-js/']);
+// Drift/release authority is not a benign document change. Classify the
+// reconciler itself, the CI workflow, and D1 certification as operational
+// below so a self-modifying gate cannot produce nonproduction_only.
 const BENIGN_FILES = new Set([
   'README.md', 'CLAUDE.md', 'CHANGELOG.md',
-  '.github/workflows/test.yml',
-  'scripts/soc-native-d1-local-certify.cjs',
-  'scripts/production-drift-policy.cjs',
 ]);
 const BENIGN_SCRIPT_TEST = /^scripts\/[A-Za-z0-9._/-]+\.(?:test|spec)\.(?:cjs|mjs|js)$/;
 
@@ -32,6 +32,9 @@ const BENIGN_SCRIPT_TEST = /^scripts\/[A-Za-z0-9._/-]+\.(?:test|spec)\.(?:cjs|mj
  * appropriate. Future unlisted scripts, workflows or migrations remain BLOCKED.
  */
 const REVIEWED_OPERATIONAL_FILES = new Set([
+  '.github/workflows/test.yml',
+  'scripts/production-drift-policy.cjs',
+  'scripts/soc-native-d1-local-certify.cjs',
   '.github/workflows/alert-delivery.yml',
   '.github/workflows/intelligence-hub.yml',
   '.github/workflows/workflow-security-gate.yml',
