@@ -94,6 +94,23 @@ test('idempotent tenant-specific staging and bounded membership ceiling',async()
     assert.equal(f.db.prepare('SELECT count(*) AS n FROM soc_notification_outbox').get().n,1);
   }finally{f.close()}
 });
+test('staging rejects impossible D1 insert receipts instead of claiming durable fanout',async()=>{
+  for (const receipt of [2,-1,NaN,undefined]) {
+    const f=fixture();
+    try {
+      const original=f.dbApi.runMutationWithChanges;
+      f.dbApi.runMutationWithChanges=async(sql,params)=>{
+        if (sql.includes('INSERT INTO soc_notification_outbox')) return receipt;
+        return original(sql,params);
+      };
+      await assert.rejects(
+        f.make().stageEventFanout({event:f.ev(),watchers:[f.add()]}),
+        /SOC_OUTBOX_INSERT_RECEIPT_INVALID/
+      );
+      assert.equal(f.row(),undefined);
+    }finally{f.close()}
+  }
+});
 test('missing event is retried, later recovered, and feed/job are idempotent',async()=>{
   const f=fixture();
   try{
