@@ -44,33 +44,38 @@ module.exports = async (req, res) => {
   const caller = await requireAnalyst(req, res, fail);
   if (!caller) return;
 
-  // Defaults to the authenticated caller's own dashboard; an explicit
-  // ?analyst= still allows viewing another analyst's queue (small internal
-  // team, same trust boundary the unauthenticated version already had --
-  // requireAnalyst() above is the real, new restriction: SOME verified
-  // analyst identity is required at all, where previously none was).
-  const analyst = req.query.analyst || caller.id;
-
+  // Authentication does not authorize impersonating another analyst via
+  // ?analyst=. Team-wide visibility requires an explicitly configured lead
+  // role; customer/tenant authorizations are NOT inferred from this role.
+  const analyst = caller.id;
+  if (req.query?.analyst !== undefined && req.query.analyst !== analyst) {
+    return fail(res, 403, 'ANALYST_SCOPE_FORBIDDEN', 'Dashboard is restricted to the authenticated analyst.');
+  }
+  const sharedQueues = caller.role === 'lead_analyst' || caller.role === 'soc_admin';
   try {
-    const dashboard = await buildAnalystDashboard(analyst);
+    const dashboard = await buildAnalystDashboard(analyst, { sharedQueues });
     return ok(res, { analyst, dashboard });
-  } catch (e) {
-    return fail(res, 500, 'DASHBOARD_FAILED', e.message);
+  } catch (_) {
+    // Database internals, Redis errors and index names are never client data.
+    return fail(res, 503, 'DASHBOARD_UNAVAILABLE', 'Dashboard temporarily unavailable.');
   }
 };
 
-async function buildAnalystDashboard(analyst) {
+async function buildAnalystDashboard(analyst, { sharedQueues = false } = {}) {
   const [assigned, open, inProgress, pending, recent, stats] = await Promise.all([
     getAssignedInvestigations(analyst),
-    getOpenInvestigations(),
+    sharedQueues ? getOpenInvestigations() : Promise.resolve([]),
     getInProgressInvestigations(analyst),
-    getPendingReview(),
-    getRecentlyUpdated(),
-    getWorkbenchStats(),
+    sharedQueues ? getPendingReview() : Promise.resolve([]),
+    sharedQueues ? getRecentlyUpdated() : Promise.resolve([]),
+    sharedQueues ? getWorkbenchStats() : Promise.resolve(null),
   ]);
 
   return {
     analyst,
+    scope: sharedQueues ? 'internal_lead' : 'self',
+    // Null is intentionally UNKNOWN/NOT_AUTHORIZED, not an invented zero.
+    // The frontend must not present team totals as analyst-owned metrics.
     summary: {
       assignedCount: assigned.length,
       openCount: open.length,
@@ -106,7 +111,7 @@ async function getAssignedInvestigations(analyst) {
       for (let i = 0; i < data.length; i += 2) {
         invest[data[i]] = data[i + 1];
       }
-      investigations.push(invest);
+      if (invest.assignee === analyst) investigations.push(invest);
     }
   }
 
