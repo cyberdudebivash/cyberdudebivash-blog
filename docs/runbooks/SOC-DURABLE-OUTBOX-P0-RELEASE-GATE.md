@@ -44,6 +44,11 @@ webhook credentials, signing secrets or the event payload.
   provider before its acknowledgement was recorded. This conservatively
   blocks some pre-dispatch crashes until manual review; it avoids an
   unsupported exactly-once delivery claim.
+- A newly claimed row must return a native safe-integer attempt count >=1.
+  Missing, coerced, fractional, zero or nonfinite D1 attempt receipts are
+  quarantined as `ATTEMPT_RECEIPT_INVALID` before owner feed writes or
+  notification enqueue. Operator review of D1 claim/receipt integrity is
+  required; do not automatically replay blocked intents.
 - Reads canonical event, proves watchlist belongs to the intended owner,
   is active and still includes that entity, then replays the owner feed
   and idempotently queues eligible email/webhook channels.
