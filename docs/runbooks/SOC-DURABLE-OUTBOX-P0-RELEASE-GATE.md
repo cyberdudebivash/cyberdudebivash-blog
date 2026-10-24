@@ -58,6 +58,7 @@ webhook credentials, signing secrets or the event payload.
   A missing/malformed dispatch result **or a dispatch exception after a
   possible partial enqueue** is likewise blocked without automatic replay.
   An `enqueued=true` result must include nonempty recognized channel names.
+  Multi-channel enqueue acknowledgements must prove **every eligible channel was newly inserted**. The underlying queue's `created=true` only means *at least one* insert succeeded; a partially pre-existing email/webhook pair is ambiguous and must be quarantined, not reported complete.
   A failure to persist `complete` after dispatch is also ambiguous and
   must not be retried automatically.
   This prevents
