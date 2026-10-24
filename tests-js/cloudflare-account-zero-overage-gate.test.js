@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
 const crypto=require('node:crypto');
 const fs=require('node:fs');
 const path=require('node:path');
-const {assess,PLAN,SAFETY_RATIO}=require('../scripts/cloudflare-account-zero-overage-gate.cjs');
+const {assess,PLAN,REQUIRED_PLATFORMS,SAFETY_RATIO}=require('../scripts/cloudflare-account-zero-overage-gate.cjs');
 const NOW='2026-10-22T16:00:00.000Z';
 const ACCOUNT='a'.repeat(32);
 const hash=s=>crypto.createHash('sha256').update(s).digest('hex');
@@ -79,6 +79,22 @@ test('reject missing shared account coverage',()=>{
   hold('SHARED_ACCOUNT_NOT_ATTESTED',x=>x.accountCoverageConfirmed=false);
   hold('SHARED_ACCOUNT_NOT_ATTESTED',x=>x.reviewedPlatforms=['soc-only']);
   hold('SHARED_ACCOUNT_NOT_ATTESTED',x=>x.reviewedPlatforms.push(x.reviewedPlatforms[0]));
+});
+test('fail closed if any known ecosystem platform is missing from account-wide review',()=>{
+  assert.deepEqual(REQUIRED_PLATFORMS,[
+    'sentinel-apex-threat-intel','sentinel-apex-ai-security-hub',
+    'sentinel-apex-soc','nilachala-devotional'
+  ]);
+  for(const missing of REQUIRED_PLATFORMS){
+    hold('SHARED_ACCOUNT_NOT_ATTESTED',x=>{
+      x.reviewedPlatforms=x.reviewedPlatforms.filter(id=>id!==missing);
+      // Padding the list with plausible names must not bypass coverage.
+      x.reviewedPlatforms.push('other-verified-platform','another-verified-platform');
+    });
+  }
+  // Extra reviewed workloads remain valid when all required platforms exist.
+  const ok=go(x=>x.reviewedPlatforms.push('additional-approved-worker'));
+  assert.equal(ok.ok,true,ok.codes.join(','));
 });
 test('reject account confusion or invalid account fingerprint',()=>{
   hold('ACCOUNT_BINDING_INVALID',()=>{},NOW,'c'.repeat(32));
