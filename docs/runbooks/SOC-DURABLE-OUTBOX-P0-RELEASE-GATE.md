@@ -39,6 +39,11 @@ webhook credentials, signing secrets or the event payload.
   Invocation with no args performs NO D1/network operation.
 - Selects at most **5** due intents, using indexed pending and expired
   claim windows, with conditional atomic claim and 90-second lease.
+  **Expired claims are quarantined** as `DELIVERY_STATE_AMBIGUOUS`, not
+  re-dispatched: the crashed worker may have enqueued a job or reached a
+  provider before its acknowledgement was recorded. This conservatively
+  blocks some pre-dispatch crashes until manual review; it avoids an
+  unsupported exactly-once delivery claim.
 - Reads canonical event, proves watchlist belongs to the intended owner,
   is active and still includes that entity, then replays the owner feed
   and idempotently queues eligible email/webhook channels.
@@ -49,13 +54,18 @@ webhook credentials, signing secrets or the event payload.
   `DELIVERY_STATE_AMBIGUOUS`, not `complete` and not automatically retried.
   A missing/malformed dispatch result **or a dispatch exception after a
   possible partial enqueue** is likewise blocked without automatic replay.
+  An `enqueued=true` result must include nonempty recognized channel names.
+  A failure to persist `complete` after dispatch is also ambiguous and
+  must not be retried automatically.
   This prevents
   false-green source acceptance when a pending job already exists or a
   previously delivered terminal job has been deleted. A verified first
   enqueue can mark the *outbox intent* complete, but not external delivery.
   Operator review of durable per-channel receipts is still mandatory.
-- Retries exceptional work with bounded backoff and stable claim tokens;
+- Retries **pre-dispatch** exceptional work with bounded backoff and stable claim tokens;
   at 5 unsuccessful attempts, marks a **blocked incident** for review.
+  After the dispatch boundary, including failure to persist a successful
+  enqueue acknowledgement, it quarantines immediately; no automatic retry.
   Errors cause the manual CLI to fail rather than claim successful service.
 - Optional `--prune-completed` removes only up to 5 completed/skipped
   intents older than 30 days. It never deletes pending, claimed or
@@ -68,7 +78,7 @@ Mandatory `node --test tests-js/soc-notification-outbox-native.test.js`
 runs SQLite migration and real SQL statements on Node 22's native SQLite;
 includes index plan, idempotent staging, duplicate memberships, false-green
 negative gate, missing event recovery, tenant status/membership enforcement,
-one-time delivery identity after partial failure, lease expiry recovery,
+one-time delivery identity after partial failure, expired-lease quarantine,
 bounded retry dead-letter, terminal-only retention and manual CLI safety.
 Existing Jest / E2E / governance / security checks remain mandatory.
 
