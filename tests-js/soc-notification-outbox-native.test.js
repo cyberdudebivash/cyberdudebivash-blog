@@ -25,7 +25,7 @@ function fixture() {
     query:async (sql,p=[]) => db.prepare(sql).all(...p),
     runMutationWithChanges:async (sql,p=[]) => Number(db.prepare(sql).run(...p).changes),
   };
-  const make = (enabled=true) => createOutbox({
+  const make = (enabled=true, overrides={}) => createOutbox({
     enabled,d1:dbApi,now:()=>clock,token:()=>Math.random().toString(36).slice(2).padEnd(16,'x'),
     getEvent:async id => events.get(id)||null,
     getWatchlist:async (wl,owner) => {
@@ -37,6 +37,7 @@ function fixture() {
     }),
     appendToFeed:async(owner,e) => {feed.add(owner+'|'+e)},
     dispatch:async args => handler(args),
+    ...overrides,
   });
   const ev=(id='evt-one')=>({event_id:id,entity_type:'cve',entity_id:'CVE-2026-0123',observed_at:'2026-10-23T00:00:00Z'});
   function add(owner='owner-1',wl='watchlist-1') {
@@ -123,6 +124,70 @@ test('customer pause/removal/ownership mismatch cancels rather than leaking aler
       assert.equal(f.row().state,'skipped');
     }finally{f.close()}
   }
+});
+test('unknown owner or entity-membership state never silently cancels customer notification',async()=>{
+  const scenarios=[
+    ['missing-owner-response',{getWatchlist:async()=>null}],
+    ['unexpected-owner-error',{getWatchlist:async()=>({error:'D1_TEMPORARY_FAILURE'})}],
+    ['invalid-owner-state',{getWatchlist:async()=>({watchlist:{status:'not-a-valid-state'}})}],
+    ['missing-entity-response',{listEntities:async()=>null}],
+    ['unexpected-entity-error',{listEntities:async()=>({error:'D1_TEMPORARY_FAILURE'})}],
+    ['malformed-entity-memberships',{listEntities:async()=>({entities:{}})}],
+    ['contradictory-owner-not-found',{getWatchlist:async()=>({error:'NOT_FOUND',watchlist:{status:'active'}})}],
+  ];
+  for(const [label,overrides] of scenarios){
+    const f=fixture();
+    try{
+      const e=f.ev();const watcher=f.add();f.events.set(e.event_id,e);
+      await f.make().stageEventFanout({event:e,watchers:[watcher]});
+      const result=await f.make(true,overrides).reconcile({limit:1});
+      assert.equal(result.retry,1,label);
+      assert.equal(result.skipped,0,label);
+      assert.equal(result.errors,1,label);
+      assert.equal(f.row().state,'pending',label);
+      assert.equal(f.row().last_error_code,'DEPENDENCY_STATE_UNKNOWN',label);
+      assert.equal(f.feed.size,0,label);
+      assert.equal(f.deliveries.size,0,label);
+      f.advance(61_000);
+      const recovered=await f.make().reconcile({limit:1});
+      assert.equal(recovered.complete,1,label+' should recover when dependencies return');
+      assert.equal(f.deliveries.size,1,label);
+    }finally{f.close()}
+  }
+});
+test('confirmed owner-scoped membership NOT_FOUND cancels after concurrent removal',async()=>{
+  const f=fixture();
+  try{
+    const e=f.ev();const w=f.add();f.events.set(e.event_id,e);
+    await f.make().stageEventFanout({event:e,watchers:[w]});
+    const result=await f.make(true,{
+      listEntities:async()=>({error:'NOT_FOUND'})
+    }).reconcile();
+    assert.equal(result.skipped,1);
+    assert.equal(result.errors,0);
+    assert.equal(f.row().state,'skipped');
+    assert.equal(f.feed.size,0);
+    assert.equal(f.deliveries.size,0);
+  }finally{f.close()}
+});
+test('persistent unknown ownership reaches blocked state without dispatch',async()=>{
+  const f=fixture();
+  try{
+    const e=f.ev();const w=f.add();f.events.set(e.event_id,e);
+    await f.make().stageEventFanout({event:e,watchers:[w]});
+    for(let attempt=0;attempt<5;attempt++){
+      const result=await f.make(true,{
+        getWatchlist:async()=>({error:'D1_TEMPORARY_FAILURE'})
+      }).reconcile({limit:1});
+      assert.equal(result.errors,1);
+      f.advance(3_700_000);
+    }
+    assert.equal(f.row().attempt_count,5);
+    assert.equal(f.row().state,'blocked');
+    assert.equal(f.row().last_error_code,'DEPENDENCY_STATE_UNKNOWN');
+    assert.equal(f.deliveries.size,0);
+    assert.equal((await f.make().reconcile()).selected,0);
+  }finally{f.close()}
 });
 test('dispatch exception after partial enqueue quarantines without automatic duplicate replay',async()=>{
   const f=fixture();
