@@ -33,7 +33,10 @@ test('source graph comes from actual production deploy push paths', () => {
 });
 for(const [label,files,expected] of [
   ['documentation only',['docs/runbooks/SOC.md','README.md'],'nonproduction_only'],
-  ['unit tests and native rehearsal',['tests-js/soc-native-d1-local-certify.test.js','scripts/soc-native-d1-local-certify.cjs','.github/workflows/test.yml'],'nonproduction_only'],
+  ['unit tests only',['tests-js/soc-native-d1-local-certify.test.js'],'nonproduction_only'],
+  ['native D1 certifier',['scripts/soc-native-d1-local-certify.cjs'],'manual_release_required'],
+  ['main test CI workflow',['.github/workflows/test.yml'],'manual_release_required'],
+  ['drift classifier self-change',['scripts/production-drift-policy.cjs'],'manual_release_required'],
   ['changed Worker',['workers/entry.js'],'manual_release_required'],
   ['changed router',['api/v1/billing.js'],'manual_release_required'],
   ['generated CTI',['posts/CVE-2026-123.html'],'manual_release_required'],
@@ -42,6 +45,37 @@ for(const [label,files,expected] of [
   ['mixed production plus docs',['index.html','docs/readme.md'],'manual_release_required'],
   ['unexpected root file',['scripts/unknown-builder.js'],'blocked'],
 ]) test(label,()=>assert.equal(state(files),expected));
+
+test('P0 self-governance files require manual review, never benign-only approval', () => {
+  const governing = [
+    'scripts/production-drift-policy.cjs',
+    '.github/workflows/test.yml',
+    'scripts/soc-native-d1-local-certify.cjs',
+  ];
+  const result = classify(compare([...governing, 'README.md']), BASE, HEAD, paths);
+  assert.equal(result.state, 'manual_release_required');
+  assert.deepEqual(result.operational, [...governing].sort());
+  assert.deepEqual(result.benign, ['README.md']);
+  assert.deepEqual(result.production, []);
+  assert.deepEqual(result.unknown, []);
+  const summary = renderDriftSummary(HEAD, BASE, result);
+  assert.match(summary, /reviewed operational\/release-control changes: 3/);
+  assert.match(summary, /Manual release and independent postdeploy certification required/);
+});
+
+test('P0 operational governance controls remain review-gated when renamed', () => {
+  for(const p of [
+    'scripts/production-drift-policy.cjs',
+    '.github/workflows/test.yml',
+    'scripts/soc-native-d1-local-certify.cjs',
+  ]){
+    const c=compare([]);
+    c.files=[{filename:'docs/retired-'+p.split('/').at(-1)+'.md',previous_filename:p,status:'renamed'}];
+    const result=classify(c,BASE,HEAD,paths);
+    assert.equal(result.state,'manual_release_required',p);
+    assert.ok(result.operational.includes(p),p);
+  }
+});
 
 // Reproduces the EXACT 41 unknown changed paths from the 23 Oct 2026
 // c77ec9a4-vs-365c89f3 independently verified whole-Git-tree comparison.
