@@ -11,6 +11,7 @@ jest.mock('../../../_lib/analyst-auth', () => ({ requireAnalyst: jest.fn() }));
 
 const { requireAnalyst } = require('../../../_lib/analyst-auth');
 const { CaseManager } = require('../../../_lib/case-manager');
+const { InvestigationManager } = require('../../../_lib/investigation-manager');
 const handler = require('../cases');
 
 const CALLER = { id: 'analyst-1', name: 'Analyst One', role: 'analyst' };
@@ -33,6 +34,10 @@ function mockRes() {
 beforeEach(() => {
   requireAnalyst.mockReset();
   requireAnalyst.mockResolvedValue(CALLER);
+  jest.spyOn(CaseManager.prototype,'getCase')
+    .mockImplementation(async id => ({id,investigationId:'inv-1'}));
+  jest.spyOn(InvestigationManager.prototype,'getInvestigation')
+    .mockImplementation(async id => ({id,assignee:'analyst-1'}));
 });
 
 afterEach(() => {
@@ -64,7 +69,7 @@ test('POST /cases creates with the authenticated caller as createdBy', async () 
 });
 
 test('GET /cases/{id} (bare ID) resolves the real ID, not the literal "cases"', async () => {
-  const getSpy = jest.spyOn(CaseManager.prototype, 'getCase').mockResolvedValue({ id: 'case-123' });
+  const getSpy = jest.spyOn(CaseManager.prototype, 'getCase').mockResolvedValue({ id: 'case-123', investigationId: 'inv-1' });
   const summarySpy = jest.spyOn(CaseManager.prototype, 'getCaseSummary').mockResolvedValue({ notes: 0 });
 
   const res = mockRes();
@@ -86,7 +91,7 @@ test('POST /cases/{id}/notes attributes the note to the caller, not a client-sup
   }), res);
 
   expect(spy).toHaveBeenCalledWith('case-123', 'a note', 'analyst-1');
-  expect(getSpy).not.toHaveBeenCalled();
+  expect(getSpy).toHaveBeenCalledWith('case-123');
 });
 
 test('POST /cases/{id}/tasks adds a task with the given assignee and due date', async () => {
@@ -95,10 +100,10 @@ test('POST /cases/{id}/tasks adds a task with the given assignee and due date', 
   const res = mockRes();
   await handler(mockReq('POST', {
     apexSubpath: 'case-123/tasks',
-    body: { description: 'do the thing', assignee: 'bob', dueDate: '2026-09-01' },
+    body: { description: 'do the thing', assignee: 'analyst-1', dueDate: '2026-09-01' },
   }), res);
 
-  expect(spy).toHaveBeenCalledWith('case-123', 'do the thing', 'bob', '2026-09-01');
+  expect(spy).toHaveBeenCalledWith('case-123', 'do the thing', 'analyst-1', '2026-09-01');
 });
 
 test('PUT /cases/{id}/close closes the case with the given reason', async () => {
@@ -115,4 +120,60 @@ test('unrecognized method/path combinations 404', async () => {
   await handler(mockReq('DELETE'), res);
 
   expect(res.statusCode).toBe(404);
+});
+
+test('P0 unauthorized case ID cannot read summary, write notes/tasks or close',async()=>{
+  jest.spyOn(InvestigationManager.prototype,'getInvestigation')
+    .mockResolvedValue({id:'inv-1',assignee:'bob'});
+  const summary=jest.spyOn(CaseManager.prototype,'getCaseSummary');
+  const addNote=jest.spyOn(CaseManager.prototype,'addNote');
+  const addTask=jest.spyOn(CaseManager.prototype,'addTask');
+  const close=jest.spyOn(CaseManager.prototype,'closeCase');
+  const scenarios=[
+    ['GET','case-123',undefined],
+    ['POST','case-123/notes',{content:'unauthorized'}],
+    ['POST','case-123/tasks',{description:'unauthorized'}],
+    ['PUT','case-123/close',{closureReason:'unauthorized'}],
+  ];
+  for(const [method,apexSubpath,body] of scenarios){
+    const res=mockRes();
+    await handler(mockReq(method,{apexSubpath,body}),res);
+    expect(res.statusCode).toBe(404);
+    expect(res.body.error.message).toBe('Case not found');
+  }
+  [summary,addNote,addTask,close].forEach(fn=>expect(fn).not.toHaveBeenCalled());
+});
+test('P0 ordinary analyst cannot create a case on another investigation',async()=>{
+  jest.spyOn(InvestigationManager.prototype,'getInvestigation')
+    .mockResolvedValue({id:'inv-bob',assignee:'bob'});
+  const spy=jest.spyOn(CaseManager.prototype,'createCase');
+  const res=mockRes();
+  await handler(mockReq('POST',{body:{investigationId:'inv-bob',title:'foreign case'}}),res);
+  expect(res.statusCode).toBe(404);
+  expect(spy).not.toHaveBeenCalled();
+});
+test('P0 owner cannot assign a case task to a different analyst without lead role',async()=>{
+  const spy=jest.spyOn(CaseManager.prototype,'addTask');
+  const res=mockRes();
+  await handler(mockReq('POST',{apexSubpath:'case-123/tasks',
+    body:{description:'Task',assignee:'bob'}}),res);
+  expect(res.statusCode).toBe(403);
+  expect(spy).not.toHaveBeenCalled();
+});
+test('P0 lead can access shared internal case but invalid/mismatched parent fails closed',async()=>{
+  jest.spyOn(InvestigationManager.prototype,'getInvestigation')
+    .mockResolvedValue({id:'inv-1',assignee:'bob'});
+  requireAnalyst.mockResolvedValue({id:'lead',role:'soc_admin'});
+  const summary=jest.spyOn(CaseManager.prototype,'getCaseSummary')
+    .mockResolvedValue({notes:0});
+  const allowed=mockRes();
+  await handler(mockReq('GET',{apexSubpath:'case-123'}),allowed);
+  expect(allowed.statusCode).toBe(200);
+  expect(summary).toHaveBeenCalledWith('case-123');
+
+  jest.spyOn(CaseManager.prototype,'getCase')
+    .mockResolvedValue({id:'case-123',investigationId:'inv-not-matching'});
+  const denied=mockRes();
+  await handler(mockReq('GET',{apexSubpath:'case-123'}),denied);
+  expect(denied.statusCode).toBe(404);
 });
