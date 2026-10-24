@@ -36,6 +36,15 @@ function seoAttribute(tag,name){
 function seoTags(head,element){
   return head.match(new RegExp('<'+element+'\\b[^>]*>','gi'))||[];
 }
+// Inspect customer-visible copy; scripts, metadata and comments cannot
+// establish or refute a legal/service claim in the rendered body.
+function visibleCopy(html){
+  const body=html.match(/<body\\b[^>]*>([\\s\\S]*?)<\\/body\\s*>/i)?.[1]||'';
+  return body.replace(/<!--[\\s\\S]*?-->/g,' ')
+    .replace(/<(?:script|style|template|noscript)\\b[^>]*>[\\s\\S]*?<\\/(?:script|style|template|noscript)\\s*>/gi,' ')
+    .replace(/<[^>]+>/g,' ').replace(/&nbsp;|&#160;/gi,' ')
+    .replace(/\\s+/g,' ').trim();
+}
 function assess(spec,result){
   const errors=[];
   const fail=(code,predicate)=>{if(!predicate)errors.push(code)};
@@ -69,6 +78,17 @@ function assess(spec,result){
   if(spec.legal){
     fail('FALSE_INCORPORATION_CLAIM',!badCompany.test(result.body));
     fail('INCORPORATED_STRUCTURED_IDENTITY',!/["']@type["']\s*:\s*["']Corporation["']/i.test(result.body));
+  }
+  if(spec.path==='/about.html'){
+    const copy=visibleCopy(result.body);
+    fail('UNVERIFIED_CONTINUOUS_MONITORING_COPY',
+      !/\\bwe monitor\\b.{0,160}\\baround the clock\\b/i.test(copy));
+    fail('RETIRED_SOCIAL_IDENTITY',
+      !/\\bX\\s*\\/\\s*Twitter\\s*:\\s*@cdbsentinelapex\\b/i.test(copy));
+  }
+  if(spec.path==='/terms.html'){
+    fail('LEGACY_VISIBLE_LEGAL_HOST',
+      !/\\bblog\\.cyberdudebivash\\.in\\b/i.test(visibleCopy(result.body)));
   }
   if(spec.path==='/'){
     fail('PERSONAL_PAN_METADATA',!personalPanStructured.test(result.body));
