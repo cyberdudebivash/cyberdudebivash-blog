@@ -7,6 +7,22 @@
 **Existing deployment config:** \`wrangler.jsonc\`, \`workers/entry.js\`, \`workers/lib/route-table.js\`
 **Change owner:** an authenticated Cloudflare/DNS operator with explicit approval.
 
+## 2026-10-24 read-only public-host observation (not cutover certification)
+
+A public page-content fetch on 2026-10-24 successfully retrieved HTML content from the following URLs; it did **not** authenticate to Cloudflare or establish DNS ownership, Worker custom-domain mapping, deployed Worker SHA, TLS certificate details, response headers, D1/R2 bindings, cache consistency, or production approval:
+
+| Public route | Observed content | Canonical / Open Graph URL observed |
+| --- | --- | --- |
+| `https://soc.cyberdudebivash.in/` | SOC + CTI homepage, source-linked intelligence cards | `https://blog.cyberdudebivash.in/` |
+| `https://soc.cyberdudebivash.in/soc-readiness-assessment.html` | Scoped, proposal-only assessment with explicit no-24/7-service disclaimer and sole-proprietorship disclosure | `https://blog.cyberdudebivash.in/soc-readiness-assessment.html` |
+| `https://soc.cyberdudebivash.in/about.html` | About/editorial page | `https://blog.cyberdudebivash.in/about.html` |
+| `https://soc.cyberdudebivash.in/terms.html` | Terms page with legacy `blog.` hostname in visible effective-date line | `https://blog.cyberdudebivash.in/terms.html` |
+| `https://blog.cyberdudebivash.in/soc-readiness-assessment.html` | Scoped assessment page also publicly retrievable | `https://blog.cyberdudebivash.in/soc-readiness-assessment.html` |
+
+**Interpretation:** The SOC hostname already exposes public pages, while its SEO identity still selects the legacy blog hostname. This is **observed dual-host publication**, not proof of an approved canonical migration, customer readiness, or parity. The previously reported public assessment-route 404 on `blog.` is not reproduced by this content fetch; verify raw HTTP status, release SHA, cache and byte hashes before closing #398. Source files and served legal copy also differ (e.g. the live terms' legacy hostname); do not infer which origin or Worker is responsible without authenticated Cloudflare evidence.
+
+**Required next gate:** Run `scripts/soc-live-release-parity.cjs --release-sha=<approved-40-hex-SHA>` only against the exact approved build after normal build/test prerequisites; the script is read-only but requires a local `dist-public` and compares eight routes on both plain and release-query URLs. Until explicit cutover approval, **do not change canonical/OG URLs, redirect `blog.`, change DNS, deploy, merge, or activate metered services** to make this observation appear green. Record canonical migration as a separate, reversible, approved change. Continue #418, #360, #404 and #400 gates independently.
+
 ## 0. Hard preconditions
 
 - Resolve all P0 release gates in \`docs/architecture/SENTINEL-APEX-SOC-TRANSFORMATION-2026-10-21.md\`. In particular, **do not expose tenant/client SOC dashboards while auth is analyst-key-based and resources are globally indexed**.
