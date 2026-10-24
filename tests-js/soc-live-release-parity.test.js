@@ -1,13 +1,12 @@
 'use strict';
 const test=require('node:test');
 const assert=require('node:assert/strict');
-const {ROUTES,assess,compareBuildLive,localAssetPath}=require('../scripts/soc-live-release-parity.cjs');
+const {ORIGIN,ROUTES,assess,compareBuildLive,localAssetPath}=require('../scripts/soc-live-release-parity.cjs');
 
 function fixture(spec){
   const standard=['<!doctype html><html><head><title>SENTINEL APEX SOC</title>'];
-  if(spec.path==='/soc-readiness-assessment.html'){
-    standard.push('<link rel="canonical" href="https://blog.cyberdudebivash.in/soc-readiness-assessment.html">');
-  }
+  standard.push('<link rel="canonical" href="'+ORIGIN+spec.path+'">');
+  standard.push('<meta property="og:url" content="'+ORIGIN+spec.path+'">');
   standard.push('</head><body><main>');
   for(const marker of spec.markers)standard.push('<span>'+marker+'</span>');
   if(spec.path==='/soc-readiness-assessment.html'){
@@ -17,6 +16,32 @@ function fixture(spec){
   return standard.join('')+'</main></body></html>';
 }
 const response=(body,status=200,type='text/html; charset=utf-8')=>({body,status,type});
+test('P0 parity must probe SOC hostname, never legacy CTI origin',()=>{
+  assert.equal(ORIGIN,'https://soc.cyberdudebivash.in');
+  assert.equal(ROUTES.length,8);
+});
+test('P0 every release route rejects legacy, absent or duplicated head SEO identity',()=>{
+  for(const spec of ROUTES){
+    const original=fixture(spec);
+    const stale=original.replace(
+      '<link rel="canonical" href="'+ORIGIN+spec.path+'">',
+      '<link rel="canonical" href="https://blog.cyberdudebivash.in'+spec.path+'">'
+    ).replace(
+      '<meta property="og:url" content="'+ORIGIN+spec.path+'">',
+      '<meta property="og:url" content="https://blog.cyberdudebivash.in'+spec.path+'">'
+    );
+    const errors=assess(spec,response(stale));
+    assert.ok(errors.includes('CANONICAL_INCORRECT'),spec.path);
+    assert.ok(errors.includes('OG_URL_INCORRECT'),spec.path);
+    const duplicate=original.replace('</head>','<link rel="canonical" href="'+ORIGIN+spec.path+'"></head>');
+    assert.ok(assess(spec,response(duplicate)).includes('CANONICAL_INCORRECT'),spec.path);
+    const bodyOnly=original.replace('<meta property="og:url" content="'+ORIGIN+spec.path+'">','')
+      .replace('</body>','<meta property="og:url" content="'+ORIGIN+spec.path+'"></body>');
+    assert.ok(assess(spec,response(bodyOnly)).includes('OG_URL_INCORRECT'),spec.path);
+    const missingHead=original.replace('<head>','<div>').replace('</head>','</div>');
+    assert.ok(assess(spec,response(missingHead)).includes('DOCUMENT_HEAD_MISSING_OR_AMBIGUOUS'),spec.path);
+  }
+});
 test('positive: every required SOC/CTI and legal route has a strict marker contract',()=>{
   assert.equal(ROUTES.length,8);
   assert.ok(ROUTES.some(x=>x.path==='/soc-readiness-assessment.html'));
