@@ -141,29 +141,6 @@ async function getOpenInvestigations() {
   return investigations;
 }
 
-async function getInProgressInvestigations(analyst) {
-  const investIds = await redis.zrevrange('investigations:by:status:in_progress', 0, 9);
-  const investigations = [];
-
-  for (const investId of investIds) {
-    const investKey = `investigation:${investId}`;
-    const data = await redis.hgetall(investKey);
-
-    if (data && data.length > 0) {
-      const invest = {};
-      for (let i = 0; i < data.length; i += 2) {
-        invest[data[i]] = data[i + 1];
-      }
-
-      if (invest.assignee === analyst) {
-        investigations.push(invest);
-      }
-    }
-  }
-
-  return investigations;
-}
-
 async function getPendingReview() {
   const investIds = await redis.zrevrange('investigations:by:status:pending_review', 0, 4);
   const investigations = [];
