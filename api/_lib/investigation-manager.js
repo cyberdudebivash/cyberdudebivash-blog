@@ -113,6 +113,9 @@ class InvestigationManager {
   async updateInvestigation(investigationId, updates) {
     const investigation = await this.getInvestigation(investigationId);
     if (!investigation) throw new Error(`Investigation not found: ${investigationId}`);
+    if (!updates || typeof updates !== 'object' || Array.isArray(updates)) {
+      throw new TypeError('SOC_INVESTIGATION_INVALID_UPDATES');
+    }
 
     const investKey = `investigation:${investigationId}`;
     const now = new Date().toISOString();
