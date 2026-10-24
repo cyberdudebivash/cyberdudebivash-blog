@@ -47,8 +47,11 @@ webhook credentials, signing secrets or the event payload.
 - Reads canonical event, proves watchlist belongs to the intended owner,
   is active and still includes that entity, then replays the owner feed
   and idempotently queues eligible email/webhook channels.
-- A disabled channel, paused/deleted watchlist or removed membership
-  yields a **skipped** terminal intent, never customer delivery.
+- A **confirmed explicit opt-out of both notification channels**, paused/deleted
+  watchlist or removed membership yields a **skipped** terminal intent.
+  Missing account email, incomplete enabled webhook, or legacy ambiguous
+  `enqueued=false` without a verified `ALL_CHANNELS_DISABLED` reason
+  must instead be **blocked**, never silently treated as customer opt-out.
 - **Ambiguous enqueue fail-closed control:** if dispatch reports eligible
   channels but `enqueued=false`, the intent is marked `blocked` with
   `DELIVERY_STATE_AMBIGUOUS`, not `complete` and not automatically retried.
