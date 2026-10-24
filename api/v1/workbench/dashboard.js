@@ -62,14 +62,17 @@ module.exports = async (req, res) => {
 };
 
 async function buildAnalystDashboard(analyst, { sharedQueues = false } = {}) {
-  const [assigned, open, inProgress, pending, recent, stats] = await Promise.all([
+  const [assigned, open, pending, recent, stats] = await Promise.all([
     getAssignedInvestigations(analyst),
     sharedQueues ? getOpenInvestigations() : Promise.resolve([]),
-    getInProgressInvestigations(analyst),
     sharedQueues ? getPendingReview() : Promise.resolve([]),
     sharedQueues ? getRecentlyUpdated() : Promise.resolve([]),
     sharedQueues ? getWorkbenchStats() : Promise.resolve(null),
   ]);
+  // Derive the analyst's in-progress records from the already verified
+  // owner index. A global status index reads other analysts' records,
+  // has misleading top-ten sampling, and adds unnecessary Redis usage.
+  const inProgress = assigned.filter(item => item.status === 'in_progress');
 
   return {
     analyst,
