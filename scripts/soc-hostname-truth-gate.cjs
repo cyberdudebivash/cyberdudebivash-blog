@@ -46,13 +46,20 @@ function assess(route, html) {
   if (!ROUTES.includes(route) || typeof html !== 'string' || !html.trim() ||
       Buffer.byteLength(html, 'utf8') > MAX_BYTES) return ['INVALID_HTML'];
   const expected = ORIGIN + route;
-  const canonical = tags(html, 'link')
+  // Only head metadata counts as canonical/OG evidence. A tag planted in the
+  // body cannot establish search identity, and missing/duplicate heads HOLD.
+  const heads = html.match(/<head\b[^>]*>[\s\S]*?<\/head\s*>/gi) || [];
+  const bodyOffset = html.search(/<body\b/i);
+  const head = heads.length === 1 &&
+    (bodyOffset < 0 || html.indexOf(heads[0]) < bodyOffset) ? heads[0] : '';
+  const canonical = tags(head, 'link')
     .filter(tag => (attribute(tag, 'rel') || '').toLowerCase().split(/\s+/).includes('canonical'))
     .map(tag => attribute(tag, 'href'));
-  const ogUrls = tags(html, 'meta')
+  const ogUrls = tags(head, 'meta')
     .filter(tag => (attribute(tag, 'property') || '').toLowerCase() === 'og:url')
     .map(tag => attribute(tag, 'content'));
   const errors = [];
+  if (!head) errors.push('DOCUMENT_HEAD_MISSING_OR_AMBIGUOUS');
   // A head-only or malformed response cannot pass legal copy checks.
   // Brand text inside comments, scripts or metadata is not customer-visible.
   const hasBody = /<body\b[^>]*>[\s\S]*?<\/body\s*>/i.test(html);
