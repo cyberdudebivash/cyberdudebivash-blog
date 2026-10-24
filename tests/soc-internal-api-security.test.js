@@ -57,3 +57,16 @@ test('Internal SOC endpoints remain unlinked from the public SOC preview', () =>
   const preview = fs.readFileSync(path.join(root, 'soc-preview.html'), 'utf8');
   expect(preview).not.toMatch(/\/api\/v1\/workbench\/|X-Analyst-Key|ANALYST_KEYS/i);
 });
+
+test('SOC dashboard and frontend must fail closed on cross-analyst access and unknown team totals', () => {
+  const api = fs.readFileSync(path.join(root,'api/v1/workbench/dashboard.js'),'utf8');
+  const html = fs.readFileSync(path.join(root,'workbench.html'),'utf8');
+  expect(api).toContain('ANALYST_SCOPE_FORBIDDEN');
+  expect(api).toContain("scope: sharedQueues ? 'internal_lead' : 'self'");
+  expect(api).not.toContain('req.query.analyst || caller.id');
+  expect(api).not.toContain("DASHBOARD_FAILED', e.message");
+  expect(html).toContain("d.scope === 'internal_lead'");
+  expect(html).toContain('Team queue restricted');
+  expect(html).toContain("value ?? '—'");
+  expect(html).not.toContain('${stats.totalCases ?? 0}');
+});
