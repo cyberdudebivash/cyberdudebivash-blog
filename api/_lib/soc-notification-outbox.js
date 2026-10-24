@@ -48,7 +48,11 @@ function createOutbox({ d1, getEvent, getWatchlist, listEntities, appendToFeed, 
       // Previously staged rows remain idempotently retryable.
       const affected = await d1.runMutationWithChanges(INSERT_SQL,
         [event.event_id,w.watchlistId,w.ownerId,at,at,at]);
-      if (affected > 0) created++;
+      // Unique-key INSERT can affect only zero or one row. An unexpected
+      // receipt is not proof that a single durable intent was staged.
+      if (affected !== 0 && affected !== 1)
+        throw new Error('SOC_OUTBOX_INSERT_RECEIPT_INVALID');
+      if (affected === 1) created++;
     }
     return { staged: unique.size, created };
   }
