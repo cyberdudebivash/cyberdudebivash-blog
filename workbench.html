@@ -268,7 +268,7 @@ const Workbench = (() => {
       const stats = d.workbenchStats || {};
       const shared = d.scope === 'internal_lead';
       const teamValue = value => shared ? (value ?? '—') : '—';
-      const teamRestricted = '<p class="muted" role="status">Internal team queue restricted to authorized SOC leads. Customer-tenant access is not available.</p>';
+      const teamRestricted = '<p class="muted" role="status">Team queue restricted to authorized internal SOC leads. Customer-tenant access is not available.</p>';
       el.innerHTML = `
         <div class="stat-grid">
           <div class="stat-box"><div class="stat-val">${s.assignedCount ?? 0}</div><div class="stat-lbl">Assigned to me (sample)</div></div>
