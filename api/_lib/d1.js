@@ -159,9 +159,20 @@ async function run(sql, params = []) {
  * trailing semicolon of its own.
  */
 async function runMutationWithChanges(sql, params = []) {
-  const [, changesResult] = await exec([{ sql, params }, { sql: 'SELECT changes() AS affected', params: [] }]);
-  const row = changesResult.results[0];
-  return row ? Number(row.affected) : 0;
+  const results = await exec([{ sql, params }, { sql: 'SELECT changes() AS affected', params: [] }]);
+  // A missing/failed receipt is not evidence of a zero-row mutation. In
+  // particular, silently converting a malformed REST/native D1 response to
+  // zero can make outbox claim/staging logic misclassify a committed write.
+  if (!Array.isArray(results) || results.length !== 2 ||
+      results.some(r => !r || r.success !== true || !Array.isArray(r.results))) {
+    throw new Error('D1_MUTATION_RECEIPT_UNVERIFIED');
+  }
+  const rows = results[1].results;
+  if (rows.length !== 1 || !rows[0] ||
+      !Number.isSafeInteger(rows[0].affected) || rows[0].affected < 0) {
+    throw new Error('D1_MUTATION_RECEIPT_UNVERIFIED');
+  }
+  return rows[0].affected;
 }
 
 module.exports = { query, run, runMutationWithChanges, setD1Binding, isConfigured, hasNativeBinding };
