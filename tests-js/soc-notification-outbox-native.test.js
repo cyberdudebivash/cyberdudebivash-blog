@@ -30,7 +30,7 @@ function fixture() {
     getEvent:async id => events.get(id)||null,
     getWatchlist:async (wl,owner) => {
       const state=owners.get(owner+'|'+wl);
-      return state ? {watchlist:{status:state}} : {error:'NOT_FOUND'};
+      return state ? {watchlist:{id:wl,status:state}} : {error:'NOT_FOUND'};
     },
     listEntities:async (wl,owner) => ({
       entities:memberships.get(owner+'|'+wl)||[]
@@ -209,7 +209,10 @@ test('unknown owner or entity-membership state never silently cancels customer n
   const scenarios=[
     ['missing-owner-response',{getWatchlist:async()=>null}],
     ['unexpected-owner-error',{getWatchlist:async()=>({error:'D1_TEMPORARY_FAILURE'})}],
-    ['invalid-owner-state',{getWatchlist:async()=>({watchlist:{status:'not-a-valid-state'}})}],
+    ['invalid-owner-state',{getWatchlist:async()=>({watchlist:{id:'watchlist-1',status:'not-a-valid-state'}})}],
+    ['wrong-owner-scoped-watchlist',{getWatchlist:async()=>({watchlist:{id:'another-watchlist',status:'active'}})}],
+    ['missing-watchlist-identity',{getWatchlist:async()=>({watchlist:{status:'active'}})}],
+    ['wrong-paused-watchlist',{getWatchlist:async()=>({watchlist:{id:'another-watchlist',status:'paused'}})}],
     ['missing-entity-response',{listEntities:async()=>null}],
     ['unexpected-entity-error',{listEntities:async()=>({error:'D1_TEMPORARY_FAILURE'})}],
     ['malformed-entity-memberships',{listEntities:async()=>({entities:{}})}],
