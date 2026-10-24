@@ -94,6 +94,47 @@ test('idempotent tenant-specific staging and bounded membership ceiling',async()
     assert.equal(f.db.prepare('SELECT count(*) AS n FROM soc_notification_outbox').get().n,1);
   }finally{f.close()}
 });
+test('invalid claim mutation receipts fail closed, then expired lease is quarantined',async()=>{
+  for (const bad of [null,undefined,-1,2,'1',NaN,Infinity]) {
+    const f=fixture();
+    try {
+      const w=f.add();const e=f.ev();f.events.set(e.event_id,e);
+      await f.make().stageEventFanout({event:e,watchers:[w]});
+      const mutate=f.dbApi.runMutationWithChanges;
+      f.dbApi.runMutationWithChanges=async(sql,params=[])=>{
+        const affected=await mutate(sql,params);
+        return sql.includes("UPDATE soc_notification_outbox SET state='claimed'") ? bad : affected;
+      };
+      await assert.rejects(f.make().reconcile({limit:1}),/SOC_OUTBOX_CLAIM_RECEIPT_INVALID/);
+      assert.equal(f.row().state,'claimed');
+      assert.equal(f.feed.size,0);
+      assert.equal(f.deliveries.size,0);
+      f.dbApi.runMutationWithChanges=mutate;
+      f.advance(90_001);
+      const recovered=await f.make().reconcile({limit:1});
+      assert.equal(recovered.blocked,1);
+      assert.equal(f.row().state,'blocked');
+      assert.equal(f.feed.size,0);
+      assert.equal(f.deliveries.size,0);
+    }finally{f.close()}
+  }
+});
+test('zero-row conditional claim remains benign contention without dispatch',async()=>{
+  const f=fixture();
+  try {
+    const w=f.add();const e=f.ev();f.events.set(e.event_id,e);
+    await f.make().stageEventFanout({event:e,watchers:[w]});
+    const mutate=f.dbApi.runMutationWithChanges;
+    f.dbApi.runMutationWithChanges=async(sql,params=[])=>
+      sql.includes("UPDATE soc_notification_outbox SET state='claimed'") ? 0 : mutate(sql,params);
+    const result=await f.make().reconcile({limit:1});
+    assert.equal(result.claim_contended,1);
+    assert.equal(result.claimed,0);
+    assert.equal(f.row().state,'pending');
+    assert.equal(f.feed.size,0);
+    assert.equal(f.deliveries.size,0);
+  }finally{f.close()}
+});
 test('unverified claimed-attempt receipts quarantine without dispatch or feed writes',async()=>{
   for (const bad of [null,undefined,-1,0,1.5,'1',NaN,Infinity]) {
     const f=fixture();

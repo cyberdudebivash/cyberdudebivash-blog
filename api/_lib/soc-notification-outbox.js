@@ -101,7 +101,11 @@ function createOutbox({ d1, getEvent, getWatchlist, listEntities, appendToFeed, 
       const claimToken = token();
       const claimed = await d1.runMutationWithChanges(CLAIM_SQL,
         [claimToken,now()+LEASE_MS,now(),...key(row),now(),now()]);
-      if (claimed !== 1) { tally.claim_contended++; continue; }
+      // Conditional UPDATE of a single composite-key row can affect only
+      // zero (contention) or one (verified claim). An invalid D1 receipt
+      // must not be silently reported as ordinary claim contention.
+      if (claimed === 0) { tally.claim_contended++; continue; }
+      if (claimed !== 1) throw new Error('SOC_OUTBOX_CLAIM_RECEIPT_INVALID');
       tally.claimed++;
       const saved = await d1.query(ATTEMPT_SQL,[...key(row),claimToken]);
       if (saved.length !== 1) throw new Error('SOC_OUTBOX_STALE_CLAIM');
