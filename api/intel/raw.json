@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-24T01:52:34.651Z",
+  "generated": "2026-10-24T05:56:19.357Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -8,55 +8,8 @@
   "endpoint": "/api/intel/raw.json",
   "description": "Raw unfiltered S2N feed — all items including suppressed. Enterprise tier.",
   "note": "Access requires Enterprise API key. Includes suppression_reason and full IOC data.",
-  "count": 109,
+  "count": 105,
   "items": [
-    {
-      "id": "GHSA-4d7fe0701d3e7216",
-      "title": "postal-mime: Quadratic CPU consumption when decoding a header of many joinable RFC 2047 base64 encoded words",
-      "description": "### Impact Decoding a header that holds a long run of joinable RFC 2047 base64 encoded words, such as `=?utf-8?B?QUJD?=` repeated tens of thousands of times in a `Subject`, `From`, `To`, a filename or a description, took time quadratic in the number of words. The join check ran a regex over the text",
-      "cvss": 7.5,
-      "final_ps": 59,
-      "quality_score": 0.548,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-10-23",
-      "last_seen": "2026-10-23",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "npm",
-      "product": "postal-mime",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-f2hq-32vh-53cc",
-        "https://github.com/postalsys/postal-mime/security/advisories/GHSA-f2hq-32vh-53cc",
-        "https://github.com/postalsys/postal-mime/commit/9eb25a66bb3cc8b631421be651b9648796f19136",
-        "https://github.com/postalsys/postal-mime/releases/tag/v4.0.8"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=1.00",
-          "recency=0d (score=1.00)",
-          "QS=0.547"
-        ],
-        "priority": [
-          "base_ps=59 (no boosts)"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
-      "iocs": []
-    },
     {
       "id": "CVE-2026-50522",
       "title": "Critical SharePoint RCE CVE-2026-50522 Under Active Exploitation After Public PoC",
@@ -231,6 +184,52 @@
           "+10 ransomware_confirmed",
           "+10 CVSS≥9",
           "+8 exploited_in_wild"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-112837",
+      "title": "CVE-2026-112837 - WordPress GamiPress plugin <= 8.0.7 - SQL Injection vulnerability",
+      "description": "CVE-2026-112837 - WordPress GamiPress plugin <= 8.0.7 - SQL Injection vulnerability",
+      "cvss": 8.5,
+      "final_ps": 48,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-23",
+      "last_seen": "2026-10-23",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-112837"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-112837"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "base_ps=48 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -566,144 +565,6 @@
           "+12 PoC_available",
           "+8 exploited_in_wild",
           "+7 zero_day"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-112835",
-      "title": "CVE-2026-112835 - WordPress VikRentCar plugin <= 1.4.8 - Cross Site Scripting (XSS) vulnerability",
-      "description": "CVE-2026-112835 - WordPress VikRentCar plugin <= 1.4.8 - Cross Site Scripting (XSS) vulnerability",
-      "cvss": 7.1,
-      "final_ps": 44,
-      "quality_score": 0.493,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-23",
-      "last_seen": "2026-10-23",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-112835"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-112835"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=0d (score=1.00)",
-          "QS=0.493"
-        ],
-        "priority": [
-          "base_ps=44 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-112838",
-      "title": "CVE-2026-112838 - WordPress VikRentCar plugin <= 1.4.8 - Cross Site Scripting (XSS) vulnerability",
-      "description": "CVE-2026-112838 - WordPress VikRentCar plugin <= 1.4.8 - Cross Site Scripting (XSS) vulnerability",
-      "cvss": 7.1,
-      "final_ps": 44,
-      "quality_score": 0.493,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-23",
-      "last_seen": "2026-10-23",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-112838"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-112838"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=0d (score=1.00)",
-          "QS=0.493"
-        ],
-        "priority": [
-          "base_ps=44 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-115486",
-      "title": "CVE-2026-115486 - Open-iscsi: open-iscsi: ipv6 neighbor discovery missing option length validation in iscsiuio allows ar",
-      "description": "CVE-2026-115486 - Open-iscsi: open-iscsi: ipv6 neighbor discovery missing option length validation in iscsiuio allows arp table poisoning",
-      "cvss": 7.1,
-      "final_ps": 43,
-      "quality_score": 0.478,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-23",
-      "last_seen": "2026-10-23",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-115486"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-115486"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=1d (score=0.85)",
-          "QS=0.478"
-        ],
-        "priority": [
-          "base_ps=43 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -3063,52 +2924,6 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-115485",
-      "title": "CVE-2026-115485 - Open-iscsi: open-iscsi: dhcpv6 vendor option strlen heap out-of-bounds read and 1-byte write in iscsiu",
-      "description": "CVE-2026-115485 - Open-iscsi: open-iscsi: dhcpv6 vendor option strlen heap out-of-bounds read and 1-byte write in iscsiuio",
-      "cvss": 6.3,
-      "final_ps": 39,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-23",
-      "last_seen": "2026-10-23",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-115485"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-115485"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.50",
-          "recency=1d (score=0.85)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=39 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
       "id": "CVE-2026-112280",
       "title": "CVE-2026-112280 - libaribb24 (aribb24) through 1.0.3 Heap Buffer Overflow via parse_data_unit_statement_body",
       "description": "CVE-2026-112280 - libaribb24 (aribb24) through 1.0.3 Heap Buffer Overflow via parse_data_unit_statement_body",
@@ -4839,56 +4654,10 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-115419",
-      "title": "CVE-2026-115419 - Unintended disclosure of data element to wrong session in Strands Agents SDK A2A Server",
+      "id": "CVE-2026-112835",
+      "title": "CVE-2026-112835 - WordPress VikRentCar plugin <= 1.4.8 - Cross Site Scripting (XSS) vulnerability",
       "description": "",
-      "cvss": 8.1,
-      "final_ps": 18,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-22",
-      "last_seen": "2026-10-22",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-115419"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-115419"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-112837",
-      "title": "CVE-2026-112837 - WordPress GamiPress plugin <= 8.0.7 - SQL Injection vulnerability",
-      "description": "",
-      "cvss": 8.5,
+      "cvss": 7.1,
       "final_ps": 18,
       "quality_score": 0.438,
       "threat_level": "LOW",
@@ -4907,11 +4676,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-112837"
+        "CVE-2026-112835"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-112837"
+        "https://cvefeed.io/vuln/detail/CVE-2026-112835"
       ],
       "explanation": {
         "quality": [
@@ -4931,10 +4700,10 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-115484",
-      "title": "CVE-2026-115484 - Open-iscsi: open-iscsi: dhcpv4 option parser heap out-of-bounds read in iscsiuio parse_msg",
+      "id": "CVE-2026-112838",
+      "title": "CVE-2026-112838 - WordPress VikRentCar plugin <= 1.4.8 - Cross Site Scripting (XSS) vulnerability",
       "description": "",
-      "cvss": 7.6,
+      "cvss": 7.1,
       "final_ps": 18,
       "quality_score": 0.438,
       "threat_level": "LOW",
@@ -4953,11 +4722,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-115484"
+        "CVE-2026-112838"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-115484"
+        "https://cvefeed.io/vuln/detail/CVE-2026-112838"
       ],
       "explanation": {
         "quality": [
@@ -4977,10 +4746,56 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-19678",
-      "title": "CVE-2026-19678 - Server-Side Request Forgery (SSRF) Leading to Internal Solr Data Disclosure",
+      "id": "CVE-2026-115486",
+      "title": "CVE-2026-115486 - Open-iscsi: open-iscsi: ipv6 neighbor discovery missing option length validation in iscsiuio allows ar",
       "description": "",
-      "cvss": 6.1,
+      "cvss": 7.1,
+      "final_ps": 18,
+      "quality_score": 0.438,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-23",
+      "last_seen": "2026-10-23",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-115486"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-115486"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.438"
+        ],
+        "priority": [
+          "base_ps=18 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-115929",
+      "title": "CVE-2026-115929 - MongoDB Compass trusts certificates issued by recoverable eMudhra intermediate CAs",
+      "description": "",
+      "cvss": 6.8,
       "final_ps": 16,
       "quality_score": 0.398,
       "threat_level": "LOW",
@@ -4990,8 +4805,8 @@
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-10-23",
-      "last_seen": "2026-10-23",
+      "first_seen": "2026-10-24",
+      "last_seen": "2026-10-24",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -4999,11 +4814,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-19678"
+        "CVE-2026-115929"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-19678"
+        "https://cvefeed.io/vuln/detail/CVE-2026-115929"
       ],
       "explanation": {
         "quality": [
