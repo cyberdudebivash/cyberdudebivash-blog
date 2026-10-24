@@ -12,7 +12,7 @@
  * Two transports, chosen automatically at call time:
  *
  *   1. Native env.DB binding (Cloudflare Workers, zero HTTP round trip) --
- *      set once per isolate via setD1Binding(env.DB), mirroring
+ *      refreshed from each Worker request via setD1Binding(env.DB), mirroring
  *      workers/lib/resvg-wasm-init.js's setWasmModule() precedent exactly:
  *      module-level mutable var + explicit setter, called from
  *      workers/entry.js before the first request.
@@ -65,11 +65,10 @@ const REST_ENDPOINT = ACCOUNT_ID && DATABASE_ID
 
 let nativeBinding = null;
 
-// Called once per Worker isolate (workers/entry.js, before the first
-// request) -- see this file's header for the setWasmModule() precedent
-// this mirrors. Never called on the Node/Vercel/GitHub-Actions path,
-// where nativeBinding stays null and every call falls through to the
-// REST transport below.
+// Refreshed by workers/lib/router.js for each Worker request (including
+// explicit null when env.DB is missing). A missing Worker D1 binding MUST
+// NOT inherit prior state or trigger REST fallback. Node / GitHub Actions
+// retain their explicitly configured REST transport.
 function setD1Binding(db) {
   nativeBinding = db;
 }
