@@ -4,6 +4,7 @@ const redis = require('../../_lib/redis');
 const { IntelligenceManager } = require('../../_lib/intelligence-manager');
 const { GraphEngine } = require('../../_lib/graph-engine');
 const { requireAnalyst } = require('../../_lib/analyst-auth');
+const { isInternalLead, canAccessInvestigation } = require('../../_lib/workbench-object-scope');
 
 const manager = new IntelligenceManager(redis);
 const graphEngine = new GraphEngine(redis, manager);
@@ -70,42 +71,58 @@ module.exports = async (req, res) => {
   if (!ALLOWED_TYPES.has(type)) {
     return fail(res, 400, 'INVALID_TYPE', `type must be one of: ${[...ALLOWED_TYPES].join(', ')}`);
   }
+  // A verified analyst key is not a license to enumerate global evidence,
+  // graph or intelligence indexes. "all" for a standard analyst means
+  // investigations assigned to that analyst, not every Redis namespace.
+  const lead = isInternalLead(caller);
+  if (!lead && !['all', 'investigations'].includes(type)) {
+    return fail(res, 403, 'SEARCH_SCOPE_FORBIDDEN',
+      'Search type requires an authorized internal SOC lead.');
+  }
 
   try {
-    const results = await performSearch(query, type, limit);
+    const results = await performSearch(query, type, limit, caller);
     return ok(res, {
       query,
       type,
       limit,
+      scope: lead ? 'internal_lead' : 'self',
       results,
       resultCount: results.length,
     });
-  } catch (e) {
-    console.error('[WORKBENCH SEARCH] failed:', e && e.message ? e.message : 'unknown');
-    return fail(res, 500, 'SEARCH_FAILED', 'Workbench search is temporarily unavailable.');
+  } catch (_) {
+    // Do not include Redis keys, record contents or upstream provider errors
+    // in client errors or metered operational logs.
+    return fail(res, 503, 'SEARCH_UNAVAILABLE', 'Workbench search temporarily unavailable.');
   }
 };
 
-async function performSearch(query, type, limit) {
+async function performSearch(query, type, limit, caller) {
+  // Fail closed when the caller identity is missing; the public handler
+  // supplies the already verified requireAnalyst() identity.
+  if (!caller || typeof caller.id !== 'string' || !caller.id) throw new Error('MISSING_SCOPE');
+  const lead = isInternalLead(caller);
   const results = [];
   const searchTerm = query.toLowerCase();
 
   if (type === 'all' || type === 'investigations') {
-    const investigations = await searchInvestigations(searchTerm, limit);
+    const investigations = await searchInvestigations(searchTerm, limit, caller);
     results.push(...investigations);
   }
 
-  if (type === 'all' || type === 'intelligence') {
+  // These three indexes have no customer tenant partition or per-owner
+  // index. Only explicitly configured internal SOC leads may read them.
+  if (lead && (type === 'all' || type === 'intelligence')) {
     const intelligence = await searchIntelligence(searchTerm, limit);
     results.push(...intelligence);
   }
 
-  if (type === 'all' || type === 'entities') {
+  if (lead && (type === 'all' || type === 'entities')) {
     const entities = await searchGraphEntities(searchTerm, limit);
     results.push(...entities);
   }
 
-  if (type === 'all' || type === 'evidence') {
+  if (lead && (type === 'all' || type === 'evidence')) {
     const evidence = await searchEvidence(searchTerm, limit);
     results.push(...evidence);
   }
@@ -113,8 +130,10 @@ async function performSearch(query, type, limit) {
   return results.slice(0, limit);
 }
 
-async function searchInvestigations(query, limit) {
-  const investigations = await redis.zrevrange('investigations:all', 0, Math.min(MAX_LIMIT, limit * 2));
+async function searchInvestigations(query, limit, caller) {
+  const index = isInternalLead(caller) ? 'investigations:all' :
+    `investigations:assigned:${caller.id}`;
+  const investigations = await redis.zrevrange(index, 0, Math.min(MAX_LIMIT, limit * 2));
   const results = [];
 
   for (const investId of investigations.slice(0, limit)) {
@@ -127,6 +146,7 @@ async function searchInvestigations(query, limit) {
     for (let i = 0; i < data.length; i += 2) {
       invest[data[i]] = data[i + 1];
     }
+    if (!canAccessInvestigation(caller, invest) || invest.id !== investId) continue;
 
     if (
       (invest.title && invest.title.toLowerCase().includes(query)) ||
