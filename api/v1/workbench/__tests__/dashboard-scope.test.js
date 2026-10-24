@@ -70,6 +70,7 @@ test('standard analyst sees only verified own assignments, not global queue or t
   expect(d.recentlyUpdated).toEqual([]);
   expect(d.workbenchStats).toBeNull();
   expect(redis.zrevrange).not.toHaveBeenCalledWith('investigations:all',expect.anything(),expect.anything());
+  expect(redis.zrevrange).not.toHaveBeenCalledWith('investigations:by:status:in_progress',expect.anything(),expect.anything());
   expect(redis.zcard).not.toHaveBeenCalled();
   expect(redis.scard).not.toHaveBeenCalled();
 });
