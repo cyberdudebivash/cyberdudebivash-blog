@@ -62,6 +62,9 @@ const REVIEWED_OPERATIONAL_FILES = new Set([
   'scripts/soc-domain-release-gate.cjs',
   'scripts/soc-hostname-truth-gate.cjs',
   'scripts/soc-live-release-parity.cjs',
+  // #433: bounded same-origin read-only public probe; still release-control,
+  // never benign or proof that production matches main.
+  'scripts/soc-public-integration-gate.cjs',
   'scripts/soc-readiness-delivery-gate.cjs',
   'scripts/verify-existing-cloudflare-domain.cjs',
 ]);
