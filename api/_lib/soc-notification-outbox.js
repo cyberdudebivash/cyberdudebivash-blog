@@ -87,7 +87,7 @@ function createOutbox({ d1, getEvent, getWatchlist, listEntities, appendToFeed, 
     const expired = await d1.query(EXPIRED_SQL,[at,1]);
     const room = limit-expired.length;
     const due = room ? await d1.query(DUE_SQL,[at,room]) : [];
-    const rows = [...expired,...due];
+    const rows = [...expired.map(row => ({ ...row, expiredClaim:true })),...due];
     const tally = { selected:rows.length, claimed:0, complete:0, skipped:0,
       retry:0, blocked:0, claim_contended:0, errors:0 };
     for (const row of rows) {
@@ -100,10 +100,18 @@ function createOutbox({ d1, getEvent, getWatchlist, listEntities, appendToFeed, 
       const saved = await d1.query(ATTEMPT_SQL,[...key(row),claimToken]);
       if (saved.length !== 1) throw new Error('SOC_OUTBOX_STALE_CLAIM');
       const attempts = Number(saved[0].attempt_count);
+      // A crashed lease may have passed the dispatch boundary. Without a
+      // durable channel receipt, re-dispatch could duplicate an already sent
+      // alert. Quarantine even if the crash occurred before dispatch.
+      if (row.expiredClaim) {
+        await blockAmbiguous(row,claimToken);
+        tally.blocked++; tally.errors++; continue;
+      }
       if (attempts > MAX_ATTEMPTS) {
         const state = await retry(row,claimToken,'ATTEMPTS_EXHAUSTED',attempts);
         tally[state === 'pending' ? 'retry' : 'blocked']++; tally.errors++; continue;
       }
+      let dispatchAttempted = false;
       try {
         const event = await getEvent(row.event_id);
         if (!event) {
@@ -127,18 +135,11 @@ function createOutbox({ d1, getEvent, getWatchlist, listEntities, appendToFeed, 
         // A duplicate delivery_id can mean a pending job OR a job that was
         // already sent and deleted. Without a durable per-channel terminal
         // ledger, a second enqueue is unsafe and must not be called success.
-        let result;
-        try {
-          result = await dispatch({ ownerId:row.owner_id, watchlistId:row.watchlist_id, event });
-        } catch (_) {
-          // The enqueue may have committed before the exception. Automatic
-          // replay could recreate a terminal job after a provider send.
-          await blockAmbiguous(row,claimToken);
-          tally.blocked++;
-          tally.errors++;
-          continue;
-        }
-        if (result && result.enqueued === true) {
+        dispatchAttempted = true;
+        const result = await dispatch({ ownerId:row.owner_id, watchlistId:row.watchlist_id, event });
+        if (result && result.enqueued === true &&
+            Array.isArray(result.channels) && result.channels.length > 0 &&
+            result.channels.every(ch => ch === 'email' || ch === 'webhook')) {
           await finish(row,claimToken,'complete');
           tally.complete++;
         } else if (result && result.enqueued === false &&
@@ -154,10 +155,15 @@ function createOutbox({ d1, getEvent, getWatchlist, listEntities, appendToFeed, 
           tally.errors++;
         }
       } catch (_) {
-        // Crash after creating a delivery job and before COMPLETE is safe:
-        // recovery uses the same per-(owner,event,channel) delivery ID.
-        const state = await retry(row,claimToken,'ENQUEUE_EXCEPTION',attempts);
-        tally[state === 'pending' ? 'retry' : 'blocked']++; tally.errors++;
+        if (dispatchAttempted) {
+          // Covers provider exception AND failure persisting the completion
+          // acknowledgement. Never retry after the dispatch boundary.
+          await blockAmbiguous(row,claimToken);
+          tally.blocked++; tally.errors++;
+        } else {
+          const state = await retry(row,claimToken,'ENQUEUE_EXCEPTION',attempts);
+          tally[state === 'pending' ? 'retry' : 'blocked']++; tally.errors++;
+        }
       }
     }
     return tally;
