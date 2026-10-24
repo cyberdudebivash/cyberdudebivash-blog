@@ -284,7 +284,13 @@ async function dispatchNewEvent({ ownerId, watchlistId, event }) {
     if (hasTarget) channels.push('email');
   }
   if (prefs.webhook_enabled && prefs.webhook_url && prefs.has_webhook_secret) channels.push('webhook');
-  if (channels.length === 0) return { enqueued: false };
+  if (channels.length === 0) {
+    // Missing account email or incomplete enabled webhook is not a customer opt-out.
+    // Only an explicit disable of both channels is safe to mark skipped.
+    const disabled = !prefs.email_enabled && !prefs.webhook_enabled;
+    return { enqueued: false, channels: [],
+      skip_reason: disabled ? 'ALL_CHANNELS_DISABLED' : 'CHANNEL_CONFIGURATION_UNAVAILABLE' };
+  }
   const result = await notify.enqueuePendingDelivery({ ownerId, eventId: event.event_id, watchlistId, channels });
   return { enqueued: result.created, channels };
 }
