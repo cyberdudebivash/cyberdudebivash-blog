@@ -266,15 +266,18 @@ const Workbench = (() => {
       document.getElementById('who').innerHTML = `Signed in as <strong>${esc(analyst)}</strong>`;
       const s = d.summary || {};
       const stats = d.workbenchStats || {};
+      const shared = d.scope === 'internal_lead';
+      const teamValue = value => shared ? (value ?? '—') : '—';
+      const teamRestricted = '<p class="muted" role="status">Internal team queue restricted to authorized SOC leads. Customer-tenant access is not available.</p>';
       el.innerHTML = `
         <div class="stat-grid">
-          <div class="stat-box"><div class="stat-val">${s.assignedCount ?? 0}</div><div class="stat-lbl">Assigned to me</div></div>
-          <div class="stat-box"><div class="stat-val orange">${s.openCount ?? 0}</div><div class="stat-lbl">Open</div></div>
+          <div class="stat-box"><div class="stat-val">${s.assignedCount ?? 0}</div><div class="stat-lbl">Assigned to me (sample)</div></div>
+          <div class="stat-box"><div class="stat-val orange">${teamValue(s.openCount)}</div><div class="stat-lbl">Open</div></div>
           <div class="stat-box"><div class="stat-val green">${s.inProgressCount ?? 0}</div><div class="stat-lbl">In progress</div></div>
-          <div class="stat-box"><div class="stat-val purple">${s.pendingReviewCount ?? 0}</div><div class="stat-lbl">Pending review</div></div>
-          <div class="stat-box"><div class="stat-val">${stats.totalInvestigations ?? 0}</div><div class="stat-lbl">Total investigations</div></div>
-          <div class="stat-box"><div class="stat-val">${stats.totalCases ?? 0}</div><div class="stat-lbl">Total cases</div></div>
-          <div class="stat-box"><div class="stat-val">${stats.totalGraphEntities ?? 0}</div><div class="stat-lbl">Graph entities</div></div>
+          <div class="stat-box"><div class="stat-val purple">${teamValue(s.pendingReviewCount)}</div><div class="stat-lbl">Pending review</div></div>
+          <div class="stat-box"><div class="stat-val">${teamValue(stats.totalInvestigations)}</div><div class="stat-lbl">Total investigations</div></div>
+          <div class="stat-box"><div class="stat-val">${teamValue(stats.totalCases)}</div><div class="stat-lbl">Total cases</div></div>
+          <div class="stat-box"><div class="stat-val">${teamValue(stats.totalGraphEntities)}</div><div class="stat-lbl">Graph entities</div></div>
         </div>
         ${(d.suggestedActions || []).length ? `
           <div class="card">
@@ -291,7 +294,7 @@ const Workbench = (() => {
           <div class="col">
             <div class="card">
               <div class="card-title">Open (unassigned queue)</div>
-              ${investigationTable(d.open)}
+              ${shared ? investigationTable(d.open) : teamRestricted}
             </div>
           </div>
         </div>
@@ -299,13 +302,13 @@ const Workbench = (() => {
           <div class="col">
             <div class="card">
               <div class="card-title">Pending Review</div>
-              ${investigationTable(d.pendingReview)}
+              ${shared ? investigationTable(d.pendingReview) : teamRestricted}
             </div>
           </div>
           <div class="col">
             <div class="card">
               <div class="card-title">Recently Updated</div>
-              ${investigationTable(d.recentlyUpdated)}
+              ${shared ? investigationTable(d.recentlyUpdated) : teamRestricted}
             </div>
           </div>
         </div>`;
