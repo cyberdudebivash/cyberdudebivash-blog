@@ -115,11 +115,16 @@ async function handleFetch(request, env) {
   // giving premium commerce and the rest of the D1-backed HTTP surface the
   // zero-extra-hop native binding in Workers. R2 has no credential fallback by
   // design: premium downloads fail closed unless the binding is present.
-  if (env && env.DB) setHttpD1Binding(env.DB);
-  if (env && env.PREMIUM_REPORTS) setR2Binding(env.PREMIUM_REPORTS);
-  // Sentinel APEX plan entitlement for premium reports: the gateway's own
-  // validation authority, reached over a service binding (no public hop).
-  if (env && env.SENTINEL_GATEWAY) setSentinelGatewayBinding(env.SENTINEL_GATEWAY);
+  // Module instances may survive multiple requests. An absent binding must
+  // actively clear the last reference; skipping setters can accidentally
+  // reuse a prior request's D1, private R2 bucket or entitlement gateway.
+  // This is a missing-binding fail-closed guard, not cross-request context
+  // isolation; customer-tenant readiness requires independent acceptance.
+  setHttpD1Binding(env?.DB || null);
+  setR2Binding(env?.PREMIUM_REPORTS || null);
+  // Sentinel APEX entitlement service. Missing binding must not inherit
+  // the previous request's privileged service reference.
+  setSentinelGatewayBinding(env?.SENTINEL_GATEWAY || null);
 
   const url = new URL(request.url);
   const route = resolveRoute(url.pathname);
