@@ -160,13 +160,18 @@ test('already-existing channel delivery cannot be certified from enqueue=false',
     assert.equal(f.row().state,'blocked');
   }finally{f.close()}
 });
-test('explicitly disabled channels are skipped; malformed dispatch responses block',async()=>{
-  for(const variant of ['disabled','malformed','false-success']){
+test('only explicit channel opt-outs skip; unavailable targets and malformed responses block',async()=>{
+  for(const variant of ['disabled','malformed','false-success','missing-recipient','legacy-implicit-skip']){
     const f=fixture();
     try{
       const e=f.ev(),w=f.add();f.events.set(e.event_id,e);
       await f.make().stageEventFanout({event:e,watchers:[w]});
-      f.setDispatch(async()=>variant==='disabled'?{enqueued:false}:variant==='false-success'?{enqueued:true}:{});
+      f.setDispatch(async()=>variant==='disabled'
+        ? {enqueued:false,channels:[],skip_reason:'ALL_CHANNELS_DISABLED'}
+        : variant==='missing-recipient'
+          ? {enqueued:false,channels:[],skip_reason:'CHANNEL_CONFIGURATION_UNAVAILABLE'}
+          : variant==='legacy-implicit-skip' ? {enqueued:false}
+          : variant==='false-success' ? {enqueued:true} : {});
       const result=await f.make().reconcile();
       if(variant==='disabled'){
         assert.equal(result.skipped,1);assert.equal(result.errors,0);
