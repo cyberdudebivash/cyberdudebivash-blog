@@ -138,7 +138,7 @@ test('missing, repeated, or post-body document head fails closed', () => {
   assert.ok(assess('/', missing).includes('DOCUMENT_HEAD_MISSING_OR_AMBIGUOUS'));
   const repeated = valid.replace('</head>', '</head><head></head>');
   assert.ok(assess('/', repeated).includes('DOCUMENT_HEAD_MISSING_OR_AMBIGUOUS'));
-  const late = valid.replace(/<head>[\\s\\S]*?<\\/head>/, '')
+  const late = valid.replace('<head>', '<div>').replace('</head>', '</div>')
     .replace('</body>', '<head><link rel="canonical" href="' + ORIGIN +
       '/"><meta property="og:url" content="' + ORIGIN + '/"></head></body>');
   assert.ok(assess('/', late).includes('DOCUMENT_HEAD_MISSING_OR_AMBIGUOUS'));
