@@ -13,6 +13,7 @@ const { InvestigationGraph } = require('../../_lib/investigation-graph');
 const { AIAnalyst } = require('../../_lib/ai-analyst');
 const { requireAnalyst } = require('../../_lib/analyst-auth');
 const { resolvePathParts } = require('../../_lib/request-path');
+const { isInternalLead, isValidObjectId, canAccessInvestigation, canAssignInvestigation } = require('../../_lib/workbench-object-scope');
 
 const MOUNT_PATH = '/api/v1/workbench/investigations';
 
@@ -52,6 +53,27 @@ function fail(res, status, code, message) {
   });
 }
 
+// The handler must not load evidence, AI suggestions, graphs or case-linked
+// intelligence before checking the parent investigation's current owner.
+async function requireInvestigationScope(res, caller, investigationId) {
+  if (!isValidObjectId(investigationId)) {
+    fail(res, 404, 'NOT_FOUND', 'Investigation not found');
+    return false;
+  }
+  try {
+    const investigation = await investigationMgr.getInvestigation(investigationId);
+    if (!investigation || investigation.id !== investigationId ||
+        !canAccessInvestigation(caller, investigation)) {
+      fail(res, 404, 'NOT_FOUND', 'Investigation not found');
+      return false;
+    }
+    return true;
+  } catch (_) {
+    fail(res, 503, 'WORKBENCH_UNAVAILABLE', 'Workbench temporarily unavailable');
+    return false;
+  }
+}
+
 module.exports = async (req, res) => {
   if (req.method === 'OPTIONS') {
     Object.entries(CORS_HEADERS).forEach(([k, v]) => res.setHeader(k, v));
@@ -65,13 +87,25 @@ module.exports = async (req, res) => {
   const action = pathParts[pathParts.length - 1];
   const id = pathParts[pathParts.length - 2];
 
+  // Route-level object authorization covers every ID-based GET/POST/PUT
+  // action. Missing and forbidden IDs produce the same non-disclosing 404.
+  // POST evidence uses a body investigationId and is checked in its handler.
+  let scopedId = null;
+  if (req.method === 'GET' && action === 'evidence' && id) scopedId = id;
+  else if (req.method === 'GET' &&
+    ['timeline', 'graph', 'suggestions', 'summary'].includes(action) && id) scopedId = id;
+  else if (req.method === 'POST' && action === 'link-intelligence' && id) scopedId = id;
+  else if (id === 'investigations' && action &&
+    ['GET', 'PUT'].includes(req.method)) scopedId = action;
+  if (scopedId !== null && !await requireInvestigationScope(res, caller, scopedId)) return;
+
   // Investigation CRUD -- base path, no sub-segment
   if (req.method === 'POST' && action === 'investigations') {
     return handleCreateInvestigation(req, res, caller);
   }
 
   if (req.method === 'GET' && action === 'investigations') {
-    return handleListInvestigations(req, res);
+    return handleListInvestigations(req, res, caller);
   }
 
   // Named sub-resource actions (/investigations/{id}/{verb}) -- checked
@@ -124,7 +158,7 @@ module.exports = async (req, res) => {
   }
 
   if (req.method === 'PUT' && id === 'investigations' && action) {
-    return handleUpdateInvestigation(req, res, action);
+    return handleUpdateInvestigation(req, res, action, caller);
   }
 
   return fail(res, 404, 'NOT_FOUND', 'Endpoint not found');
@@ -142,33 +176,48 @@ async function handleCreateInvestigation(req, res, caller) {
       return fail(res, 400, 'MISSING_TITLE', 'title required');
     }
 
+    const effectiveAssignee = assignee || caller.id;
+    if (!canAssignInvestigation(caller, effectiveAssignee)) {
+      return fail(res, 403, 'ASSIGNMENT_FORBIDDEN', 'Cannot assign an investigation to another analyst');
+    }
     const investigation = await investigationMgr.createInvestigation(
       title,
       description || '',
       priority || 'MEDIUM',
-      assignee,
+      effectiveAssignee,
       linkedIntelligence || [],
       caller.id
     );
 
     return ok(res, { investigation }, 201);
   } catch (e) {
-    return fail(res, 500, 'CREATE_FAILED', e.message);
+    return fail(res, 503, 'CREATE_FAILED', 'Workbench operation temporarily unavailable');
   }
 }
 
-async function handleListInvestigations(req, res) {
+async function handleListInvestigations(req, res, caller) {
+  const lead = isInternalLead(caller);
+  if (!lead && req.query.assignee && req.query.assignee !== caller.id) {
+    return fail(res, 403, 'ANALYST_SCOPE_FORBIDDEN', 'Cannot list another analyst\'s investigations');
+  }
   try {
-    const filters = {};
-    if (req.query.status) filters.status = req.query.status;
-    if (req.query.assignee) filters.assignee = req.query.assignee;
-
-    const limit = parseInt(req.query.limit || '50', 10);
-    const investigations = await investigationMgr.listInvestigations(filters, limit);
-
-    return ok(res, { investigations, count: investigations.length });
-  } catch (e) {
-    return fail(res, 500, 'LIST_FAILED', e.message);
+    // Force a caller-specific Redis index for normal analysts. Passing both
+    // status and assignee to listInvestigations is unsafe: status takes
+    // precedence and would silently trigger a global-index scan.
+    const filters = lead ? {} : { assignee: caller.id };
+    if (lead && req.query.status) filters.status = req.query.status;
+    if (lead && req.query.assignee) filters.assignee = req.query.assignee;
+    const parsedLimit = Number.parseInt(req.query.limit, 10);
+    const limit = Number.isFinite(parsedLimit) ? Math.max(1, Math.min(50, parsedLimit)) : 50;
+    const records = await investigationMgr.listInvestigations(filters, limit);
+    const investigations = records.filter(investigation =>
+      canAccessInvestigation(caller, investigation) &&
+      (!req.query.status || investigation.status === req.query.status) &&
+      (!req.query.assignee || investigation.assignee === req.query.assignee));
+    return ok(res, { investigations, count: investigations.length,
+      scope: lead ? 'internal_lead' : 'self' });
+  } catch (_) {
+    return fail(res, 503, 'LIST_UNAVAILABLE', 'Investigation list temporarily unavailable');
   }
 }
 
@@ -181,22 +230,28 @@ async function handleGetInvestigation(req, res, id) {
 
     return ok(res, { investigation });
   } catch (e) {
-    return fail(res, 500, 'GET_FAILED', e.message);
+    return fail(res, 503, 'GET_FAILED', 'Workbench operation temporarily unavailable');
   }
 }
 
-async function handleUpdateInvestigation(req, res, id) {
+async function handleUpdateInvestigation(req, res, id, caller) {
   try {
     let body = {};
     if (req.body) {
       body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
     }
 
+    // Ordinary analysts may update their own record but cannot transfer it
+    // to another analyst; only explicitly configured internal leads can.
+    if (Object.prototype.hasOwnProperty.call(body, 'assignee') &&
+        !canAssignInvestigation(caller, body.assignee)) {
+      return fail(res, 403, 'ASSIGNMENT_FORBIDDEN', 'Cannot reassign to another analyst');
+    }
     const investigation = await investigationMgr.updateInvestigation(id, body);
 
     return ok(res, { investigation });
   } catch (e) {
-    return fail(res, 500, 'UPDATE_FAILED', e.message);
+    return fail(res, 503, 'UPDATE_FAILED', 'Workbench operation temporarily unavailable');
   }
 }
 
@@ -211,6 +266,7 @@ async function handleAddEvidence(req, res, caller) {
     if (!investigationId || !type || !title) {
       return fail(res, 400, 'MISSING_FIELD', 'investigationId, type, title required');
     }
+    if (!await requireInvestigationScope(res, caller, investigationId)) return;
 
     // createdBy always the verified caller -- never a client-supplied
     // metadata field, otherwise any request could attribute evidence to
@@ -221,7 +277,7 @@ async function handleAddEvidence(req, res, caller) {
 
     return ok(res, { evidence }, 201);
   } catch (e) {
-    return fail(res, 500, 'EVIDENCE_FAILED', e.message);
+    return fail(res, 503, 'EVIDENCE_FAILED', 'Workbench operation temporarily unavailable');
   }
 }
 
@@ -236,7 +292,7 @@ async function handleGetInvestigationEvidence(req, res, investigationId) {
       count: evidence.length,
     });
   } catch (e) {
-    return fail(res, 500, 'EVIDENCE_LIST_FAILED', e.message);
+    return fail(res, 503, 'EVIDENCE_LIST_FAILED', 'Workbench operation temporarily unavailable');
   }
 }
 
@@ -251,7 +307,7 @@ async function handleGetTimeline(req, res, id) {
       stats,
     });
   } catch (e) {
-    return fail(res, 500, 'TIMELINE_FAILED', e.message);
+    return fail(res, 503, 'TIMELINE_FAILED', 'Workbench operation temporarily unavailable');
   }
 }
 
@@ -262,7 +318,7 @@ async function handleGetInvestigationGraph(req, res, id) {
 
     return ok(res, graphData);
   } catch (e) {
-    return fail(res, 500, 'GRAPH_FAILED', e.message);
+    return fail(res, 503, 'GRAPH_FAILED', 'Workbench operation temporarily unavailable');
   }
 }
 
@@ -287,7 +343,7 @@ async function handleGetSuggestions(req, res, id) {
       },
     });
   } catch (e) {
-    return fail(res, 500, 'SUGGESTIONS_FAILED', e.message);
+    return fail(res, 503, 'SUGGESTIONS_FAILED', 'Workbench operation temporarily unavailable');
   }
 }
 
@@ -297,7 +353,7 @@ async function handleGetExecutiveSummary(req, res, id) {
 
     return ok(res, { summary });
   } catch (e) {
-    return fail(res, 500, 'SUMMARY_FAILED', e.message);
+    return fail(res, 503, 'SUMMARY_FAILED', 'Workbench operation temporarily unavailable');
   }
 }
 
@@ -317,6 +373,6 @@ async function handleLinkIntelligence(req, res, id) {
 
     return ok(res, result);
   } catch (e) {
-    return fail(res, 500, 'LINK_FAILED', e.message);
+    return fail(res, 503, 'LINK_FAILED', 'Workbench operation temporarily unavailable');
   }
 }
