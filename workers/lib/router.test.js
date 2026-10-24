@@ -4,6 +4,9 @@ const { test, describe } = require('node:test');
 const assert = require('node:assert/strict');
 const { handleFetch, dispatch, handleScheduled, HANDLER_MODULES } = require('./router');
 const { DIRECT_API_HANDLERS, DYNAMIC_API_HANDLERS } = require('./route-table');
+const d1 = require('../../api/_lib/d1');
+const r2 = require('../../api/_lib/premium-report-storage');
+const gateway = require('../../api/_lib/sentinel-gateway-binding');
 
 function fakeEnv(assetsFetchImpl) {
   const calls = [];
@@ -37,6 +40,49 @@ describe('router — HANDLER_MODULES parity with route-table.js', () => {
     const known = new Set([...DIRECT_API_HANDLERS, ...DYNAMIC_API_HANDLERS.map(([, p]) => p)]);
     for (const key of Object.keys(HANDLER_MODULES)) {
       assert.ok(known.has(key), `HANDLER_MODULES has ${key}, which route-table.js does not resolve to any route`);
+    }
+  });
+});
+
+describe('P0 Worker D1/R2/gateway binding lifecycle (missing-bindings fail closed)', () => {
+  test('clears bindings on a subsequent request that omits privileged resources', async () => {
+    const request = new Request('https://soc.cyberdudebivash.in/CLAUDE.md');
+    const { env } = fakeEnv();
+    const db = { prepare() { throw Error('no D1 writes allowed in routing test'); } };
+    const bucket = { put() {}, get() {} };
+    const service = { fetch() { throw Error('no outbound entitlement call'); } };
+    try {
+      await handleFetch(request, { ...env, DB: db, PREMIUM_REPORTS: bucket, SENTINEL_GATEWAY: service });
+      assert.equal(d1.hasNativeBinding(), true);
+      assert.equal(r2.isConfigured(), true);
+      assert.equal(gateway.getSentinelGatewayBinding(), service);
+
+      const response = await handleFetch(request, env);
+      assert.equal(response.status, 404);
+      assert.equal(d1.hasNativeBinding(), false, 'must not inherit prior D1');
+      assert.equal(r2.isConfigured(), false, 'must not inherit prior private R2 bucket');
+      assert.equal(gateway.getSentinelGatewayBinding(), null, 'must not inherit prior entitlement gateway');
+    } finally {
+      d1.setD1Binding(null);
+      r2.setR2Binding(null);
+      gateway.setSentinelGatewayBinding(null);
+    }
+  });
+
+  test('partial bindings clear missing resources while keeping only current request D1', async () => {
+    const request = new Request('https://soc.cyberdudebivash.in/CLAUDE.md');
+    const { env } = fakeEnv();
+    try {
+      await handleFetch(request, { ...env, PREMIUM_REPORTS: { put() {}, get() {} },
+        SENTINEL_GATEWAY: { fetch() {} }, DB: { prepare() {} } });
+      await handleFetch(request, { ...env, DB: { prepare() {} } });
+      assert.equal(d1.hasNativeBinding(), true);
+      assert.equal(r2.isConfigured(), false);
+      assert.equal(gateway.getSentinelGatewayBinding(), null);
+    } finally {
+      d1.setD1Binding(null);
+      r2.setR2Binding(null);
+      gateway.setSentinelGatewayBinding(null);
     }
   });
 });

@@ -12,7 +12,7 @@
  * Two transports, chosen automatically at call time:
  *
  *   1. Native env.DB binding (Cloudflare Workers, zero HTTP round trip) --
- *      set once per isolate via setD1Binding(env.DB), mirroring
+ *      refreshed from each Worker request via setD1Binding(env.DB), mirroring
  *      workers/lib/resvg-wasm-init.js's setWasmModule() precedent exactly:
  *      module-level mutable var + explicit setter, called from
  *      workers/entry.js before the first request.
@@ -65,17 +65,21 @@ const REST_ENDPOINT = ACCOUNT_ID && DATABASE_ID
 
 let nativeBinding = null;
 
-// Called once per Worker isolate (workers/entry.js, before the first
-// request) -- see this file's header for the setWasmModule() precedent
-// this mirrors. Never called on the Node/Vercel/GitHub-Actions path,
-// where nativeBinding stays null and every call falls through to the
-// REST transport below.
+// Refreshed by workers/lib/router.js for each Worker request (including
+// explicit null when env.DB is missing). A missing Worker D1 binding MUST
+// NOT inherit prior state or trigger REST fallback. Node / GitHub Actions
+// retain their explicitly configured REST transport.
 function setD1Binding(db) {
   nativeBinding = db;
 }
 
 function isConfigured() {
-  return Boolean(nativeBinding) || Boolean(REST_ENDPOINT && API_TOKEN);
+  return Boolean(nativeBinding) || (!isCloudflareWorkers() && Boolean(REST_ENDPOINT && API_TOKEN));
+}
+// Only expose binding presence, never a customer database handle or token.
+// Used by the Worker routing regression to verify stale bindings are gone.
+function hasNativeBinding() {
+  return Boolean(nativeBinding);
 }
 
 // Only warns on the Node path: at module-load time nativeBinding is
@@ -106,6 +110,10 @@ async function exec(statements) {
     return results.map(r => ({ results: r.results || [], success: r.success !== false, meta: r.meta || {} }));
   }
 
+  // Workers must never silently fall back to an authenticated external
+  // Cloudflare REST call when env.DB is absent. Missing native binding is a
+  // release/configuration failure, not permission for extra HTTP/usage.
+  if (isCloudflareWorkers()) throw new Error('D1 native binding required in Worker');
   if (!REST_ENDPOINT || !API_TOKEN) throw new Error('D1 not configured');
   // A single ;-joined sql string, one flat params array. The only
   // multi-statement caller in this file (runMutationWithChanges) always
@@ -156,4 +164,4 @@ async function runMutationWithChanges(sql, params = []) {
   return row ? Number(row.affected) : 0;
 }
 
-module.exports = { query, run, runMutationWithChanges, setD1Binding, isConfigured };
+module.exports = { query, run, runMutationWithChanges, setD1Binding, isConfigured, hasNativeBinding };
