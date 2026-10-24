@@ -292,7 +292,14 @@ class InvestigationManager {
 
     for (const id of investigationIds) {
       const invest = await this.getInvestigation(id);
-      if (invest) investigations.push(invest);
+      // Index membership is a hint, never authorization or current state.
+      // Reassignment currently leaves stale index members (#455); validate
+      // each stored record before returning it to any caller.
+      if (invest &&
+          (!filters.assignee || invest.assignee === filters.assignee) &&
+          (!filters.status || invest.status === filters.status)) {
+        investigations.push(invest);
+      }
     }
 
     return investigations;
@@ -343,15 +350,17 @@ class InvestigationManager {
   async listInvestigations(filters = {}, limit = 50) {
     let investigationIds = [];
 
-    if (filters.status) {
+    // A requested owner scope takes precedence over status: never widen a
+    // caller-scoped worklist into the global status index.
+    if (filters.assignee) {
       investigationIds = await this.redis.zrevrange(
-        `investigations:by:status:${filters.status}`,
+        `investigations:assigned:${filters.assignee}`,
         0,
         limit - 1
       );
-    } else if (filters.assignee) {
+    } else if (filters.status) {
       investigationIds = await this.redis.zrevrange(
-        `investigations:assigned:${filters.assignee}`,
+        `investigations:by:status:${filters.status}`,
         0,
         limit - 1
       );
