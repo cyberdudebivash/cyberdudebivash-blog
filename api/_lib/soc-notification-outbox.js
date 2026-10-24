@@ -143,8 +143,9 @@ function createOutbox({ d1, getEvent, getWatchlist, listEntities, appendToFeed, 
           await finish(row,claimToken,'complete');
           tally.complete++;
         } else if (result && result.enqueued === false &&
-                   (!Array.isArray(result.channels) || result.channels.length === 0)) {
-          // No eligible channels: no customer send is expected.
+                   Array.isArray(result.channels) && result.channels.length === 0 &&
+                   result.skip_reason === 'ALL_CHANNELS_DISABLED') {
+          // Explicitly disabled email and webhook: no customer send is expected.
           await finish(row,claimToken,'skipped');
           tally.skipped++;
         } else {
