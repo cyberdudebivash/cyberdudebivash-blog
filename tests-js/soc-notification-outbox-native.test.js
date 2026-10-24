@@ -94,6 +94,27 @@ test('idempotent tenant-specific staging and bounded membership ceiling',async()
     assert.equal(f.db.prepare('SELECT count(*) AS n FROM soc_notification_outbox').get().n,1);
   }finally{f.close()}
 });
+test('unverified claimed-attempt receipts quarantine without dispatch or feed writes',async()=>{
+  for (const bad of [null,undefined,-1,0,1.5,'1',NaN,Infinity]) {
+    const f=fixture();
+    try {
+      const w=f.add();const e=f.ev();f.events.set(e.event_id,e);
+      await f.make().stageEventFanout({event:e,watchers:[w]});
+      const query=f.dbApi.query;
+      f.dbApi.query=async(sql,params=[])=>
+        sql.includes('SELECT attempt_count FROM soc_notification_outbox')
+          ? [{attempt_count:bad}] : query(sql,params);
+      const result=await f.make().reconcile({limit:1});
+      assert.equal(result.blocked,1);
+      assert.equal(result.errors,1);
+      assert.equal(f.row().state,'blocked');
+      assert.equal(f.row().last_error_code,'ATTEMPT_RECEIPT_INVALID');
+      assert.equal(f.feed.size,0);
+      assert.equal(f.deliveries.size,0);
+      assert.equal((await f.make().reconcile()).selected,0);
+    }finally{f.close()}
+  }
+});
 test('missing event is retried, later recovered, and feed/job are idempotent',async()=>{
   const f=fixture();
   try{
