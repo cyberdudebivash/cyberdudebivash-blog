@@ -161,12 +161,12 @@ test('already-existing channel delivery cannot be certified from enqueue=false',
   }finally{f.close()}
 });
 test('explicitly disabled channels are skipped; malformed dispatch responses block',async()=>{
-  for(const variant of ['disabled','malformed']){
+  for(const variant of ['disabled','malformed','false-success']){
     const f=fixture();
     try{
       const e=f.ev(),w=f.add();f.events.set(e.event_id,e);
       await f.make().stageEventFanout({event:e,watchers:[w]});
-      f.setDispatch(async()=>variant==='disabled'?{enqueued:false}:{});
+      f.setDispatch(async()=>variant==='disabled'?{enqueued:false}:variant==='false-success'?{enqueued:true}:{});
       const result=await f.make().reconcile();
       if(variant==='disabled'){
         assert.equal(result.skipped,1);assert.equal(result.errors,0);
@@ -179,7 +179,7 @@ test('explicitly disabled channels are skipped; malformed dispatch responses blo
     }finally{f.close()}
   }
 });
-test('lease prevents competing claim and expired lease is recovered without duplication',async()=>{
+test('expired claim quarantines possible post-dispatch crash without duplicate replay',async()=>{
   const f=fixture();
   try{
     const w=f.add(),e=f.ev();f.events.set(e.event_id,e);
@@ -191,7 +191,9 @@ test('lease prevents competing claim and expired lease is recovered without dupl
     assert.equal((await f.make().reconcile()).selected,0);
     f.advance(90_001);
     const result=await f.make().reconcile();
-    assert.equal(result.complete,1);assert.equal(f.feed.size,1);
+    assert.equal(result.blocked,1);assert.equal(result.complete,0);
+    assert.equal(f.feed.size,0);assert.equal(f.deliveries.size,0);
+    assert.equal(f.row().last_error_code,'DELIVERY_STATE_AMBIGUOUS');
   }finally{f.close()}
 });
 test('expired claim receives recovery capacity even when five pending jobs exist',async()=>{
@@ -210,19 +212,20 @@ test('expired claim receives recovery capacity even when five pending jobs exist
     f.advance(91_000);
     const result=await f.make().reconcile({limit:5});
     assert.equal(result.selected,5);
-    assert.equal(result.complete,5);
+    assert.equal(result.complete,4);
+    assert.equal(result.blocked,1);
     const expired=f.db.prepare('SELECT state FROM soc_notification_outbox WHERE event_id=?').get(first.event_id);
-    assert.equal(expired.state,'complete','expired lease must not starve behind pending backlog');
+    assert.equal(expired.state,'blocked','expired lease must be quarantined, not re-dispatched');
     const left=f.db.prepare("SELECT count(*) AS n FROM soc_notification_outbox WHERE state='pending'").get().n;
     assert.equal(left,1);
   }finally{f.close()}
 });
-test('persistent failures exhaust five claims and block with retained evidence',async()=>{
+test('pre-dispatch missing event exhausts five claims and retains blocked evidence',async()=>{
   const f=fixture();
   try{
-    const w=f.add(),e=f.ev();f.events.set(e.event_id,e);
+    const w=f.add(),e=f.ev();
     await f.make().stageEventFanout({event:e,watchers:[w]});
-    f.setDispatch(async()=>{throw new Error('sensitive data must not be logged')});
+    // Missing canonical event is safe to retry because dispatch was never called.
     for(let attempt=0;attempt<5;attempt++){
       const result=await f.make().reconcile();
       assert.equal(result.errors,1);
@@ -230,7 +233,29 @@ test('persistent failures exhaust five claims and block with retained evidence',
     }
     assert.equal(f.row().state,'blocked');assert.equal(f.row().attempt_count,5);
     assert.equal((await f.make().reconcile()).selected,0);
-    assert.equal(f.feed.size,1);assert.equal(f.deliveries.size,0);
+    assert.equal(f.feed.size,0);assert.equal(f.deliveries.size,0);
+  }finally{f.close()}
+});
+test('completion acknowledgement failure after enqueue blocks without second dispatch',async()=>{
+  const f=fixture();
+  try{
+    const e=f.ev(),w=f.add();f.events.set(e.event_id,e);
+    await f.make().stageEventFanout({event:e,watchers:[w]});
+    let sends=0;
+    f.setDispatch(async()=>{sends++;return {enqueued:true,channels:['email']};});
+    const original=f.dbApi.runMutationWithChanges;
+    f.dbApi.runMutationWithChanges=async(sql,params)=>{
+      if(sql.includes('last_error_code=\'\'') && params[0]==='complete')
+        throw new Error('D1 completion write unavailable');
+      return original(sql,params);
+    };
+    const result=await f.make().reconcile();
+    assert.equal(result.blocked,1);assert.equal(result.errors,1);
+    assert.equal(f.row().state,'blocked');
+    assert.equal(sends,1);
+    f.advance(91_000);
+    assert.equal((await f.make().reconcile()).selected,0);
+    assert.equal(sends,1,'post-dispatch acknowledgement failure must not duplicate');
   }finally{f.close()}
 });
 test('retention deletes only terminal successful records, not failed/claimed evidence',async()=>{
