@@ -64,6 +64,30 @@ test('negative: wrong content type and empty bodies fail closed',()=>{
   assert.ok(assess(spec,response(fixture(spec),200,'application/json')).includes('NOT_HTML'));
   assert.ok(assess(spec,response('')).includes('BODY_EMPTY_OR_OVERSIZE'));
 });
+test('negative: live parity blocks obsolete visible SOC legal host and service claims',()=>{
+  const about=ROUTES.find(x=>x.path==='/about.html');
+  const terms=ROUTES.find(x=>x.path==='/terms.html');
+  const obsoleteAbout=fixture(about).replace('</main>',
+    '<p>We monitor official vulnerability authorities around the clock.</p>'+
+    '<p>X/Twitter: @cdbsentinelapex</p></main>');
+  const aboutErrors=assess(about,response(obsoleteAbout));
+  assert.ok(aboutErrors.includes('UNVERIFIED_CONTINUOUS_MONITORING_COPY'));
+  assert.ok(aboutErrors.includes('RETIRED_SOCIAL_IDENTITY'));
+  const obsoleteTerms=fixture(terms).replace('</main>',
+    '<p>Effective date: 5 July 2026 · blog.cyberdudebivash.in</p></main>');
+  assert.ok(assess(terms,response(obsoleteTerms)).includes('LEGACY_VISIBLE_LEGAL_HOST'));
+});
+test('negative control: hidden scripts and comments do not count as visible legal copy',()=>{
+  const about=ROUTES.find(x=>x.path==='/about.html');
+  const terms=ROUTES.find(x=>x.path==='/terms.html');
+  const hiddenAbout=fixture(about).replace('</main>',
+    '<!-- We monitor around the clock. X/Twitter: @cdbsentinelapex -->'+
+    '<script>const legacy="We monitor around the clock. X/Twitter: @cdbsentinelapex";</script></main>');
+  assert.deepEqual(assess(about,response(hiddenAbout)),[]);
+  const hiddenTerms=fixture(terms).replace('</main>',
+    '<script>const oldHost="blog.cyberdudebivash.in";</script></main>');
+  assert.deepEqual(assess(terms,response(hiddenTerms)),[]);
+});
 test('negative: legal pages containing obsolete incorporated identity fail',()=>{
   for(const spec of ROUTES.filter(x=>x.legal)){
     const bad=fixture(spec)+'<footer>CyberDudeBivash Pvt. Ltd.</footer>';
