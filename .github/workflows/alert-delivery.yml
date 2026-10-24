@@ -130,6 +130,17 @@ jobs:
           HAS_CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
         run: node scripts/alert-delivery-execution-gate.cjs
 
+      # Node scripts import production dependencies (including js-yaml) through
+      # detection-intelligence.js. Checkout + setup-node alone do not install
+      # node_modules; the post-secret 2026-10-24 run #40128037457 failed here.
+      # Install ONLY lockfile-pinned runtime dependencies, with lifecycle
+      # scripts/audit/funding network calls disabled. Keep the secret-presence
+      # gate above this step to avoid package-install spend when not configured.
+      - name: "📦 Install locked runtime dependencies"
+        run: |
+          npm ci --legacy-peer-deps --ignore-scripts --omit=dev --no-audit --no-fund
+          node -e "require.resolve('js-yaml')"
+
       - name: "🔎 Evaluate watchlist changes"
         id: evaluation
         env:
