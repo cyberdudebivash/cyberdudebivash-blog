@@ -24,7 +24,7 @@ test('legacy blog canonical fails even when page otherwise appears healthy', () 
 test('missing and duplicated canonical/OG identity fail closed', () => {
   const html = fixture('/').replace(/<link rel="canonical"[^>]*>/, '');
   assert.ok(assess('/', html).includes('SOC_CANONICAL_MISMATCH'));
-  const duplicated = fixture('/') + '<meta property="og:url" content="' + ORIGIN + '/">';
+  const duplicated = fixture('/').replace('</head>', '<meta property="og:url" content="' + ORIGIN + '/"></head>');
   assert.ok(assess('/', duplicated).includes('SOC_OG_URL_MISMATCH'));
 });
 test('legacy legal seller and false incorporation are rejected', () => {
@@ -118,4 +118,28 @@ test('assessment enquiry requires a usable mailto anchor in body', () => {
   const hidden = good.replace('<a href="mailto:contact@cyberdudebivash.in"',
     '<a hidden href="mailto:contact@cyberdudebivash.in"');
   assert.ok(assess(route, hidden).includes('ENQUIRY_CONTACT_MISSING'));
+});
+
+test('SOC SEO identity metadata outside head never satisfies release gate', () => {
+  const route = '/soc-readiness-assessment.html';
+  const link = '<link rel="canonical" href="' + ORIGIN + route + '">';
+  const og = '<meta property="og:url" content="' + ORIGIN + route + '">';
+  const html = fixture(route).replace(link, '').replace(og, '')
+    .replace('</body>', link + og + '</body>');
+  const errors = assess(route, html);
+  assert.ok(errors.includes('SOC_CANONICAL_MISMATCH'));
+  assert.ok(errors.includes('SOC_OG_URL_MISMATCH'));
+  assert.ok(!errors.includes('DOCUMENT_HEAD_MISSING_OR_AMBIGUOUS'));
+});
+
+test('missing, repeated, or post-body document head fails closed', () => {
+  const valid = fixture('/');
+  const missing = valid.replace('<head>', '').replace('</head>', '');
+  assert.ok(assess('/', missing).includes('DOCUMENT_HEAD_MISSING_OR_AMBIGUOUS'));
+  const repeated = valid.replace('</head>', '</head><head></head>');
+  assert.ok(assess('/', repeated).includes('DOCUMENT_HEAD_MISSING_OR_AMBIGUOUS'));
+  const late = valid.replace('<head>', '<div>').replace('</head>', '</div>')
+    .replace('</body>', '<head><link rel="canonical" href="' + ORIGIN +
+      '/"><meta property="og:url" content="' + ORIGIN + '/"></head></body>');
+  assert.ok(assess('/', late).includes('DOCUMENT_HEAD_MISSING_OR_AMBIGUOUS'));
 });
