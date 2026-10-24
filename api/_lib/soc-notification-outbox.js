@@ -11,7 +11,7 @@ const MAX_RECONCILE_JOBS = 5;
 const MAX_ATTEMPTS = 5;
 const LEASE_MS = 90_000;
 const BACKOFF_MS = [60_000,300_000,900_000,1_800_000,3_600_000];
-const ERROR_CODES = new Set(['EVENT_NOT_AVAILABLE','EVENT_PAYLOAD_INVALID','ENQUEUE_EXCEPTION','ATTEMPTS_EXHAUSTED','DELIVERY_STATE_AMBIGUOUS','DEPENDENCY_STATE_UNKNOWN']);
+const ERROR_CODES = new Set(['EVENT_NOT_AVAILABLE','EVENT_PAYLOAD_INVALID','ENQUEUE_EXCEPTION','ATTEMPTS_EXHAUSTED','DELIVERY_STATE_AMBIGUOUS','DEPENDENCY_STATE_UNKNOWN','ATTEMPT_RECEIPT_INVALID']);
 const INSERT_SQL = "INSERT INTO soc_notification_outbox (event_id,watchlist_id,owner_id,state,attempt_count,next_attempt_ms,created_at_ms,updated_at_ms) VALUES (?, ?, ?, 'pending', 0, ?, ?, ?) ON CONFLICT(event_id,watchlist_id,owner_id) DO NOTHING";
 const DUE_SQL = "SELECT event_id,watchlist_id,owner_id FROM soc_notification_outbox WHERE state='pending' AND next_attempt_ms <= ? ORDER BY next_attempt_ms,created_at_ms LIMIT ?";
 const EXPIRED_SQL = "SELECT event_id,watchlist_id,owner_id FROM soc_notification_outbox WHERE state='claimed' AND lease_expires_ms <= ? ORDER BY lease_expires_ms LIMIT ?";
@@ -75,9 +75,9 @@ function createOutbox({ d1, getEvent, getWatchlist, listEntities, appendToFeed, 
   // deleted, so a replay after an external send can recreate the same job.
   // Quarantine ambiguous enqueue outcomes rather than falsely completing
   // the outbox intent or automatically retrying a potential duplicate send.
-  async function blockAmbiguous(row, claimToken) {
+  async function blockAmbiguous(row, claimToken, code = 'DELIVERY_STATE_AMBIGUOUS') {
     const changed = await d1.runMutationWithChanges(RETRY_SQL,
-      ['blocked',now(),'DELIVERY_STATE_AMBIGUOUS',now(),...key(row),claimToken]);
+      ['blocked',now(),code,now(),...key(row),claimToken]);
     if (changed !== 1) throw new Error('SOC_OUTBOX_STALE_CLAIM');
   }
   async function reconcile({ limit = MAX_RECONCILE_JOBS } = {}) {
@@ -105,7 +105,13 @@ function createOutbox({ d1, getEvent, getWatchlist, listEntities, appendToFeed, 
       tally.claimed++;
       const saved = await d1.query(ATTEMPT_SQL,[...key(row),claimToken]);
       if (saved.length !== 1) throw new Error('SOC_OUTBOX_STALE_CLAIM');
-      const attempts = Number(saved[0].attempt_count);
+      const attempts = saved[0] && saved[0].attempt_count;
+      // A claimed row must have a native integer attempt receipt >= 1.
+      // Never dispatch using an ambiguous or coerced D1 read result.
+      if (!Number.isSafeInteger(attempts) || attempts < 1) {
+        await blockAmbiguous(row,claimToken,'ATTEMPT_RECEIPT_INVALID');
+        tally.blocked++; tally.errors++; continue;
+      }
       // A crashed lease may have passed the dispatch boundary. Without a
       // durable channel receipt, re-dispatch could duplicate an already sent
       // alert. Quarantine even if the crash occurred before dispatch.
