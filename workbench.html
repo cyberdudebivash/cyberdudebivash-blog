@@ -134,6 +134,8 @@ const API = '';
 const Workbench = (() => {
   let analystKey = null;
   let analystIdentity = null;
+  // The frontend mirrors API scope for honest controls; the API remains the authority.
+  let workbenchScope = 'self';
 
   /* ── API client ──────────────────────────────────────────────── */
   async function api(path, opts = {}) {
@@ -211,7 +213,8 @@ const Workbench = (() => {
     const alertEl = document.getElementById('login-alert');
     if (!key) { alertBox(alertEl, 'error', 'Enter your analyst key.'); return; }
     analystKey = key;
-    get('/api/v1/workbench/dashboard').then(() => {
+    get('/api/v1/workbench/dashboard').then(({ dashboard }) => {
+      workbenchScope = dashboard?.scope === 'internal_lead' ? 'internal_lead' : 'self';
       try { sessionStorage.setItem('apex_analyst_key', key); } catch (_) {}
       document.getElementById('login-screen').classList.add('hidden');
       document.getElementById('app').classList.remove('hidden');
@@ -225,6 +228,7 @@ const Workbench = (() => {
 
   function logout() {
     analystKey = null;
+    workbenchScope = 'self';
     try { sessionStorage.removeItem('apex_analyst_key'); } catch (_) {}
     document.getElementById('app').classList.add('hidden');
     document.getElementById('logout-link').classList.add('hidden');
@@ -238,7 +242,8 @@ const Workbench = (() => {
     try { saved = sessionStorage.getItem('apex_analyst_key'); } catch (_) {}
     if (!saved) return;
     analystKey = saved;
-    get('/api/v1/workbench/dashboard').then(() => {
+    get('/api/v1/workbench/dashboard').then(({ dashboard }) => {
+      workbenchScope = dashboard?.scope === 'internal_lead' ? 'internal_lead' : 'self';
       document.getElementById('login-screen').classList.add('hidden');
       document.getElementById('app').classList.remove('hidden');
       document.getElementById('logout-link').classList.remove('hidden');
@@ -267,6 +272,7 @@ const Workbench = (() => {
       const s = d.summary || {};
       const stats = d.workbenchStats || {};
       const shared = d.scope === 'internal_lead';
+      workbenchScope = shared ? 'internal_lead' : 'self';
       const teamValue = value => shared ? (value ?? '—') : '—';
       const teamRestricted = '<p class="muted" role="status">Team queue restricted to authorized internal SOC leads. Customer-tenant access is not available.</p>';
       el.innerHTML = `
@@ -672,6 +678,7 @@ const Workbench = (() => {
   ══════════════════════════════════════════════════════════════ */
   renderers.search = function () {
     const el = document.getElementById('panel-search');
+    const internalLead = workbenchScope === 'internal_lead';
     el.innerHTML = `
       <div class="card">
         <div class="card-title">🔍 Cross-Entity Search</div>
@@ -679,8 +686,10 @@ const Workbench = (() => {
           <div class="col form-group"><input id="search-q" type="text" placeholder="Search investigations, intelligence, entities, evidence…"></div>
           <div class="col form-group" style="max-width:200px">
             <select id="search-type">
-              <option value="all">All types</option><option value="investigations">Investigations</option>
-              <option value="intelligence">Intelligence</option><option value="entities">Graph entities</option><option value="evidence">Evidence</option>
+              <option value="all">${internalLead ? 'All internal types' : 'My investigations'}</option><option value="investigations">Investigations</option>
+              <option value="intelligence" ${internalLead ? '' : 'disabled'}>Intelligence (internal lead)</option>
+              <option value="entities" ${internalLead ? '' : 'disabled'}>Graph entities (internal lead)</option>
+              <option value="evidence" ${internalLead ? '' : 'disabled'}>Evidence (internal lead)</option>
             </select>
           </div>
         </div>
@@ -697,12 +706,14 @@ const Workbench = (() => {
     loading(el);
     try {
       const type = document.getElementById('search-type').value;
-      const { results } = await get(`/api/v1/workbench/search?q=${encodeURIComponent(q)}&type=${encodeURIComponent(type)}`);
-      el.innerHTML = !results.length ? '<div class="empty-state">No results.</div>' : results.map(r => `
+      const { results, scope } = await get(`/api/v1/workbench/search?q=${encodeURIComponent(q)}&type=${encodeURIComponent(type)}`);
+      const scopedNotice = scope === 'self'
+        ? '<p class="muted" role="status">Search restricted to investigations assigned to your analyst identity.</p>' : '';
+      el.innerHTML = scopedNotice + (!results.length ? '<div class="empty-state">No results.</div>' : results.map(r => `
         <div class="entity-card" data-type="${esc(r.type)}" data-id="${esc(r.id)}">
           <span class="badge st-open">${esc(r.type)}</span> <strong>${esc(r.title || r.name || r.id)}</strong>
           ${r.description ? `<div class="muted" style="font-size:12px;margin-top:4px">${esc(r.description)}</div>` : ''}
-        </div>`).join('');
+        </div>`).join(''));
       el.querySelectorAll('[data-type="investigation"]').forEach(card => card.addEventListener('click', () => {
         switchTab('investigations');
         setTimeout(() => showInvestigationDetail(card.dataset.id), 0);
