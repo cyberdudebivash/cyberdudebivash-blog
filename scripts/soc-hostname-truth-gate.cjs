@@ -30,6 +30,18 @@ function attribute(tag, name) {
 function tags(html, element) {
   return html.match(new RegExp('<' + element + '\\b[^>]*>', 'gi')) || [];
 }
+// Inspect rendered legal/service copy, not historical asset URLs or script metadata.
+function visibleBodyText(html) {
+  const body = html.match(/<body\b[^>]*>([\s\S]*?)<\/body\s*>/i);
+  if (!body) return '';
+  return body[1]
+    .replace(/<!--[\s\S]*?-->/g, ' ')
+    .replace(/<(?:script|style|template|noscript)\b[^>]*>[\s\S]*?<\/(?:script|style|template|noscript)\s*>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;|&#160;/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 function assess(route, html) {
   if (!ROUTES.includes(route) || typeof html !== 'string' || !html.trim() ||
       Buffer.byteLength(html, 'utf8') > MAX_BYTES) return ['INVALID_HTML'];
@@ -41,17 +53,45 @@ function assess(route, html) {
     .filter(tag => (attribute(tag, 'property') || '').toLowerCase() === 'og:url')
     .map(tag => attribute(tag, 'content'));
   const errors = [];
+  // A head-only or malformed response cannot pass legal copy checks.
+  // Brand text inside comments, scripts or metadata is not customer-visible.
+  const hasBody = /<body\b[^>]*>[\s\S]*?<\/body\s*>/i.test(html);
+  const copy = hasBody ? visibleBodyText(html) : '';
+  if (!hasBody || !copy) errors.push('VISIBLE_BODY_MISSING');
   if (canonical.length !== 1 || canonical[0] !== expected) errors.push('SOC_CANONICAL_MISMATCH');
   if (ogUrls.length !== 1 || ogUrls[0] !== expected) errors.push('SOC_OG_URL_MISMATCH');
   if (INCORPORATED.test(html)) errors.push('UNSUPPORTED_INCORPORATION');
   if (UNSUPPORTED.test(html)) errors.push('UNSUPPORTED_SERVICE_OR_CERTIFICATION');
-  if (LEGAL_ROUTES.has(route) && !html.includes('CYBERDUDEBIVASH ECOSYSTEM'))
+  if (LEGAL_ROUTES.has(route) && !copy.includes('CYBERDUDEBIVASH ECOSYSTEM'))
     errors.push('SELLER_IDENTITY_MISSING');
+  if (route === '/terms.html' && /\bblog\.cyberdudebivash\.in\b/i.test(visibleBodyText(html)))
+    errors.push('LEGACY_VISIBLE_LEGAL_HOST');
+  if (route === '/about.html') {
+    const copy = visibleBodyText(html);
+    if (/\bwe monitor\b.{0,160}\baround the clock\b/i.test(copy))
+      errors.push('UNVERIFIED_CONTINUOUS_MONITORING_COPY');
+    if (/\bX\s*\/\s*Twitter\s*:\s*@cdbsentinelapex\b/i.test(copy))
+      errors.push('RETIRED_SOCIAL_IDENTITY');
+    if (!/(?:not an active 24\/7 monitoring service|(?:continuous\s+)?managed customer monitoring.{0,160}(?:not offered|subject to|requires))/i.test(copy))
+      errors.push('MANAGED_SERVICE_BOUNDARY_MISSING');
+  }
   if (route === '/soc-readiness-assessment.html') {
-    if (!html.includes('not an active 24/7 monitoring service'))
+    // The scope limitation must be customer-visible; metadata cannot satisfy it.
+    if (!copy.includes('not an active 24/7 monitoring service'))
       errors.push('SERVICE_BOUNDARY_MISSING');
-    if (!html.includes('contact@cyberdudebivash.in'))
-      errors.push('ENQUIRY_CONTACT_MISSING');
+    // An email address in a comment, script or unrelated text is not an enquiry CTA.
+    const bodyMarkup = html.match(/<body\b[^>]*>([\s\S]*?)<\/body\s*>/i)?.[1] || '';
+    const linkMarkup = bodyMarkup
+      .replace(/<!--[\s\S]*?-->/g, ' ')
+      .replace(/<(?:script|style|template|noscript)\b[^>]*>[\s\S]*?<\/(?:script|style|template|noscript)\s*>/gi, ' ');
+    const enquiryLink = tags(linkMarkup, 'a').some(tag => {
+      const href = attribute(tag, 'href') || '';
+      return /^mailto:contact@cyberdudebivash\.in(?:\?|$)/i.test(href) &&
+        !/\s(?:hidden|inert)(?:\s|=|>)/i.test(tag) &&
+        !/\saria-hidden\s*=\s*["']true["']/i.test(tag) &&
+        !/\sstyle\s*=\s*["'][^"']*(?:display\s*:\s*none|visibility\s*:\s*hidden)/i.test(tag);
+    });
+    if (!enquiryLink) errors.push('ENQUIRY_CONTACT_MISSING');
   }
   return errors;
 }

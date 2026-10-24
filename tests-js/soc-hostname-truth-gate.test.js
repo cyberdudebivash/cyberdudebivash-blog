@@ -8,7 +8,7 @@ function fixture(route, {canonical = ORIGIN + route, og = ORIGIN + route, extra 
     '<link rel="canonical" href="' + canonical + '">' +
     '<meta property="og:url" content="' + og + '">' +
     '</head><body>CYBERDUDEBIVASH ECOSYSTEM ' +
-    'not an active 24/7 monitoring service contact@cyberdudebivash.in ' +
+    'not an active 24/7 monitoring service <a href="mailto:contact@cyberdudebivash.in">Request a scoped proposal</a> ' +
     extra + '</body></html>';
 }
 test('approved SOC identity fixtures pass on all routes', () => {
@@ -49,4 +49,73 @@ test('oversized, empty and unsupported routes are rejected', () => {
 test('unsupported SOC service and certification statements are rejected', () => {
   const errors = assess('/', fixture('/', {extra:'SOC 2 Type II certified'}));
   assert.ok(errors.includes('UNSUPPORTED_SERVICE_OR_CERTIFICATION'));
+});
+
+test('visible Terms legacy hostname blocks release while historical image URL remains allowed', () => {
+  const clean = fixture('/terms.html', {extra:'<img src="https://blog.cyberdudebivash.in/og-image.png" alt="Legacy CTI artwork">'});
+  assert.deepEqual(assess('/terms.html', clean), []);
+  const stale = fixture('/terms.html', {extra:'<p class="sub">Effective date · blog.cyberdudebivash.in</p>'});
+  assert.ok(assess('/terms.html', stale).includes('LEGACY_VISIBLE_LEGAL_HOST'));
+});
+test('About page must not assert unsupported around-the-clock monitoring or retired social identity', () => {
+  const stale = fixture('/about.html', {
+    extra:'<p>We monitor official vulnerability authorities and global security reporting around the clock.</p>' +
+      '<p>X / Twitter: @cdbsentinelapex</p>'
+  });
+  const errors = assess('/about.html', stale);
+  assert.ok(errors.includes('UNVERIFIED_CONTINUOUS_MONITORING_COPY'));
+  assert.ok(errors.includes('RETIRED_SOCIAL_IDENTITY'));
+});
+test('About page must explicitly bound managed customer monitoring availability', () => {
+  const stale = fixture('/about.html').replace('not an active 24/7 monitoring service', '');
+  assert.ok(assess('/about.html', stale).includes('MANAGED_SERVICE_BOUNDARY_MISSING'));
+  const scoped = fixture('/about.html', {
+    extra:'Continuous managed customer monitoring and incident response are not offered without a separately approved service agreement and operational acceptance.'
+  }).replace('not an active 24/7 monitoring service', '');
+  assert.ok(!assess('/about.html', scoped).includes('MANAGED_SERVICE_BOUNDARY_MISSING'));
+});
+
+test('missing body or head-only legal response fails closed', () => {
+  const terms = fixture('/terms.html');
+  const headOnly = terms.replace(/<body>[\s\S]*?<\/body>/, '');
+  const errors = assess('/terms.html', headOnly);
+  assert.ok(errors.includes('VISIBLE_BODY_MISSING'));
+  assert.ok(errors.includes('SELLER_IDENTITY_MISSING'));
+});
+
+test('legal seller must appear in visible copy, not just hidden markup', () => {
+  const terms = fixture('/terms.html');
+  const hidden = terms.replace('CYBERDUDEBIVASH ECOSYSTEM',
+    '<script type="application/ld+json">{"name":"CYBERDUDEBIVASH ECOSYSTEM"}</script>');
+  const errors = assess('/terms.html', hidden);
+  assert.ok(errors.includes('SELLER_IDENTITY_MISSING'));
+  assert.ok(!errors.includes('VISIBLE_BODY_MISSING'));
+});
+
+test('all SOC routes reject missing visible body independently of metadata', () => {
+  for (const route of ROUTES) {
+    const html = fixture(route).replace(/<body>[\s\S]*?<\/body>/, '');
+    assert.ok(assess(route, html).includes('VISIBLE_BODY_MISSING'), route);
+  }
+});
+
+test('assessment scope limitation must appear in body copy, not just scripts', () => {
+  const route = '/soc-readiness-assessment.html';
+  const html = fixture(route).replace('not an active 24/7 monitoring service',
+    '<script>not an active 24/7 monitoring service</script>');
+  assert.ok(assess(route, html).includes('SERVICE_BOUNDARY_MISSING'));
+});
+test('assessment enquiry requires a usable mailto anchor in body', () => {
+  const route = '/soc-readiness-assessment.html';
+  const good = fixture(route);
+  assert.deepEqual(assess(route, good), []);
+  const naked = good.replace('<a href="mailto:contact@cyberdudebivash.in">Request a scoped proposal</a>',
+    'contact@cyberdudebivash.in');
+  assert.ok(assess(route, naked).includes('ENQUIRY_CONTACT_MISSING'));
+  const scriptOnly = good.replace('<a href="mailto:contact@cyberdudebivash.in">Request a scoped proposal</a>',
+    '<script>\"mailto:contact@cyberdudebivash.in\"</script>');
+  assert.ok(assess(route, scriptOnly).includes('ENQUIRY_CONTACT_MISSING'));
+  const hidden = good.replace('<a href="mailto:contact@cyberdudebivash.in"',
+    '<a hidden href="mailto:contact@cyberdudebivash.in"');
+  assert.ok(assess(route, hidden).includes('ENQUIRY_CONTACT_MISSING'));
 });
