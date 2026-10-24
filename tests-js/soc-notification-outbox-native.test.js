@@ -300,3 +300,43 @@ test('change-engine stages outbox before event persistence with no automatic sch
   const workflow=fs.readFileSync(path.resolve(__dirname,'../.github/workflows/alert-delivery.yml'),'utf8');
   assert.doesNotMatch(workflow,/reconcile-soc-notification-outbox/);
 });
+
+test('real dispatcher refuses partial or duplicate multi-channel enqueue acknowledgements',async()=>{
+  // Isolate real dispatchNewEvent source without Redis, providers or network I/O.
+  const vm = require('node:vm');
+  const source = fs.readFileSync(path.resolve(__dirname,'../api/_lib/notification-dispatch.js'),'utf8');
+  const notifier = {
+    getPreferences: async()=>({
+      email_enabled:true,email_override:'test@example.invalid',
+      webhook_enabled:true,webhook_url:'https://example.invalid/hook',has_webhook_secret:true,
+    }),
+    enqueuePendingDelivery: async()=>({created:true,channels_created:['email','webhook']}),
+  };
+  const loaded = {exports:{}};
+  const deps = {
+    './redis':{}, './resend':{}, './watchlist-store':{},
+    './notification-store':notifier, './webhook-signing':{},
+  };
+  vm.runInNewContext(source,{
+    module:loaded,require:name=>{
+      if(!Object.prototype.hasOwnProperty.call(deps,name)) throw new Error('UNEXPECTED_DEPENDENCY');
+      return deps[name];
+    },
+  },{filename:'notification-dispatch.js',timeout:1000});
+  const event={event_id:'evt-partial-enqueue'};
+  for(const [receipt,expected] of [
+    [{created:true,channels_created:['email','webhook']},true],
+    [{created:true,channels_created:['email']},false],
+    [{created:true,channels_created:['webhook']},false],
+    [{created:true,channels_created:['email','email']},false],
+    [{created:true,channels_created:['email','other']},false],
+    [{created:true,channels_created:[]},false],
+    [{created:false,channels_created:['email','webhook']},false],
+    [{created:true},false],
+  ]){
+    notifier.enqueuePendingDelivery=async()=>receipt;
+    const result=await loaded.exports.dispatchNewEvent({ownerId:'owner-a',watchlistId:'watch-a',event});
+    assert.equal(result.enqueued,expected,JSON.stringify(receipt));
+    assert.deepEqual(Array.from(result.channels),['email','webhook']);
+  }
+});
