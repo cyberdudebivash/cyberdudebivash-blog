@@ -114,6 +114,16 @@ class InvestigationManager {
     const investKey = `investigation:${investigationId}`;
     const now = new Date().toISOString();
 
+    // P0 #455: a mutable assignee without an atomic owner-index transition
+    // creates stale/absent assignment entries and can undermine workbench
+    // visibility. Until an atomic, idempotent reassignment operation is
+    // implemented and certified, fail closed BEFORE any Redis mutation.
+    // This guard also protects non-HTTP callers of this manager.
+    if (Object.prototype.hasOwnProperty.call(updates, 'assignee') &&
+        updates.assignee !== investigation.assignee) {
+      throw new Error('SOC_INVESTIGATION_REASSIGNMENT_NOT_READY');
+    }
+
     // Update allowed fields
     const allowed = ['title', 'description', 'priority', 'status', 'assignee'];
     const updateData = {};
