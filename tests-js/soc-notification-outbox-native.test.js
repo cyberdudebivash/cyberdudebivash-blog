@@ -370,6 +370,26 @@ test('already-existing channel delivery cannot be certified from enqueue=false',
     assert.equal(f.row().state,'blocked');
   }finally{f.close()}
 });
+test('duplicate channel acknowledgements are quarantined without claiming complete fanout',async()=>{
+  for (const channels of [['email','email'],['webhook','webhook'],['email','webhook','email']]) {
+    const f=fixture();
+    try {
+      const e=f.ev(),w=f.add();f.events.set(e.event_id,e);
+      await f.make().stageEventFanout({event:e,watchers:[w]});
+      let calls=0;
+      f.setDispatch(async()=>{calls++;return {enqueued:true,channels};});
+      const result=await f.make().reconcile();
+      assert.equal(result.complete,0);
+      assert.equal(result.blocked,1);
+      assert.equal(result.errors,1);
+      assert.equal(f.row().state,'blocked');
+      assert.equal(f.row().last_error_code,'DELIVERY_STATE_AMBIGUOUS');
+      f.advance(3_700_000);
+      assert.equal((await f.make().reconcile()).selected,0);
+      assert.equal(calls,1,'ambiguous acknowledgement must never replay dispatch');
+    }finally{f.close()}
+  }
+});
 test('only explicit channel opt-outs skip; unavailable targets and malformed responses block',async()=>{
   for(const variant of ['disabled','malformed','false-success','missing-recipient','legacy-implicit-skip']){
     const f=fixture();
