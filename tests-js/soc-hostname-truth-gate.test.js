@@ -11,6 +11,37 @@ function fixture(route, {canonical = ORIGIN + route, og = ORIGIN + route, extra 
     'not an active 24/7 monitoring service <a href="mailto:contact@cyberdudebivash.in">Request a scoped proposal</a> ' +
     extra + '</body></html>';
 }
+test('P0 legal and customer-contact routes are covered by hostname release gate', () => {
+  const legalCustomerRoutes=['/about.html','/terms.html','/privacy.html','/security-disclosure.html','/contact.html'];
+  assert.equal(ROUTES.length,7);
+  for(const route of legalCustomerRoutes){
+    assert.ok(ROUTES.includes(route),route);
+    const legacy=fixture(route,{
+      canonical:'https://blog.cyberdudebivash.in'+route,
+      og:'https://blog.cyberdudebivash.in'+route,
+    });
+    const faults=assess(route,legacy);
+    assert.ok(faults.includes('SOC_CANONICAL_MISMATCH'),route);
+    assert.ok(faults.includes('SOC_OG_URL_MISMATCH'),route);
+    const missingSeller=fixture(route).replace('CYBERDUDEBIVASH ECOSYSTEM','');
+    assert.ok(assess(route,missingSeller).includes('SELLER_IDENTITY_MISSING'),route);
+  }
+});
+
+test('newly covered source pages have exactly one SOC canonical and Open Graph identity', () => {
+  const fs=require('node:fs');
+  const path=require('node:path');
+  const root=path.resolve(__dirname,'..');
+  for(const route of ['/privacy.html','/security-disclosure.html','/contact.html']){
+    const html=fs.readFileSync(path.join(root,route.slice(1)),'utf8');
+    const errors=assess(route,html);
+    assert.deepEqual(errors,[],route+': '+errors.join(','));
+    // Keep existing legacy-host asset/form integrations out of scope; only
+    // SEO document identity is being migrated by this source PR.
+    assert.ok(html.includes('https://soc.cyberdudebivash.in'+route),route);
+  }
+});
+
 test('approved SOC identity fixtures pass on all routes', () => {
   for (const route of ROUTES) assert.deepEqual(assess(route, fixture(route)), []);
 });
