@@ -111,6 +111,32 @@ test('negative: PAN property on homepage fails without logging its value',()=>{
   const bad=fixture(spec)+'<script type="application/ld+json">{"propertyID":"PAN","value":"REDACTED"}</script>';
   assert.ok(assess(spec,response(bad)).includes('PERSONAL_PAN_METADATA'));
 });
+test('negative: head-only and empty-body pages cannot establish legal or service parity',()=>{
+  for(const spec of ROUTES){
+    const headOnly=fixture(spec).replace(/<body>[\\s\\S]*?<\\/body>/,'');
+    assert.ok(assess(spec,response(headOnly)).includes('VISIBLE_BODY_MISSING'),spec.path);
+    const emptyBody=fixture(spec).replace(/<body>[\\s\\S]*?<\\/body>/,'<body></body>');
+    assert.ok(assess(spec,response(emptyBody)).includes('VISIBLE_BODY_MISSING'),spec.path);
+  }
+});
+test('negative: hidden service-boundary text and non-actionable enquiry cannot pass',()=>{
+  const spec=ROUTES.find(x=>x.path==='/soc-readiness-assessment.html');
+  const valid=fixture(spec);
+  const scriptBoundary=valid.replace('<p>not an active 24/7 monitoring service</p>',
+    '<script>const notice="not an active 24/7 monitoring service";</script>');
+  assert.ok(assess(spec,response(scriptBoundary)).includes('SERVICE_BOUNDARY_MISSING'));
+  const mailto='<a href="mailto:contact@cyberdudebivash.in?subject=SENTINEL%20APEX">Request a Scoped Proposal</a>';
+  const scriptOnly=valid.replace(mailto,
+    '<script>const link="mailto:contact@cyberdudebivash.in?subject=SENTINEL%20APEX";</script>');
+  assert.ok(assess(spec,response(scriptOnly)).includes('ENQUIRY_LINK_MISSING'));
+  const hidden=valid.replace(mailto,
+    '<a hidden href="mailto:contact@cyberdudebivash.in?subject=SENTINEL%20APEX">Request a Scoped Proposal</a>');
+  assert.ok(assess(spec,response(hidden)).includes('ENQUIRY_LINK_MISSING'));
+  const ariaHidden=valid.replace(mailto,
+    '<a aria-hidden="true" href="mailto:contact@cyberdudebivash.in?subject=SENTINEL%20APEX">Request a Scoped Proposal</a>');
+  assert.ok(assess(spec,response(ariaHidden)).includes('ENQUIRY_LINK_MISSING'));
+  assert.deepEqual(assess(spec,response(valid)),[]);
+});
 test('negative: missing enterprise inquiry link and missing 24/7 disclaimer fail',()=>{
   const spec=ROUTES.find(x=>x.path==='/soc-readiness-assessment.html');
   const original=fixture(spec);
