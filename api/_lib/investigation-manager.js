@@ -47,6 +47,9 @@ class InvestigationManager {
       version: 1,
     };
 
+    // #455: creation writes the record and indexes in separate Redis operations.
+    // A failed intermediate write can leave incomplete index membership;
+    // transactional or idempotent reconciliation is required before release.
     const investKey = `investigation:${investigationId}`;
     await this.redis.hset(investKey, Object.entries(investigation).flat());
     await this.redis.expire(investKey, 31536000);
@@ -110,9 +113,22 @@ class InvestigationManager {
   async updateInvestigation(investigationId, updates) {
     const investigation = await this.getInvestigation(investigationId);
     if (!investigation) throw new Error(`Investigation not found: ${investigationId}`);
+    if (!updates || typeof updates !== 'object' || Array.isArray(updates)) {
+      throw new TypeError('SOC_INVESTIGATION_INVALID_UPDATES');
+    }
 
     const investKey = `investigation:${investigationId}`;
     const now = new Date().toISOString();
+
+    // P0 #455: a mutable assignee without an atomic owner-index transition
+    // creates stale/absent assignment entries and can undermine workbench
+    // visibility. Until an atomic, idempotent reassignment operation is
+    // implemented and certified, fail closed BEFORE any Redis mutation.
+    // This guard also protects non-HTTP callers of this manager.
+    if (Object.prototype.hasOwnProperty.call(updates, 'assignee') &&
+        updates.assignee !== investigation.assignee) {
+      throw new Error('SOC_INVESTIGATION_REASSIGNMENT_NOT_READY');
+    }
 
     // Update allowed fields
     const allowed = ['title', 'description', 'priority', 'status', 'assignee'];
