@@ -411,20 +411,35 @@ test('completion acknowledgement failure after enqueue blocks without second dis
     assert.equal(sends,1,'post-dispatch acknowledgement failure must not duplicate');
   }finally{f.close()}
 });
-test('retention deletes only terminal successful records, not failed/claimed evidence',async()=>{
+test('P0 replay safety: completed outbox tombstone survives day-31 pruning and deterministic event replay',async()=>{
   const f=fixture();
   try{
     const w=f.add(),e=f.ev();f.events.set(e.event_id,e);
     await f.make().stageEventFanout({event:e,watchers:[w]});
     assert.equal((await f.make().reconcile()).complete,1);
-    const w2=f.add('owner-2','wl-2');
-    await f.make().stageEventFanout({event:f.ev('evt-pending'),watchers:[w2]});
+    assert.equal(f.deliveries.size,1);
     f.advance(31*86400000);
-    const count=await f.make().pruneCompleted();
-    assert.equal(count,1);
-    assert.equal(f.db.prepare('SELECT count(*) AS n FROM soc_notification_outbox').get().n,1);
-    assert.equal(f.db.prepare('SELECT state FROM soc_notification_outbox').get().state,'pending');
+    await assert.rejects(f.make().pruneCompleted(),/SOC_OUTBOX_PRUNE_UNSAFE_REPLAY/);
+    assert.deepEqual(await f.make().stageEventFanout({event:e,watchers:[w]}),{staged:1,created:0});
+    assert.equal((await f.make().reconcile()).selected,0);
+    assert.equal(f.deliveries.size,1,'replay must not create a second notification intent');
+    assert.equal(f.row().state,'complete');
     await assert.rejects(f.make().pruneCompleted({days:1}),/SOC_OUTBOX_RETENTION_RANGE/);
+  }finally{f.close()}
+});
+test('P0 replay safety: skipped customer opt-out remains terminal after retention horizon',async()=>{
+  const f=fixture();
+  try{
+    const w=f.add(),e=f.ev();f.events.set(e.event_id,e);
+    f.owners.set(w.ownerId+'|'+w.watchlistId,'paused');
+    await f.make().stageEventFanout({event:e,watchers:[w]});
+    assert.equal((await f.make().reconcile()).skipped,1);
+    f.advance(31*86400000);
+    await assert.rejects(f.make().pruneCompleted({days:30,limit:5}),/SOC_OUTBOX_PRUNE_UNSAFE_REPLAY/);
+    assert.deepEqual(await f.make().stageEventFanout({event:e,watchers:[w]}),{staged:1,created:0});
+    assert.equal((await f.make().reconcile()).selected,0);
+    assert.equal(f.row().state,'skipped');
+    assert.equal(f.deliveries.size,0,'paused watchlist must not be re-notified');
   }finally{f.close()}
 });
 test('manual CLI has zero database access without --apply and rejects unsafe arguments',()=>{
@@ -436,7 +451,7 @@ test('manual CLI has zero database access without --apply and rejects unsafe arg
   const {parse}=require('../scripts/reconcile-soc-notification-outbox.js');
   assert.deepEqual(parse(['--apply','--limit=1']),{apply:true,prune:false,limit:1});
   for(const argv of [['--limit=6'],['--apply','--limit=0'],
-    ['--apply','--limit=1','--limit=2'],['--prune-completed'],['--unknown']])
+    ['--apply','--limit=1','--limit=2'],['--prune-completed'],['--apply','--prune-completed'],['--unknown']])
     assert.throws(()=>parse(argv),/SOC_OUTBOX_/);
 });
 test('change-engine stages outbox before event persistence with no automatic scheduler wiring',()=>{

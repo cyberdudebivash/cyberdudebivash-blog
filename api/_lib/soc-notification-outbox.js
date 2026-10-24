@@ -19,7 +19,8 @@ const CLAIM_SQL = "UPDATE soc_notification_outbox SET state='claimed',claim_toke
 const COMPLETE_SQL = "UPDATE soc_notification_outbox SET state=?,claim_token=NULL,lease_expires_ms=NULL,last_error_code='',updated_at_ms=? WHERE event_id=? AND watchlist_id=? AND owner_id=? AND state='claimed' AND claim_token=?";
 const RETRY_SQL = "UPDATE soc_notification_outbox SET state=?,claim_token=NULL,lease_expires_ms=NULL,next_attempt_ms=?,last_error_code=?,updated_at_ms=? WHERE event_id=? AND watchlist_id=? AND owner_id=? AND state='claimed' AND claim_token=?";
 const ATTEMPT_SQL = "SELECT attempt_count FROM soc_notification_outbox WHERE event_id=? AND watchlist_id=? AND owner_id=? AND claim_token=? LIMIT 1";
-const PRUNE_SQL = "DELETE FROM soc_notification_outbox WHERE rowid IN (SELECT rowid FROM soc_notification_outbox WHERE state IN ('complete','skipped') AND updated_at_ms < ? ORDER BY updated_at_ms LIMIT ?)";
+// Terminal intents must remain deduplicating tombstones until a separately
+// certified retention design prevents replay after historical deletion.
 
 const validId = x => typeof x === 'string' && x.length > 0 && x.length <= 256;
 const key = row => [row.event_id,row.watchlist_id,row.owner_id];
@@ -210,8 +211,12 @@ function createOutbox({ d1, getEvent, getWatchlist, listEntities, appendToFeed, 
     if (!Number.isSafeInteger(days) || days < 30 || days > 365 ||
         !Number.isSafeInteger(limit) || limit < 1 || limit > MAX_RECONCILE_JOBS)
       throw new RangeError('SOC_OUTBOX_RETENTION_RANGE');
-    // Never delete pending, claimed or blocked incident evidence automatically.
-    return d1.runMutationWithChanges(PRUNE_SQL,[now()-days*86400000,limit]);
+    // P0 #418: completed/skipped rows are the only durable tombstones for
+    // deterministic event replay. Deleting them allows stageEventFanout()
+    // to recreate an intent after change_events rejects the same event_id.
+    // Retention must stay fail-closed until canonical event existence,
+    // per-channel receipts, privacy expiry and atomicity are certified.
+    throw new Error('SOC_OUTBOX_PRUNE_UNSAFE_REPLAY');
   }
   return { stageEventFanout, reconcile, pruneCompleted };
 }
@@ -230,4 +235,4 @@ function productionOutbox() {
 }
 module.exports = { isEnabled, createOutbox, productionOutbox, MAX_WATCHERS,
   MAX_RECONCILE_JOBS, MAX_ATTEMPTS, INSERT_SQL, DUE_SQL, EXPIRED_SQL, CLAIM_SQL,
-  COMPLETE_SQL, RETRY_SQL, ATTEMPT_SQL, PRUNE_SQL };
+  COMPLETE_SQL, RETRY_SQL, ATTEMPT_SQL };

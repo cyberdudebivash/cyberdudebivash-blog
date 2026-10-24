@@ -8,15 +8,15 @@
 function parse(argv) {
   const flags = new Set(argv);
   const options = argv.filter(x => x.startsWith('--limit='));
-  const accepted = new Set(['--apply','--prune-completed',...options]);
-  if (argv.some(x => !accepted.has(x)) || options.length > 1 ||
-      (flags.has('--prune-completed') && !flags.has('--apply')))
+  // No destructive retention CLI until replay-safe tombstones exist (#418).
+  const accepted = new Set(['--apply',...options]);
+  if (argv.some(x => !accepted.has(x)) || options.length > 1)
     throw new RangeError('SOC_OUTBOX_INVALID_ARGUMENTS');
   const limit = options.length ? Number(options[0].slice('--limit='.length)) : 5;
   if (!Number.isSafeInteger(limit) || limit < 1 || limit > 5 ||
       (options.length && !/^--limit=[1-5]$/.test(options[0])))
     throw new RangeError('SOC_OUTBOX_LIMIT_1_TO_5');
-  return { apply:flags.has('--apply'), prune:flags.has('--prune-completed'),limit };
+  return { apply:flags.has('--apply'), prune:false, limit };
 }
 async function main(argv = process.argv.slice(2)) {
   const args = parse(argv);
@@ -32,10 +32,6 @@ async function main(argv = process.argv.slice(2)) {
   const o = require('../api/_lib/soc-notification-outbox').productionOutbox();
   const result = await o.reconcile({ limit:args.limit });
   console.log('[SOC-OUTBOX] Totals (no tenant IDs, payload or delivery secrets):', JSON.stringify(result));
-  if (args.prune) {
-    const pruned = await o.pruneCompleted({ days:30, limit:args.limit });
-    console.log('[SOC-OUTBOX] Completed record retention deleted:', pruned);
-  }
   // Processing an incomplete outbox should never be counted as a clean
   // customer-delivery success. This does not prove email/webhook receipt.
   if (result.errors > 0 || result.blocked > 0)

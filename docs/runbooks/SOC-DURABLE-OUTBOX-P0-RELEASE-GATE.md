@@ -94,9 +94,16 @@ webhook credentials, signing secrets or the event payload.
   After the dispatch boundary, including failure to persist a successful
   enqueue acknowledgement, it quarantines immediately; no automatic retry.
   Errors cause the manual CLI to fail rather than claim successful service.
-- Optional `--prune-completed` removes only up to 5 completed/skipped
-  intents older than 30 days. It never deletes pending, claimed or
-  blocked evidence. Retention and legal scope still require approval.
+- **P0 replay/retention HOLD (24 October 2026):** `--prune-completed` is
+  rejected before D1 access and `pruneCompleted()` fails closed. Completed
+  and skipped intents are currently the only durable tombstones protecting
+  deterministic event IDs from being restaged after 30-day deletion.
+  Pruning them could re-create a customer alert or undo a prior opt-out.
+  Do not schedule retention deletion until a reviewed canonical-event
+  deduplication strategy, durable per-channel terminal receipt ledger,
+  bounded privacy retention/tombstone policy, native D1 failure tests and
+  owner approval exist. Indefinite tombstone retention is **not** a
+  certified privacy policy; this is a temporary safety block, not GO.
 - Reports only numerical metrics, never tenant IDs, payloads or secrets.
 
 ## Offline tests and control acceptance
@@ -106,7 +113,7 @@ runs SQLite migration and real SQL statements on Node 22's native SQLite;
 includes index plan, idempotent staging, duplicate memberships, false-green
 negative gate, missing event recovery, tenant status/membership enforcement,
 one-time delivery identity after partial failure, expired-lease quarantine,
-bounded retry dead-letter, terminal-only retention and manual CLI safety.
+bounded retry dead-letter, fail-closed retention replay negatives and manual CLI safety.
 Existing Jest / E2E / governance / security checks remain mandatory.
 
 ## Security / privacy / service caveats
