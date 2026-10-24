@@ -99,6 +99,8 @@ jobs:
         run: python3 -m unittest -v tests.test_soc_evidence_read_budget
       - name: P0 SOC — Gated durable outbox native SQLite safety and replay tests
         run: node --test tests-js/soc-notification-outbox-native.test.js
+      - name: P0 SOC — Reject ambiguous outbox stage receipts
+        run: node --test tests-js/soc-outbox-stage-receipt.test.js
       - name: P0 FinOps — SQL-index and watcher-cost contract against offline native SQLite
         run: node --test tests-js/soc-watchlist-native-sqlite-cost-contract.test.js
 
