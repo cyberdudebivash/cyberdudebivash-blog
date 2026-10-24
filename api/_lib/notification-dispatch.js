@@ -292,7 +292,17 @@ async function dispatchNewEvent({ ownerId, watchlistId, event }) {
       skip_reason: disabled ? 'ALL_CHANNELS_DISABLED' : 'CHANNEL_CONFIGURATION_UNAVAILABLE' };
   }
   const result = await notify.enqueuePendingDelivery({ ownerId, eventId: event.event_id, watchlistId, channels });
-  return { enqueued: result.created, channels };
+  // enqueuePendingDelivery() reports created=true when *any* channel is new.
+  // If only one of two channels was inserted, the other may already have
+  // been sent and its terminal job deleted. Never report that partial
+  // materialization as a complete fanout intent.
+  const newlyCreated = result && Array.isArray(result.channels_created)
+    ? result.channels_created : [];
+  const allCreated = result && result.created === true &&
+    newlyCreated.length === channels.length &&
+    new Set(newlyCreated).size === channels.length &&
+    channels.every(channel => newlyCreated.includes(channel));
+  return { enqueued: Boolean(allCreated), channels };
 }
 
 // The sender. Safe to invoke repeatedly/CONCURRENTLY is now an explicit
