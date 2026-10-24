@@ -11,7 +11,7 @@ const MAX_RECONCILE_JOBS = 5;
 const MAX_ATTEMPTS = 5;
 const LEASE_MS = 90_000;
 const BACKOFF_MS = [60_000,300_000,900_000,1_800_000,3_600_000];
-const ERROR_CODES = new Set(['EVENT_NOT_AVAILABLE','ENQUEUE_EXCEPTION','ATTEMPTS_EXHAUSTED','DELIVERY_STATE_AMBIGUOUS','DEPENDENCY_STATE_UNKNOWN']);
+const ERROR_CODES = new Set(['EVENT_NOT_AVAILABLE','EVENT_PAYLOAD_INVALID','ENQUEUE_EXCEPTION','ATTEMPTS_EXHAUSTED','DELIVERY_STATE_AMBIGUOUS','DEPENDENCY_STATE_UNKNOWN']);
 const INSERT_SQL = "INSERT INTO soc_notification_outbox (event_id,watchlist_id,owner_id,state,attempt_count,next_attempt_ms,created_at_ms,updated_at_ms) VALUES (?, ?, ?, 'pending', 0, ?, ?, ?) ON CONFLICT(event_id,watchlist_id,owner_id) DO NOTHING";
 const DUE_SQL = "SELECT event_id,watchlist_id,owner_id FROM soc_notification_outbox WHERE state='pending' AND next_attempt_ms <= ? ORDER BY next_attempt_ms,created_at_ms LIMIT ?";
 const EXPIRED_SQL = "SELECT event_id,watchlist_id,owner_id FROM soc_notification_outbox WHERE state='claimed' AND lease_expires_ms <= ? ORDER BY lease_expires_ms LIMIT ?";
@@ -118,6 +118,19 @@ function createOutbox({ d1, getEvent, getWatchlist, listEntities, appendToFeed, 
           const state = await retry(row,claimToken,'EVENT_NOT_AVAILABLE',attempts);
           tally[state === 'pending' ? 'retry' : 'blocked']++; tally.errors++; continue;
         }
+        // Do not mistake a corrupt or mismatched canonical event for a
+        // customer removing an entity. Require deterministic event identity,
+        // supported entity coordinates, and a parseable observation time.
+        // Invalid payloads stay pre-dispatch and retain an incident trail.
+        if (typeof event !== 'object' || Array.isArray(event) ||
+            event.event_id !== row.event_id ||
+            !['cve','campaign'].includes(event.entity_type) ||
+            !validId(event.entity_id) ||
+            typeof event.observed_at !== 'string' ||
+            !Number.isFinite(Date.parse(event.observed_at))) {
+          const state = await retry(row,claimToken,'EVENT_PAYLOAD_INVALID',attempts);
+          tally[state === 'pending' ? 'retry' : 'blocked']++; tally.errors++; continue;
+        }
         const owned = await getWatchlist(row.watchlist_id,row.owner_id);
         // A verified NOT_FOUND or explicit pause is an authorized cancellation.
         // Missing/error-shaped dependency responses are NOT proof of customer
@@ -139,11 +152,14 @@ function createOutbox({ d1, getEvent, getWatchlist, listEntities, appendToFeed, 
           // membership lookup. No customer delivery should be emitted.
           await finish(row,claimToken,'skipped'); tally.skipped++; continue;
         }
-        if (!entities || entities.error || !Array.isArray(entities.entities)) {
+        if (!entities || entities.error || !Array.isArray(entities.entities) ||
+            entities.entities.some(e => !e || !['cve','campaign'].includes(e.type) || !validId(e.id))) {
+          // A partial/malformed list is not positive proof that the event
+          // membership was removed; never turn decode errors into opt-out.
           const state = await retry(row,claimToken,'DEPENDENCY_STATE_UNKNOWN',attempts);
           tally[state === 'pending' ? 'retry' : 'blocked']++; tally.errors++; continue;
         }
-        if (!entities.entities.some(e => e && e.type === event.entity_type && e.id === event.entity_id)) {
+        if (!entities.entities.some(e => e.type === event.entity_type && e.id === event.entity_id)) {
           await finish(row,claimToken,'skipped'); tally.skipped++; continue;
         }
         // Feed insertion itself must be replayed: event persistence may
