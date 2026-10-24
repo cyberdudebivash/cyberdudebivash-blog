@@ -47,6 +47,8 @@ class InvestigationManager {
       version: 1,
     };
 
+    // #455: prevent two create attempts for the same caller-supplied identity
+    // from silently diverging. Creation still needs transactional index recovery.
     const investKey = `investigation:${investigationId}`;
     await this.redis.hset(investKey, Object.entries(investigation).flat());
     await this.redis.expire(investKey, 31536000);
