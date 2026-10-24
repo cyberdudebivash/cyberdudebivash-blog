@@ -89,3 +89,29 @@ test('negative control: removal of the gate fails the acceptance contract', () =
   assert.equal(validate(yaml.replace('run: node scripts/alert-delivery-execution-gate.cjs',
     'run: echo previous-unsafe-preflight')), false);
 });
+
+test('alert runner installs lockfile-defined runtime dependencies before evaluation or delivery', () => {
+  const yaml = fs.readFileSync(path.resolve(__dirname, '../.github/workflows/alert-delivery.yml'), 'utf8');
+  const pkg = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../package.json'), 'utf8'));
+  const lock = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../package-lock.json'), 'utf8'));
+  const preflight = 'run: node scripts/alert-delivery-execution-gate.cjs';
+  const install = 'npm ci --omit=dev --legacy-peer-deps --ignore-scripts --no-audit --no-fund';
+  const moduleLoad = "require('js-yaml'); require('./api/_lib/change-engine'); require('./api/_lib/notification-dispatch')";
+  const evaluate = 'run: node scripts/evaluate-watchlist-changes.js';
+  const deliver = 'run: node scripts/deliver-watchlist-notifications.js --limit=50';
+  const safe = content =>
+    content.split(install).length === 2 &&
+    content.indexOf(preflight) >= 0 &&
+    content.indexOf(preflight) < content.indexOf(install) &&
+    content.indexOf(install) < content.indexOf(moduleLoad) &&
+    content.indexOf(moduleLoad) < content.indexOf(evaluate) &&
+    content.indexOf(evaluate) < content.indexOf(deliver);
+  assert.equal(pkg.dependencies['js-yaml'], lock.packages[''].dependencies['js-yaml']);
+  assert.equal(pkg.dependencies['js-yaml'], '5.2.2');
+  assert.equal(safe(yaml), true);
+  // Negative controls: removal, reordering, or skipping dependency install
+  // must fail this contract before any alert evaluator executes.
+  assert.equal(safe(yaml.replace(install, 'echo no-runtime-install')), false);
+  assert.equal(safe(yaml.replace(install, 'npm install js-yaml')), false);
+  assert.equal(safe(yaml.replace(install, '').replace(evaluate, install + '\\n' + evaluate)), false);
+});
