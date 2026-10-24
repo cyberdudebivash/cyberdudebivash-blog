@@ -93,4 +93,23 @@ Save: reviewed commit SHA, Worker deployment ID, exact DNS record changes, old W
 
 Rollback triggers: increased 4xx/5xx, stale or unverified CTI/telemetry, authentication errors, broken old-URL parity, any cross-tenant leak, payment or entitlement failure, unbounded Cloudflare cost. Restore the previously recorded healthy Worker deployment and validated DNS configuration, then revert canonical changes only as coordinated with routing. Recheck both hostnames, original feeds and customer access.
 
+### P0 legal/customer route identity matrix (source-only)
+
+For every approved release, independently verify **both canonical and `og:url`**
+within the document `<head>` on:
+`/`, `/soc-readiness-assessment.html`, `/about.html`,
+`/terms.html`, `/privacy.html`, `/security-disclosure.html` and
+`/contact.html`. The read-only `scripts/soc-hostname-truth-gate.cjs`
+now checks these seven paths in source mode or with `--live`.
+The last three routes previously advertised `blog.cyberdudebivash.in`;
+correction of the **source** metadata must not be called a live fix until
+independent `soc.` public probes show corresponding URLs after an
+authorized deployment. Legacy CTI image and endpoint URLs are separate
+compatibility concerns: do not blindly replace them.
+
+Release acceptance must also confirm actual Cloudflare deployment provenance,
+all customer-visible legal copy, authorized product scope, and both hostname
+behavior. A successful SEO/source gate alone **never** authorizes customer
+monitoring or production GO.
+
 **This document does not initiate DNS, routing, secrets, Worker deploy, checkout or customer operations.**
