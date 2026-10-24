@@ -139,6 +139,7 @@ function createOutbox({ d1, getEvent, getWatchlist, listEntities, appendToFeed, 
           await finish(row,claimToken,'skipped'); tally.skipped++; continue;
         }
         if (!owned || owned.error || !owned.watchlist ||
+            owned.watchlist.id !== row.watchlist_id ||
             !['active','paused'].includes(owned.watchlist.status)) {
           const state = await retry(row,claimToken,'DEPENDENCY_STATE_UNKNOWN',attempts);
           tally[state === 'pending' ? 'retry' : 'blocked']++; tally.errors++; continue;
