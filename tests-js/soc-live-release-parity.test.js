@@ -113,9 +113,9 @@ test('negative: PAN property on homepage fails without logging its value',()=>{
 });
 test('negative: head-only and empty-body pages cannot establish legal or service parity',()=>{
   for(const spec of ROUTES){
-    const headOnly=fixture(spec).replace(/<body>[\\s\\S]*?<\\/body>/,'');
+    const headOnly=fixture(spec).replace(/<body>[\s\S]*?<\/body>/,'');
     assert.ok(assess(spec,response(headOnly)).includes('VISIBLE_BODY_MISSING'),spec.path);
-    const emptyBody=fixture(spec).replace(/<body>[\\s\\S]*?<\\/body>/,'<body></body>');
+    const emptyBody=fixture(spec).replace(/<body>[\s\S]*?<\/body>/,'<body></body>');
     assert.ok(assess(spec,response(emptyBody)).includes('VISIBLE_BODY_MISSING'),spec.path);
   }
 });
