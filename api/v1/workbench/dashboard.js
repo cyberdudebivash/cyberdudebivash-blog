@@ -44,33 +44,41 @@ module.exports = async (req, res) => {
   const caller = await requireAnalyst(req, res, fail);
   if (!caller) return;
 
-  // Defaults to the authenticated caller's own dashboard; an explicit
-  // ?analyst= still allows viewing another analyst's queue (small internal
-  // team, same trust boundary the unauthenticated version already had --
-  // requireAnalyst() above is the real, new restriction: SOME verified
-  // analyst identity is required at all, where previously none was).
-  const analyst = req.query.analyst || caller.id;
-
+  // Authentication does not authorize impersonating another analyst via
+  // ?analyst=. Team-wide visibility requires an explicitly configured lead
+  // role; customer/tenant authorizations are NOT inferred from this role.
+  const analyst = caller.id;
+  if (req.query?.analyst !== undefined && req.query.analyst !== analyst) {
+    return fail(res, 403, 'ANALYST_SCOPE_FORBIDDEN', 'Dashboard is restricted to the authenticated analyst.');
+  }
+  const sharedQueues = caller.role === 'lead_analyst' || caller.role === 'soc_admin';
   try {
-    const dashboard = await buildAnalystDashboard(analyst);
+    const dashboard = await buildAnalystDashboard(analyst, { sharedQueues });
     return ok(res, { analyst, dashboard });
-  } catch (e) {
-    return fail(res, 500, 'DASHBOARD_FAILED', e.message);
+  } catch (_) {
+    // Database internals, Redis errors and index names are never client data.
+    return fail(res, 503, 'DASHBOARD_UNAVAILABLE', 'Dashboard temporarily unavailable.');
   }
 };
 
-async function buildAnalystDashboard(analyst) {
-  const [assigned, open, inProgress, pending, recent, stats] = await Promise.all([
+async function buildAnalystDashboard(analyst, { sharedQueues = false } = {}) {
+  const [assigned, open, pending, recent, stats] = await Promise.all([
     getAssignedInvestigations(analyst),
-    getOpenInvestigations(),
-    getInProgressInvestigations(analyst),
-    getPendingReview(),
-    getRecentlyUpdated(),
-    getWorkbenchStats(),
+    sharedQueues ? getOpenInvestigations() : Promise.resolve([]),
+    sharedQueues ? getPendingReview() : Promise.resolve([]),
+    sharedQueues ? getRecentlyUpdated() : Promise.resolve([]),
+    sharedQueues ? getWorkbenchStats() : Promise.resolve(null),
   ]);
+  // Derive the analyst's in-progress records from the already verified
+  // owner index. A global status index reads other analysts' records,
+  // has misleading top-ten sampling, and adds unnecessary Redis usage.
+  const inProgress = assigned.filter(item => item.status === 'in_progress');
 
   return {
     analyst,
+    scope: sharedQueues ? 'internal_lead' : 'self',
+    // Null is intentionally UNKNOWN/NOT_AUTHORIZED, not an invented zero.
+    // The frontend must not present team totals as analyst-owned metrics.
     summary: {
       assignedCount: assigned.length,
       openCount: open.length,
@@ -106,7 +114,7 @@ async function getAssignedInvestigations(analyst) {
       for (let i = 0; i < data.length; i += 2) {
         invest[data[i]] = data[i + 1];
       }
-      investigations.push(invest);
+      if (invest.assignee === analyst) investigations.push(invest);
     }
   }
 
@@ -127,29 +135,6 @@ async function getOpenInvestigations() {
         invest[data[i]] = data[i + 1];
       }
       investigations.push(invest);
-    }
-  }
-
-  return investigations;
-}
-
-async function getInProgressInvestigations(analyst) {
-  const investIds = await redis.zrevrange('investigations:by:status:in_progress', 0, 9);
-  const investigations = [];
-
-  for (const investId of investIds) {
-    const investKey = `investigation:${investId}`;
-    const data = await redis.hgetall(investKey);
-
-    if (data && data.length > 0) {
-      const invest = {};
-      for (let i = 0; i < data.length; i += 2) {
-        invest[data[i]] = data[i + 1];
-      }
-
-      if (invest.assignee === analyst) {
-        investigations.push(invest);
-      }
     }
   }
 
