@@ -117,6 +117,23 @@ jobs:
             console.log('✅ Content integrity OK');
           "
 
+      # P0: HTTP 200 only proves the edge answers, not that its immutable
+      # Cloudflare Workers ASSETS bundle matches the latest source feed.
+      # Compare both canonical public domains with the checked-in source.
+      # This probe is read-only: no Wrangler, cron, publishing or mutation.
+      - name: "📥 Read-only snapshot source checkout"
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: "⚙️ Node.js 22 for deterministic public feed certification"
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - name: "🛡️ P0: Verify SOC and legacy edge feed freshness + source parity"
+        run: |
+          node --test tests-js/soc-public-feed-parity.test.js
+          node scripts/certify-soc-public-feed-parity.cjs
+
       - name: "💳 Pricing integrity — live check"
         if: success()
         run: |
