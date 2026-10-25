@@ -38,13 +38,45 @@ function seoTags(head,element){
 }
 // Inspect customer-visible copy; scripts, metadata and comments cannot
 // establish or refute a legal/service claim in the rendered body.
-function visibleCopy(html){
+// Conservative static visibility model: hidden/inert/aria-hidden and inline
+// display/visibility restrictions are inherited. This is not a browser's
+// computed-style/accessibility tree; ambiguous rendering needs a live review.
+function visibleSurface(html){
   const body=html.match(/<body\b[^>]*>([\s\S]*?)<\/body\s*>/i)?.[1]||'';
-  return body.replace(/<!--[\s\S]*?-->/g,' ')
-    .replace(/<(?:script|style|template|noscript)\b[^>]*>[\s\S]*?<\/(?:script|style|template|noscript)\s*>/gi,' ')
-    .replace(/<[^>]+>/g,' ').replace(/&nbsp;|&#160;/gi,' ')
-    .replace(/\s+/g,' ').trim();
+  const markup=body.replace(/<!--[\s\S]*?-->/g,' ')
+    .replace(/<(?:script|style|template|noscript)\b[^>]*>[\s\S]*?<\/(?:script|style|template|noscript)\s*>/gi,' ');
+  const tokens=markup.match(/<\/?[a-z][\w:-]*\b(?:[^>"']|"[^"]*"|'[^']*')*>|[^<]+/gi)||[];
+  const voidTags=new Set(['area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr']);
+  const nonCustomerTags=new Set(['svg','math','iframe','object','canvas']);
+  const stack=[],copy=[],anchors=[];
+  for(const token of tokens){
+    if(token[0]!=='<'){
+      if(!stack.at(-1)?.hidden)copy.push(token);
+      continue;
+    }
+    const match=token.match(/^<\s*(\/?)\s*([a-z][\w:-]*)\b/i);
+    if(!match)continue;
+    const tag=match[2].toLowerCase();
+    if(match[1]){
+      const index=stack.map(entry=>entry.tag).lastIndexOf(tag);
+      if(index>=0)stack.length=index;
+      continue;
+    }
+    const unquotedStyle=token.match(/\sstyle\s*=\s*([^\s"'=<>]+)/i)?.[1]||'';
+    const style=seoAttribute(token,'style')||unquotedStyle;
+    const ownHidden=nonCustomerTags.has(tag)
+      ||/(?:^|\s)(?:hidden|inert)(?=\s|=|\/?>)/i.test(token)
+      ||(seoAttribute(token,'aria-hidden')||'').toLowerCase()==='true'
+      ||/\saria-hidden\s*=\s*true(?=\s|\/?>)/i.test(token)
+      ||/(?:^|;)\s*(?:display\s*:\s*none|visibility\s*:\s*(?:hidden|collapse))\b/i.test(style);
+    const hidden=Boolean(stack.at(-1)?.hidden||ownHidden);
+    if(tag==='a'&&!hidden)anchors.push(seoAttribute(token,'href')||'');
+    if(!voidTags.has(tag)&&!/\/\s*>$/.test(token))stack.push({tag,hidden});
+  }
+  return {copy:copy.join(' ').replace(/&nbsp;|&#160;/gi,' ').replace(/\s+/g,' ').trim(),anchors};
 }
+function visibleCopy(html){return visibleSurface(html).copy;}
+
 function assess(spec,result){
   const errors=[];
   const fail=(code,predicate)=>{if(!predicate)errors.push(code)};
@@ -104,16 +136,8 @@ function assess(spec,result){
   if(spec.path==='/soc-readiness-assessment.html'){
     // Only a usable customer-facing anchor establishes a proposal CTA.
     // A mailto string in a script, comment or hidden anchor is insufficient.
-    const bodyMarkup=result.body.match(/<body\b[^>]*>([\s\S]*?)<\/body\s*>/i)?.[1]||'';
-    const activeMarkup=bodyMarkup.replace(/<!--[\s\S]*?-->/g,' ')
-      .replace(/<(?:script|style|template|noscript)\b[^>]*>[\s\S]*?<\/(?:script|style|template|noscript)\s*>/gi,' ');
-    const enquiry=seoTags(activeMarkup,'a').some(tag=>{
-      const href=seoAttribute(tag,'href')||'';
-      return /^mailto:contact@cyberdudebivash\.in\?subject=\S+/i.test(href) &&
-        !/\s(?:hidden|inert)(?:\s|=|>)/i.test(tag) &&
-        !/\saria-hidden\s*=\s*["']true["']/i.test(tag) &&
-        !/\sstyle\s*=\s*["'][^"']*(?:display\s*:\s*none|visibility\s*:\s*hidden)/i.test(tag);
-    });
+    const enquiry=visibleSurface(result.body).anchors.some(href=>
+      /^mailto:contact@cyberdudebivash\.in\?subject=\S+/i.test(href));
     fail('ENQUIRY_LINK_MISSING',enquiry);
     fail('FALSE_CHECKOUT',!/href=["'][^"']*(?:checkout|buy\.html)/i.test(result.body));
     fail('SERVICE_BOUNDARY_MISSING',visible.includes('not an active 24/7 monitoring service'));
