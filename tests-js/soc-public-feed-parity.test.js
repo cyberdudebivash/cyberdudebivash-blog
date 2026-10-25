@@ -1,7 +1,7 @@
 'use strict';
 const test=require('node:test');
 const assert=require('node:assert/strict');
-const {inspect,assess,check,boundedJson,TARGETS}=require('../scripts/certify-soc-public-feed-parity.cjs');
+const {inspect,assess,predeployGate,check,boundedJson,TARGETS}=require('../scripts/certify-soc-public-feed-parity.cjs');
 const now=Date.parse('2026-10-25T05:10:00.000Z');
 function fixture({stamp='2026-10-25T04:40:00.000Z',total=6518,items=150}={}){
   return {generatedAt:stamp,metadata:{lastPipelineRun:stamp},totalPublished:total,items:Array.from({length:items},(_,id)=>({id}))};
@@ -86,4 +86,50 @@ test('bounded network reader supplies exact public bytes to release parity gate'
     fetchImpl:async()=>new Response(JSON.stringify({...f,mark:'different'}),{status:200,headers:{'content-type':'application/json'}})});
   assert.equal(drift.status,'FAIL');
   assert(drift.results.every(r=>r.reason==='PUBLIC_ASSET_SHA256_MISMATCH'));
+});
+
+test('P0 predeploy gate passes an identical recent source/report/build without any network',()=>{
+  const feed=fixture();const state={lastRun:feed.generatedAt,lastReportGeneratedAt:feed.generatedAt};
+  assert.deepEqual(predeployGate({source:feed,asset:structuredClone(feed),state,nowMs:now}),
+    {status:'PASS',reason:'SOURCE_REPORT_AND_BUILT_ASSET_FRESH'});
+});
+test('P0 predeploy negative: recent heartbeat with stale real report blocks BEFORE mutation',()=>{
+  const feed=fixture();
+  const result=predeployGate({source:feed,asset:feed,
+    state:{lastRun:feed.generatedAt,lastReportGeneratedAt:'2026-10-24T21:27:18.946Z'},nowMs:now});
+  assert.deepEqual(result,{status:'FAIL',reason:'SOURCE_INTEL_CONTENT_STALE'});
+});
+test('P0 predeploy negative: source pipeline stale or source state missing blocks',()=>{
+  const old=fixture({stamp:'2026-10-24T03:54:29Z'});
+  assert.equal(predeployGate({source:old,asset:old,
+    state:{lastRun:old.generatedAt,lastReportGeneratedAt:old.generatedAt},nowMs:now}).reason,
+    'SOURCE_PIPELINE_STALE');
+  const feed=fixture();
+  assert.equal(predeployGate({source:feed,asset:feed,state:{lastRun:feed.generatedAt},nowMs:now}).reason,
+    'SOURCE_REPORT_EVIDENCE_MISSING');
+});
+test('P0 predeploy negative: altered build timestamp, corpus, or item window blocks',()=>{
+  const feed=fixture();
+  const state={lastRun:feed.generatedAt,lastReportGeneratedAt:feed.generatedAt};
+  const verdict=asset=>predeployGate({source:feed,asset,state,nowMs:now}).reason;
+  assert.equal(verdict({...feed,generatedAt:'2026-10-25T04:41:00Z'}),
+    'PREDEPLOY_BUILD_TIMESTAMP_DIVERGED');
+  assert.equal(verdict({...feed,totalPublished:feed.totalPublished+1}),
+    'PREDEPLOY_BUILD_CORPUS_DIVERGED');
+  assert.equal(verdict({...feed,items:feed.items.slice(1)}),
+    'PREDEPLOY_BUILD_ITEMS_DIVERGED');
+});
+
+test('release workflow structurally preserves predeploy-before-mutation and public parity after',()=>{
+  const fs=require('node:fs');
+  const path=require('node:path');
+  const workflow=fs.readFileSync(path.join(__dirname,'..','.github/workflows/cloudflare-production-deploy.yml'),'utf8');
+  const build=workflow.indexOf('npm run build:cloudflare');
+  const preflight=workflow.indexOf('node scripts/certify-soc-public-feed-parity.cjs --predeploy');
+  const mutation=workflow.indexOf('npx wrangler deploy --config wrangler.jsonc');
+  const postflight=workflow.indexOf('node scripts/certify-soc-public-feed-parity.cjs --release-asset');
+  assert(build>=0&&preflight>build&&mutation>preflight&&postflight>mutation,
+    'required order: built source, offline P0 freshness gate, Wrangler mutation, live two-host SHA-256 parity');
+  assert.match(workflow,/if:\s*\$\{\{\s*github\.event_name == 'workflow_dispatch'\s*&&\s*github\.ref == 'refs\/heads\/main'/,
+    'the Cloudflare deploy must remain explicitly approved and manual-only');
 });

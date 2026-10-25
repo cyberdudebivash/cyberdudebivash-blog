@@ -212,6 +212,14 @@ jobs:
       - name: "Predeploy customer route certification parity — rendered build"
         run: node scripts/preflight-customer-route-markers.cjs dist-public
 
+      # P0: reject old analytical content or mismatched build inputs BEFORE
+      # a production Worker mutation, rather than reporting failure only AFTER.
+      # This executes locally against reviewed source, state and built assets;
+      # no HTTP requests, credentials, D1/R2 or Cloudflare API activity.
+      - name: "P0 predeploy intelligence content and asset freshness — fail closed"
+        shell: bash
+        run: node scripts/certify-soc-public-feed-parity.cjs --predeploy
+
       - name: "Wrangler configuration dry-run"
         run: npx wrangler deploy --dry-run --config wrangler.jsonc --outdir .wrangler-dry-run
 
