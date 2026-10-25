@@ -42,6 +42,19 @@ test('P0 every release route rejects legacy, absent or duplicated head SEO ident
     assert.ok(assess(spec,response(missingHead)).includes('DOCUMENT_HEAD_MISSING_OR_AMBIGUOUS'),spec.path);
   }
 });
+test('negative: inert canonical and Open Graph tags in comments or scripts cannot certify identity',()=>{
+  for(const spec of ROUTES){
+    const original=fixture(spec);
+    const canonical='<link rel="canonical" href="'+ORIGIN+spec.path+'">';
+    const og='<meta property="og:url" content="'+ORIGIN+spec.path+'">';
+    for(const wrap of [tag=>'<!-- '+tag+' -->',tag=>'<script type="text/plain">'+tag+'</script>']){
+      const inert=original.replace(canonical,wrap(canonical)).replace(og,wrap(og));
+      const errors=assess(spec,response(inert));
+      assert.ok(errors.includes('CANONICAL_INCORRECT'),spec.path);
+      assert.ok(errors.includes('OG_URL_INCORRECT'),spec.path);
+    }
+  }
+});
 test('positive: every required SOC/CTI and legal route has a strict marker contract',()=>{
   assert.equal(ROUTES.length,8);
   assert.ok(ROUTES.some(x=>x.path==='/soc-readiness-assessment.html'));
@@ -110,6 +123,63 @@ test('negative: PAN property on homepage fails without logging its value',()=>{
   const spec=ROUTES.find(x=>x.path==='/');
   const bad=fixture(spec)+'<script type="application/ld+json">{"propertyID":"PAN","value":"REDACTED"}</script>';
   assert.ok(assess(spec,response(bad)).includes('PERSONAL_PAN_METADATA'));
+});
+test('negative: head-only and empty-body pages cannot establish legal or service parity',()=>{
+  for(const spec of ROUTES){
+    const headOnly=fixture(spec).replace(/<body>[\s\S]*?<\/body>/,'');
+    assert.ok(assess(spec,response(headOnly)).includes('VISIBLE_BODY_MISSING'),spec.path);
+    const emptyBody=fixture(spec).replace(/<body>[\s\S]*?<\/body>/,'<body></body>');
+    assert.ok(assess(spec,response(emptyBody)).includes('VISIBLE_BODY_MISSING'),spec.path);
+  }
+});
+test('negative: hidden service-boundary text and non-actionable enquiry cannot pass',()=>{
+  const spec=ROUTES.find(x=>x.path==='/soc-readiness-assessment.html');
+  const valid=fixture(spec);
+  const scriptBoundary=valid.replace('<p>not an active 24/7 monitoring service</p>',
+    '<script>const notice="not an active 24/7 monitoring service";</script>');
+  assert.ok(assess(spec,response(scriptBoundary)).includes('SERVICE_BOUNDARY_MISSING'));
+  const mailto='<a href="mailto:contact@cyberdudebivash.in?subject=SENTINEL%20APEX">Request a Scoped Proposal</a>';
+  const scriptOnly=valid.replace(mailto,
+    '<script>const link="mailto:contact@cyberdudebivash.in?subject=SENTINEL%20APEX";</script>');
+  assert.ok(assess(spec,response(scriptOnly)).includes('ENQUIRY_LINK_MISSING'));
+  const hidden=valid.replace(mailto,
+    '<a hidden href="mailto:contact@cyberdudebivash.in?subject=SENTINEL%20APEX">Request a Scoped Proposal</a>');
+  assert.ok(assess(spec,response(hidden)).includes('ENQUIRY_LINK_MISSING'));
+  const ariaHidden=valid.replace(mailto,
+    '<a aria-hidden="true" href="mailto:contact@cyberdudebivash.in?subject=SENTINEL%20APEX">Request a Scoped Proposal</a>');
+  assert.ok(assess(spec,response(ariaHidden)).includes('ENQUIRY_LINK_MISSING'));
+  assert.deepEqual(assess(spec,response(valid)),[]);
+});
+test('negative: inherited hidden ancestors cannot certify the only boundary or proposal CTA',()=>{
+  const spec=ROUTES.find(x=>x.path==='/soc-readiness-assessment.html');
+  const valid=fixture(spec);
+  const boundary='<p>not an active 24/7 monitoring service</p>';
+  const cta='<a href="mailto:contact@cyberdudebivash.in?subject=SENTINEL%20APEX">Request a Scoped Proposal</a>';
+  for(const attribute of ['hidden','inert','aria-hidden="true"','aria-hidden=true',
+    'style="display:none"','style="visibility: hidden"','style=display:none']){
+    const wrap=html=>'<section '+attribute+'><div>'+html+'</div></section>';
+    const boundaryHidden=valid.replace(boundary,wrap(boundary));
+    const ctaHidden=valid.replace(cta,wrap(cta));
+    const bothHidden=valid.replace(boundary,'').replace(cta,wrap(boundary+cta));
+    assert.ok(assess(spec,response(boundaryHidden)).includes('SERVICE_BOUNDARY_MISSING'),attribute);
+    assert.ok(assess(spec,response(ctaHidden)).includes('ENQUIRY_LINK_MISSING'),attribute);
+    const errors=assess(spec,response(bothHidden));
+    assert.ok(errors.includes('SERVICE_BOUNDARY_MISSING'),attribute);
+    assert.ok(errors.includes('ENQUIRY_LINK_MISSING'),attribute);
+  }
+  const visibleWithHiddenDecoy=valid.replace('</main>',
+    '<section hidden><p>not an active 24/7 monitoring service</p></section></main>');
+  assert.deepEqual(assess(spec,response(visibleWithHiddenDecoy)),[]);
+});
+test('negative control: obsolete About and Terms copy inside hidden ancestors is not visible',()=>{
+  const about=ROUTES.find(x=>x.path==='/about.html');
+  const terms=ROUTES.find(x=>x.path==='/terms.html');
+  const hiddenAbout=fixture(about).replace('</main>',
+    '<section aria-hidden="true"><p>We monitor around the clock. X/Twitter: @cdbsentinelapex</p></section></main>');
+  const hiddenTerms=fixture(terms).replace('</main>',
+    '<section style="display:none"><p>blog.cyberdudebivash.in</p></section></main>');
+  assert.deepEqual(assess(about,response(hiddenAbout)),[]);
+  assert.deepEqual(assess(terms,response(hiddenTerms)),[]);
 });
 test('negative: missing enterprise inquiry link and missing 24/7 disclaimer fail',()=>{
   const spec=ROUTES.find(x=>x.path==='/soc-readiness-assessment.html');

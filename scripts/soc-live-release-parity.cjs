@@ -38,13 +38,45 @@ function seoTags(head,element){
 }
 // Inspect customer-visible copy; scripts, metadata and comments cannot
 // establish or refute a legal/service claim in the rendered body.
-function visibleCopy(html){
+// Conservative static visibility model: hidden/inert/aria-hidden and inline
+// display/visibility restrictions are inherited. This is not a browser's
+// computed-style/accessibility tree; ambiguous rendering needs a live review.
+function visibleSurface(html){
   const body=html.match(/<body\b[^>]*>([\s\S]*?)<\/body\s*>/i)?.[1]||'';
-  return body.replace(/<!--[\s\S]*?-->/g,' ')
-    .replace(/<(?:script|style|template|noscript)\b[^>]*>[\s\S]*?<\/(?:script|style|template|noscript)\s*>/gi,' ')
-    .replace(/<[^>]+>/g,' ').replace(/&nbsp;|&#160;/gi,' ')
-    .replace(/\s+/g,' ').trim();
+  const markup=body.replace(/<!--[\s\S]*?-->/g,' ')
+    .replace(/<(?:script|style|template|noscript)\b[^>]*>[\s\S]*?<\/(?:script|style|template|noscript)\s*>/gi,' ');
+  const tokens=markup.match(/<\/?[a-z][\w:-]*\b(?:[^>"']|"[^"]*"|'[^']*')*>|[^<]+/gi)||[];
+  const voidTags=new Set(['area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr']);
+  const nonCustomerTags=new Set(['svg','math','iframe','object','canvas']);
+  const stack=[],copy=[],anchors=[];
+  for(const token of tokens){
+    if(token[0]!=='<'){
+      if(!stack.at(-1)?.hidden)copy.push(token);
+      continue;
+    }
+    const match=token.match(/^<\s*(\/?)\s*([a-z][\w:-]*)\b/i);
+    if(!match)continue;
+    const tag=match[2].toLowerCase();
+    if(match[1]){
+      const index=stack.map(entry=>entry.tag).lastIndexOf(tag);
+      if(index>=0)stack.length=index;
+      continue;
+    }
+    const unquotedStyle=token.match(/\sstyle\s*=\s*([^\s"'=<>]+)/i)?.[1]||'';
+    const style=seoAttribute(token,'style')||unquotedStyle;
+    const ownHidden=nonCustomerTags.has(tag)
+      ||/(?:^|\s)(?:hidden|inert)(?=\s|=|\/?>)/i.test(token)
+      ||(seoAttribute(token,'aria-hidden')||'').toLowerCase()==='true'
+      ||/\saria-hidden\s*=\s*true(?=\s|\/?>)/i.test(token)
+      ||/(?:^|;)\s*(?:display\s*:\s*none|visibility\s*:\s*(?:hidden|collapse))\b/i.test(style);
+    const hidden=Boolean(stack.at(-1)?.hidden||ownHidden);
+    if(tag==='a'&&!hidden)anchors.push(seoAttribute(token,'href')||'');
+    if(!voidTags.has(tag)&&!/\/\s*>$/.test(token))stack.push({tag,hidden});
+  }
+  return {copy:copy.join(' ').replace(/&nbsp;|&#160;/gi,' ').replace(/\s+/g,' ').trim(),anchors};
 }
+function visibleCopy(html){return visibleSurface(html).copy;}
+
 function assess(spec,result){
   const errors=[];
   const fail=(code,predicate)=>{if(!predicate)errors.push(code)};
@@ -60,16 +92,24 @@ function assess(spec,result){
     if(!result.body.includes(marker))errors.push('REQUIRED_MARKER_MISSING');
   }
   fail('SOFT_404',!/<title[^>]*>\s*(?:404|not found)\b/i.test(result.body));
+  // A head-only page can carry correct SEO tags and markers but offers no
+  // customer-visible legal disclosure or service boundary.
+  const visible=visibleCopy(result.body);
+  fail('VISIBLE_BODY_MISSING',Boolean(visible));
   const heads=result.body.match(/<head\b[^>]*>[\s\S]*?<\/head\s*>/gi)||[];
   const bodyOffset=result.body.search(/<body\b/i);
   const head=heads.length===1 &&
     (bodyOffset<0||result.body.indexOf(heads[0])<bodyOffset)?heads[0]:'';
   fail('DOCUMENT_HEAD_MISSING_OR_AMBIGUOUS',Boolean(head));
+  // Tags embedded in comments or script literals are not active SEO metadata.
+  // Reject a release that only appears to have a canonical/OG identity.
+  const activeHead=head.replace(/<!--[\s\S]*?-->/g,' ')
+    .replace(/<(?:script|style|template|noscript)\b[^>]*>[\s\S]*?<\/(?:script|style|template|noscript)\s*>/gi,' ');
   const expected=ORIGIN+spec.path;
-  const canonical=seoTags(head,'link')
+  const canonical=seoTags(activeHead,'link')
     .filter(tag=>(seoAttribute(tag,'rel')||'').toLowerCase().split(/\s+/).includes('canonical'))
     .map(tag=>seoAttribute(tag,'href'));
-  const ogUrls=seoTags(head,'meta')
+  const ogUrls=seoTags(activeHead,'meta')
     .filter(tag=>(seoAttribute(tag,'property')||'').toLowerCase()==='og:url')
     .map(tag=>seoAttribute(tag,'content'));
   fail('CANONICAL_INCORRECT',canonical.length===1&&canonical[0]===expected);
@@ -94,9 +134,13 @@ function assess(spec,result){
     fail('PERSONAL_PAN_METADATA',!personalPanStructured.test(result.body));
   }
   if(spec.path==='/soc-readiness-assessment.html'){
-    fail('ENQUIRY_LINK_MISSING',result.body.includes('mailto:contact@cyberdudebivash.in?subject='));
+    // Only a usable customer-facing anchor establishes a proposal CTA.
+    // A mailto string in a script, comment or hidden anchor is insufficient.
+    const enquiry=visibleSurface(result.body).anchors.some(href=>
+      /^mailto:contact@cyberdudebivash\.in\?subject=\S+/i.test(href));
+    fail('ENQUIRY_LINK_MISSING',enquiry);
     fail('FALSE_CHECKOUT',!/href=["'][^"']*(?:checkout|buy\.html)/i.test(result.body));
-    fail('SERVICE_BOUNDARY_MISSING',result.body.includes('not an active 24/7 monitoring service'));
+    fail('SERVICE_BOUNDARY_MISSING',visible.includes('not an active 24/7 monitoring service'));
   }
   return [...new Set(errors)].sort();
 }
