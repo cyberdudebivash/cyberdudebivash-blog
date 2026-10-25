@@ -75,3 +75,12 @@ def test_global_threat_and_insurance_score_are_blocked_live():
     codes = {f.code for f in audit_html(html, now=NOW)}
     assert "global_threat_level_claim" in codes
     assert "cyber_insurance_score_claim" in codes
+
+
+def test_live_public_incorporation_claim_is_blocked():
+    html = """<html><head><link rel="canonical" href="https://cti.cyberdudebivash.in/"></head>
+    <body><footer>CYBERDUDEBIVASH PRIVATE LIMITED</footer><time>21 September 2026</time></body></html>"""
+    codes = {f.code for f in audit_html(html, now=NOW)}
+    assert "unsupported_incorporation" in codes
+    safe_html = html.replace("CYBERDUDEBIVASH PRIVATE LIMITED", "CYBERDUDEBIVASH ECOSYSTEM")
+    assert "unsupported_incorporation" not in {f.code for f in audit_html(safe_html, now=NOW)}
