@@ -69,11 +69,15 @@ function assess(spec,result){
   const head=heads.length===1 &&
     (bodyOffset<0||result.body.indexOf(heads[0])<bodyOffset)?heads[0]:'';
   fail('DOCUMENT_HEAD_MISSING_OR_AMBIGUOUS',Boolean(head));
+  // Tags embedded in comments or script literals are not active SEO metadata.
+  // Reject a release that only appears to have a canonical/OG identity.
+  const activeHead=head.replace(/<!--[\s\S]*?-->/g,' ')
+    .replace(/<(?:script|style|template|noscript)\b[^>]*>[\s\S]*?<\/(?:script|style|template|noscript)\s*>/gi,' ');
   const expected=ORIGIN+spec.path;
-  const canonical=seoTags(head,'link')
+  const canonical=seoTags(activeHead,'link')
     .filter(tag=>(seoAttribute(tag,'rel')||'').toLowerCase().split(/\s+/).includes('canonical'))
     .map(tag=>seoAttribute(tag,'href'));
-  const ogUrls=seoTags(head,'meta')
+  const ogUrls=seoTags(activeHead,'meta')
     .filter(tag=>(seoAttribute(tag,'property')||'').toLowerCase()==='og:url')
     .map(tag=>seoAttribute(tag,'content'));
   fail('CANONICAL_INCORRECT',canonical.length===1&&canonical[0]===expected);
