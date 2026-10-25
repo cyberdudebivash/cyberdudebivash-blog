@@ -277,6 +277,13 @@ jobs:
             fi
           done
 
+      # This gate runs AFTER the existing push step, so authentic new
+      # reports are never discarded by an outage in other feed providers.
+      # It fails the workflow when source yield is below the existing minimum
+      # and does not dispatch recovery, reset dedup, or call any endpoint.
+      - name: "P0 source-yield truth — block false green pipeline"
+        run: node scripts/check-intel-source-yield.cjs
+
       - name: "Run summary"
         if: always()
         run: |
@@ -296,7 +303,10 @@ jobs:
               const ok=Object.values(h).filter(x=>x.status==='ok').length;
               const deg=Object.values(h).filter(x=>x.status==='degraded').length;
               const warn=Object.values(h).filter(x=>x.status==='warning').length;
-              console.log('Src Health : '+ok+' ok, '+warn+' warn, '+deg+' degraded');
+              const empty=Object.values(h).filter(x=>x.status==='empty').length;
+              const y=s.lastIngestion||{};
+              console.log('Src Health : '+ok+' returned items, '+empty+' empty, '+warn+' warn, '+deg+' degraded');
+              console.log('Run yield  : '+(y.activeSources??'?')+'/'+(y.totalSources??'?')+' non-empty sources, '+(y.reportsGenerated??'?')+' new reports');
             " 2>/dev/null || true
           fi
           if [ -f live-intel.json ]; then
