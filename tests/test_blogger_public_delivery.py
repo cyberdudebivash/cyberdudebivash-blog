@@ -94,7 +94,7 @@ def test_public_probe_cli_accepts_attempt_budget_and_applies_it_to_all_reads(mon
         return '<a href="' + URL + '">report</a>'
 
     monkeypatch.setattr(probe, "fetch", fake_fetch)
-    monkeypatch.setattr(sys, "argv", ["check_blogger_public_delivery.py", "--attempts", "1"])
+    monkeypatch.setattr(sys, "argv", ["check_blogger_public_delivery.py", "--attempts", "1", "--min-posts-in-window", "1"])
 
     assert probe.main() == 0
     assert calls == [("feed", 1), ("desktop", 1), ("mobile", 1)]

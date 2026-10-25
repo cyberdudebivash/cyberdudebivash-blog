@@ -86,23 +86,40 @@ def fetch(url, endpoint="public", attempts=3, max_retry_after=60):
             time.sleep(5 * (2 ** (attempt - 1)))
 
 
-def evaluate(feed, desktop, mobile, now=None):
+def evaluate(feed, desktop, mobile, now=None, *, max_age_minutes=240, min_posts_in_window=1):
     entries = feed.get("feed", {}).get("entry", [])
     if not isinstance(entries, list) or not entries:
         raise ValueError("empty_or_invalid_public_feed")
     parsed = []
+    seen_ids = set()
     for entry in entries:
         stamp = entry["published"]["$t"]
         date = datetime.fromisoformat(stamp.replace("Z", "+00:00"))
         if date.tzinfo is None:
             raise ValueError("publication_timezone_missing")
+        post_id = entry.get("id", {}).get("$t")
+        if not isinstance(post_id, str) or not post_id.strip():
+            raise ValueError("public_post_id_missing")
+        post_url = next((link.get("href", "") for link in entry.get("link", []) if link.get("rel") == "alternate"), "")
+        parsed_url = urlsplit(post_url)
+        if (parsed_url.scheme != "https" or parsed_url.hostname != urlsplit(BASE).hostname
+                or not parsed_url.path.endswith(".html")):
+            raise ValueError("invalid_public_permalink")
+        if post_id in seen_ids:
+            continue  # Repeated feed entries are not independent publications.
+        seen_ids.add(post_id)
         parsed.append((date, entry))
     newest = max(parsed, key=lambda pair: pair[0])[1]
     post_url = next((link["href"] for link in newest.get("link", []) if link.get("rel") == "alternate"), "")
     url = urlsplit(post_url)
-    if url.scheme != "https" or url.hostname != urlsplit(BASE).hostname or not url.path.endswith(".html"):
-        raise ValueError("invalid_public_permalink")
-    result = evaluate_blogger_freshness({"posts": [{"published_at": newest["published"]["$t"]}]}, now=now)
+    # Count distinct public Blogger post IDs, not merely the newest entry.
+    # Internal publication ledgers cannot establish this public SLO.
+    result = evaluate_blogger_freshness(
+        {"posts": [{"published_at": entry["published"]["$t"]} for _, entry in parsed]},
+        now=now,
+        max_age_minutes=max_age_minutes,
+        min_posts_in_window=min_posts_in_window,
+    )
     result.update({"post_id": newest.get("id", {}).get("$t"), "permalink": post_url, "checked_at": (now or datetime.now(timezone.utc)).isoformat()})
     visibility_defects = []
     for label, document in (("desktop", desktop), ("mobile", mobile)):
@@ -128,7 +145,13 @@ def evaluate(feed, desktop, mobile, now=None):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--attempts", type=int, default=3, help="Maximum attempts per public endpoint")
+    parser.add_argument("--max-age-minutes", type=int, default=75,
+                        help="Public publication SLO window (default: 75 minutes)")
+    parser.add_argument("--min-posts-in-window", type=int, default=4,
+                        help="Distinct public posts required (default: 4)")
     args = parser.parse_args()
+    if args.max_age_minutes < 1 or args.min_posts_in_window < 1:
+        parser.error("freshness thresholds must be positive")
     try:
         feed = json.loads(fetch(
             BASE + "/feeds/posts/summary?alt=json&max-results=5&orderby=published",
@@ -139,6 +162,8 @@ def main():
             feed,
             fetch(BASE + "/", "desktop", attempts=args.attempts),
             fetch(BASE + "/?m=1", "mobile", attempts=args.attempts),
+            max_age_minutes=args.max_age_minutes,
+            min_posts_in_window=args.min_posts_in_window,
         )
     except ProbeTransportError as exc:
         result = {"status": "BLOGGER_PUBLIC_RATE_LIMITED" if exc.http_status == 429 else "BLOGGER_PUBLIC_PROBE_ERROR",
