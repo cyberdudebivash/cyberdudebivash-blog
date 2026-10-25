@@ -69,6 +69,29 @@ function assess(reference,delivered,nowMs=Date.now(),options={}) {
   return {status:'PASS',reason:'PUBLIC_SOURCE_FRESHNESS_AND_CORPUS_VERIFIED',src,live};
 }
 
+/**
+ * Fail-closed, completely offline predeploy gate. A static Worker build can
+ * only be released after it is tied to a recent real report and the same
+ * checked-in feed snapshot. No network, Cloudflare API, cron, or provider call.
+ * This must run BEFORE npx wrangler deploy; the postdeploy gate separately
+ * validates exact public bytes.
+ */
+function predeployGate({source,asset,state,nowMs=Date.now()}={}) {
+  const verdict=assess(source,asset,nowMs,{sourceState:state});
+  if(verdict.status!=='PASS') return {status:'FAIL',reason:verdict.reason};
+  if(!source || !asset || !Array.isArray(source.items) || !Array.isArray(asset.items))
+    return {status:'FAIL',reason:'PREDEPLOY_BUILD_FEED_INVALID'};
+  // GeneratedAt and corpus are not independently meaningful if the built
+  // artifact silently comes from a different revision than the source ledger.
+  if(typeof source.generatedAt!=='string' || source.generatedAt!==asset.generatedAt)
+    return {status:'FAIL',reason:'PREDEPLOY_BUILD_TIMESTAMP_DIVERGED'};
+  if(source.totalPublished!==asset.totalPublished)
+    return {status:'FAIL',reason:'PREDEPLOY_BUILD_CORPUS_DIVERGED'};
+  if(source.items.length!==asset.items.length)
+    return {status:'FAIL',reason:'PREDEPLOY_BUILD_ITEMS_DIVERGED'};
+  return {status:'PASS',reason:'SOURCE_REPORT_AND_BUILT_ASSET_FRESH'};
+}
+
 async function boundedJson(response) {
   if(response.status===429)return {status:'INCONCLUSIVE',reason:'PUBLIC_RATE_LIMITED'};
   if(response.status!==200)return {status:'FAIL',reason:'PUBLIC_HTTP_'+response.status};
@@ -118,9 +141,19 @@ async function check({expected,expectedBytes,sourceState,fetchImpl=globalThis.fe
 if(require.main===module){
   try{
     const releaseMode=process.argv.length===3&&process.argv[2]==='--release-asset';
-    if(!releaseMode&&process.argv.length!==2)
-      throw new Error('USAGE: node scripts/certify-soc-public-feed-parity.cjs [--release-asset]');
+    const predeployMode=process.argv.length===3&&process.argv[2]==='--predeploy';
+    if(!releaseMode&&!predeployMode&&process.argv.length!==2)
+      throw new Error('USAGE: node scripts/certify-soc-public-feed-parity.cjs [--predeploy|--release-asset]');
     const root=path.join(__dirname,'..');
+    if(predeployMode) {
+      const source=JSON.parse(fs.readFileSync(path.join(root,'live-intel.json'),'utf8'));
+      const asset=JSON.parse(fs.readFileSync(path.join(root,'dist-public/live-intel.json'),'utf8'));
+      const state=JSON.parse(fs.readFileSync(path.join(root,'intel-state.json'),'utf8'));
+      const result=predeployGate({source,asset,state});
+      process.stdout.write(JSON.stringify(result)+'\n');
+      process.exitCode=result.status==='PASS'?0:2;
+      return;
+    }
     const bytes=fs.readFileSync(path.join(root,releaseMode?'dist-public/live-intel.json':'live-intel.json'));
     const expected=JSON.parse(bytes.toString('utf8'));
     const state=releaseMode?JSON.parse(fs.readFileSync(path.join(root,'intel-state.json'),'utf8')):undefined;
@@ -130,4 +163,4 @@ if(require.main===module){
     }).catch(()=>{console.error('INCONCLUSIVE: DELIVERY_CERTIFICATION_UNAVAILABLE');process.exitCode=3;});
   }catch(_){console.error('FAIL: AUTHORITATIVE_SOURCE_UNAVAILABLE');process.exitCode=2;}
 }
-module.exports={TARGETS,MAX_BYTES,STALE_MINUTES,inspect,assess,boundedJson,check};
+module.exports={TARGETS,MAX_BYTES,STALE_MINUTES,inspect,assess,predeployGate,boundedJson,check};
