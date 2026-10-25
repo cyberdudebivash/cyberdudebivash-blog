@@ -191,6 +191,8 @@ function createOutbox({ d1, getEvent, getWatchlist, listEntities, appendToFeed, 
         const result = await dispatch({ ownerId:row.owner_id, watchlistId:row.watchlist_id, event });
         if (result && result.enqueued === true &&
             Array.isArray(result.channels) && result.channels.length > 0 &&
+            result.channels.length <= 2 &&
+            new Set(result.channels).size === result.channels.length &&
             result.channels.every(ch => ch === 'email' || ch === 'webhook')) {
           await finish(row,claimToken,'complete');
           tally.complete++;
