@@ -42,6 +42,19 @@ test('P0 every release route rejects legacy, absent or duplicated head SEO ident
     assert.ok(assess(spec,response(missingHead)).includes('DOCUMENT_HEAD_MISSING_OR_AMBIGUOUS'),spec.path);
   }
 });
+test('negative: inert canonical and Open Graph tags in comments or scripts cannot certify identity',()=>{
+  for(const spec of ROUTES){
+    const original=fixture(spec);
+    const canonical='<link rel="canonical" href="'+ORIGIN+spec.path+'">';
+    const og='<meta property="og:url" content="'+ORIGIN+spec.path+'">';
+    for(const wrap of [tag=>'<!-- '+tag+' -->',tag=>'<script type="text/plain">'+tag+'</script>']){
+      const inert=original.replace(canonical,wrap(canonical)).replace(og,wrap(og));
+      const errors=assess(spec,response(inert));
+      assert.ok(errors.includes('CANONICAL_INCORRECT'),spec.path);
+      assert.ok(errors.includes('OG_URL_INCORRECT'),spec.path);
+    }
+  }
+});
 test('positive: every required SOC/CTI and legal route has a strict marker contract',()=>{
   assert.equal(ROUTES.length,8);
   assert.ok(ROUTES.some(x=>x.path==='/soc-readiness-assessment.html'));
