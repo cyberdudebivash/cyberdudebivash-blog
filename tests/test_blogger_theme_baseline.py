@@ -92,3 +92,9 @@ def test_global_threat_level_fixture_is_blocked():
     result = certify_theme('''<script type="application/ld+json">{"@type":"WebSite","url":"https://cti.cyberdudebivash.in/"}</script><p>Global Threat Level 88.4</p>''')
     assert result["status"] == "FAIL"
     assert "global_threat_level_claim" in {x["code"] for x in result["findings"]}
+
+
+def test_incorporated_legal_form_fails_theme_baseline():
+    theme = GOOD_THEME + "<footer>CYBERDUDEBIVASH PRIVATE LIMITED</footer>"
+    assert "unsupported_incorporation" in {f["code"] for f in certify_theme(theme)["findings"]}
+    assert certify_theme(GOOD_THEME)["status"] == "PASS"

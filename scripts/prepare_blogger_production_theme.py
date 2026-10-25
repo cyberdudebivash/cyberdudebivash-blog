@@ -21,10 +21,14 @@ BLOCKED=(
  r"Active\s+Managed\s+Tenants\s+142\s+Tenants", r"Global\s+Tenant\s+Health\s+99\.98%[^<\r\n]*",
  r"Platform\s+Status\s*:\s*99\.99%\s+ONLINE", r"SOC\s*2\s*Type\s*II",
 )
+# Legal-entity changes require explicit operator review, not automated text deletion.
+LEGAL_FORM_RE=re.compile(r"\bCYBERDUDEBIVASH\s+(?:PRIVATE\s+LIMITED|PVT\.?\s*LTD\.?)\b",re.I)
 def main()->int:
  if not SOURCE.is_file():
   print(f"ERROR: export the actual live Blogger theme to {SOURCE} first",file=sys.stderr);return 2
  text=SOURCE.read_text(encoding="utf-8")
+ if LEGAL_FORM_RE.search(text):
+  print("ERROR: unsupported incorporated legal form requires operator correction",file=sys.stderr);return 1
  changed=text
  for pattern in BLOCKED:
   changed=re.sub(pattern,"",changed,flags=re.I)

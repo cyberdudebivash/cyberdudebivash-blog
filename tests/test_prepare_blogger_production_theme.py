@@ -22,3 +22,14 @@ def test_prepares_candidate_without_overwriting_live_baseline(tmp_path, monkeypa
     assert "SOC 2 Type II" not in candidate
     assert "mQGNBF+1234BCDEF" not in candidate
     assert len(sha.read_text().split()[0])==64
+
+
+def test_candidate_refuses_unsupported_legal_form_without_overwriting(tmp_path, monkeypatch):
+    src=tmp_path/"production-current.xml";out=tmp_path/"candidate.xml";sha=tmp_path/"candidate.sha256"
+    original='<html><body>CYBERDUDEBIVASH PRIVATE LIMITED</body></html>'
+    src.write_text(original,encoding="utf-8")
+    monkeypatch.setattr(tool,"SOURCE",src);monkeypatch.setattr(tool,"OUT",out);monkeypatch.setattr(tool,"SHA",sha)
+    assert tool.main()==1
+    assert src.read_text(encoding="utf-8")==original
+    assert not out.exists()
+    assert not sha.exists()

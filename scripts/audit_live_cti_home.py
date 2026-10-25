@@ -67,6 +67,7 @@ BLOCKED_PUBLIC_PATTERNS: tuple[tuple[str, str, str], ...] = (
     ("platform_uptime_claim", r"Platform\s+Status\s*:\s*99\.99%\s+ONLINE", "Unproven uptime/SLA claim is public."),
     ("tenant_health_claim", r"Global\s+Tenant\s+Health\s+99\.98%", "Unproven tenant-health claim is public."),
     ("soc2_type2_claim", r"SOC\s*2\s*Type\s*II", "SOC 2 Type II wording requires audit evidence."),
+    ("unsupported_incorporation", r"\bCYBERDUDEBIVASH\s+(?:PRIVATE\s+LIMITED|PVT\.?\s*LTD\.?)\b", "Unverified incorporated-company legal form is public."),
     ("indicator_count_claim", r"Real-time\s+Indicators\s*:\s*142,890\+", "Unproven real-time indicator count is public."),
     ("board_sla_claim", r"Board\s+SLA\s+Compliance\s+99\.4%", "Unproven board SLA metric is public."),
     ("global_threat_level_claim", r"Global\s+Threat\s+Level\s+88\.4", "Unproven global threat-level metric is public."),
