@@ -204,3 +204,25 @@ test('negative: unsafe local asset path cannot be resolved',()=>{
   assert.throws(()=>localAssetPath('dist-public','/../private-secret.html'),/ASSET_PATH_INVALID/);
   assert.match(localAssetPath('dist-public','/soc-readiness-assessment.html'),/soc-readiness-assessment\.html$/);
 });
+
+test('negative: required SOC and legal identity markers must be customer-visible',()=>{
+  for(const spec of ROUTES){
+    // Assessment email identity is separately validated as an actionable CTA.
+    // Use its SOC Readiness marker, which has no duplicate visible anchor.
+    const marker=spec.path==='/soc-readiness-assessment.html'?'SOC Readiness':spec.markers[0];
+    const original=fixture(spec);
+    const span='<span>'+marker+'</span>';
+    assert.ok(original.includes(span),spec.path);
+    for(const wrap of [
+      html=>'<section hidden>'+html+'</section>',
+      html=>'<section inert>'+html+'</section>',
+      html=>'<section aria-hidden="true">'+html+'</section>',
+      html=>'<section style="display:none">'+html+'</section>',
+      html=>'<script type="text/plain">'+html+'</script>'
+    ]){
+      const decoy=original.replace(span,wrap(span));
+      const errors=assess(spec,response(decoy));
+      assert.ok(errors.includes('REQUIRED_VISIBLE_MARKER_MISSING'),spec.path+' '+wrap(span));
+    }
+  }
+});
