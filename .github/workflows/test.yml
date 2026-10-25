@@ -114,6 +114,8 @@ jobs:
         run: node --test tests-js/soc-native-d1-local-certify.test.js
       - name: P0 — Public SOC feed freshness and source-parity negative controls
         run: node --test tests-js/soc-public-feed-parity.test.js
+      - name: P0 — Per-run source yield evidence and false-green source health controls
+        run: node --test tests-js/intel-source-yield-truth.test.js
       - name: P0 — Verify Cloudflare release control is manual-only and drift comparisons fail closed
         run: node --test tests-js/production-drift-safety.test.js
       - name: P0 — Prevent DNS migration during routine Cloudflare content releases
