@@ -150,6 +150,37 @@ test('negative: hidden service-boundary text and non-actionable enquiry cannot p
   assert.ok(assess(spec,response(ariaHidden)).includes('ENQUIRY_LINK_MISSING'));
   assert.deepEqual(assess(spec,response(valid)),[]);
 });
+test('negative: inherited hidden ancestors cannot certify the only boundary or proposal CTA',()=>{
+  const spec=ROUTES.find(x=>x.path==='/soc-readiness-assessment.html');
+  const valid=fixture(spec);
+  const boundary='<p>not an active 24/7 monitoring service</p>';
+  const cta='<a href="mailto:contact@cyberdudebivash.in?subject=SENTINEL%20APEX">Request a Scoped Proposal</a>';
+  for(const attribute of ['hidden','inert','aria-hidden="true"','aria-hidden=true',
+    'style="display:none"','style="visibility: hidden"','style=display:none']){
+    const wrap=html=>'<section '+attribute+'><div>'+html+'</div></section>';
+    const boundaryHidden=valid.replace(boundary,wrap(boundary));
+    const ctaHidden=valid.replace(cta,wrap(cta));
+    const bothHidden=valid.replace(boundary,'').replace(cta,wrap(boundary+cta));
+    assert.ok(assess(spec,response(boundaryHidden)).includes('SERVICE_BOUNDARY_MISSING'),attribute);
+    assert.ok(assess(spec,response(ctaHidden)).includes('ENQUIRY_LINK_MISSING'),attribute);
+    const errors=assess(spec,response(bothHidden));
+    assert.ok(errors.includes('SERVICE_BOUNDARY_MISSING'),attribute);
+    assert.ok(errors.includes('ENQUIRY_LINK_MISSING'),attribute);
+  }
+  const visibleWithHiddenDecoy=valid.replace('</main>',
+    '<section hidden><p>not an active 24/7 monitoring service</p></section></main>');
+  assert.deepEqual(assess(spec,response(visibleWithHiddenDecoy)),[]);
+});
+test('negative control: obsolete About and Terms copy inside hidden ancestors is not visible',()=>{
+  const about=ROUTES.find(x=>x.path==='/about.html');
+  const terms=ROUTES.find(x=>x.path==='/terms.html');
+  const hiddenAbout=fixture(about).replace('</main>',
+    '<section aria-hidden="true"><p>We monitor around the clock. X/Twitter: @cdbsentinelapex</p></section></main>');
+  const hiddenTerms=fixture(terms).replace('</main>',
+    '<section style="display:none"><p>blog.cyberdudebivash.in</p></section></main>');
+  assert.deepEqual(assess(about,response(hiddenAbout)),[]);
+  assert.deepEqual(assess(terms,response(hiddenTerms)),[]);
+});
 test('negative: missing enterprise inquiry link and missing 24/7 disclaimer fail',()=>{
   const spec=ROUTES.find(x=>x.path==='/soc-readiness-assessment.html');
   const original=fixture(spec);
