@@ -11,6 +11,7 @@ const https  = require('https');
 const http   = require('http');
 const fs     = require('fs');
 const path   = require('path');
+const { buildNvdCveUrls, parseNvdBatchResults } = require('./scripts/nvd-cve-query-contract.cjs');
 const { renderSocCtiCover, CSS: SOC_CTI_COVER_CSS } = require('./scripts/cti-soc-cover');
 const { CSS: CTI_READER_CSS } = require('./scripts/cti-reading-style-v13');
 const { CSS: CTI_ENTERPRISE_READER_CSS, renderReaderGuide } = require('./scripts/cti-enterprise-reader-v14');
@@ -476,20 +477,14 @@ async function fetchNVD(state) {
   const rawStart = lastFetch ? new Date(lastFetch) : new Date(Date.now() - CFG.nvdLookbackHours * 3600000);
   // Use the EARLIER of rawStart and minStart to ensure we cover at least nvdMinLookbackHours
   const start = rawStart < minStart ? rawStart : minStart;
-  const fmt   = d => d.toISOString().slice(0,23);
-  // Fetch CRITICAL and HIGH severity CVEs for broader signal coverage
-  const apiUrl      = `${CFG.nvdApi}?pubStartDate=${encodeURIComponent(fmt(start))}&pubEndDate=${encodeURIComponent(fmt(end))}&cvssV3SeverityExact=CRITICAL&resultsPerPage=20&noRejected`;
-  const apiUrlHigh  = `${CFG.nvdApi}?pubStartDate=${encodeURIComponent(fmt(start))}&pubEndDate=${encodeURIComponent(fmt(end))}&cvssV3SeverityExact=HIGH&resultsPerPage=15&noRejected`;
-  const apiUrlMod   = `${CFG.nvdApi}?lastModStartDate=${encodeURIComponent(fmt(start))}&lastModEndDate=${encodeURIComponent(fmt(end))}&cvssV3SeverityExact=CRITICAL&resultsPerPage=15&noRejected`;
+  // NVD API v2 documents cvssV3Severity (NOT cvssV3SeverityExact).
+  // One helper fixes both publication and modification queries without
+  // broadening rate limits, requested severities, or number of API calls.
+  const [apiUrl,apiUrlHigh,apiUrlMod] = buildNvdCveUrls(CFG.nvdApi,start,end);
   log(`NVD: fetching CRITICAL+HIGH CVEs since ${start.toISOString()} (min floor: ${CFG.nvdMinLookbackHours}h)...`);
   try {
     await sleep(600);
     // v5.1: Fetch CRITICAL, HIGH, and recently-modified CRITICAL CVEs — merge and deduplicate
-    const parseVulns = (raw) => {
-      try {
-        return (JSON.parse(raw).vulnerabilities||[]);
-      } catch(_) { return []; }
-    };
     const mapVuln = (v) => {
       const cve = v.cve, id = cve.id;
       const desc   = (cve.descriptions||[]).find(d=>d.lang==='en')?.value||'';
@@ -519,17 +514,20 @@ async function fetchNVD(state) {
       fetchWithRetry(apiUrlHigh, {}, 2),
       fetchWithRetry(apiUrlMod, {}, 2),
     ]);
+    const batch = parseNvdBatchResults([rawCrit,rawHighPub,rawMod]);
+    if(batch.failedRequests)warn(`NVD: ${batch.failedRequests}/3 bounded API requests failed; use available verified responses only.`);
     const seenIds = new Set();
-    const allVulns = [
-      ...(rawCrit.status==='fulfilled' ? parseVulns(rawCrit.value) : []),
-      ...(rawHighPub.status==='fulfilled' ? parseVulns(rawHighPub.value) : []),
-      ...(rawMod.status==='fulfilled' ? parseVulns(rawMod.value) : []),
-    ].filter(v => { const id = v?.cve?.id; if (!id||seenIds.has(id)) return false; seenIds.add(id); return true; });
+    const allVulns = batch.vulnerabilities.filter(v => { const id = v?.cve?.id; if (!id||seenIds.has(id)) return false; seenIds.add(id); return true; });
     const items = allVulns.map(mapVuln).filter(i => i.cvss >= CFG.minCVSS);
     setSourceLastFetch(state, 'nvd', Date.now());
     log(`NVD: ${items.length} items CRITICAL+HIGH (since ${start.toISOString().slice(0,10)}, ${allVulns.length} raw).`);
     return items;
-  } catch(e) { warn(`NVD failed: ${e.message}`); return []; }
+  } catch(e) {
+    warn(`NVD failed: ${e.message}`);
+    // Propagate to runTier so a real API failure is counted as failed source,
+    // never "successful source with zero new intelligence".
+    throw e;
+  }
 }
 
 // ── SOURCE 2: CISA KEV ─────────────────────────────────────────────────
