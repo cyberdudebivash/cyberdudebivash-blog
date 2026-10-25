@@ -288,6 +288,15 @@ jobs:
             echo "| Deployed at (UTC) | $(date -u +%Y-%m-%dT%H:%M:%SZ) |"
           } >> "$GITHUB_STEP_SUMMARY"
 
+      # Post-deployment acceptance: the exact built public feed must be visible
+      # on BOTH approved hostnames. Heartbeat alone cannot prove new intel.
+      # Read-only, two fixed URLs, no dispatch/deploy, secrets or customer data.
+      - name: "P0 deployed feed integrity — exact asset and report-age parity"
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/certify-soc-public-feed-parity.cjs --release-asset
+
       - name: "P0 postcondition — verify existing domain mapping unchanged"
         shell: bash
         env:
