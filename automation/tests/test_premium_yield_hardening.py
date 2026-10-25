@@ -268,3 +268,82 @@ def test_key_judgements_spend_fallback_model_quota_before_primary(monkeypatch):
     assert result == ("[]", "groq")
     assert captured["primary"] == "small-20b"
     assert captured["fallbacks"] == ("qwen-a", "qwen-b", "primary-120b")
+
+
+
+def test_groq_http_404_only_quarantines_exact_model_for_current_run(monkeypatch):
+    """Repeated 404s are skipped without suppressing other Groq models."""
+    url = "https://api.groq.com/openai/v1/chat/completions"
+    model = "qwen/qwen3.6-27b"
+    response = Mock(status_code=404, headers={})
+    error = requests.exceptions.HTTPError("404", response=response)
+    network = Mock(side_effect=error)
+    fallback = Mock(return_value="verified-other-model-content")
+    monkeypatch.setattr(hardening, "_ORIGINAL_OPENAI_CALL", network)
+    monkeypatch.setattr(hardening, "_ORIGINAL_TRY_PROVIDER", fallback)
+    hardening._GROQ_404_THIS_RUN.clear()
+    try:
+        with __import__("pytest").raises(requests.exceptions.HTTPError):
+            hardening.quota_aware_openai_call(
+                url=url, api_key="safe-test", model=model, prompt="p",
+                max_tokens=80, extra_headers={}, sleep_fn=lambda _: None,
+            )
+        assert network.call_count == 1
+        ledger = []
+        assert hardening.quota_aware_try_provider(
+            name="groq", url=url, api_key="safe-test", model=model,
+            prompt="p", max_tokens=80, extra_headers={},
+            sleep_fn=lambda _: None, attempts=ledger,
+        ) is None
+        assert ledger == [{"provider": "groq", "model": model,
+                           "ok": False, "error": "groq_http_404_quarantined_this_run"}]
+        fallback.assert_not_called()
+        assert hardening.quota_aware_try_provider(
+            name="groq", url=url, api_key="safe-test", model="openai/gpt-oss-20b",
+            prompt="p", max_tokens=80, extra_headers={},
+            sleep_fn=lambda _: None, attempts=[],
+        ) == "verified-other-model-content"
+    finally:
+        hardening._GROQ_404_THIS_RUN.clear()
+
+
+def test_non_groq_404_never_quarantines_model(monkeypatch):
+    """An unrelated provider endpoint must not inherit Groq's circuit breaker."""
+    url = "https://openrouter.ai/api/v1/chat/completions"
+    response = Mock(status_code=404, headers={})
+    error = requests.exceptions.HTTPError("404", response=response)
+    monkeypatch.setattr(hardening, "_ORIGINAL_OPENAI_CALL", Mock(side_effect=error))
+    monkeypatch.setattr(hardening, "_ORIGINAL_TRY_PROVIDER", Mock(return_value="fallback"))
+    hardening._GROQ_404_THIS_RUN.clear()
+    try:
+        with __import__("pytest").raises(requests.exceptions.HTTPError):
+            hardening.quota_aware_openai_call(
+                url=url, api_key="safe-test", model="model-xyz",
+                prompt="p", max_tokens=80, extra_headers={},
+                sleep_fn=lambda _: None,
+            )
+        assert hardening._GROQ_404_THIS_RUN == set()
+        assert hardening.quota_aware_try_provider(
+            name="openrouter", url=url, api_key="safe-test", model="model-xyz",
+            prompt="p", max_tokens=80, extra_headers={},
+            sleep_fn=lambda _: None, attempts=[],
+        ) == "fallback"
+    finally:
+        hardening._GROQ_404_THIS_RUN.clear()
+
+
+def test_groq_non_404_failure_does_not_suppress_future_attempts(monkeypatch):
+    url = "https://api.groq.com/openai/v1/chat/completions"
+    response = Mock(status_code=503, headers={})
+    monkeypatch.setattr(hardening, "_ORIGINAL_OPENAI_CALL",
+                        Mock(side_effect=requests.exceptions.HTTPError("503", response=response)))
+    hardening._GROQ_404_THIS_RUN.clear()
+    try:
+        with __import__("pytest").raises(requests.exceptions.HTTPError):
+            hardening.quota_aware_openai_call(
+                url=url, api_key="safe-test", model="temporary-unavailable",
+                prompt="p", max_tokens=80, extra_headers={}, sleep_fn=lambda _: None,
+            )
+        assert hardening._GROQ_404_THIS_RUN == set()
+    finally:
+        hardening._GROQ_404_THIS_RUN.clear()
