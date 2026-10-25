@@ -98,10 +98,11 @@ jobs:
             const health = s.sourceHealth || {};
             const sources = Object.entries(health);
 
-            let healthy = 0, degraded = 0, failed = 0;
+            let healthy = 0, degraded = 0, empty = 0, failed = 0;
 
             sources.forEach(([name, h]) => {
               if (h.status === 'ok') healthy++;
+              else if (h.status === 'empty') empty++;
               else if (h.status === 'degraded') degraded++;
               else failed++;
 
@@ -111,7 +112,8 @@ jobs:
 
             console.log('');
             console.log('Source Summary:');
-            console.log('  ✓ Healthy:', healthy);
+            console.log('  ✓ Returned records:', healthy);
+            console.log('  ⚠ Empty source results:', empty);
             console.log('  ⚠ Degraded:', degraded);
             console.log('  ✗ Failed:', failed);
             console.log('  Total evaluated:', sources.length);
