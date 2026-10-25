@@ -194,14 +194,22 @@ async function fetchWithTimeout(fetchFn, sourceKey, timeoutMs) {
 function initSourceHealth(name) {
   return { name, lastSuccess: null, lastError: null, consecutiveFails: 0, totalFails: 0, totalSuccesses: 0, successRate: 1.0, status: 'ok' };
 }
-function recordSourceSuccess(state, source) {
+function recordSourceSuccess(state, source, itemCount) {
+  if (!Number.isSafeInteger(itemCount) || itemCount < 0) throw new Error('source_invalid_item_count');
   if (!state.sourceHealth) state.sourceHealth = {};
   const h = state.sourceHealth[source] || initSourceHealth(source);
-  h.lastSuccess       = isoNowFull();
+  const now = isoNowFull();
+  h.lastSuccess       = now;  // Transport success is NOT proof of useful intel.
+  h.lastItemCount     = itemCount;
+  h.lastFetchAt       = now;
+  h.consecutiveEmpty  = itemCount === 0 ? (h.consecutiveEmpty || 0) + 1 : 0;
+  if (itemCount > 0) h.lastDataAt = now;
   h.consecutiveFails  = 0;
   h.totalSuccesses    = (h.totalSuccesses || 0) + 1;
   h.successRate       = h.totalSuccesses / Math.max(1, h.totalSuccesses + h.totalFails);
-  h.status            = 'ok';
+  // An empty successful request is not "healthy fresh feed" evidence.
+  // Distinguish from a network failure; do not invent new records.
+  h.status            = itemCount > 0 ? 'ok' : 'empty';
   state.sourceHealth[source] = h;
 }
 function recordSourceFailure(state, source, errorMsg) {
@@ -218,7 +226,9 @@ function getSourceHealthReport(state) {
   const health = state.sourceHealth || {};
   const degraded = Object.values(health).filter(h => h.status === 'degraded');
   const warning  = Object.values(health).filter(h => h.status === 'warning');
-  return { degraded: degraded.map(h=>h.name), warning: warning.map(h=>h.name), total: Object.keys(health).length };
+  const empty    = Object.values(health).filter(h => h.status === 'empty');
+  return { degraded: degraded.map(h=>h.name), warning: warning.map(h=>h.name),
+    empty: empty.map(h=>h.name), total: Object.keys(health).length };
 }
 
 // ── UTILITIES ──────────────────────────────────────────────────────────
@@ -3081,6 +3091,8 @@ function validateAndReport(allItems, generatedCards, state, T0, sourceStats) {
   log(`📚 Total published    : ${state.totalPublished}`);
   if (healthRpt.degraded.length > 0) log(`🔥 DEGRADED sources   : ${healthRpt.degraded.join(', ')}`);
   if (healthRpt.warning.length  > 0) log(`⚠️  WARNING sources    : ${healthRpt.warning.join(', ')}`);
+  if (healthRpt.empty.length > 0) log(`⚠️  Sources with zero returned records: ${healthRpt.empty.length}/${healthRpt.total}`);
+  if (state.lastIngestion) log(`📡 Fetch sources with data this run: ${state.lastIngestion.activeSources}/${state.lastIngestion.totalSources}`);
   if (sourceStats) {
     log('\n── Per-Source Stats ────────────────────────────────────────────');
     Object.entries(sourceStats).forEach(([src, st]) => {
@@ -3091,7 +3103,8 @@ function validateAndReport(allItems, generatedCards, state, T0, sourceStats) {
 
   // Phase 9 validation criteria
   const criteria = [
-    { check: sourceCount >= 5,         label: 'Minimum 5 sources active' },
+    { check: Boolean(state.lastIngestion && state.lastIngestion.activeSources >= 5),
+      label: 'Minimum 5 sources returned records this run' },
     { check: allItems.length >= 5,     label: 'Minimum 5 intel items' },
     { check: kevCount >= 0,            label: 'CISA KEV feed active' },
     { check: iocTotal >= 0,            label: 'IOC extraction running' },
@@ -3107,7 +3120,11 @@ async function runTier(label, tasks, state) {
   log(`\n── ${label} ──────────────────────────────────────────────────`);
   const results = await Promise.allSettled(tasks.map(([fn, key]) =>
     fetchWithTimeout(() => fn(state), key, CFG.sourceTimeoutMs)
-      .then(items => { recordSourceSuccess(state, key); return items || []; })
+      .then(items => {
+        if (!Array.isArray(items)) throw new Error('source_non_array_result');
+        recordSourceSuccess(state, key, items.length);
+        return items;
+      })
       .catch(e   => { recordSourceFailure(state, key, e.message); warn(`${key} failed: ${e.message}`); return []; })
   ));
   const batches = results.map(r => r.status === 'fulfilled' ? r.value : []);
@@ -3217,14 +3234,14 @@ async function main() {
       [s=>fetchRansomWatch(s), 'ransomwatch'],
       [s=>fetchAIIncidentDB(s), 'ai_incident_db'],
     ], state);
-    tier3Batches.forEach((b,idx) => { const k=['reddit_netsec','reddit_cyber','cert_eu','microsoft_security','wired_security','recorded_future'][idx]; if(k) sourceStats[k]={fetched:b.length}; });
+    tier3Batches.forEach((b,idx) => { const k=['reddit_netsec','reddit_cyber','cert_eu','microsoft_security','wired_security','recorded_future','malwarebazaar','ncsc_uk','cisco_psirt','otx','ransomwatch','ai_incident_db'][idx]; if(k) sourceStats[k]={fetched:b.length}; });
 
     // ── FULL CORRELATION ACROSS ALL 28 SOURCES ────────────────────────
     log('\n── FULL CORRELATION ENGINE ─────────────────────────────────────');
     const allBatches      = [...tier1Batches, ...tier2Batches, ...tier3Batches];
     const correlatedItems = correlateAndMerge(allBatches);
     const activeSources   = allBatches.filter(b=>b.length>0).length;
-    log(`Full corpus: ${correlatedItems.length} items from ${activeSources}/28 sources`);
+    log(`Full corpus: ${correlatedItems.length} items from ${activeSources}/${allBatches.length} sources`);
     const multiSrcCount   = correlatedItems.filter(i=>(i.sourceCount||1)>=2).length;
     if (multiSrcCount > 0) log(`Multi-source corroborated: ${multiSrcCount} items`);
 
@@ -3266,6 +3283,14 @@ async function main() {
     log(`\n── DEBUG STATS ─────────────────────────────────────────────────`);
     log(`  total_fetched: ${totalFetched} | new_after_dedup: ${newAfterDedup} | enriched: ${enrichedItems.length}`);
     Object.entries(sourceStats).forEach(([src,st]) => { st.new = enrichedItems.filter(i=>i.source===src&&!isPublished(state,i.id)).length; });
+    // Persist measured THIS-RUN output separately from cumulative counters.
+    // No customer/private payloads, URLs, or authorization material.
+    state.lastIngestion = {
+      checkedAt: isoNowFull(), totalSources: allBatches.length,
+      activeSources, fetchedRecords: totalFetched,
+      enrichedRecords: enrichedItems.length, newAfterDedup,
+      reportsGenerated: 0,
+    };
 
     // ── PHASE 8: FRESHNESS — alert if stale > 30 min ─────────────────
     const freshnessMs  = CFG.freshnessAlertMins * 60000;
@@ -3379,6 +3404,7 @@ async function main() {
     // "pipeline ran" apart from "pipeline actually produced new content"
     // without depending on window membership.
     if (newSlugs.length > 0) state.lastReportGeneratedAt = isoNowFull();
+    state.lastIngestion.reportsGenerated = newSlugs.length;
     saveState(state);
     if (analystMemory) {
       try {
@@ -3417,5 +3443,6 @@ if (require.main === module) {
     extractSentinelApexRecords, normalizeSentinelApexRecord,
     sapexCanonicalId, sapexNativeMitre, fetchSentinelApex,
     watermarkStart,
+    recordSourceSuccess, recordSourceFailure, getSourceHealthReport,
   };
 }
