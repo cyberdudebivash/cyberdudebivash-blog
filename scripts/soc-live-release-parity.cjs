@@ -88,13 +88,18 @@ function assess(spec,result){
   fail('NOT_HTML',typeof result.type==='string'&&/^text\/html(?:;|$)/i.test(result.type));
   fail('BODY_EMPTY_OR_OVERSIZE',result.body.length>0&&Buffer.byteLength(result.body,'utf8')<=MAX_HTML);
   if(result.status!==200)return [...new Set(errors)].sort();
+  // A marker hidden in a script, metadata or invisible body subtree is not
+  // customer-facing evidence. The email-address marker is separately checked
+  // through the required visible, actionable mailto anchor below.
+  const visible=visibleCopy(result.body);
   for(const marker of spec.markers||[]){
     if(!result.body.includes(marker))errors.push('REQUIRED_MARKER_MISSING');
+    if(marker!=='contact@cyberdudebivash.in' && !visible.includes(marker))
+      errors.push('REQUIRED_VISIBLE_MARKER_MISSING');
   }
   fail('SOFT_404',!/<title[^>]*>\s*(?:404|not found)\b/i.test(result.body));
   // A head-only page can carry correct SEO tags and markers but offers no
   // customer-visible legal disclosure or service boundary.
-  const visible=visibleCopy(result.body);
   fail('VISIBLE_BODY_MISSING',Boolean(visible));
   const heads=result.body.match(/<head\b[^>]*>[\s\S]*?<\/head\s*>/gi)||[];
   const bodyOffset=result.body.search(/<body\b/i);
