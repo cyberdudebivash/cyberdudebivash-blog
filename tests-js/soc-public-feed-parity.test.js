@@ -51,3 +51,39 @@ test('unreachable edge cannot be misrepresented as healthy',async()=>{
   const out=await check({expected:fixture(),nowMs:now,fetchImpl:async()=>{throw Error('offline');}});
   assert.equal(out.status,'INCONCLUSIVE');assert(out.results.every(r=>r.reason==='PUBLIC_READ_UNAVAILABLE'));
 });
+
+
+test('a recent pipeline heartbeat never masks an old lastReportGeneratedAt',()=>{
+  const fresh=fixture();
+  const r=assess(fresh,fresh,now,{
+    sourceState:{lastRun:fresh.generatedAt,lastReportGeneratedAt:'2026-10-24T21:27:18.946Z'}
+  });
+  assert.equal(r.status,'FAIL');
+  assert.equal(r.reason,'SOURCE_INTEL_CONTENT_STALE');
+});
+test('missing or future-dated report receipts cannot certify a release',()=>{
+  const f=fixture();
+  assert.equal(assess(f,f,now,{sourceState:{lastRun:f.generatedAt}}).reason,'SOURCE_REPORT_EVIDENCE_MISSING');
+  assert.equal(assess(f,f,now,{sourceState:{lastRun:f.generatedAt,lastReportGeneratedAt:'2026-10-25T05:50:00Z'}}).reason,'SOURCE_REPORT_TIMESTAMP_FUTURE');
+  assert.equal(assess(f,f,now,{sourceState:{lastRun:'2026-10-24T03:00:00Z',lastReportGeneratedAt:f.generatedAt}}).reason,'SOURCE_STATE_RUNTIME_MISMATCH');
+});
+test('byte exact release verification passes only for identical build artifact',()=>{
+  const f=fixture();
+  const bytes=Buffer.from(JSON.stringify(f));
+  const state={lastRun:f.generatedAt,lastReportGeneratedAt:f.generatedAt};
+  assert.equal(assess(f,f,now,{sourceState:state,expectedBytes:bytes,publicBytes:Buffer.from(bytes)}).status,'PASS');
+  const altered=Buffer.from(JSON.stringify({...f,harmlessLookingExtraField:true}));
+  assert.equal(assess(f,{...f,harmlessLookingExtraField:true},now,{sourceState:state,expectedBytes:bytes,publicBytes:altered}).reason,'PUBLIC_ASSET_SHA256_MISMATCH');
+  assert.equal(assess(f,f,now,{sourceState:state,expectedBytes:bytes}).reason,'PUBLIC_ASSET_BYTES_UNAVAILABLE');
+});
+test('bounded network reader supplies exact public bytes to release parity gate',async()=>{
+  const f=fixture();
+  const expectedBytes=Buffer.from(JSON.stringify(f));
+  const state={lastRun:f.generatedAt,lastReportGeneratedAt:f.generatedAt};
+  const out=await check({expected:f,expectedBytes,sourceState:state,nowMs:now,fetchImpl:async()=>fakeResponse(f)});
+  assert.equal(out.status,'PASS');
+  const drift=await check({expected:f,expectedBytes,sourceState:state,nowMs:now,
+    fetchImpl:async()=>new Response(JSON.stringify({...f,mark:'different'}),{status:200,headers:{'content-type':'application/json'}})});
+  assert.equal(drift.status,'FAIL');
+  assert(drift.results.every(r=>r.reason==='PUBLIC_ASSET_SHA256_MISMATCH'));
+});
