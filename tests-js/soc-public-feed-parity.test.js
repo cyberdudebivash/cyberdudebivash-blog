@@ -119,3 +119,17 @@ test('P0 predeploy negative: altered build timestamp, corpus, or item window blo
   assert.equal(verdict({...feed,items:feed.items.slice(1)}),
     'PREDEPLOY_BUILD_ITEMS_DIVERGED');
 });
+
+test('release workflow structurally preserves predeploy-before-mutation and public parity after',()=>{
+  const fs=require('node:fs');
+  const path=require('node:path');
+  const workflow=fs.readFileSync(path.join(__dirname,'..','.github/workflows/cloudflare-production-deploy.yml'),'utf8');
+  const build=workflow.indexOf('npm run build:cloudflare');
+  const preflight=workflow.indexOf('node scripts/certify-soc-public-feed-parity.cjs --predeploy');
+  const mutation=workflow.indexOf('npx wrangler deploy --config wrangler.jsonc');
+  const postflight=workflow.indexOf('node scripts/certify-soc-public-feed-parity.cjs --release-asset');
+  assert(build>=0&&preflight>build&&mutation>preflight&&postflight>mutation,
+    'required order: built source, offline P0 freshness gate, Wrangler mutation, live two-host SHA-256 parity');
+  assert.match(workflow,/if:\s*\$\{\{\s*github\.event_name == 'workflow_dispatch'\s*&&\s*github\.ref == 'refs\/heads\/main'/,
+    'the Cloudflare deploy must remain explicitly approved and manual-only');
+});
