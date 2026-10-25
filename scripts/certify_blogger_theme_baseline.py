@@ -46,6 +46,7 @@ BLOCKED_PATTERNS: tuple[tuple[str, str], ...] = (
     ("global_threat_level_claim", r"Global\s+Threat\s+Level\s+88\.4"),
     ("cyber_insurance_score_claim", r"Cyber\s+Insurance\s+Score\s+94/100"),
     ("soc2_type2_claim", r"SOC\s*2\s*Type\s*II"),
+    ("unsupported_incorporation", r"\bCYBERDUDEBIVASH\s+(?:PRIVATE\s+LIMITED|PVT\.?\s*LTD\.?)\b"),
 )
 
 SCRIPT_RE = re.compile(
