@@ -50,6 +50,10 @@ logger = setup_logger("premium_yield_hardening")
 
 _TAIL_REPAIRABLE_CORE = frozenset({"executive recommendations", "references"})
 _MODEL_COOLDOWNS: dict[tuple[str, str], float] = {}
+# A Groq HTTP 404 is non-retryable for a particular model in this process.
+# The 2026-10-25 publisher repeatedly attempted the same failing Qwen model.
+# Never persist this inference across jobs: models and provider routing change.
+_GROQ_404_THIS_RUN: set[tuple[str, str]] = set()
 
 _ORIGINAL_OPENAI_CALL: Optional[Callable] = None
 _ORIGINAL_TRY_PROVIDER: Optional[Callable] = None
@@ -120,7 +124,16 @@ def quota_aware_openai_call(
         )
     except requests.exceptions.HTTPError as exc:
         response = getattr(exc, "response", None)
-        if response is not None and getattr(response, "status_code", None) == 429:
+        status = getattr(response, "status_code", None)
+        # Cache only the exact known Groq chat-completions endpoint, and only
+        # within this process. A single 404 is evidence this exact model cannot
+        # be used right now; retrying it for every report wastes the run budget.
+        # This is NOT evidence every Groq model or every provider is offline.
+        if status == 404 and url == _llm._GROQ_URL:
+            _GROQ_404_THIS_RUN.add(_cooldown_key(url, model))
+            logger.warning("Groq model HTTP 404 quarantined for this run",
+                           extra={"model": model, "error_code": "GROQ_MODEL_HTTP_404"})
+        if status == 429:
             raw_retry_after = _llm._raw_retry_after_seconds(response)
             if raw_retry_after is not None and raw_retry_after > _llm._MAX_BACKOFF_SECONDS:
                 _activate_model_cooldown(url, model, raw_retry_after)
@@ -146,6 +159,16 @@ def quota_aware_try_provider(
     """Skip a model whose provider-declared reset is still in the future."""
     if _ORIGINAL_TRY_PROVIDER is None:
         raise RuntimeError("premium yield hardening is not installed")
+
+    if url == _llm._GROQ_URL and _cooldown_key(url, model) in _GROQ_404_THIS_RUN:
+        if attempts is not None:
+            attempts.append({
+                "provider": name,
+                "model": model,
+                "ok": False,
+                "error": "groq_http_404_quarantined_this_run",
+            })
+        return None
 
     remaining = _cooldown_remaining(url, model)
     if remaining > 0:
