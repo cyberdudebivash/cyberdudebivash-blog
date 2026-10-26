@@ -13,6 +13,7 @@ const fs     = require('fs');
 const path   = require('path');
 const {VERIFIED_RSS_URLS,mayRetry,verifyRssPayload}=require('./scripts/rss-source-health-policy.cjs');
 const { buildNvdCveUrls, parseNvdBatchResults } = require('./scripts/nvd-cve-query-contract.cjs');
+const { finalizePublicationCounts } = require('./scripts/finalize-publication-counts.cjs');
 const { renderSocCtiCover, CSS: SOC_CTI_COVER_CSS } = require('./scripts/cti-soc-cover');
 const { CSS: CTI_READER_CSS } = require('./scripts/cti-reading-style-v13');
 const { CSS: CTI_ENTERPRISE_READER_CSS, renderReaderGuide } = require('./scripts/cti-enterprise-reader-v14');
@@ -3319,6 +3320,7 @@ async function main() {
       const health = getSourceHealthReport(state);
       if (health.degraded.length > 0) log(`⚠️  Degraded sources: ${health.degraded.join(', ')}`);
       saveState(state);
+      finalizePublicationCounts(state, CFG.liveJsonPath, path.join(CFG.apiDir, 'live.json'));
       validateAndReport(enrichedItems, [], state, T0, sourceStats);
       safeRelease();
       return;
@@ -3407,6 +3409,7 @@ async function main() {
     if (newSlugs.length > 0) state.lastReportGeneratedAt = isoNowFull();
     state.lastIngestion.reportsGenerated = newSlugs.length;
     saveState(state);
+    finalizePublicationCounts(state, CFG.liveJsonPath, path.join(CFG.apiDir, 'live.json'));
     if (analystMemory) {
       try {
         analystMemory.save(fs, CFG.memoryPath);
