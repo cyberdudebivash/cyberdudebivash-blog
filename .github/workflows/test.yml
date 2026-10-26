@@ -118,6 +118,8 @@ jobs:
         run: node --test tests-js/soc-public-feed-parity.test.js
       - name: P0 — Dual-host S2N live API/report ledger source and release byte parity
         run: node --test tests-js/soc-s2n-api-release.test.js
+      - name: P0 — Pinned source, safe-account billing and Windows operator offline release controls
+        run: node --test tests-js/soc-operator-release-preflight.test.js
       - name: P0 — Finalized report-ledger count must match both source feeds
         run: node --test tests-js/finalize-publication-counts.test.js
       - name: P0 — Per-run source yield evidence and false-green source health controls
