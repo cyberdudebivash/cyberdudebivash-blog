@@ -35,6 +35,11 @@ test('P0 source root and bundled root timestamp, item window or counter drift bl
  assert(verdict(x=>x.rootAsset.items.pop()).status==='HOLD');
  assert(verdict(x=>x.rootAsset.generatedAt='2026-10-26T12:29:00Z').status==='HOLD');
 });
+test('P0 root feed bundle also requires unchanged ordered report identities',()=>{
+ assert(verdict(x=>x.rootAsset.items.reverse()).codes.includes('ROOT_BUILD_REPORT_IDENTITY_DIVERGENCE'));
+ assert(verdict(x=>x.rootAsset.items[0].id='CVE-2026-FAKE').codes.includes('ROOT_BUILD_REPORT_IDENTITY_DIVERGENCE'));
+ assert.equal(verdict(x=>x.rootAsset.items[0].cvss=9.2).status,'PASS');
+});
 test('P0 CVSS build corrections may edit values but not add, reorder or replace report identities',()=>{
  assert.equal(verdict(x=>x.apiAsset.items[0].cvss=9.1).status,'PASS');
  assert(verdict(x=>x.apiAsset.items.reverse()).codes.includes('API_BUILD_REPORT_IDENTITY_DIVERGENCE'));
