@@ -110,6 +110,8 @@ jobs:
         run: node --test tests-js/intelligence-hub-publish-race.test.js
       - name: P0 — Bounded delivery and backlog truth negative controls
         run: node --test tests-js/watchlist-delivery-cli-truth.test.js
+      - name: P0 — Do not hide lost/ambiguous SOC customer alert delivery outcomes
+        run: node --test tests-js/soc-alert-delivery-health.test.js
       - name: Verify native D1 rehearsal cannot target remote production
         run: node --test tests-js/soc-native-d1-local-certify.test.js
       - name: P0 — Public SOC feed freshness and source-parity negative controls
