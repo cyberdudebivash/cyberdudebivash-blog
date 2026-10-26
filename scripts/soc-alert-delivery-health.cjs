@@ -21,8 +21,10 @@ function assessDeliveryHealth(result,oldestPendingAgeSeconds) {
     (!Number.isSafeInteger(oldestPendingAgeSeconds)||oldestPendingAgeSeconds<0))
     errors.push('BACKLOG_AGE_INVALID');
   if(errors.length) return {healthy:false,status:'MONITOR_ERROR',codes:errors,customerReceiptVerified:false};
-  if(result.delivered+result.retried+result.dead_lettered+result.unresolved>result.attempts)
-    errors.push('IMPOSSIBLE_DISPOSITION_TOTAL');
+  // Every attempted delivery must have exactly one recorded disposition.
+  // Under-counted outcomes are ambiguous, not successful processing.
+  if(result.delivered+result.retried+result.dead_lettered+result.unresolved!==result.attempts)
+    errors.push('DISPOSITION_TOTAL_MISMATCH');
   if(result.delivered>result.claimed||result.attempts>result.claimed)
     errors.push('IMPOSSIBLE_ATTEMPT_CLAIM_TOTAL');
   if(errors.length)return {healthy:false,status:'MONITOR_ERROR',codes:errors,customerReceiptVerified:false};
