@@ -44,6 +44,7 @@
 // Operator workload limit: never silently clamp oversized CLI batches.
 // Preserve the existing 100-job no-argument default.
 const MAX_GITHUB_DELIVERY_LIMIT = 100;
+const {assessDeliveryHealth} = require('./soc-alert-delivery-health.cjs');
 function parseLimitArg(argv) {
   if (argv.some(a => a !== '--limit' && !a.startsWith('--limit='))) {
     throw new RangeError('Invalid delivery CLI argument; only --limit=N is supported');
@@ -107,6 +108,13 @@ async function main() {
     oldest_pending_delivery_age_seconds: oldestPendingAgeSeconds,
     elapsed_ms: elapsedMs,
   }));
+
+  // A processed queue is not proof of live customer delivery. Preserve a
+  // routine green empty cycle but make dead letters, ambiguous transitions,
+  // corrupt metrics and overdue work fail the existing scheduled job.
+  const verdict=assessDeliveryHealth(results, oldestPendingAgeSeconds);
+  console.log('[NOTIFY-DELIVER-HEALTH]',JSON.stringify(verdict));
+  if(!verdict.healthy)throw new Error('SOC_DELIVERY_OPERATIONAL_HEALTH_HOLD');
 }
 
 if (require.main === module) {
