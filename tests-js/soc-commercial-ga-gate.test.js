@@ -109,7 +109,8 @@ test('managed GA gate never runs as part of routine content Worker deploy',()=>{
   assert.match(workflow,/github\.event_name == 'workflow_dispatch'/);
   assert.match(workflow,/node scripts\/cloudflare-account-zero-overage-gate\.cjs/);
 });
-\ntest('one generic document or repeated evidence locator cannot greenwash separate controls',()=>{
+
+test('one generic document or repeated evidence locator cannot greenwash separate controls',()=>{
   const a=CONTROLS[0],b=CONTROLS[1];
   assert(result(x=>x.manifest.controls[b].evidenceSha256=x.manifest.controls[a].evidenceSha256)
     .codes.includes('CONTROL_PROOF_REUSED'));
