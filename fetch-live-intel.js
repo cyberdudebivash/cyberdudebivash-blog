@@ -11,7 +11,9 @@ const https  = require('https');
 const http   = require('http');
 const fs     = require('fs');
 const path   = require('path');
+const {VERIFIED_RSS_URLS,mayRetry,verifyRssPayload}=require('./scripts/rss-source-health-policy.cjs');
 const { buildNvdCveUrls, parseNvdBatchResults } = require('./scripts/nvd-cve-query-contract.cjs');
+const { finalizePublicationCounts } = require('./scripts/finalize-publication-counts.cjs');
 const { renderSocCtiCover, CSS: SOC_CTI_COVER_CSS } = require('./scripts/cti-soc-cover');
 const { CSS: CTI_READER_CSS } = require('./scripts/cti-reading-style-v13');
 const { CSS: CTI_ENTERPRISE_READER_CSS, renderReaderGuide } = require('./scripts/cti-enterprise-reader-v14');
@@ -123,12 +125,12 @@ const CFG = {
   secweekRss:         'https://www.securityweek.com/feed/',
   sansRss:            'https://isc.sans.edu/rssfeed_full.xml',
   darkReadingRss:     'https://www.darkreading.com/rss.xml',
-  talosBlogRss:       'https://blog.talosintelligence.com/feeds/posts/default',
+  talosBlogRss:       VERIFIED_RSS_URLS.talos,
   unit42Rss:          'https://unit42.paloaltonetworks.com/feed/',
   crowdstrikeBlogRss: 'https://www.crowdstrike.com/blog/feed/',
   sentineloneBlogRss: 'https://www.sentinelone.com/blog/feed/',
   googleProjZeroRss:  'https://googleprojectzero.blogspot.com/feeds/posts/default',
-  rapid7BlogRss:      'https://www.rapid7.com/blog/feed/',
+  rapid7BlogRss:      VERIFIED_RSS_URLS.rapid7,
   urlhausApi:         'https://urlhaus-api.abuse.ch/v1/payloads/recent/',
   threatfoxApi:       'https://threatfox-api.abuse.ch/api/v1/',
 
@@ -373,6 +375,8 @@ async function fetchWithRetry(rawUrl, opts = {}, attempts = 3) {
   for (let i = 0; i < attempts; i++) {
     try { return await fetchUrl(rawUrl, opts); }
     catch(e) {
+      // 401/403, retired 404/410 and 429 are not safe immediate retries.
+      if (!mayRetry(e)) throw e;
       if (i < attempts - 1) { warn(`Retry ${i+1} for ${rawUrl.slice(0,60)}: ${e.message}`); await sleep(2000*(i+1)); }
       else throw e;
     }
@@ -832,7 +836,7 @@ async function fetchRSS(urlStr, source, maxItems, state) {
   log(`${source}: fetching RSS (since ${afterDate.toISOString().slice(0,10)})...`);
   try {
     const raw = await fetchWithRetry(urlStr);
-    const parsed = parseRSS(raw);
+    const parsed = verifyRssPayload(raw,parseRSS(raw));
     const filtered = parsed.filter(item => {
       if (!item.pubDate) return true;
       try { return new Date(item.pubDate) >= afterDate; } catch(_) { return true; }
@@ -840,7 +844,7 @@ async function fetchRSS(urlStr, source, maxItems, state) {
     const items = filtered.slice(0, maxItems||CFG.maxRssItems).map(item => rssToIntel(item, source));
     if (state) setSourceLastFetch(state, source, Date.now());
     log(`${source}: ${items.length} items (filtered from ${parsed.length}).`); return items;
-  } catch(e) { warn(`${source} failed: ${e.message}`); return []; }
+  } catch(e) { warn(`${source} failed: ${e.message}`); throw e; }
 }
 
 // ── SOURCE 10: Abuse.ch URLhaus ────────────────────────────────────────
@@ -3316,6 +3320,7 @@ async function main() {
       const health = getSourceHealthReport(state);
       if (health.degraded.length > 0) log(`⚠️  Degraded sources: ${health.degraded.join(', ')}`);
       saveState(state);
+      finalizePublicationCounts(state, CFG.liveJsonPath, path.join(CFG.apiDir, 'live.json'));
       validateAndReport(enrichedItems, [], state, T0, sourceStats);
       safeRelease();
       return;
@@ -3404,6 +3409,7 @@ async function main() {
     if (newSlugs.length > 0) state.lastReportGeneratedAt = isoNowFull();
     state.lastIngestion.reportsGenerated = newSlugs.length;
     saveState(state);
+    finalizePublicationCounts(state, CFG.liveJsonPath, path.join(CFG.apiDir, 'live.json'));
     if (analystMemory) {
       try {
         analystMemory.save(fs, CFG.memoryPath);
