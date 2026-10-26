@@ -1,15 +1,15 @@
 {
-  "generated": "2026-10-26T12:31:51.130Z",
+  "generated": "2026-10-26T13:17:59.437Z",
   "version": "1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX v4.0",
   "stats": {
-    "total_nodes": 16126,
+    "total_nodes": 16128,
     "actors": 8,
-    "cves": 7541,
-    "campaigns": 1647,
+    "cves": 7542,
+    "campaigns": 1648,
     "malware": 0,
     "iocs": 911,
-    "edges": 4403
+    "edges": 4404
   },
   "nodes": {
     "actor:lockbit": {
@@ -298348,7 +298348,7 @@
       "attributes": {
         "cvss": 9.8,
         "threat_level": "HIGH",
-        "priority_score": 71,
+        "priority_score": 66,
         "exploited": true,
         "cisa_kev": false,
         "ransomware": false,
@@ -302412,7 +302412,7 @@
         "first_seen": "2026-10-26",
         "last_seen": "2026-10-26",
         "confidence": 0.9,
-        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | 3 related CVEs: CVE-2026-109618, CVE-2026-109619, CVE-2026-115560 | 1 item(s) confirmed exploited in the wild"
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | 2 related CVEs: CVE-2026-109618, CVE-2026-109619 | 1 item(s) confirmed exploited in the wild"
       },
       "connections": [
         {
@@ -302902,6 +302902,44 @@
       "connections": [
         {
           "target": "CVE-2026-30803",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "CVE-2026-12293": {
+      "id": "CVE-2026-12293",
+      "type": "CVE",
+      "name": "CVE-2026-12293 — mozilla firefox CVSS 9.8 Critical Vulnerability",
+      "attributes": {
+        "cvss": 9.8,
+        "threat_level": "HIGH",
+        "priority_score": 70,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "mozilla",
+        "product": "firefox",
+        "published": "2026-06-16",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "campaign:cve-2026-12293": {
+      "id": "campaign:cve-2026-12293",
+      "type": "Campaign",
+      "name": "mozilla firefox Exploitation Campaign",
+      "attributes": {
+        "severity": "HIGH",
+        "item_count": 1,
+        "first_seen": "2026-06-16",
+        "last_seen": "2026-06-16",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-12293"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-12293",
           "relationship": "includes",
           "confidence": 1
         }
@@ -342717,6 +342755,15 @@
       "sources": [
         "shared CVE: CVE-2026-109618"
       ]
+    },
+    {
+      "id": "campaign:cve-2026-12293→includes→CVE-2026-12293",
+      "source": "campaign:cve-2026-12293",
+      "target": "CVE-2026-12293",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-10-26",
+      "sources": []
     }
   ]
 }
