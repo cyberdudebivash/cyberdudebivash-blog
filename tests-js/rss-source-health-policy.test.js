@@ -37,7 +37,7 @@ test('reject disguised HTML errors, malformed feed data and unparseable items',(
 test('runtime propagates broken fetch to per-source health rather than successful empty results',()=>{
  const s=fs.readFileSync(path.join(__dirname,'..','fetch-live-intel.js'),'utf8');
  assert.match(s,/if \(!mayRetry\(e\)\) throw e;/);
- assert.match(s,/verifyRssPayload\(raw, parseRSS\(raw\)\)/);
+ assert.match(s,/verifyRssPayload\(raw,\s*parseRSS\(raw\)\)/);
  assert.match(s,/catch\(e\) \{ warn\(\x60\$\{source\} failed: \$\{e\.message\}\x60\); throw e; \}/);
  assert.match(s,/recordSourceFailure\(state, key,/);
 });
