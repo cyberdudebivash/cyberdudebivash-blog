@@ -203,6 +203,11 @@ jobs:
         run: |
           node -e "require('./scripts/soc-homepage-integrity').assertHomepageIntegrity(require('fs').readFileSync('index.html','utf8'),'publisher precommit')"
 
+      # Post-publisher, precommit source ledger parity; a failed or interrupted
+      # finalizer MUST NOT leave a false published count in tracked feeds.
+      - name: "P0 fail-closed finalized report ledger and both source feeds"
+        run: node scripts/assert-publication-ledger.cjs
+
       - name: "Detect changes"
         id: changes
         run: |
@@ -257,7 +262,10 @@ jobs:
           for i in 1 2 3; do
             # A successful rebase can reintroduce malformed HTML from upstream.
             # Validate the actual final checkout before EACH push attempt.
-            node -e "require('./scripts/soc-homepage-integrity').assertHomepageIntegrity(require('fs').readFileSync('index.html','utf8'),'publisher prepush')" 
+            node -e "require('./scripts/soc-homepage-integrity').assertHomepageIntegrity(require('fs').readFileSync('index.html','utf8'),'publisher prepush')"
+            # A rebase can combine two independent publisher revisions; always
+            # reverify the final index before every customer-impacting push.
+            node scripts/assert-publication-ledger.cjs
             if git push origin main; then
               echo "✅ Push succeeded (attempt $i)"
               break

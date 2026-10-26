@@ -3155,6 +3155,13 @@ async function main() {
     if (!fs.existsSync(CFG.postsDir)) fs.mkdirSync(CFG.postsDir, { recursive: true });
 
     const state      = loadState();
+    // Recover an interrupted PRIOR publisher finalization using the existing
+    // immutable report ledger receipt BEFORE this run resets reportsGenerated.
+    // Refuse unexplained count drift; never advance report/clock timestamps.
+    if (state.lastRun && state.lastIngestion?.reportsGenerated > 0) {
+      const recovery = finalizePublicationCounts(state, CFG.liveJsonPath, path.join(CFG.apiDir, 'live.json'));
+      log(`P0 prior publication ledger: ${recovery.status}, total=${recovery.total}`);
+    }
     const sourceStats = {};
     log(`State: ${state.published.length} in dedup window (TTL=${CFG.dedupTtlDays}d). Total published: ${state.totalPublished}`);
 

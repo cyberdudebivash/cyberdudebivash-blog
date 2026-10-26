@@ -52,3 +52,41 @@ test('publisher invokes count finalization after state save in both branches',()
  const matches=engine.match(/saveState\(state\);\s*finalizePublicationCounts\(state, CFG\.liveJsonPath, path\.join\(CFG\.apiDir, 'live\.json'\)\);/g)||[];
  assert.equal(matches.length,2);
 });
+
+test('P0 prior-run receipt repairs exact 6-report interruption before next generator',()=>{
+ const f=files();
+ try {
+  const before=f.read(),first=finalizePublicationCounts(state(),f.wp,f.ap);
+  assert.equal(first.status,'RECONCILED');
+  const [widgetAfter,apiAfter]=f.read();
+  assert.equal(widgetAfter.totalPublished,6533);
+  assert.equal(apiAfter.total_published,6533);
+  assert.deepEqual(widgetAfter.items,before[0].items);
+  assert.deepEqual(apiAfter.items,before[1].items);
+  assert.equal(widgetAfter.generatedAt,before[0].generatedAt);
+  assert.equal(apiAfter.generated,before[1].generated);
+  assert.equal(finalizePublicationCounts(state(),f.wp,f.ap).status,'ALREADY_FINAL');
+ }finally{f.clean();}
+});
+test('P0 read-only assertion refuses real six-report ledger drift and does not reset freshness',()=>{
+ const {check}=require('../scripts/assert-publication-ledger.cjs');
+ const s={...state(),lastRun:'2026-10-26T05:51:59.280Z',
+   lastReportGeneratedAt:'2026-10-26T05:51:59.280Z'};
+ assert(check({state:s,widget:widget(),api:api()}).codes.includes('UNFINALIZED_REPORT_COUNT'));
+ assert.equal(check({state:s,widget:widget(6533),api:api(6533)}).status,'PASS');
+ const bad={...widget(6533),generatedAt:'2026-10-23T04:58:15Z'};
+ assert(check({state:s,widget:bad,api:api(6533)}).codes.includes('SOURCE_FEED_RUN_DIVERGENCE'));
+});
+test('P0 publisher recovery executes before run mutations and CI prevents unfinalized commits',()=>{
+ const engine=fs.readFileSync(path.join(__dirname,'..','fetch-live-intel.js'),'utf8');
+ const workflow=fs.readFileSync(path.join(__dirname,'..','.github/workflows/sentinel-apex.yml'),'utf8');
+ const s=engine.indexOf('const state      = loadState();');
+ const recovery=engine.indexOf('const recovery = finalizePublicationCounts(');
+ const tier1=engine.indexOf('const tier1Batches = await runTier(');
+ assert(s>=0&&recovery>s&&tier1>recovery);
+ const pre=workflow.indexOf('name: "P0 fail-closed finalized report ledger and both source feeds"');
+ const stage=workflow.indexOf('name: "Commit and push intel (always commit for heartbeat)"');
+ assert(pre>0&&pre<stage);
+ assert(workflow.includes('node scripts/assert-publication-ledger.cjs'));
+ assert(workflow.indexOf('node scripts/assert-publication-ledger.cjs',stage)>stage);
+});
