@@ -238,10 +238,28 @@ jobs:
 
             console.log('  Status:', status);
             console.log('');
-            console.log('✅ Freshness certification: Feed is current within ' + newest.toFixed(0) + '-minute window');
+            console.log('Diagnostic item age only; not an intelligence freshness certification. Status: ' + status);
           "
 
-          echo "freshness_verified=true" >> $GITHUB_OUTPUT
+          echo "freshness_metrics_calculated=true" >> $GITHUB_OUTPUT
+
+      # Real pipeline liveness is NOT fresh analytical content, and a long
+      # cumulative corpus is NOT proof that five upstream sources supplied
+      # intelligence in the current run. No remote requests or side effects.
+      - name: "CATEGORY 5B: P0 Source + Report Operational Truth"
+        id: source_content_truth
+        shell: bash
+        run: |
+          set +e
+          node scripts/assess-pipeline-operational-health.cjs
+          verdict=$?
+          set -e
+          if [ "$verdict" -eq 0 ]; then
+            echo "source_content_verified=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "source_content_verified=false" >> "$GITHUB_OUTPUT"
+            echo "::error title=P0 Source Intelligence Not Certified::Pipeline runtime/content or per-run ingestion coverage failed. This is not customer delivery readiness."
+          fi
 
       - name: "CATEGORY 6: Pipeline Quality Detection"
         id: quality_metrics
@@ -332,7 +350,7 @@ jobs:
               console.log('');
               console.log('Recommendation: Retry failed sources independently');
             } else {
-              console.log('✅ No recovery needed — all sources healthy');
+              console.log('No transport-failure flags. Independent source-yield and report freshness control still applies.');
             }
           "
 
@@ -382,11 +400,12 @@ jobs:
           fi
 
           # Criterion 5: Freshness verified
-          if [ "${{ steps.freshness_metrics.outputs.freshness_verified }}" = "true" ]; then
-            echo "✅ PASS: Freshness verified"
+          if [ "${{ steps.source_content_truth.outputs.source_content_verified }}" = "true" ]; then
+            echo "✅ PASS: Fresh source coverage and actual generated report verified"
             PASS=$((PASS + 1))
           else
-            echo "⚠️  WARN: Freshness not yet determined"
+            echo "❌ FAIL: Source coverage / report freshness not certified"
+            FAIL=$((FAIL + 1))
           fi
 
           # Criterion 6: Metrics recorded
@@ -402,7 +421,7 @@ jobs:
 
           if [ $FAIL -eq 0 ]; then
             echo "certification_passed=true" >> $GITHUB_OUTPUT
-            echo "status=CERTIFIED" >> $GITHUB_OUTPUT
+            echo "status=SOURCE_HEALTH_CERTIFIED" >> $GITHUB_OUTPUT
             exit 0
           else
             echo "certification_passed=false" >> $GITHUB_OUTPUT
@@ -422,11 +441,12 @@ jobs:
           echo "Execution Validation : ${{ steps.pipeline_exec.outputs.pipeline_executed }}"
           echo "Source Health        : ${{ steps.source_health.outputs.sources_evaluated }}"
           echo "Publication Health   : ${{ steps.publication_health.outputs.all_publications_successful }}"
-          echo "Freshness Status     : ${{ steps.freshness_metrics.outputs.freshness_verified }}"
+          echo "Freshness Evidence   : ${{ steps.source_content_truth.outputs.source_content_verified }}"
           echo "Quality Status       : ${{ steps.quality_metrics.outputs.quality_passed }}"
           echo "History Recorded     : ${{ steps.history_persistence.outputs.history_recorded }}"
           echo ""
           echo "══════════════════════════════════════════════════════════════"
+          echo "SOURCE-ONLY status, not Cloudflare delivery, alert receipt, SOC 2, or managed customer GA certification."
 
           # Display detailed feed metrics
           if [ -f live-intel.json ]; then
