@@ -72,6 +72,7 @@ function validate({manifest,feed,state,feedBytes,nowMs=Date.now(),expectedCommit
   fail('CONTROL_SET_INCOMPLETE_OR_UNREVIEWED',object(checks)&&
     Object.keys(checks).length===CONTROLS.length&&CONTROLS.every(key=>Object.hasOwn(checks,key)));
   let newest=0;
+  const proofRefs=new Set(),proofHashes=new Set();
   if(object(checks)){
     for(const id of CONTROLS){
       const c=checks[id];
@@ -79,6 +80,14 @@ function validate({manifest,feed,state,feedBytes,nowMs=Date.now(),expectedCommit
       const when=stamp(c.collectedAt)?Date.parse(c.collectedAt):NaN;
       if(Number.isFinite(when)&&when>newest)newest=when;
       const maxAge=DYNAMIC.has(id)?2*HOURS:7*DAY;
+      if(reference(c.privateEvidenceRef)){
+        if(proofRefs.has(c.privateEvidenceRef))errors.add('CONTROL_PROOF_REUSED');
+        proofRefs.add(c.privateEvidenceRef);
+      }
+      if(HASH.test(c.evidenceSha256||'')){
+        if(proofHashes.has(c.evidenceSha256.toLowerCase()))errors.add('CONTROL_PROOF_REUSED');
+        proofHashes.add(c.evidenceSha256.toLowerCase());
+      }
       fail('CONTROL_PROOF_INVALID_'+id,c.status==='PASS'&&reference(c.privateEvidenceRef)&&
         HASH.test(c.evidenceSha256||'')&&c.releaseCommit===m.releaseCommit&&
         Number.isFinite(when)&&when<=nowMs&&nowMs-when<=maxAge&&
@@ -90,7 +99,7 @@ function validate({manifest,feed,state,feedBytes,nowMs=Date.now(),expectedCommit
   fail('OWNER_RELEASE_APPROVAL_INVALID',object(approval)&&approval.status==='APPROVED'&&
     reference(approval.privateApprovalRef)&&reference(approval.approvedByRole)&&
     Number.isFinite(approvalTime)&&approvalTime<=nowMs&&
-    nowMs-approvalTime<=2*HOURS&&approvalTime>=newest);
+    nowMs-approvalTime<=2*HOURS&&approvalTime>=newest&&approvalTime>=deployTime);
   const pilot=m.customerPilot||{};
   const acceptanceTime=stamp(pilot.acceptedAt)?Date.parse(pilot.acceptedAt):NaN;
   fail('REAL_CUSTOMER_PILOT_ACCEPTANCE_MISSING',object(pilot)&&pilot.status==='ACCEPTED'&&
