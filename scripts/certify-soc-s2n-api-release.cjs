@@ -26,6 +26,12 @@ function validateBundle({state,rootSource,apiSource,rootAsset,apiAsset,nowMs=Dat
   if(receipt.status!=='PASS')push('AUTHORITATIVE_LEDGER_NOT_FINAL');
   const sourceGate=predeployGate({source:rootSource,asset:rootAsset,state,nowMs});
   if(sourceGate.status!=='PASS')push('ROOT_RELEASE_'+sourceGate.reason);
+  // Independent root-feed identities: equal counts/window sizes can still
+  // hide altered CVE IDs or arbitrary report substitutions in a build.
+  if(!validItems(rootSource?.items)||!validItems(rootAsset?.items)||
+     JSON.stringify(rootSource.items.map(x=>x.id))!==
+     JSON.stringify(rootAsset.items.map(x=>x.id)))
+    push('ROOT_BUILD_REPORT_IDENTITY_DIVERGENCE');
   if(!apiSource||!apiAsset||!validItems(apiSource.items)||!validItems(apiAsset.items))
     push('API_SOURCE_OR_BUILD_SHAPE_INVALID');
   else{
