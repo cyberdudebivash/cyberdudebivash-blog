@@ -42,6 +42,29 @@ test('fail closed on malformed, negative, overflow and inconsistent receipt tota
  for(const b of bad) assert.equal(assessDeliveryHealth(b,null).status,'MONITOR_ERROR',JSON.stringify(b));
  for(const a of [-1,'0',3.5])assert.equal(assessDeliveryHealth(good(),a).status,'MONITOR_ERROR');
 });
+test('missing delivery dispositions never become green customer processing',()=>{
+ for(const candidate of [
+   {...good(),delivered:0},
+   {...good(),attempts:2,claimed:2,records_processed:2},
+   {...good(),attempts:2,claimed:2,records_processed:2,delivered:0,retried:1},
+ ]) {
+   const result=assessDeliveryHealth(candidate,null);
+   assert.equal(result.healthy,false,JSON.stringify(candidate));
+   assert.equal(result.status,'MONITOR_ERROR');
+   assert(result.codes.includes('DISPOSITION_TOTAL_MISMATCH'));
+   assert.equal(result.customerReceiptVerified,false);
+ }
+});
+test('fully accounted attempts preserve normal retry and terminal classifications',()=>{
+ const retry={...good(),delivered:0,retried:1};
+ assert.equal(assessDeliveryHealth(retry,null).healthy,true);
+ const dead={...good(),delivered:0,dead_lettered:1};
+ assert.equal(assessDeliveryHealth(dead,null).status,'DELIVERY_PROCESSING_DEGRADED');
+ const unresolved={...good(),delivered:0,unresolved:1};
+ assert.equal(assessDeliveryHealth(unresolved,null).status,'DELIVERY_PROCESSING_DEGRADED');
+ const empty={...good(),records_processed:0,claimed:0,attempts:0,delivered:0};
+ assert.equal(assessDeliveryHealth(empty,null).status,'NO_ELIGIBLE_DELIVERIES');
+});
 test('scheduled delivery calls a zero-I/O verdict after actual D1 processing, not mock sends',()=>{
  const cli=fs.readFileSync(path.join(__dirname,'..','scripts/deliver-watchlist-notifications.js'),'utf8');
  const wf=fs.readFileSync(path.join(__dirname,'..','.github/workflows/alert-delivery.yml'),'utf8');
