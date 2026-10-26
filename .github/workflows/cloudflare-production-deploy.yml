@@ -219,6 +219,12 @@ jobs:
       - name: "P0 predeploy intelligence content and asset freshness — fail closed"
         shell: bash
         run: node scripts/certify-soc-public-feed-parity.cjs --predeploy
+      # The homepage feed and S2N API are distinct shipped customer assets.
+      # Require their common immutable ledger, report IDs and build totals
+      # before any Wrangler mutation; CVSS corrections may edit scores only.
+      - name: "P0 predeploy S2N API ledger and built-asset parity — fail closed"
+        shell: bash
+        run: node scripts/certify-soc-s2n-api-release.cjs --predeploy
 
       - name: "Wrangler configuration dry-run"
         run: npx wrangler deploy --dry-run --config wrangler.jsonc --outdir .wrangler-dry-run
@@ -304,6 +310,13 @@ jobs:
         run: |
           set -euo pipefail
           node scripts/certify-soc-public-feed-parity.cjs --release-asset
+      # Independently prove /api/intel/live.json exactly matches its approved
+      # built bytes at both hostnames. A healthy root feed alone is not enough.
+      - name: "P0 deployed S2N live API exact bytes on both hostnames"
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/certify-soc-s2n-api-release.cjs --release-asset
 
       - name: "P0 postcondition — verify existing domain mapping unchanged"
         shell: bash
