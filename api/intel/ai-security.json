@@ -2,12 +2,12 @@
   "platform": "CYBERDUDEBIVASH SENTINEL APEX — AI Security Intelligence Division",
   "endpoint": "/api/intel/ai-security.json",
   "doctrine": "Sentinel-APEX/prompts/ai-security-master-prompt.md",
-  "generated": "2026-10-27T17:53:06.660Z",
+  "generated": "2026-10-27T22:05:31.157Z",
   "disclaimer": "Evidence-graded AI security intelligence. Confidence and evidence labels attached per item. Community leads are corroborated before publication.",
   "stats": {
-    "published": 13,
-    "p1": 0,
-    "leadsHeld": 8,
+    "published": 19,
+    "p1": 1,
+    "leadsHeld": 9,
     "analystReports": 0,
     "sourcesOk": 5,
     "sourcesTotal": 6,
@@ -19,22 +19,6 @@
         "status": "degraded",
         "items": 0,
         "error": "HTTP 429"
-      },
-      {
-        "name": "NVD (prompt injection)",
-        "key": "nvd_pi",
-        "tier": 1,
-        "status": "ok",
-        "items": 40,
-        "error": null
-      },
-      {
-        "name": "arXiv cs.CR (LLM security)",
-        "key": "arxiv_sec",
-        "tier": 2,
-        "status": "ok",
-        "items": 30,
-        "error": null
       },
       {
         "name": "GitHub Security Advisories",
@@ -53,6 +37,22 @@
         "error": null
       },
       {
+        "name": "NVD (prompt injection)",
+        "key": "nvd_pi",
+        "tier": 1,
+        "status": "ok",
+        "items": 40,
+        "error": null
+      },
+      {
+        "name": "arXiv cs.CR (LLM security)",
+        "key": "arxiv_sec",
+        "tier": 2,
+        "status": "ok",
+        "items": 30,
+        "error": null
+      },
+      {
         "name": "NVD (AI/LLM keyword)",
         "key": "nvd_ai",
         "tier": 1,
@@ -61,7 +61,7 @@
         "error": null
       }
     ],
-    "runtimeMs": 5858
+    "runtimeMs": 10284
   },
   "frameworks": {
     "owasp_llm_top10": {
@@ -88,8 +88,64 @@
       "AML.T0057": "LLM Data Leakage"
     }
   },
-  "count": 13,
+  "count": 19,
   "items": [
+    {
+      "id": "c07c4478224783d8",
+      "title": "MLflow vulnerable to remote code execution on unauthenticated servers via third-party scorer deserialization importing caller-placed artifact modules",
+      "url": "https://github.com/advisories/GHSA-26p8-2jq9-3vq9",
+      "source": "GitHub Security Advisories",
+      "tier": 1,
+      "published": "2026-10-27T21:26:32Z",
+      "cve": "CVE-2026-116692",
+      "severity": "critical",
+      "cvss": null,
+      "evidence_label": "VERIFIED_ADVISORY",
+      "categories": [
+        {
+          "id": "infra",
+          "label": "AI Infrastructure / Inference Server"
+        }
+      ],
+      "owasp_llm": [
+        {
+          "id": "LLM05",
+          "name": "Supply Chain Vulnerabilities"
+        }
+      ],
+      "mitre_atlas": [
+        {
+          "id": "AML.T0010",
+          "name": "ML Supply Chain Compromise"
+        }
+      ],
+      "agent_risk": {
+        "flags": {
+          "agentic": false,
+          "mcp": false,
+          "rag": true,
+          "tool_use": false,
+          "supply_chain": false
+        },
+        "level": "elevated"
+      },
+      "enterprise_impact": {
+        "score": 65,
+        "priority": "P1"
+      },
+      "confidence": {
+        "source": "HIGH",
+        "evidence": "HIGH",
+        "overall": "HIGH",
+        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
+      },
+      "corroboration": 1,
+      "detection": {
+        "detect": "Expose-check inference servers (Triton/vLLM/Ollama/MLflow/Ray) for unauthenticated management endpoints.",
+        "hunt": "Shodan/asset-inventory sweep for AI infra bound to 0.0.0.0 without auth."
+      },
+      "has_analyst_report": false
+    },
     {
       "id": "54d609e6e22c08c3",
       "title": "vLLM: Request-controlled mm_processor_kwargs.code_revision allows remote code execution",
@@ -147,6 +203,230 @@
       "detection": {
         "detect": "Alert on model artifact downloads from non-allowlisted registries; scan pickled/`.pt` model files for arbitrary code (Fickling, ModelScan).",
         "hunt": "Review CI/CD and notebook hosts for outbound connections initiated during model load."
+      },
+      "has_analyst_report": false
+    },
+    {
+      "id": "98e61938904a6e6e",
+      "title": "Model Context Protocol Python SDK: Server bearer-token authentication accepts tokens issued for a different resource server",
+      "url": "https://github.com/advisories/GHSA-w4fh-qvv9-3v23",
+      "source": "GitHub Security Advisories",
+      "tier": 1,
+      "published": "2026-10-27T21:06:59Z",
+      "cve": "CVE-2026-116684",
+      "severity": "medium",
+      "cvss": null,
+      "evidence_label": "VERIFIED_ADVISORY",
+      "categories": [
+        {
+          "id": "agent_tool",
+          "label": "Agentic / Tool / MCP Exploitation"
+        }
+      ],
+      "owasp_llm": [
+        {
+          "id": "LLM06",
+          "name": "Sensitive Information Disclosure / Excessive Agency"
+        }
+      ],
+      "mitre_atlas": [
+        {
+          "id": "AML.T0053",
+          "name": "LLM Plugin Compromise"
+        }
+      ],
+      "agent_risk": {
+        "flags": {
+          "agentic": false,
+          "mcp": true,
+          "rag": false,
+          "tool_use": false,
+          "supply_chain": false
+        },
+        "level": "elevated"
+      },
+      "enterprise_impact": {
+        "score": 50,
+        "priority": "P2"
+      },
+      "confidence": {
+        "source": "HIGH",
+        "evidence": "HIGH",
+        "overall": "HIGH",
+        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
+      },
+      "corroboration": 1,
+      "detection": {
+        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
+        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
+      },
+      "has_analyst_report": false
+    },
+    {
+      "id": "ef9aa2cd6aa2e244",
+      "title": "Model Context Protocol Python SDK: HTTP client transports followed cross-origin redirects carrying custom headers and bodies",
+      "url": "https://github.com/advisories/GHSA-5h93-6whr-6q8j",
+      "source": "GitHub Security Advisories",
+      "tier": 1,
+      "published": "2026-10-27T21:05:34Z",
+      "cve": "CVE-2026-116685",
+      "severity": "medium",
+      "cvss": null,
+      "evidence_label": "VERIFIED_ADVISORY",
+      "categories": [
+        {
+          "id": "agent_tool",
+          "label": "Agentic / Tool / MCP Exploitation"
+        }
+      ],
+      "owasp_llm": [
+        {
+          "id": "LLM06",
+          "name": "Sensitive Information Disclosure / Excessive Agency"
+        }
+      ],
+      "mitre_atlas": [
+        {
+          "id": "AML.T0053",
+          "name": "LLM Plugin Compromise"
+        }
+      ],
+      "agent_risk": {
+        "flags": {
+          "agentic": false,
+          "mcp": true,
+          "rag": false,
+          "tool_use": false,
+          "supply_chain": false
+        },
+        "level": "elevated"
+      },
+      "enterprise_impact": {
+        "score": 50,
+        "priority": "P2"
+      },
+      "confidence": {
+        "source": "HIGH",
+        "evidence": "HIGH",
+        "overall": "HIGH",
+        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
+      },
+      "corroboration": 1,
+      "detection": {
+        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
+        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
+      },
+      "has_analyst_report": false
+    },
+    {
+      "id": "98810b525952f2d0",
+      "title": "Model Context Protocol Python SDK: Client fetched server-chosen $ref URLs while validating tool results against output schemas",
+      "url": "https://github.com/advisories/GHSA-rwrf-2pqf-9j8j",
+      "source": "GitHub Security Advisories",
+      "tier": 1,
+      "published": "2026-10-27T21:05:29Z",
+      "cve": "CVE-2026-116686",
+      "severity": "medium",
+      "cvss": null,
+      "evidence_label": "VERIFIED_ADVISORY",
+      "categories": [
+        {
+          "id": "agent_tool",
+          "label": "Agentic / Tool / MCP Exploitation"
+        }
+      ],
+      "owasp_llm": [
+        {
+          "id": "LLM06",
+          "name": "Sensitive Information Disclosure / Excessive Agency"
+        }
+      ],
+      "mitre_atlas": [
+        {
+          "id": "AML.T0053",
+          "name": "LLM Plugin Compromise"
+        }
+      ],
+      "agent_risk": {
+        "flags": {
+          "agentic": false,
+          "mcp": true,
+          "rag": false,
+          "tool_use": false,
+          "supply_chain": false
+        },
+        "level": "elevated"
+      },
+      "enterprise_impact": {
+        "score": 50,
+        "priority": "P2"
+      },
+      "confidence": {
+        "source": "HIGH",
+        "evidence": "HIGH",
+        "overall": "HIGH",
+        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
+      },
+      "corroboration": 1,
+      "detection": {
+        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
+        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
+      },
+      "has_analyst_report": false
+    },
+    {
+      "id": "c45c57be1f8d209e",
+      "title": "MCP TypeScript SDK: HTTP server transports and handlers did not limit request body size or JSON-RPC batch length",
+      "url": "https://github.com/advisories/GHSA-f897-62hf-6gxq",
+      "source": "GitHub Security Advisories",
+      "tier": 1,
+      "published": "2026-10-27T19:02:00Z",
+      "cve": null,
+      "severity": "high",
+      "cvss": null,
+      "evidence_label": "VERIFIED_ADVISORY",
+      "categories": [
+        {
+          "id": "agent_tool",
+          "label": "Agentic / Tool / MCP Exploitation"
+        }
+      ],
+      "owasp_llm": [
+        {
+          "id": "LLM06",
+          "name": "Sensitive Information Disclosure / Excessive Agency"
+        }
+      ],
+      "mitre_atlas": [
+        {
+          "id": "AML.T0053",
+          "name": "LLM Plugin Compromise"
+        }
+      ],
+      "agent_risk": {
+        "flags": {
+          "agentic": false,
+          "mcp": true,
+          "rag": false,
+          "tool_use": false,
+          "supply_chain": false
+        },
+        "level": "elevated"
+      },
+      "enterprise_impact": {
+        "score": 48,
+        "priority": "P2"
+      },
+      "confidence": {
+        "source": "HIGH",
+        "evidence": "MODERATE",
+        "overall": "HIGH",
+        "rationale": "Authoritative source (GitHub Security Advisories)."
+      },
+      "corroboration": 1,
+      "detection": {
+        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
+        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
       },
       "has_analyst_report": false
     },
@@ -263,14 +543,14 @@
       "has_analyst_report": false
     },
     {
-      "id": "e19538d6a5d97fe1",
-      "title": "vllm p2p never connected zmq_exhaustion",
-      "url": "https://github.com/advisories/GHSA-frvg-qw88-hww9",
+      "id": "355adf4fe0ab50b0",
+      "title": "MLflow vulnerable to arbitrary file read on unauthenticated servers via prompt model version source",
+      "url": "https://github.com/advisories/GHSA-m65p-9j7q-6w33",
       "source": "GitHub Security Advisories",
       "tier": 1,
-      "published": "2026-10-27T14:45:53Z",
-      "cve": "CVE-2026-94624",
-      "severity": "medium",
+      "published": "2026-10-27T21:26:56Z",
+      "cve": "CVE-2026-116690",
+      "severity": "high",
       "cvss": null,
       "evidence_label": "VERIFIED_ADVISORY",
       "categories": [
@@ -302,8 +582,64 @@
         "level": "standard"
       },
       "enterprise_impact": {
-        "score": 30,
-        "priority": "P3"
+        "score": 43,
+        "priority": "P2"
+      },
+      "confidence": {
+        "source": "HIGH",
+        "evidence": "HIGH",
+        "overall": "HIGH",
+        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
+      },
+      "corroboration": 1,
+      "detection": {
+        "detect": "Expose-check inference servers (Triton/vLLM/Ollama/MLflow/Ray) for unauthenticated management endpoints.",
+        "hunt": "Shodan/asset-inventory sweep for AI infra bound to 0.0.0.0 without auth."
+      },
+      "has_analyst_report": false
+    },
+    {
+      "id": "cbbd81f8c245ee58",
+      "title": "MLflow CrewAI autologging records LLM provider API keys in logged trace spans",
+      "url": "https://github.com/advisories/GHSA-j7qq-vr8c-xvw3",
+      "source": "GitHub Security Advisories",
+      "tier": 1,
+      "published": "2026-10-27T21:26:39Z",
+      "cve": "CVE-2026-116691",
+      "severity": "medium",
+      "cvss": null,
+      "evidence_label": "VERIFIED_ADVISORY",
+      "categories": [
+        {
+          "id": "infra",
+          "label": "AI Infrastructure / Inference Server"
+        }
+      ],
+      "owasp_llm": [
+        {
+          "id": "LLM05",
+          "name": "Supply Chain Vulnerabilities"
+        }
+      ],
+      "mitre_atlas": [
+        {
+          "id": "AML.T0010",
+          "name": "ML Supply Chain Compromise"
+        }
+      ],
+      "agent_risk": {
+        "flags": {
+          "agentic": false,
+          "mcp": false,
+          "rag": true,
+          "tool_use": false,
+          "supply_chain": false
+        },
+        "level": "elevated"
+      },
+      "enterprise_impact": {
+        "score": 40,
+        "priority": "P2"
       },
       "confidence": {
         "source": "HIGH",
