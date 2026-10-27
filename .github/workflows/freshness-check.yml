@@ -289,6 +289,17 @@ jobs:
         run: |
           python3 scripts/check_blogger_public_delivery.py
 
+      # The publisher being fresh does not mean customers receive that
+      # revision. Independently test BOTH approved live SOC hostnames.
+      # Do not dispatch a deployment or regenerate reports on public drift.
+      - name: "P0 SOC and legacy public intelligence freshness — fail closed"
+        id: soc_public_freshness
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/certify-soc-public-feed-parity.cjs
+
       - name: "Monitor result summary"
         if: always()
         shell: bash
@@ -303,6 +314,8 @@ jobs:
           echo "Recovery conclusion  : ${{ steps.recovery.outputs.recovery_conclusion || 'not-applicable' }}"
           echo "Post-recovery status : ${{ steps.post_recovery.outputs.status || 'not-applicable' }}"
           echo "Public delivery step : ${{ steps.public_delivery.outcome || 'unavailable' }}"
+          echo "SOC public feed check : ${{ steps.soc_public_freshness.outcome || 'unavailable' }}"
+          echo "SOC source freshness only proves repository content; live edge freshness is verified separately."
           echo "Blogger freshness     : ${{ steps.blogger_freshness.outputs.status || 'UNAVAILABLE' }}"
           echo "Blogger age (minutes): ${{ steps.blogger_freshness.outputs.age_minutes || 'unavailable' }}"
           echo "Blogger reports/window: ${{ steps.blogger_freshness.outputs.publication_count_window || 'unknown' }} / 4"
@@ -316,7 +329,11 @@ jobs:
         if: failure()
         shell: bash
         run: |
-          if [ "${{ steps.public_delivery.outcome }}" = "failure" ]; then
+          if [ "${{ steps.soc_public_freshness.outcome }}" = "failure" ]; then
+            echo "::error title=P0 SOC Live Intel Deployment Drift::Public SOC and legacy live-intel feeds cannot be certified against current source. Manual Cloudflare release review required, NO automatic deploy or fabricated timestamp."
+            echo "SOC source freshness: ${{ steps.freshness.outputs.status || 'unavailable' }}"
+            echo "Release operation: MANUAL_OWNER_APPROVED_ONLY"
+          elif [ "${{ steps.public_delivery.outcome }}" = "failure" ]; then
             echo "::error title=Blogger Public Delivery Verification Failed::Public feed/homepage verification failed. Inspect the probe JSON for endpoint, HTTP status, attempts and defect. Publication is not verified; do not dispatch more posts to repair a read failure."
             echo "Monitor run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             echo "Generator post-recovery status: ${{ steps.post_recovery.outputs.status || 'not-applicable' }}"
