@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-27T14:50:19.200Z",
+  "generated": "2026-10-27T19:55:52.725Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -8,14 +8,203 @@
   "endpoint": "/api/intel/raw.json",
   "description": "Raw unfiltered S2N feed — all items including suppressed. Enterprise tier.",
   "note": "Access requires Enterprise API key. Includes suppression_reason and full IOC data.",
-  "count": 127,
+  "count": 129,
   "items": [
     {
-      "id": "GHSA-d9ee28a410b82e8a",
-      "title": "better-auth: Device login approval does not show the requesting client or permissions",
-      "description": "## Am I affected? You may be affected if you use `better-auth` from `1.3.8-beta.3` up to, but not including, `1.7.0-rc.3`, and you enable the `deviceAuthorization()` plugin. This range includes all 1.6 releases. You are affected only if all of these are also true: - An attacker can start a device re",
-      "cvss": 8.1,
-      "final_ps": 60,
+      "id": "CVE-2026-109618",
+      "title": "PHP2Shell security flaws now sucessfully exploited in the wild",
+      "description": "Two critical RCE vulnerabilities (CVE-2026-109618 and CVE-2026-109619), collectively tracked as PHP2Shell, have been successfully exploited in the wild. [...]",
+      "cvss": 9.8,
+      "final_ps": 81,
+      "quality_score": 0.538,
+      "threat_level": "HIGH",
+      "type": "CLOUD_SECURITY",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-26",
+      "last_seen": "2026-10-26",
+      "exploited": true,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-109618",
+        "CVE-2026-109619"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.bleepingcomputer.com/news/security/php2shell-security-flaws-now-sucessfully-exploited-in-the-wild/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=1d (score=0.85)",
+          "QS=0.537"
+        ],
+        "priority": [
+          "+10 CVSS≥9",
+          "+8 exploited_in_wild"
+        ],
+        "suppression": null,
+        "merge": [
+          "MERGED: CVE-2026-109619 → CVE-2026-109618 (sim=0.85)"
+        ]
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-117532",
+      "title": "CVE-2026-117532 — Unknown Vendor REDAXO core from CVSS 9.8 Critical Vulnerability",
+      "description": "REDAXO core from 5.3.0 before 5.21.4 contains an authentication bypass vulnerability in the structure/history plugin that allows unauthenticated attackers to forge temporary login tokens. Attackers can force the session-tied secret into a predictable state and forge tokens for accounts like admin, g",
+      "cvss": 9.8,
+      "final_ps": 76,
+      "quality_score": 0.58,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-27",
+      "last_seen": "2026-10-27",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "REDAXO core from",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/redaxo/core/security/advisories/GHSA-px8f-whj8-hrpq",
+        "https://www.vulncheck.com/advisories/redaxo-core-5.3.0-before-5.21.4-authentication-bypass-via-history-plugin"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.580"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-117564",
+      "title": "CVE-2026-117564 — Unknown Vendor nest-admin before 1.0.1 CVSS 9.8 Critical Vulnerability",
+      "description": "nest-admin before 1.0.1 contains an authentication bypass vulnerability that allows unauthenticated attackers to forge administrator tokens by using a hardcoded JWT_SECRET committed in .env.production. Attackers can sign tokens with the known secret that JwtStrategy and RbacGuard trust, impersonatin",
+      "cvss": 9.8,
+      "final_ps": 76,
+      "quality_score": 0.58,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-27",
+      "last_seen": "2026-10-27",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "nest-admin before 1.0.1",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/buqiyuan/nest-admin",
+        "https://github.com/buqiyuan/nest-admin/blob/2eeccc4cb699d1aedbe04b4437a9d095cde02c74/.env.production#L5",
+        "https://github.com/buqiyuan/nest-admin/commit/f2cec8cb776cbf113115b33164dac69a46d24097",
+        "https://github.com/buqiyuan/nest-admin/issues/92"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.580"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "GHSA-8f048292d5218d8d",
+      "title": "Hydra legacy target blacklist permits unsafe PyYAML loading",
+      "description": "## Summary Hydra's legacy target blacklist omits PyYAML's unsafe loading surfaces. If an\napplication passes attacker-controlled targets and arguments to instantiate(),\na target such as yaml.unsafe_load can execute Python code through a\nconfig-controlled YAML stream containing Python object-construct",
+      "cvss": 7.8,
+      "final_ps": 59,
+      "quality_score": 0.548,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-27",
+      "last_seen": "2026-10-27",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "pip",
+      "product": "hydra-core",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-wf6j-7hvr-gr93",
+        "https://github.com/hydra-ecosystem/hydra/security/advisories/GHSA-757g-8w3h-hp29",
+        "https://github.com/hydra-ecosystem/hydra/commit/9a7a9a287d565311183da3392bee4345a7fab6d7",
+        "https://github.com/hydra-ecosystem/hydra/commit/de5554320c17cd2d974492c03d0b1456adb4a8ef"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.547"
+        ],
+        "priority": [
+          "base_ps=59 (no boosts)"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "iocs": []
+    },
+    {
+      "id": "GHSA-b027a65dab566aaa",
+      "title": "MCP TypeScript SDK: HTTP server transports and handlers did not limit request body size or JSON-RPC batch length",
+      "description": "### Summary\nIn affected versions, MCP servers reachable over HTTP put no limit on the size of a POST body or on the number of messages in a JSON-RPC batch. Large requests could exhaust the server's memory, and one long batch could block it from serving anyone else. No credentials were needed, unless",
+      "cvss": 7.5,
+      "final_ps": 59,
       "quality_score": 0.548,
       "threat_level": "MEDIUM",
       "type": "CVE_REPORT",
@@ -30,15 +219,15 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "npm",
-      "product": "better-auth",
+      "product": "@modelcontextprotocol/sdk",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-q84f-53jg-9ppm",
-        "https://github.com/better-auth/better-auth/security/advisories/GHSA-q84f-53jg-9ppm",
-        "https://github.com/better-auth/better-auth/commit/f68044dcfbd9fb83763249ed9509cfacbcce47be",
-        "https://github.com/better-auth/better-auth/releases/tag/v1.7.0-rc.3"
+        "https://github.com/advisories/GHSA-f897-62hf-6gxq",
+        "https://github.com/modelcontextprotocol/typescript-sdk/security/advisories/GHSA-f897-62hf-6gxq",
+        "https://github.com/modelcontextprotocol/typescript-sdk/pull/2698",
+        "https://github.com/modelcontextprotocol/typescript-sdk/pull/2717"
       ],
       "explanation": {
         "quality": [
@@ -48,52 +237,7 @@
           "QS=0.547"
         ],
         "priority": [
-          "base_ps=60 (no boosts)"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
-      "iocs": []
-    },
-    {
-      "id": "BLEEPINGCOMPUTER-2420eef60355b04a",
-      "title": "CISA confirms PHP2Shell vulnerabilities now exploited in attacks",
-      "description": "The U.S. Cybersecurity and Infrastructure Security Agency (CISA) has added the PHP2Shell vulnerabilities to its catalog of actively exploited security flaws and ordered federal agencies to patch their systems by Thursday. [...]",
-      "cvss": 0,
-      "final_ps": 54,
-      "quality_score": 0.48,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "bleepingcomputer",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "bleepingcomputer"
-      ],
-      "first_seen": "2026-10-27",
-      "last_seen": "2026-10-27",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "BleepingComputer",
-      "product": "Threat Intelligence",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.bleepingcomputer.com/news/security/cisa-confirms-php2shell-vulnerabilities-now-exploited-in-attacks/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.72 (bleepingcomputer)",
-          "data_confidence=0.65",
-          "recency=0d (score=1.00)",
-          "QS=0.480"
-        ],
-        "priority": [
-          "+8 exploited_in_wild",
-          "+4 critical_infra"
+          "base_ps=59 (no boosts)"
         ],
         "suppression": "Single-source item with no CVE IDs or IOCs",
         "merge": null
@@ -563,144 +707,6 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-70388",
-      "title": "CVE-2026-70388 - Memory Corruption via Integer Underflow in Message Length Validation",
-      "description": "CVE-2026-70388 - Memory Corruption via Integer Underflow in Message Length Validation",
-      "cvss": 8.3,
-      "final_ps": 46,
-      "quality_score": 0.478,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-26",
-      "last_seen": "2026-10-26",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-70388"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-70388"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=1d (score=0.85)",
-          "QS=0.478"
-        ],
-        "priority": [
-          "base_ps=46 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-110720",
-      "title": "CVE-2026-110720 - Consul-k8s vulnerable to a cross-namespace authorization bypass in component ACL binding rules",
-      "description": "CVE-2026-110720 - Consul-k8s vulnerable to a cross-namespace authorization bypass in component ACL binding rules",
-      "cvss": 7.5,
-      "final_ps": 46,
-      "quality_score": 0.493,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-26",
-      "last_seen": "2026-10-26",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-110720"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-110720"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=0d (score=1.00)",
-          "QS=0.493"
-        ],
-        "priority": [
-          "base_ps=46 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-82944",
-      "title": "CVE-2026-82944 - Buffer Overflow in CoE SDO Upload Multi-Segment Data Transfers",
-      "description": "CVE-2026-82944 - Buffer Overflow in CoE SDO Upload Multi-Segment Data Transfers",
-      "cvss": 8.8,
-      "final_ps": 45,
-      "quality_score": 0.428,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-26",
-      "last_seen": "2026-10-26",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-82944"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-82944"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=1d (score=0.85)",
-          "QS=0.427"
-        ],
-        "priority": [
-          "base_ps=45 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
       "id": "CVE-2024-58400",
       "title": "Low Security Vulnerability (CVE-2024-58400)",
       "description": "CVE-2024-58400",
@@ -988,6 +994,52 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-110720",
+      "title": "CVE-2026-110720 - Consul-k8s vulnerable to a cross-namespace authorization bypass in component ACL binding rules",
+      "description": "CVE-2026-110720 - Consul-k8s vulnerable to a cross-namespace authorization bypass in component ACL binding rules",
+      "cvss": 7.5,
+      "final_ps": 44,
+      "quality_score": 0.478,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-26",
+      "last_seen": "2026-10-26",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-110720"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-110720"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=1d (score=0.85)",
+          "QS=0.478"
+        ],
+        "priority": [
+          "base_ps=44 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
       "id": "CVE-2026-116620",
       "title": "Low Security Vulnerability (CVE-2026-116620)",
       "description": "CVE-2026-116620",
@@ -1114,6 +1166,52 @@
           "data_confidence=0.45",
           "recency=0d (score=1.00)",
           "QS=0.443"
+        ],
+        "priority": [
+          "base_ps=42 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-65213",
+      "title": "CVE-2026-65213 - Supermicro BMC IPMI feature contains a Arbitrary Command Execution with Superuser Privileges vulnerabil",
+      "description": "CVE-2026-65213 - Supermicro BMC IPMI feature contains a Arbitrary Command Execution with Superuser Privileges vulnerability",
+      "cvss": 6.6,
+      "final_ps": 42,
+      "quality_score": 0.453,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-27",
+      "last_seen": "2026-10-27",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-65213"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-65213"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.50",
+          "recency=0d (score=1.00)",
+          "QS=0.453"
         ],
         "priority": [
           "base_ps=42 (no boosts)"
@@ -1262,6 +1360,51 @@
       "iocs": []
     },
     {
+      "id": "REDDIT_NETSEC-fc89fefd7954e0bf",
+      "title": "The Gentlemen: A closer look at a not-so-gentle ransomware-as-a-service operation",
+      "description": "Our Threat Research Unit published a breakdown of “The Gentlemen” - a Russian-speaking ransomware-as-a-service group that emerged in mid-2025, reportedly after affiliates split off from established groups like LockBit and Qilin. A few things that stood out from the research: They’re offering affilia",
+      "cvss": 0,
+      "final_ps": 42,
+      "quality_score": 0.415,
+      "threat_level": "LOW",
+      "type": "RANSOMWARE",
+      "source": "reddit_netsec",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "reddit_netsec"
+      ],
+      "first_seen": "2026-10-27",
+      "last_seen": "2026-10-27",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": true,
+      "vendor": "reddit_netsec",
+      "product": "Threat Intelligence",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.reddit.com/r/netsec/comments/1xgxdk8/the_gentlemen_a_closer_look_at_a_notsogentle/"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.42 (reddit_netsec)",
+          "data_confidence=0.65",
+          "recency=0d (score=1.00)",
+          "actor_confidence=named_actor",
+          "QS=0.415"
+        ],
+        "priority": [
+          "+10 ransomware_confirmed"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "iocs": []
+    },
+    {
       "id": "REDDIT_CYBER-6757d76e18da3c9b",
       "title": "ssh-keysign-pwn: Linux LPE allows unprivileged users to read root-owned files. PoC with SSH server privkey",
       "description": "",
@@ -1308,12 +1451,12 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-82947",
-      "title": "CVE-2026-82947 - Multiple Out-of-Bounds Reads in Frame Processing",
-      "description": "CVE-2026-82947 - Multiple Out-of-Bounds Reads in Frame Processing",
-      "cvss": 7.1,
+      "id": "CVE-2026-10511",
+      "title": "CVE-2026-10511 - Jupiter X Core <= 4.61.0 - Authenticated (Contributor+) Stored Cross-Site Scripting via 'forget_passwor",
+      "description": "CVE-2026-10511 - Jupiter X Core <= 4.61.0 - Authenticated (Contributor+) Stored Cross-Site Scripting via 'forget_password_link' Parameter",
+      "cvss": 6.4,
       "final_ps": 41,
-      "quality_score": 0.428,
+      "quality_score": 0.453,
       "threat_level": "LOW",
       "type": "CVE_REPORT",
       "source": "sentinel_apex",
@@ -1321,8 +1464,8 @@
       "merged_sources": [
         "sentinel_apex"
       ],
-      "first_seen": "2026-10-26",
-      "last_seen": "2026-10-26",
+      "first_seen": "2026-10-27",
+      "last_seen": "2026-10-27",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
@@ -1330,18 +1473,18 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-82947"
+        "CVE-2026-10511"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-82947"
+        "https://cvefeed.io/vuln/detail/CVE-2026-10511"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=1d (score=0.85)",
-          "QS=0.427"
+          "data_confidence=0.50",
+          "recency=0d (score=1.00)",
+          "QS=0.453"
         ],
         "priority": [
           "base_ps=41 (no boosts)"
@@ -1427,6 +1570,98 @@
       "ioc_count": 0,
       "refs": [
         "https://cvefeed.io/vuln/detail/CVE-2026-116817"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.50",
+          "recency=0d (score=1.00)",
+          "QS=0.453"
+        ],
+        "priority": [
+          "base_ps=41 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-116821",
+      "title": "CVE-2026-116821 - YesWiki before 4.7.0 Read-ACL Bypass via SQL LIKE Wildcards in Usernames",
+      "description": "CVE-2026-116821 - YesWiki before 4.7.0 Read-ACL Bypass via SQL LIKE Wildcards in Usernames",
+      "cvss": 6.5,
+      "final_ps": 41,
+      "quality_score": 0.453,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-27",
+      "last_seen": "2026-10-27",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-116821"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-116821"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.50",
+          "recency=0d (score=1.00)",
+          "QS=0.453"
+        ],
+        "priority": [
+          "base_ps=41 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-116825",
+      "title": "CVE-2026-116825 - YesWiki from 4.6.2 before 4.7.0 HTTP Signature Replay via ActivityPub Inbox",
+      "description": "CVE-2026-116825 - YesWiki from 4.6.2 before 4.7.0 HTTP Signature Replay via ActivityPub Inbox",
+      "cvss": 6.5,
+      "final_ps": 41,
+      "quality_score": 0.453,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-27",
+      "last_seen": "2026-10-27",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-116825"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-116825"
       ],
       "explanation": {
         "quality": [
@@ -3616,236 +3851,6 @@
       "iocs": []
     },
     {
-      "id": "CVE-2025-2783",
-      "title": "Exploit for CVE-2025-2783 exploit",
-      "description": "",
-      "cvss": 9.5,
-      "final_ps": 40,
-      "quality_score": 0.558,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-07-23",
-      "last_seen": "2026-07-23",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Unknown Product",
-      "due_date": null,
-      "cves": [
-        "CVE-2025-2783"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://intel.cyberdudebivash.com/reports/2026/07/intel--99df649fb8ceeff2.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.557"
-        ],
-        "priority": [
-          "+10 CVSS≥9",
-          "+8 exploited_in_wild"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-16232",
-      "title": "CISA Warns of Check Point Authentication Vulnerability Actively Exploited in the Wild",
-      "description": "",
-      "cvss": 9.1,
-      "final_ps": 40,
-      "quality_score": 0.538,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-07-23",
-      "last_seen": "2026-07-23",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Unknown Product",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-16232"
-      ],
-      "ioc_count": 0,
-      "refs": [],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.65",
-          "recency=0d (score=1.00)",
-          "QS=0.537"
-        ],
-        "priority": [
-          "+10 CVSS≥9",
-          "+8 exploited_in_wild"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-92171",
-      "title": "Low Security Vulnerability (CVE-2026-92171)",
-      "description": "CVE-2026-92171",
-      "cvss": 6.5,
-      "final_ps": 39,
-      "quality_score": 0.403,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-26",
-      "last_seen": "2026-10-26",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-92171"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://vulners.com/nvd/NVD:CVE-2026-92171?utm_source=rss&utm_medium=rss&utm_campaign=rss"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.403"
-        ],
-        "priority": [
-          "base_ps=39 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-93849",
-      "title": "Low Security Vulnerability (CVE-2026-93849)",
-      "description": "CVE-2026-93849",
-      "cvss": 6.5,
-      "final_ps": 39,
-      "quality_score": 0.403,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-26",
-      "last_seen": "2026-10-26",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-93849"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://vulners.com/nvd/NVD:CVE-2026-93849?utm_source=rss&utm_medium=rss&utm_campaign=rss"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.403"
-        ],
-        "priority": [
-          "base_ps=39 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-93850",
-      "title": "Low Security Vulnerability (CVE-2026-93850)",
-      "description": "CVE-2026-93850",
-      "cvss": 6.5,
-      "final_ps": 39,
-      "quality_score": 0.403,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-26",
-      "last_seen": "2026-10-26",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-93850"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://vulners.com/nvd/NVD:CVE-2026-93850?utm_source=rss&utm_medium=rss&utm_campaign=rss"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.403"
-        ],
-        "priority": [
-          "base_ps=39 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
       "id": "CVE-2026-115961",
       "title": "CVE-2026-115961 - WordPress B Slider plugin <= 2.2.2 - Cross Site Scripting (XSS) vulnerability",
       "description": "CVE-2026-115961 - WordPress B Slider plugin <= 2.2.2 - Cross Site Scripting (XSS) vulnerability",
@@ -3938,14 +3943,14 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-109618",
-      "title": "PHP2Shell security flaws now sucessfully exploited in the wild",
-      "description": "",
-      "cvss": 9.8,
-      "final_ps": 38,
-      "quality_score": 0.497,
+      "id": "CVE-2026-92171",
+      "title": "Low Security Vulnerability (CVE-2026-92171)",
+      "description": "CVE-2026-92171",
+      "cvss": 6.5,
+      "final_ps": 37,
+      "quality_score": 0.388,
       "threat_level": "LOW",
-      "type": "CLOUD_SECURITY",
+      "type": "CVE_REPORT",
       "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
@@ -3953,30 +3958,120 @@
       ],
       "first_seen": "2026-10-26",
       "last_seen": "2026-10-26",
-      "exploited": true,
+      "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "",
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-109618",
-        "CVE-2026-109619"
+        "CVE-2026-92171"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://www.bleepingcomputer.com/news/security/php2shell-security-flaws-now-sucessfully-exploited-in-the-wild/"
+        "https://vulners.com/nvd/NVD:CVE-2026-92171?utm_source=rss&utm_medium=rss&utm_campaign=rss"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.497"
+          "data_confidence=0.25",
+          "recency=1d (score=0.85)",
+          "QS=0.388"
         ],
         "priority": [
-          "+10 CVSS≥9",
-          "+8 exploited_in_wild"
+          "base_ps=37 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-93849",
+      "title": "Low Security Vulnerability (CVE-2026-93849)",
+      "description": "CVE-2026-93849",
+      "cvss": 6.5,
+      "final_ps": 37,
+      "quality_score": 0.388,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-26",
+      "last_seen": "2026-10-26",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-93849"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://vulners.com/nvd/NVD:CVE-2026-93849?utm_source=rss&utm_medium=rss&utm_campaign=rss"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.25",
+          "recency=1d (score=0.85)",
+          "QS=0.388"
+        ],
+        "priority": [
+          "base_ps=37 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-93850",
+      "title": "Low Security Vulnerability (CVE-2026-93850)",
+      "description": "CVE-2026-93850",
+      "cvss": 6.5,
+      "final_ps": 37,
+      "quality_score": 0.388,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-26",
+      "last_seen": "2026-10-26",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-93850"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://vulners.com/nvd/NVD:CVE-2026-93850?utm_source=rss&utm_medium=rss&utm_campaign=rss"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.25",
+          "recency=1d (score=0.85)",
+          "QS=0.388"
+        ],
+        "priority": [
+          "base_ps=37 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -4032,149 +4127,10 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-82946",
-      "title": "CVE-2026-82946 - Null Pointer Dereference in Mailbox Error Handling",
-      "description": "CVE-2026-82946 - Null Pointer Dereference in Mailbox Error Handling",
-      "cvss": 6.5,
-      "final_ps": 37,
-      "quality_score": 0.388,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-26",
-      "last_seen": "2026-10-26",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-82946"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-82946"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=1d (score=0.85)",
-          "QS=0.388"
-        ],
-        "priority": [
-          "base_ps=37 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-115425",
-      "title": "CVE-2026-115425 - Multiple cross-site scripting (XSS) in OPNsense",
-      "description": "CVE-2026-115425 - Multiple cross-site scripting (XSS) in OPNsense",
-      "cvss": 6.1,
-      "final_ps": 37,
-      "quality_score": 0.388,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-26",
-      "last_seen": "2026-10-26",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-115425"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-115425"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=1d (score=0.85)",
-          "QS=0.388"
-        ],
-        "priority": [
-          "base_ps=37 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-0322",
-      "title": "Palo Alto Networks warns of PAN-OS RCE flaw exploited in attacks",
+      "id": "CVE-2026-104351",
+      "title": "CVE-2026-104351 — Unknown Vendor Adobe Campaign Classic CVSS 9.9 Critical Vulnerability",
       "description": "",
-      "cvss": 9.8,
-      "final_ps": 35,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "ZERO_DAY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-14",
-      "last_seen": "2026-10-14",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-0322"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.bleepingcomputer.com/news/security/palo-alto-networks-warns-of-pan-os-rce-flaw-exploited-in-attacks/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9",
-          "+7 zero_day"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-117532",
-      "title": "CVE-2026-117532 — Unknown Vendor REDAXO core from CVSS 9.8 Critical Vulnerability",
-      "description": "",
-      "cvss": 9.8,
+      "cvss": 9.9,
       "final_ps": 31,
       "quality_score": 0.525,
       "threat_level": "LOW",
@@ -4190,13 +4146,12 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "REDAXO core from",
+      "product": "Adobe Campaign Classic",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/redaxo/core/security/advisories/GHSA-px8f-whj8-hrpq",
-        "https://www.vulncheck.com/advisories/redaxo-core-5.3.0-before-5.21.4-authentication-bypass-via-history-plugin"
+        "https://www.adobe.com/trust/security/products/campaign/apsb26-162.html"
       ],
       "explanation": {
         "quality": [
@@ -4216,10 +4171,10 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-117564",
-      "title": "CVE-2026-117564 — Unknown Vendor nest-admin before 1.0.1 CVSS 9.8 Critical Vulnerability",
+      "id": "CVE-2026-104353",
+      "title": "CVE-2026-104353 — Unknown Vendor Adobe Campaign Classic CVSS 9.9 Critical Vulnerability",
       "description": "",
-      "cvss": 9.8,
+      "cvss": 9.9,
       "final_ps": 31,
       "quality_score": 0.525,
       "threat_level": "LOW",
@@ -4235,15 +4190,12 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "nest-admin before 1.0.1",
+      "product": "Adobe Campaign Classic",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/buqiyuan/nest-admin",
-        "https://github.com/buqiyuan/nest-admin/blob/2eeccc4cb699d1aedbe04b4437a9d095cde02c74/.env.production#L5",
-        "https://github.com/buqiyuan/nest-admin/commit/f2cec8cb776cbf113115b33164dac69a46d24097",
-        "https://github.com/buqiyuan/nest-admin/issues/92"
+        "https://www.adobe.com/trust/security/products/campaign/apsb26-162.html"
       ],
       "explanation": {
         "quality": [
@@ -4263,81 +4215,31 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-27975",
-      "title": "Ajenti has potential Remote Code Execution",
+      "id": "CVE-2026-105489",
+      "title": "CVE-2026-105489 — Unknown Vendor Adobe Campaign Classic CVSS 9.9 Critical Vulnerability",
       "description": "",
-      "cvss": 9.8,
+      "cvss": 9.9,
       "final_ps": 31,
-      "quality_score": 0.523,
+      "quality_score": 0.525,
       "threat_level": "LOW",
       "type": "CVE_REPORT",
-      "source": "github_advisories",
+      "source": "nvd",
       "sources_confirmed": 1,
       "merged_sources": [
-        "github_advisories"
+        "nvd"
       ],
       "first_seen": "2026-10-27",
       "last_seen": "2026-10-27",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "pip",
-      "product": "aj",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-27975",
-        "CVE-2026-27975"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-vcw3-r3fx-j444",
-        "https://github.com/ajenti/ajenti/security/advisories/GHSA-vcw3-r3fx-j444",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-27975",
-        "https://github.com/ajenti/ajenti/releases/tag/v2.2.13"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-100752",
-      "title": "CVE-2026-100752 — ordasoft real estate manager CVSS 9.8 Critical Vulnerability",
-      "description": "",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-09-28",
-      "last_seen": "2026-09-28",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "ordasoft",
-      "product": "real estate manager",
+      "vendor": "Unknown Vendor",
+      "product": "Adobe Campaign Classic",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://www.ordasoft.com/"
+        "https://www.adobe.com/trust/security/products/campaign/apsb26-162.html"
       ],
       "explanation": {
         "quality": [
@@ -4357,10 +4259,10 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-101108",
-      "title": "CVE-2026-101108 — ordasoft vehicle manager CVSS 9.8 Critical Vulnerability",
+      "id": "CVE-2026-105780",
+      "title": "CVE-2026-105780 — Unknown Vendor Adobe Campaign Classic CVSS 9.9 Critical Vulnerability",
       "description": "",
-      "cvss": 9.8,
+      "cvss": 9.9,
       "final_ps": 31,
       "quality_score": 0.525,
       "threat_level": "LOW",
@@ -4370,18 +4272,18 @@
       "merged_sources": [
         "nvd"
       ],
-      "first_seen": "2026-09-28",
-      "last_seen": "2026-09-28",
+      "first_seen": "2026-10-27",
+      "last_seen": "2026-10-27",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "ordasoft",
-      "product": "vehicle manager",
+      "vendor": "Unknown Vendor",
+      "product": "Adobe Campaign Classic",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://www.ordasoft.com/"
+        "https://www.adobe.com/trust/security/products/campaign/apsb26-162.html"
       ],
       "explanation": {
         "quality": [
@@ -4401,8 +4303,597 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-117536",
-      "title": "CVE-2026-117536 — Unknown Vendor REDAXO before 5.21.3 CVSS 8.8 High Severity Vulnerability",
+      "id": "CVE-2026-105781",
+      "title": "CVE-2026-105781 — Unknown Vendor Adobe Campaign Classic CVSS 10 Critical Vulnerability",
+      "description": "",
+      "cvss": 10,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-27",
+      "last_seen": "2026-10-27",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Adobe Campaign Classic",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/campaign/apsb26-162.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-48360",
+      "title": "CVE-2026-48360 — Unknown Vendor Adobe Connect is CVSS 9.6 Critical Vulnerability",
+      "description": "",
+      "cvss": 9.6,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-27",
+      "last_seen": "2026-10-27",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Adobe Connect is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/connect/apsb26-182.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-104350",
+      "title": "CVE-2026-104350 — Unknown Vendor Adobe Campaign Classic CVSS 9.3 Critical Vulnerability",
+      "description": "",
+      "cvss": 9.3,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-27",
+      "last_seen": "2026-10-27",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Adobe Campaign Classic",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/campaign/apsb26-162.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-104354",
+      "title": "CVE-2026-104354 — Unknown Vendor Adobe Campaign Classic CVSS 9.1 Critical Vulnerability",
+      "description": "",
+      "cvss": 9.1,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-27",
+      "last_seen": "2026-10-27",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Adobe Campaign Classic",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/campaign/apsb26-162.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-105779",
+      "title": "CVE-2026-105779 — Unknown Vendor Adobe Campaign Classic CVSS 9.1 Critical Vulnerability",
+      "description": "",
+      "cvss": 9.1,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-27",
+      "last_seen": "2026-10-27",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Adobe Campaign Classic",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/campaign/apsb26-162.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-116506",
+      "title": "CVE-2026-116506 — Unknown Vendor A vulnerability was CVSS 9.9 Critical Vulnerability",
+      "description": "",
+      "cvss": 9.9,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-26",
+      "last_seen": "2026-10-26",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "A vulnerability was",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://gist.github.com/H3rmesk1t/1046036a8601e93f375754e11307bfc8",
+        "https://vuldb.com/cve/CVE-2026-116506",
+        "https://vuldb.com/submit/1022555",
+        "https://vuldb.com/vuln/426404"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-116508",
+      "title": "CVE-2026-116508 — Unknown Vendor A security flaw CVSS 10 Critical Vulnerability",
+      "description": "",
+      "cvss": 10,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-26",
+      "last_seen": "2026-10-26",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "A security flaw",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://gist.github.com/H3rmesk1t/ad72def4ccc232757d4cbabf45da72cb",
+        "https://vuldb.com/cve/CVE-2026-116508",
+        "https://vuldb.com/submit/1022557",
+        "https://vuldb.com/vuln/426406"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-116505",
+      "title": "CVE-2026-116505 — Unknown Vendor A vulnerability was CVSS 9.1 Critical Vulnerability",
+      "description": "",
+      "cvss": 9.1,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-26",
+      "last_seen": "2026-10-26",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "A vulnerability was",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://gist.github.com/H3rmesk1t/836a8c4be24fcc4b7041b4bbe9cbb178",
+        "https://vuldb.com/cve/CVE-2026-116505",
+        "https://vuldb.com/submit/1022554",
+        "https://vuldb.com/vuln/426403"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-112403",
+      "title": "CVE-2026-112403 — python pillow CVSS 9.8 Critical Vulnerability",
+      "description": "",
+      "cvss": 9.8,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-19",
+      "last_seen": "2026-10-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "python",
+      "product": "pillow",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/python-pillow/Pillow/commit/242a059aedc1935097d9aa1dc3f099750467ba75",
+        "https://github.com/python-pillow/Pillow/releases/tag/13.0.0",
+        "https://github.com/python-pillow/Pillow/security/advisories/GHSA-8g5g-8vmr-9782",
+        "https://github.com/python-pillow/Pillow/security/advisories/GHSA-8g5g-8vmr-9782"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-112900",
+      "title": "CVE-2026-112900 — python pillow CVSS 9.8 Critical Vulnerability",
+      "description": "",
+      "cvss": 9.8,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-19",
+      "last_seen": "2026-10-19",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "python",
+      "product": "pillow",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/python-pillow/Pillow/commit/a2c363141da31a265dd536c945677db4b64f3ec9",
+        "https://github.com/python-pillow/Pillow/releases/tag/13.0.0",
+        "https://github.com/python-pillow/Pillow/security/advisories/GHSA-w889-685w-c8fh"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2024-58309",
+      "title": "CVE-2024-58309 — xbtitfm xbtitfm CVSS 9.8 Critical Vulnerability",
+      "description": "",
+      "cvss": 9.8,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2025-12-11",
+      "last_seen": "2025-12-11",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "xbtitfm",
+      "product": "xbtitfm",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.exploit-db.com/exploits/51909",
+        "https://www.vulncheck.com/advisories/xbtitfm-unauthenticated-sql-injection-in-shouteditphp",
+        "https://xbtitfm.eu"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2024-25182",
+      "title": "CVE-2024-25182 — vvveb vvvebjs CVSS 9.8 Critical Vulnerability",
+      "description": "",
+      "cvss": 9.8,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2025-12-29",
+      "last_seen": "2025-12-29",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "vvveb",
+      "product": "vvvebjs",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://gist.github.com/joaoviictorti/ff6220d8ed6df77a0420f4413a1d9b8d"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2024-27480",
+      "title": "CVE-2024-27480 — vvveb vvvebjs CVSS 9.8 Critical Vulnerability",
+      "description": "",
+      "cvss": 9.8,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2025-12-29",
+      "last_seen": "2025-12-29",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "vvveb",
+      "product": "vvvebjs",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://gist.github.com/joaoviictorti/abb2d1929c29d09c13c60bb45f28a8ff",
+        "https://gist.github.com/joaoviictorti/abb2d1929c29d09c13c60bb45f28a8ff"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-107672",
+      "title": "CVE-2026-107672 — Unknown Vendor A maliciously crafted CVSS 8.8 High Severity Vulnerability",
       "description": "",
       "cvss": 8.8,
       "final_ps": 21,
@@ -4420,13 +4911,13 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "REDAXO before 5.21.3",
+      "product": "A maliciously crafted",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/redaxo/core/security/advisories/GHSA-mrrj-4f5x-j958",
-        "https://www.vulncheck.com/advisories/redaxo-before-5.21.3-csrf-token-bypass-via-users-users-privilege-escalation"
+        "https://marketplace.visualstudio.com/items?itemName=Autodesk.hsm-post-processor",
+        "https://www.autodesk.com/trust/security-advisories/adsk-sa-2026-0018"
       ],
       "explanation": {
         "quality": [
@@ -4446,10 +4937,10 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-33944",
-      "title": "Dolibarr has SQL Injection in societe/class/societe.class.php via localtax1_value parameter",
+      "id": "CVE-2026-116587",
+      "title": "Go JOSE: DoS when parsing JWKs that contain RSA keys",
       "description": "",
-      "cvss": 8.8,
+      "cvss": 7.5,
       "final_ps": 21,
       "quality_score": 0.523,
       "threat_level": "LOW",
@@ -4464,19 +4955,19 @@
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "composer",
-      "product": "dolibarr/dolibarr",
+      "vendor": "go",
+      "product": "github.com/go-jose/go-jose/v4",
       "due_date": null,
       "cves": [
-        "CVE-2026-33944",
-        "CVE-2026-33944"
+        "CVE-2026-116587",
+        "CVE-2026-116587"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-v5fq-cf5m-vwv7",
-        "https://github.com/Dolibarr/dolibarr/security/advisories/GHSA-v5fq-cf5m-vwv7",
-        "https://www.sec4check.pl/blog/posts/cve-dolibarr-sql-injection-localtax-third-party.html",
-        "https://github.com/advisories/GHSA-v5fq-cf5m-vwv7"
+        "https://github.com/advisories/GHSA-mgcc-cww5-fp2q",
+        "https://github.com/go-jose/go-jose/security/advisories/GHSA-mgcc-cww5-fp2q",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-116587",
+        "https://github.com/go-jose/go-jose/commit/a0111f82742fa92bceec9ede40845e73319e6230"
       ],
       "explanation": {
         "quality": [
@@ -4496,44 +4987,39 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-115924",
-      "title": "Rembg: Unauthenticated SAM model injection permits local-file disclosure through malicious ONNX graphs",
+      "id": "CVE-2026-112353",
+      "title": "CVE-2026-112353 — Unknown Vendor GFI KerioConnect (Kerio CVSS 8.2 High Severity Vulnerability",
       "description": "",
-      "cvss": 8.6,
+      "cvss": 8.2,
       "final_ps": 21,
-      "quality_score": 0.523,
+      "quality_score": 0.525,
       "threat_level": "LOW",
       "type": "CVE_REPORT",
-      "source": "github_advisories",
+      "source": "nvd",
       "sources_confirmed": 1,
       "merged_sources": [
-        "github_advisories"
+        "nvd"
       ],
       "first_seen": "2026-10-27",
       "last_seen": "2026-10-27",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "pip",
-      "product": "rembg",
+      "vendor": "Unknown Vendor",
+      "product": "GFI KerioConnect (Kerio",
       "due_date": null,
-      "cves": [
-        "CVE-2026-115924",
-        "CVE-2026-115924"
-      ],
+      "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-qr6x-7v33-6qmg",
-        "https://github.com/danielgatis/rembg/security/advisories/GHSA-qr6x-7v33-6qmg",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-115924",
-        "https://github.com/danielgatis/rembg/commit/b2758c6b39bb2b02df90a03128110339476984d3"
+        "https://gfi.ai/resource/kerioconnect-product-releases/",
+        "https://www.vulncheck.com/advisories/gfi-kerioconnect-8p2-stored-xss-via-svg-attachment"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.95 (github_advisories)",
+          "source_weight=1.00 (nvd)",
           "data_confidence=0.75",
           "recency=0d (score=1.00)",
-          "QS=0.523"
+          "QS=0.525"
         ],
         "priority": [
           "base_ps=21 (no boosts)"
@@ -4546,58 +5032,8 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-49272",
-      "title": "OAuthLib: Bearer token can be retrieved as long as client knows a valid client ID for device workflow",
-      "description": "",
-      "cvss": 8.5,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-10-27",
-      "last_seen": "2026-10-27",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "pip",
-      "product": "oauthlib",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-49272",
-        "CVE-2026-49272"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-3jp2-3mrg-2vxc",
-        "https://github.com/oauthlib/oauthlib/security/advisories/GHSA-3jp2-3mrg-2vxc",
-        "https://github.com/oauthlib/oauthlib/releases/tag/v4.0.0",
-        "https://github.com/advisories/GHSA-3jp2-3mrg-2vxc"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-117558",
-      "title": "CVE-2026-117558 — Unknown Vendor The ai-sdlc plugin CVSS 7.8 High Severity Vulnerability",
+      "id": "CVE-2026-113775",
+      "title": "CVE-2026-113775 — Unknown Vendor A maliciously crafted CVSS 7.8 High Severity Vulnerability",
       "description": "",
       "cvss": 7.8,
       "final_ps": 21,
@@ -4615,15 +5051,14 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "The ai-sdlc plugin",
+      "product": "A maliciously crafted",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/ai-sdlc-framework/ai-sdlc",
-        "https://github.com/ai-sdlc-framework/ai-sdlc/blob/ai-sdlc-plugin-v0.31.2/ai-sdlc-plugin/mcp-server/src/tools/check-issue.ts#L15-L19",
-        "https://github.com/ai-sdlc-framework/ai-sdlc/commit/717d7ecf068b714f65955e50fcf5cb4f9a0b5070",
-        "https://github.com/ai-sdlc-framework/ai-sdlc/issues/1970"
+        "https://dl.appstreaming.autodesk.com/production/installers/Fusion%20Client%20Downloader.dmg",
+        "https://dl.appstreaming.autodesk.com/production/installers/Fusion%20Client%20Downloader.exe",
+        "https://www.autodesk.com/trust/security-advisories/adsk-sa-2026-0019"
       ],
       "explanation": {
         "quality": [
@@ -4643,8 +5078,8 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-117559",
-      "title": "CVE-2026-117559 — Unknown Vendor DroidMind through 0.4.0 CVSS 7.8 High Severity Vulnerability",
+      "id": "CVE-2026-48379",
+      "title": "CVE-2026-48379 — Unknown Vendor Substance3D - Painter CVSS 7.8 High Severity Vulnerability",
       "description": "",
       "cvss": 7.8,
       "final_ps": 21,
@@ -4662,15 +5097,12 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "DroidMind through 0.4.0",
+      "product": "Substance3D - Painter",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/hyperb1iss/droidmind",
-        "https://github.com/hyperb1iss/droidmind/blob/v0.4.0/droidmind/security.py#L338-L402",
-        "https://github.com/hyperb1iss/droidmind/issues/17",
-        "https://www.vulncheck.com/advisories/droidmind-through-0.4.0-command-injection-via-shell-allowlist-bypass"
+        "https://www.adobe.com/trust/security/products/substance3d-painter/apsb26-178.html"
       ],
       "explanation": {
         "quality": [
@@ -4690,55 +5122,8 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-117560",
-      "title": "CVE-2026-117560 — Unknown Vendor ATXP Gemini CLI CVSS 7.8 High Severity Vulnerability",
-      "description": "",
-      "cvss": 7.8,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-27",
-      "last_seen": "2026-10-27",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "ATXP Gemini CLI",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/atxp-dev/atxp",
-        "https://github.com/atxp-dev/atxp/blob/4e88b0282b51ae7c22ea1b6ca4476a39298299ff/src/server.ts#L28-L40",
-        "https://github.com/atxp-dev/atxp/issues/15",
-        "https://www.vulncheck.com/advisories/atxp-gemini-cli-extension-through-1.0.0-os-command-injection-via-mcp-tools"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-116871",
-      "title": "CVE-2026-116871 — Unknown Vendor Semantic MediaWiki 3.0.0 CVSS 7.5 High Severity Vulnerability",
+      "id": "CVE-2026-117604",
+      "title": "CVE-2026-117604 — Unknown Vendor Grav from 1.7.53.3 CVSS 7.5 High Severity Vulnerability",
       "description": "",
       "cvss": 7.5,
       "final_ps": 21,
@@ -4756,15 +5141,15 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "Semantic MediaWiki 3.0.0",
+      "product": "Grav from 1.7.53.3",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/SemanticMediaWiki/SemanticMediaWiki/commit/756492002752f937a9e115e14330b1181bd8c60c",
-        "https://github.com/SemanticMediaWiki/SemanticMediaWiki/commit/e642f38c708dee7da5e885b8d40be8ffc56f3e87",
-        "https://github.com/SemanticMediaWiki/SemanticMediaWiki/security/advisories/GHSA-f8vw-wvm6-h2qq",
-        "https://www.vulncheck.com/advisories/semantic-mediawiki-3.0.0-before-7.3.1-uncontrolled-recursion-via-special-ask"
+        "https://github.com/getgrav/grav/commit/4d9fca043f990a818d65cea61c928203b9e19641",
+        "https://github.com/getgrav/grav/releases/tag/1.7.53.6",
+        "https://github.com/getgrav/grav/security/advisories/GHSA-xprx-c7jf-cp6g",
+        "https://www.vulncheck.com/advisories/grav-from-1.7.53.3-before-1.7.53.6-clockwork-profiler-authorization-bypass-via-loopback-fallback"
       ],
       "explanation": {
         "quality": [
@@ -4784,280 +5169,8 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-116872",
-      "title": "CVE-2026-116872 — Unknown Vendor Semantic MediaWiki from CVSS 7.5 High Severity Vulnerability",
-      "description": "",
-      "cvss": 7.5,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-27",
-      "last_seen": "2026-10-27",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Semantic MediaWiki from",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/SemanticMediaWiki/SemanticMediaWiki/commit/c2bf1699dec4016e21ce52613152bda799ce87d4",
-        "https://github.com/SemanticMediaWiki/SemanticMediaWiki/security/advisories/GHSA-j2r2-7qpg-p675",
-        "https://www.vulncheck.com/advisories/semantic-mediawiki-3.0.0-before-7.3.1-denial-of-service-via-special-search-compact-filters"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-116896",
-      "title": "CVE-2026-116896 — Unknown Vendor REDAXO before 5.21.5 CVSS 7.5 High Severity Vulnerability",
-      "description": "",
-      "cvss": 7.5,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-27",
-      "last_seen": "2026-10-27",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "REDAXO before 5.21.5",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/redaxo/core/security/advisories/GHSA-phjc-vx3j-58r3",
-        "https://www.vulncheck.com/advisories/redaxo-before-5.21.5-privilege-escalation-via-backup-export-of-authentication-tables"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-117540",
-      "title": "CVE-2026-117540 — Unknown Vendor svg-sanitizer from 0.5.3 CVSS 7.5 High Severity Vulnerability",
-      "description": "",
-      "cvss": 7.5,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-27",
-      "last_seen": "2026-10-27",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "svg-sanitizer from 0.5.3",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/darylldoyle/svg-sanitizer/commit/9ba9001493f5da737759303f13bd965ebdaa778c",
-        "https://github.com/darylldoyle/svg-sanitizer/security/advisories/GHSA-2v7c-jx29-jprp",
-        "https://www.vulncheck.com/advisories/svg-sanitizer-before-1.1.0-quadratic-cpu-exhaustion-dos-via-php-tag-stripping-loop"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-100164",
-      "title": "CVE-2026-100164 — Unknown Vendor Observable response discrepancy CVSS 7.5 High Severity Vulnerability",
-      "description": "",
-      "cvss": 7.5,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-27",
-      "last_seen": "2026-10-27",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Observable response discrepancy",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://siberguvenlik.gov.tr/guvenlik-bildirimleri/detay/tr-26-1406"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-92546",
-      "title": "CVE-2026-92546 — Unknown Vendor Authentication bypass by CVSS 7.5 High Severity Vulnerability",
-      "description": "",
-      "cvss": 7.5,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-27",
-      "last_seen": "2026-10-27",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Authentication bypass by",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://siberguvenlik.gov.tr/guvenlik-bildirimleri/detay/tr-26-1408"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-117553",
-      "title": "CVE-2026-117553 — Unknown Vendor Umbraco CMS before CVSS 7.5 High Severity Vulnerability",
-      "description": "",
-      "cvss": 7.5,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-27",
-      "last_seen": "2026-10-27",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Umbraco CMS before",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/umbraco/Umbraco-CMS",
-        "https://github.com/umbraco/Umbraco-CMS/blob/release-18.2.1/src/Umbraco.Cms.Api.Management/Middleware/BackOfficeAuthorizationInitializationMiddleware.cs#L74-L112",
-        "https://github.com/umbraco/Umbraco-CMS/commit/490b9b27dcbb8fb3fe868a36203590968b0569d6",
-        "https://github.com/umbraco/Umbraco-CMS/security/advisories/GHSA-rpv9-qp4c-g469"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-116873",
-      "title": "CVE-2026-116873 — Unknown Vendor Semantic MediaWiki from CVSS 7.3 High Severity Vulnerability",
+      "id": "CVE-2026-117511",
+      "title": "CVE-2026-117511 — Unknown Vendor A vulnerability has CVSS 7.3 High Severity Vulnerability",
       "description": "",
       "cvss": 7.3,
       "final_ps": 21,
@@ -5075,13 +5188,15 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "Semantic MediaWiki from",
+      "product": "A vulnerability has",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/SemanticMediaWiki/SemanticMediaWiki/security/advisories/GHSA-rjqv-6r83-pg8v",
-        "https://www.vulncheck.com/advisories/semantic-mediawiki-7.3.0-missing-authorization-via-smwtask-api-run-joblist-and-update"
+        "https://github.com/desmondmorris/node-tesseract/",
+        "https://github.com/desmondmorris/node-tesseract/issues/72",
+        "https://vuldb.com/cve/CVE-2026-117511",
+        "https://vuldb.com/submit/1024535"
       ],
       "explanation": {
         "quality": [
@@ -5101,8 +5216,287 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-116876",
-      "title": "CVE-2026-116876 — Unknown Vendor Semantic MediaWiki from CVSS 7.1 High Severity Vulnerability",
+      "id": "CVE-2026-104349",
+      "title": "CVE-2026-104349 — Unknown Vendor Creative Cloud Desktop CVSS 7.3 High Severity Vulnerability",
+      "description": "",
+      "cvss": 7.3,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-27",
+      "last_seen": "2026-10-27",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Creative Cloud Desktop",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/creative-cloud/apsb26-135.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-117512",
+      "title": "CVE-2026-117512 — Unknown Vendor A vulnerability was CVSS 7.3 High Severity Vulnerability",
+      "description": "",
+      "cvss": 7.3,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-27",
+      "last_seen": "2026-10-27",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "A vulnerability was",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/oretnom23/php-travel-agency-system/",
+        "https://github.com/oretnom23/php-travel-agency-system/issues/6",
+        "https://vuldb.com/cve/CVE-2026-117512",
+        "https://vuldb.com/submit/1024620"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-117513",
+      "title": "CVE-2026-117513 — Unknown Vendor A vulnerability was CVSS 7.3 High Severity Vulnerability",
+      "description": "",
+      "cvss": 7.3,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-27",
+      "last_seen": "2026-10-27",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "A vulnerability was",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/oretnom23/php-travel-agency-system/",
+        "https://github.com/oretnom23/php-travel-agency-system/issues/7",
+        "https://vuldb.com/cve/CVE-2026-117513",
+        "https://vuldb.com/submit/1024621"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-117514",
+      "title": "CVE-2026-117514 — Unknown Vendor A vulnerability was CVSS 7.3 High Severity Vulnerability",
+      "description": "",
+      "cvss": 7.3,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-27",
+      "last_seen": "2026-10-27",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "A vulnerability was",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/oretnom23/php-travel-agency-system/",
+        "https://github.com/oretnom23/php-travel-agency-system/issues/8",
+        "https://vuldb.com/cve/CVE-2026-117514",
+        "https://vuldb.com/submit/1024622"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-117515",
+      "title": "CVE-2026-117515 — Unknown Vendor A security flaw CVSS 7.3 High Severity Vulnerability",
+      "description": "",
+      "cvss": 7.3,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-27",
+      "last_seen": "2026-10-27",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "A security flaw",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/oretnom23/php-travel-agency-system/",
+        "https://github.com/oretnom23/php-travel-agency-system/issues/9",
+        "https://vuldb.com/cve/CVE-2026-117515",
+        "https://vuldb.com/submit/1024623"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-117516",
+      "title": "CVE-2026-117516 — Unknown Vendor A weakness has CVSS 7.3 High Severity Vulnerability",
+      "description": "",
+      "cvss": 7.3,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-27",
+      "last_seen": "2026-10-27",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "A weakness has",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/oretnom23/php-travel-agency-system/",
+        "https://github.com/oretnom23/php-travel-agency-system/issues/10",
+        "https://vuldb.com/cve/CVE-2026-117516",
+        "https://vuldb.com/submit/1024624"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-102636",
+      "title": "CVE-2026-102636 — Unknown Vendor A maliciously crafted CVSS 7.1 High Severity Vulnerability",
       "description": "",
       "cvss": 7.1,
       "final_ps": 21,
@@ -5120,14 +5514,14 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "Semantic MediaWiki from",
+      "product": "A maliciously crafted",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/SemanticMediaWiki/SemanticMediaWiki/commit/d2a198f42184373bb8604450c46a13a2c28eafa3",
-        "https://github.com/SemanticMediaWiki/SemanticMediaWiki/security/advisories/GHSA-9824-67pm-c29j",
-        "https://www.vulncheck.com/advisories/semantic-mediawiki-2.5.0-before-7.3.1-missing-authorization-via-is-edit-protected"
+        "https://dl.appstreaming.autodesk.com/production/installers/Fusion%20Client%20Downloader.dmg",
+        "https://dl.appstreaming.autodesk.com/production/installers/Fusion%20Client%20Downloader.exe",
+        "https://www.autodesk.com/trust/security-advisories/adsk-sa-2026-0019"
       ],
       "explanation": {
         "quality": [
@@ -5147,8 +5541,8 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-116880",
-      "title": "CVE-2026-116880 — Unknown Vendor Semantic MediaWiki from CVSS 7.1 High Severity Vulnerability",
+      "id": "CVE-2026-102637",
+      "title": "CVE-2026-102637 — Unknown Vendor A maliciously crafted CVSS 7.1 High Severity Vulnerability",
       "description": "",
       "cvss": 7.1,
       "final_ps": 21,
@@ -5166,13 +5560,14 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "Semantic MediaWiki from",
+      "product": "A maliciously crafted",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/SemanticMediaWiki/SemanticMediaWiki/security/advisories/GHSA-7f7v-2qf4-gfq3",
-        "https://www.vulncheck.com/advisories/semantic-mediawiki-3.0.0-before-7.3.1-csrf-via-special-smwadmin-maintenance-actions"
+        "https://dl.appstreaming.autodesk.com/production/installers/Fusion%20Client%20Downloader.dmg",
+        "https://dl.appstreaming.autodesk.com/production/installers/Fusion%20Client%20Downloader.exe",
+        "https://www.autodesk.com/trust/security-advisories/adsk-sa-2026-0019"
       ],
       "explanation": {
         "quality": [
@@ -5192,10 +5587,10 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-109995",
-      "title": "CVE-2026-109995 — Unknown Vendor The Advanced Views CVSS 7.2 High Severity Vulnerability",
+      "id": "CVE-2026-102638",
+      "title": "CVE-2026-102638 — Unknown Vendor A maliciously crafted CVSS 7.1 High Severity Vulnerability",
       "description": "",
-      "cvss": 7.2,
+      "cvss": 7.1,
       "final_ps": 21,
       "quality_score": 0.525,
       "threat_level": "LOW",
@@ -5211,15 +5606,14 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "The Advanced Views",
+      "product": "A maliciously crafted",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://plugins.trac.wordpress.org/browser/acf-views/tags/3.9.6/src/Cpt/Data_Vendors/Base/Fields/Custom_Field.php#L70",
-        "https://plugins.trac.wordpress.org/browser/acf-views/tags/3.9.6/src/Cpt/Data_Vendors/Wp/Fields/Comment/Comment_Content_Field.php#L27",
-        "https://plugins.trac.wordpress.org/browser/acf-views/tags/3.9.6/src/Cpt/Data_Vendors/Wp/Fields/Comment/Comment_Content_Field.php#L50",
-        "https://plugins.trac.wordpress.org/browser/acf-views/tags/3.9.7/src/Cpt/Data_Vendors/Wp/Fields/Comment/Comment_Content_Field.php"
+        "https://dl.appstreaming.autodesk.com/production/installers/Fusion%20Client%20Downloader.dmg",
+        "https://dl.appstreaming.autodesk.com/production/installers/Fusion%20Client%20Downloader.exe",
+        "https://www.autodesk.com/trust/security-advisories/adsk-sa-2026-0019"
       ],
       "explanation": {
         "quality": [
@@ -5239,276 +5633,12 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-17006",
-      "title": "CVE-2026-17006 — ibm vios CVSS 8.3 High Severity Vulnerability",
+      "id": "CVE-2026-87018",
+      "title": "undici vulnerable to Denial of Service via TLS 1.2 certificate-changing renegotiation",
       "description": "",
-      "cvss": 8.3,
+      "cvss": 7.5,
       "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-08-20",
-      "last_seen": "2026-08-20",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "ibm",
-      "product": "vios",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.ibm.com/support/pages/node/7283858"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-17000",
-      "title": "CVE-2026-17000 — ibm vios CVSS 8.1 High Severity Vulnerability",
-      "description": "",
-      "cvss": 8.1,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-08-20",
-      "last_seen": "2026-08-20",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "ibm",
-      "product": "vios",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.ibm.com/support/pages/node/7283858"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-17060",
-      "title": "CVE-2026-17060 — ibm vios CVSS 8.1 High Severity Vulnerability",
-      "description": "",
-      "cvss": 8.1,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-08-20",
-      "last_seen": "2026-08-20",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "ibm",
-      "product": "vios",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.ibm.com/support/pages/node/7283858"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-17138",
-      "title": "CVE-2026-17138 — ibm vios CVSS 8.1 High Severity Vulnerability",
-      "description": "",
-      "cvss": 8.1,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-08-20",
-      "last_seen": "2026-08-20",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "ibm",
-      "product": "vios",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.ibm.com/support/pages/node/7283858"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-17003",
-      "title": "CVE-2026-17003 — ibm vios CVSS 7.7 High Severity Vulnerability",
-      "description": "",
-      "cvss": 7.7,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-08-20",
-      "last_seen": "2026-08-20",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "ibm",
-      "product": "vios",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.ibm.com/support/pages/node/7283858"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-17024",
-      "title": "CVE-2026-17024 — ibm vios CVSS 7.7 High Severity Vulnerability",
-      "description": "",
-      "cvss": 7.7,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-08-20",
-      "last_seen": "2026-08-20",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "ibm",
-      "product": "vios",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.ibm.com/support/pages/node/7283858"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-102554",
-      "title": "Google Guava: CompactHashMap/CompactHashSet/MapMakerInternalMap deserialization triggers uncontrolled memory allocation",
-      "description": "",
-      "cvss": 5.9,
-      "final_ps": 19,
-      "quality_score": 0.483,
+      "quality_score": 0.523,
       "threat_level": "LOW",
       "type": "CVE_REPORT",
       "source": "github_advisories",
@@ -5521,29 +5651,179 @@
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "maven",
-      "product": "com.google.guava:guava",
+      "vendor": "npm",
+      "product": "undici",
       "due_date": null,
       "cves": [
-        "CVE-2026-102554",
-        "CVE-2026-102554"
+        "CVE-2026-87018",
+        "CVE-2026-87018"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-xxph-c9ww-hj94",
-        "https://github.com/google/guava/security/advisories/GHSA-xxph-c9ww-hj94",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-102554",
-        "https://github.com/google/guava/commit/b931fe9d6d5cf00bc55714ad3308d086f71850fe"
+        "https://github.com/advisories/GHSA-qrxm-fqhp-jwvm",
+        "https://github.com/nodejs/undici/security/advisories/GHSA-qrxm-fqhp-jwvm",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-87018",
+        "https://github.com/nodejs/undici/commit/12cfd96c3f430897656e3edc1c5e02be8c1cd309"
       ],
       "explanation": {
         "quality": [
           "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.55",
+          "data_confidence=0.75",
           "recency=0d (score=1.00)",
-          "QS=0.483"
+          "QS=0.523"
         ],
         "priority": [
-          "base_ps=19 (no boosts)"
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-109855",
+      "title": "undici WebSocket client vulnerable to Denial of Service via failed HTTP/2 handshake",
+      "description": "",
+      "cvss": 7.5,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-27",
+      "last_seen": "2026-10-27",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "undici",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-109855",
+        "CVE-2026-109855"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-qq8j-7v2v-3rwp",
+        "https://github.com/nodejs/undici/security/advisories/GHSA-qq8j-7v2v-3rwp",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-109855",
+        "https://github.com/nodejs/undici/pull/5873"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-109829",
+      "title": "undici vulnerable to cache poisoning and cross-user disclosure via cross-origin redirects",
+      "description": "",
+      "cvss": 7.4,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-27",
+      "last_seen": "2026-10-27",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "undici",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-109829",
+        "CVE-2026-109829"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-4w7w-5xrc-9h26",
+        "https://github.com/nodejs/undici/security/advisories/GHSA-4w7w-5xrc-9h26",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-109829",
+        "https://github.com/nodejs/undici/commit/26c2bfb3def0b67241ce878e80657ed5d6c3efa8"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-109383",
+      "title": "undici vulnerable to TLS certificate validation bypass via dropped tls options in Agent",
+      "description": "",
+      "cvss": 7.4,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-27",
+      "last_seen": "2026-10-27",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "undici",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-109383",
+        "CVE-2026-109383"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-2m5v-pch6-74hx",
+        "https://github.com/nodejs/undici/security/advisories/GHSA-2m5v-pch6-74hx",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-109383",
+        "https://github.com/nodejs/undici/commit/04cb74b1db131ff8f5b4557dce811cbf5f4664b4"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -5636,190 +5916,6 @@
         ],
         "priority": [
           "base_ps=18 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-65213",
-      "title": "CVE-2026-65213 - Supermicro BMC IPMI feature contains a Arbitrary Command Execution with Superuser Privileges vulnerabil",
-      "description": "",
-      "cvss": 6.6,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-27",
-      "last_seen": "2026-10-27",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-65213"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-65213"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-10511",
-      "title": "CVE-2026-10511 - Jupiter X Core <= 4.61.0 - Authenticated (Contributor+) Stored Cross-Site Scripting via 'forget_passwor",
-      "description": "",
-      "cvss": 6.4,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-27",
-      "last_seen": "2026-10-27",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-10511"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-10511"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-116821",
-      "title": "CVE-2026-116821 - YesWiki before 4.7.0 Read-ACL Bypass via SQL LIKE Wildcards in Usernames",
-      "description": "",
-      "cvss": 6.5,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-27",
-      "last_seen": "2026-10-27",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-116821"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-116821"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-116825",
-      "title": "CVE-2026-116825 - YesWiki from 4.6.2 before 4.7.0 HTTP Signature Replay via ActivityPub Inbox",
-      "description": "",
-      "cvss": 6.5,
-      "final_ps": 16,
-      "quality_score": 0.398,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-27",
-      "last_seen": "2026-10-27",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-116825"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-116825"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.25",
-          "recency=0d (score=1.00)",
-          "QS=0.398"
-        ],
-        "priority": [
-          "base_ps=16 (no boosts)"
         ],
         "suppression": null,
         "merge": null
