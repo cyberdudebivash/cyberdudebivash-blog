@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-28T17:16:31.358Z",
+  "generated": "2026-10-28T21:50:55.698Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,48 +7,92 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 6696,
+  "total_published": 6711,
   "s2n_stats": {
-    "passed": 103,
-    "suppressed": 6,
-    "avg_qs": 0.515
+    "passed": 107,
+    "suppressed": 4,
+    "avg_qs": 0.513
   },
   "items": [
     {
-      "id": "CVE-2026-101767",
-      "title": "Hackers Target Critical Oracle E-Business Suite RCE Flaw Days After Security Patch",
-      "description": "Threat actors are beginning to probe for a newly patched critical vulnerability in Oracle E-Business Suite (EBS), according to threat intelligence firm Defused Cyber. The vulnerability in question is CVE-2026-101767 (CVSS score: 9.8) in the Oracle Application Object Library of Oracle E-Business Suit",
+      "id": "CVE-2026-111497",
+      "title": "CVE-2026-111497 — google brotli CVSS 9.8 Critical Vulnerability",
+      "description": "A buffer overflow vulnerability in the Brotli decoder (c/dec/decode.c) in Google Brotli versions 1.0.3 through 1.2.0 on all platforms allows a remote unauthenticated attacker to corrupt adjacent decoder state memory, disclose sensitive memory contents, cause a denial of service, or potentially execu",
       "cvss": 9.8,
-      "final_ps": 60,
-      "quality_score": 0.478,
-      "threat_level": "MEDIUM",
+      "final_ps": 70,
+      "quality_score": 0.52,
+      "threat_level": "HIGH",
       "type": "CVE_REPORT",
-      "source": "thehackernews",
+      "source": "nvd",
       "sources_confirmed": 1,
       "merged_sources": [
-        "thehackernews"
+        "nvd"
+      ],
+      "first_seen": "2026-10-22",
+      "last_seen": "2026-10-22",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "google",
+      "product": "brotli",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/andybalholm/brotli/releases/tag/v1.2.7",
+        "https://nodejs.org/en/blog/vulnerability/october-2026-security-releases#nodejs-brotli-decoder-out-of-bounds-write-permits-remote-code-execution-cve-2026-111497---high",
+        "http://www.openwall.com/lists/oss-security/2026/10/23/25",
+        "http://www.openwall.com/lists/oss-security/2026/10/24/6"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=1.00",
+          "recency=6d (score=0.40)",
+          "QS=0.520"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-116613",
+      "title": "CVE-2026-116613 - Animated Text Block <= 1.2.6 - Missing Authorization to Unauthenticated Sensitive Information Exposure",
+      "description": "CVE-2026-116613 - Animated Text Block <= 1.2.6 - Missing Authorization to Unauthenticated Sensitive Information Exposure via 'id' Shortcode Attribute",
+      "cvss": 9.1,
+      "final_ps": 59,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
       ],
       "first_seen": "2026-10-28",
       "last_seen": "2026-10-28",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "The Hacker News",
-      "product": "Threat Intelligence",
+      "vendor": "",
+      "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-101767"
+        "CVE-2026-116613"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://thehackernews.com/2026/10/hackers-target-critical-oracle-e.html"
+        "https://cvefeed.io/vuln/detail/CVE-2026-116613"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.55 (thehackernews)",
-          "data_confidence=1.00",
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
           "recency=0d (score=1.00)",
-          "QS=0.478"
+          "QS=0.493"
         ],
         "priority": [
           "+10 CVSS≥9"
@@ -490,49 +534,6 @@
       }
     },
     {
-      "id": "CVE-2026-111497",
-      "title": "Node2Shell Vulnerability Actively Exploited in the Wild, CISA Warns",
-      "description": "CISA has added the Node2Shell flaw, tracked as CVE-2026-111497, to its Known Exploited Vulnerabilities catalog. Attackers are already sending live exploit traffic at Node.js servers, so teams should patch right away. CISA added the bug to its Known Exploited Vulnerabilities catal... [Full analysis a",
-      "cvss": 0,
-      "final_ps": 46,
-      "quality_score": 0.482,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-28",
-      "last_seen": "2026-10-28",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-111497"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cybersecuritynews.com/node2shell-vulnerability/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.35",
-          "recency=0d (score=1.00)",
-          "QS=0.482"
-        ],
-        "priority": [
-          "+8 exploited_in_wild"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
       "id": "CVE-2026-76519",
       "title": "Cisco Secure Email Gateway 0-Day Vulnerability Actively Exploited in Attacks",
       "description": "",
@@ -882,6 +883,135 @@
         "priority": [
           "+10 CVSS≥9",
           "+8 exploited_in_wild"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-118038",
+      "title": "CVE-2026-118038 - Path Traversal in Telerik Document Processing Libraries AI Agent Tools",
+      "description": "CVE-2026-118038 - Path Traversal in Telerik Document Processing Libraries AI Agent Tools",
+      "cvss": 6.5,
+      "final_ps": 41,
+      "quality_score": 0.453,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-28",
+      "last_seen": "2026-10-28",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-118038"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-118038"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.50",
+          "recency=0d (score=1.00)",
+          "QS=0.453"
+        ],
+        "priority": [
+          "base_ps=41 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-67079",
+      "title": "CVE-2026-67079 - HCL BigFix AEX is affected by multiple security vulnerabilities.",
+      "description": "CVE-2026-67079 - HCL BigFix AEX is affected by multiple security vulnerabilities.",
+      "cvss": 6.4,
+      "final_ps": 41,
+      "quality_score": 0.453,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-28",
+      "last_seen": "2026-10-28",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-67079"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-67079"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.50",
+          "recency=0d (score=1.00)",
+          "QS=0.453"
+        ],
+        "priority": [
+          "base_ps=41 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-67080",
+      "title": "CVE-2026-67080 - HCL BigFix AEX is affected by multiple security vulnerabilities.",
+      "description": "CVE-2026-67080 - HCL BigFix AEX is affected by multiple security vulnerabilities.",
+      "cvss": 6.5,
+      "final_ps": 41,
+      "quality_score": 0.453,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-10-28",
+      "last_seen": "2026-10-28",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-67080"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-67080"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.50",
+          "recency=0d (score=1.00)",
+          "QS=0.453"
+        ],
+        "priority": [
+          "base_ps=41 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -2184,7 +2314,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2019-0708",
@@ -2228,7 +2360,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2025-69212",
@@ -2272,7 +2406,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2024-36401",
@@ -2859,143 +2995,9 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-109218",
-      "title": "CVE-2026-109218 — Unknown Vendor The Contact Manager CVSS 9.8 Critical Vulnerability",
-      "description": "The Contact Manager plugin for WordPress is vulnerable to Arbitrary File Upload in all versions up to, and including, 9.1.2 via the add_message function. This is due to an incomplete extension blacklist that fails to detect dangerous extensions when a trailing dot causes the extension-derivation rou",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-28",
-      "last_seen": "2026-10-28",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "The Contact Manager",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://fr.wordpress.org/plugins/contact-manager/",
-        "https://plugins.trac.wordpress.org/browser/contact-manager/tags/9.1.2/contact-manager.php#L42",
-        "https://plugins.trac.wordpress.org/browser/contact-manager/tags/9.1.2/includes/add-message.php#L254",
-        "https://plugins.trac.wordpress.org/browser/contact-manager/tags/9.1.2/includes/add-message.php#L256"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-106013",
-      "title": "CVE-2026-106013 — Unknown Vendor The Jupiter X CVSS 9.8 Critical Vulnerability",
-      "description": "The Jupiter X Core plugin for WordPress is vulnerable to Authentication Bypass via the Twitter/X Social Login handler in all versions up to and including 4.61.0. The vulnerability exists within the verify_twitter_callback function because after exchanging the visitor's oauth_verifier for their acces",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-28",
-      "last_seen": "2026-10-28",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "The Jupiter X",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://plugins.trac.wordpress.org/changeset/3759312/jupiterx-core/trunk/includes/extensions/raven/includes/modules/forms/classes/social-login-handler/twitter.php",
-        "https://www.wordfence.com/threat-intel/vulnerabilities/id/1ad42de2-9ed1-4cf6-a031-22789be4cbe2?source=cve"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-84999",
-      "title": "CVE-2026-84999 — Unknown Vendor The Pie Register CVSS 9.8 Critical Vulnerability",
-      "description": "The Pie Register Premium plugin for WordPress is vulnerable to Unrestricted File Type Upload in all versions up to, and including, 3.8.4.0 via the piereg_file_upload function. This is due to the plugin performing file type validation via wp_check_filetype and wp_check_filetype_and_ext but never chec",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-28",
-      "last_seen": "2026-10-28",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "The Pie Register",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://pieregister.com/",
-        "https://www.wordfence.com/threat-intel/vulnerabilities/id/8385dd30-28e5-4572-8504-2f3e7029bad6?source=cve"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-112352",
-      "title": "CVE-2026-112352 — Unknown Vendor Sunhillo SureLine before CVSS 9.1 Critical Vulnerability",
-      "description": "Sunhillo SureLine before 9.1.5 contains an authentication bypass vulnerability that allows an unauthenticated remote attacker to impersonate any user with an active web session by forging a session cookie containing only a cleartext username with no random identifier or integrity protection. Attacke",
+      "id": "CVE-2026-117574",
+      "title": "CVE-2026-117574 — Unknown Vendor A flaw was CVSS 9.1 Critical Vulnerability",
+      "description": "A flaw was found in ai-gateway-payload-processing. An authenticated remote attacker can exploit this vulnerability by submitting a request specifying another tenant's model identifier in the request body or header. Because the service does not verify authorization before retrieving credentials from ",
       "cvss": 9.1,
       "final_ps": 31,
       "quality_score": 0.525,
@@ -3006,19 +3008,19 @@
       "merged_sources": [
         "nvd"
       ],
-      "first_seen": "2026-10-27",
-      "last_seen": "2026-10-27",
+      "first_seen": "2026-10-28",
+      "last_seen": "2026-10-28",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "Sunhillo SureLine before",
+      "product": "A flaw was",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://www.sunhillo.com/product/sureline/",
-        "https://www.vulncheck.com/advisories/sunhillo-sureline-authentication-bypass-via-session-cookie"
+        "https://access.redhat.com/security/cve/CVE-2026-117574",
+        "https://bugzilla.redhat.com/show_bug.cgi?id=2494861"
       ],
       "explanation": {
         "quality": [
@@ -3037,9 +3039,9 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-117532",
-      "title": "CVE-2026-117532 — Unknown Vendor REDAXO core from CVSS 9.8 Critical Vulnerability",
-      "description": "REDAXO core from 5.3.0 before 5.21.4 contains an authentication bypass vulnerability in the structure/history plugin that allows unauthenticated attackers to forge temporary login tokens. Attackers can force the session-tied secret into a predictable state and forge tokens for accounts like admin, g",
+      "id": "CVE-2026-103406",
+      "title": "CVE-2026-103406 — Unknown Vendor An Improper Neutralization CVSS 9.8 Critical Vulnerability",
+      "description": "An Improper Neutralization of Special Elements used in an OS Command vulnerability in the AutomatedProvisioner in Juniper Networks Session Smart Conductor allows a remote attacker to execute arbitrary commands as root via a specially crafted salt minion ID.",
       "cvss": 9.8,
       "final_ps": 31,
       "quality_score": 0.525,
@@ -3049,869 +3051,26 @@
       "sources_confirmed": 1,
       "merged_sources": [
         "nvd"
-      ],
-      "first_seen": "2026-10-27",
-      "last_seen": "2026-10-27",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "REDAXO core from",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/redaxo/core/security/advisories/GHSA-px8f-whj8-hrpq",
-        "https://www.vulncheck.com/advisories/redaxo-core-5.3.0-before-5.21.4-authentication-bypass-via-history-plugin"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-117564",
-      "title": "CVE-2026-117564 — Unknown Vendor nest-admin before 1.0.1 CVSS 9.8 Critical Vulnerability",
-      "description": "nest-admin before 1.0.1 contains an authentication bypass vulnerability that allows unauthenticated attackers to forge administrator tokens by using a hardcoded JWT_SECRET committed in .env.production. Attackers can sign tokens with the known secret that JwtStrategy and RbacGuard trust, impersonatin",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-27",
-      "last_seen": "2026-10-27",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "nest-admin before 1.0.1",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/buqiyuan/nest-admin",
-        "https://github.com/buqiyuan/nest-admin/blob/2eeccc4cb699d1aedbe04b4437a9d095cde02c74/.env.production#L5",
-        "https://github.com/buqiyuan/nest-admin/commit/f2cec8cb776cbf113115b33164dac69a46d24097",
-        "https://github.com/buqiyuan/nest-admin/issues/92"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-104351",
-      "title": "CVE-2026-104351 — Unknown Vendor Adobe Campaign Classic CVSS 9.9 Critical Vulnerability",
-      "description": "Adobe Campaign Classic (ACC) is affected by an Improper Control of Generation of Code ('Code Injection') vulnerability that could result in arbitrary code execution in the context of the current user. A low-privileged attacker could exploit this vulnerability to execute arbitrary code. Exploitation ",
-      "cvss": 9.9,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-27",
-      "last_seen": "2026-10-27",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Adobe Campaign Classic",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.adobe.com/trust/security/products/campaign/apsb26-162.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-104353",
-      "title": "CVE-2026-104353 — Unknown Vendor Adobe Campaign Classic CVSS 9.9 Critical Vulnerability",
-      "description": "Adobe Campaign Classic (ACC) is affected by an Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection') vulnerability that could result in arbitrary code execution in the context of the current user. A low-privileged attacker could exploit this vulnerability to exec",
-      "cvss": 9.9,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-27",
-      "last_seen": "2026-10-27",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Adobe Campaign Classic",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.adobe.com/trust/security/products/campaign/apsb26-162.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-105489",
-      "title": "CVE-2026-105489 — Unknown Vendor Adobe Campaign Classic CVSS 9.9 Critical Vulnerability",
-      "description": "Adobe Campaign Classic (ACC) is affected by an Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') vulnerability that could result in arbitrary code execution in the context of the current user. A low-privileged attacker could exploit this vulnerability to execute ar",
-      "cvss": 9.9,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-27",
-      "last_seen": "2026-10-27",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Adobe Campaign Classic",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.adobe.com/trust/security/products/campaign/apsb26-162.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-105780",
-      "title": "CVE-2026-105780 — Unknown Vendor Adobe Campaign Classic CVSS 9.9 Critical Vulnerability",
-      "description": "Adobe Campaign Classic (ACC) is affected by an Incorrect Authorization vulnerability that could result in arbitrary code execution in the context of the current user. A low-privileged attacker could exploit this vulnerability to execute arbitrary code. Exploitation of this issue does not require use",
-      "cvss": 9.9,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-27",
-      "last_seen": "2026-10-27",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Adobe Campaign Classic",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.adobe.com/trust/security/products/campaign/apsb26-162.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-105781",
-      "title": "CVE-2026-105781 — Unknown Vendor Adobe Campaign Classic CVSS 10 Critical Vulnerability",
-      "description": "Adobe Campaign Classic (ACC) is affected by an Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') vulnerability that could result in arbitrary code execution in the context of the current user. An attacker could exploit this vulnerability to execute arbitrary SQL co",
-      "cvss": 10,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-27",
-      "last_seen": "2026-10-27",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Adobe Campaign Classic",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.adobe.com/trust/security/products/campaign/apsb26-162.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-48360",
-      "title": "CVE-2026-48360 — Unknown Vendor Adobe Connect is CVSS 9.6 Critical Vulnerability",
-      "description": "Adobe Connect is affected by an Improper Control of Generation of Code ('Code Injection') vulnerability that could result in arbitrary code execution in the context of the current user. An attacker could exploit this vulnerability to execute arbitrary code. Exploitation of this issue requires user i",
-      "cvss": 9.6,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-27",
-      "last_seen": "2026-10-27",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Adobe Connect is",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.adobe.com/trust/security/products/connect/apsb26-182.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-104350",
-      "title": "CVE-2026-104350 — Unknown Vendor Adobe Campaign Classic CVSS 9.3 Critical Vulnerability",
-      "description": "Adobe Campaign Classic (ACC) is affected by a reflected Cross-Site Scripting (XSS) vulnerability. An attacker could exploit this vulnerability to inject malicious scripts into a web page, potentially gaining elevated access or control over the victim's account or session. Exploitation of this issue ",
-      "cvss": 9.3,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-27",
-      "last_seen": "2026-10-27",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Adobe Campaign Classic",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.adobe.com/trust/security/products/campaign/apsb26-162.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-104354",
-      "title": "CVE-2026-104354 — Unknown Vendor Adobe Campaign Classic CVSS 9.1 Critical Vulnerability",
-      "description": "Adobe Campaign Classic (ACC) is affected by an Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') vulnerability that could result in arbitrary code execution in the context of the current user. An attacker with high privileges could exploit this vulnerability to exe",
-      "cvss": 9.1,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-27",
-      "last_seen": "2026-10-27",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Adobe Campaign Classic",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.adobe.com/trust/security/products/campaign/apsb26-162.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-105779",
-      "title": "CVE-2026-105779 — Unknown Vendor Adobe Campaign Classic CVSS 9.1 Critical Vulnerability",
-      "description": "Adobe Campaign Classic (ACC) is affected by an Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') vulnerability that could result in a Security feature bypass. A low-privileged attacker could leverage this vulnerability to bypass security measures and gain unauthori",
-      "cvss": 9.1,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-27",
-      "last_seen": "2026-10-27",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Adobe Campaign Classic",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.adobe.com/trust/security/products/campaign/apsb26-162.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-116506",
-      "title": "CVE-2026-116506 — Unknown Vendor A vulnerability was CVSS 9.9 Critical Vulnerability",
-      "description": "A vulnerability was determined in TOTOLINK A950RG 4.1.2cu.5268_B20221104. Affected is the function apmib_set of the file firewall.so. This manipulation causes command injection. The attack may be initiated remotely. The exploit has been publicly disclosed and may be utilized.",
-      "cvss": 9.9,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-26",
-      "last_seen": "2026-10-26",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "A vulnerability was",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://gist.github.com/H3rmesk1t/1046036a8601e93f375754e11307bfc8",
-        "https://vuldb.com/cve/CVE-2026-116506",
-        "https://vuldb.com/submit/1022555",
-        "https://vuldb.com/vuln/426404"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-116508",
-      "title": "CVE-2026-116508 — Unknown Vendor A security flaw CVSS 10 Critical Vulnerability",
-      "description": "A security flaw has been discovered in TOTOLINK A950RG 4.1.2cu.5268_B20221104. Affected by this issue is the function sub_402340 of the file infostat.cgi of the component Device-Information CGI. Performing a manipulation of the argument CONTENT_LENGTH results in stack-based buffer overflow. Remote e",
-      "cvss": 10,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-26",
-      "last_seen": "2026-10-26",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "A security flaw",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://gist.github.com/H3rmesk1t/ad72def4ccc232757d4cbabf45da72cb",
-        "https://vuldb.com/cve/CVE-2026-116508",
-        "https://vuldb.com/submit/1022557",
-        "https://vuldb.com/vuln/426406"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-116505",
-      "title": "CVE-2026-116505 — Unknown Vendor A vulnerability was CVSS 9.1 Critical Vulnerability",
-      "description": "A vulnerability was found in TOTOLINK A950RG 4.1.2cu.5268_B20221104. This impacts the function getDeviceInfo of the file /var/lib/misc/udhcpd.leases of the component device-information Handler. The manipulation of the argument MAC address results in command injection. The attack can be launched remo",
-      "cvss": 9.1,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-26",
-      "last_seen": "2026-10-26",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "A vulnerability was",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://gist.github.com/H3rmesk1t/836a8c4be24fcc4b7041b4bbe9cbb178",
-        "https://vuldb.com/cve/CVE-2026-116505",
-        "https://vuldb.com/submit/1022554",
-        "https://vuldb.com/vuln/426403"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-112398",
-      "title": "CVE-2026-112398 — python pillow CVSS 9.8 Critical Vulnerability",
-      "description": "Pillow is a Python imaging library. Prior to 13.0.0, Pillow's FlashPix JPEG-tile decoder can write decoded scanlines beyond the allocated tile buffer. FlashPix (FPX) JPEG decoding selects raw mode LA with two bytes per pixel, while an unrecognized JPEG mode can be decoded as JCS_UNKNOWN with four co",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-19",
-      "last_seen": "2026-10-19",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "python",
-      "product": "pillow",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/python-pillow/Pillow/commit/242a059aedc1935097d9aa1dc3f099750467ba75",
-        "https://github.com/python-pillow/Pillow/releases/tag/13.0.0",
-        "https://github.com/python-pillow/Pillow/security/advisories/GHSA-5x8w-8jj5-q52h",
-        "https://github.com/python-pillow/Pillow/security/advisories/GHSA-5x8w-8jj5-q52h"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-112403",
-      "title": "CVE-2026-112403 — python pillow CVSS 9.8 Critical Vulnerability",
-      "description": "Pillow is a Python imaging library. Prior to 13.0.0, Pillow's JPEG decoder can write a full-width scanline into a buffer sized for a requested draft scale. ImagingJpegDecode does not verify libjpeg's actual output width and component count after scaling is requested, and an 8-bit lossless SOF3 JPEG ",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-19",
-      "last_seen": "2026-10-19",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "python",
-      "product": "pillow",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/python-pillow/Pillow/commit/242a059aedc1935097d9aa1dc3f099750467ba75",
-        "https://github.com/python-pillow/Pillow/releases/tag/13.0.0",
-        "https://github.com/python-pillow/Pillow/security/advisories/GHSA-8g5g-8vmr-9782",
-        "https://github.com/python-pillow/Pillow/security/advisories/GHSA-8g5g-8vmr-9782"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-112900",
-      "title": "CVE-2026-112900 — python pillow CVSS 9.8 Critical Vulnerability",
-      "description": "Pillow is a Python imaging library. From 2.6.0 until 13.0.0, Pillow is vulnerable to argument injection when invoking Ghostscript for EPS input. EpsImagePlugin.Ghostscript passes a caller-controlled input filename after -f without converting it to a safe absolute path, so a name beginning with a hyp",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-10-19",
-      "last_seen": "2026-10-19",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "python",
-      "product": "pillow",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/python-pillow/Pillow/commit/a2c363141da31a265dd536c945677db4b64f3ec9",
-        "https://github.com/python-pillow/Pillow/releases/tag/13.0.0",
-        "https://github.com/python-pillow/Pillow/security/advisories/GHSA-w889-685w-c8fh"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-48356",
-      "title": "CVE-2026-48356 — adobe commerce CVSS 9.3 Critical Vulnerability",
-      "description": "Adobe Commerce is affected by an Unrestricted Upload of File with Dangerous Type vulnerability that could result in arbitrary code execution in the context of the current user, potentially gaining elevated access or control over the victim's account or session. Exploitation of this issue requires us",
-      "cvss": 9.3,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-07-14",
-      "last_seen": "2026-07-14",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "adobe",
-      "product": "commerce",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://helpx.adobe.com/security/products/magento/apsb26-73.html",
-        "https://sansec.io/research/magento-cms-block-loader-deepveindrilling#indicators-of-compromise",
-        "https://sansec.io/research/polyshell-mass-attack-wave",
-        "https://www.cisa.gov/known-exploited-vulnerabilities-catalog?field_cve=CVE-2026-48356"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2024-25182",
-      "title": "CVE-2024-25182 — vvveb vvvebjs CVSS 9.8 Critical Vulnerability",
-      "description": "givanz VvvebJs 1.7.2 suffers from a File Upload vulnerability via save.php.",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2025-12-29",
-      "last_seen": "2025-12-29",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "vvveb",
-      "product": "vvvebjs",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://gist.github.com/joaoviictorti/ff6220d8ed6df77a0420f4413a1d9b8d"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-114278",
-      "title": "CVE-2026-114278 Unauthenticated Command Injection via kubeconfig Username in che-machine-exec",
-      "description": "CVE-2026-114278 Unauthenticated Command Injection via kubeconfig Username in che-machine-exec",
-      "cvss": 9.8,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "SOCIAL_ENGINEERING",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
       ],
       "first_seen": "2026-10-28",
       "last_seen": "2026-10-28",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "",
-      "product": "",
+      "vendor": "Unknown Vendor",
+      "product": "An Improper Neutralization",
       "due_date": null,
-      "cves": [
-        "CVE-2026-114278"
-      ],
+      "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://vulners.com/cve/CVE-2026-114278?utm_source=rss&utm_medium=rss&utm_campaign=rss"
+        "https://supportportal.juniper.net/JSA112183"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
           "recency=0d (score=1.00)",
-          "QS=0.438"
+          "QS=0.525"
         ],
         "priority": [
           "+10 CVSS≥9"
@@ -3923,85 +3082,38 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-116613",
-      "title": "CVE-2026-116613 - Animated Text Block <= 1.2.6 - Missing Authorization to Unauthenticated Sensitive Information Exposure",
-      "description": "CVE-2026-116613 - Animated Text Block <= 1.2.6 - Missing Authorization to Unauthenticated Sensitive Information Exposure via 'id' Shortcode Attribute",
-      "cvss": 9.1,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-28",
-      "last_seen": "2026-10-28",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-116613"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-116613"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-97631",
-      "title": "Critical UEFI Firmware Flaw Could Expose Millions of Servers to Pre-Boot Code Execution",
-      "description": "A critical bug in open-source EDK II firmware lets a remote attacker run code on a machine before the operating system starts. The flaw is tracked as CVE-2026-97631. It sits in the network boot (PXE) driver and received a CVSS v4 score of 9.5. The advisory lists the NetworkPkg pa... [Full analysis a",
+      "id": "CVE-2026-103409",
+      "title": "CVE-2026-103409 — Unknown Vendor A Missing authentication CVSS 9.8 Critical Vulnerability",
+      "description": "A Missing authentication for critical function vulnerability in Juniper Networks Session Smart Router allows an unauthenticated network-based attacker to obtain administrative privileges by passing crafted URL parameters to an insecure endpoint running as root.\n\nNote that this vulnerability can only",
       "cvss": 9.8,
-      "final_ps": 28,
-      "quality_score": 0.438,
+      "final_ps": 31,
+      "quality_score": 0.525,
       "threat_level": "HIGH",
-      "type": "SUPPLY_CHAIN",
-      "source": "sentinel_apex",
+      "type": "CVE_REPORT",
+      "source": "nvd",
       "sources_confirmed": 1,
       "merged_sources": [
-        "sentinel_apex"
+        "nvd"
       ],
       "first_seen": "2026-10-28",
       "last_seen": "2026-10-28",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "",
-      "product": "",
+      "vendor": "Unknown Vendor",
+      "product": "A Missing authentication",
       "due_date": null,
-      "cves": [
-        "CVE-2026-97631"
-      ],
+      "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://cybersecuritynews.com/uefi-firmware-vulnerability/"
+        "https://supportportal.juniper.net/JSA112183"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
           "recency=0d (score=1.00)",
-          "QS=0.438"
+          "QS=0.525"
         ],
         "priority": [
           "+10 CVSS≥9"
@@ -4013,39 +3125,44 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-112357",
-      "title": "CVE-2026-112357 — Unknown Vendor GFI KerioConnect (Kerio CVSS 7.8 High Severity Vulnerability",
-      "description": "GFI KerioConnect (Kerio Connect) Outlook Connector (Offline Edition), 'KOFF', before 10.0.9 Patch 2 contains a local privilege escalation vulnerability caused by weak installer permissions that leave the product directory writable by the built-in Users group. A local non-administrative attacker can ",
-      "cvss": 7.8,
+      "id": "CVE-2026-115915",
+      "title": "vLLM: Untrusted EPS inputs can trigger denial of service or Ghostscript RCE",
+      "description": "### Summary In vLLM 0.30.0, `ImageMediaIO` passes attacker-controlled image bytes to Pillow's format autodetection without restricting the accepted formats; the request's MIME label does not constrain decoder selection. An EPS payload labeled `image/png` reached the host's Ghostscript executable. On",
+      "cvss": 8.1,
       "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "MEDIUM",
+      "quality_score": 0.523,
+      "threat_level": "HIGH",
       "type": "CVE_REPORT",
-      "source": "nvd",
+      "source": "github_advisories",
       "sources_confirmed": 1,
       "merged_sources": [
-        "nvd"
+        "github_advisories"
       ],
       "first_seen": "2026-10-28",
       "last_seen": "2026-10-28",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "GFI KerioConnect (Kerio",
+      "vendor": "pip",
+      "product": "vllm",
       "due_date": null,
-      "cves": [],
+      "cves": [
+        "CVE-2026-115915",
+        "CVE-2026-115915"
+      ],
       "ioc_count": 0,
       "refs": [
-        "https://gfi.ai/resource/kerioconnect-product-releases/",
-        "https://www.vulncheck.com/advisories/gfi-kerioconnect-koff-9p2-privilege-escalation"
+        "https://github.com/advisories/GHSA-h3rc-j82p-2c3h",
+        "https://github.com/vllm-project/vllm/security/advisories/GHSA-h3rc-j82p-2c3h",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-115915",
+        "https://github.com/vllm-project/vllm/pull/60022"
       ],
       "explanation": {
         "quality": [
-          "source_weight=1.00 (nvd)",
+          "source_weight=0.95 (github_advisories)",
           "data_confidence=0.75",
           "recency=0d (score=1.00)",
-          "QS=0.525"
+          "QS=0.523"
         ],
         "priority": [
           "base_ps=21 (no boosts)"
@@ -4057,39 +3174,44 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-67187",
-      "title": "CVE-2026-67187 — Unknown Vendor Ninja Forms plugin CVSS 7.1 High Severity Vulnerability",
-      "description": "Ninja Forms plugin for WordPress before 3.15.4 contains an incomplete server-side validation vulnerability that allows unauthenticated attackers to submit arbitrary values to Checkbox List, Multi-Select List, Image List, Country, and State fields because NF_Abstracts_List falls through to a validate",
-      "cvss": 7.1,
+      "id": "CVE-2026-118660",
+      "title": "Happy DOM: SSRF via iframe and link stylesheet when parsing untrusted HTML",
+      "description": "## Summary\nhappy-dom v20.8.9 makes real server-side HTTP requests to arbitrary URLs when parsing HTML containing ` ` or ` ` elements. This behavior is enabled by default (`disableIframePageLoading: false`, `disableCSSFileLoading: false`). When an application uses happy-dom to parse untrusted HTML on",
+      "cvss": 8.6,
       "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "MEDIUM",
+      "quality_score": 0.523,
+      "threat_level": "HIGH",
       "type": "CVE_REPORT",
-      "source": "nvd",
+      "source": "github_advisories",
       "sources_confirmed": 1,
       "merged_sources": [
-        "nvd"
+        "github_advisories"
       ],
       "first_seen": "2026-10-28",
       "last_seen": "2026-10-28",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Ninja Forms plugin",
+      "vendor": "npm",
+      "product": "happy-dom",
       "due_date": null,
-      "cves": [],
+      "cves": [
+        "CVE-2026-118660",
+        "CVE-2026-118660"
+      ],
       "ioc_count": 0,
       "refs": [
-        "https://wordpress.org/plugins/ninja-forms/#developers",
-        "https://www.vulncheck.com/advisories/ninja-forms-wordpress-plugin-server-side-validation-bypass-via-list-fields"
+        "https://github.com/advisories/GHSA-c8p4-j97h-3vg8",
+        "https://github.com/capricorn86/happy-dom/security/advisories/GHSA-c8p4-j97h-3vg8",
+        "https://github.com/capricorn86/happy-dom/pull/2502",
+        "https://github.com/capricorn86/happy-dom/commit/0a99c7525a1d0043e3182843ae33466ab7b19e74"
       ],
       "explanation": {
         "quality": [
-          "source_weight=1.00 (nvd)",
+          "source_weight=0.95 (github_advisories)",
           "data_confidence=0.75",
           "recency=0d (score=1.00)",
-          "QS=0.525"
+          "QS=0.523"
         ],
         "priority": [
           "base_ps=21 (no boosts)"
@@ -4101,9 +3223,9 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-109384",
-      "title": "CVE-2026-109384 — Unknown Vendor The The Innovative CVSS 8.8 High Severity Vulnerability",
-      "description": "The The Innovative Form Builder – IvyForms plugin for WordPress is vulnerable to Arbitrary File Upload in all versions up to, and including, 1.5.1 via the filterFiletypeAndExt function. This is due to insufficient file type validation due to the absence of a dangerous-extension denylist in the allow",
+      "id": "CVE-2026-103401",
+      "title": "CVE-2026-103401 — Unknown Vendor An Improper Link CVSS 8.8 High Severity Vulnerability",
+      "description": "An Improper Link Resolution Before File Access ('Link Following') vulnerability in the unauthenticated web server handlers in Juniper Networks Session Smart Router and Session Smart Conductor allows a local unprivileged user to overwrite arbitrary files as root via unauthenticated API endpoints.\n\nTh",
       "cvss": 8.8,
       "final_ps": 21,
       "quality_score": 0.525,
@@ -4120,15 +3242,12 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "The The Innovative",
+      "product": "An Improper Link",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://plugins.trac.wordpress.org/browser/ivyforms/tags/1.5.1/backend/src/Common/Sanitizer/Sanitizer.php#L839",
-        "https://plugins.trac.wordpress.org/browser/ivyforms/tags/1.5.1/backend/src/Routes/Form/Form.php#L246",
-        "https://plugins.trac.wordpress.org/browser/ivyforms/tags/1.5.1/backend/src/Services/Submission/SubmissionUploadFilePersister.php#L126",
-        "https://plugins.trac.wordpress.org/browser/ivyforms/tags/1.5.1/backend/src/Services/Submission/SubmissionUploadFileValidator.php#L127"
+        "https://supportportal.juniper.net/JSA112183"
       ],
       "explanation": {
         "quality": [
@@ -4147,9 +3266,9 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-111120",
-      "title": "CVE-2026-111120 — Unknown Vendor The VikRentCar Car CVSS 8.8 High Severity Vulnerability",
-      "description": "The VikRentCar Car Rental Management System plugin for WordPress is vulnerable to Cross-Site Request Forgery in all versions up to, and including, 1.4.8. This is due to missing or incorrect nonce validation on the condtext_update_tmpl function. This makes it possible for unauthenticated attackers to",
+      "id": "CVE-2026-103402",
+      "title": "CVE-2026-103402 — Unknown Vendor An Insufficient Verification CVSS 8.8 High Severity Vulnerability",
+      "description": "An Insufficient Verification of Data Authenticity vulnerability in PCLI in Juniper Networks Session Smart Router and Session Smart Conductor allows an attacker with write access to the model cache directory to execute arbitrary code and escalate privileges via the processing of unverified cache file",
       "cvss": 8.8,
       "final_ps": 21,
       "quality_score": 0.525,
@@ -4166,15 +3285,12 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "The VikRentCar Car",
+      "product": "An Insufficient Verification",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://plugins.trac.wordpress.org/browser/vikrentcar/tags/1.4.8/admin/controller.php#L9558",
-        "https://plugins.trac.wordpress.org/browser/vikrentcar/tags/1.4.8/admin/controller.php#L9609",
-        "https://plugins.trac.wordpress.org/browser/vikrentcar/tags/1.4.8/admin/helpers/conditional_rules.php#L1003",
-        "https://plugins.trac.wordpress.org/browser/vikrentcar/tags/1.4.8/admin/helpers/conditional_rules.php#L654"
+        "https://supportportal.juniper.net/JSA112183"
       ],
       "explanation": {
         "quality": [
@@ -4193,9 +3309,9 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-92797",
-      "title": "CVE-2026-92797 — Unknown Vendor The MemberPress plugin CVSS 8.8 High Severity Vulnerability",
-      "description": "The MemberPress plugin for WordPress is vulnerable to Cross-Site Request Forgery in versions up to, and including, 1.14.1. This is due to a bypassable nonce verification check in the save_profile_fields() function that uses an isset() condition at line 1119, allowing the security check to be complet",
+      "id": "CVE-2026-103403",
+      "title": "CVE-2026-103403 — Unknown Vendor An Improper Neutralization CVSS 8.8 High Severity Vulnerability",
+      "description": "An Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection') vulnerability in AccessManager in Juniper Networks Session Smart Router and Session Smart Conductor allows an attacker to perform arbitrary file deletion and arbitrary command execution via the deletion of ",
       "cvss": 8.8,
       "final_ps": 21,
       "quality_score": 0.525,
@@ -4212,13 +3328,12 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "The MemberPress plugin",
+      "product": "An Improper Neutralization",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://memberpress.com/change-log/#1.14.2",
-        "https://www.wordfence.com/threat-intel/vulnerabilities/id/2fb6cdd0-cd48-49a5-b998-f1c3fbdc25f7?source=cve"
+        "https://supportportal.juniper.net/JSA112183"
       ],
       "explanation": {
         "quality": [
@@ -4237,9 +3352,363 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-15323",
-      "title": "CVE-2026-15323 — Unknown Vendor The Product Designer CVSS 7.5 High Severity Vulnerability",
-      "description": "The Product Designer for WooCommerce WordPress | Lumise plugin for WordPress is vulnerable to Directory Traversal in all versions up to, and including, 2.1.2 via the process_checkout function. This makes it possible for unauthenticated attackers to read the contents of arbitrary files on the server,",
+      "id": "CVE-2026-103407",
+      "title": "CVE-2026-103407 — Unknown Vendor An Improper Limitation CVSS 8.8 High Severity Vulnerability",
+      "description": "An Improper Limitation of a Pathname to a Restricted Directory vulnerability in ConfigDirector in Juniper Networks Session Smart Router and Session Smart Conductor allows an authenticated REST user to read, overwrite, or delete arbitrary certificate and key files on the host filesystem via the certi",
+      "cvss": 8.8,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-28",
+      "last_seen": "2026-10-28",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "An Improper Limitation",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://supportportal.juniper.net/JSA112183"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-103408",
+      "title": "CVE-2026-103408 — Unknown Vendor A Stack Buffer CVSS 8.8 High Severity Vulnerability",
+      "description": "A Stack Buffer Overflow vulnerability in the DHCP client in Juniper Networks Session Smart Router allows an unauthenticated attacker on the local network to achieve remote code execution via a malicious DHCP reply.",
+      "cvss": 8.8,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-28",
+      "last_seen": "2026-10-28",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "A Stack Buffer",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://supportportal.juniper.net/JSA112183"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-106079",
+      "title": "CVE-2026-106079 — Unknown Vendor An Improper Neutralization CVSS 8.8 High Severity Vulnerability",
+      "description": "An Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection') vulnerability in AccessManager in Juniper Networks Session Smart Router and Session Smart Conductor allows an attacker with config-write privileges to achieve arbitrary command execution as root in the YANG",
+      "cvss": 8.8,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-28",
+      "last_seen": "2026-10-28",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "An Improper Neutralization",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://supportportal.juniper.net/JSA112183"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-118645",
+      "title": "CVE-2026-118645 — Unknown Vendor n8n before 1.123.85, CVSS 8.7 High Severity Vulnerability",
+      "description": "n8n before 1.123.85, 2.x before 2.43.5, and 2.44.x before 2.44.1 contains a filter injection vulnerability in the Quick Base node, which sends the Where filter to the Quick Base API as raw query text. Attackers supplying untrusted input such as webhook data used to build the filter can make Get Many",
+      "cvss": 8.7,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-28",
+      "last_seen": "2026-10-28",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "n8n before 1.123.85,",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/n8n-io/n8n/security/advisories/GHSA-65mv-v8rp-54wc",
+        "https://www.vulncheck.com/advisories/n8n-before-1.123.85-2.43.5-and-2.44.1-filter-injection-via-quick-base-node-where-parameter"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-84725",
+      "title": "CVE-2026-84725 — Unknown Vendor when EAP runs CVSS 8.1 High Severity Vulnerability",
+      "description": "when EAP runs with -secmgr, the openjdk-orb's JDKBridge honours attacker-supplied CDR codebase URLs during object unmarshalling on :3528, allowing an unauthenticated attacker to load and instantiate arbitrary classes from a remote URL in the server JVM before EJB security interceptors run.",
+      "cvss": 8.1,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-28",
+      "last_seen": "2026-10-28",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "when EAP runs",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://access.redhat.com/security/cve/CVE-2026-84725",
+        "https://bugzilla.redhat.com/show_bug.cgi?id=2527228"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-118643",
+      "title": "CVE-2026-118643 — Unknown Vendor n8n before 1.123.85, CVSS 8.2 High Severity Vulnerability",
+      "description": "n8n before 1.123.85, 2.x before 2.43.5, and 2.44.x before 2.44.1 stores credential secrets in execution error data when operations fail in the Git, MongoDB Atlas Vector Store, and Google Cloud Storage nodes. Users who can view a workflow's executions but cannot read the credential can recover Git pa",
+      "cvss": 8.2,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-28",
+      "last_seen": "2026-10-28",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "n8n before 1.123.85,",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/n8n-io/n8n/security/advisories/GHSA-qmvv-q3c9-wpp7",
+        "https://www.vulncheck.com/advisories/n8n-before-1.123.85-2.43.5-and-2.44.1-credential-exposure-via-node-execution-error-data"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-118647",
+      "title": "CVE-2026-118647 — Unknown Vendor n8n before 1.123.85, CVSS 8.2 High Severity Vulnerability",
+      "description": "n8n before 1.123.85, 2.x before 2.43.5, and 2.44.x before 2.44.1 saves the SeaTable Trigger node's API token in error execution data, because failed poll requests store raw request headers. Users who can view workflow executions but cannot read the credential can recover the token and access the con",
+      "cvss": 8.2,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-28",
+      "last_seen": "2026-10-28",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "n8n before 1.123.85,",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/n8n-io/n8n/security/advisories/GHSA-crfj-5wv6-8v86",
+        "https://www.vulncheck.com/advisories/n8n-before-1.123.85-2.43.5-and-2.44.1-seatable-trigger-api-token-exposure-via-execution-data"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-115912",
+      "title": "vLLM: Public multimodal SHM handle forgery reaches worker-side `pickle.loads()` with insecure serialization disabled",
+      "description": "## Affected - **Ecosystem / package:** pip / `vllm`\n- **Affected versions:** vLLM MultiModalKwargsItem: assert mm_item is not None, f\"Expected an address item for {mm_hash=}\" if \"address\" in mm_item: address = cast(int, mm_item[\"address\"].data) monotonic_id = cast(int, mm_item[\"monotonic_id\"].data) ",
+      "cvss": 7.5,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-28",
+      "last_seen": "2026-10-28",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "pip",
+      "product": "vllm",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-115912",
+        "CVE-2026-115912"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-6757-hggm-hp2w",
+        "https://github.com/vllm-project/vllm/security/advisories/GHSA-6757-hggm-hp2w",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-115912",
+        "https://github.com/vllm-project/vllm/pull/59357"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-103410",
+      "title": "CVE-2026-103410 — Unknown Vendor An Integer Overflow CVSS 7.5 High Severity Vulnerability",
+      "description": "An Integer Overflow vulnerability in the DPI certificate scanner in Juniper Networks Session Smart Router allows an unauthenticated remote attacker to cause a denial of service via a specially crafted TLS server certificate.",
       "cvss": 7.5,
       "final_ps": 21,
       "quality_score": 0.525,
@@ -4256,13 +3725,12 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "The Product Designer",
+      "product": "An Integer Overflow",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://plugins.trac.wordpress.org/browser/lumise/trunk/core/cart.php#L209",
-        "https://www.wordfence.com/threat-intel/vulnerabilities/id/a4a1fb57-84b2-4849-a4d5-9381baf43ff5?source=cve"
+        "https://supportportal.juniper.net/JSA112183"
       ],
       "explanation": {
         "quality": [
@@ -4281,10 +3749,10 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-109381",
-      "title": "CVE-2026-109381 — Unknown Vendor The Mage Eventpress CVSS 7.2 High Severity Vulnerability",
-      "description": "The Mage Eventpress plugin for WordPress is vulnerable to privilege escalation in versions up to, and including, 5.7.8 This is due to the mep_grant_shop_manager_access() function hooking user_has_cap and unconditionally granting manage_options whenever an attacker-controllable request marker matches",
-      "cvss": 7.2,
+      "id": "CVE-2026-118641",
+      "title": "CVE-2026-118641 — Unknown Vendor n8n before 1.123.85, CVSS 7.5 High Severity Vulnerability",
+      "description": "n8n before 1.123.85, 2.x before 2.43.5, and 2.44.x before 2.44.1 contains an OData $filter injection vulnerability in the Microsoft Outlook contact lookup and Microsoft SharePoint v1 item update nodes, which build $filter string literals from expression-bindable parameters without escaping. Attacker",
+      "cvss": 7.5,
       "final_ps": 21,
       "quality_score": 0.525,
       "threat_level": "MEDIUM",
@@ -4300,15 +3768,13 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "The Mage Eventpress",
+      "product": "n8n before 1.123.85,",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/magepeopleteam/mage-eventpress",
-        "https://plugins.trac.wordpress.org/browser/mage-eventpress/trunk/woocommerce-event-press.php#L405",
-        "https://plugins.trac.wordpress.org/browser/mage-eventpress/trunk/woocommerce-event-press.php#L432",
-        "https://plugins.trac.wordpress.org/browser/mage-eventpress/trunk/woocommerce-event-press.php#L504"
+        "https://github.com/n8n-io/n8n/security/advisories/GHSA-mgpr-56r4-5c67",
+        "https://www.vulncheck.com/advisories/n8n-before-1.123.85-2.43.5-and-2.44.1-odata-filter-injection-via-outlook-and-sharepoint-nodes"
       ],
       "explanation": {
         "quality": [
@@ -4327,10 +3793,10 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-110662",
-      "title": "CVE-2026-110662 — Unknown Vendor The MxChat – CVSS 7.2 High Severity Vulnerability",
-      "description": "The MxChat – AI Chatbot & Content Generation for WordPress plugin for WordPress is vulnerable to Stored DOM-Based Cross-Site Scripting via the 'feedback' parameter in all versions up to, and including, 3.2.25 due to insufficient input sanitization and output escaping. This makes it possible for unau",
-      "cvss": 7.2,
+      "id": "CVE-2026-118644",
+      "title": "CVE-2026-118644 — Unknown Vendor n8n before 2.41.5 CVSS 7.7 High Severity Vulnerability",
+      "description": "n8n before 2.41.5 and 2.42.x before 2.42.2 passes a failed workflow's full execution context, including the identity of the user who started the run, to the configured error workflow. A project editor can set a colleague's workflow settings.errorWorkflow to an error workflow they own, inherit the co",
+      "cvss": 7.7,
       "final_ps": 21,
       "quality_score": 0.525,
       "threat_level": "MEDIUM",
@@ -4346,15 +3812,566 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "The MxChat –",
+      "product": "n8n before 2.41.5",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://plugins.trac.wordpress.org/browser/mxchat-basic/tags/3.2.25/includes/class-mxchat-admin.php#L3824",
-        "https://plugins.trac.wordpress.org/browser/mxchat-basic/tags/3.2.25/js/mxchat_transcripts.js#L1252",
-        "https://plugins.trac.wordpress.org/browser/mxchat-basic/tags/3.2.25/js/mxchat_transcripts.js#L267",
-        "https://plugins.trac.wordpress.org/browser/mxchat-basic/tags/3.2.25/js/mxchat_transcripts.js#L427"
+        "https://github.com/n8n-io/n8n/security/advisories/GHSA-pcr3-v5vr-qppf",
+        "https://www.vulncheck.com/advisories/n8n-before-2.41.5-and-2.42.2-credential-theft-via-error-workflow-context-inheritance"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-103411",
+      "title": "CVE-2026-103411 — Unknown Vendor An Integer Underflow CVSS 7.1 High Severity Vulnerability",
+      "description": "An Integer Underflow vulnerability in DhcpMessageDecoder in Juniper Networks Session Smart Router allows an attacker with local network access to cause information disclosure and a denial of service via a malicious DHCP reply.",
+      "cvss": 7.1,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-28",
+      "last_seen": "2026-10-28",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "An Integer Underflow",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://supportportal.juniper.net/JSA112183"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-118642",
+      "title": "CVE-2026-118642 — Unknown Vendor n8n before 1.123.85, CVSS 7.1 High Severity Vulnerability",
+      "description": "n8n before 1.123.85, 2.43.5, and 2.44.1 contains an authorization bypass vulnerability that allows authenticated members to use inaccessible credentials through inline sub-workflow nodes with non-boolean disabled values. Attackers knowing a credential id can run Execute Workflow nodes in inline JSON",
+      "cvss": 7.1,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-28",
+      "last_seen": "2026-10-28",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "n8n before 1.123.85,",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/n8n-io/n8n/security/advisories/GHSA-8vrr-mgc5-jg55",
+        "https://www.vulncheck.com/advisories/n8n-before-1.123.85-2.43.5-and-2.44.1-credential-permission-check-bypass-via-inline-sub-workflows"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-116581",
+      "title": "Seroval: fromJSON deserializer trusts node-supplied array length and sequence doneAt (unauthenticated event-loop DoS)",
+      "description": "### Summary `fromJSON` and `fromCrossJSON` used two node fields without checking them. - An array node's element list was not checked to be an array. A small payload could set the length the decoder looped over. This part is also tracked in GHSA-wp97-x4hv-qvhp.\n- A sequence node's done index was not",
+      "cvss": 7.5,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-28",
+      "last_seen": "2026-10-28",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "seroval",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-116581",
+        "CVE-2026-116581"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-97r2-qh9m-474h",
+        "https://github.com/lxsmnsyc/seroval/security/advisories/GHSA-97r2-qh9m-474h",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-116581",
+        "https://github.com/lxsmnsyc/seroval/commit/cdcee3e3bc384ee844360844f8ea98fd2b275d69"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-116584",
+      "title": "Seroval `fromJSON`/`fromCrossJSON` denial of service via unvalidated array node length",
+      "description": "### Summary `fromJSON` and `fromCrossJSON` did not check that an array node's element list is an array. A small crafted payload could set the length the decoder used. That length controlled how much memory was allocated and how many times the decoder looped, and it did not depend on the size of the ",
+      "cvss": 7.5,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-28",
+      "last_seen": "2026-10-28",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "seroval",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-116584",
+        "CVE-2026-116584"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-wp97-x4hv-qvhp",
+        "https://github.com/lxsmnsyc/seroval/security/advisories/GHSA-wp97-x4hv-qvhp",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-116584",
+        "https://github.com/lxsmnsyc/seroval/commit/cdcee3e3bc384ee844360844f8ea98fd2b275d69"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-115887",
+      "title": "graphql-scalars PhoneNumber scalar is vulnerable to regular expression denial of service",
+      "description": "## Summary The regular expression behind `GraphQLPhoneNumber` since 1.24.1 backtracks exponentially. A string made of a run of digits followed by one character that makes the match fail (for example `\"1\".repeat(30) + \"x\"`) blocks the JavaScript thread for seconds, and every additional digit doubles ",
+      "cvss": 7.5,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-28",
+      "last_seen": "2026-10-28",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "graphql-scalars",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-115887",
+        "CVE-2026-115887"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-x8rm-f576-gq67",
+        "https://github.com/graphql-hive/graphql-scalars/security/advisories/GHSA-x8rm-f576-gq67",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-115887",
+        "https://github.com/graphql-hive/graphql-scalars/pull/2719"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-116795",
+      "title": "RE2JS: Quadratic-time denial of service in re2js lookbehind matching",
+      "description": "### Summary Using the opt-in `LOOKBEHINDS` flag together with any repeated-matching API\n(`matcher().find()` in a loop, `matchAll()`, `split()`, `matcher().replaceAll()`)\ncauses quadratic-time (Θ(n²)) matching, contradicting the library's own\n\"linear time matching\" guarantee. A single call with a 16,",
+      "cvss": 7.5,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-28",
+      "last_seen": "2026-10-28",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "re2js",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-116795",
+        "CVE-2026-116795"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-gg6h-894w-4m9c",
+        "https://github.com/le0pard/re2js/security/advisories/GHSA-gg6h-894w-4m9c",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-116795",
+        "https://github.com/le0pard/re2js/pull/59"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-116580",
+      "title": "Seroval: Deserialization invokes attacker-chosen callables: AsyncIteratorFactoryInstance calls source.on(listener) witho",
+      "description": "### Summary When `fromJSON` rebuilt an async iterator, it called `on()` on the iterator's source without checking that the source was a seroval stream. A crafted payload could pick another value as the source, such as a function returned by an application plugin. The deserializer then called that va",
+      "cvss": 7.3,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-28",
+      "last_seen": "2026-10-28",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "seroval",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-116580",
+        "CVE-2026-116580"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-7rv5-mrxv-xcr9",
+        "https://github.com/lxsmnsyc/seroval/security/advisories/GHSA-7rv5-mrxv-xcr9",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-116580",
+        "https://github.com/lxsmnsyc/seroval/commit/3edc78b495ea0d6bd498143e5b3e56996607c5f2"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-118257",
+      "title": "Vue I18n: escapeParameter does not prevent XSS through srcdoc in translation messages",
+      "description": "### Summary When `escapeParameter` is enabled (`escapeParameterHtml` in the Legacy API), Vue I18n passes the translated string through `sanitizeTranslatedHtml()`. The sanitizer escapes ` ` in attribute values and neutralizes event handler attributes such as `onerror`, but it does not handle the `src",
+      "cvss": 7.2,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-10-28",
+      "last_seen": "2026-10-28",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "npm",
+      "product": "vue-i18n",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-118257",
+        "CVE-2026-118257"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-83rm-6c8r-g728",
+        "https://github.com/intlify/vue-i18n/security/advisories/GHSA-83rm-6c8r-g728",
+        "https://github.com/intlify/vue-i18n/pull/2679",
+        "https://github.com/intlify/vue-i18n/commit/43391d20e7c85403cb59bdb21b5d542819f54042"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-70262",
+      "title": "CVE-2026-70262 — microsoft windows 10 1607 CVSS 8.8 High Severity Vulnerability",
+      "description": "Heap-based buffer overflow in WebDAV allows an unauthorized attacker to elevate privileges over a network.",
+      "cvss": 8.8,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-13",
+      "last_seen": "2026-10-13",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "microsoft",
+      "product": "windows 10 1607",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-70262"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-70275",
+      "title": "CVE-2026-70275 — microsoft windows 10 1607 CVSS 8.8 High Severity Vulnerability",
+      "description": "Untrusted pointer dereference in Windows CD-ROM Driver allows an unauthorized attacker to execute code over a network.",
+      "cvss": 8.8,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-13",
+      "last_seen": "2026-10-13",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "microsoft",
+      "product": "windows 10 1607",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-70275"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-83789",
+      "title": "CVE-2026-83789 — microsoft windows 10 1607 CVSS 8.8 High Severity Vulnerability",
+      "description": "Heap-based buffer overflow in Windows SMB Client allows an unauthorized attacker to elevate privileges over a network.",
+      "cvss": 8.8,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-13",
+      "last_seen": "2026-10-13",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "microsoft",
+      "product": "windows 10 1607",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-83789"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-47304",
+      "title": "CVE-2026-47304 — microsoft .net framework CVSS 8.1 High Severity Vulnerability",
+      "description": "Improper verification of cryptographic signature in .NET allows an unauthorized attacker to bypass a security feature over a network.",
+      "cvss": 8.1,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-07-14",
+      "last_seen": "2026-07-14",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "microsoft",
+      "product": ".net framework",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-47304"
       ],
       "explanation": {
         "quality": [
