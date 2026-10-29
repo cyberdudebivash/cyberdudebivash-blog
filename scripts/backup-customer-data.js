@@ -182,6 +182,48 @@ async function fetchAll(redis) {
   return { hashes, strings, auditLog };
 }
 
+/**
+ * P0 backup artifact safety: do not publish a final backup path until the
+ * encrypted contents can be read and successfully authenticated/decrypted.
+ * A same-directory hard link installs an already-verified 0600 temp file
+ * atomically WITHOUT overwriting an existing artifact. Never fall back to
+ * unencrypted output, a partial final artifact or a different storage tier.
+ */
+function writeVerifiedEncryptedSnapshot(snapshot, keyHex, outputPath) {
+  _requireValidKey(keyHex);
+  if (typeof outputPath !== 'string' || !outputPath.trim()) {
+    throw new Error('SOC_BACKUP_INVALID_OUTPUT_PATH');
+  }
+  const encrypted = encryptSnapshot(snapshot, keyHex);
+  const parent = path.dirname(outputPath);
+  fs.mkdirSync(parent, { recursive: true });
+  const tempPath = path.join(parent,
+    `.${path.basename(outputPath)}.${crypto.randomBytes(12).toString('hex')}.tmp`);
+  let fd;
+  try {
+    fd = fs.openSync(tempPath, 'wx', 0o600);
+    fs.writeFileSync(fd, encrypted, 'utf8');
+    fs.fsyncSync(fd);
+    fs.closeSync(fd);
+    fd = undefined;
+    // Read exactly what was written, not the in-memory encryption output.
+    // GCM verification fails closed if the file is incomplete or corrupted.
+    const readBack = decryptSnapshot(fs.readFileSync(tempPath, 'utf8'), keyHex);
+    if (JSON.stringify(readBack) !== JSON.stringify(snapshot)) {
+      throw new Error('SOC_BACKUP_ENCRYPTED_ARTIFACT_MISMATCH');
+    }
+    // linkSync does NOT replace an existing path (including a symlink).
+    // Temp and target share a directory, so this avoids a partial final file.
+    fs.linkSync(tempPath, outputPath);
+  } finally {
+    if (fd !== undefined) fs.closeSync(fd);
+    try { fs.unlinkSync(tempPath); } catch (err) {
+      if (err.code !== 'ENOENT') throw err;
+    }
+  }
+  return outputPath;
+}
+
 async function main() {
   const outputPath = process.argv[2] ||
     path.join(__dirname, '..', 'backups', `customer-data-${new Date().toISOString().replace(/[:.]/g, '-')}.enc`);
@@ -193,13 +235,13 @@ async function main() {
     return;
   }
 
+  // P0: validate the key BEFORE opening Redis or consuming any customer-read
+  // budget. A present-but-invalid key is not a valid backup prerequisite.
+  _requireValidKey(encryptionKey);
   const redis = require('../api/_lib/redis');
   const data = await fetchAll(redis);
   const snapshot = buildSnapshot(data);
-  const encrypted = encryptSnapshot(snapshot, encryptionKey);
-
-  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-  fs.writeFileSync(outputPath, encrypted, 'utf8');
+  writeVerifiedEncryptedSnapshot(snapshot, encryptionKey, outputPath);
 
   console.log(`[BACKUP] Snapshot written: ${outputPath}`);
   console.log(`[BACKUP] ${Object.keys(snapshot.hashes).length} user record(s), ${Object.keys(snapshot.strings).length} lookup key(s), ${snapshot.auditLog.length} audit entries.`);
@@ -216,4 +258,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { buildSnapshot, encryptSnapshot, decryptSnapshot, fetchAll, normalizeHashRecord, normalizeAuditLog, KEY_PATTERNS, SCHEMA_VERSION };
+module.exports = { buildSnapshot, encryptSnapshot, decryptSnapshot, fetchAll, normalizeHashRecord, normalizeAuditLog, writeVerifiedEncryptedSnapshot, KEY_PATTERNS, SCHEMA_VERSION };
