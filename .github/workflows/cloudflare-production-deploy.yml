@@ -142,6 +142,11 @@ on:
       - '.github/workflows/cloudflare-production-deploy.yml'
       - '.github/workflows/production-drift-reconcile.yml'
   workflow_dispatch:
+    inputs:
+      approved_release_sha:
+        description: "Exact 40-character owner-reviewed SHA (must match protected approval and current main)"
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -173,6 +178,16 @@ jobs:
         with:
           node-version: '24'
           cache: npm
+
+      # No checkout/build result is approved merely because the caller
+      # selected main. A protected, independently configured release SHA is
+      # mandatory; publisher commits can advance main at any time.
+      - name: "P0 immutable owner-approved SHA before build — fail closed"
+        shell: bash
+        env:
+          CDB_SOC_RELEASE_INPUT_SHA: ${{ inputs.approved_release_sha }}
+          CDB_SOC_APPROVED_RELEASE_SHA: ${{ secrets.CDB_SOC_APPROVED_RELEASE_SHA }}
+        run: node scripts/soc-cloudflare-release-sha-gate.cjs
 
       - name: "Install locked dependencies"
         run: npm ci --legacy-peer-deps --ignore-scripts
@@ -275,6 +290,15 @@ jobs:
           vercel_refs="$(jq '[.result[] | select((.content // "" | ascii_downcase) | contains("vercel"))] | length' <<<"$dns_json")"
           test "$vercel_refs" -eq 0 || { echo "::error::Legacy Vercel DNS target is still present"; exit 1; }
           echo "PASS: NO_LEGACY_VERCEL_DNS_BEFORE_WORKER_DEPLOY"
+
+      # Recheck current main just before Wrangler: a scheduled publisher
+      # could have advanced main while the protected review was in progress.
+      - name: "P0 last-mile immutable release SHA revalidation — fail closed"
+        shell: bash
+        env:
+          CDB_SOC_RELEASE_INPUT_SHA: ${{ inputs.approved_release_sha }}
+          CDB_SOC_APPROVED_RELEASE_SHA: ${{ secrets.CDB_SOC_APPROVED_RELEASE_SHA }}
+        run: node scripts/soc-cloudflare-release-sha-gate.cjs
 
       - name: "Deploy Worker assets to the existing, approved domain"
         shell: bash
