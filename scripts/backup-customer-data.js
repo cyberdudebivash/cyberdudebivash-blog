@@ -88,6 +88,71 @@ function decryptSnapshot(encrypted, keyHex) {
   return JSON.parse(plaintext.toString('utf8'));
 }
 
+/**
+ * P0: Upstash REST HGETALL returns alternating [field,value,...], NOT an
+ * object. Earlier backups persisted these arrays and restore used hmset with
+ * numeric array indexes, risking silent corruption of customer key records.
+ * Accept both original legacy flat arrays and object-backed test fixtures,
+ * but never invent missing fields or values. This helper has no I/O.
+ */
+function normalizeHashRecord(raw) {
+  if (!raw || typeof raw !== 'object') {
+    throw new Error('SOC_BACKUP_INVALID_HASH_RESPONSE');
+  }
+  let pairs;
+  if (Array.isArray(raw)) {
+    if (!raw.length || raw.length % 2 !== 0) {
+      throw new Error('SOC_BACKUP_INVALID_HASH_RESPONSE');
+    }
+    pairs = [];
+    for (let i = 0; i < raw.length; i += 2) {
+      pairs.push([raw[i], raw[i + 1]]);
+    }
+  } else {
+    pairs = Object.entries(raw);
+  }
+  if (!pairs.length) throw new Error('SOC_BACKUP_INVALID_HASH_RESPONSE');
+  const seen = new Set();
+  const normalized = [];
+  for (const [field, value] of pairs) {
+    if (typeof field !== 'string' || !field || seen.has(field) ||
+        typeof value !== 'string') {
+      throw new Error('SOC_BACKUP_INVALID_HASH_RESPONSE');
+    }
+    seen.add(field);
+    normalized.push([field, value]);
+  }
+  return Object.fromEntries(normalized);
+}
+
+/**
+ * Upstash ZREVRANGE WITHSCORES returns a flat [member,score,...] array;
+ * existing historical encrypted snapshots sometimes contain already-paired
+ * entries from test clients. Preserve both shapes without data loss.
+ */
+function normalizeAuditLog(raw) {
+  if (!Array.isArray(raw)) throw new Error('SOC_BACKUP_INVALID_AUDIT_RESPONSE');
+  if (!raw.length) return [];
+  let entries;
+  if (raw.every(Array.isArray)) {
+    entries = raw;
+  } else if (raw.some(Array.isArray) || raw.length % 2 !== 0) {
+    throw new Error('SOC_BACKUP_INVALID_AUDIT_RESPONSE');
+  } else {
+    entries = [];
+    for (let i = 0; i < raw.length; i += 2) entries.push([raw[i], raw[i + 1]]);
+  }
+  return entries.map(pair => {
+    if (!Array.isArray(pair) || pair.length !== 2 ||
+        typeof pair[0] !== 'string' || !pair[0] ||
+        (typeof pair[1] !== 'string' && typeof pair[1] !== 'number') ||
+        !Number.isFinite(Number(pair[1]))) {
+      throw new Error('SOC_BACKUP_INVALID_AUDIT_RESPONSE');
+    }
+    return [pair[0], String(pair[1])];
+  });
+}
+
 /** Fetch all data for the configured key patterns from a live redis
  *  client. Isolated from encryption/file-writing so it's the only piece
  *  that actually needs a connection -- takes `redis` as a parameter so
@@ -100,20 +165,19 @@ async function fetchAll(redis) {
     const keys = (await redis.keys(pattern)) || [];
     for (const key of keys) {
       if (key.startsWith('user:key:')) {
-        hashes[key] = await redis.hgetall(key);
+        hashes[key] = normalizeHashRecord(await redis.hgetall(key));
       } else {
         strings[key] = await redis.get(key);
       }
     }
   }
 
-  let auditLog = [];
-  try {
-    auditLog = (await redis.zrevrange('audit:payment:log', 0, -1, true)) || [];
-  } catch (_) {
-    // Best-effort -- a missing/unreadable audit log must not block backing
-    // up the higher-priority user records above.
-  }
+  // The payment audit log is durable customer evidence, not an optional
+  // cosmetic counter. Fail the entire backup on an unreadable/malformed log
+  // rather than emit a successful but silently incomplete encrypted snapshot.
+  const auditLog = normalizeAuditLog(
+    await redis.zrevrange('audit:payment:log', 0, -1, true)
+  );
 
   return { hashes, strings, auditLog };
 }
@@ -152,4 +216,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { buildSnapshot, encryptSnapshot, decryptSnapshot, fetchAll, KEY_PATTERNS, SCHEMA_VERSION };
+module.exports = { buildSnapshot, encryptSnapshot, decryptSnapshot, fetchAll, normalizeHashRecord, normalizeAuditLog, KEY_PATTERNS, SCHEMA_VERSION };
