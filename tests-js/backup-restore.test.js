@@ -87,14 +87,10 @@ test('fetchAll routes user:key:* through hgetall and everything else through get
   assert.deepStrictEqual(result.auditLog, [['TIER_UPGRADED', '1700000000']]);
 });
 
-test('fetchAll tolerates a failing audit-log read without losing user records', async () => {
+test('P0 backup rejects failing audit-log reads rather than claiming an incomplete snapshot', async () => {
   const redis = fakeRedis({ 'user:key:hash1': { email: 'a@example.com' } });
   redis.zrevrange = async () => { throw new Error('redis down'); };
-
-  const result = await fetchAll(redis);
-
-  assert.deepStrictEqual(result.hashes['user:key:hash1'], { email: 'a@example.com' });
-  assert.deepStrictEqual(result.auditLog, []);
+  await assert.rejects(fetchAll(redis), /redis down/);
 });
 
 test('KEY_PATTERNS excludes ephemeral/regenerable keys by design', () => {
@@ -105,11 +101,15 @@ test('KEY_PATTERNS excludes ephemeral/regenerable keys by design', () => {
 /* ─── applySnapshot — restore replay ───────────────────────────────────── */
 
 function recordingRedis() {
-  const written = { hashes: {}, strings: {} };
+  const written = { hashes: {}, strings: {}, auditLog: [] };
   return {
     written,
     hmset: async (key, fields) => { written.hashes[key] = fields; },
     set: async (key, value) => { written.strings[key] = value; },
+    zadd: async (key, score, member) => {
+      assert.strictEqual(key, 'audit:payment:log');
+      written.auditLog.push([member, score]);
+    },
   };
 }
 
