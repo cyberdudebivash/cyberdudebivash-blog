@@ -295,9 +295,31 @@ class InvestigationManager {
     return events.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
   }
 
-  async getRelatedInvestigations(investigationId, limit = 20) {
+  async getRelatedInvestigations(investigationId, limit = 20, filters) {
+    // P0: the previous implementation referenced an undefined "filters"
+    // variable after reading the index, causing a ReferenceError for any
+    // related result. Never fix this by defaulting to an unscoped global list:
+    // this legacy analyst workbench has NOT passed tenant isolation review.
+    // The caller must derive the owner scope from authenticated server identity,
+    // not from arbitrary browser query parameters.
+    if (!filters || typeof filters !== 'object' || Array.isArray(filters) ||
+        typeof filters.assignee !== 'string' || !filters.assignee.trim() ||
+        filters.assignee === 'unassigned') {
+      throw new Error('SOC_RELATED_INVESTIGATION_OWNER_SCOPE_REQUIRED');
+    }
+    if (!Number.isSafeInteger(limit) || limit < 1 || limit > 50) {
+      throw new RangeError('SOC_RELATED_INVESTIGATION_LIMIT_INVALID');
+    }
+    if (filters.status !== undefined &&
+        !Object.values(INVESTIGATION_STATUS).includes(filters.status)) {
+      throw new Error('SOC_RELATED_INVESTIGATION_STATUS_INVALID');
+    }
+
     const investigation = await this.getInvestigation(investigationId);
     if (!investigation) throw new Error(`Investigation not found: ${investigationId}`);
+    if (investigation.assignee !== filters.assignee) {
+      throw new Error('SOC_RELATED_INVESTIGATION_OWNER_SCOPE_MISMATCH');
+    }
 
     // Find investigations with overlapping linked intelligence
     const linkedIntel = investigation.linkedIntelligence || [];
