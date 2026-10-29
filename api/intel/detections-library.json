@@ -1,8 +1,40 @@
 {
-  "generated": "2026-10-28T22:40:37.777Z",
+  "generated": "2026-10-29T05:55:40.965Z",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
   "count": 200,
   "items": [
+    {
+      "slug": "cve-2026-116576-npm-systeminformation",
+      "title": "systeminformation vulnerable to Windows command injection in services() through Unicode quotation marks",
+      "url": "/posts/cve-2026-116576-npm-systeminformation.html",
+      "generated": "2026-10-29T01:38:49.400Z",
+      "severity": "HIGH",
+      "cves": [
+        "CVE-2026-116576",
+        "CVE-2026-116576"
+      ],
+      "mitreAttack": [
+        {
+          "id": "T1059.001",
+          "name": "PowerShell",
+          "tactic": "execution",
+          "confidence": "HIGH"
+        }
+      ],
+      "sigma": [
+        "title: Suspicious Encoded PowerShell Invocation\nid: 180ec008-0df2-59e2-a4d6-7b0797640f02\nstatus: experimental\ndescription: 'Suspicious Encoded PowerShell Invocation. Evidence basis: On Windows, `systeminformation@5.33.15` builds a PowerShell command using the value passed to `services()`. T. CYBERDUDEBIVASH SENTINEL APEX Detection Engineering.'\nreferences:\n- 'https://nvd.nist.gov/vuln/detail/CVE-2026-116576'\nauthor: CYBERDUDEBIVASH SENTINEL APEX Detection Engineering\ndate: 2026-10-29\ntags:\n- attack.t1059.001\nlogsource:\n    product: windows\n    category: process_creation\ndetection:\n    selection:\n        Image|endswith: \\powershell.exe\n        CommandLine|contains:\n            - '-EncodedCommand'\n            - '-enc '\n            - FromBase64String\n    condition: selection\nfalsepositives:\n    - Legitimate administrative activity\n    - Authorized security testing\nlevel: high"
+      ],
+      "kql": [
+        "DeviceProcessEvents\n| where FolderPath endswith \"\\\\powershell.exe\"\n| where (ProcessCommandLine contains \"-EncodedCommand\" or ProcessCommandLine contains \"-enc \" or ProcessCommandLine contains \"FromBase64String\")\n| project Timestamp, DeviceName, FolderPath, ProcessCommandLine, InitiatingProcessFolderPath"
+      ],
+      "splunk": [
+        "| tstats count from datamodel=Endpoint where nodename=Endpoint.Processes Processes.process_path=\"*\\powershell.exe\" (Processes.process=\"*-EncodedCommand*\" OR Processes.process=\"*-enc *\" OR Processes.process=\"*FromBase64String*\") by Processes.process_path Processes.parent_process_path _time"
+      ],
+      "osquery": [
+        "SELECT * FROM processes WHERE path LIKE '%\\powershell.exe' AND (cmdline LIKE '%-EncodedCommand%' OR cmdline LIKE '%-enc %' OR cmdline LIKE '%FromBase64String%');"
+      ],
+      "suricata": []
+    },
     {
       "slug": "cve-2026-48379-unknown-vendor-substance3d-painter",
       "title": "CVE-2026-48379 — Unknown Vendor Substance3D - Painter CVSS 7.8 High Severity Vulnerability",
@@ -4245,25 +4277,6 @@
         "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL http://git.projectnightcrawler.dev/NightmareEclipse/LegacyHive&quot;&gt;&lt;code&gt;git.projectnight\"; http.host; content:\"git.projectnightcrawler.dev\"; nocase; http.uri; content:\"/NightmareEclipse/LegacyHive&quot\\;&gt\\;&lt\\;code&gt\\;git.projectnight\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
         "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/user/ILikeNoodlesXOXO&quot;&gt;\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/user/ILikeNoodlesXOXO&quot\\;&gt\\;\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
         "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uw2f7e/nightmare_eclipse_could_be_dropping_his_big/\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uw2f7e/nightmare_eclipse_could_be_dropping_his_big/\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)"
-      ]
-    },
-    {
-      "slug": "writing-an-evasive-net-shellcode-loader",
-      "title": "Writing an Evasive .NET Shellcode Loader",
-      "url": "/posts/writing-an-evasive-net-shellcode-loader.html",
-      "generated": "2026-07-14T08:02:11.541Z",
-      "severity": "MEDIUM",
-      "cves": [],
-      "mitreAttack": [],
-      "sigma": [],
-      "kql": [],
-      "splunk": [],
-      "osquery": [],
-      "suricata": [
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/user/slashcrypto&quot;&gt;\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/user/slashcrypto&quot\\;&gt\\;\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://slashsec.at/en/blog/writing-an-evasive-dotnet-shellcode-loader&quot;&gt;[link]&lt;/a&gt;&lt;\"; http.host; content:\"slashsec.at\"; nocase; http.uri; content:\"/en/blog/writing-an-evasive-dotnet-shellcode-loader&quot\\;&gt\\;[link]&lt\\;/a&gt\\;&lt\\;\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/netsec/comments/1uw1jdd/writing_an_evasive_net_shellcode_loader/&quot;&gt;[\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/netsec/comments/1uw1jdd/writing_an_evasive_net_shellcode_loader/&quot\\;&gt\\;[\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
         "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)"
       ]
     }
