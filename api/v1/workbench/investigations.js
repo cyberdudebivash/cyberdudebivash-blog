@@ -247,7 +247,9 @@ async function handleUpdateInvestigation(req, res, id, caller) {
         !canAssignInvestigation(caller, body.assignee)) {
       return fail(res, 403, 'ASSIGNMENT_FORBIDDEN', 'Cannot reassign to another analyst');
     }
-    const investigation = await investigationMgr.updateInvestigation(id, body);
+    // requireAnalyst already authenticated this internal caller above. Never
+    // derive reassignment authority from a client-supplied body/role field.
+    const investigation = await investigationMgr.updateInvestigation(id, body, caller);
 
     return ok(res, { investigation });
   } catch (e) {

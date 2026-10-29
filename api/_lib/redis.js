@@ -85,6 +85,31 @@ const redis = {
   // rank-based, not score-range-based.
   zrangebyscore: (key, min, max) => redisCmd('ZRANGEBYSCORE', key, String(min), String(max)),
 
+  // Atomic Redis Lua script over Upstash REST. POST keeps the script and
+  // arguments out of URL paths. A pipeline is not atomic; do not substitute.
+  // Fail closed on response-level errors, including successful HTTP 200 with
+  // a Redis error payload.
+  eval: async (script, keys = [], args = []) => {
+    if (!BASE || !TOKEN) throw new Error('Redis not configured');
+    if (typeof script !== 'string' || !script || !Array.isArray(keys) ||
+        !Array.isArray(args) || keys.length > 12 || args.length > 32) {
+      throw new Error('SOC_REDIS_EVAL_INVALID_ARGUMENTS');
+    }
+    const res = await fetch(BASE, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(['EVAL', script, String(keys.length), ...keys, ...args]),
+      cache: 'no-store',
+    });
+    if (!res.ok) throw new Error(`Redis EVAL HTTP ${res.status}`);
+    const json = await res.json();
+    if (!json || Object.prototype.hasOwnProperty.call(json, 'error') ||
+        !Object.prototype.hasOwnProperty.call(json, 'result')) {
+      throw new Error('SOC_REDIS_EVAL_SERVER_REJECTED');
+    }
+    return json.result;
+  },
+
   // Pipeline: execute multiple commands
   pipeline: async (commands) => {
     const res = await fetch(`${BASE}/pipeline`, {
