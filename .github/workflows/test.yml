@@ -97,6 +97,8 @@ jobs:
         run: python3 -m unittest -v tests.test_soc_original_event_identity
       - name: Validate SOC atomic evidence source read quota (offline SQLite)
         run: python3 -m unittest -v tests.test_soc_evidence_read_budget
+      - name: P0 — Verified encrypted backup artifact, fail-closed key and overwrite safety
+        run: node --test tests-js/soc-backup-atomic-artifact.test.js
       - name: P0 — Customer backup and historical Redis restore integrity
         run: node --test tests-js/backup-restore.test.js tests-js/soc-backup-native-restorability.test.js
       - name: P0 SOC — Gated durable outbox native SQLite safety and replay tests
