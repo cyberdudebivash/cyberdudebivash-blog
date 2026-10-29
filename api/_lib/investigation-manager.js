@@ -3,6 +3,7 @@
 const crypto = require('crypto');
 const { atomicReassign } = require('./investigation-assignment-atomic');
 const { atomicCloseInvestigation } = require('./investigation-closure-atomic');
+const { isInternalLead, isValidObjectId } = require('./workbench-object-scope');
 
 const INVESTIGATION_STATUS = {
   OPEN: 'open',
@@ -370,8 +371,7 @@ class InvestigationManager {
     // A verified internal lead must supply the caller identity. Existing
     // untrusted/non-HTTP callers are intentionally fail-closed until the
     // authenticated route/canary contract is proven.
-    if (!trustedCaller || typeof trustedCaller !== 'object' ||
-        !['lead_analyst', 'soc_admin'].includes(trustedCaller.role)) {
+    if (!isInternalLead(trustedCaller) || !isValidObjectId(trustedCaller.id)) {
       throw new Error('SOC_INVESTIGATION_CLOSE_AUTHORIZATION_REQUIRED');
     }
     const investigation = await this.getInvestigation(investigationId);
