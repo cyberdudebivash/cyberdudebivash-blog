@@ -1,6 +1,7 @@
 'use strict';
 
 const crypto = require('crypto');
+const { atomicReassign } = require('./investigation-assignment-atomic');
 
 const INVESTIGATION_STATUS = {
   OPEN: 'open',
@@ -110,7 +111,7 @@ class InvestigationManager {
     return investigation;
   }
 
-  async updateInvestigation(investigationId, updates) {
+  async updateInvestigation(investigationId, updates, trustedCaller = null) {
     const investigation = await this.getInvestigation(investigationId);
     if (!investigation) throw new Error(`Investigation not found: ${investigationId}`);
     if (!updates || typeof updates !== 'object' || Array.isArray(updates)) {
@@ -120,15 +121,12 @@ class InvestigationManager {
     const investKey = `investigation:${investigationId}`;
     const now = new Date().toISOString();
 
-    // P0 #455: a mutable assignee without an atomic owner-index transition
-    // creates stale/absent assignment entries and can undermine workbench
-    // visibility. Until an atomic, idempotent reassignment operation is
-    // implemented and certified, fail closed BEFORE any Redis mutation.
-    // This guard also protects non-HTTP callers of this manager.
-    if (Object.prototype.hasOwnProperty.call(updates, 'assignee') &&
-        updates.assignee !== investigation.assignee) {
-      throw new Error('SOC_INVESTIGATION_REASSIGNMENT_NOT_READY');
-    }
+    // P0 #455: only a verified internal lead may use the atomic compare-and-
+    // swap reassignment path. Non-HTTP callers without trusted identity still
+    // fail closed. Existing status/priority guards run BEFORE this mutation.
+    const reassignmentRequested =
+      Object.prototype.hasOwnProperty.call(updates, 'assignee') &&
+      updates.assignee !== investigation.assignee;
 
     // P0 #462: status and priority have separate Redis sorted-set indexes.
     // Non-atomic hash-only transitions leave old memberships and omit new ones.
@@ -156,6 +154,15 @@ class InvestigationManager {
           updateData[field] = updates[field];
         }
       }
+    }
+
+    // Reassignment updates the hash, owner indices and audit inside one
+    // Upstash Redis EVAL; do not separately hset/audit after a successful CAS.
+    if (reassignmentRequested) {
+      return atomicReassign({
+        redis: this.redis, investigation, updates, caller: trustedCaller,
+        now: new Date(now)
+      });
     }
 
     updateData.updatedAt = now;
