@@ -86,7 +86,27 @@ const redis = {
       if (encoded === undefined) throw new TypeError('SOC_REDIS_HSET_INVALID_FIELDS');
       args.push(name, encoded);
     }
-    return redisCmd('HSET', key, ...args);
+    // Preserve the existing compact GET path for a classic one-field edit.
+    if (!Array.isArray(field)) return redisCmd('HSET', key, ...args);
+    // A full investigation/report may be too large for URL path parameters.
+    // Upstash supports exactly one command as POST [COMMAND, key, field, value...].
+    // This is a single atomic Redis HSET, NOT a non-atomic REST pipeline.
+    return (async () => {
+      if (!BASE || !TOKEN) throw new Error('Redis not configured');
+      const res = await fetch(BASE, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${TOKEN}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(['HSET', key, ...args]),
+        cache: 'no-store',
+      });
+      if (!res.ok) throw new Error(`Redis HSET HTTP ${res.status}`);
+      const json = await res.json();
+      if (!json || Object.prototype.hasOwnProperty.call(json, 'error') ||
+          !Object.prototype.hasOwnProperty.call(json, 'result')) {
+        throw new Error('SOC_REDIS_HSET_SERVER_REJECTED');
+      }
+      return json.result;
+    })();
   },
   hgetall: key               => redisCmd('HGETALL', key),
   hmset: async (key, obj) => {
