@@ -162,12 +162,28 @@ async function fetchAll(redis) {
   const strings = {};
 
   for (const pattern of KEY_PATTERNS) {
-    const keys = (await redis.keys(pattern)) || [];
+    // Redis KEYS must return an array even for an empty keyspace. A null,
+    // malformed or wrong-namespace reply is not evidence that all customer
+    // records vanished; do not publish an apparently complete backup.
+    const keys = await redis.keys(pattern);
+    const prefix = pattern.slice(0, -1);
+    if (!Array.isArray(keys) ||
+        keys.some(key => typeof key !== 'string' ||
+          !key.startsWith(prefix) || key.length <= prefix.length) ||
+        new Set(keys).size !== keys.length) {
+      throw new Error('SOC_BACKUP_INVALID_KEY_ENUMERATION');
+    }
     for (const key of keys) {
       if (key.startsWith('user:key:')) {
         hashes[key] = normalizeHashRecord(await redis.hgetall(key));
       } else {
-        strings[key] = await redis.get(key);
+        const value = await redis.get(key);
+        // A key returned by KEYS but missing at GET time implies a changing
+        // snapshot. Do not silently restore it as an absent customer lookup.
+        if (typeof value !== 'string') {
+          throw new Error('SOC_BACKUP_INCONSISTENT_LOOKUP_VALUE');
+        }
+        strings[key] = value;
       }
     }
   }
