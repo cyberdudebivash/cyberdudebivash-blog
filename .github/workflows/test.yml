@@ -124,6 +124,8 @@ jobs:
         run: node --test tests-js/soc-operator-release-preflight.test.js
       - name: P0 — Cloudflare manually approved exact SHA and last-mile main parity
         run: node --test tests-js/soc-cloudflare-release-sha-gate.test.js
+      - name: P0 — Atomic closed-case status transition, audit and authorization guards
+        run: node --test tests-js/soc-investigation-close-atomic.test.js tests-js/soc-investigation-status-priority-guard.test.js
       - name: P0 — Atomic internal lead investigation reassignment and index/audit CAS
         run: node --test tests-js/soc-investigation-atomic-assignment.test.js
       - name: P0 — Related investigation owner-scoped query, failure and regression controls
