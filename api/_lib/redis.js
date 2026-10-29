@@ -55,7 +55,59 @@ const redis = {
 
   // Hashes
   hget:   (key, field)       => redisCmd('HGET', key, field),
-  hset:   (key, field, val)  => redisCmd('HSET', key, field, val),
+  // Redis HSET accepts EITHER a field/value pair OR multiple alternating
+  // field/value arguments. Several core SOC managers pass Object.entries(...)
+  // .flat() to this adapter; the old fixed-arity implementation sent that
+  // entire array as ONE field and an undefined value (P0 write-path defect).
+  // Validate the full payload before sending one atomic Redis HSET command.
+  hset: (key, field, val) => {
+    let pairs;
+    if (Array.isArray(field) && val === undefined) {
+      pairs = field;
+    } else if (typeof field === 'string' && val !== undefined) {
+      pairs = [field, val];
+    } else {
+      throw new TypeError('SOC_REDIS_HSET_INVALID_FIELDS');
+    }
+    if (!pairs.length || pairs.length % 2 !== 0) {
+      throw new TypeError('SOC_REDIS_HSET_INVALID_FIELDS');
+    }
+    const args = [];
+    for (let i = 0; i < pairs.length; i += 2) {
+      const name = pairs[i], value = pairs[i + 1];
+      if (typeof name !== 'string' || !name ||
+          value === undefined ||
+          (typeof value === 'number' && !Number.isFinite(value))) {
+        throw new TypeError('SOC_REDIS_HSET_INVALID_FIELDS');
+      }
+      // Structured values must not silently become "[object Object]".
+      const encoded = value && typeof value === 'object'
+        ? JSON.stringify(value) : String(value);
+      if (encoded === undefined) throw new TypeError('SOC_REDIS_HSET_INVALID_FIELDS');
+      args.push(name, encoded);
+    }
+    // Preserve the existing compact GET path for a classic one-field edit.
+    if (!Array.isArray(field)) return redisCmd('HSET', key, ...args);
+    // A full investigation/report may be too large for URL path parameters.
+    // Upstash supports exactly one command as POST [COMMAND, key, field, value...].
+    // This is a single atomic Redis HSET, NOT a non-atomic REST pipeline.
+    return (async () => {
+      if (!BASE || !TOKEN) throw new Error('Redis not configured');
+      const res = await fetch(BASE, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${TOKEN}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(['HSET', key, ...args]),
+        cache: 'no-store',
+      });
+      if (!res.ok) throw new Error(`Redis HSET HTTP ${res.status}`);
+      const json = await res.json();
+      if (!json || Object.prototype.hasOwnProperty.call(json, 'error') ||
+          !Object.prototype.hasOwnProperty.call(json, 'result')) {
+        throw new Error('SOC_REDIS_HSET_SERVER_REJECTED');
+      }
+      return json.result;
+    })();
+  },
   hgetall: key               => redisCmd('HGETALL', key),
   hmset: async (key, obj) => {
     const pairs = Object.entries(obj).flat().map(String);
