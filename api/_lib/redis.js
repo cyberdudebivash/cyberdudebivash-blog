@@ -119,9 +119,46 @@ const redis = {
     })();
   },
   hgetall: key               => redisCmd('HGETALL', key),
+  // HMSET is still used for customer API keys, paid entitlements,
+  // purchase tokens and encrypted-snapshot restoration. Never put those
+  // values or potentially long records in a GET URL (proxy/URL-size risk).
+  // Preserve Redis HMSET's historic 'OK' response, not HSET's count.
+  // One REST POST command is atomic on Redis; do NOT use /pipeline.
   hmset: async (key, obj) => {
-    const pairs = Object.entries(obj).flat().map(String);
-    return redisCmd('HMSET', key, ...pairs);
+    if (typeof key !== 'string' || !key ||
+        !obj || typeof obj !== 'object' || Array.isArray(obj)) {
+      throw new TypeError('SOC_REDIS_HMSET_INVALID_FIELDS');
+    }
+    const entries = Object.entries(obj);
+    if (!entries.length) throw new TypeError('SOC_REDIS_HMSET_INVALID_FIELDS');
+    const pairs = [];
+    for (const [field, value] of entries) {
+      if (typeof field !== 'string' || !field) {
+        throw new TypeError('SOC_REDIS_HMSET_INVALID_FIELDS');
+      }
+      // Maintain existing String(value) wire encoding for all callers.
+      // Validation prevents invalid key/field shape, not a tier remapping.
+      pairs.push(field, String(value));
+    }
+    if (!BASE || !TOKEN) throw new Error('Redis not configured');
+    const res = await fetch(BASE, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(['HMSET', key, ...pairs]),
+      cache: 'no-store',
+    });
+    if (!res.ok) throw new Error(`Redis HMSET HTTP ${res.status}`);
+    const json = await res.json();
+    if (!json || typeof json !== 'object' || Array.isArray(json) ||
+        (Object.prototype.hasOwnProperty.call(json, 'error') &&
+         json.error !== null && json.error !== undefined) ||
+        json.result !== 'OK') {
+      throw new Error('SOC_REDIS_HMSET_NOT_CONFIRMED');
+    }
+    return json.result;
   },
   hincrby: (key, field, n)   => redisCmd('HINCRBY', key, field, String(n)),
 

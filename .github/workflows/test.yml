@@ -128,6 +128,8 @@ jobs:
         run: node --test tests-js/soc-operator-release-preflight.test.js
       - name: P0 — Cloudflare manually approved exact SHA and last-mile main parity
         run: node --test tests-js/soc-cloudflare-release-sha-gate.test.js
+      - name: P0 — Customer HMSET POST transport, paid-entitlement and native recovery errors
+        run: node --test tests-js/soc-redis-hmset-post-contract.test.js
       - name: P0 — Redis HTTP-200 provider errors must not create false customer backup/restore receipts
         run: node --test tests-js/soc-redis-http200-error-truth.test.js
       - name: P0 — SOC Redis HSET wire compatibility, fail-closed and persistence regression
