@@ -31,7 +31,7 @@ test('P0: HTTP 200 Redis error is not mistaken for successful GET/SET/KEYS/HMSET
     ()=>redis.hmset('user:key:001',{tier:'pro'}),
     ()=>redis.zadd('audit:payment:log',1700000000000,'event')
   ]){
-    await assert.rejects(cb(),/SOC_REDIS_COMMAND_SERVER_REJECTED/);
+    await assert.rejects(cb(),/SOC_REDIS_(COMMAND_SERVER_REJECTED|HMSET_NOT_CONFIRMED)/);
   }
   assert.deepEqual(calls.map(x=>x.parts[0]),['GET','SET','KEYS','HMSET','ZADD']);
 });
@@ -70,7 +70,8 @@ test('P0: restore refuses to report hash recovery after an HTTP-200 HMSET reject
     strings:{'user:id:disposable':'disposable'},
     auditLog:[['{"event":"DISPOSABLE"}','1700000000000']]
   });
-  await assert.rejects(applySnapshot(redis,snap),/SOC_REDIS_COMMAND_SERVER_REJECTED/);
+  // HMSET has an explicit 'OK' receipt gate on its new POST transport.
+  await assert.rejects(applySnapshot(redis,snap),/SOC_REDIS_HMSET_NOT_CONFIRMED/);
   assert.deepEqual(calls.map(x=>x.parts[0]),['HMSET']);
 });
 test('P0: non-atomic pipeline surfaces any failed or ambiguous operation receipt',async t=>{
