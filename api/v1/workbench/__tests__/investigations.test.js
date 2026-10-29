@@ -107,7 +107,8 @@ test('PUT /investigations/{id} (bare ID) resolves the real ID, not the literal "
   const res = mockRes();
   await handler(mockReq('PUT', { apexSubpath: 'inv-123', body: { title: 'Updated' } }), res);
 
-  expect(spy).toHaveBeenCalledWith('inv-123', { title: 'Updated' });
+  // Pass only authenticated server identity to the manager for lead-only CAS.
+  expect(spy).toHaveBeenCalledWith('inv-123', { title: 'Updated' }, CALLER);
 });
 
 test('POST /investigations/evidence sets createdBy to the caller, overriding any client-supplied value', async () => {
