@@ -91,3 +91,29 @@ test('P0: valid pipeline may contain a documented null Redis result',async t=>{
   fixture(t,()=>({ok:true,json:async()=>[{result:'OK',error:null},{result:null}]}));
   assert.deepEqual(await redis.pipeline([['SET','a','1'],['GET','absent']]),['OK',null]);
 });
+
+test('P0: Redis KEYS null, malformed, duplicate and wrong-scope replies never certify an empty backup',async()=>{
+  for(const response of [null,undefined,{},'not-an-array',['user:key:good','user:key:good'],
+    ['payment:secret'],['user:key:']]){
+    const mock={
+      keys:async()=>response,
+      get:async()=>{throw Error('get must not execute')},
+      hgetall:async()=>{throw Error('hgetall must not execute')},
+      zrevrange:async()=>{throw Error('audit must not execute')}
+    };
+    await assert.rejects(fetchAll(mock),/SOC_BACKUP_INVALID_KEY_ENUMERATION/);
+  }
+});
+test('P0: customer lookup vanishing between KEYS and GET fails backup instead of silently skipping restore',async()=>{
+  const r={
+    keys:async pattern=>pattern==='user:email:*'?['user:email:ghost@example.invalid']:[],
+    get:async()=>null,
+    hgetall:async()=>{throw Error('unexpected hash read')},
+    zrevrange:async()=>[]
+  };
+  await assert.rejects(fetchAll(r),/SOC_BACKUP_INCONSISTENT_LOOKUP_VALUE/);
+});
+test('P0: a genuinely empty Redis customer keyspace with readable empty audit log is valid',async()=>{
+  const r={keys:async()=>[],zrevrange:async()=>[]};
+  assert.deepEqual(await fetchAll(r),{hashes:{},strings:{},auditLog:[]});
+});
