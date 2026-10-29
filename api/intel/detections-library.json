@@ -1,8 +1,39 @@
 {
-  "generated": "2026-10-29T14:47:05.052Z",
+  "generated": "2026-10-29T16:15:22.598Z",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
   "count": 200,
   "items": [
+    {
+      "slug": "cve-2026-119025-unknown-vendor-open-7-2-0-before",
+      "title": "CVE-2026-119025 — Unknown Vendor open 7.2.0 before CVSS 7.5 High Severity Vulnerability",
+      "url": "/posts/cve-2026-119025-unknown-vendor-open-7-2-0-before.html",
+      "generated": "2026-10-29T15:27:29.578Z",
+      "severity": "HIGH",
+      "cves": [
+        "CVE-2026-119025"
+      ],
+      "mitreAttack": [
+        {
+          "id": "T1059.001",
+          "name": "PowerShell",
+          "tactic": "execution",
+          "confidence": "HIGH"
+        }
+      ],
+      "sigma": [
+        "title: Suspicious Encoded PowerShell Invocation\nid: 180ec008-0df2-59e2-a4d6-7b0797640f02\nstatus: experimental\ndescription: 'Suspicious Encoded PowerShell Invocation. Evidence basis: on vulnerability that allows attackers to execute PowerShell code by supplying crafted URLs on Windows and WSL. CYBERDUDEBIVASH SENTINEL APEX Detection Engineering.'\nreferences:\n- 'https://nvd.nist.gov/vuln/detail/CVE-2026-119025'\nauthor: CYBERDUDEBIVASH SENTINEL APEX Detection Engineering\ndate: 2026-10-29\ntags:\n- attack.t1059.001\nlogsource:\n    product: windows\n    category: process_creation\ndetection:\n    selection:\n        Image|endswith: \\powershell.exe\n        CommandLine|contains:\n            - '-EncodedCommand'\n            - '-enc '\n            - FromBase64String\n    condition: selection\nfalsepositives:\n    - Legitimate administrative activity\n    - Authorized security testing\nlevel: high"
+      ],
+      "kql": [
+        "DeviceProcessEvents\n| where FolderPath endswith \"\\\\powershell.exe\"\n| where (ProcessCommandLine contains \"-EncodedCommand\" or ProcessCommandLine contains \"-enc \" or ProcessCommandLine contains \"FromBase64String\")\n| project Timestamp, DeviceName, FolderPath, ProcessCommandLine, InitiatingProcessFolderPath"
+      ],
+      "splunk": [
+        "| tstats count from datamodel=Endpoint where nodename=Endpoint.Processes Processes.process_path=\"*\\powershell.exe\" (Processes.process=\"*-EncodedCommand*\" OR Processes.process=\"*-enc *\" OR Processes.process=\"*FromBase64String*\") by Processes.process_path Processes.parent_process_path _time"
+      ],
+      "osquery": [
+        "SELECT * FROM processes WHERE path LIKE '%\\powershell.exe' AND (cmdline LIKE '%-EncodedCommand%' OR cmdline LIKE '%-enc %' OR cmdline LIKE '%FromBase64String%');"
+      ],
+      "suricata": []
+    },
     {
       "slug": "cve-2026-116576-npm-systeminformation",
       "title": "systeminformation vulnerable to Windows command injection in services() through Unicode quotation marks",
@@ -4259,25 +4290,6 @@
         "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/user/Character_Bison5968&quot;&gt;\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/user/Character_Bison5968&quot\\;&gt\\;\"; nocase; classtype:trojan-activity; sid:9000005; rev:1;)",
         "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain arxiv.org\"; dns.query; content:\"arxiv.org\"; nocase; classtype:trojan-activity; sid:9000006; rev:1;)",
         "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000007; rev:1;)"
-      ]
-    },
-    {
-      "slug": "nightmare-eclipse-could-be-dropping-his-big-promised-exploit",
-      "title": "Nightmare Eclipse could be dropping his big promised exploit today",
-      "url": "/posts/nightmare-eclipse-could-be-dropping-his-big-promised-exploit.html",
-      "generated": "2026-07-14T09:02:08.438Z",
-      "severity": "MEDIUM",
-      "cves": [],
-      "mitreAttack": [],
-      "sigma": [],
-      "kql": [],
-      "splunk": [],
-      "osquery": [],
-      "suricata": [
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL http://git.projectnightcrawler.dev/NightmareEclipse/LegacyHive&quot;&gt;&lt;code&gt;git.projectnight\"; http.host; content:\"git.projectnightcrawler.dev\"; nocase; http.uri; content:\"/NightmareEclipse/LegacyHive&quot\\;&gt\\;&lt\\;code&gt\\;git.projectnight\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/user/ILikeNoodlesXOXO&quot;&gt;\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/user/ILikeNoodlesXOXO&quot\\;&gt\\;\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/r/cybersecurity/comments/1uw2f7e/nightmare_eclipse_could_be_dropping_his_big/\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/r/cybersecurity/comments/1uw2f7e/nightmare_eclipse_could_be_dropping_his_big/\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)"
       ]
     }
   ]
