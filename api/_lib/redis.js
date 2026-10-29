@@ -55,7 +55,39 @@ const redis = {
 
   // Hashes
   hget:   (key, field)       => redisCmd('HGET', key, field),
-  hset:   (key, field, val)  => redisCmd('HSET', key, field, val),
+  // Redis HSET accepts EITHER a field/value pair OR multiple alternating
+  // field/value arguments. Several core SOC managers pass Object.entries(...)
+  // .flat() to this adapter; the old fixed-arity implementation sent that
+  // entire array as ONE field and an undefined value (P0 write-path defect).
+  // Validate the full payload before sending one atomic Redis HSET command.
+  hset: (key, field, val) => {
+    let pairs;
+    if (Array.isArray(field) && val === undefined) {
+      pairs = field;
+    } else if (typeof field === 'string' && val !== undefined) {
+      pairs = [field, val];
+    } else {
+      throw new TypeError('SOC_REDIS_HSET_INVALID_FIELDS');
+    }
+    if (!pairs.length || pairs.length % 2 !== 0) {
+      throw new TypeError('SOC_REDIS_HSET_INVALID_FIELDS');
+    }
+    const args = [];
+    for (let i = 0; i < pairs.length; i += 2) {
+      const name = pairs[i], value = pairs[i + 1];
+      if (typeof name !== 'string' || !name ||
+          value === undefined ||
+          (typeof value === 'number' && !Number.isFinite(value))) {
+        throw new TypeError('SOC_REDIS_HSET_INVALID_FIELDS');
+      }
+      // Structured values must not silently become "[object Object]".
+      const encoded = value && typeof value === 'object'
+        ? JSON.stringify(value) : String(value);
+      if (encoded === undefined) throw new TypeError('SOC_REDIS_HSET_INVALID_FIELDS');
+      args.push(name, encoded);
+    }
+    return redisCmd('HSET', key, ...args);
+  },
   hgetall: key               => redisCmd('HGETALL', key),
   hmset: async (key, obj) => {
     const pairs = Object.entries(obj).flat().map(String);
