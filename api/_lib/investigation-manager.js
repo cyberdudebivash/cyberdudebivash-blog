@@ -2,6 +2,8 @@
 
 const crypto = require('crypto');
 const { atomicReassign } = require('./investigation-assignment-atomic');
+const { atomicCloseInvestigation } = require('./investigation-closure-atomic');
+const { isInternalLead, isValidObjectId } = require('./workbench-object-scope');
 
 const INVESTIGATION_STATUS = {
   OPEN: 'open',
@@ -364,33 +366,21 @@ class InvestigationManager {
     return investigations;
   }
 
-  async closeInvestigation(investigationId, closureReason, recommendations) {
+  async closeInvestigation(investigationId, closureReason, recommendations, trustedCaller = null) {
+    // P0 #462: refuse a split hash + status index + audit mutation.
+    // A verified internal lead must supply the caller identity. Existing
+    // untrusted/non-HTTP callers are intentionally fail-closed until the
+    // authenticated route/canary contract is proven.
+    if (!isInternalLead(trustedCaller) || !isValidObjectId(trustedCaller.id)) {
+      throw new Error('SOC_INVESTIGATION_CLOSE_AUTHORIZATION_REQUIRED');
+    }
     const investigation = await this.getInvestigation(investigationId);
     if (!investigation) throw new Error(`Investigation not found: ${investigationId}`);
 
-    const investKey = `investigation:${investigationId}`;
-    const now = new Date().toISOString();
-
-    await this.redis.hset(investKey, 'status', INVESTIGATION_STATUS.CLOSED);
-    await this.redis.hset(investKey, 'closedAt', now);
-    await this.redis.hset(investKey, 'closureReason', closureReason);
-    await this.redis.hset(investKey, 'recommendations', JSON.stringify(recommendations || []));
-
-    // Update status indices
-    await this.redis.zrem(`investigations:by:status:${investigation.status}`, investigationId);
-    await this.redis.zadd(
-      `investigations:by:status:${INVESTIGATION_STATUS.CLOSED}`,
-      Date.now(),
-      investigationId
-    );
-
-    // Record audit
-    await this.recordInvestigationAudit(investigationId, 'CLOSE', 'analyst', {
-      closureReason,
-      recommendations,
+    return atomicCloseInvestigation({
+      redis: this.redis, investigation, closureReason, recommendations,
+      caller: trustedCaller,
     });
-
-    return { closed: true, investigationId };
   }
 
   async recordInvestigationAudit(investigationId, action, actor, metadata) {
