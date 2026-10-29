@@ -20,6 +20,16 @@ async function redisCmd(...args) {
   });
   if (!res.ok) throw new Error(`Redis HTTP ${res.status}`);
   const json = await res.json();
+  // P0: Upstash may return an HTTP 200 containing {"error":"..."}.
+  // Never treat that as a missing key, empty backup keyspace, successful HMSET
+  // or successful payment audit replay. Redis GET's explicit result:null IS
+  // a valid cache miss and must remain supported.
+  if (!json || typeof json !== 'object' || Array.isArray(json) ||
+      (Object.prototype.hasOwnProperty.call(json, 'error') &&
+       json.error !== null && json.error !== undefined) ||
+      !Object.prototype.hasOwnProperty.call(json, 'result')) {
+    throw new Error('SOC_REDIS_COMMAND_SERVER_REJECTED');
+  }
   return json.result;
 }
 
@@ -171,6 +181,16 @@ const redis = {
     });
     if (!res.ok) throw new Error(`Redis pipeline HTTP ${res.status}`);
     const json = await res.json();
+    // A pipeline is NOT atomic: a later command can fail after earlier ones
+    // executed. Surface every failed/ambiguous receipt to callers. Do not
+    // convert a partial failure into an all-green result array.
+    if (!Array.isArray(json) || json.length !== commands.length ||
+        json.some(r => !r || typeof r !== 'object' || Array.isArray(r) ||
+          (Object.prototype.hasOwnProperty.call(r, 'error') &&
+           r.error !== null && r.error !== undefined) ||
+          !Object.prototype.hasOwnProperty.call(r, 'result'))) {
+      throw new Error('SOC_REDIS_PIPELINE_PARTIAL_FAILURE');
+    }
     return json.map(r => r.result);
   },
 };
