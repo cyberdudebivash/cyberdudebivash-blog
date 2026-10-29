@@ -124,6 +124,8 @@ jobs:
         run: node --test tests-js/soc-operator-release-preflight.test.js
       - name: P0 — Cloudflare manually approved exact SHA and last-mile main parity
         run: node --test tests-js/soc-cloudflare-release-sha-gate.test.js
+      - name: P0 — Related investigation owner-scoped query, failure and regression controls
+        run: node --test tests-js/soc-related-investigation-scope.test.js tests-js/soc-investigation-reassignment-guard.test.js tests-js/soc-investigation-status-priority-guard.test.js
       - name: P0 — Finalized report-ledger count must match both source feeds
         run: node --test tests-js/finalize-publication-counts.test.js
       - name: P0 — Per-run source yield evidence and false-green source health controls
