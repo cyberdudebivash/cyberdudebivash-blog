@@ -41,6 +41,18 @@ node scripts/soc-operator-release-preflight.cjs
 if ($LASTEXITCODE -ne 0) { throw 'HOLD: operator preflight rejected source, budget or pinned commit' }
 ```
 
+## 3a. Independent immutable production approval (review-only addition)
+
+The production workflow now requires **two matching owner-held approval values** before it may mutate the Worker:
+
+- Configure `CDB_SOC_APPROVED_RELEASE_SHA` as an independently reviewed **protected production-environment GitHub Actions secret** (a 40-character immutable Git commit SHA). Do not print the secret, substitute `main`, or create an approval automatically.
+- At **Actions → Cloudflare Production Deploy → Run workflow**, choose `main` and enter the same reviewed SHA into the required `approved_release_sha` input.
+- The read-only gate compares that input and protected secret with `GITHUB_SHA`, checked-out `HEAD`, and the real `origin/main` SHA retrieved via `git ls-remote` from the official GitHub repository.
+- The gate runs once before `npm ci` and again immediately before `wrangler deploy`. A publisher advancing `main` after approval causes **HOLD**; review a new immutable source revision rather than auto-updating the approved SHA.
+- Confirm that the `production` environment has actual required reviewers and that main branch protections are enforced; merely declaring `environment: production` in YAML is not proof of configured approvals.
+
+This closes one code-level provenance gap only. It does not authorize a deployment, certify Cloudflare account usage, replace the separate local preflight, or prove post-deploy customer acceptance.
+
 A **PASS means only that this local offline source/build/budget metadata is consistent**. It does not verify that the Cloudflare attestation is authentic, the production Worker mapping is correct, the actual customer receives reports, or a managed SOC has a staffed service-level agreement.
 
 ## 4. Remaining operator-only live GO sequence
