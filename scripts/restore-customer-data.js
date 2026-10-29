@@ -19,32 +19,73 @@
 'use strict';
 
 const fs = require('fs');
-const { decryptSnapshot } = require('./backup-customer-data');
+const { decryptSnapshot, normalizeHashRecord, normalizeAuditLog, SCHEMA_VERSION } = require('./backup-customer-data');
 
-/** Replay a decrypted snapshot into a live redis client. Pure with respect
- *  to the snapshot itself; the only side effect happens through the
- *  passed-in `redis` client, so this is directly testable with a fake
- *  client instead of live Redis. Skips null/undefined string values
- *  (a key that existed with no value at backup time) rather than writing
- *  the literal string "null"/"undefined" into Redis. */
+/**
+ * Validate the entire decrypted artifact BEFORE any Redis write. A historical
+ * v1 snapshot can contain native Upstash HGETALL flattened arrays; normalize
+ * these safely into hash objects, not numeric-field HMSET corruption. Never
+ * restore keys outside the intended customer lookup namespaces.
+ */
+function validateSnapshot(snapshot) {
+  const isRecord = x => x !== null && typeof x === 'object' &&
+    !Array.isArray(x) &&
+    (Object.getPrototypeOf(x) === Object.prototype ||
+     Object.getPrototypeOf(x) === null);
+  if (!isRecord(snapshot) || snapshot.schemaVersion !== SCHEMA_VERSION ||
+      typeof snapshot.createdAt !== 'string' ||
+      !Number.isFinite(Date.parse(snapshot.createdAt)) ||
+      !isRecord(snapshot.hashes) || !isRecord(snapshot.strings) ||
+      !Array.isArray(snapshot.auditLog)) {
+    throw new Error('SOC_RESTORE_INVALID_SNAPSHOT_SCHEMA');
+  }
+  const hashes = [];
+  const strings = [];
+  for (const [key, fields] of Object.entries(snapshot.hashes)) {
+    if (!key.startsWith('user:key:') || key.length <= 'user:key:'.length) {
+      throw new Error('SOC_RESTORE_KEY_SCOPE_VIOLATION');
+    }
+    hashes.push([key, normalizeHashRecord(fields)]);
+  }
+  for (const [key, value] of Object.entries(snapshot.strings)) {
+    const isAllowed = ['user:email:', 'user:id:', 'user:pending:tier:']
+      .some(prefix => key.startsWith(prefix) && key.length > prefix.length);
+    if (!isAllowed) throw new Error('SOC_RESTORE_KEY_SCOPE_VIOLATION');
+    if (value !== null && value !== undefined && typeof value !== 'string') {
+      throw new Error('SOC_RESTORE_INVALID_STRING_VALUE');
+    }
+    if (value !== null && value !== undefined) strings.push([key, value]);
+  }
+  const auditLog = normalizeAuditLog(snapshot.auditLog);
+  return {hashes, strings, auditLog};
+}
+
+/**
+ * Restore only after a full artifact validation pass. Writes remain
+ * intentionally explicit and NOT transactional across keys: an operator must
+ * rehearse recovery against an isolated Redis instance before --confirm.
+ * Payment audit-log scores and members are preserved using idempotent ZADD.
+ */
 async function applySnapshot(redis, snapshot) {
+  const prepared = validateSnapshot(snapshot);
   let hashesWritten = 0;
   let stringsWritten = 0;
+  let auditEntriesWritten = 0;
 
-  for (const [key, fields] of Object.entries(snapshot.hashes || {})) {
-    if (fields && typeof fields === 'object') {
-      await redis.hmset(key, fields);
-      hashesWritten++;
-    }
+  for (const [key, fields] of prepared.hashes) {
+    await redis.hmset(key, fields);
+    hashesWritten++;
   }
-  for (const [key, value] of Object.entries(snapshot.strings || {})) {
-    if (value !== null && value !== undefined) {
-      await redis.set(key, value);
-      stringsWritten++;
-    }
+  for (const [key, value] of prepared.strings) {
+    await redis.set(key, value);
+    stringsWritten++;
+  }
+  for (const [member, score] of prepared.auditLog) {
+    await redis.zadd('audit:payment:log', Number(score), member);
+    auditEntriesWritten++;
   }
 
-  return { hashesWritten, stringsWritten };
+  return {hashesWritten, stringsWritten, auditEntriesWritten};
 }
 
 async function main() {
@@ -63,10 +104,13 @@ async function main() {
 
   const encrypted = fs.readFileSync(snapshotPath, 'utf8');
   const snapshot = decryptSnapshot(encrypted, encryptionKey);
+  // Schema, key-scope and legacy hash/audit validation are required even in
+  // dry-run mode: an invalid artifact must never be called restorable.
+  const prepared = validateSnapshot(snapshot);
 
-  const userCount = Object.keys(snapshot.hashes || {}).length;
-  const stringCount = Object.keys(snapshot.strings || {}).length;
-  console.log(`[RESTORE] Snapshot from ${snapshot.createdAt}: ${userCount} user record(s), ${stringCount} lookup key(s), ${(snapshot.auditLog || []).length} audit entries.`);
+  const userCount = prepared.hashes.length;
+  const stringCount = prepared.strings.length;
+  console.log(`[RESTORE] Snapshot from ${snapshot.createdAt}: ${userCount} user record(s), ${stringCount} lookup key(s), ${prepared.auditLog.length} audit entries.`);
 
   if (flag !== '--confirm') {
     console.log('[RESTORE] Dry run only — no data written. Re-run with --confirm to actually restore into Redis.');
@@ -74,8 +118,8 @@ async function main() {
   }
 
   const redis = require('../api/_lib/redis');
-  const { hashesWritten, stringsWritten } = await applySnapshot(redis, snapshot);
-  console.log(`[RESTORE] Wrote ${hashesWritten} hash(es), ${stringsWritten} string key(s) into Redis.`);
+  const { hashesWritten, stringsWritten, auditEntriesWritten } = await applySnapshot(redis, snapshot);
+  console.log(`[RESTORE] Wrote ${hashesWritten} hash(es), ${stringsWritten} string key(s), ${auditEntriesWritten} payment audit entry/entries into Redis.`);
 }
 
 if (require.main === module) {
@@ -85,4 +129,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { applySnapshot };
+module.exports = { applySnapshot, validateSnapshot };
