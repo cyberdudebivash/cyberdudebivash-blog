@@ -124,6 +124,8 @@ jobs:
         run: node --test tests-js/soc-operator-release-preflight.test.js
       - name: P0 — Cloudflare manually approved exact SHA and last-mile main parity
         run: node --test tests-js/soc-cloudflare-release-sha-gate.test.js
+      - name: P0 — SOC Redis HSET wire compatibility, fail-closed and persistence regression
+        run: node --test tests-js/soc-redis-hset-wire-contract.test.js
       - name: P0 — Atomic internal lead investigation reassignment and index/audit CAS
         run: node --test tests-js/soc-investigation-atomic-assignment.test.js
       - name: P0 — Related investigation owner-scoped query, failure and regression controls
