@@ -156,3 +156,80 @@ test('SOC public browser feed never relays CISA intelligence through anonymous p
  assert.match(source,/Official origin unavailable => visible unavailable state/);
  assert.doesNotMatch(source,/_feedGenerated\s*=\s*new Date\(\)\.toISOString\(\)/);
 });
+
+
+test('SOC customer widget prioritizes report age, not high-priority archival file order',()=>{
+ const vm=require('node:vm');
+ const source=fs.readFileSync(path.join(__dirname,'..','live-feed-widget.js'),'utf8');
+ const sandbox={
+   window:{location:{origin:'https://soc.cyberdudebivash.in'}},
+   document:{readyState:'loading',addEventListener(){}},
+   encodeURIComponent, Date, Number, URL, console,
+ };
+ vm.runInNewContext(source,sandbox,{timeout:1000});
+ const select=sandbox.window.LIVE_FEED_WIDGET.selectLocalItems;
+ assert.equal(typeof select,'function');
+ const now=Date.parse('2026-10-30T14:00:00Z');
+ const rows=[
+   {id:'ARCHIVE-HIGH',priority:100,_addedAt:'2026-07-31T22:07:00Z'},
+   {id:'YESTERDAY',priority:5,_addedAt:'2026-10-29T16:00:00Z'},
+   {id:'TODAY',priority:1,_addedAt:'2026-10-30T13:23:00Z'},
+   {id:'FUTURE',priority:999,_addedAt:'2026-10-31T00:00:00Z'},
+   {id:'UNDATED',priority:999},
+   {id:'TIE-HIGH',priority:11,_addedAt:'2026-10-29T16:00:00Z'},
+ ];
+ const selected=select(rows,now);
+ assert.deepEqual(Array.from(selected,r=>r.id),['TODAY','TIE-HIGH','YESTERDAY']);
+ assert(selected.every(r=>r._contentArchived===false));
+ assert.equal(selected[0]._reportAddedAt,'2026-10-30T13:23:00.000Z');
+ assert.equal(rows[0]._contentArchived,undefined,'do not mutate authoritative report source');
+ assert.equal(rows[0].id,'ARCHIVE-HIGH');
+});
+
+test('SOC source selector enforces 15-card bound and labels an archival-only corpus',()=>{
+ const vm=require('node:vm');
+ const source=fs.readFileSync(path.join(__dirname,'..','live-feed-widget.js'),'utf8');
+ const sandbox={
+   window:{location:{origin:'https://soc.cyberdudebivash.in'}},
+   document:{readyState:'loading',addEventListener(){}},
+   encodeURIComponent, Date, Number, URL, console,
+ };
+ vm.runInNewContext(source,sandbox,{timeout:1000});
+ const select=sandbox.window.LIVE_FEED_WIDGET.selectLocalItems;
+ const now=Date.parse('2026-10-30T14:00:00Z');
+ const archives=Array.from({length:150},(_,i)=>({
+   id:'OLD-'+i,priority:100-i,_addedAt:new Date(now-(60+i)*86400000).toISOString(),
+ }));
+ const result=select(archives,now);
+ assert.equal(result.length,15,'must never render the full 150-item priority-ranked corpus');
+ assert.equal(result[0].id,'OLD-0');
+ assert(result.every(r=>r._contentArchived===true));
+ assert.equal(select([{id:'NO_DATE'},{id:'FUTURE',_addedAt:'2099-01-01'}],now).length,0);
+ assert.match(source,/ARCHIVAL INTEL — NO RECENT REPORTS/);
+ assert.match(source,/No reports added in last/);
+ assert.match(source,/selectLocalItems\(data\.items\)/);
+});
+
+test('SOC genuine 150-row fixture is recency-ranked and DOM bounded',()=>{
+ const vm=require('node:vm');
+ const source=fs.readFileSync(path.join(__dirname,'..','live-feed-widget.js'),'utf8');
+ const sandbox={
+   window:{location:{origin:'https://soc.cyberdudebivash.in'}},
+   document:{readyState:'loading',addEventListener(){}},
+   encodeURIComponent, Date, Number, URL, console,
+ };
+ vm.runInNewContext(source,sandbox,{timeout:1000});
+ const choose=sandbox.window.LIVE_FEED_WIDGET.selectLocalItems;
+ const feed=JSON.parse(fs.readFileSync(path.join(__dirname,'..','live-intel.json'),'utf8'));
+ const generated=Date.parse(feed.generatedAt);
+ assert(Number.isFinite(generated));
+ const selected=choose(feed.items,generated+1000);
+ assert(selected.length<=15);
+ assert(selected.length>0);
+ assert(selected.every(x=>typeof x._reportAddedAt==='string'));
+ const dates=Array.from(selected,x=>Date.parse(x._reportAddedAt));
+ assert(dates.every((d,i)=>i===0||dates[i-1]>=d),'the most recently added report must be first');
+ if(selected.some(x=>!x._contentArchived)){
+   assert(selected.every(x=>!x._contentArchived),'never pad a recent feed with months-old cards');
+ }
+});
