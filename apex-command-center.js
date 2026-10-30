@@ -53,15 +53,33 @@
     if(Number.isFinite(cv)){if(cv>=9)return'CRITICAL';if(cv>=7)return'HIGH';if(cv>=4)return'MEDIUM';return'LOW';}
     return 'LOW';
   }
+  function selectTriageFeed(rawItems, nowMs){
+    var now=Number.isFinite(nowMs)?nowMs:Date.now();
+    var cutoff=now-30*86400000;
+    var dated=(Array.isArray(rawItems)?rawItems:[]).map(function(it,index){
+      if(!it||typeof it!=='object'||Array.isArray(it))return null;
+      var value=it._addedAt||it.pubDate||it.published||it.dateAdded;
+      var ts=typeof value==='string'&&value.trim()?Date.parse(value):NaN;
+      if(!Number.isFinite(ts)||ts<0||ts>now+5*60000)return null;
+      return {item:it,time:ts,priority:Number(it.priority)||0,index:index};
+    }).filter(Boolean);
+    dated.sort(function(a,b){return b.time-a.time||b.priority-a.priority||a.index-b.index;});
+    var recent=dated.filter(function(x){return x.time>=cutoff;});
+    var archived=recent.length===0&&dated.length>0;
+    return {items:(archived?dated:recent).slice(0,7).map(function(x){return x.item;}),
+      archived:archived};
+  }
   function renderFeed(feed){
-    var items=Array.isArray(feed.items)?feed.items.slice():[];
-    items.sort(function(a,b){return (Number(b.priority)||0)-(Number(a.priority)||0)||Date.parse(b._addedAt||b.pubDate||0)-Date.parse(a._addedAt||a.pubDate||0);});
-    var top=items.slice(0,7),box=$('cdb-triage-feed');
+    // The source corpus is priority-ranked for analysts, not chronologically
+    // ranked for customers. Show recent evidence, never ancient top-priority
+    // rows merely because they appear first in the JSON.
+    var selection=selectTriageFeed(feed.items);
+    var top=selection.items,box=$('cdb-triage-feed');
     if(box){
-      if(!top.length){box.innerHTML='<div class="cdb-feed-row"><div></div><div><div class="cdb-feed-title">No current records available</div><div class="cdb-feed-sub">Feed returned no intelligence rows.</div></div></div>';}
+      if(!top.length){box.innerHTML='<div class="cdb-feed-row"><div></div><div><div class="cdb-feed-title">No current records available</div><div class="cdb-feed-sub">No timestamp-verified intelligence rows were available.</div></div></div>';}
       else box.innerHTML=top.map(function(it){
         var sev=normalizeSeverity(it),cls=sev.toLowerCase(),fallback='/search.html?q='+encodeURIComponent(it.id||it.title||''),href=safeHref(it.link,fallback),when=it._addedAt||it.pubDate||'';
-        var a=age(when),flags=[];if(it.cisaKev)flags.push('CISA KEV');if(it.exploited)flags.push('EXPLOITED');if(it.ransomware)flags.push('RANSOMWARE');if(Number(it.iocCount)>0)flags.push(it.iocCount+' IOC');
+        var a=age(when),flags=[];if(it.cisaKev)flags.push('CISA KEV');if(it.exploited)flags.push('EXPLOITED');if(it.ransomware)flags.push('RANSOMWARE');if(Number(it.iocCount)>0)flags.push(it.iocCount+' IOC');if(selection.archived)flags.push('ARCHIVAL · NO RECENT REPORTS');
         return '<a class="cdb-feed-row" href="'+escapeText(href)+'"><span class="cdb-sev '+cls+'">'+sev+'</span><span><span class="cdb-feed-title">'+escapeText(it.title||it.id||'Intelligence record')+'</span><span class="cdb-feed-sub">'+escapeText([it.id,it.source].concat(flags).filter(Boolean).join(' · '))+'</span></span><span class="cdb-feed-time">'+escapeText(a.iso?a.label:String(when||''))+'</span></a>';
       }).join('');
     }

@@ -156,3 +156,140 @@ test('SOC public browser feed never relays CISA intelligence through anonymous p
  assert.match(source,/Official origin unavailable => visible unavailable state/);
  assert.doesNotMatch(source,/_feedGenerated\s*=\s*new Date\(\)\.toISOString\(\)/);
 });
+
+
+test('SOC customer widget prioritizes report age, not high-priority archival file order',()=>{
+ const vm=require('node:vm');
+ const source=fs.readFileSync(path.join(__dirname,'..','live-feed-widget.js'),'utf8');
+ const sandbox={
+   window:{location:{origin:'https://soc.cyberdudebivash.in'}},
+   document:{readyState:'loading',addEventListener(){}},
+   encodeURIComponent, Date, Number, URL, console,
+ };
+ vm.runInNewContext(source,sandbox,{timeout:1000});
+ const select=sandbox.window.LIVE_FEED_WIDGET.selectLocalItems;
+ assert.equal(typeof select,'function');
+ const now=Date.parse('2026-10-30T14:00:00Z');
+ const rows=[
+   {id:'ARCHIVE-HIGH',priority:100,_addedAt:'2026-07-31T22:07:00Z'},
+   {id:'YESTERDAY',priority:5,_addedAt:'2026-10-29T16:00:00Z'},
+   {id:'TODAY',priority:1,_addedAt:'2026-10-30T13:23:00Z'},
+   {id:'FUTURE',priority:999,_addedAt:'2026-10-31T00:00:00Z'},
+   {id:'UNDATED',priority:999},
+   {id:'TIE-HIGH',priority:11,_addedAt:'2026-10-29T16:00:00Z'},
+ ];
+ const selected=select(rows,now);
+ assert.deepEqual(Array.from(selected,r=>r.id),['TODAY','TIE-HIGH','YESTERDAY']);
+ assert(selected.every(r=>r._contentArchived===false));
+ assert.equal(selected[0]._reportAddedAt,'2026-10-30T13:23:00.000Z');
+ assert.equal(rows[0]._contentArchived,undefined,'do not mutate authoritative report source');
+ assert.equal(rows[0].id,'ARCHIVE-HIGH');
+});
+
+test('SOC source selector enforces 15-card bound and labels an archival-only corpus',()=>{
+ const vm=require('node:vm');
+ const source=fs.readFileSync(path.join(__dirname,'..','live-feed-widget.js'),'utf8');
+ const sandbox={
+   window:{location:{origin:'https://soc.cyberdudebivash.in'}},
+   document:{readyState:'loading',addEventListener(){}},
+   encodeURIComponent, Date, Number, URL, console,
+ };
+ vm.runInNewContext(source,sandbox,{timeout:1000});
+ const select=sandbox.window.LIVE_FEED_WIDGET.selectLocalItems;
+ const now=Date.parse('2026-10-30T14:00:00Z');
+ const archives=Array.from({length:150},(_,i)=>({
+   id:'OLD-'+i,priority:100-i,_addedAt:new Date(now-(60+i)*86400000).toISOString(),
+ }));
+ const result=select(archives,now);
+ assert.equal(result.length,15,'must never render the full 150-item priority-ranked corpus');
+ assert.equal(result[0].id,'OLD-0');
+ assert(result.every(r=>r._contentArchived===true));
+ assert.equal(select([{id:'NO_DATE'},{id:'FUTURE',_addedAt:'2099-01-01'}],now).length,0);
+ assert.match(source,/ARCHIVAL INTEL — NO RECENT REPORTS/);
+ assert.match(source,/No reports added in last/);
+ assert.match(source,/selectLocalItems\(data\.items\)/);
+});
+
+test('SOC genuine 150-row fixture is recency-ranked and DOM bounded',()=>{
+ const vm=require('node:vm');
+ const source=fs.readFileSync(path.join(__dirname,'..','live-feed-widget.js'),'utf8');
+ const sandbox={
+   window:{location:{origin:'https://soc.cyberdudebivash.in'}},
+   document:{readyState:'loading',addEventListener(){}},
+   encodeURIComponent, Date, Number, URL, console,
+ };
+ vm.runInNewContext(source,sandbox,{timeout:1000});
+ const choose=sandbox.window.LIVE_FEED_WIDGET.selectLocalItems;
+ const feed=JSON.parse(fs.readFileSync(path.join(__dirname,'..','live-intel.json'),'utf8'));
+ const generated=Date.parse(feed.generatedAt);
+ assert(Number.isFinite(generated));
+ const selected=choose(feed.items,generated+1000);
+ assert(selected.length<=15);
+ assert(selected.length>0);
+ assert(selected.every(x=>typeof x._reportAddedAt==='string'));
+ const dates=Array.from(selected,x=>Date.parse(x._reportAddedAt));
+ assert(dates.every((d,i)=>i===0||dates[i-1]>=d),'the most recently added report must be first');
+ if(selected.some(x=>!x._contentArchived)){
+   assert(selected.every(x=>!x._contentArchived),'never pad a recent feed with months-old cards');
+ }
+});
+
+
+test('SOC command center triage uses latest reports, not oldest high-priority ones',()=>{
+ const vm=require('node:vm');
+ const js=fs.readFileSync(path.join(__dirname,'..','apex-command-center.js'),'utf8');
+ const start=js.indexOf('function selectTriageFeed(');
+ const end=js.indexOf('function renderFeed(',start);
+ assert(start>=0&&end>start,'extract exact production triage selection function');
+ const choose=vm.runInNewContext('(function(){'+js.slice(start,end)+'return selectTriageFeed;})()',{
+   Date,Number,Array,
+ },{timeout:1000});
+ const now=Date.parse('2026-10-30T14:00:00Z');
+ const rows=[
+  {id:'ARCHIVE-HIGH',priority:100,_addedAt:'2026-07-31T22:07:00Z'},
+  {id:'RECENT-LOW',priority:1,_addedAt:'2026-10-30T13:23:00Z'},
+  {id:'YESTERDAY',priority:90,_addedAt:'2026-10-29T13:23:00Z'},
+  {id:'FUTURE',priority:999,_addedAt:'2026-11-02T13:23:00Z'},
+  {id:'NO-DATE',priority:999},
+ ];
+ const selected=choose(rows,now);
+ assert.equal(selected.archived,false);
+ assert.deepEqual(Array.from(selected.items,x=>x.id),['RECENT-LOW','YESTERDAY']);
+ const allOld=choose(Array.from({length:30},(_,i)=>({
+  id:'ARCHIVE-'+i,priority:100-i,
+  _addedAt:new Date(now-(70+i)*86400000).toISOString(),
+ })),now);
+ assert.equal(allOld.archived,true);
+ assert.equal(allOld.items.length,7,'triage DOM cap is seven cards');
+ assert.equal(allOld.items[0].id,'ARCHIVE-0');
+ assert.equal(choose([{id:'FUTURE',_addedAt:'2099-01-01'}],now).items.length,0);
+ assert.match(js,/ARCHIVAL · NO RECENT REPORTS/);
+ assert.match(js,/selectTriageFeed\(feed\.items\)/);
+ assert.doesNotMatch(js,/items\.sort\(function\(a,b\)\{return \(Number\(b\.priority\)/);
+});
+
+test('SOC command center and live widget agree on the latest source report',()=>{
+ const vm=require('node:vm');
+ const widget=fs.readFileSync(path.join(__dirname,'..','live-feed-widget.js'),'utf8');
+ const sandbox={
+  window:{location:{origin:'https://soc.cyberdudebivash.in'}},
+  document:{readyState:'loading',addEventListener(){}},
+  encodeURIComponent,Date,Number,URL,console,
+ };
+ vm.runInNewContext(widget,sandbox,{timeout:1000});
+ const src=fs.readFileSync(path.join(__dirname,'..','apex-command-center.js'),'utf8');
+ const start=src.indexOf('function selectTriageFeed(');
+ const end=src.indexOf('function renderFeed(',start);
+ const triage=vm.runInNewContext('(function(){'+src.slice(start,end)+'return selectTriageFeed;})()',{
+  Date,Number,Array,
+ },{timeout:1000});
+ const feed=JSON.parse(fs.readFileSync(path.join(__dirname,'..','live-intel.json'),'utf8'));
+ const now=Date.parse(feed.generatedAt)+1000;
+ const widgetTop=sandbox.window.LIVE_FEED_WIDGET.selectLocalItems(feed.items,now);
+ const triageTop=triage(feed.items,now);
+ assert(widgetTop.length>0&&triageTop.items.length>0);
+ assert.equal(widgetTop[0].id,triageTop.items[0].id,
+  'both customer panels must lead with the same newest verified report');
+ assert(triageTop.items.length<=7);
+ assert(widgetTop.length<=15);
+});
