@@ -26,8 +26,12 @@ function token(changes={}) {
 
 function fixture({registered=true,member=true}={}) {
   const first=jest.fn(async () => registered ? {allowed:1} : null);
+  const memberFirst=jest.fn(async () => member ?
+    {tenant_id:'acme',principal_id:'analyst',role:'ANALYST'} : null);
   const bind=jest.fn((...args) => ({first}));
-  const prepare=jest.fn((sql) => ({bind}));
+  const prepare=jest.fn((sql) => ({
+    bind:(...args) => {bind(...args);return {first:sql.includes('FROM soc_principals p')?memberFirst:first};},
+  }));
   const withSession=jest.fn(() => ({prepare}));
   const nativeD1={withSession};
   const incident={
@@ -54,7 +58,7 @@ function fixture({registered=true,member=true}={}) {
     nativeD1,incidentDb,oidc:{issuer:ISSUER,audience:AUDIENCE,jwksUrl:ISSUER+'/jwks'},
     fetcher,nowMillis:()=>AT,randomUUID:()=>ID.slice(4),
   });
-  return {service,fetcher,nativeD1,withSession,prepare,bind,first,incidentDb};
+  return {service,fetcher,nativeD1,withSession,prepare,bind,first,memberFirst,incidentDb};
 }
 
 describe('Primary-consistent SOC session authority',() => {
@@ -79,7 +83,9 @@ describe('Primary-consistent SOC session authority',() => {
       EPOCH-20,EPOCH+600,EPOCH,
     ]);
     expect(params.join(' ')).not.toContain(JTI);
-    expect(f.incidentDb.query.mock.calls.some(([query])=>query.includes('FROM soc_principals'))).toBe(true);
+    expect(f.prepare.mock.calls.some(([query])=>query.includes('FROM soc_principals p'))).toBe(true);
+    expect(f.withSession).toHaveBeenNthCalledWith(2,'first-primary');
+    expect(f.incidentDb.query.mock.calls.some(([query])=>query.includes('FROM soc_principals p'))).toBe(false);
   });
   test('unregistered JWT cannot reach any incident data',async () => {
     const f=fixture({registered:false});
@@ -125,6 +131,21 @@ describe('Primary-consistent SOC session authority',() => {
     await expect(f.service.get({
       accessToken:token(),tenantId:'acme',id:ID,
     })).rejects.toMatchObject({code:'UNAUTHENTICATED'});
+    expect(f.incidentDb.query).not.toHaveBeenCalled();
+  });
+  test('stale incident adapter membership cannot override primary revocation',async () => {
+    const f=fixture({member:false});
+    await expect(f.service.get({accessToken:token(),tenantId:'acme',id:ID}))
+      .rejects.toMatchObject({code:'FORBIDDEN',status:403});
+    expect(f.memberFirst).toHaveBeenCalledTimes(1);
+    expect(f.incidentDb.query).not.toHaveBeenCalled();
+    expect(f.withSession).toHaveBeenNthCalledWith(2,'first-primary');
+  });
+  test('primary membership outage returns a sanitized availability denial',async () => {
+    const f=fixture();
+    f.memberFirst.mockRejectedValue(new Error('D1 PRIMARY PRIVATE DB ERROR'));
+    await expect(f.service.list({accessToken:token(),tenantId:'acme'}))
+      .rejects.toMatchObject({code:'SOC_MEMBERSHIP_AUTHORITY_UNAVAILABLE',status:503});
     expect(f.incidentDb.query).not.toHaveBeenCalled();
   });
   test('cannot initialize without explicit identity provider config',() => {
