@@ -42,7 +42,8 @@ function harness({
   };
   const verifyIdentity=jest.fn(async () => identity);
   const service = createSocIncidentService({
-    db,verifyIdentity,now:()=>TIME,randomUUID:()=>UUID,
+    db,verifyIdentity,queryMembership:(sql,params)=>db.query(sql,params),
+    now:()=>TIME,randomUUID:()=>UUID,
   });
   return {service,db,verifyIdentity,row};
 }
@@ -52,6 +53,11 @@ const ctx = {accessToken:'opaque-verified-by-external-adapter',tenantId:'acme'};
 describe('SOC incident service: identity and tenant authorization',() => {
   test('cannot initialize without a verified identity adapter',() => {
     expect(() => createSocIncidentService({db:{}})).toThrow('OIDC_VERIFIER_REQUIRED');
+  });
+  test('refuses construction without explicit membership authority',() => {
+    const fake={query:async()=>[],run:async()=>({success:true}),runMutationWithChanges:async()=>1};
+    expect(()=>createSocIncidentService({db:fake,verifyIdentity:async()=>({verified:true})}))
+      .toThrow('SOC_MEMBERSHIP_AUTHORITY_REQUIRED');
   });
   test('denies unverified claims before reading D1',async () => {
     const {service,db}=harness({identity:{issuer:'https://idp.example',subject:'analyst-sub'}});
