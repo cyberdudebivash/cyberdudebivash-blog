@@ -241,7 +241,7 @@ test('SOC command center triage uses latest reports, not oldest high-priority on
  const start=js.indexOf('function selectTriageFeed(');
  const end=js.indexOf('function renderFeed(',start);
  assert(start>=0&&end>start,'extract exact production triage selection function');
- const choose=vm.runInNewContext('('+js.slice(start,end)+'return selectTriageFeed)()',{
+ const choose=vm.runInNewContext('(function(){'+js.slice(start,end)+'return selectTriageFeed;})()',{
    Date,Number,Array,
  },{timeout:1000});
  const now=Date.parse('2026-10-30T14:00:00Z');
@@ -280,7 +280,7 @@ test('SOC command center and live widget agree on the latest source report',()=>
  const src=fs.readFileSync(path.join(__dirname,'..','apex-command-center.js'),'utf8');
  const start=src.indexOf('function selectTriageFeed(');
  const end=src.indexOf('function renderFeed(',start);
- const triage=vm.runInNewContext('('+src.slice(start,end)+'return selectTriageFeed)()',{
+ const triage=vm.runInNewContext('(function(){'+src.slice(start,end)+'return selectTriageFeed;})()',{
   Date,Number,Array,
  },{timeout:1000});
  const feed=JSON.parse(fs.readFileSync(path.join(__dirname,'..','live-intel.json'),'utf8'));
