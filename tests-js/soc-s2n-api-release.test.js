@@ -140,6 +140,11 @@ test('P0 stale or divergent authoritative source blocks S2N network probes befor
  const sourceStale=await monitorPublic({sourceApi:x.apiSource,sourceRoot:x.rootSource,
   sourceState:x.state,nowMs:time+24*60*60*1000,fetchImpl});
  assert.equal(sourceStale.status,'FAIL');
+ const noRecentReport=structuredClone(x);
+ noRecentReport.state.lastReportGeneratedAt='2026-10-25T05:51:00Z';
+ const falseHeartbeat=await monitorPublic({sourceApi:noRecentReport.apiSource,
+  sourceRoot:noRecentReport.rootSource,sourceState:noRecentReport.state,nowMs:time,fetchImpl});
+ assert.equal(falseHeartbeat.status,'FAIL');
  const diverged=structuredClone(x);diverged.apiSource.total_published=1;
  const drift=await monitorPublic({sourceApi:diverged.apiSource,sourceRoot:diverged.rootSource,
   sourceState:diverged.state,nowMs:time,fetchImpl});
@@ -153,6 +158,6 @@ test('P0 routine smoke always checks separate dual-host S2N API even after root-
  assert(root>0&&api>root);
  const start=w.lastIndexOf('      - name:',api);
  const section=w.slice(start,api);
- assert.match(section,/if: \${{ !cancelled\(\) }}/);
+ assert.match(section,/if: \$\{\{ !cancelled\(\) \}\}/);
  assert.doesNotMatch(section,/wrangler|dispatch|billing|POST|--release-asset/);
 });
