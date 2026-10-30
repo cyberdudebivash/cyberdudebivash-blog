@@ -120,7 +120,7 @@ describe('SOC incident service: bounded query and mutation contract',() => {
     const t=harness();
     const result=await t.service.create({...ctx,requestId:REQUEST,input:{title:'Real event',severity:'HIGH'}});
     expect(result.incidentId).toBe(ID);
-    const [sql,params]=t.db.run.mock.calls[0];
+    const [sql,params]=t.db.runMutationWithChanges.mock.calls[0];
     expect(sql).toContain('audit_actor_id');
     expect(sql).toContain('audit_request_id');
     expect(params).toEqual(['acme',ID,'Real event','HIGH',null,'analyst',REQUEST,TIME,TIME]);
@@ -174,8 +174,8 @@ describe('P0: server-side SOC incident owner assignment tenant and lifecycle gat
     expect(t.db.query.mock.calls.some(([sql,params]) =>
       sql.includes('FROM soc_principals') && sql.includes('principal_id=?') &&
       params[0]==='acme' && params[1]==='lead-active')).toBe(true);
-    expect(t.db.run).toHaveBeenCalledTimes(1);
-    expect(t.db.run.mock.calls[0][1][5]).toBe('analyst');
+    expect(t.db.runMutationWithChanges).toHaveBeenCalledTimes(1);
+    expect(t.db.runMutationWithChanges.mock.calls[0][1][5]).toBe('analyst');
   });
 
   test.each(['foreign-tenant-owner','revoked-owner','invited-owner','read-only-owner','unknown'])
@@ -235,5 +235,71 @@ describe('P0: server-side SOC incident owner assignment tenant and lifecycle gat
     await expect(t.service.update({...ctx,id:ID,expectedVersion:2,
       requestId:REQUEST,changes:{ownerId:'lead-active'}})).rejects.toThrow();
     expect(t.db.runMutationWithChanges).not.toHaveBeenCalled();
+  });
+});
+
+describe('P0 commit-time SOC assignee authorization: SQLite statement receipts', () => {
+  test('INSERT is an atomic SELECT gated by a live principal and has exact tenant parameters',async () => {
+    const t=harness();
+    await t.service.create({...ctx,requestId:REQUEST,input:{
+      title:'Investigate attempted compromise',severity:'HIGH',ownerId:'lead-active',
+    }});
+    const [sql,params]=t.db.runMutationWithChanges.mock.calls[0];
+    expect(sql).toMatch(/INSERT INTO soc_incidents/);
+    expect(sql).toMatch(/SELECT \?,\?,\?,\?,'OPEN'/);
+    expect(sql).toMatch(/WHERE \? IS NULL OR EXISTS/);
+    expect(sql).toMatch(/WHERE tenant_id=\? AND principal_id=\?/);
+    expect(sql).toMatch(/status='ACTIVE'/);
+    expect(sql).toMatch(/'ANALYST','LEAD_ANALYST','TENANT_ADMIN'/);
+    expect(params.slice(-3)).toEqual(['lead-active','acme','lead-active']);
+    expect(t.db.run).not.toHaveBeenCalled();
+  });
+
+  test('a revoked owner between preflight and INSERT cannot be reported as created',async () => {
+    const t=harness();
+    // Preflight's mocked principal lookup succeeds; commit-time SQL receipt
+    // returns zero because a native DB would see the intervening revocation.
+    t.db.runMutationWithChanges.mockResolvedValue(0);
+    await expect(t.service.create({...ctx,requestId:REQUEST,input:{
+      title:'Denied after revocation',severity:'HIGH',ownerId:'lead-active',
+    }})).rejects.toMatchObject({code:'INCIDENT_WRITE_REJECTED',status:409});
+    expect(t.db.runMutationWithChanges).toHaveBeenCalledTimes(1);
+    expect(t.db.run).not.toHaveBeenCalled();
+  });
+
+  test('a revoked owner between preflight and UPDATE cannot receive the incident',async () => {
+    const t=harness();
+    t.db.runMutationWithChanges.mockResolvedValue(0);
+    await expect(t.service.update({...ctx,id:ID,expectedVersion:2,
+      requestId:REQUEST,changes:{ownerId:'lead-active'}}))
+      .rejects.toMatchObject({code:'VERSION_CONFLICT',status:409});
+    const [sql,params]=t.db.runMutationWithChanges.mock.calls[0];
+    expect(sql).toMatch(/WHERE tenant_id=\? AND incident_id=\? AND version=\?/);
+    expect(sql).toMatch(/AND EXISTS \(SELECT 1 FROM soc_principals/);
+    expect(sql).toMatch(/status='ACTIVE'/);
+    expect(params.slice(-5)).toEqual(['acme',ID,2,'acme','lead-active']);
+  });
+
+  test('unassigned and unchanged-owner edits remain available without reassigning revoked legacy principals',async () => {
+    const t=harness();
+    await t.service.create({...ctx,requestId:REQUEST,input:{
+      title:'No owner yet',severity:'MEDIUM',
+    }});
+    expect(t.db.runMutationWithChanges.mock.calls[0][1].slice(-3))
+      .toEqual([null,'acme',null]);
+    t.db.runMutationWithChanges.mockClear();
+    await t.service.update({...ctx,id:ID,expectedVersion:2,
+      requestId:REQUEST,changes:{state:'INVESTIGATING'}});
+    const [sql,params]=t.db.runMutationWithChanges.mock.calls[0];
+    expect(sql).not.toMatch(/AND EXISTS \(SELECT 1 FROM soc_principals/);
+    expect(params.slice(-3)).toEqual(['acme',ID,2]);
+  });
+
+  test('native DB adapter rejection prevents a false successful incident receipt',async () => {
+    const t=harness();
+    t.db.runMutationWithChanges.mockRejectedValue(new Error('D1_WRITE_UNAVAILABLE'));
+    await expect(t.service.create({...ctx,requestId:REQUEST,input:{
+      title:'Unaudited incident must not exist',severity:'CRITICAL',ownerId:'lead-active',
+    }})).rejects.toMatchObject({code:'INCIDENT_WRITE_REJECTED',status:409});
   });
 });
