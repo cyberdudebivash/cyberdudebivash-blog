@@ -132,6 +132,48 @@ async function applySnapshot(redis, snapshot) {
     : {hashesWritten, stringsWritten, auditEntriesWritten};
 }
 
+/**
+ * P0 CLI write-safety: a --confirm restore must target an explicitly pinned
+ * Redis origin, distinct from the owner-declared live origin in rehearsal mode.
+ * These environment assertions reduce accidental targeting; they are not a
+ * substitute for independently verifying the target or incident approval.
+ * Never print URLs, provider tokens, or endpoint fingerprints in diagnostics.
+ */
+function verifyRestoreTarget(env) {
+  const invalid = () => { throw new Error('SOC_RESTORE_TARGET_NOT_AUTHORIZED'); };
+  const sha = value => typeof value === 'string' &&
+    /^[a-f0-9]{64}$/i.test(value) ? value.toLowerCase() : null;
+  const hash = value => require('node:crypto')
+    .createHash('sha256').update(value).digest('hex');
+  let parsed;
+  try { parsed = new URL(env.UPSTASH_REDIS_REST_URL || ''); }
+  catch (_) { return invalid(); }
+  const raw = env.UPSTASH_REDIS_REST_URL;
+  // Require an exact, credential-free Upstash HTTPS origin. An endpoint with
+  // a path, userinfo, query, fragment or unexpected port is not auditable.
+  if (typeof raw !== 'string' || raw !== parsed.origin ||
+      parsed.protocol !== 'https:' || parsed.port ||
+      parsed.username || parsed.password || parsed.search || parsed.hash ||
+      !/^[a-z0-9-]+\.upstash\.io$/i.test(parsed.hostname)) invalid();
+  const target = hash(parsed.origin);
+  const expected = sha(env.SOC_RESTORE_TARGET_URL_SHA256);
+  const live = sha(env.SOC_RESTORE_LIVE_URL_SHA256);
+  const approval = env.SOC_RESTORE_APPROVAL_REF;
+  if (!expected || !live || expected !== target ||
+      typeof approval !== 'string' ||
+      !/^CDB-(?:INC|CHG)-20\d{2}-\d{3,8}$/.test(approval)) invalid();
+  if (env.SOC_RESTORE_MODE === 'isolated-rehearsal') {
+    if (target === live) invalid();
+  } else if (env.SOC_RESTORE_MODE === 'production-break-glass') {
+    if (target !== live ||
+        env.SOC_RESTORE_BREAK_GLASS_CONFIRM !==
+        'I_AUTHORIZE_PRODUCTION_CUSTOMER_DATA_RESTORE') invalid();
+  } else {
+    invalid();
+  }
+  return {mode:env.SOC_RESTORE_MODE, authorized:true};
+}
+
 async function main() {
   const [, , snapshotPath, flag] = process.argv;
   if (!snapshotPath) {
@@ -161,6 +203,9 @@ async function main() {
     return;
   }
 
+  // Authorization is checked BEFORE loading any live Redis adapter or write.
+  // This does not replace private owner approval or a separate isolated rehearsal.
+  verifyRestoreTarget(process.env);
   const redis = require('../api/_lib/redis');
   const { hashesWritten, stringsWritten, auditEntriesWritten } = await applySnapshot(redis, snapshot);
   console.log(`[RESTORE] Wrote ${hashesWritten} hash(es), ${stringsWritten} string key(s), ${auditEntriesWritten} payment audit entry/entries into Redis.`);
@@ -174,4 +219,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { applySnapshot, validateSnapshot };
+module.exports = { applySnapshot, validateSnapshot, verifyRestoreTarget };
