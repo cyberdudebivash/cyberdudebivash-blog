@@ -139,15 +139,24 @@ function createSocIncidentService({
     await requireActiveOwner(user.tenantId,owner);
     const id = assertIncident('inc_' + randomUUID());
     const time = now();
+    // The preflight D1 lookup is good UX, but it is not authorization at
+    // commit time: an owner can be revoked after that read. SQLite must
+    // observe an ACTIVE, write-capable principal in the SAME atomic INSERT.
+    // SELECT ... WHERE instead of VALUES ensures revoked/foreign owners
+    // cannot create an incident or trigger its append-only audit record.
     const sql = [
       'INSERT INTO soc_incidents(tenant_id,incident_id,title,severity,state,owner_id,version,',
       'audit_actor_id,audit_request_id,created_at,updated_at)',
-      "VALUES(?,?,?,?,'OPEN',?,1,?,?,?,?)",
+      "SELECT ?,?,?,?,'OPEN',?,1,?,?,?,? WHERE ? IS NULL OR EXISTS (",
+      'SELECT 1 FROM soc_principals WHERE tenant_id=? AND principal_id=?',
+      "AND status='ACTIVE' AND role IN ('ANALYST','LEAD_ANALYST','TENANT_ADMIN'))",
     ].join(' ');
     try {
-      const result = await db.run(sql, [user.tenantId,id,title,input.severity,owner,
-        user.principalId,rid,time,time]);
-      if (!result || result.success === false) fail('INCIDENT_WRITE_REJECTED',409);
+      const affected = await db.runMutationWithChanges(sql, [
+        user.tenantId,id,title,input.severity,owner,user.principalId,rid,time,time,
+        owner,user.tenantId,owner,
+      ]);
+      if (affected !== 1) fail('INCIDENT_WRITE_REJECTED',409);
     } catch (_) { fail('INCIDENT_WRITE_REJECTED',409); }
     return view(await load(user.tenantId,id));
   }
@@ -173,16 +182,31 @@ function createSocIncidentService({
     if (changes.ownerId !== undefined && owner !== old.owner_id) {
       await requireActiveOwner(user.tenantId,owner);
     }
+    // A changed, non-null assignee must STILL be active at the moment of
+    // the write, even if their account is revoked between preflight and
+    // this statement. Single-statement EXISTS shares SQLite's write
+    // serialization and optimistic incident version check. An unchanged
+    // legacy owner or explicit unassignment does not need re-authorization.
+    const assignmentChanged = changes.ownerId !== undefined &&
+      owner !== old.owner_id && owner !== null;
     const sql = [
       'UPDATE soc_incidents SET title=?,severity=?,state=?,owner_id=?,',
       'version=version+1,updated_at=?,audit_actor_id=?,audit_request_id=?',
       'WHERE tenant_id=? AND incident_id=? AND version=?',
+      ...(assignmentChanged ? [
+        'AND EXISTS (SELECT 1 FROM soc_principals',
+        'WHERE tenant_id=? AND principal_id=?',
+        "AND status='ACTIVE' AND role IN ('ANALYST','LEAD_ANALYST','TENANT_ADMIN'))",
+      ] : []),
     ].join(' ');
+    const params = [
+      title,severity,state,owner,now(),user.principalId,requestId,
+      user.tenantId,id,expectedVersion,
+      ...(assignmentChanged ? [user.tenantId,owner] : []),
+    ];
     let affected;
     try {
-      affected = await db.runMutationWithChanges(sql, [
-        title,severity,state,owner,now(),user.principalId,requestId,
-        user.tenantId,id,expectedVersion]);
+      affected = await db.runMutationWithChanges(sql, params);
     } catch (_) { fail('INCIDENT_WRITE_REJECTED',409); }
     if (affected !== 1) fail('VERSION_CONFLICT',409);
     return view(await load(user.tenantId,id));
