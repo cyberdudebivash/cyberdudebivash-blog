@@ -66,6 +66,7 @@ function fakeRedis(data) {
     },
     hgetall: async (key) => data[key] || null,
     get: async (key) => data[key] ?? null,
+    ttl: async key => key.startsWith('user:pending:tier:') ? 90 * 86400 : -1,
     zrevrange: async () => [['TIER_UPGRADED', '1700000000']],
   };
 }
