@@ -99,6 +99,8 @@ jobs:
         run: python3 -m unittest -v tests.test_soc_evidence_read_budget
       - name: P0 — Verified encrypted backup artifact, fail-closed key and overwrite safety
         run: node --test tests-js/soc-backup-atomic-artifact.test.js
+      - name: P0 — Restore CLI denies unpinned or production-targeted rehearsal writes
+        run: node --test tests-js/soc-restore-target-guard.test.js
       - name: P0 — Pending prepaid entitlement backup TTL and legacy recovery no-rearm
         run: node --test tests-js/soc-backup-pending-entitlement-expiry.test.js
       - name: P0 — Customer backup and historical Redis restore integrity
