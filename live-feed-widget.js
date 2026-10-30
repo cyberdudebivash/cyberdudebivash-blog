@@ -5,10 +5,8 @@
  *
  * Source chain (each tried in order until data found):
  *   1. /live-intel.json  — same-origin, GitHub Actions-generated
- *   2. CISA KEV (direct) — public CORS-enabled CDN
- *   3. CISA KEV (proxy1) — corsproxy.io
- *   4. CISA KEV (proxy2) — allorigins
- *   5. Explicit unavailable state — never fabricate a healthy feed
+ *   2. CISA KEV (official HTTPS origin, when browser CORS permits)
+ *   3. Explicit unavailable state — never trust anonymous proxy rewrites
  *
  * © 2025 CYBERDUDEBIVASH. All rights reserved.
  * ═══════════════════════════════════════════════════════════
@@ -20,8 +18,6 @@
   var CFG = {
     LOCAL_JSON:  '/live-intel.json',
     CISA_DIRECT: 'https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json',
-    CISA_PROXY1: 'https://corsproxy.io/?https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json',
-    CISA_PROXY2: 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json'),
     CONTAINER_ID:'live-intel-feed',
     CACHE_KEY:   'cbd_lfw_v5',
     CACHE_TTL:   55 * 1000,        // 55s — just under refresh interval
@@ -43,8 +39,46 @@
     return new Date(d).toLocaleDateString([],{month:'short',day:'numeric'});
   }
 
+  // Browser retrieval time is not evidence that intelligence was newly
+  // generated. Unknown/future timestamps fail closed rather than showing
+  // a reassuring green or 'breaking' state.
+  function classifyFeedTimestamp(value, nowMillis) {
+    var now = Number.isFinite(nowMillis) ? nowMillis : Date.now();
+    var stamp = typeof value === 'string' && value.trim() ? Date.parse(value) : NaN;
+    if (!Number.isFinite(stamp) || stamp < 0 || stamp > now + 5 * 60000) {
+      return { state: 'unverified', publishedAt: null };
+    }
+    return {
+      state: now - stamp > 180 * 60000 ? 'stale' : 'current',
+      publishedAt: stamp
+    };
+  }
+
   function esc(s) {
     return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // Report links are controlled by intelligence data, not trusted HTML.
+  // Restrict them to the actual SENTINEL APEX-owned report hosts and HTTPS.
+  // Never render javascript:, data:, userinfo, or third-party redirect URLs.
+  var REPORT_HOSTS = Object.freeze({
+    'soc.cyberdudebivash.in': true,
+    'blog.cyberdudebivash.in': true,
+    'cti.cyberdudebivash.in': true,
+    'intel.cyberdudebivash.com': true
+  });
+  function safeReportHref(value) {
+    if (typeof value !== 'string' || !value || value.length > 2048 ||
+        /[\u0000-\u001f\u007f]/.test(value)) return null;
+    try {
+      var u = new URL(value, window.location.origin);
+      if (u.protocol !== 'https:' || u.username || u.password ||
+          !Object.prototype.hasOwnProperty.call(REPORT_HOSTS, u.hostname.toLowerCase())) return null;
+      return u.href;
+    } catch (e) { return null; }
+  }
+  function safeThreatColor(value) {
+    return typeof value === 'string' && /^#[0-9a-fA-F]{6}$/.test(value) ? value : '#00b4d8';
   }
 
   function slugify(s) {
@@ -205,18 +239,11 @@
         // 2. CISA direct
         return xhrFetch(CFG.CISA_DIRECT, 10000).then(function(d) {
           var items = parseCISA(d);
-          if (items && items.length) return items.map(function(item){item._feedGenerated=new Date().toISOString();return item;});
-          // 3. CISA proxy 1
-          return xhrFetch(CFG.CISA_PROXY1, 10000).then(function(d2) {
-            var items2 = parseCISA(d2);
-            if (items2 && items2.length) return items2.map(function(item){item._feedGenerated=new Date().toISOString();return item;});
-            // 4. CISA proxy 2
-            return xhrFetch(CFG.CISA_PROXY2, 10000).then(function(d3) {
-              var items3 = parseCISA(d3);
-              if (items3 && items3.length) return items3.map(function(item){item._feedGenerated=new Date().toISOString();return item;});
-              return [];
-            });
-          });
+          if (items && items.length) return items.map(function(item){item._feedGenerated=null;return item;});
+          // No third-party CORS proxies: they can modify threat content,
+          // misrepresent CISA provenance, and expose visitor traffic.
+          // Official origin unavailable => visible unavailable state.
+          return [];
         });
       })
       .catch(function() { return []; });
@@ -232,7 +259,12 @@
   }
 
   function card(item) {
-    var threat = item.threat || classify(item.desc||'');
+    var rawThreat = item.threat || classify(item.desc||'');
+    // Feed and session-cache values may be attacker-influenced; reject CSS
+    // attribute injection even when the JSON was generated first-party.
+    var threat = {
+      label: rawThreat.label, color: safeThreatColor(rawThreat.color),
+    };
     var sev    = sevColor(item.score);
     var vendor = (item.vendors&&item.vendors[0])||item.product||'Unknown';
     // Strip raw HTML entities from description before display
@@ -242,7 +274,8 @@
     // Use item.slug directly when available (populated by pipeline),
     // avoiding the ID-hash fallback that generates non-existent post URLs.
     var slug   = item.slug || slugify((item.id||'')+(vendor?'-'+vendor:'')+(product&&product!==vendor?'-'+product:''));
-    var href   = item.link || (item.slug ? '/posts/'+item.slug+'.html' : null) || '#';
+    var href   = safeReportHref(item.link) ||
+      safeReportHref(item.slug ? '/posts/'+item.slug+'.html' : null);
     var sourceHref = firstHttpUrl(item.refs);
 
     var badges = '';
@@ -268,7 +301,8 @@
         +'<div class="lfw-badges">'+badges+'</div>'
       +'</div>'
       +'<div class="lfw-cf">'
-        +'<a href="'+esc(href)+'" class="lfw-read">🔍 Full Intel Report →</a>'
+        +(href ? '<a href="'+esc(href)+'" class="lfw-read">🔍 Full Intel Report →</a>' :
+          '<span class="lfw-read lfw-unavailable">Report link unavailable</span>')
         +(sourceHref?'<a href="'+esc(sourceHref)+'" class="lfw-ref" target="_blank" rel="noopener noreferrer">Source ↗</a>':'')
       +'</div>'
     +'</article>';
@@ -278,11 +312,14 @@
   function render(items, container, animate) {
     var exploited = items.filter(function(i){return i.exploited;}).length;
     var critical  = items.filter(function(i){return parseFloat(i.score)>=9;}).length;
-    var feedDate  = items[0]&&items[0]._feedGenerated ? new Date(items[0]._feedGenerated) : null;
-    var feedValid = feedDate && !isNaN(feedDate.getTime());
-    var stale     = feedValid && (Date.now()-feedDate.getTime()) > 180*60000;
-    var ts        = feedValid ? timeAgo(feedDate) : 'timestamp unavailable';
-    _lastFetchAt  = feedValid ? feedDate.getTime() : null;
+    var verdict   = classifyFeedTimestamp(items[0] && items[0]._feedGenerated);
+    var stale     = verdict.state !== 'current';
+    var ts        = verdict.publishedAt !== null ? timeAgo(verdict.publishedAt) : 'timestamp unavailable';
+    _lastFetchAt  = verdict.publishedAt;
+    var heading   = verdict.state === 'unverified' ? 'SOURCE TIMESTAMP UNVERIFIED' :
+      stale ? 'STALE FEED — LAST VERIFIED INTEL' : 'VERIFIED THREAT INTEL';
+    var updateLabel = verdict.state === 'unverified' ? 'Source timestamp unavailable' :
+      (stale ? 'Feed stale · ' : 'Source generated · ') + ts;
     var grid      = items.map(card).join('');
 
     if (animate) {
@@ -295,7 +332,10 @@
           if(ns[0]) ns[0].textContent=exploited;
           if(ns[1]) ns[1].textContent=critical;
           if(ns[2]) ns[2].textContent=items.length;
-          var u=container.querySelector('.lfw-upd'); if(u) u.textContent=(stale?'Feed stale · ':'Feed updated · ')+ts;
+          var u=container.querySelector('.lfw-upd'); if(u) u.textContent=updateLabel;
+          var b=container.querySelector('.lfw-bt'); if(b) b.textContent=heading;
+          var dot=container.querySelector('.lfw-dot');
+          if(dot) dot.classList.toggle('lfw-dot-load',stale);
         }, 300);
         return;
       }
@@ -305,14 +345,14 @@
       '<div class="lfw-wrap">'
       +'<div class="lfw-hdr">'
         +'<div class="lfw-hdr-r1">'
-          +'<div class="lfw-brand"><span class="lfw-dot'+(stale?' lfw-dot-load':'')+'"></span><span class="lfw-bt">'+(stale?'STALE FEED — LAST VERIFIED INTEL':'VERIFIED THREAT INTEL')+'</span><span class="lfw-bs">SENTINEL APEX</span></div>'
+          +'<div class="lfw-brand"><span class="lfw-dot'+(stale?' lfw-dot-load':'')+'"></span><span class="lfw-bt">'+heading+'</span><span class="lfw-bs">SENTINEL APEX</span></div>'
           +'<button class="lfw-btn-r" id="lfw-refresh-btn" title="Refresh">⟳</button>'
         +'</div>'
         +'<div class="lfw-hdr-r2">'
           +'<span class="lfw-stat"><span class="lfw-sn lfw-sn-e">'+exploited+'</span> Exploited</span>'
           +'<span class="lfw-stat"><span class="lfw-sn lfw-sn-c">'+critical+'</span> Critical</span>'
           +'<span class="lfw-stat"><span class="lfw-sn lfw-sn-t">'+items.length+'</span> Threats</span>'
-          +'<span class="lfw-stat lfw-upd">'+(stale?'Feed stale · ':'Feed updated · ')+ts+'</span>'
+          +'<span class="lfw-stat lfw-upd">'+updateLabel+'</span>'
         +'</div>'
       +'</div>'
       +'<div class="lfw-grid" style="transition:opacity .3s">'+grid+'</div>'
@@ -426,23 +466,23 @@
   function injectLabel(container) {
     if (document.getElementById('lfw-label')) return;
     var d=document.createElement('div'); d.id='lfw-label';
-    d.innerHTML='<h2>🛰 Live Breaking Intel</h2><span id="lfw-label-ts">Fetching…</span>';
+    d.innerHTML='<h2>🛰 Threat Intelligence Feed</h2><span id="lfw-label-ts">Fetching…</span>';
     container.parentNode.insertBefore(d, container);
   }
 
   /* ── PHASE 10: LAST-UPDATED TICKER ──────────────────────── */
   var _lastFetchAt = null;
+  function lastVerifiedSourceLabel() {
+    if (_lastFetchAt === null) return 'Source timestamp unavailable';
+    var age = Date.now() - _lastFetchAt;
+    if (age > 180 * 60000) return 'STALE · source generated ' + timeAgo(_lastFetchAt);
+    return 'Source generated ' + timeAgo(_lastFetchAt);
+  }
   function startFreshnessTicker() {
     var el = document.getElementById('lfw-label-ts');
     if (!el) return;
     setInterval(function() {
-      if (!_lastFetchAt) return;
-      var secsAgo = Math.round((Date.now() - _lastFetchAt) / 1000);
-      var label;
-      if (secsAgo < 60)       label = 'Updated ' + secsAgo + 's ago';
-      else if (secsAgo < 3600) label = 'Updated ' + Math.round(secsAgo/60) + 'm ago';
-      else                     label = 'Updated ' + Math.round(secsAgo/3600) + 'h ago';
-      el.textContent = label;
+      el.textContent = lastVerifiedSourceLabel();
     }, 5000); // tick every 5s
   }
 
@@ -453,7 +493,7 @@
     injectLabel(container);
     doFetch(container, false).then(function(){
       var ts=document.getElementById('lfw-label-ts');
-      if(ts) ts.textContent=_lastFetchAt?'Feed updated '+timeAgo(_lastFetchAt):'Feed timestamp unavailable';
+      if(ts) ts.textContent=lastVerifiedSourceLabel();
       startFreshnessTicker();
     });
     // Refresh the displayed source state; do not relabel browser fetch time as
@@ -462,7 +502,7 @@
       if (document.hidden) return; // no background polling from hidden tabs
       doFetch(container,true).then(function(){
         var ts=document.getElementById('lfw-label-ts');
-        if(ts) ts.textContent=_lastFetchAt?'Feed updated '+timeAgo(_lastFetchAt):'Feed timestamp unavailable';
+        if(ts) ts.textContent=lastVerifiedSourceLabel();
       });
     }, CFG.REFRESH_MS);
   }
@@ -473,5 +513,11 @@
     setTimeout(boot, 800);
   }
 
-  window.LIVE_FEED_WIDGET = { refresh: function(){ var c=document.getElementById(CFG.CONTAINER_ID); if(c) doFetch(c,true); }, cfg: CFG };
+  window.LIVE_FEED_WIDGET = {
+    refresh: function(){ var c=document.getElementById(CFG.CONTAINER_ID); if(c) doFetch(c,true); },
+    cfg: CFG,
+    classifyFeedTimestamp: classifyFeedTimestamp,
+    safeReportHref: safeReportHref,
+    safeThreatColor: safeThreatColor
+  };
 })();
