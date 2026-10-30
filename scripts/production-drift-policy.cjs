@@ -71,6 +71,35 @@ const REVIEWED_OPERATIONAL_FILES = new Set([
   'scripts/soc-commercial-ga-gate.cjs',
   'scripts/assess-pipeline-operational-health.cjs',
   'scripts/verify-existing-cloudflare-domain.cjs',
+  // P0 #433: 25 exact paths reported UNKNOWN by verified full-tree run
+  // #41062872020. Classify conservatively as OPERATIONAL: every changed
+  // path still requires operator-reviewed release; never mark as benign.
+  // These names are NOT a claim of source correctness, deployment, or GO.
+  '.github/workflows/backup-customer-data.yml',
+  '.github/workflows/freshness-check.yml',
+  '.github/workflows/pipeline-health-certification.yml',
+  '.github/workflows/sentinel-apex.yml',
+  '.github/workflows/smoke-test.yml',
+  'automation/premium_yield_hardening.py',
+  'automation/tests/test_premium_yield_hardening.py',
+  'fetch-live-intel.js',
+  'scripts/assert-publication-ledger.cjs',
+  'scripts/audit_live_cti_home.py',
+  'scripts/backup-customer-data.js',
+  'scripts/backup-preflight-gate.cjs',
+  'scripts/certify-soc-public-feed-parity.cjs',
+  'scripts/certify-soc-s2n-api-release.cjs',
+  'scripts/certify_blogger_theme_baseline.py',
+  'scripts/check-intel-source-yield.cjs',
+  'scripts/check_blogger_public_delivery.py',
+  'scripts/finalize-publication-counts.cjs',
+  'scripts/nvd-cve-query-contract.cjs',
+  'scripts/prepare_blogger_production_theme.py',
+  'scripts/restore-customer-data.js',
+  'scripts/rss-source-health-policy.cjs',
+  'scripts/soc-alert-delivery-health.cjs',
+  'scripts/soc-cloudflare-release-sha-gate.cjs',
+  'scripts/soc-operator-release-preflight.cjs',
 ]);
 
 /**
