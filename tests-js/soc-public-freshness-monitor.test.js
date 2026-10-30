@@ -144,3 +144,15 @@ test('SOC feed renderer denies untrusted report links and CSS attribute injectio
  assert.match(source,/safeReportHref\(item\.link\)/);
  assert.match(source,/Report link unavailable/);
 });
+
+
+test('SOC public browser feed never relays CISA intelligence through anonymous proxy services',()=>{
+ const source=fs.readFileSync(path.join(__dirname,'..','live-feed-widget.js'),'utf8');
+ assert.match(source,/CISA_DIRECT:\s*'https:\/\/www\.cisa\.gov\//);
+ assert.match(source,/xhrFetch\(CFG\.CISA_DIRECT/);
+ assert.doesNotMatch(source,/corsproxy\.io|allorigins\.win|CISA_PROXY1|CISA_PROXY2/);
+ // A blocked official CISA fetch must return an unavailable state; never
+ // simulate a current publication or silently trust another domain.
+ assert.match(source,/Official origin unavailable => visible unavailable state/);
+ assert.doesNotMatch(source,/_feedGenerated\s*=\s*new Date\(\)\.toISOString\(\)/);
+});
