@@ -15,7 +15,11 @@ function fixture(enabled=true) {
     create:jest.fn(async()=>({incidentId:ID,version:1})),
     update:jest.fn(async()=>({incidentId:ID,version:3})),
   };
-  const entitlement=jest.fn(async ({tenantId}) => ({verified:true,allowed:true,tenantId,tier:'PRO'}));
+  const entitlement=jest.fn(async ({tenantId}) => ({
+    verified:true,allowed:true,tenantId,tier:'PRO',
+    product:'SENTINEL_APEX_SOC',subscriptionStatus:'active',
+    capabilities:['soc.incidents.read','soc.incidents.write'],
+  }));
   return {
     service,entitlement,
     handle:createSocIncidentHttpHandler({
@@ -201,9 +205,83 @@ test('commercial entitlement authority outage fails closed without incident acce
 
 test.each(['PRO','ENTERPRISE','MSSP'])('verified %s entitlement permits tenant-bound service authorization',async tier => {
   const {handle,service,entitlement}=fixture();
-  entitlement.mockResolvedValue({verified:true,allowed:true,tenantId:'acme',tier});
+  entitlement.mockResolvedValue({
+    verified:true,allowed:true,tenantId:'acme',tier,
+    product:'SENTINEL_APEX_SOC',subscriptionStatus:'active',
+    capabilities:['soc.incidents.read','soc.incidents.write'],
+  });
   const res=await handle(request());
   expect(res.status).toBe(200);
   expect(service.list).toHaveBeenCalledTimes(1);
-  expect(entitlement).toHaveBeenCalledWith({accessToken:TOKEN,tenantId:'acme'});
+  expect(entitlement).toHaveBeenCalledWith({
+    accessToken:TOKEN,tenantId:'acme',capability:'soc.incidents.read',
+  });
+});
+
+
+const verifiedGrant=(capabilities=['soc.incidents.read','soc.incidents.write'])=>({
+  verified:true,allowed:true,tenantId:'acme',tier:'PRO',
+  product:'SENTINEL_APEX_SOC',subscriptionStatus:'active',capabilities,
+});
+
+test.each([
+  [{...verifiedGrant(),product:'SENTINEL_APEX_THREAT_INTEL'},'wrong product'],
+  [{...verifiedGrant(),product:undefined},'missing product'],
+  [{...verifiedGrant(),subscriptionStatus:'past_due'},'past due without approved SOC grace'],
+  [{...verifiedGrant(),subscriptionStatus:'cancelled'},'cancelled'],
+  [{...verifiedGrant(),subscriptionStatus:'refunded'},'refunded'],
+  [{...verifiedGrant(),subscriptionStatus:'expired'},'expired'],
+  [{...verifiedGrant(),subscriptionStatus:'ACTIVE'},'mis-cased status'],
+  [{...verifiedGrant(),capabilities:[]},'missing scope'],
+  [{...verifiedGrant(),capabilities:['intel.premium.read']},'intel-only scope'],
+  [{...verifiedGrant(),capabilities:'soc.incidents.read'},'untrusted scope string'],
+  [{...verifiedGrant(),capabilities:Array(33).fill('soc.incidents.read')},'oversize scope claims'],
+  [{...verifiedGrant(),tier:'FREE'},'free despite explicit feature'],
+  [{...verifiedGrant(),tenantId:'contoso'},'wrong tenant'],
+])('paid plan does not enable SOC incident access: %s (%s)',async (verdict) => {
+  const {handle,service,entitlement}=fixture();
+  entitlement.mockResolvedValue(verdict);
+  const res=await handle(request());
+  expect(res.status).toBe(403);
+  expect((await res.json()).error.code).toBe('SUBSCRIPTION_REQUIRED');
+  expect(service.list).not.toHaveBeenCalled();
+});
+
+test('read-only explicit SOC grant permits reads but never mutations',async () => {
+  const {handle,service,entitlement}=fixture();
+  entitlement.mockResolvedValue(verifiedGrant(['soc.incidents.read']));
+  const read=await handle(request());
+  expect(read.status).toBe(200);
+  const writeResponse=await handle(write('POST'));
+  expect(writeResponse.status).toBe(403);
+  expect(service.create).not.toHaveBeenCalled();
+  expect(entitlement).toHaveBeenNthCalledWith(2,{
+    accessToken:TOKEN,tenantId:'acme',capability:'soc.incidents.write',
+  });
+});
+
+test('write-only explicit SOC grant cannot read tenant incidents',async () => {
+  const {handle,service,entitlement}=fixture();
+  entitlement.mockResolvedValue(verifiedGrant(['soc.incidents.write']));
+  expect((await handle(request())).status).toBe(403);
+  expect(service.list).not.toHaveBeenCalled();
+});
+
+test('approved SOC write scope and active shared subscription allow service RBAC to run',async () => {
+  const {handle,service,entitlement}=fixture();
+  entitlement.mockResolvedValue(verifiedGrant(['soc.incidents.write']));
+  const created=await handle(write('POST'));
+  expect(created.status).toBe(201);
+  expect(service.create).toHaveBeenCalledTimes(1);
+  expect(entitlement).toHaveBeenCalledWith({
+    accessToken:TOKEN,tenantId:'acme',capability:'soc.incidents.write',
+  });
+});
+
+test('malformed entitlement authority result fails closed on mutation',async () => {
+  const {handle,service,entitlement}=fixture();
+  entitlement.mockResolvedValue({verified:true,allowed:true,tenantId:'acme',tier:'MSSP'});
+  const res=await handle(write('PATCH',API+'/'+ID,{state:'INVESTIGATING'},{'If-Match':'"2"'}));
+  expect(res.status).toBe(403);
+  expect(service.update).not.toHaveBeenCalled();
 });

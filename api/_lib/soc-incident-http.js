@@ -17,6 +17,15 @@ const INCIDENT_ROUTE = new RegExp(
 );
 const ALLOWED = new Set(['GET','POST','PATCH']);
 const PAID_TIERS = new Set(['PRO','ENTERPRISE','MSSP']);
+// A shared Threat Intel subscription grants no customer incident capability
+// by itself. SOC incident operations require an independent, operator-approved
+// feature grant bound to the same canonical subscription and tenant.
+const SOC_PRODUCT = 'SENTINEL_APEX_SOC';
+const SOC_CAPABILITY = Object.freeze({
+  GET: 'soc.incidents.read',
+  POST: 'soc.incidents.write',
+  PATCH: 'soc.incidents.write',
+});
 const ERROR_STATUSES = new Set([400,401,403,404,409,413,429,503]);
 const HEADERS = {
   'Content-Type':'application/json; charset=utf-8',
@@ -120,10 +129,22 @@ function createSocIncidentHttpHandler({service,approvedOrigin,enabled=false,auth
       // server-trusted records, not accept a browser-provided tier or tenant.
       let entitlement;
       try {
-        entitlement=await authorizeCommercialAccess({accessToken,tenantId});
+        entitlement=await authorizeCommercialAccess({
+          accessToken, tenantId, capability: SOC_CAPABILITY[request.method],
+        });
       } catch (_) { return error(503,'ENTITLEMENT_SERVICE_UNAVAILABLE'); }
-      if (!entitlement || entitlement.verified!==true || entitlement.allowed!==true ||
-          entitlement.tenantId!==tenantId || !PAID_TIERS.has(entitlement.tier)) {
+      // Fail closed on incomplete/foreign commercial grants. The authority
+      // must verify an ACTIVE subscription and an independently enabled SOC
+      // product permission for this exact operation. Never infer either from
+      // the common PRO/ENTERPRISE/MSSP plan labels alone.
+      if (!entitlement || typeof entitlement!=='object' ||
+          entitlement.verified!==true || entitlement.allowed!==true ||
+          entitlement.tenantId!==tenantId || !PAID_TIERS.has(entitlement.tier) ||
+          entitlement.product!==SOC_PRODUCT ||
+          entitlement.subscriptionStatus!=='active' ||
+          !Array.isArray(entitlement.capabilities) ||
+          entitlement.capabilities.length>32 ||
+          !entitlement.capabilities.includes(SOC_CAPABILITY[request.method])) {
         return error(403,'SUBSCRIPTION_REQUIRED');
       }
       if (request.method==='GET') {
