@@ -62,6 +62,29 @@
     return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
+  // Report links are controlled by intelligence data, not trusted HTML.
+  // Restrict them to the actual SENTINEL APEX-owned report hosts and HTTPS.
+  // Never render javascript:, data:, userinfo, or third-party redirect URLs.
+  var REPORT_HOSTS = Object.freeze({
+    'soc.cyberdudebivash.in': true,
+    'blog.cyberdudebivash.in': true,
+    'cti.cyberdudebivash.in': true,
+    'intel.cyberdudebivash.com': true
+  });
+  function safeReportHref(value) {
+    if (typeof value !== 'string' || !value || value.length > 2048 ||
+        /[\u0000-\u001f\u007f]/.test(value)) return null;
+    try {
+      var u = new URL(value, window.location.origin);
+      if (u.protocol !== 'https:' || u.username || u.password ||
+          !Object.prototype.hasOwnProperty.call(REPORT_HOSTS, u.hostname.toLowerCase())) return null;
+      return u.href;
+    } catch (e) { return null; }
+  }
+  function safeThreatColor(value) {
+    return typeof value === 'string' && /^#[0-9a-fA-F]{6}$/.test(value) ? value : '#00b4d8';
+  }
+
   function slugify(s) {
     return String(s||'').toLowerCase().replace(/[^a-z0-9\s-]/g,' ').replace(/\s+/g,'-').replace(/-{2,}/g,'-').replace(/^-|-$/g,'').slice(0,90);
   }
@@ -247,7 +270,12 @@
   }
 
   function card(item) {
-    var threat = item.threat || classify(item.desc||'');
+    var rawThreat = item.threat || classify(item.desc||'');
+    // Feed and session-cache values may be attacker-influenced; reject CSS
+    // attribute injection even when the JSON was generated first-party.
+    var threat = {
+      label: rawThreat.label, color: safeThreatColor(rawThreat.color),
+    };
     var sev    = sevColor(item.score);
     var vendor = (item.vendors&&item.vendors[0])||item.product||'Unknown';
     // Strip raw HTML entities from description before display
@@ -257,7 +285,8 @@
     // Use item.slug directly when available (populated by pipeline),
     // avoiding the ID-hash fallback that generates non-existent post URLs.
     var slug   = item.slug || slugify((item.id||'')+(vendor?'-'+vendor:'')+(product&&product!==vendor?'-'+product:''));
-    var href   = item.link || (item.slug ? '/posts/'+item.slug+'.html' : null) || '#';
+    var href   = safeReportHref(item.link) ||
+      safeReportHref(item.slug ? '/posts/'+item.slug+'.html' : null);
     var sourceHref = firstHttpUrl(item.refs);
 
     var badges = '';
@@ -283,7 +312,8 @@
         +'<div class="lfw-badges">'+badges+'</div>'
       +'</div>'
       +'<div class="lfw-cf">'
-        +'<a href="'+esc(href)+'" class="lfw-read">🔍 Full Intel Report →</a>'
+        +(href ? '<a href="'+esc(href)+'" class="lfw-read">🔍 Full Intel Report →</a>' :
+          '<span class="lfw-read lfw-unavailable">Report link unavailable</span>')
         +(sourceHref?'<a href="'+esc(sourceHref)+'" class="lfw-ref" target="_blank" rel="noopener noreferrer">Source ↗</a>':'')
       +'</div>'
     +'</article>';
@@ -497,6 +527,8 @@
   window.LIVE_FEED_WIDGET = {
     refresh: function(){ var c=document.getElementById(CFG.CONTAINER_ID); if(c) doFetch(c,true); },
     cfg: CFG,
-    classifyFeedTimestamp: classifyFeedTimestamp
+    classifyFeedTimestamp: classifyFeedTimestamp,
+    safeReportHref: safeReportHref,
+    safeThreatColor: safeThreatColor
   };
 })();
