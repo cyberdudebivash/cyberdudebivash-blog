@@ -16,6 +16,7 @@ const INCIDENT_ROUTE = new RegExp(
   '^/api/v1/soc/tenants/([a-z0-9_-]{3,64})/incidents(?:/(inc_' + UUID + '))?/?$'
 );
 const ALLOWED = new Set(['GET','POST','PATCH']);
+const PAID_TIERS = new Set(['PRO','ENTERPRISE','MSSP']);
 const ERROR_STATUSES = new Set([400,401,403,404,409,413,429,503]);
 const HEADERS = {
   'Content-Type':'application/json; charset=utf-8',
@@ -73,13 +74,20 @@ async function parseSmallJson(request) {
   return result;
 }
 
-function createSocIncidentHttpHandler({service,approvedOrigin,enabled=false}={}) {
+function createSocIncidentHttpHandler({service,approvedOrigin,enabled=false,authorizeCommercialAccess}={}) {
   if (!service || ['get','list','create','update'].some(k=>typeof service[k]!=='function')) {
     throw new Error('VERIFIED_SOC_SERVICE_REQUIRED');
   }
   if (typeof approvedOrigin!=='string' || !/^https:\/\/[a-z0-9.-]+$/.test(approvedOrigin) ||
       approvedOrigin !== 'https://soc.cyberdudebivash.in') {
     throw new Error('APPROVED_SOC_ORIGIN_REQUIRED');
+  }
+
+  // Customer data requires an independently implemented, server-trusted
+  // billing-to-tenant authorization authority. No browser or JWT tier claim
+  // can replace it; this remains SOURCE ONLY and unregistered.
+  if (enabled === true && typeof authorizeCommercialAccess !== 'function') {
+    throw new Error('SOC_ENTITLEMENT_AUTHORITY_REQUIRED');
   }
 
   return async function handle(request) {
@@ -106,6 +114,18 @@ function createSocIncidentHttpHandler({service,approvedOrigin,enabled=false}={})
     if (!match || request.headers.has('cookie')) return error(401,'BEARER_TOKEN_REQUIRED');
     const accessToken=match[1];
     try {
+      // Commercial access is separate from OIDC identity + D1 membership.
+      // Both are mandatory: the service performs its own tenant/role checks.
+      // The injected authority must verify subscription ownership using
+      // server-trusted records, not accept a browser-provided tier or tenant.
+      let entitlement;
+      try {
+        entitlement=await authorizeCommercialAccess({accessToken,tenantId});
+      } catch (_) { return error(503,'ENTITLEMENT_SERVICE_UNAVAILABLE'); }
+      if (!entitlement || entitlement.verified!==true || entitlement.allowed!==true ||
+          entitlement.tenantId!==tenantId || !PAID_TIERS.has(entitlement.tier)) {
+        return error(403,'SUBSCRIPTION_REQUIRED');
+      }
       if (request.method==='GET') {
         if (id) {
           if (url.search) invalid('UNEXPECTED_QUERY');
