@@ -74,7 +74,8 @@ test('real-service native-D1 certificate is callable and uses only a disposable 
   assert.match(script,/SELECT changes\(\) AS affected/);
   assert.match(script,/Revocation-race INSERT must not create an audit row/);
   assert.match(script,/Revocation-race UPDATE must not create audit rows/);
-  assert.doesNotMatch(script,/--remote|wrangler deploy/);
+  assert.match(script,/!args\.includes\('--remote'\)/);
+  assert.doesNotMatch(script,/wrangler deploy/);
 });
 test('disposable native-D1 query binder preserves text, null and integers without accepting ambiguous binds',()=>{
   assert.equal(renderBoundSql('SELECT ? AS subject, ? AS owner, ? AS count',
