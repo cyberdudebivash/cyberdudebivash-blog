@@ -74,10 +74,16 @@ test('production recovery requires a separate explicit break-glass confirmation'
     /SOC_RESTORE_TARGET_NOT_AUTHORIZED/);
   const authorized={...prod,
     SOC_RESTORE_BREAK_GLASS_CONFIRM:'I_AUTHORIZE_PRODUCTION_CUSTOMER_DATA_RESTORE'};
-  assert.deepEqual(verifyRestoreTarget(authorized),
+  // Ordinary --confirm can never authorize live customer writes, even
+  // when an operator has already populated break-glass environment values.
+  assert.throws(()=>verifyRestoreTarget(authorized,'--confirm'),
+    /SOC_RESTORE_TARGET_NOT_AUTHORIZED/);
+  assert.deepEqual(verifyRestoreTarget(authorized,'--confirm-production'),
     {mode:'production-break-glass',authorized:true});
+  assert.throws(()=>verifyRestoreTarget(standard(),'--confirm-production'),
+    /SOC_RESTORE_TARGET_NOT_AUTHORIZED/);
   assert.throws(()=>verifyRestoreTarget({...authorized,UPSTASH_REDIS_REST_URL:ISOLATED,
-    SOC_RESTORE_TARGET_URL_SHA256:fingerprint(ISOLATED)}),
+    SOC_RESTORE_TARGET_URL_SHA256:fingerprint(ISOLATED)},'--confirm-production'),
     /SOC_RESTORE_TARGET_NOT_AUTHORIZED/);
 });
 test('CLI --confirm fails before live Upstash access when destination approval is absent',()=>{
