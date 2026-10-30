@@ -109,10 +109,15 @@ describe('Primary-consistent SOC session authority',() => {
       requestId:'request-abcdef12345678',
       input:{title:'Relevant finding',severity:'HIGH'},
     });
-    expect(f.incidentDb.run).toHaveBeenCalledTimes(1);
-    const params=f.incidentDb.run.mock.calls[0][1];
+    // Incident creation now requires a checked affected-row receipt, so the
+    // atomic owner guard can never report a zero-row write as a creation.
+    expect(f.incidentDb.runMutationWithChanges).toHaveBeenCalledTimes(1);
+    const [sql,params]=f.incidentDb.runMutationWithChanges.mock.calls[0];
+    expect(sql).toContain('INSERT INTO soc_incidents');
+    expect(sql).toContain('WHERE ? IS NULL OR EXISTS');
     expect(params[0]).toBe('acme');
     expect(params[5]).toBe('analyst');
+    expect(params.slice(-3)).toEqual([null,'acme',null]);
   });
   test('primary D1 read outage fails closed before incident reads',async () => {
     const f=fixture();
