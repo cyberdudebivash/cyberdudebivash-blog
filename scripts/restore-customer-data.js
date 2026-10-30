@@ -4,14 +4,15 @@
  *
  * Companion to backup-customer-data.js. Decrypts a snapshot and replays it
  * into Redis. Defaults to a dry run (prints what WOULD be restored) --
- * requires an explicit --confirm flag to actually write, since replaying
- * data into production Redis should be a deliberate human decision (a
- * "break glass" action performed during an actual incident), never
+ * requires --confirm for isolated rehearsals or --confirm-production for
+ * an actual production recovery; replaying customer data requires a
+ * separately authorized break-glass action during an actual incident, never
  * scheduled or triggered automatically the way the backup itself is.
  *
  * Usage:
  *   BACKUP_ENCRYPTION_KEY=<key> node scripts/restore-customer-data.js <snapshot-file>            # dry run
- *   BACKUP_ENCRYPTION_KEY=<key> node scripts/restore-customer-data.js <snapshot-file> --confirm   # writes
+ *   BACKUP_ENCRYPTION_KEY=<key> node scripts/restore-customer-data.js <snapshot-file> --confirm   # isolated rehearsal only
+ *   BACKUP_ENCRYPTION_KEY=<key> node scripts/restore-customer-data.js <snapshot-file> --confirm-production   # approved production break-glass only
  *
  * See RUNBOOKS.md "Redis Outage / Data Loss" for the full procedure this
  * script is one step of.
@@ -199,7 +200,7 @@ async function main() {
   console.log(`[RESTORE] Snapshot from ${snapshot.createdAt}: ${userCount} user record(s), ${stringCount} lookup key(s), ${prepared.auditLog.length} audit entries.`);
 
   if (flag !== '--confirm' && flag !== '--confirm-production') {
-    console.log('[RESTORE] Dry run only — no data written. Re-run with --confirm to actually restore into Redis.');
+    console.log('[RESTORE] Dry run only — no data written. Re-run with the authorized isolated --confirm or break-glass --confirm-production mode.');
     return;
   }
 
