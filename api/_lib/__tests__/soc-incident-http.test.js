@@ -193,8 +193,9 @@ test('commercial entitlement authority outage fails closed without incident acce
   entitlement.mockRejectedValue(new Error('private billing data unavailable'));
   const res=await handle(request());
   expect(res.status).toBe(503);
-  expect((await res.json()).error.code).toBe('ENTITLEMENT_SERVICE_UNAVAILABLE');
-  expect(JSON.stringify(await res.json().catch(()=>({})))).not.toContain('private billing data');
+  const body=await res.json();
+  expect(body.error.code).toBe('ENTITLEMENT_SERVICE_UNAVAILABLE');
+  expect(JSON.stringify(body)).not.toContain('private billing data');
   expect(service.list).not.toHaveBeenCalled();
 });
 
