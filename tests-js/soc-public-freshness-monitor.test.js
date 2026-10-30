@@ -66,9 +66,9 @@ test('SOC browser widget classifies genuine source age, not browser fetch time',
  const vm=require('node:vm');
  const widgetSource=fs.readFileSync(path.join(__dirname,'..','live-feed-widget.js'),'utf8');
  const sandbox={
-   window:{},
+   window:{location:{origin:'https://soc.cyberdudebivash.in'}},
    document:{readyState:'loading',addEventListener(){}},
-   encodeURIComponent, Date, Number, console,
+   encodeURIComponent, Date, Number, URL, console,
  };
  vm.runInNewContext(widgetSource,sandbox,{timeout:1000});
  const classify=sandbox.window.LIVE_FEED_WIDGET.classifyFeedTimestamp;
@@ -102,4 +102,45 @@ test('SOC widget cannot pretend CISA fallback retrieval created fresh intel',()=
  assert.match(source,/lastVerifiedSourceLabel\(\)/);
  assert.match(source,/lfw-bt/);
  assert.match(source,/classList\.toggle\('lfw-dot-load',stale\)/);
+});
+
+
+test('SOC feed renderer denies untrusted report links and CSS attribute injection',()=>{
+ const vm=require('node:vm');
+ const source=fs.readFileSync(path.join(__dirname,'..','live-feed-widget.js'),'utf8');
+ const sandbox={
+   window:{location:{origin:'https://soc.cyberdudebivash.in'}},
+   document:{readyState:'loading',addEventListener(){}},
+   encodeURIComponent, Date, Number, URL, console,
+ };
+ vm.runInNewContext(source,sandbox,{timeout:1000});
+ const safe=sandbox.window.LIVE_FEED_WIDGET.safeReportHref;
+ const color=sandbox.window.LIVE_FEED_WIDGET.safeThreatColor;
+ assert.equal(safe('/posts/verified-cve.html'),
+   'https://soc.cyberdudebivash.in/posts/verified-cve.html');
+ assert.equal(safe('https://blog.cyberdudebivash.in/posts/verified-cve.html'),
+   'https://blog.cyberdudebivash.in/posts/verified-cve.html');
+ assert.equal(safe('https://cti.cyberdudebivash.in/2026/10/intel.html'),
+   'https://cti.cyberdudebivash.in/2026/10/intel.html');
+ assert.equal(safe('https://intel.cyberdudebivash.com/reports/a.html'),
+   'https://intel.cyberdudebivash.com/reports/a.html');
+ for(const malicious of [
+   'javascript:alert(1)','data:text/html,hello','//attacker.example/x',
+   'https://soc.cyberdudebivash.in.attacker.example/report',
+   'https://someone:password@soc.cyberdudebivash.in/posts/a',
+   'https://evil.example/fake-report', 'http://blog.cyberdudebivash.in/posts/a',
+   '\nhttps://blog.cyberdudebivash.in/posts/a',
+   'https://blog.cyberdudebivash.in/posts/a\u0000'
+ ]){
+   assert.equal(safe(malicious),null,JSON.stringify(malicious));
+ }
+ assert.equal(color('#abcdef'),'#abcdef');
+ assert.equal(color('#00b4d8'),'#00b4d8');
+ for(const injection of ['";onmouseover="alert(1)','red;background:url(javascript:alert(1))',
+   'var(--untrusted)','linear-gradient(red,blue)',null,'#abc']){
+   assert.equal(color(injection),'#00b4d8',String(injection));
+ }
+ assert.match(source,/safeThreatColor\(rawThreat\.color\)/);
+ assert.match(source,/safeReportHref\(item\.link\)/);
+ assert.match(source,/Report link unavailable/);
 });
