@@ -58,12 +58,18 @@ function view(row) {
 function createSocIncidentService({
   db = defaultD1,
   verifyIdentity,
+  queryMembership,
   now = () => new Date().toISOString(),
   randomUUID = () => crypto.randomUUID(),
 } = {}) {
   if (typeof verifyIdentity !== 'function') fail('OIDC_VERIFIER_REQUIRED', 503);
   if (!db || typeof db.query !== 'function' || typeof db.run !== 'function' ||
       typeof db.runMutationWithChanges !== 'function') fail('SOC_DATABASE_ADAPTER_REQUIRED', 503);
+  if (queryMembership !== undefined && typeof queryMembership !== 'function')
+    fail('SOC_MEMBERSHIP_AUTHORITY_REQUIRED', 503);
+  // Internal direct service tests can provide their own repository adapter;
+  // production composition must inject the primary-consistent membership read.
+  const readMembership = queryMembership || ((sql,params) => db.query(sql,params));
 
   async function authorize(accessToken, tenantId, writable) {
     if (typeof tenantId !== 'string' || !TENANT.test(tenantId)) fail('INVALID_TENANT');
@@ -75,14 +81,19 @@ function createSocIncidentService({
         identity.issuer.length > 512 || typeof identity.subject !== 'string' ||
         !identity.subject || identity.subject.length > 512) fail('UNAUTHENTICATED', 401);
 
-    const rows = await db.query([
+    let rows;
+    try { rows = await readMembership([
       'SELECT p.tenant_id,p.principal_id,p.role FROM soc_principals p',
       'INNER JOIN soc_tenants t ON t.tenant_id=p.tenant_id',
       "WHERE p.tenant_id=? AND p.oidc_issuer=? AND p.oidc_subject=?",
       "AND p.status='ACTIVE' AND t.status='ACTIVE' LIMIT 1",
-    ].join(' '), [tenantId, identity.issuer, identity.subject]);
-    if (!rows.length) fail('FORBIDDEN', 403);
+    ].join(' '), [tenantId, identity.issuer, identity.subject]); }
+    catch (_) { fail('SOC_MEMBERSHIP_AUTHORITY_UNAVAILABLE', 503); }
+    if (!Array.isArray(rows) || rows.length !== 1) fail('FORBIDDEN', 403);
     const user = rows[0];
+    if (!user || user.tenant_id !== tenantId ||
+        typeof user.principal_id !== 'string' || !user.principal_id ||
+        typeof user.role !== 'string') fail('FORBIDDEN', 403);
     if (writable && !WRITE_ROLES.has(user.role)) fail('FORBIDDEN', 403);
     return { tenantId: user.tenant_id, principalId: user.principal_id };
   }
