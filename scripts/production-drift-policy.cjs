@@ -39,6 +39,9 @@ const REVIEWED_OPERATIONAL_FILES = new Set([
   '.github/workflows/intelligence-hub.yml',
   '.github/workflows/workflow-security-gate.yml',
   'OPERATIONS.md',
+  // P0 #494: emergency customer-data backup/restore controls are operational
+  // instructions: changes require human review, never benign-only release.
+  'RUNBOOKS.md',
   'ai-security-intel-memory.json',
   'ai-security-intel-state.json',
   'intel-memory.json',
