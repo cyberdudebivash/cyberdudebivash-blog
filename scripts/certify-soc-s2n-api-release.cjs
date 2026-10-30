@@ -94,10 +94,13 @@ async function monitorPublic({sourceApi,sourceRoot,sourceState,fetchImpl=globalT
   if(receipt.status!=='PASS')return reject('SOURCE_S2N_LEDGER_UNCERTIFIED');
   const timestamp=Date.parse(sourceApi.generated||'');
   const ids=validItems(sourceApi.items)?sourceApi.items.map(x=>x.id):null;
+  const lastReport=Date.parse(sourceState.lastReportGeneratedAt||'');
   if(!ids||new Set(ids).size!==ids.length||
      !Number.isSafeInteger(sourceApi.total_published)||
      sourceApi.total_published<ids.length||!Number.isFinite(timestamp)||
-     timestamp>nowMs+5*60000||nowMs-timestamp>180*60000)
+     timestamp>nowMs+5*60000||nowMs-timestamp>180*60000||
+     !Number.isFinite(lastReport)||lastReport>timestamp+5*60000||
+     lastReport>nowMs+5*60000||nowMs-lastReport>180*60000)
     return reject('SOURCE_S2N_MALFORMED_OR_STALE');
   const results=[];
   for(const [host,url] of Object.entries(TARGETS)){
