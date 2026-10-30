@@ -227,14 +227,51 @@
     };
   }
 
+  /* ── RECENT SOURCE SELECTION ──────────────────────────────── */
+  // The canonical feed is scored/priority-ranked, not chronological. Rendering
+  // it in file order put months-old CVEs ahead of newly verified reports and
+  // created up to 150 DOM cards despite the 15-card customer UX ceiling.
+  // A new pipeline heartbeat is NOT evidence that its individual reports
+  // are newly published; rank by their own recorded creation/publication time.
+  function selectLocalItems(rawItems, nowMs) {
+    if (!Array.isArray(rawItems)) return [];
+    var now = Number.isFinite(nowMs) ? nowMs : Date.now();
+    var cutoff = now - CFG.LOOKBACK_DAYS * 86400000;
+    var dated = rawItems.map(function(raw, index) {
+      if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+      var value = raw._addedAt || raw.pubDate || raw.published || raw.dateAdded;
+      var ts = typeof value === 'string' && value.trim() ? Date.parse(value) : NaN;
+      // No unknown or impossible report time should claim a 'recent' slot.
+      if (!Number.isFinite(ts) || ts < 0 || ts > now + 5 * 60000) return null;
+      var item = normaliseLocal(raw);
+      if (!item) return null;
+      return {item:item, time:ts, priority:Number(raw.priority)||0, index:index};
+    }).filter(Boolean);
+    dated.sort(function(a,b) {
+      return b.time-a.time || b.priority-a.priority || a.index-b.index;
+    });
+    var recent = dated.filter(function(record) { return record.time >= cutoff; });
+    var archived = recent.length === 0;
+    // Keep archival evidence browsable when there are no qualifying new
+    // reports, but explicitly label it archival in the renderer.
+    return (archived ? dated : recent).slice(0, CFG.MAX_CARDS).map(function(record) {
+      record.item._reportAddedAt = new Date(record.time).toISOString();
+      record.item._contentArchived = archived;
+      return record.item;
+    });
+  }
+
   /* ── MAIN FETCH PIPELINE ─────────────────────────────────── */
   function pipeline() {
     // 1. Same-origin JSON
     return xhrFetch(CFG.LOCAL_JSON+'?_='+Math.floor(Date.now()/60000), 8000)
       .then(function(data) {
-        if (data && data.items && data.items.length) {
-          var generated = (data.metadata&&data.metadata.generated)||data._heartbeat||data.lastUpdated||null;
-          return data.items.map(normaliseLocal).filter(Boolean).map(function(item){ item._feedGenerated=generated; return item; });
+        if (data && Array.isArray(data.items) && data.items.length) {
+          var selected = selectLocalItems(data.items);
+          if (selected.length) {
+            var generated = (data.metadata&&data.metadata.generated)||data.generatedAt||data.lastUpdated||null;
+            return selected.map(function(item){ item._feedGenerated=generated; return item; });
+          }
         }
         // 2. CISA direct
         return xhrFetch(CFG.CISA_DIRECT, 10000).then(function(d) {
@@ -313,13 +350,17 @@
     var exploited = items.filter(function(i){return i.exploited;}).length;
     var critical  = items.filter(function(i){return parseFloat(i.score)>=9;}).length;
     var verdict   = classifyFeedTimestamp(items[0] && items[0]._feedGenerated);
-    var stale     = verdict.state !== 'current';
+    var archived  = items[0] && items[0]._contentArchived === true;
+    var stale     = verdict.state !== 'current' || archived;
     var ts        = verdict.publishedAt !== null ? timeAgo(verdict.publishedAt) : 'timestamp unavailable';
     _lastFetchAt  = verdict.publishedAt;
     var heading   = verdict.state === 'unverified' ? 'SOURCE TIMESTAMP UNVERIFIED' :
-      stale ? 'STALE FEED — LAST VERIFIED INTEL' : 'VERIFIED THREAT INTEL';
+      verdict.state === 'stale' ? 'STALE FEED — LAST VERIFIED INTEL' :
+      archived ? 'ARCHIVAL INTEL — NO RECENT REPORTS' : 'VERIFIED THREAT INTEL';
     var updateLabel = verdict.state === 'unverified' ? 'Source timestamp unavailable' :
-      (stale ? 'Feed stale · ' : 'Source generated · ') + ts;
+      verdict.state === 'stale' ? 'Feed stale · '+ts :
+      archived ? 'No reports added in last '+CFG.LOOKBACK_DAYS+' days · Source generated '+ts :
+      'Source generated · '+ts;
     var grid      = items.map(card).join('');
 
     if (animate) {
@@ -518,6 +559,7 @@
     cfg: CFG,
     classifyFeedTimestamp: classifyFeedTimestamp,
     safeReportHref: safeReportHref,
-    safeThreatColor: safeThreatColor
+    safeThreatColor: safeThreatColor,
+    selectLocalItems: selectLocalItems
   };
 })();
