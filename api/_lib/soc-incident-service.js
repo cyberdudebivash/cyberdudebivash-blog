@@ -65,11 +65,12 @@ function createSocIncidentService({
   if (typeof verifyIdentity !== 'function') fail('OIDC_VERIFIER_REQUIRED', 503);
   if (!db || typeof db.query !== 'function' || typeof db.run !== 'function' ||
       typeof db.runMutationWithChanges !== 'function') fail('SOC_DATABASE_ADAPTER_REQUIRED', 503);
-  if (queryMembership !== undefined && typeof queryMembership !== 'function')
+  // No fallback to the generic D1 query adapter: it may read a replica
+  // whose principal/tenant revocation state is stale. Callers MUST supply
+  // a primary-consistent reader; the production boundary uses first-primary.
+  if (typeof queryMembership !== 'function')
     fail('SOC_MEMBERSHIP_AUTHORITY_REQUIRED', 503);
-  // Internal direct service tests can provide their own repository adapter;
-  // production composition must inject the primary-consistent membership read.
-  const readMembership = queryMembership || ((sql,params) => db.query(sql,params));
+  const readMembership = queryMembership;
 
   async function authorize(accessToken, tenantId, writable) {
     if (typeof tenantId !== 'string' || !TENANT.test(tenantId)) fail('INVALID_TENANT');
