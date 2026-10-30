@@ -85,7 +85,7 @@ function createSocIncidentHttpHandler({service,approvedOrigin,enabled=false}={})
   return async function handle(request) {
     // Authentication is NOT an activation switch. Explicit, independently
     // authorized operator configuration is required before any request is served.
-    if (!enabled) return error(404,'NOT_FOUND');
+    if (enabled !== true) return error(404,'NOT_FOUND');
     if (!(request instanceof Request)) return error(400,'INVALID_REQUEST');
     const url=new URL(request.url);
     if (url.origin!==approvedOrigin) return error(404,'NOT_FOUND');
