@@ -123,7 +123,7 @@ describe('SOC incident service: bounded query and mutation contract',() => {
     const [sql,params]=t.db.runMutationWithChanges.mock.calls[0];
     expect(sql).toContain('audit_actor_id');
     expect(sql).toContain('audit_request_id');
-    expect(params).toEqual(['acme',ID,'Real event','HIGH',null,'analyst',REQUEST,TIME,TIME]);
+    expect(params).toEqual(['acme',ID,'Real event','HIGH',null,'analyst',REQUEST,TIME,TIME,null,'acme',null]);
   });
   test('extra mutation fields and injected tenant/actor are rejected',async () => {
     const t=harness();
