@@ -87,6 +87,22 @@ function createSocIncidentService({
     return { tenantId: user.tenant_id, principalId: user.principal_id };
   }
 
+  // An incident assignee is a live SOC operator, not an arbitrary customer-
+  // supplied principal ID. The composite foreign key alone only proves the
+  // principal existed once; it does not reject REVOKED/INVITED/read-only
+  // principals. Keep the lookup scoped to the authenticated tenant and use
+  // one indistinguishable 403 for foreign, unknown or inactive principals.
+  async function requireActiveOwner(tenantId, ownerId) {
+    if (ownerId === null) return;
+    const owners = await db.query([
+      'SELECT principal_id FROM soc_principals',
+      'WHERE tenant_id=? AND principal_id=? AND status=\'ACTIVE\'',
+      "AND role IN ('ANALYST','LEAD_ANALYST','TENANT_ADMIN') LIMIT 1",
+    ].join(' '), [tenantId,ownerId]);
+    if (!Array.isArray(owners) || owners.length !== 1 ||
+        owners[0].principal_id !== ownerId) fail('INVALID_INCIDENT_OWNER',403);
+  }
+
   async function load(tenantId, id) {
     const rows = await db.query([
       'SELECT tenant_id,incident_id,title,severity,state,owner_id,version,created_at,updated_at',
@@ -120,6 +136,7 @@ function createSocIncidentService({
     if (!SEVERITIES.has(input.severity)) fail('INVALID_SEVERITY');
     const owner = input.ownerId == null ? null : assertText(input.ownerId,128,'OWNER');
     const rid = assertRequest(requestId);
+    await requireActiveOwner(user.tenantId,owner);
     const id = assertIncident('inc_' + randomUUID());
     const time = now();
     const sql = [
@@ -151,6 +168,11 @@ function createSocIncidentService({
     if (!STATES.has(state)) fail('INVALID_STATE');
     const owner = changes.ownerId === undefined ? old.owner_id
       : changes.ownerId === null ? null : assertText(changes.ownerId,128,'OWNER');
+    // Reconfirm only when changing the assignee: unrelated edits to legacy
+    // incidents must not accidentally grant access or silently reassign.
+    if (changes.ownerId !== undefined && owner !== old.owner_id) {
+      await requireActiveOwner(user.tenantId,owner);
+    }
     const sql = [
       'UPDATE soc_incidents SET title=?,severity=?,state=?,owner_id=?,',
       'version=version+1,updated_at=?,audit_actor_id=?,audit_request_id=?',
