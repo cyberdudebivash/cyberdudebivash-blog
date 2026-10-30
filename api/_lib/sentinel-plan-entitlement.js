@@ -54,7 +54,7 @@ function utmValue(value, fallback) {
   if (typeof value !== 'string' || !value || value.length > 180 ||
       !/^[A-Za-z0-9._-]+$/.test(value) ||
       /(?:cdb_|sentinel_|api[_-]?key|access[_-]?token|password|secret)/i.test(value) ||
-      /^(?:[A-Za-z0-9_-]+\\.){2}[A-Za-z0-9_-]+$/.test(value)) {
+      /^(?:[A-Za-z0-9_-]+\.){2}[A-Za-z0-9_-]+$/.test(value)) {
     return fallback;
   }
   const clean = value.toLowerCase().replace(/^-+|-+$/g, '').slice(0, 60);
