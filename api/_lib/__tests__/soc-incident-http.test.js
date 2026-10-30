@@ -146,3 +146,14 @@ test('database error messages are not sent to the client',async() => {
   expect(res.status).toBe(500);
   expect(JSON.stringify(await json(res))).not.toContain('NEVER_LEAK');
 });
+
+test.each([undefined, false, 'false', 'true', 0, 1, null, {}])(
+  'SOC incident HTTP rejects non-boolean or disabled activation value %p', async enabled => {
+    const service = fixture().service;
+    const handler = createSocIncidentHttpHandler({service,approvedOrigin:ORIGIN,enabled});
+    const res = await handler(request());
+    expect(res.status).toBe(404);
+    expect((await res.json()).error.code).toBe('NOT_FOUND');
+    expect(service.list).not.toHaveBeenCalled();
+  }
+);
