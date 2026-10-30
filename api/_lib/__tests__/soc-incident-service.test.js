@@ -20,9 +20,17 @@ function harness({
   };
   const db = {
     query:jest.fn(async (sql,params) => {
-      if (sql.includes('FROM soc_principals')) return member
-        ? [{tenant_id:params[0],principal_id:'analyst',role}]
-        : [];
+      if (sql.includes('FROM soc_principals')) {
+        // The actual owner query must not confuse existence/foreign tenancy
+        // with ACTIVE, write-capable membership in the requested tenant.
+        if (sql.includes('WHERE tenant_id=? AND principal_id=?')) {
+          if (params[0] !== 'acme') return [];
+          if (params[1] === 'analyst' || params[1] === 'lead-active')
+            return [{principal_id:params[1]}];
+          return []; // revoked, read-only, foreign, unknown
+        }
+        return member ? [{tenant_id:params[0],principal_id:'analyst',role}] : [];
+      }
       if (sql.includes('FROM soc_incidents')) {
         if (sql.includes('incident_id=?')) return params[0] === 'acme' ? [row] : [];
         return params[0] === 'acme' ? [row] : [];
@@ -154,5 +162,78 @@ describe('SOC incident service: bounded query and mutation contract',() => {
     t.db.runMutationWithChanges.mockResolvedValue(0);
     await expect(t.service.update({...ctx,id:ID,expectedVersion:2,requestId:REQUEST,changes:{state:'INVESTIGATING'}}))
       .rejects.toMatchObject({code:'VERSION_CONFLICT'});
+  });
+});
+
+describe('P0: server-side SOC incident owner assignment tenant and lifecycle gate',() => {
+  test('creation permits an explicitly ACTIVE same-tenant analyst and checks D1 before writing',async () => {
+    const t=harness();
+    await t.service.create({...ctx,requestId:REQUEST,input:{
+      title:'Customer-originated signal',severity:'HIGH',ownerId:'lead-active',
+    }});
+    expect(t.db.query.mock.calls.some(([sql,params]) =>
+      sql.includes('FROM soc_principals') && sql.includes('principal_id=?') &&
+      params[0]==='acme' && params[1]==='lead-active')).toBe(true);
+    expect(t.db.run).toHaveBeenCalledTimes(1);
+    expect(t.db.run.mock.calls[0][1][5]).toBe('analyst');
+  });
+
+  test.each(['foreign-tenant-owner','revoked-owner','invited-owner','read-only-owner','unknown'])
+    ('creation rejects %s before any incident write',async ownerId => {
+      const t=harness();
+      await expect(t.service.create({...ctx,requestId:REQUEST,input:{
+        title:'Sensitive customer incident',severity:'CRITICAL',ownerId,
+      }})).rejects.toMatchObject({code:'INVALID_INCIDENT_OWNER',status:403});
+      expect(t.db.run).not.toHaveBeenCalled();
+      expect(t.db.runMutationWithChanges).not.toHaveBeenCalled();
+    });
+
+  test.each(['foreign-tenant-owner','revoked-owner','invited-owner','read-only-owner','unknown'])
+    ('reassignment to %s is forbidden without mutating incident version or audit',async ownerId => {
+      const t=harness();
+      await expect(t.service.update({...ctx,id:ID,expectedVersion:2,
+        requestId:REQUEST,changes:{ownerId}}))
+        .rejects.toMatchObject({code:'INVALID_INCIDENT_OWNER',status:403});
+      expect(t.db.runMutationWithChanges).not.toHaveBeenCalled();
+    });
+
+  test('reassignment to active same-tenant operator is authorized and tenant predicate remains',async () => {
+    const t=harness();
+    await t.service.update({...ctx,id:ID,expectedVersion:2,
+      requestId:REQUEST,changes:{ownerId:'lead-active'}});
+    const owner=t.db.query.mock.calls.find(([sql]) =>
+      sql.includes('WHERE tenant_id=? AND principal_id=?'));
+    expect(owner[1]).toEqual(['acme','lead-active']);
+    expect(t.db.runMutationWithChanges).toHaveBeenCalledTimes(1);
+    expect(t.db.runMutationWithChanges.mock.calls[0][1][3]).toBe('lead-active');
+  });
+
+  test('existing legitimate owner does not trigger an unnecessary owner-enumeration query',async () => {
+    const t=harness();
+    await t.service.update({...ctx,id:ID,expectedVersion:2,
+      requestId:REQUEST,changes:{state:'INVESTIGATING'}});
+    expect(t.db.query.mock.calls.filter(([sql]) =>
+      sql.includes('WHERE tenant_id=? AND principal_id=?'))).toHaveLength(0);
+    expect(t.db.runMutationWithChanges).toHaveBeenCalledTimes(1);
+  });
+
+  test('clearing an assignee is permitted; cross-tenant owner names are never returned',async () => {
+    const t=harness();
+    await t.service.update({...ctx,id:ID,expectedVersion:2,
+      requestId:REQUEST,changes:{ownerId:null}});
+    expect(t.db.runMutationWithChanges.mock.calls[0][1][3]).toBeNull();
+  });
+
+  test('principal lookup outage fails before mutation rather than pretending owner is eligible',async () => {
+    const t=harness();
+    const original=t.db.query.getMockImplementation();
+    t.db.query.mockImplementation((sql,params)=>{
+      if (sql.includes('WHERE tenant_id=? AND principal_id=?'))
+        throw new Error('D1 permission or connection failure');
+      return original(sql,params);
+    });
+    await expect(t.service.update({...ctx,id:ID,expectedVersion:2,
+      requestId:REQUEST,changes:{ownerId:'lead-active'}})).rejects.toThrow();
+    expect(t.db.runMutationWithChanges).not.toHaveBeenCalled();
   });
 });
