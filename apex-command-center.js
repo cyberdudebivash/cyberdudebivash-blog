@@ -29,7 +29,7 @@
        /[\u0000-\u001f\u007f]/.test(v))return fallback;
     try{
       var u=new URL(v,window.location.origin);
-      if(u.protocol!=='https:'||u.username||u.password||
+      if(u.protocol!=='https:'||u.username||u.password||u.port||
          !Object.prototype.hasOwnProperty.call(REPORT_HOSTS,u.hostname.toLowerCase()))return fallback;
       return u.href;
     }catch(e){return fallback;}
