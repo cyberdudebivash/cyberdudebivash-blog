@@ -31,6 +31,23 @@ After the secret owner restores authorized prerequisites, the owner may explicit
 - Snapshot creation time, SHA-256 of the **encrypted** artifact, secure storage location, custodian, retention/expiry date, and latest successful recoverable backup time are recorded in private operational evidence; no sensitive customer fields or secrets are attached to tickets.
 - A separately approved durable encrypted-backup destination and key-escrow/rotation policy are required for longer-term recoverability. **GitHub Actions artifact retention is currently 7 days**, as declared in `.github/workflows/backup-customer-data.yml`. It is not a durable archival service.
 
+### Restore CLI write authorization — enforced before any Redis writes
+
+The CLI now **fails closed** for `--confirm` unless the operator provides an explicitly pinned Redis origin and an incident/change reference; an offline dry run does not need these write-authorization variables. This is defense in depth against an accidental target mismatch, **not independent proof of target isolation or formal customer-data change approval**.
+
+To prepare private write authorization, verify the *actual* approved Upstash REST origin and compute its SHA-256 fingerprint locally without publishing the URL or token. Keep the production-origin fingerprint from a separately verified privileged source; do not invent a dummy fingerprint merely to pass the check. Both fingerprints are **SHA-256 of the exact HTTPS origin string** (e.g. generated privately via `require('node:crypto').createHash('sha256').update(origin).digest('hex')`). Only an exact lowercase HTTPS `*.upstash.io` origin with no slash, URL path, query, credentials or port suffix is accepted.
+
+The authorized process environment must provide:
+
+- `SOC_RESTORE_TARGET_URL_SHA256` — private independently reviewed fingerprint of the exact `UPSTASH_REDIS_REST_URL` destination.
+- `SOC_RESTORE_LIVE_URL_SHA256` — separate, genuine fingerprint of the current live customer Redis origin.
+- `SOC_RESTORE_APPROVAL_REF` — approved incident/change reference in `CDB-INC-YYYY-NNN` or `CDB-CHG-YYYY-NNN` format (3–8 digits after year).
+- `SOC_RESTORE_MODE=isolated-rehearsal` — required for a rehearsal; target fingerprint **must differ** from the verified live fingerprint.
+
+For an actual production disaster-recovery change only, use `SOC_RESTORE_MODE=production-break-glass` with the **same exact live and target fingerprint**, plus `SOC_RESTORE_BREAK_GLASS_CONFIRM=I_AUTHORIZE_PRODUCTION_CUSTOMER_DATA_RESTORE`. These environment controls must be combined with explicit independent owner approval, a scheduled recovery window, reconciliation, and rollback. A matching hash and approval-reference string are **operator-supplied assertions, not cryptographic proof of authority**.
+
+The guard checks these conditions *after* offline snapshot authentication/validation but **before** loading the live Redis adapter or executing any restore command. It does not display Redis URLs, tokens, or fingerprint values. For a rehearsal, a second person or independent approved inventory must confirm the target is disposable and separate from production before `--confirm`. No scripts automatically select a sandbox or provision an isolated database.
+
 ### Isolated recovery rehearsal — mandatory before customer GO
 
 **Critical:** `scripts/restore-customer-data.js --confirm` writes to whichever Upstash Redis endpoint is configured by `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` in the invoking environment. It does **not** automatically select a staging database, create a sandbox, or supply cross-key atomicity. **Never run `--confirm` with production credentials as a rehearsal.**
