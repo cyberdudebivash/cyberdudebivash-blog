@@ -19,7 +19,7 @@
 'use strict';
 
 const fs = require('fs');
-const { decryptSnapshot, normalizeHashRecord, normalizeAuditLog, SCHEMA_VERSION } = require('./backup-customer-data');
+const { decryptSnapshot, normalizeHashRecord, normalizeAuditLog, SCHEMA_VERSION, PENDING_TIER_PREFIX, MAX_PENDING_TIER_TTL_SECONDS } = require('./backup-customer-data');
 
 /**
  * Validate the entire decrypted artifact BEFORE any Redis write. A historical
@@ -41,6 +41,21 @@ function validateSnapshot(snapshot) {
   }
   const hashes = [];
   const strings = [];
+  // Historical v1 encrypted files can lack this additive metadata.
+  // Without the original TTL, restoring a pending payment as a plain SET
+  // would resurrect an expired, time-limited entitlement indefinitely.
+  const pendingTierExpiry = snapshot.pendingTierExpiry === undefined
+    ? {} : snapshot.pendingTierExpiry;
+  if (!isRecord(pendingTierExpiry)) {
+    throw new Error('SOC_RESTORE_PENDING_TIER_TTL_UNVERIFIED');
+  }
+  for (const key of Object.keys(pendingTierExpiry)) {
+    if (!key.startsWith(PENDING_TIER_PREFIX) ||
+        !Object.prototype.hasOwnProperty.call(snapshot.strings,key) ||
+        typeof snapshot.strings[key] !== 'string') {
+      throw new Error('SOC_RESTORE_PENDING_TIER_TTL_UNVERIFIED');
+    }
+  }
   for (const [key, fields] of Object.entries(snapshot.hashes)) {
     if (!key.startsWith('user:key:') || key.length <= 'user:key:'.length) {
       throw new Error('SOC_RESTORE_KEY_SCOPE_VIOLATION');
@@ -54,7 +69,22 @@ function validateSnapshot(snapshot) {
     if (value !== null && value !== undefined && typeof value !== 'string') {
       throw new Error('SOC_RESTORE_INVALID_STRING_VALUE');
     }
-    if (value !== null && value !== undefined) strings.push([key, value]);
+    if (value !== null && value !== undefined) {
+      if (key.startsWith(PENDING_TIER_PREFIX)) {
+        const expiresAt = pendingTierExpiry[key];
+        const millis = typeof expiresAt === 'string' &&
+          /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(expiresAt)
+          ? Date.parse(expiresAt) : NaN;
+        const snapshotTime = Date.parse(snapshot.createdAt);
+        if (!Number.isFinite(millis) || millis >
+            snapshotTime + MAX_PENDING_TIER_TTL_SECONDS * 1000) {
+          throw new Error('SOC_RESTORE_PENDING_TIER_TTL_UNVERIFIED');
+        }
+        strings.push([key, value, millis]);
+      } else {
+        strings.push([key, value]);
+      }
+    }
   }
   const auditLog = normalizeAuditLog(snapshot.auditLog);
   return {hashes, strings, auditLog};
@@ -76,8 +106,20 @@ async function applySnapshot(redis, snapshot) {
     await redis.hmset(key, fields);
     hashesWritten++;
   }
-  for (const [key, value] of prepared.strings) {
-    await redis.set(key, value);
+  let expiredPendingTiers = 0;
+  for (const [key, value, expiresAtMillis] of prepared.strings) {
+    if (key.startsWith(PENDING_TIER_PREFIX)) {
+      // Never resurrect or extend a paid pre-registration TTL.
+      // Favor early expiration over the risk of accidentally rearming access.
+      const secondsLeft = Math.floor((expiresAtMillis - Date.now()) / 1000);
+      if (secondsLeft <= 0) {
+        expiredPendingTiers++;
+        continue;
+      }
+      await redis.setex(key, secondsLeft, value);
+    } else {
+      await redis.set(key, value);
+    }
     stringsWritten++;
   }
   for (const [member, score] of prepared.auditLog) {
@@ -85,7 +127,9 @@ async function applySnapshot(redis, snapshot) {
     auditEntriesWritten++;
   }
 
-  return {hashesWritten, stringsWritten, auditEntriesWritten};
+  return expiredPendingTiers
+    ? {hashesWritten, stringsWritten, auditEntriesWritten, expiredPendingTiers}
+    : {hashesWritten, stringsWritten, auditEntriesWritten};
 }
 
 async function main() {
@@ -120,6 +164,7 @@ async function main() {
   const redis = require('../api/_lib/redis');
   const { hashesWritten, stringsWritten, auditEntriesWritten } = await applySnapshot(redis, snapshot);
   console.log(`[RESTORE] Wrote ${hashesWritten} hash(es), ${stringsWritten} string key(s), ${auditEntriesWritten} payment audit entry/entries into Redis.`);
+  console.log('[RESTORE] Pending-tier TTL: captured expiry enforced, expired records never resurrected.');
 }
 
 if (require.main === module) {
