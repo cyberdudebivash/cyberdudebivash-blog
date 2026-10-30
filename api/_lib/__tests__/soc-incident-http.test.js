@@ -15,7 +15,13 @@ function fixture(enabled=true) {
     create:jest.fn(async()=>({incidentId:ID,version:1})),
     update:jest.fn(async()=>({incidentId:ID,version:3})),
   };
-  return {service,handle:createSocIncidentHttpHandler({service,approvedOrigin:ORIGIN,enabled})};
+  const entitlement=jest.fn(async ({tenantId}) => ({verified:true,allowed:true,tenantId,tier:'PRO'}));
+  return {
+    service,entitlement,
+    handle:createSocIncidentHttpHandler({
+      service,approvedOrigin:ORIGIN,enabled,authorizeCommercialAccess:entitlement,
+    }),
+  };
 }
 async function json(response) {return response.json();}
 function request(url=API,init={}) {
@@ -157,3 +163,46 @@ test.each([undefined, false, 'false', 'true', 0, 1, null, {}])(
     expect(service.list).not.toHaveBeenCalled();
   }
 );
+
+test('customer SOC adapter refuses activation without a trusted commercial authority', () => {
+  const service=fixture().service;
+  expect(() => createSocIncidentHttpHandler({service,approvedOrigin:ORIGIN,enabled:true}))
+    .toThrow('SOC_ENTITLEMENT_AUTHORITY_REQUIRED');
+});
+
+test.each([
+  [{verified:true,allowed:true,tenantId:'acme',tier:'FREE'},403],
+  [{verified:true,allowed:true,tenantId:'acme',tier:'pro'},403],
+  [{verified:true,allowed:true,tenantId:'acme',tier:'UNKNOWN'},403],
+  [{verified:true,allowed:true,tenantId:'contoso',tier:'PRO'},403],
+  [{verified:false,allowed:true,tenantId:'acme',tier:'PRO'},403],
+  [{verified:true,allowed:false,tenantId:'acme',tier:'PRO'},403],
+  [true,403],
+  [null,403],
+])('refuses untrusted or nonpremium commercial entitlement: %p', async (verdict,status) => {
+  const {handle,service,entitlement}=fixture();
+  entitlement.mockResolvedValue(verdict);
+  const res=await handle(request());
+  expect(res.status).toBe(status);
+  expect((await res.json()).error.code).toBe('SUBSCRIPTION_REQUIRED');
+  expect(service.list).not.toHaveBeenCalled();
+});
+
+test('commercial entitlement authority outage fails closed without incident access',async () => {
+  const {handle,service,entitlement}=fixture();
+  entitlement.mockRejectedValue(new Error('private billing data unavailable'));
+  const res=await handle(request());
+  expect(res.status).toBe(503);
+  expect((await res.json()).error.code).toBe('ENTITLEMENT_SERVICE_UNAVAILABLE');
+  expect(JSON.stringify(await res.json().catch(()=>({})))).not.toContain('private billing data');
+  expect(service.list).not.toHaveBeenCalled();
+});
+
+test.each(['PRO','ENTERPRISE','MSSP'])('verified %s entitlement permits tenant-bound service authorization',async tier => {
+  const {handle,service,entitlement}=fixture();
+  entitlement.mockResolvedValue({verified:true,allowed:true,tenantId:'acme',tier});
+  const res=await handle(request());
+  expect(res.status).toBe(200);
+  expect(service.list).toHaveBeenCalledTimes(1);
+  expect(entitlement).toHaveBeenCalledWith({accessToken:TOKEN,tenantId:'acme'});
+});
