@@ -134,6 +134,15 @@ jobs:
           node --test tests-js/soc-public-feed-parity.test.js
           node scripts/certify-soc-public-feed-parity.cjs
 
+      # P0: Homepage feed and S2N API can drift independently. On every
+      # customer smoke check, diagnose BOTH fixed public S2N API hosts, even
+      # when the preceding root-feed gate fails. No worker mutation; this
+      # is source-ledger parity, not the exact-byte postdeploy certification.
+      - name: "🛡️ P0: Verify SOC and blog public S2N API freshness and report IDs"
+        if: ${{ !cancelled() }}
+        run: |
+          node scripts/certify-soc-s2n-api-release.cjs --monitor-public
+
       - name: "💳 Pricing integrity — live check"
         if: success()
         run: |
