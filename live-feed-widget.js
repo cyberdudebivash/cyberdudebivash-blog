@@ -5,10 +5,8 @@
  *
  * Source chain (each tried in order until data found):
  *   1. /live-intel.json  — same-origin, GitHub Actions-generated
- *   2. CISA KEV (direct) — public CORS-enabled CDN
- *   3. CISA KEV (proxy1) — corsproxy.io
- *   4. CISA KEV (proxy2) — allorigins
- *   5. Explicit unavailable state — never fabricate a healthy feed
+ *   2. CISA KEV (official HTTPS origin, when browser CORS permits)
+ *   3. Explicit unavailable state — never trust anonymous proxy rewrites
  *
  * © 2025 CYBERDUDEBIVASH. All rights reserved.
  * ═══════════════════════════════════════════════════════════
@@ -20,8 +18,6 @@
   var CFG = {
     LOCAL_JSON:  '/live-intel.json',
     CISA_DIRECT: 'https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json',
-    CISA_PROXY1: 'https://corsproxy.io/?https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json',
-    CISA_PROXY2: 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json'),
     CONTAINER_ID:'live-intel-feed',
     CACHE_KEY:   'cbd_lfw_v5',
     CACHE_TTL:   55 * 1000,        // 55s — just under refresh interval
@@ -244,17 +240,10 @@
         return xhrFetch(CFG.CISA_DIRECT, 10000).then(function(d) {
           var items = parseCISA(d);
           if (items && items.length) return items.map(function(item){item._feedGenerated=null;return item;});
-          // 3. CISA proxy 1
-          return xhrFetch(CFG.CISA_PROXY1, 10000).then(function(d2) {
-            var items2 = parseCISA(d2);
-            if (items2 && items2.length) return items2.map(function(item){item._feedGenerated=null;return item;});
-            // 4. CISA proxy 2
-            return xhrFetch(CFG.CISA_PROXY2, 10000).then(function(d3) {
-              var items3 = parseCISA(d3);
-              if (items3 && items3.length) return items3.map(function(item){item._feedGenerated=null;return item;});
-              return [];
-            });
-          });
+          // No third-party CORS proxies: they can modify threat content,
+          // misrepresent CISA provenance, and expose visitor traffic.
+          // Official origin unavailable => visible unavailable state.
+          return [];
         });
       })
       .catch(function() { return []; });
