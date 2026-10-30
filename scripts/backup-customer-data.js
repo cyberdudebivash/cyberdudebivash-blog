@@ -54,7 +54,7 @@ function buildSnapshot({ hashes, strings, auditLog, pendingTierExpiry = {} }) {
     // Optional additive v1 extension: ABSOLUTE original expiration times
     // for paid-but-not-registered records. Legacy v1 pending records without
     // this evidence MUST NOT be restored as immortal Redis strings.
-    pendingTierExpiry,
+    ...(Object.keys(pendingTierExpiry).length ? {pendingTierExpiry} : {}),
     auditLog, // [ [member, score], ... ]                (audit:payment:log)
   };
 }
@@ -213,7 +213,9 @@ async function fetchAll(redis) {
     await redis.zrevrange('audit:payment:log', 0, -1, true)
   );
 
-  return { hashes, strings, pendingTierExpiry, auditLog };
+  return Object.keys(pendingTierExpiry).length
+    ? { hashes, strings, pendingTierExpiry, auditLog }
+    : { hashes, strings, auditLog };
 }
 
 /**
