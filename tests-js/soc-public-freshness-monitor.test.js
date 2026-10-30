@@ -60,3 +60,46 @@ test('monitor cannot silently repair a Cloudflare edge deploy by dispatching the
  assert.doesNotMatch(subset,/createWorkflowDispatch|force_reset_state|wrangler deploy/);
  assert.match(workflow,/Release operation: MANUAL_OWNER_APPROVED_ONLY/);
 });
+
+
+test('SOC browser widget classifies genuine source age, not browser fetch time',()=>{
+ const vm=require('node:vm');
+ const widgetSource=fs.readFileSync(path.join(__dirname,'..','live-feed-widget.js'),'utf8');
+ const sandbox={
+   window:{},
+   document:{readyState:'loading',addEventListener(){}},
+   encodeURIComponent, Date, Number, console,
+ };
+ vm.runInNewContext(widgetSource,sandbox,{timeout:1000});
+ const classify=sandbox.window.LIVE_FEED_WIDGET.classifyFeedTimestamp;
+ assert.equal(typeof classify,'function');
+ const now=Date.parse('2026-10-30T12:00:00Z');
+ const current=classify('2026-10-30T11:15:00Z',now);
+ assert.equal(current.state,'current');
+ assert.equal(current.publishedAt,Date.parse('2026-10-30T11:15:00Z'));
+ const edgeStale=classify('2026-10-23T04:58:15.799Z',now);
+ assert.equal(edgeStale.state,'stale');
+ assert.equal(edgeStale.publishedAt,Date.parse('2026-10-23T04:58:15.799Z'));
+ assert.equal(classify('2026-10-30T08:59:00Z',now).state,'stale');
+ assert.equal(classify('2026-10-30T09:00:00Z',now).state,'current');
+ assert.equal(classify('2026-10-30T12:05:01Z',now).state,'unverified');
+ assert.equal(classify('2026-10-30T12:05:00Z',now).state,'current');
+ for(const bad of [null,undefined,'','NaN','definitely-not-a-date',{},12345]){
+   const result=classify(bad,now);
+   assert.equal(result.state,'unverified',String(bad));
+   assert.equal(result.publishedAt,null);
+ }
+});
+
+test('SOC widget cannot pretend CISA fallback retrieval created fresh intel',()=>{
+ const source=fs.readFileSync(path.join(__dirname,'..','live-feed-widget.js'),'utf8');
+ assert.doesNotMatch(source,/_feedGenerated\s*=\s*new Date\(\)\.toISOString\(\)/);
+ assert.match(source,/item\._feedGenerated=null/);
+ assert.match(source,/SOURCE TIMESTAMP UNVERIFIED/);
+ assert.match(source,/STALE FEED — LAST VERIFIED INTEL/);
+ assert.doesNotMatch(source,/Live Breaking Intel/);
+ assert.match(source,/Threat Intelligence Feed/);
+ assert.match(source,/lastVerifiedSourceLabel\(\)/);
+ assert.match(source,/lfw-bt/);
+ assert.match(source,/classList\.toggle\('lfw-dot-load',stale\)/);
+});
