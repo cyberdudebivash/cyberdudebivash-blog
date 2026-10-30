@@ -75,3 +75,33 @@ describe('gateway subscription authority — negative controls', () => {
     expect(opts.headers['X-API-Key']).toBe('cdb_pro_test_key');
   });
 });
+
+describe('checkout referral privacy and URL safety', () => {
+  test.each([
+    ['buyer@example.com', 'premium-intelligence'],
+    ['buyer%40example.com', 'premium-intelligence'],
+    ['cdb_pro_privatekey', 'premium-intelligence'],
+    ['report-cdb_pro_privatekey', 'premium-intelligence'],
+    ['sentinel_keyprivate', 'premium-intelligence'],
+    ['abc.def.ghi', 'premium-intelligence'],
+    ['https://external.example', 'premium-intelligence'],
+    ['folder/report', 'premium-intelligence'],
+    ['MY-API_KEY-123', 'premium-intelligence'],
+    ['token=private', 'premium-intelligence'],
+  ])('unsafe campaign content is discarded: %s', (untrusted, expected) => {
+    const url = new URL(plan.premiumUpgradeUrl({content: untrusted}));
+    expect(url.searchParams.get('utm_content')).toBe(expected);
+    expect(url.toString()).not.toContain(untrusted);
+  });
+
+  test('safe existing report slug keeps conversion attribution', () => {
+    const slug = 'sentinel-apex-vuln-cve-2025-62593-ray-v3';
+    expect(new URL(plan.premiumUpgradeUrl({content:slug})).searchParams.get('utm_content')).toBe(slug);
+  });
+
+  test('suspicious source and campaign metadata revert to safe defaults', () => {
+    const url = new URL(plan.premiumUpgradeUrl({source:'customer@example.com',campaign:'cdb_pro_key_fragment'}));
+    expect(url.searchParams.get('utm_source')).toBe('intel-factory');
+    expect(url.searchParams.get('utm_campaign')).toBe('sentinel-apex-conversion');
+  });
+});
