@@ -35,3 +35,43 @@ describe('tier eligibility fails closed', () => {
     expect(plan.isSentinelPlatformCredential('')).toBe(false);
   });
 });
+
+describe('gateway subscription authority — negative controls', () => {
+  afterEach(() => plan.setSentinelGatewayBinding(null));
+
+  test('missing binding refuses access instead of treating paid tier as trusted', async () => {
+    plan.setSentinelGatewayBinding(null);
+    await expect(plan.resolveSentinelPlatformCredential('cdb_pro_test_key'))
+      .rejects.toMatchObject({ code: 'ENTITLEMENT_SERVICE_UNAVAILABLE' });
+  });
+
+  test.each([
+    [{ valid: false, tier: 'PRO' }, false],
+    [{ valid: true, tier: 'FREE' }, false],
+    [{ valid: true, tier: 'pro' }, false],
+    [{ valid: true, tier: 'MSSP' }, true],
+    [{ valid: true, tier: 'ENTERPRISE' }, true],
+  ])('only verified exact gateway tiers grant premium access: %p', async (payload, allowed) => {
+    const gateway = { fetch: jest.fn(async () => ({ ok: true, json: async () => payload })) };
+    plan.setSentinelGatewayBinding(gateway);
+    const result = await plan.resolveSentinelPlatformCredential('cdb_pro_test_key');
+    expect(result.planEligible).toBe(allowed);
+    expect(result.valid).toBe(payload.valid);
+    expect(gateway.fetch).toHaveBeenCalledTimes(1);
+  });
+
+  test('gateway outage fails closed', async () => {
+    plan.setSentinelGatewayBinding({ fetch: async () => { throw new Error('offline'); } });
+    await expect(plan.resolveSentinelPlatformCredential('cdb_pro_test_key'))
+      .rejects.toMatchObject({ code: 'ENTITLEMENT_SERVICE_UNAVAILABLE' });
+  });
+
+  test('gateway request uses header credential, never a query parameter', async () => {
+    const fetch = jest.fn(async () => ({ ok: true, json: async () => ({ valid: true, tier: 'PRO' }) }));
+    plan.setSentinelGatewayBinding({ fetch });
+    await plan.resolveSentinelPlatformCredential('cdb_pro_test_key');
+    const [url, opts] = fetch.mock.calls[0];
+    expect(new URL(url).searchParams.has('api_key')).toBe(false);
+    expect(opts.headers['X-API-Key']).toBe('cdb_pro_test_key');
+  });
+});
