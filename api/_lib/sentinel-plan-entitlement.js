@@ -48,7 +48,16 @@ function setSentinelGatewayBinding(binding) {
 }
 
 function utmValue(value, fallback) {
-  const clean = String(value || '').toLowerCase().replace(/[^a-z0-9._-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60);
+  // Public referral URLs are copied into browser history, logs and analytics.
+  // Never transliterate an email, credential, URL or arbitrary input into a
+  // seemingly safe tracking identifier: punctuation removal preserves PII.
+  if (typeof value !== 'string' || !value || value.length > 180 ||
+      !/^[A-Za-z0-9._-]+$/.test(value) ||
+      /(?:cdb_|sentinel_|api[_-]?key|access[_-]?token|password|secret)/i.test(value) ||
+      /^(?:[A-Za-z0-9_-]+\\.){2}[A-Za-z0-9_-]+$/.test(value)) {
+    return fallback;
+  }
+  const clean = value.toLowerCase().replace(/^-+|-+$/g, '').slice(0, 60);
   return clean || fallback;
 }
 
