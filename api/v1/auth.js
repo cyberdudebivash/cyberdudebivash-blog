@@ -20,6 +20,7 @@ const {
 } = require('../_lib/middleware');
 const sec    = require('../_lib/security');
 const resend = require('../_lib/resend');
+const { consumePendingTierAfterRegistration } = require('../_lib/pending-tier-registration');
 
 /* ─── Allowed fields for register (Phase 2 whitelist) ─────────── */
 const REGISTER_FIELDS = ['email', 'name', 'plan'];
@@ -161,17 +162,21 @@ async function handleRegister(req, res) {
     /* ── Check for pre-approved tier (paid before registering) */
     let activeTier      = 'free';
     let tierActivatedBy = null;
+    const pendingTierKey = `user:pending:tier:${safeEmail}`;
+    let approvedPendingRaw = null;
     try {
-      const pendingRaw = await redis.get(`user:pending:tier:${safeEmail}`);
+      const pendingRaw = await redis.get(pendingTierKey);
       if (pendingRaw) {
         const pending = JSON.parse(pendingRaw);
         if (pending && pending.tier && ['starter', 'pro', 'team', 'enterprise'].includes(pending.tier)) {
           activeTier      = pending.tier;
           tierActivatedBy = pending.transactionId || 'manual_payment';
-          await redis.del(`user:pending:tier:${safeEmail}`).catch(() => {});
+          // Do NOT delete yet. Account creation can still fail; its paid
+          // entitlement must remain available for an authorized retry.
+          approvedPendingRaw = pendingRaw;
         }
       }
-    } catch (_) { /* best-effort */ }
+    } catch (_) { /* best-effort: no payment status is logged */ }
 
     /* ── Create user ────────────────────────────────────── */
     const userId = 'usr_' + crypto.randomBytes(12).toString('hex');
@@ -197,6 +202,18 @@ async function handleRegister(req, res) {
 
     await redis.set(emailKey,                `${userId}`);
     await redis.set(`user:id:${userId}`,     hash);
+
+    // Both account lookups and the user hash must persist before consuming
+    // a pre-approved paid tier. The Lua check deletes ONLY the exact value
+    // originally read, never a newer concurrent payment update. Cleanup
+    // failure must not hide an already-created one-time customer API key.
+    if (approvedPendingRaw !== null) {
+      try {
+        await consumePendingTierAfterRegistration(redis,pendingTierKey,approvedPendingRaw);
+      } catch (_) {
+        console.warn('[AUTH] Pending paid-tier cleanup deferred after successful registration');
+      }
+    }
     await redis.incr('analytics:registrations:total').catch(() => {});
     await redis.incr(`analytics:registrations:${now.slice(0,10)}`).catch(() => {});
 
