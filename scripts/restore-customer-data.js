@@ -139,7 +139,7 @@ async function applySnapshot(redis, snapshot) {
  * substitute for independently verifying the target or incident approval.
  * Never print URLs, provider tokens, or endpoint fingerprints in diagnostics.
  */
-function verifyRestoreTarget(env) {
+function verifyRestoreTarget(env,flag='--confirm') {
   const invalid = () => { throw new Error('SOC_RESTORE_TARGET_NOT_AUTHORIZED'); };
   const sha = value => typeof value === 'string' &&
     /^[a-f0-9]{64}$/i.test(value) ? value.toLowerCase() : null;
@@ -163,9 +163,9 @@ function verifyRestoreTarget(env) {
       typeof approval !== 'string' ||
       !/^CDB-(?:INC|CHG)-20\d{2}-\d{3,8}$/.test(approval)) invalid();
   if (env.SOC_RESTORE_MODE === 'isolated-rehearsal') {
-    if (target === live) invalid();
+    if (target === live || flag !== '--confirm') invalid();
   } else if (env.SOC_RESTORE_MODE === 'production-break-glass') {
-    if (target !== live ||
+    if (flag !== '--confirm-production' || target !== live ||
         env.SOC_RESTORE_BREAK_GLASS_CONFIRM !==
         'I_AUTHORIZE_PRODUCTION_CUSTOMER_DATA_RESTORE') invalid();
   } else {
@@ -177,7 +177,7 @@ function verifyRestoreTarget(env) {
 async function main() {
   const [, , snapshotPath, flag] = process.argv;
   if (!snapshotPath) {
-    console.error('Usage: node restore-customer-data.js <snapshot-file> [--confirm]');
+    console.error('Usage: node restore-customer-data.js <snapshot-file> [--confirm|--confirm-production]');
     process.exit(1);
     return;
   }
@@ -198,14 +198,14 @@ async function main() {
   const stringCount = prepared.strings.length;
   console.log(`[RESTORE] Snapshot from ${snapshot.createdAt}: ${userCount} user record(s), ${stringCount} lookup key(s), ${prepared.auditLog.length} audit entries.`);
 
-  if (flag !== '--confirm') {
+  if (flag !== '--confirm' && flag !== '--confirm-production') {
     console.log('[RESTORE] Dry run only — no data written. Re-run with --confirm to actually restore into Redis.');
     return;
   }
 
   // Authorization is checked BEFORE loading any live Redis adapter or write.
   // This does not replace private owner approval or a separate isolated rehearsal.
-  verifyRestoreTarget(process.env);
+  verifyRestoreTarget(process.env,flag);
   const redis = require('../api/_lib/redis');
   const { hashesWritten, stringsWritten, auditEntriesWritten } = await applySnapshot(redis, snapshot);
   console.log(`[RESTORE] Wrote ${hashesWritten} hash(es), ${stringsWritten} string key(s), ${auditEntriesWritten} payment audit entry/entries into Redis.`);
