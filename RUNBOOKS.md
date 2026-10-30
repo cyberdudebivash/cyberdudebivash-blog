@@ -7,72 +7,44 @@ real incident teaches something this version got wrong, not speculatively.
 
 ---
 
-## Backup & Restore
+## Backup & Restore — P0 customer-data recovery (30 October 2026)
 
-**What's backed up and why**: registered API keys, tier assignments, and
-the payment audit log exist *only* in Redis (Upstash) — unlike posts and
-reports, which are git-versioned and durable by construction. Before
-`scripts/backup-customer-data.js` existed, there was no export path at all
-for this data (found and recorded in `platform/open-issues.md`, GPEP v1).
+**Current operational status: NO-GO / not yet recoverability-certified.**
+The latest inspected scheduled workflow, [Customer Data Backup run #41037203567](https://github.com/cyberdudebivash/cyberdudebivash-blog/actions/runs/41037203567), **failed during credential preflight**: `HAS_REDIS_URL=true`, `HAS_REDIS_TOKEN=true`, `HAS_BACKUP_KEY=false`. The backup and artifact-upload steps were **skipped**. This is a correct fail-closed result, not evidence of a usable new encrypted backup. Do not close [recovery incident #494](https://github.com/cyberdudebivash/cyberdudebivash-blog/issues/494) until independent backup and restore evidence exists.
 
-**Not yet active in production.** The backup workflow
-(`.github/workflows/backup-customer-data.yml`) and scripts exist and are
-tested, but require three GitHub Actions repository secrets that are not
-yet configured — see the workflow file's own header comment for exact
-names and how to generate `BACKUP_ENCRYPTION_KEY`. Until they're set, the
-workflow runs on schedule, detects this, and posts a visible warning
-without failing. **This is a pending activation decision, the same shape
-as the registration welcome email before it was merged** — someone with
-repo-secrets access needs to provision the three secrets before backups
-actually start.
+**Data scope.** `scripts/backup-customer-data.js` reads the Redis customer API-key hashes (`user:key:*`), durable account lookup strings (`user:email:*` and `user:id:*`), time-limited prepaid registration tier strings (`user:pending:tier:*`), and the payment audit sorted set (`audit:payment:log`). Snapshots contain sensitive customer metadata and hashes. The current implementation encrypts with AES-256-GCM before writing an output file, then verifies the encrypted bytes can be decrypted. It does **not** guarantee a transactionally consistent point-in-time Redis snapshot.
 
-**Manual backup** (once secrets are configured, or run locally with the
-same three env vars set):
-```
-BACKUP_ENCRYPTION_KEY=<key> node scripts/backup-customer-data.js [outputPath]
-```
+### Owner-only secret recovery (no secrets in chat, Git, PRs, or logs)
 
-**Restore procedure** (a deliberate, human-initiated action — never
-automatic):
-1. Obtain the encrypted snapshot (a GitHub Actions artifact, or a locally
-   run backup file) and the `BACKUP_ENCRYPTION_KEY` used to create it.
-2. Dry run first — always:
-   ```
-   BACKUP_ENCRYPTION_KEY=<key> node scripts/restore-customer-data.js <snapshot-file>
-   ```
-   This decrypts and prints record counts without writing anything.
-3. Only after confirming the counts look right, actually write:
-   ```
-   BACKUP_ENCRYPTION_KEY=<key> node scripts/restore-customer-data.js <snapshot-file> --confirm
-   ```
+1. In GitHub repository **Settings → Secrets and variables → Actions**, inspect availability/scope of exactly `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`, and `BACKUP_ENCRYPTION_KEY`. The current workflow job declares **no GitHub environment**, so an environment-only secret is not automatically available to it. Confirm correct repository access and intentionally approved scope.
+2. Recover the **original** `BACKUP_ENCRYPTION_KEY` from the authorized key custodian/vault. Its expected format is 64 hexadecimal characters (32 bytes). Do not generate a replacement merely to make CI green: historical encrypted snapshots would then be unreadable. If the original key is demonstrably irretrievable, initiate a separately approved documented recovery/rotation incident and assess historical backups before establishing a new key.
+3. Make any secret correction **privately through authorized administration**. Do not expose secret values via issue comments, screenshots, shell history, workflow logs, or a pull request. Do not modify the preflight to skip the key check.
+4. Before a credentialed backup attempt, obtain approval for the expected Upstash read workload and retention handling; repository CI success alone is not a cost/quotas attestation or a production customer-recovery guarantee.
 
-**Recovery targets** (proposed, not yet validated against a real incident):
-- **RPO (Recovery Point Objective)**: ≤24 hours, matching the daily backup
-  schedule. If this isn't tight enough for the business's actual risk
-  tolerance, that's an Executive Decision (increase frequency), not
-  something to silently assume is fine.
-- **RTO (Recovery Time Objective)**: not yet measured. The restore script
-  itself runs in seconds for realistic data volumes, but total incident
-  time also depends on detecting the loss, obtaining the encryption key,
-  and locating the right snapshot — none of which have been rehearsed.
+### Controlled encrypted-backup acceptance
 
-**Validation procedure**: none has been run yet against a real or
-staging Redis instance — only against fake in-memory clients in
-`tests-js/backup-restore.test.js`. **Remaining validation, explicitly**: a
-real dry run against a staging (not production) Redis instance, once one
-exists, to confirm the KEYS-based enumeration behaves correctly at real
-data volumes and the restore path is genuinely trustworthy end-to-end.
+After the secret owner restores authorized prerequisites, the owner may explicitly trigger the **existing** `backup-customer-data.yml` workflow (or perform the equivalent approved private local run). No automatic new schedule or cloud deployment is required. Verify all of the following on the **same run**:
 
-**Ownership**: whoever holds GitHub repository secrets access and the
-Upstash account today — not assigned to a named role here since this is
-currently a small/solo operation (see `platform/open-issues.md`'s scale
-readiness finding).
+- Credential preflight **passed** and the real customer backup step **completed**; no plaintext data appeared in logs.
+- The `customer-data-backup-<run_id>` encrypted artifact was uploaded successfully, is nonempty, and is retrievable within its retention window.
+- The original key decrypts and authenticates the artifact **off the production service**; the snapshot schema, actual record counts, payment-audit entries, and pending-tier expiry metadata pass the current restore validator. A successful upload alone is insufficient.
+- Snapshot creation time, SHA-256 of the **encrypted** artifact, secure storage location, custodian, retention/expiry date, and latest successful recoverable backup time are recorded in private operational evidence; no sensitive customer fields or secrets are attached to tickets.
+- A separately approved durable encrypted-backup destination and key-escrow/rotation policy are required for longer-term recoverability. **GitHub Actions artifact retention is currently 7 days**, as declared in `.github/workflows/backup-customer-data.yml`. It is not a durable archival service.
 
-**Known limitation, stated plainly**: GitHub Actions artifact retention
-(90 days, set in the workflow) is a safety net, not a long-term archival
-policy. If the business needs backups older than 90 days recoverable, that
-needs a durable off-GitHub destination — an infrastructure decision
-requiring explicit approval, not built here.
+### Isolated recovery rehearsal — mandatory before customer GO
+
+**Critical:** `scripts/restore-customer-data.js --confirm` writes to whichever Upstash Redis endpoint is configured by `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` in the invoking environment. It does **not** automatically select a staging database, create a sandbox, or supply cross-key atomicity. **Never run `--confirm` with production credentials as a rehearsal.**
+
+1. Provision or select an explicitly approved **disposable, isolated** Redis target. Independently verify the target's provider account, database identity, endpoint, and scope are different from live customer Redis, without revealing its token. Apply approved time/budget limits.
+2. Using the original key supplied through a secure, nonlogged environment, perform the offline dry-run command: `node scripts/restore-customer-data.js /secure/path/customer-data.enc`. It must authenticate the encrypted input and validate the entire snapshot without Redis writes.
+3. Only after independent destination verification, explicit owner authorization, and a clean dry run, use the isolated target credentials for the restore command: `node scripts/restore-customer-data.js /secure/path/customer-data.enc --confirm`.
+4. Verify recovered account-hash fields, account lookup consistency, audit score/member fidelity, and customer entitlement correctness, including expired, revoked and refunded payment cases; record **redacted** counts and pass/fail receipts. Never invent or extend a 90-day pending-tier TTL. Historical snapshots missing trustworthy prepaid expiry metadata must fail closed and require payment-ledger reconciliation.
+5. Measure end-to-end **RPO/RTO** using actual backup/restore timestamps and completeness results; document partial-write recovery/rollback because restoration is key-by-key, not atomic. Destroy the isolated rehearsal dataset according to the approved retention policy.
+6. A real production restore is a separate break-glass change, requiring incident authorization, correct destination verification, write freeze/coordination where required, rollback readiness, payment reconciliation, and a written customer-impact plan. A successful rehearsal is **not** automatic permission to overwrite production Redis.
+
+**Recovery objectives:** ≤24-hour RPO is only a *proposed target* derived from the daily schedule; it is **not achieved or certified** while scheduled backups fail. RTO is unmeasured until an isolated end-to-end rehearsal is completed. Mark both **unverified** in customer-facing SLA statements.
+
+**Release gate:** The backup issue remains OPEN until a current encrypted snapshot is authenticated and restored into isolated native Upstash with account/tier/audit/TTL reconciliation and explicit owner acceptance. Source tests (including `tests-js/backup-restore.test.js`), successful CI, or a credential-presence flag by themselves are not recovery certification.
 
 ---
 
@@ -90,10 +62,10 @@ out.
 3. If actual data loss occurred (not just connectivity), follow the
    **Backup & Restore** procedure above once a new/recovered Redis
    instance is reachable.
-4. If no backup exists yet (true until the three secrets above are
-   configured), registered users' API keys are unrecoverable — they would
-   need to re-register. State this to affected customers plainly rather
-   than guessing at a recovery that isn't possible yet.
+4. If no authenticated, restorable backup is available, recovery of some
+   registered users' API-key records may be impossible. Do not assume
+   earlier snapshots are valid or that all prior customer records are lost;
+   establish the actual recovery position and disclose verified impact.
 
 ---
 
