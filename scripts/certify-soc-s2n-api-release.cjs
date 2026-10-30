@@ -77,6 +77,70 @@ async function verifyPublic({assetBytes,fetchImpl=globalThis.fetch,timeoutMs=100
   return {status:results.some(x=>x.status==='FAIL')?'FAIL':
      results.some(x=>x.status==='INCONCLUSIVE')?'INCONCLUSIVE':'PASS',results};
 }
+/**
+ * P0 routine public S2N monitoring without a deployment asset.
+ * Only checks the approved two public API routes against a verified main
+ * source ledger. Does not claim exact built-byte parity or release approval:
+ * post-deployment --release-asset remains the separate stronger control.
+ * GET budget: at most one request per fixed hostname; never writes/dispatches.
+ */
+async function monitorPublic({sourceApi,sourceRoot,sourceState,fetchImpl=globalThis.fetch,
+  nowMs=Date.now(),timeoutMs=10000}={}) {
+  const reject=reason=>({status:'FAIL',reason,results:[]});
+  if(typeof fetchImpl!=='function'||!Number.isFinite(nowMs)||
+     !sourceApi||!sourceRoot||!sourceState)
+    return reject('SOURCE_S2N_EVIDENCE_UNAVAILABLE');
+  const receipt=checkLedger({state:sourceState,widget:sourceRoot,api:sourceApi});
+  if(receipt.status!=='PASS')return reject('SOURCE_S2N_LEDGER_UNCERTIFIED');
+  const timestamp=Date.parse(sourceApi.generated||'');
+  const ids=validItems(sourceApi.items)?sourceApi.items.map(x=>x.id):null;
+  if(!ids||new Set(ids).size!==ids.length||
+     !Number.isSafeInteger(sourceApi.total_published)||
+     sourceApi.total_published<ids.length||!Number.isFinite(timestamp)||
+     timestamp>nowMs+5*60000||nowMs-timestamp>180*60000)
+    return reject('SOURCE_S2N_MALFORMED_OR_STALE');
+  const results=[];
+  for(const [host,url] of Object.entries(TARGETS)){
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),timeoutMs);
+    let verdict;
+    try{
+      const response=await fetchImpl(url,{method:'GET',redirect:'manual',cache:'no-store',
+        headers:{Accept:'application/json','Cache-Control':'no-cache'},signal:controller.signal});
+      const read=await boundedJson(response);
+      if(read.status!=='OK')verdict={status:read.status,reason:read.reason};
+      else {
+        const api=read.data,ts=Date.parse(api?.generated||'');
+        const actual=validItems(api?.items)?api.items.map(x=>x.id):null;
+        if(!actual||new Set(actual).size!==actual.length||
+           !Number.isSafeInteger(api.total_published)||
+           api.total_published<actual.length||!Number.isFinite(ts)||
+           ts>nowMs+5*60000)
+          verdict={status:'FAIL',reason:'PUBLIC_S2N_API_INVALID'};
+        else if(nowMs-ts>180*60000)
+          verdict={status:'FAIL',reason:'PUBLIC_S2N_API_STALE'};
+        else if(timestamp-ts>5*60000)
+          verdict={status:'FAIL',reason:'PUBLIC_S2N_API_BEHIND_SOURCE'};
+        else if(api.total_published!==sourceApi.total_published)
+          verdict={status:'FAIL',reason:'PUBLIC_S2N_API_LEDGER_MISMATCH'};
+        else if(ts>timestamp+5*60000||JSON.stringify(actual)!==JSON.stringify(ids))
+          verdict={status:'FAIL',reason:'PUBLIC_S2N_API_REPORT_IDENTITY_DRIFT'};
+        else verdict={status:'PASS',reason:'PUBLIC_S2N_API_SOURCE_PARITY'};
+        verdict.publicPublished=api.total_published;
+        verdict.publicGenerated=Number.isFinite(ts)?new Date(ts).toISOString():null;
+      }
+    }catch(_){verdict={status:'INCONCLUSIVE',reason:'PUBLIC_S2N_API_READ_UNAVAILABLE'};}
+    finally{clearTimeout(timer);}
+    // No item contents, secrets, provider payloads, or customer data in logs.
+    results.push({host,...verdict});
+  }
+  return {status:results.some(x=>x.status==='FAIL')?'FAIL':
+      results.some(x=>x.status==='INCONCLUSIVE')?'INCONCLUSIVE':'PASS',
+    sourcePublished:sourceApi.total_published,
+    sourceGenerated:sourceApi.generated,results,
+    releaseAssetByteParityCertified:false};
+}
+
 function loadBundle(root){
   const read=p=>JSON.parse(fs.readFileSync(path.join(root,p),'utf8'));
   return {
@@ -87,11 +151,25 @@ function loadBundle(root){
 }
 if(require.main===module){
   const mode=process.argv[2];
-  if(process.argv.length!==3||!['--predeploy','--release-asset'].includes(mode)){
-    console.error('HOLD: USAGE --predeploy|--release-asset');process.exitCode=2;
+  if(process.argv.length!==3||!['--predeploy','--release-asset','--monitor-public'].includes(mode)){
+    console.error('HOLD: USAGE --predeploy|--release-asset|--monitor-public');process.exitCode=2;
   }else{
     try{
-      const root=path.join(__dirname,'..'),validation=validateBundle(loadBundle(root));
+      const root=path.join(__dirname,'..');
+      if(mode==='--monitor-public'){
+        const load=p=>JSON.parse(fs.readFileSync(path.join(root,p),'utf8'));
+        monitorPublic({sourceApi:load('api/intel/live.json'),
+          sourceRoot:load('live-intel.json'),sourceState:load('intel-state.json')})
+          .then(result=>{
+            console.log(JSON.stringify(result));
+            process.exitCode=result.status==='PASS'?0:result.status==='FAIL'?2:3;
+          }).catch(()=>{
+            console.error('INCONCLUSIVE: S2N_PUBLIC_MONITOR_UNAVAILABLE');
+            process.exitCode=3;
+          });
+        return;
+      }
+      const validation=validateBundle(loadBundle(root));
       if(validation.status!=='PASS'){
         console.error(JSON.stringify(validation));process.exitCode=2;
       }else if(mode==='--predeploy'){
@@ -106,4 +184,4 @@ if(require.main===module){
     }catch(_){console.error('HOLD: S2N_RELEASE_SOURCE_OR_BUILD_UNAVAILABLE');process.exitCode=2;}
   }
 }
-module.exports={TARGETS,validateBundle,verifyPublic,MAX_BYTES};
+module.exports={TARGETS,validateBundle,verifyPublic,monitorPublic,MAX_BYTES};
