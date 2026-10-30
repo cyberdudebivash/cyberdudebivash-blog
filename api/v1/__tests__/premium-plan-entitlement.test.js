@@ -347,6 +347,23 @@ describe('standalone checkout is retired', () => {
     expect(db.prepare('SELECT COUNT(*) n FROM premium_orders').get().n).toBe(0);
   });
 
+  test('retired checkout cannot reflect client-controlled identifiers into referral tracking', async () => {
+    const sensitive = 'customer-account-2026-private';
+    const r = await call('checkout', null, {
+      method: 'POST', body: { report_id: sensitive },
+    });
+    expect(r.statusCode).toBe(410);
+    expect(r.body.error.code).toBe('PREMIUM_CHECKOUT_MOVED');
+    const url = new URL(r.body.error.upgrade_url);
+    expect(url.origin).toBe('https://intel.cyberdudebivash.com');
+    expect(url.searchParams.get('plan')).toBe('pro');
+    expect(url.searchParams.get('utm_content')).toBe('checkout');
+    expect(url.toString()).not.toContain(sensitive);
+    expect(razorpay.createOrder).not.toHaveBeenCalled();
+    expect(authenticate).not.toHaveBeenCalled();
+    expect(db.prepare('SELECT COUNT(*) n FROM premium_orders').get().n).toBe(0);
+  });
+
   test('the public catalog carries the required plan and a Sentinel APEX link, never the R2 key', async () => {
     const r = await call('catalog', null);
     const [ray] = r.body.data.reports;
