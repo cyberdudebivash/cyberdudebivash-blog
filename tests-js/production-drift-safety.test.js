@@ -46,6 +46,23 @@ for(const [label,files,expected] of [
   ['unexpected root file',['scripts/unknown-builder.js'],'blocked'],
 ]) test(label,()=>assert.equal(state(files),expected));
 
+test('P0 customer-data recovery RUNBOOKS.md is operator-reviewed, not a benign document', () => {
+  const result = classify(compare(['RUNBOOKS.md']),BASE,HEAD,paths);
+  assert.equal(result.state,'manual_release_required');
+  assert.deepEqual(result.operational,['RUNBOOKS.md']);
+  assert.deepEqual(result.benign,[]);
+  assert.deepEqual(result.unknown,[]);
+  const renamed = compare([]);
+  renamed.files=[{filename:'docs/retired-restore-runbook.md',previous_filename:'RUNBOOKS.md',status:'renamed'}];
+  const renamedResult=classify(renamed,BASE,HEAD,paths);
+  assert.equal(renamedResult.state,'manual_release_required');
+  assert.ok(renamedResult.operational.includes('RUNBOOKS.md'));
+  const suspicious=classify(compare(['RUNBOOKS.md','UNREVIEWED-RECOVERY.md']),BASE,HEAD,paths);
+  assert.equal(suspicious.state,'blocked');
+  assert.deepEqual(suspicious.unknown,['UNREVIEWED-RECOVERY.md']);
+  assert.ok(suspicious.operational.includes('RUNBOOKS.md'));
+});
+
 test('P0 self-governance files require manual review, never benign-only approval', () => {
   const governing = [
     'scripts/production-drift-policy.cjs',
