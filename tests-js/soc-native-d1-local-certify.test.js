@@ -5,7 +5,7 @@ const os=require('node:os');
 const path=require('node:path');
 const fs=require('node:fs');
 const {
- config,safeInvocation,admission,seedSQL,NAME
+ config,safeInvocation,admission,seedSQL,renderBoundSql,certifyIncidentOwnerCommit,NAME
 }=require('../scripts/soc-native-d1-local-certify.cjs');
 
 test('local D1 binding is a reserved synthetic isolated name and ID',()=>{
@@ -62,4 +62,26 @@ test('harness never includes remote D1 options, deploy command or real database'
   assert.doesNotMatch(source,/wrangler deploy|migrations apply.*--remote/);
   assert.doesNotMatch(source,/database_name:'sentinel-apex-core'/);
   assert.match(source,/WRANGLER_SEND_METRICS='false'/);
+});
+
+test('real-service native-D1 certificate is callable and uses only a disposable local SQLite harness',()=>{
+  assert.equal(typeof certifyIncidentOwnerCommit,'function');
+  const script=fs.readFileSync(path.join(__dirname,'..','scripts','soc-native-d1-local-certify.cjs'),'utf8');
+  assert.match(script,/await certifyIncidentOwnerCommit\(conf,state\)/);
+  assert.match(script,/createSocIncidentService/);
+  assert.match(script,/INSERT INTO soc_incidents|certifyIncidentOwnerCommit/);
+  assert.match(script,/runMutationWithChanges/);
+  assert.match(script,/SELECT changes\(\) AS affected/);
+  assert.match(script,/Revocation-race INSERT must not create an audit row/);
+  assert.match(script,/Revocation-race UPDATE must not create audit rows/);
+  assert.doesNotMatch(script,/--remote|wrangler deploy/);
+});
+test('disposable native-D1 query binder preserves text, null and integers without accepting ambiguous binds',()=>{
+  assert.equal(renderBoundSql('SELECT ? AS subject, ? AS owner, ? AS count',
+    ["O'Malley",null,5]),
+    "SELECT 'O''Malley' AS subject, NULL AS owner, 5 AS count");
+  assert.throws(()=>renderBoundSql('SELECT ?',[]));
+  assert.throws(()=>renderBoundSql('SELECT ?',[1,2]));
+  assert.throws(()=>renderBoundSql('SELECT ?',[{payload:'evil'}]));
+  assert.throws(()=>renderBoundSql('SELECT ?',[1.5]));
 });
