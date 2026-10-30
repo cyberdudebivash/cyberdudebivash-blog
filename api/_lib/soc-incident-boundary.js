@@ -53,9 +53,21 @@ function createSocIncidentBoundary({
     checkRevocation: sessionAuthority.checkRevocation,
     now:clock,
   });
+  // Authorization must never depend on a stale D1 read replica. The
+  // existing incidentDb adapter is retained for tenant-scoped data access,
+  // but current principal membership comes from a fresh primary session.
+  async function queryPrimaryMembership(sql, params) {
+    const session = nativeD1.withSession('first-primary');
+    if (!session || typeof session.prepare !== 'function')
+      throw new Error('SOC_MEMBERSHIP_PRIMARY_REQUIRED');
+    const row = await session.prepare(sql).bind(...params).first();
+    return row == null ? [] : [row];
+  }
+
   return createSocIncidentService({
     db: incidentDb,
     verifyIdentity: verifiedIdentity,
+    queryMembership: queryPrimaryMembership,
     now: () => new Date(clock()).toISOString(),
     ...(randomUUID ? {randomUUID} : {}),
   });
