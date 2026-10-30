@@ -61,7 +61,7 @@ module.exports=async function premiumIntelligenceRouter(req,res){
     if(action==='checkout'){
       // Retired 2026-10-02: Sentinel APEX is the only payment authority. No
       // Razorpay order, D1 row or other side effect is created here.
-      return fail(res,410,'PREMIUM_CHECKOUT_MOVED','Premium Intelligence is included with Sentinel APEX plans. Standalone report checkout has moved to Sentinel APEX.',{upgrade_url:plan.premiumUpgradeUrl({content:sanitizeId(req.body&&req.body.report_id,120)||'checkout'})});
+      return fail(res,410,'PREMIUM_CHECKOUT_MOVED','Premium Intelligence is included with Sentinel APEX plans. Standalone report checkout has moved to Sentinel APEX.',{upgrade_url:plan.premiumUpgradeUrl({content:'checkout'})});
     }
     if(action==='verify'){
       if(req.method!=='POST')return fail(res,405,'METHOD_NOT_ALLOWED','POST required');if(!(await sec.submissionIpRateLimit(req,res)))return;const user=await authenticate(req,res);if(!user)return;
