@@ -26,7 +26,7 @@
   });
   function safeHref(v,fallback){
     if(typeof v!=='string'||!v||v.length>2048||
-       /[\\u0000-\\u001f\\u007f]/.test(v))return fallback;
+       /[\u0000-\u001f\u007f]/.test(v))return fallback;
     try{
       var u=new URL(v,window.location.origin);
       if(u.protocol!=='https:'||u.username||u.password||
