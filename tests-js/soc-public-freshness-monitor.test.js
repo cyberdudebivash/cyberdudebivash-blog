@@ -293,3 +293,39 @@ test('SOC command center and live widget agree on the latest source report',()=>
  assert(triageTop.items.length<=7);
  assert(widgetTop.length<=15);
 });
+
+
+test('SOC command center report links deny foreign and insecure destinations',()=>{
+ const vm=require('node:vm');
+ const js=fs.readFileSync(path.join(__dirname,'..','apex-command-center.js'),'utf8');
+ const start=js.indexOf('var REPORT_HOSTS=');
+ const end=js.indexOf('function age(',start);
+ assert(start>=0 && end>start,'must test the exact source function and allowlist');
+ const safe=vm.runInNewContext(
+   '(function(){'+js.slice(start,end)+'return safeHref;})()',
+   {URL,Object,window:{location:{origin:'https://soc.cyberdudebivash.in'}}},
+   {timeout:1000}
+ );
+ const fallback='/search.html?q=verified';
+ const firstParty=[
+  'https://blog.cyberdudebivash.in/posts/verified.html',
+  'https://soc.cyberdudebivash.in/posts/verified.html',
+  'https://cti.cyberdudebivash.in/2026/10/report.html',
+  'https://intel.cyberdudebivash.com/reports/verified.html'
+ ];
+ for(const url of firstParty) assert.equal(safe(url,fallback),url);
+ assert.equal(safe('/posts/verified.html',fallback),
+  'https://soc.cyberdudebivash.in/posts/verified.html');
+ for(const bad of [
+   'javascript:alert(1)','data:text/html,x','http://blog.cyberdudebivash.in/posts/x',
+   '//attacker.example/x','https://evil.example/','https://blog.cyberdudebivash.in.attacker.example/x',
+   'https://user:secret@blog.cyberdudebivash.in/posts/x',
+   'https://blog.cyberdudebivash.in:8443/posts/x',
+   '\nhttps://blog.cyberdudebivash.in/posts/x',
+   'https://blog.cyberdudebivash.in/posts/x\u0000',
+   '',
+   'x'.repeat(2049),
+ ])assert.equal(safe(bad,fallback),fallback,JSON.stringify(bad));
+ assert.match(js,/safeHref\(it\.link,fallback\)/);
+ assert.match(js,/Object\.prototype\.hasOwnProperty\.call\(REPORT_HOSTS/);
+});

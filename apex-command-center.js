@@ -14,10 +14,23 @@
 
   function safeText(v,fallback){return (v===0||v)?String(v):fallback;}
   function escapeText(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]);});}
+  // Customer triage links are sourced from intelligence data. Refuse
+  // foreign domains, HTTP downgrade, script schemes and credentialed URLs.
+  // Use a local, correctly encoded search fallback rather than redirecting
+  // customers to untrusted reports.
+  var REPORT_HOSTS=Object.freeze({
+    'soc.cyberdudebivash.in':true,
+    'blog.cyberdudebivash.in':true,
+    'cti.cyberdudebivash.in':true,
+    'intel.cyberdudebivash.com':true
+  });
   function safeHref(v,fallback){
+    if(typeof v!=='string'||!v||v.length>2048||
+       /[\u0000-\u001f\u007f]/.test(v))return fallback;
     try{
-      var u=new URL(String(v||''),window.location.origin);
-      if(u.protocol!=='https:'&&u.protocol!=='http:')return fallback;
+      var u=new URL(v,window.location.origin);
+      if(u.protocol!=='https:'||u.username||u.password||u.port||
+         !Object.prototype.hasOwnProperty.call(REPORT_HOSTS,u.hostname.toLowerCase()))return fallback;
       return u.href;
     }catch(e){return fallback;}
   }
