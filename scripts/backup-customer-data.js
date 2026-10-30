@@ -40,15 +40,21 @@ const crypto = require('crypto');
 // recovery.
 const KEY_PATTERNS = ['user:key:*', 'user:email:*', 'user:id:*', 'user:pending:tier:*'];
 const SCHEMA_VERSION = 1;
+const PENDING_TIER_PREFIX = 'user:pending:tier:';
+const MAX_PENDING_TIER_TTL_SECONDS = 90 * 86400;
 
 /** Build a structured snapshot from already-fetched key/value pairs. Pure
  *  -- no I/O, so this is directly unit-testable without live Redis. */
-function buildSnapshot({ hashes, strings, auditLog }) {
+function buildSnapshot({ hashes, strings, auditLog, pendingTierExpiry = {} }) {
   return {
     schemaVersion: SCHEMA_VERSION,
     createdAt: new Date().toISOString(),
     hashes,   // { [key]: { field: value, ... }, ... }  (user:key:*)
     strings,  // { [key]: value, ... }                  (user:email:*, user:id:*, user:pending:tier:*)
+    // Optional additive v1 extension: ABSOLUTE original expiration times
+    // for paid-but-not-registered records. Legacy v1 pending records without
+    // this evidence MUST NOT be restored as immortal Redis strings.
+    pendingTierExpiry,
     auditLog, // [ [member, score], ... ]                (audit:payment:log)
   };
 }
@@ -160,6 +166,7 @@ function normalizeAuditLog(raw) {
 async function fetchAll(redis) {
   const hashes = {};
   const strings = {};
+  const pendingTierExpiry = {};
 
   for (const pattern of KEY_PATTERNS) {
     // Redis KEYS must return an array even for an empty keyspace. A null,
@@ -184,6 +191,17 @@ async function fetchAll(redis) {
           throw new Error('SOC_BACKUP_INCONSISTENT_LOOKUP_VALUE');
         }
         strings[key] = value;
+        if (key.startsWith(PENDING_TIER_PREFIX)) {
+          // An original pre-registration payment is time-limited to 90 days.
+          // Preserve remaining TTL as an absolute expiration captured here,
+          // so decrypting an old snapshot cannot silently extend entitlement.
+          const seconds = await redis.ttl(key);
+          if (!Number.isSafeInteger(seconds) || seconds <= 0 ||
+              seconds > MAX_PENDING_TIER_TTL_SECONDS) {
+            throw new Error('SOC_BACKUP_PENDING_TIER_TTL_UNVERIFIED');
+          }
+          pendingTierExpiry[key] = new Date(Date.now() + seconds * 1000).toISOString();
+        }
       }
     }
   }
@@ -195,7 +213,7 @@ async function fetchAll(redis) {
     await redis.zrevrange('audit:payment:log', 0, -1, true)
   );
 
-  return { hashes, strings, auditLog };
+  return { hashes, strings, pendingTierExpiry, auditLog };
 }
 
 /**
@@ -274,4 +292,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { buildSnapshot, encryptSnapshot, decryptSnapshot, fetchAll, normalizeHashRecord, normalizeAuditLog, writeVerifiedEncryptedSnapshot, KEY_PATTERNS, SCHEMA_VERSION };
+module.exports = { buildSnapshot, encryptSnapshot, decryptSnapshot, fetchAll, normalizeHashRecord, normalizeAuditLog, writeVerifiedEncryptedSnapshot, KEY_PATTERNS, SCHEMA_VERSION, PENDING_TIER_PREFIX, MAX_PENDING_TIER_TTL_SECONDS };
