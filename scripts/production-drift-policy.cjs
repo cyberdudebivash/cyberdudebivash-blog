@@ -33,11 +33,6 @@ const BENIGN_SCRIPT_TEST = /^scripts\/[A-Za-z0-9._/-]+\.(?:test|spec)\.(?:cjs|mj
  */
 const REVIEWED_OPERATIONAL_FILES = new Set([
   '.github/workflows/test.yml',
-  // P0 #433: live 2026-10-31 full-tree reconciler found these two
-  // previously unclassified release/authorization verification inputs.
-  // Require human operational review, never benign-only classification.
-  '.github/workflows/production-drift-reconcile.yml',
-  'api/_lib/__tests__/d1-worker-native-fail-closed.test.js',
   'scripts/production-drift-policy.cjs',
   'scripts/soc-native-d1-local-certify.cjs',
   '.github/workflows/alert-delivery.yml',
