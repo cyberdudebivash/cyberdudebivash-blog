@@ -1,15 +1,15 @@
 {
-  "generated": "2026-10-31T22:43:19.970Z",
+  "generated": "2026-11-01T01:59:07.901Z",
   "version": "1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX v4.0",
   "stats": {
-    "total_nodes": 16953,
+    "total_nodes": 16959,
     "actors": 8,
-    "cves": 8012,
-    "campaigns": 1971,
+    "cves": 8015,
+    "campaigns": 1973,
     "malware": 0,
     "iocs": 911,
-    "edges": 4735
+    "edges": 4737
   },
   "nodes": {
     "actor:lockbit": {
@@ -317858,7 +317858,7 @@
       "attributes": {
         "cvss": 6.5,
         "threat_level": "LOW",
-        "priority_score": 38,
+        "priority_score": 33,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
@@ -318480,6 +318480,118 @@
         "type": "CVE_REPORT"
       },
       "connections": []
+    },
+    "CVE-2026-120189": {
+      "id": "CVE-2026-120189",
+      "type": "CVE",
+      "name": "CVE-2026-120189 — Unknown Vendor A vulnerability was CVSS 10 Critical Vulnerability",
+      "attributes": {
+        "cvss": 10,
+        "threat_level": "HIGH",
+        "priority_score": 71,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "Unknown Vendor",
+        "product": "A vulnerability was",
+        "published": "2026-11-01",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-120191": {
+      "id": "CVE-2026-120191",
+      "type": "CVE",
+      "name": "CVE-2026-120191 — Unknown Vendor A weakness has CVSS 7.3 High Severity Vulnerability",
+      "attributes": {
+        "cvss": 7.3,
+        "threat_level": "MEDIUM",
+        "priority_score": 62,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "Unknown Vendor",
+        "product": "A weakness has",
+        "published": "2026-11-01",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "CVE-2026-118636": {
+      "id": "CVE-2026-118636",
+      "type": "CVE",
+      "name": "Low Security Vulnerability (CVE-2026-118636)",
+      "attributes": {
+        "cvss": 9.8,
+        "threat_level": "MEDIUM",
+        "priority_score": 51,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "",
+        "product": "",
+        "published": "2026-10-31",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "REDDIT_CYBER-2399a8ec184fda0d": {
+      "id": "REDDIT_CYBER-2399a8ec184fda0d",
+      "type": "Intel",
+      "name": "Synology NAS Ransomware: C3RB3R and DSM Security Gaps",
+      "attributes": {
+        "cvss": 0,
+        "threat_level": "LOW",
+        "priority_score": 26,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": true,
+        "vendor": "reddit_cyber",
+        "product": "Threat Intelligence",
+        "published": "2026-10-31",
+        "type": "RANSOMWARE"
+      },
+      "connections": []
+    },
+    "campaign:cve-2026-120189": {
+      "id": "campaign:cve-2026-120189",
+      "type": "Campaign",
+      "name": "Unknown A Exploitation Campaign",
+      "attributes": {
+        "severity": "HIGH",
+        "item_count": 1,
+        "first_seen": "2026-11-01",
+        "last_seen": "2026-11-01",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-120189"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-120189",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "campaign:cve-2026-120191": {
+      "id": "campaign:cve-2026-120191",
+      "type": "Campaign",
+      "name": "Unknown A Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-11-01",
+        "last_seen": "2026-11-01",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2026-120191"
+      },
+      "connections": [
+        {
+          "target": "CVE-2026-120191",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
     }
   },
   "edges": [
@@ -361280,6 +361392,24 @@
       "relationship": "includes",
       "confidence": 1,
       "first_seen": "2026-10-31",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-120189→includes→CVE-2026-120189",
+      "source": "campaign:cve-2026-120189",
+      "target": "CVE-2026-120189",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-11-01",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2026-120191→includes→CVE-2026-120191",
+      "source": "campaign:cve-2026-120191",
+      "target": "CVE-2026-120191",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-11-01",
       "sources": []
     }
   ]
