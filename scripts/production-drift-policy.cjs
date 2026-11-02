@@ -72,6 +72,9 @@ const REVIEWED_OPERATIONAL_FILES = new Set([
   // Managed customer commercial activation requires operator approval.
   // Review-only gate, never a deploy or evidence of live certification.
   'scripts/soc-commercial-ga-gate.cjs',
+  // #525/#526: authenticated third-party CTI policy is a release-critical
+  // operational input, NEVER a benign test/document or deployment approval.
+  'scripts/abuse-ch-access-policy.cjs',
   'scripts/assess-pipeline-operational-health.cjs',
   'scripts/verify-existing-cloudflare-domain.cjs',
   // P0 #433: 25 exact paths reported UNKNOWN by verified full-tree run
