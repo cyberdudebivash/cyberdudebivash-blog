@@ -3,7 +3,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { deployPaths, classify, classifyVerifiedGitTrees, renderDriftSummary } = require('../scripts/production-drift-policy.cjs');
+const { deployPaths, classify, classifyVerifiedGitTrees, renderDriftSummary, isReviewedOperationalPath } = require('../scripts/production-drift-policy.cjs');
 
 const root = path.resolve(__dirname, '..');
 const deploy = fs.readFileSync(path.join(root,'.github/workflows/cloudflare-production-deploy.yml'),'utf8');
@@ -390,4 +390,18 @@ test('P0: no source changes cannot be mistaken for a verified deployed release',
   assert.equal(r.state,'nonproduction_only');
   assert.equal(r.compared_files,0);
   assert.equal(r.comparison_source,'verified_full_git_trees');
+});
+
+test('P0: reviewed authenticated source policy remains operational, never benign or green deployment', () => {
+  const reviewed = 'scripts/abuse-ch-access-policy.cjs';
+  assert.equal(isReviewedOperationalPath(reviewed), true);
+  const classified = classify(compare([reviewed]), BASE, HEAD, paths);
+  assert.equal(classified.state, 'manual_release_required');
+  assert.deepEqual(classified.operational, [reviewed]);
+  assert.deepEqual(classified.unknown, []);
+  assert.equal(classified.production.length, 0);
+  assert.equal(state(['scripts/abuse-ch-unreviewed-extension.cjs']), 'blocked');
+  const mixed = classify(compare([reviewed, 'workers/entry.js']), BASE, HEAD, paths);
+  assert.equal(mixed.state, 'manual_release_required');
+  assert.deepEqual(mixed.production, ['workers/entry.js']);
 });
