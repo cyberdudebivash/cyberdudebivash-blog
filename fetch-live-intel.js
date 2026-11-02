@@ -557,7 +557,7 @@ async function fetchCISAKev(state) {
     });
     setSourceLastFetch(state, 'cisa_kev', Date.now());
     log(`CISA KEV: ${items.length} items.`); return items;
-  } catch(e) { warn(`CISA KEV failed: ${e.message}`); return []; }
+  } catch(e) { warn(`CISA KEV failed: ${e.message}`); throw e; }
 }
 
 /**
@@ -612,7 +612,7 @@ async function fetchCISAAlerts(state) {
       });
     setSourceLastFetch(state, 'cisa_alerts', Date.now());
     log(`CISA Alerts: ${items.length} items (filtered from ${parsed.length}).`); return items;
-  } catch(e) { warn(`CISA Alerts failed: ${e.message}`); return []; }
+  } catch(e) { warn(`CISA Alerts failed: ${e.message}`); throw e; }
 }
 
 // ── SOURCE 4: GitHub Security Advisories ──────────────────────────────
@@ -648,7 +648,7 @@ async function fetchGitHubAdvisories(state) {
     });
     setSourceLastFetch(state, 'github_advisories', Date.now());
     log(`GitHub Advisories: ${items.length} items.`); return items;
-  } catch(e) { warn(`GitHub Advisories failed: ${e.message}`); return []; }
+  } catch(e) { warn(`GitHub Advisories failed: ${e.message}`); throw e; }
 }
 
 // ── RSS NORMALIZER ─────────────────────────────────────────────────────
@@ -877,7 +877,7 @@ async function fetchURLhaus() {
       iocs:info.hashes.slice(0,10), sourceCount:1, malwareTag:tag, daysOld:0,
     }));
     log(`URLhaus: ${items.length} items.`); return items;
-  } catch(e) { warn(`URLhaus failed: ${e.message}`); return []; }
+  } catch(e) { warn(`URLhaus failed: ${e.message}`); throw e; }
 }
 
 // ── SOURCE 11: Abuse.ch ThreatFox ─────────────────────────────────────
@@ -912,7 +912,7 @@ async function fetchThreatFox() {
       iocs:info.iocs.slice(0,10), sourceCount:1, malwareFamily:family, daysOld:0,
     }));
     log(`ThreatFox: ${items.length} items.`); return items;
-  } catch(e) { warn(`ThreatFox failed: ${e.message}`); return []; }
+  } catch(e) { warn(`ThreatFox failed: ${e.message}`); throw e; }
 }
 
 // ── SOURCE 12: MSRC ─────────────────────────────────────────────────────
@@ -933,7 +933,7 @@ async function fetchMSRC() {
       exploited:false, cisaKev:false, ransomware:false, iocs:[], sourceCount:1, daysOld:0,
     }));
     log(`MSRC: ${items.length} items.`); return items;
-  } catch(e) { warn(`MSRC failed: ${e.message}`); return []; }
+  } catch(e) { warn(`MSRC failed: ${e.message}`); throw e; }
 }
 
 // ── SOURCE: CYBERDUDEBIVASH SENTINEL APEX — native ecosystem CTI feed ──
@@ -1210,7 +1210,7 @@ async function fetchExploitDB(state) {
       });
     setSourceLastFetch(state, 'exploitdb', Date.now());
     log(`ExploitDB: ${items.length} items.`); return items;
-  } catch(e) { warn(`ExploitDB failed: ${e.message}`); return []; }
+  } catch(e) { warn(`ExploitDB failed: ${e.message}`); throw e; }
 }
 
 async function fetchPacketStorm(state) {
@@ -1240,7 +1240,7 @@ async function fetchPacketStorm(state) {
       });
     setSourceLastFetch(state, 'packetstorm', Date.now());
     log(`PacketStorm: ${items.length} items.`); return items;
-  } catch(e) { warn(`PacketStorm failed: ${e.message}`); return []; }
+  } catch(e) { warn(`PacketStorm failed: ${e.message}`); throw e; }
 }
 
 async function fetchFullDisclosure(state) {
@@ -1270,7 +1270,7 @@ async function fetchFullDisclosure(state) {
       });
     setSourceLastFetch(state, 'fulldisclosure', Date.now());
     log(`Full Disclosure: ${items.length} items.`); return items;
-  } catch(e) { warn(`Full Disclosure failed: ${e.message}`); return []; }
+  } catch(e) { warn(`Full Disclosure failed: ${e.message}`); throw e; }
 }
 
 // ── TIER 2 SOURCES 16-21: THREAT INTEL BLOGS ─────────────────────────
