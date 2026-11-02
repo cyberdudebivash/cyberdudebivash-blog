@@ -59,6 +59,15 @@ class TestGlobalFeedRegistry(unittest.TestCase):
         names = [f.name for f in _GLOBAL_FEEDS]
         self.assertEqual(len(names), len(set(names)))
 
+    def test_cert_eu_uses_published_category_specific_feed(self):
+        cert_feeds = [f.url for f in _GLOBAL_FEEDS if f.name == "CERT-EU Publications"]
+        self.assertEqual(cert_feeds, ["https://cert.europa.eu/publications/threat-intelligence-rss"])
+
+    def test_default_groq_fallbacks_exclude_deprecated_model(self):
+        self.assertNotIn("qwen/qwen3.6-27b", Config().llm_model_groq_fallbacks)
+        with patch.dict(os.environ, {"GROQ_FALLBACK_MODELS": ""}):
+            self.assertNotIn("qwen/qwen3.6-27b", Config.from_env().llm_model_groq_fallbacks)
+
 
 class TestGlobalRSSAggregator(unittest.TestCase):
     def setUp(self):
