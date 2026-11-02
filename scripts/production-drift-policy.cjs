@@ -75,6 +75,11 @@ const REVIEWED_OPERATIONAL_FILES = new Set([
   // #525/#526: authenticated third-party CTI policy is a release-critical
   // operational input, NEVER a benign test/document or deployment approval.
   'scripts/abuse-ch-access-policy.cjs',
+  // #433/#434: verified Blogger publisher runtime and its source catalog are
+  // operational/release-critical. Changes still require manual customer
+  // delivery review; never exempt via automation/** wildcard or mark benign.
+  'automation/config.py',
+  'automation/rss_aggregator.py',
   'scripts/assess-pipeline-operational-health.cjs',
   'scripts/verify-existing-cloudflare-domain.cjs',
   // P0 #433: 25 exact paths reported UNKNOWN by verified full-tree run

@@ -405,3 +405,23 @@ test('P0: reviewed authenticated source policy remains operational, never benign
   assert.equal(mixed.state, 'manual_release_required');
   assert.deepEqual(mixed.production, ['workers/entry.js']);
 });
+
+test('P0: Blogger runtime/config source changes are operational and never grant deploy approval', () => {
+  for (const reviewed of ['automation/config.py', 'automation/rss_aggregator.py']) {
+    assert.equal(isReviewedOperationalPath(reviewed), true, reviewed);
+    const classified = classify(compare([reviewed]), BASE, HEAD, paths);
+    assert.equal(classified.state, 'manual_release_required');
+    assert.deepEqual(classified.operational, [reviewed]);
+    assert.deepEqual(classified.unknown, []);
+    assert.equal(classified.production.length, 0);
+  }
+  const both = classify(compare(['automation/config.py', 'automation/rss_aggregator.py', 'workers/entry.js']), BASE, HEAD, paths);
+  assert.equal(both.state, 'manual_release_required');
+  assert.deepEqual(both.production, ['workers/entry.js']);
+  assert.equal(both.operational.length, 2);
+  for (const unknown of ['automation/credentials.py', 'automation/new-feed-adapter.py', 'scripts/unreviewed-source-auth.cjs']) {
+    const classified = classify(compare([unknown]), BASE, HEAD, paths);
+    assert.equal(classified.state, 'blocked', unknown);
+    assert.deepEqual(classified.unknown, [unknown]);
+  }
+});
