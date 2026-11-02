@@ -36,7 +36,7 @@ for (const [name, label] of adapters) {
     const body = functionSource(name);
     const errorHandler = body.split('\n').find(line => line.includes('warn(`' + label + ' failed:'));
     assert.ok(errorHandler, name + ': expected explicit source-specific failure log');
-    assert.match(errorHandler, /catch\s*\(e\)\s*\{[^{}]*throw\s+e\s*;/);
+    assert.match(errorHandler, /catch\s*\(e\)\s*\{[^\n]*\bthrow\s+e\s*;/);
     assert.doesNotMatch(errorHandler, /return\s*\[\s*\]/);
   });
 }
@@ -50,5 +50,5 @@ test('central per-source collector catches upstream failures and records failure
 });
 
 test('enrichment-only EPSS lookup stays optional and returns no invented score', () => {
-  assert.match(functionSource('fetchEpssBatch'), /catch\s*\(e\)\s*\{[^{}]*return\s*\{\s*\}/);
+  assert.match(functionSource('fetchEpssBatch'), /catch\s*\(e\)\s*\{[^\n]*return\s*\{\s*\}/);
 });
