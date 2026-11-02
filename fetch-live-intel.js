@@ -56,6 +56,8 @@ let detectionRulesManager = null;
 try { detectionRulesManager = require('./api/_lib/detection-rules'); }
 catch (e) { console.warn('⚠️ detection-rules manager unavailable:', e.message); }
 
+const { abuseChHeaders, authenticatedRedirectUrl } = require('./scripts/abuse-ch-access-policy.cjs');
+
 const CFG = {
   // ── Core paths ─────────────────────────────────────────────────────
   baseUrl:            'https://blog.cyberdudebivash.in',
@@ -137,7 +139,7 @@ const CFG = {
   // ── TIER 3: Community + signals ─────────────────────────────────────
   redditNetsecRss:    'https://www.reddit.com/r/netsec/.rss?limit=25',
   redditCyberRss:     'https://www.reddit.com/r/cybersecurity/.rss?limit=15',
-  certEuRss:          'https://www.cert.europa.eu/publications/threat-intelligence/rss',
+  certEuRss:          'https://cert.europa.eu/publications/threat-intelligence-rss',
   microsoftSecBlogRss:'https://www.microsoft.com/en-us/security/blog/feed/',
   wiredSecRss:        'https://www.wired.com/feed/category/security/latest/rss',
   recordedFutureRss:  'https://www.recordedfuture.com/feed/',
@@ -353,7 +355,9 @@ function fetchUrl(rawUrl, opts = {}, redirects = 0) {
     };
     const req = client.request(options, res => {
       if ([301,302,303,307,308].includes(res.statusCode) && res.headers.location) {
-        const loc = res.headers.location.startsWith('http') ? res.headers.location : `${parsed.protocol}//${parsed.host}${res.headers.location}`;
+        let loc;
+        try { loc = authenticatedRedirectUrl(rawUrl, res.headers.location, opts.headers || {}); }
+        catch (e) { res.resume(); return reject(e); }
         res.resume();
         return fetchUrl(loc, opts, redirects + 1).then(resolve).catch(reject);
       }
@@ -851,9 +855,16 @@ async function fetchRSS(urlStr, source, maxItems, state) {
 async function fetchURLhaus() {
   log('Abuse.ch URLhaus: fetching...');
   try {
-    const raw = await fetchWithRetry(CFG.urlhausApi, { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:'limit=40' });
+    // GET and Auth-Key per provider API. Never put credentials in URLs.
+    const headers = abuseChHeaders({
+      key: process.env.ABUSE_CH_AUTH_KEY,
+      commercialUseApproved: process.env.CDB_ABUSE_CH_COMMERCIAL_USE_APPROVED,
+    });
+    const raw = await fetchWithRetry(CFG.urlhausApi, { method:'GET', headers });
     const data = JSON.parse(raw);
+    if (data.query_status && data.query_status !== 'ok') throw new Error('URLHAUS_PROVIDER_QUERY_REJECTED');
     const payloads = data.payloads || data.urls || [];
+    if (!Array.isArray(payloads)) throw new Error('URLHAUS_INVALID_RESPONSE_SHAPE');
     if (!payloads.length) return [];
     const families = {};
     payloads.slice(0,40).forEach(u => {
@@ -884,14 +895,19 @@ async function fetchURLhaus() {
 async function fetchThreatFox() {
   log('Abuse.ch ThreatFox: fetching...');
   try {
-    const body = JSON.stringify({ query:'get_iocs', days:1, limit:100 });
+    const headers = abuseChHeaders({
+      key: process.env.ABUSE_CH_AUTH_KEY,
+      commercialUseApproved: process.env.CDB_ABUSE_CH_COMMERCIAL_USE_APPROVED,
+    });
+    const body = JSON.stringify({ query:'get_iocs', days:1 });
     const raw  = await fetchWithRetry(CFG.threatfoxApi, {
       method:'POST',
-      headers:{ 'Content-Type':'application/json', 'Content-Length':Buffer.byteLength(body) },
+      headers:{ ...headers, 'Content-Type':'application/json', 'Content-Length':Buffer.byteLength(body) },
       body,
     });
     const data = JSON.parse(raw);
-    if (data.query_status !== 'ok' || !Array.isArray(data.data)) return [];
+    if (data.query_status === 'no_result') return [];
+    if (data.query_status !== 'ok' || !Array.isArray(data.data)) throw new Error('THREATFOX_INVALID_PROVIDER_RESPONSE');
     const families = {};
     data.data.slice(0,100).forEach(ioc => {
       const fam = ioc.malware_printable||ioc.malware||'Unknown Malware';
