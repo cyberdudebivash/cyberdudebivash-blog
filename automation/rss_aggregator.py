@@ -94,7 +94,7 @@ _GLOBAL_FEEDS: tuple[_Feed, ...] = (
     _Feed("US-CERT Alerts", "https://www.cisa.gov/cybersecurity-advisories/all.xml"),
     _Feed("NCSC UK Alerts", "https://www.ncsc.gov.uk/api/1/services/v1/report-rss-feed.xml"),
     _Feed("ENISA News", "https://www.enisa.europa.eu/media/news-items/news-wires/RSS"),
-    _Feed("CERT-EU Publications", "https://www.cert.europa.eu/publications/rss"),
+    _Feed("CERT-EU Publications", "https://cert.europa.eu/publications/threat-intelligence-rss"),
     _Feed("Australian ASD ACSC", "https://www.cyber.gov.au/about-us/view-all-content/alerts-and-advisories/rss"),
     _Feed("NIST NVD Recent CVEs", "https://nvd.nist.gov/feeds/xml/cve/misc/nvd-rss-analyzed.xml"),
     _Feed("AWS Security Blog", "https://aws.amazon.com/blogs/security/feed/"),

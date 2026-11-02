@@ -59,7 +59,6 @@ class Config:
     # independent daily headroom under the same configured key.
     llm_model_groq_fallbacks: tuple[str, ...] = (
         "openai/gpt-oss-20b",
-        "qwen/qwen3.6-27b",
         "qwen/qwen3.8-27b",
     )
 
@@ -166,7 +165,7 @@ class Config:
             llm_model_groq=os.environ.get("GROQ_MODEL", "openai/gpt-oss-120b"),
             llm_model_groq_fallbacks=_parse_csv_env(
                 "GROQ_FALLBACK_MODELS",
-                ("openai/gpt-oss-20b", "qwen/qwen3.6-27b", "qwen/qwen3.8-27b"),
+                ("openai/gpt-oss-20b", "qwen/qwen3.8-27b"),
             ),
             llm_model_gemini=os.environ.get("GEMINI_MODEL", "gemini-3.7-flash"),
             llm_model_gemini_fallbacks=_parse_csv_env(
