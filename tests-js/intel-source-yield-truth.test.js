@@ -117,7 +117,7 @@ test('scheduled publisher heartbeat never manufactures a new report timestamp or
     readFileSync(){return JSON.stringify(missingMeta);},
     writeFileSync(_,content){output2=JSON.parse(content);},
   });
-  vm.runInNewContext(script[1],context,{timeout:1000});
+  vm.runInNewContext(script[1],{...context},{timeout:1000});
   assert.equal(Object.hasOwn(output2.metadata,'generatedAt'),false,'missing publication timestamp is never forged');
   assert.equal(output2.metadata.lastPipelineRun,now);
 });
