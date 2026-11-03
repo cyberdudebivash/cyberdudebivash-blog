@@ -75,6 +75,10 @@ const REVIEWED_OPERATIONAL_FILES = new Set([
   // #525/#526: authenticated third-party CTI policy is a release-critical
   // operational input, NEVER a benign test/document or deployment approval.
   'scripts/abuse-ch-access-policy.cjs',
+  // P0 #433/#536: source-imported MalwareBazaar authorization, licensing and
+  // provider-response contract. Explicitly reviewed operational dependency.
+  // NOT a benign script or permission to deploy, invoke, or purchase API access.
+  'scripts/malwarebazaar-access-contract.cjs',
   // #433/#434: verified Blogger publisher runtime and its source catalog are
   // operational/release-critical. Changes still require manual customer
   // delivery review; never exempt via automation/** wildcard or mark benign.
