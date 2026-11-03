@@ -57,6 +57,7 @@ try { detectionRulesManager = require('./api/_lib/detection-rules'); }
 catch (e) { console.warn('⚠️ detection-rules manager unavailable:', e.message); }
 
 const { abuseChHeaders, authenticatedRedirectUrl } = require('./scripts/abuse-ch-access-policy.cjs');
+const { planMalwareBazaarRecent, parseMalwareBazaarRecent } = require('./scripts/malwarebazaar-access-contract.cjs');
 
 const CFG = {
   // ── Core paths ─────────────────────────────────────────────────────
@@ -1334,34 +1335,29 @@ async function fetchRecordedFuture(state) {
 // ── PHASE 2B: EXPANDED INTELLIGENCE SOURCES v5.3 ─────────────────────────
 
 async function fetchMalwareBazaar() {
-  return new Promise(resolve => {
-    const body = JSON.stringify({ query:'get_recent', selector:'time', limit:25 });
-    const req = https.request({ hostname:'mb-api.abuse.ch', path:'/api/v1/', method:'POST',
-      headers:{'Content-Type':'application/json','Content-Length':Buffer.byteLength(body),'User-Agent':'CYBERDUDEBIVASH-SENTINEL/5.3'}
-    }, res => {
-      let d=''; res.on('data',c=>d+=c); res.on('end',()=>{
-        try {
-          const j = JSON.parse(d);
-          if (j.query_status !== 'ok' || !Array.isArray(j.data)) return resolve([]);
-          const items = j.data.slice(0,15).map(s => {
-            const text = `MalwareBazaar Sample: ${s.tags?.join(', ')||'malware'} — ${s.file_name||'unknown'} SHA256: ${s.sha256_hash}`;
-            return {
-              source:'malwarebazaar', type:'MALWARE_REPORT',
-              id:`MALWAREBAZAAR-${s.sha256_hash?.slice(0,16)||md5(s.file_name||Math.random().toString())}`,
-              title:`Malware Sample: ${s.tags?.join(' / ')||'Unknown Malware'} (${s.file_type||'binary'})`,
-              desc:text, cvss:null, refs:[`https://bazaar.abuse.ch/sample/${s.sha256_hash}/`].filter(Boolean),
-              pubDate:s.first_seen?.slice(0,10)||isoNow(), vendor:'MalwareBazaar', product:'Malware Sample',
-              exploited:false, ransomware:/ransomware|ransom/i.test(text),
-              iocs:[{ type:'sha256', value:s.sha256_hash, confidence_score:0.95, first_seen:s.first_seen||isoNow() }].filter(i=>i.value),
-              sourceCount:1, malwareFamily:s.signature||null, malwareTag:s.tags?.[0]||null,
-            };
-          }).filter(i=>i.id);
-          resolve(items);
-        } catch(e) { resolve([]); }
-      });
-    });
-    req.on('error',()=>resolve([])); req.setTimeout(12000,()=>{req.destroy();resolve([])});
-    req.write(body); req.end();
+  // Approval and Auth-Key are required BEFORE the first network request.
+  // Provider errors must propagate into source-health failure accounting.
+  const request=planMalwareBazaarRecent({
+    key:process.env.ABUSE_CH_AUTH_KEY,
+    commercialUseApproved:process.env.CDB_ABUSE_CH_COMMERCIAL_USE_APPROVED,
+  });
+  const raw=await fetchWithRetry(request.url,request.options);
+  const samples=parseMalwareBazaarRecent(raw);
+  return samples.map(s=>{
+    const tags=Array.isArray(s.tags)?s.tags.map(String).slice(0,8):[];
+    const fileName=typeof s.file_name==='string'?s.file_name.slice(0,160):'unknown';
+    const description='MalwareBazaar sample observed: '+(tags.join(', ')||'malware')+' — '+fileName+'; SHA256 '+s.sha256_hash+'.';
+    return {
+      source:'malwarebazaar',type:'MALWARE_REPORT',
+      id:'MALWAREBAZAAR-'+s.sha256_hash.slice(0,16),
+      title:'Malware Sample: '+(tags.join(' / ')||'Unknown Malware')+' ('+(s.file_type||'binary')+')',
+      desc:description,cvss:null,refs:['https://bazaar.abuse.ch/sample/'+s.sha256_hash+'/'],
+      pubDate:typeof s.first_seen==='string'&&s.first_seen.length>=10?s.first_seen.slice(0,10):isoNow(),
+      vendor:'MalwareBazaar',product:'Malware Sample',exploited:false,
+      ransomware:/ransomware|ransom/i.test(description),
+      iocs:[{type:'sha256',value:s.sha256_hash,confidence_score:0.95,first_seen:s.first_seen||isoNow()}],
+      sourceCount:1,malwareFamily:s.signature||null,malwareTag:tags[0]||null
+    };
   });
 }
 
