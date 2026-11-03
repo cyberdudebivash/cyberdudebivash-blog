@@ -11,17 +11,17 @@
   <meta property="og:title" content="Enterprise Threat Intelligence — CYBERDUDEBIVASH SENTINEL APEX">
   <meta property="og:description" content="Source-bound threat intelligence, contract-scoped service terms, white-label delivery options, and dedicated analyst support for enterprise security teams.">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="https://blog.cyberdudebivash.in/og-image.png">
+  <meta property="og:image" content="https://soc.cyberdudebivash.in/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:url" content="https://blog.cyberdudebivash.in/enterprise.html">
+  <meta property="og:url" content="https://soc.cyberdudebivash.in/enterprise.html">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@cdbsentinelapex">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://blog.cyberdudebivash.in/enterprise.html">
+  <link rel="canonical" href="https://soc.cyberdudebivash.in/enterprise.html">
 
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Service","name":"CYBERDUDEBIVASH SENTINEL APEX Enterprise Threat Intelligence","provider":{"@type":"Organization","name":"CyberDudeBivash","url":"https://blog.cyberdudebivash.in"},"description":"Enterprise threat intelligence platform with source-bound feeds, contract-scoped service terms, and dedicated analyst support.","areaServed":"Worldwide","serviceType":"Cybersecurity Intelligence"}
+  {"@context":"https://schema.org","@type":"Service","name":"CYBERDUDEBIVASH SENTINEL APEX Enterprise Threat Intelligence","provider":{"@type":"Organization","name":"CyberDudeBivash","url":"https://www.cyberdudebivash.com"},"description":"Enterprise threat intelligence platform with source-bound feeds, contract-scoped service terms, and dedicated analyst support.","areaServed":"Worldwide","serviceType":"Cybersecurity Intelligence"}
   </script>
 
   <style>
@@ -264,43 +264,31 @@
   </div>
 </section>
 
-<!-- ROI CALCULATOR -->
-<section>
+<!-- EVIDENCE-BOUND COST PLANNER: does not claim breach losses avoided or reductions in incident rate/MTTD. -->
+<section aria-labelledby="cost-planner-title">
   <div style="text-align:center;margin-bottom:2rem;">
-    <div class="section-title" style="display:inline-block">💰 ROI CALCULATOR</div>
-    <h2 class="section-h2">Calculate Your Intelligence ROI</h2>
-    <p class="section-sub" style="margin:0 auto">Estimate the cost-benefit of enterprise threat intelligence vs. breach costs.</p>
+    <div class="section-title" style="display:inline-block">ENTERPRISE COST PLANNING</div>
+    <h2 class="section-h2" id="cost-planner-title">Understand the Subscription Cost</h2>
+    <p class="section-sub" style="margin:0 auto">Compare the published Enterprise list price with your own annual budget. No breach prevention, response-time improvement, or ROI is assumed.</p>
   </div>
   <div class="roi-calc">
     <div class="roi-grid">
       <div>
-        <label class="roi-label">Number of Employees</label>
-        <input class="roi-input" type="number" id="roi-employees" value="500" min="10" oninput="calcROI()">
-        <label class="roi-label">Annual Security Budget ($)</label>
-        <input class="roi-input" type="number" id="roi-budget" value="500000" min="10000" oninput="calcROI()">
-        <label class="roi-label">Industry Sector</label>
-        <select class="roi-input" id="roi-sector" onchange="calcROI()">
-          <option value="finance">Financial Services</option>
-          <option value="health">Healthcare</option>
-          <option value="tech">Technology</option>
-          <option value="gov">Government</option>
-          <option value="retail">Retail / E-Commerce</option>
-          <option value="energy">Energy / Critical Infrastructure</option>
-        </select>
-        <label class="roi-label">Current Avg. MTTD (days)</label>
-        <input class="roi-input" type="number" id="roi-mttd" value="14" min="1" oninput="calcROI()">
+        <label class="roi-label" for="roi-budget">Your annual security budget (USD, optional)</label>
+        <input class="roi-input" type="number" id="roi-budget" min="1" step="1" inputmode="decimal" placeholder="Enter your annual budget" oninput="updateCostPlanner()">
+        <p class="form-note">This input is used in your browser for a budget ratio. It is not submitted with an enquiry.</p>
+        <p class="form-note">USD figures are published list prices only. Subscription billing, applicable taxes, entitlements, and the final INR amount must be confirmed at the authoritative checkout.</p>
       </div>
       <div>
-        <div class="roi-result" id="roi-result">
-          <h4>📊 ROI Projection</h4>
-          <div class="roi-line"><span>Avg. Breach Cost (your sector)</span><span id="r-breach">-</span></div>
-          <div class="roi-line"><span>Expected incidents prevented/yr</span><span id="r-incidents">-</span></div>
-          <div class="roi-line"><span>Cost avoided (breach prevention)</span><span id="r-avoided">-</span></div>
-          <div class="roi-line"><span>CYBERDUDEBIVASH SENTINEL APEX Enterprise cost</span><span id="r-cost">—</span></div>
-          <div class="roi-line"><span>MTTD reduction (estimated)</span><span id="r-mttd">-</span></div>
-          <div class="roi-line total"><span>Estimated Annual ROI</span><span id="r-roi">-</span></div>
+        <div class="roi-result" id="roi-result" aria-live="polite">
+          <h4>Enterprise Plan — Budget Context</h4>
+          <div class="roi-line"><span>Monthly list price (USD)</span><span id="r-plan-monthly">Confirm at checkout</span></div>
+          <div class="roi-line"><span>Annual list price (USD)</span><span id="r-plan-annual">Confirm at checkout</span></div>
+          <div class="roi-line total"><span>Share of your annual budget</span><span id="r-plan-share">Enter a budget</span></div>
+          <div class="roi-line"><span>Managed 24/7 monitoring</span><span>Separate written scope required</span></div>
+          <div class="roi-line"><span>Breach prevention / ROI</span><span>Not estimated without customer evidence</span></div>
           <div style="margin-top:1rem;">
-            <a href="#contact" style="display:block;text-align:center;background:linear-gradient(135deg,var(--c),var(--c2));color:#000;font-weight:800;padding:.65rem;border-radius:8px;text-decoration:none;font-size:.85rem;">Get Detailed ROI Report →</a>
+            <a href="#contact" style="display:block;text-align:center;background:linear-gradient(135deg,var(--c),var(--c2));color:#000;font-weight:800;padding:.65rem;border-radius:8px;text-decoration:none;font-size:.85rem;">Request an Enterprise Scope &amp; Quote →</a>
           </div>
         </div>
       </div>
@@ -463,7 +451,7 @@
           <textarea name="message" placeholder="Tell us about your current pain points, team size, and what you're trying to solve..."></textarea>
         </div>
       </div>
-      <button type="submit" class="form-submit" onclick="window.CX?.TRACK?.event('enterprise_form_submit',{})">📧 Send Enterprise Request → Response in 24 Hours</button>
+      <button type="submit" class="form-submit" onclick="window.CX?.TRACK?.event('enterprise_form_submit',{})">Send Enterprise Request →</button>
       <p class="form-note">🔒 No spam. Your info is used only to respond to your inquiry.</p>
     </form>
   </div>
@@ -484,40 +472,46 @@
 <script src="/conversion-engine.js?v=20260705" defer></script>
 <script src="/seo-engine.js" defer></script>
 <script>
-function calcROI() {
-  const emp      = parseInt(document.getElementById('roi-employees').value) || 500;
-  const budget   = parseInt(document.getElementById('roi-budget').value) || 500000;
-  const sector   = document.getElementById('roi-sector').value;
-  const mttd     = parseInt(document.getElementById('roi-mttd').value) || 14;
+'use strict';
+window.__enterprisePrices = { monthly: null, annual: null };
 
-  const breachCosts = { finance:5800000, health:10900000, tech:4900000, gov:3800000, retail:2700000, energy:4700000 };
-  const incidentRate = { finance:.6, health:.5, tech:.7, gov:.4, retail:.65, energy:.45 };
-
-  const breach   = breachCosts[sector] || 4800000;
-  const rate     = incidentRate[sector] || 0.5;
-  const prevented= Math.round(rate * (emp / 500) * 1.4 * 10) / 10;
-  const avoided  = Math.round(breach * prevented * 0.35);
-  // Annual Enterprise SOC price from the Sentinel APEX platform (intel-plans.js);
-  // the estimate is not shown until the real price is known.
-  const cost     = window.__enterpriseAnnualUsd || 0;
-  const mttdNew  = Math.round(mttd * 0.25);
-  const roi      = cost ? Math.round(((avoided - cost) / cost) * 100) : null;
-
-  const fmt = n => '$' + n.toLocaleString();
-  document.getElementById('r-breach').textContent    = fmt(breach);
-  document.getElementById('r-incidents').textContent = prevented + '/yr';
-  document.getElementById('r-avoided').textContent   = fmt(avoided);
-  document.getElementById('r-cost').textContent      = cost ? fmt(cost) + '/yr' : '—';
-  document.getElementById('r-mttd').textContent      = mttd + 'd → ' + mttdNew + 'd';
-  document.getElementById('r-roi').textContent       = roi === null ? '—' : roi + 'x';
+function updateCostPlanner() {
+  const prices = window.__enterprisePrices || {};
+  const money = value => typeof value === 'number' && Number.isFinite(value) && value > 0
+    ? '$' + value.toLocaleString('en-US') : 'Confirm at checkout';
+  document.getElementById('r-plan-monthly').textContent = money(prices.monthly);
+  document.getElementById('r-plan-annual').textContent = money(prices.annual);
+  const rawBudget = document.getElementById('roi-budget').value.trim();
+  const shareEl = document.getElementById('r-plan-share');
+  if (rawBudget === '') {
+    shareEl.textContent = 'Enter a budget';
+    return;
+  }
+  const budget = Number(rawBudget);
+  if (!Number.isFinite(budget) || budget <= 0) {
+    shareEl.textContent = 'Enter a positive amount';
+    return;
+  }
+  if (typeof prices.annual !== 'number' || !Number.isFinite(prices.annual) || prices.annual <= 0) {
+    shareEl.textContent = 'Confirm price at checkout';
+    return;
+  }
+  shareEl.textContent = (prices.annual / budget * 100).toFixed(1) + '%';
 }
-calcROI();
+
 document.addEventListener('DOMContentLoaded', function () {
-  if (!window.IntelCheckout) return;
+  updateCostPlanner();
+  if (!window.IntelCheckout || typeof window.IntelCheckout.pricing !== 'function') return;
   window.IntelCheckout.pricing().then(function (data) {
-    const t = data && data.tiers && data.tiers.ENTERPRISE;
-    if (t && typeof t.usd_annual === 'number' && t.usd_annual > 0) { window.__enterpriseAnnualUsd = t.usd_annual; calcROI(); }
-  });
+    const plan = data && data.tiers && data.tiers.ENTERPRISE;
+    if (!plan || data.currency !== 'INR' || data.unit !== 'paise') return;
+    const annual = plan.usd_annual, monthly = plan.usd_monthly;
+    window.__enterprisePrices = {
+      annual: typeof annual === 'number' && Number.isFinite(annual) && annual > 0 ? annual : null,
+      monthly: typeof monthly === 'number' && Number.isFinite(monthly) && monthly > 0 ? monthly : null,
+    };
+    updateCostPlanner();
+  }).catch(function () { /* Fail closed: checkout remains source of price truth. */ });
 });
 </script>
 <script src="/ai-monetization-engine.js" defer></script>
