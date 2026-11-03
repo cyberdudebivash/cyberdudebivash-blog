@@ -7,7 +7,7 @@ const vm = require('node:vm');
 const html = fs.readFileSync(path.join(__dirname, '..', 'enterprise.html'), 'utf8');
 
 function plannerScript() {
-  const blocks = [...html.matchAll(/<script(?:\\s[^>]*)?>([\\s\\S]*?)<\\/script>/g)];
+  const blocks = [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)];
   const found = blocks.find(match => match[1].includes('function updateCostPlanner()'));
   assert.ok(found, 'Enterprise cost planner inline script missing');
   return found[1];
