@@ -131,7 +131,10 @@ test('P0 revenue integrity: homepage does not represent FormSubmit enquiries as 
     assert.match(html, /Meeting availability, proposals and delivery timelines require written confirmation/);
     assert.doesNotMatch(html, /New SOC Intelligence Subscriber|SOC Intelligence Subscription/);
     assert.doesNotMatch(html, /Get real-time threat alerts:|Subscribe Free|Custom ROI projections within 24 hours|Book Free Call/);
-    assert.doesNotMatch(html, /href="\/enterprise\.html#book"/);
+    assert.doesNotMatch(html, /href="\/?enterprise\.html#book"/);
+    assert.doesNotMatch(html, /BOOK A SESSION|Book Consultation|Book Strategy Call/);
+    assert.match(html, /Request Consultation &rarr;/);
+    assert.match(html, /Request Strategy Call/);
     const newsletter = html.match(/<div class="newsletter-bar">([\s\S]*?)<\/div>/);
     assert.ok(newsletter, stage + ': expected top service-enquiry bar');
     assert.doesNotMatch(newsletter[1], /<form\b/i, stage + ': unverified newsletter form restored');
