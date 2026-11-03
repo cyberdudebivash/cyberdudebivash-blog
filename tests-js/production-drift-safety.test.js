@@ -46,6 +46,33 @@ for(const [label,files,expected] of [
   ['unexpected root file',['scripts/unknown-builder.js'],'blocked'],
 ]) test(label,()=>assert.equal(state(files),expected));
 
+test('P0 #433/#536: licensed MalwareBazaar source contract stays manual-review gated, never benign or auto-deploy', () => {
+  const file='scripts/malwarebazaar-access-contract.cjs';
+  assert.equal(isReviewedOperationalPath(file),true,'reviewed, exact source dependency');
+  const result=classify(compare([file]),BASE,HEAD,paths);
+  assert.equal(result.state,'manual_release_required');
+  assert.deepEqual(result.operational,[file]);
+  assert.deepEqual(result.unknown,[]);
+  assert.deepEqual(result.benign,[]);
+  assert.deepEqual(result.production,[]);
+  assert.match(renderDriftSummary(HEAD,BASE,result),/Manual release and independent postdeploy certification required/);
+  for (const other of [
+    'scripts/malwarebazaar-access-contract-v2.cjs',
+    'scripts/unreviewed-provider-access.cjs',
+  ]) {
+    assert.equal(isReviewedOperationalPath(other),false,other);
+    assert.equal(state([file,other]),'blocked',other);
+  }
+  const rename=compare([]);
+  rename.files=[{
+    filename:'docs/retired-malwarebazaar-helper.md',
+    previous_filename:file,status:'renamed'
+  }];
+  const renamed=classify(rename,BASE,HEAD,paths);
+  assert.equal(renamed.state,'manual_release_required');
+  assert.deepEqual(renamed.operational,[file]);
+});
+
 test('P0 customer-data recovery RUNBOOKS.md is operator-reviewed, not a benign document', () => {
   const result = classify(compare(['RUNBOOKS.md']),BASE,HEAD,paths);
   assert.equal(result.state,'manual_release_required');
