@@ -139,6 +139,18 @@ test('P0 revenue integrity: homepage does not represent FormSubmit enquiries as 
   }
 });
 
+test('P0 CTI trust: intelligence page never fakes newsletter enrollment or provider delivery', () => {
+  const html = source('intelligence.html');
+  assert.match(html, /CTI Briefing Requests/);
+  assert.match(html, /Request a CTI Briefing/);
+  assert.match(html, /No newsletter enrollment or alert delivery is assumed/);
+  assert.match(html, /href="\/contact\.html"/);
+  assert.doesNotMatch(html, /handleNewsletterSubmit|Subscribed! Welcome|Subscribe to Intel Feed/);
+  assert.doesNotMatch(html, /CYBERDUDEBIVASH SENTINEL APEX Newsletter Subscriber/);
+  assert.doesNotMatch(html, /Get weekly threat intelligence summaries delivered to your inbox every Monday/);
+  assert.doesNotMatch(html, /subscribed=1|<form class="newsletter-form"/);
+});
+
 test('P0 privacy: public SOC homepage JSON-LD omits standalone proprietor PAN', () => {
   for (const html of [source('index.html'), build(source('index.html'))]) {
     const blocks = [...html.matchAll(/<script\s+type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
