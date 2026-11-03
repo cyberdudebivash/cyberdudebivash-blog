@@ -1,8 +1,39 @@
 {
-  "generated": "2026-11-03T16:25:15.417Z",
+  "generated": "2026-11-03T23:29:04.318Z",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
   "count": 200,
   "items": [
+    {
+      "slug": "cve-2026-121451-unknown-vendor-ab-download-manager",
+      "title": "CVE-2026-121451 — Unknown Vendor AB Download Manager CVSS 8.8 High Severity Vulnerability",
+      "url": "/posts/cve-2026-121451-unknown-vendor-ab-download-manager.html",
+      "generated": "2026-11-03T19:17:14.179Z",
+      "severity": "HIGH",
+      "cves": [
+        "CVE-2026-121451"
+      ],
+      "mitreAttack": [
+        {
+          "id": "T1547.001",
+          "name": "Registry Run Keys / Startup Folder",
+          "tactic": "persistence",
+          "confidence": "HIGH"
+        }
+      ],
+      "sigma": [
+        "title: Registry Run Key Persistence From User-Writable Path\nid: 7080b048-4dcb-5428-984f-56b6de11a5f7\nstatus: experimental\ndescription: 'Registry Run Key Persistence From User-Writable Path. Evidence basis: afted folder and name values, placing payloads in startup folders for code execution on next login.. CYBERDUDEBIVASH SENTINEL APEX Detection Engineering.'\nreferences:\n- 'https://nvd.nist.gov/vuln/detail/CVE-2026-121451'\nauthor: CYBERDUDEBIVASH SENTINEL APEX Detection Engineering\ndate: 2026-11-03\ntags:\n- attack.t1547.001\nlogsource:\n    product: windows\n    category: registry_set\ndetection:\n    selection:\n        TargetObject|contains: \\Software\\Microsoft\\Windows\\CurrentVersion\\Run\n    filter_1:\n        Image|startswith:\n            - 'C:\\Program Files'\n            - 'C:\\Windows\\'\n    condition: selection and not filter_1\nfalsepositives:\n    - Legitimate administrative activity\n    - Authorized security testing\nlevel: medium"
+      ],
+      "kql": [
+        "DeviceRegistryEvents\n| where RegistryKey contains \"\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run\"\n| where not ((InitiatingProcessFolderPath startswith \"C:\\\\Program Files\" or InitiatingProcessFolderPath startswith \"C:\\\\Windows\\\\\"))\n| project Timestamp, DeviceName, RegistryKey, RegistryValueData, InitiatingProcessFolderPath"
+      ],
+      "splunk": [
+        "| tstats count from datamodel=Endpoint where nodename=Endpoint.Registry Registry.registry_path=\"*\\Software\\Microsoft\\Windows\\CurrentVersion\\Run*\" NOT (Registry.process_path=\"C:\\Program Files*\" OR Registry.process_path=\"C:\\Windows\\*\") by Registry.process_path Registry.registry_path _time"
+      ],
+      "osquery": [
+        "SELECT * FROM registry WHERE path LIKE '%\\Software\\Microsoft\\Windows\\CurrentVersion\\Run%';"
+      ],
+      "suricata": []
+    },
     {
       "slug": "cve-2026-119025-unknown-vendor-open-7-2-0-before",
       "title": "CVE-2026-119025 — Unknown Vendor open 7.2.0 before CVSS 7.5 High Severity Vulnerability",
@@ -4268,28 +4299,6 @@
         "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://arstechnica.com/security/2026/07/the-us-government-warns-that-russia-state-hackers-are-comin\"; http.host; content:\"arstechnica.com\"; nocase; http.uri; content:\"/security/2026/07/the-us-government-warns-that-russia-state-hackers-are-comin\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)",
         "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000005; rev:1;)",
         "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain arstechnica.com\"; dns.query; content:\"arstechnica.com\"; nocase; classtype:trojan-activity; sid:9000006; rev:1;)"
-      ]
-    },
-    {
-      "slug": "addressing-the-state-layer-gap-in-autonomous-actor-architect",
-      "title": "Addressing the state-layer gap in autonomous actor architectures: Byzantine fault tolerance without consensus",
-      "url": "/posts/addressing-the-state-layer-gap-in-autonomous-actor-architect.html",
-      "generated": "2026-07-14T09:02:08.443Z",
-      "severity": "MEDIUM",
-      "cves": [],
-      "mitreAttack": [],
-      "sigma": [],
-      "kql": [],
-      "splunk": [],
-      "osquery": [],
-      "suricata": [
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://arxiv.org/abs/2607.10305&quot;&gt;https://arxiv.org/abs/2607.10305&lt;/a&gt;&lt;/li&gt;\"; http.host; content:\"arxiv.org\"; nocase; http.uri; content:\"/abs/2607.10305&quot\\;&gt\\;https\"; nocase; classtype:trojan-activity; sid:9000001; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://arxiv.org/abs/2605.19373&quot;&gt;https://arxiv.org/abs/2605.19373&lt;/a&gt;&lt;/li&gt;\"; http.host; content:\"arxiv.org\"; nocase; http.uri; content:\"/abs/2605.19373&quot\\;&gt\\;https\"; nocase; classtype:trojan-activity; sid:9000002; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL http://memora.optitransfer.ch&quot;&gt;memora.optitransfer.ch&lt;/a&gt;&lt;/li&gt;\"; http.host; content:\"memora.optitransfer.ch&quot\\;&gt\\;memora.optitransfer.ch&lt\\;\"; nocase; http.uri; content:\"/a&gt\\;&lt\\;/li&gt\\;\"; nocase; classtype:trojan-activity; sid:9000003; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL http://github.com/mgillr/memora-swarm&quot;&gt;github.com/mgillr/memora-swarm&lt;/a&gt;&lt;/li&gt;\"; http.host; content:\"github.com\"; nocase; http.uri; content:\"/mgillr/memora-swarm&quot\\;&gt\\;github.com/mgillr/memora-swarm&lt\\;/a&gt\\;&lt\\;/li&gt\\;\"; nocase; classtype:trojan-activity; sid:9000004; rev:1;)",
-        "alert http $HOME_NET any -> $EXTERNAL_NET any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious URL https://www.reddit.com/user/Character_Bison5968&quot;&gt;\"; http.host; content:\"www.reddit.com\"; nocase; http.uri; content:\"/user/Character_Bison5968&quot\\;&gt\\;\"; nocase; classtype:trojan-activity; sid:9000005; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain arxiv.org\"; dns.query; content:\"arxiv.org\"; nocase; classtype:trojan-activity; sid:9000006; rev:1;)",
-        "alert dns $HOME_NET any -> any any (msg:\"CYBERDUDEBIVASH SENTINEL APEX - malicious domain www.reddit.com\"; dns.query; content:\"www.reddit.com\"; nocase; classtype:trojan-activity; sid:9000007; rev:1;)"
       ]
     }
   ]
