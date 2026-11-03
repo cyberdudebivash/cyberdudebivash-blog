@@ -62,3 +62,62 @@ test('workflow gate executes after commit to preserve legitimately generated rep
   assert(wf.indexOf('node scripts/check-intel-source-yield.cjs') < wf.indexOf('name: "Run summary"'));
   assert.match(wf,/cancel-in-progress: false/);
 });
+
+test('scheduled publisher heartbeat never manufactures a new report timestamp or missing item evidence date',()=>{
+  const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
+  const source=fs.readFileSync(path.join(__dirname,'..','.github/workflows/sentinel-apex.yml'),'utf8');
+  const start=source.indexOf('- name: "Ensure feed heartbeat (production stability)"');
+  const end=source.indexOf('      # A timed-out publisher',start);
+  assert.ok(start>=0&&end>start,'publisher heartbeat step must exist');
+  const script=source.slice(start,end).match(/node -e "\n([\s\S]*?)\n          " 2>&1/);
+  assert.ok(script,'embedded heartbeat program must be present and isolated');
+  const prior='2026-10-23T04:58:15.799Z';
+  const now='2026-11-03T16:15:00.000Z';
+  const fixture={
+    metadata:{generatedAt:prior,lastPipelineRun:prior},
+    generatedAt:prior,
+    items:[
+      {id:'existing',_addedAt:'2026-10-20',pubDate:'2026-10-19'},
+      {id:'dated',pubDate:'2026-10-21'},
+      {id:'undated'},
+      {id:'invalid',pubDate:'unknown'},
+      {id:'future',pubDate:'2027-01-01'},
+    ],
+  };
+  let output;
+  class FixedDate extends Date{
+    constructor(...args){super(...(args.length?args:[now]));}
+    static now(){return Date.parse(now);}
+  }
+  const context={
+    Date:FixedDate,
+    require(name){
+      assert.equal(name,'fs');
+      return {
+        readFileSync(file,encoding){assert.equal(file,'live-intel.json');assert.equal(encoding,'utf8');return JSON.stringify(fixture);},
+        writeFileSync(file,content){assert.equal(file,'live-intel.json');output=JSON.parse(content);},
+      };
+    },
+    console:{log(){},error(message){throw new Error(String(message));}},
+  };
+  vm.runInNewContext(script[1],context,{timeout:1000});
+  assert.ok(output,'heartbeat must persist the audit-only update');
+  assert.equal(output.generatedAt,prior,'top-level report timestamp preserved');
+  assert.equal(output.metadata.generatedAt,prior,'report generatedAt never refreshed by heartbeat');
+  assert.equal(output.metadata.lastPipelineRun,now,'pipeline heartbeat remains separately visible');
+  assert.equal(output._heartbeat,now,'diagnostic heartbeat remains separately visible');
+  assert.equal(output.items[0]._addedAt,'2026-10-20');
+  assert.equal(output.items[1]._addedAt,'2026-10-21','valid source date may backfill');
+  assert.equal(Object.hasOwn(output.items[2],'_addedAt'),false,'missing item date stays unknown');
+  assert.equal(Object.hasOwn(output.items[3],'_addedAt'),false,'invalid item date stays unknown');
+  assert.equal(Object.hasOwn(output.items[4],'_addedAt'),false,'future item date is not trusted');
+  const missingMeta={items:[{id:'undated'}]};
+  let output2;
+  context.require=()=>({
+    readFileSync(){return JSON.stringify(missingMeta);},
+    writeFileSync(_,content){output2=JSON.parse(content);},
+  });
+  vm.runInNewContext(script[1],{...context},{timeout:1000});
+  assert.equal(Object.hasOwn(output2.metadata,'generatedAt'),false,'missing publication timestamp is never forged');
+  assert.equal(output2.metadata.lastPipelineRun,now);
+});
