@@ -178,23 +178,26 @@ jobs:
               const data = JSON.parse(fs.readFileSync('live-intel.json', 'utf8'));
               const now = new Date().toISOString();
 
-              // Update metadata with current timestamp (heartbeat)
+              // A scheduler heartbeat is not evidence of newly published intel.
+              // Preserve generatedAt and the original item timestamps verbatim.
               if (!data.metadata) data.metadata = {};
-              data.metadata.generatedAt = now;
               data.metadata.lastPipelineRun = now;
               data._heartbeat = now;
 
-              // Ensure all items have _addedAt for freshness calculation
-              if (data.items && Array.isArray(data.items)) {
-                data.items.forEach((item, idx) => {
-                  if (!item._addedAt) {
-                    item._addedAt = item.pubDate || item.published || now;
-                  }
+              // Restore missing item dates only from authentic bounded source
+              // timestamps; never stamp unknown data with the scheduler time.
+              if (Array.isArray(data.items)) {
+                data.items.forEach((item) => {
+                  if (!item || typeof item !== 'object' || item._addedAt) return;
+                  const originalDate = [item.pubDate, item.published].find(value =>
+                    typeof value === 'string' && Number.isFinite(Date.parse(value)) &&
+                    Date.parse(value) <= Date.now() + 5 * 60 * 1000);
+                  if (originalDate) item._addedAt = originalDate;
                 });
               }
 
               fs.writeFileSync('live-intel.json', JSON.stringify(data, null, 2));
-              console.log('✅ Heartbeat added to ' + (data.items?.length || 0) + ' items');
+              console.log('✅ Scheduler heartbeat recorded; source report timestamps unchanged');
             } catch(e) {
               console.error('⚠️ Heartbeat update failed: ' + e.message);
               // Non-fatal - continue to commit attempt
