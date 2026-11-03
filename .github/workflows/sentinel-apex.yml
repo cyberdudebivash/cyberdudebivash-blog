@@ -165,6 +165,9 @@ jobs:
       # (data/ioc-feed.json is only replaced after the new feed validates).
       - name: "Refresh evidence-only IOC feed"
         timeout-minutes: 3
+        # Reuse the existing explicit approval. Do not log, set or infer consent.
+        env:
+          CDB_ABUSE_CH_COMMERCIAL_USE_APPROVED: ${{ vars.CDB_ABUSE_CH_COMMERCIAL_USE_APPROVED }}
         run: |
           timeout 150 node scripts/refresh-ioc-intelligence.js \
             || echo "::warning title=IOC refresh::IOC refresh did not publish; last-known-good feed retained"
