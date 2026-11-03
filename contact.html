@@ -24,7 +24,7 @@
   "@context": "https://schema.org",
   "@type": "ContactPage",
   "name": "Enterprise Contact — CYBERDUDEBIVASH SENTINEL APEX",
-  "url": "https://blog.cyberdudebivash.in/contact.html",
+  "url": "https://soc.cyberdudebivash.in/contact.html",
   "description": "Enterprise threat intelligence, SOC consulting, MSSP partnerships",
   "provider": {
     "@type": "Organization",
@@ -199,7 +199,7 @@ footer a{color:var(--cyan);text-decoration:none}
         <!-- FormSubmit config -->
         <input type="hidden" name="_subject" value="[ENTERPRISE INQUIRY] CYBERDUDEBIVASH SENTINEL APEX">
         <input type="hidden" name="_template" value="table">
-        <input type="hidden" name="_next" value="https://blog.cyberdudebivash.in/contact.html?submitted=1">
+        <input type="hidden" name="_next" value="https://soc.cyberdudebivash.in/contact.html?submitted=1">
         <input type="hidden" name="_captcha" value="false">
 
         <div class="form-row">
@@ -315,15 +315,15 @@ footer a{color:var(--cyan);text-decoration:none}
         <button type="submit" class="submit-btn" onclick="gtag('event','enterprise_inquiry_submit',{event_category:'conversion'})">
           ⚡ Submit Enterprise Inquiry →
         </button>
-        <p class="form-disclaimer">By submitting, you agree to be contacted by CYBERDUDEBIVASH SENTINEL APEX regarding your inquiry. We never share your information with third parties. <a href="mailto:bivash@cyberdudebivash.com" style="color:var(--cyan)">Privacy questions? Email us.</a></p>
+        <p class="form-disclaimer">By submitting, you agree to be contacted by CYBERDUDEBIVASH SENTINEL APEX regarding your inquiry. This form uses FormSubmit as an email delivery processor; we do not sell your enquiry details or share them for third-party marketing. Do not include credentials, private logs, or sensitive incident evidence. <a href="/privacy.html" style="color:var(--cyan)">Privacy policy</a> · <a href="mailto:contact@cyberdudebivash.in" style="color:var(--cyan)">Contact directly</a>.</p>
       </form>
     </div>
 
     <!-- SUCCESS STATE (shown via URL param) -->
     <div class="success-message" id="success-message">
       <div class="success-icon">✅</div>
-      <h3>Inquiry Received — Thank You!</h3>
-      <p>We've received your enterprise inquiry and will review it through the published customer contact workflow.<br><br>
+      <h3>Thank you for contacting us</h3>
+      <p>Your browser returned from our enquiry form. This page cannot independently verify inbox delivery or a response commitment. If the form provider requests email verification, please complete it. For time-sensitive requests, <a href="mailto:contact@cyberdudebivash.in" style="color:var(--cyan">email us directly</a>.<br><br>
       In the meantime, explore our <a href="/products.html" style="color:var(--cyan)">detection pack store</a>, review our <a href="/pricing.html" style="color:var(--cyan)">pricing tiers</a>, or browse the <a href="/intelligence.html" style="color:var(--cyan)">live threat intelligence hub</a>.</p>
     </div>
 
@@ -438,7 +438,7 @@ footer a{color:var(--cyan);text-decoration:none}
 <script>
 // Show success state if submitted
 (function(){
-  if(window.location.search.includes('submitted=1')){
+  if(new URLSearchParams(window.location.search).get('submitted') === '1'){
     var form = document.getElementById('inquiry-form-card');
     var success = document.getElementById('success-message');
     if(form && success){
@@ -446,7 +446,7 @@ footer a{color:var(--cyan);text-decoration:none}
       success.style.display = 'block';
       // GA4 conversion event
       if(typeof gtag === 'function'){
-        gtag('event','enterprise_inquiry_complete',{event_category:'conversion',event_label:'formsubmit'});
+        gtag('event','enterprise_inquiry_form_return',{event_category:'form_navigation',event_label:'formsubmit_unverified'});
       }
     }
   }
