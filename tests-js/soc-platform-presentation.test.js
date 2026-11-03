@@ -121,6 +121,39 @@ test('P0 revenue: homepage prioritizes scoped SOC assessment without stale-feed 
   }
 });
 
+test('P0 revenue integrity: homepage does not represent FormSubmit enquiries as subscribed alerts or booked meetings', () => {
+  const sourceText = source('index.html');
+  for (const [stage, html] of [['source', sourceText], ['rendered', build(sourceText)]]) {
+    assert.match(html, /Need SOC readiness or threat intelligence support\?/);
+    assert.match(html, /href="\/soc-readiness-assessment\.html" class="nl-btn"/);
+    assert.match(html, /Request an Intelligence Briefing/);
+    assert.match(html, /Request a Discovery Conversation/);
+    assert.match(html, /Meeting availability, proposals and delivery timelines require written confirmation/);
+    assert.doesNotMatch(html, /New SOC Intelligence Subscriber|SOC Intelligence Subscription/);
+    assert.doesNotMatch(html, /Get real-time threat alerts:|Subscribe Free|Custom ROI projections within 24 hours|Book Free Call/);
+    assert.doesNotMatch(html, /href="\/?enterprise\.html#book"/);
+    assert.doesNotMatch(html, /BOOK A SESSION|Book Consultation|Book Strategy Call/);
+    assert.match(html, /Request Consultation &rarr;/);
+    assert.match(html, /Request Strategy Call/);
+    const newsletter = html.match(/<div class="newsletter-bar">([\s\S]*?)<\/div>/);
+    assert.ok(newsletter, stage + ': expected top service-enquiry bar');
+    assert.doesNotMatch(newsletter[1], /<form\b/i, stage + ': unverified newsletter form restored');
+    assert.match(html, /Enquiry only; no automatic monitoring/);
+  }
+});
+
+test('P0 CTI trust: intelligence page never fakes newsletter enrollment or provider delivery', () => {
+  const html = source('intelligence.html');
+  assert.match(html, /CTI Briefing Requests/);
+  assert.match(html, /Request a CTI Briefing/);
+  assert.match(html, /No newsletter enrollment or alert delivery is assumed/);
+  assert.match(html, /href="\/contact\.html"/);
+  assert.doesNotMatch(html, /handleNewsletterSubmit|Subscribed! Welcome|Subscribe to Intel Feed/);
+  assert.doesNotMatch(html, /CYBERDUDEBIVASH SENTINEL APEX Newsletter Subscriber/);
+  assert.doesNotMatch(html, /Get weekly threat intelligence summaries delivered to your inbox every Monday/);
+  assert.doesNotMatch(html, /subscribed=1|<form class="newsletter-form"/);
+});
+
 test('P0 privacy: public SOC homepage JSON-LD omits standalone proprietor PAN', () => {
   for (const html of [source('index.html'), build(source('index.html'))]) {
     const blocks = [...html.matchAll(/<script\s+type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
