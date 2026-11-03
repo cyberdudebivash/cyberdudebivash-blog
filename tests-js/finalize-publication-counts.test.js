@@ -14,6 +14,40 @@ function files(w=widget(),a=api()) {
   fs.writeFileSync(wp,JSON.stringify(w));fs.writeFileSync(ap,JSON.stringify(a));
   return {wp,ap,read:()=>[JSON.parse(fs.readFileSync(wp)),JSON.parse(fs.readFileSync(ap))],clean:()=>fs.rmSync(dir,{recursive:true,force:true})};
 }
+test('existing report file updates dedup only, never increments cumulative count or invents report freshness',()=>{
+ const { acknowledgeExistingPost }=require('../fetch-live-intel.js');
+ const s={totalPublished:6996,lastRun:'2026-11-03T11:44:01Z',
+   lastReportGeneratedAt:'2026-11-03T11:44:01Z',
+   published:[{id:'CVE-EXISTING',slug:'old',date:'2026-05-01',title:'Old'},
+     {id:'CVE-OTHER',slug:'other',date:'2026-11-02',title:'Other'}]};
+ const item={id:'CVE-EXISTING',slug:'existing-cve',title:'Existing CVE'};
+ assert.deepEqual(acknowledgeExistingPost(s,item),{status:'EXISTING_FILE_DEDUP_ONLY',total:6996});
+ assert.equal(s.totalPublished,6996);
+ assert.equal(s.lastRun,'2026-11-03T11:44:01Z');
+ assert.equal(s.lastReportGeneratedAt,'2026-11-03T11:44:01Z');
+ assert.equal(s.published.filter(p=>p.id===item.id).length,1);
+ assert.equal(s.published[0].slug,'existing-cve');
+ assert.equal(s.published[1].id,'CVE-OTHER');
+ acknowledgeExistingPost(s,item);
+ assert.equal(s.totalPublished,6996);
+ assert.equal(s.published.filter(p=>p.id===item.id).length,1);
+ for(const malformed of [{...s,totalPublished:-1},{...s,published:null},null])
+   assert.throws(()=>acknowledgeExistingPost(malformed,item),/EXISTING_POST_DEDUP_INVALID/);
+ for(const invalid of [{...item,id:''},{...item,slug:''},{...item,title:''}])
+   assert.throws(()=>acknowledgeExistingPost(s,invalid),/EXISTING_POST_DEDUP_INVALID/);
+ const sixNew={totalPublished:s.totalPublished+6,lastIngestion:{reportsGenerated:6}};
+ assert.equal(assessPublicationCounts(sixNew,widget(6996),api(6996)).status,'RECONCILE');
+});
+
+test('publisher differentiates previously existing post from a genuinely new report',()=>{
+ const engine=fs.readFileSync(path.join(__dirname,'..','fetch-live-intel.js'),'utf8');
+ const preexisting=engine.match(/if \(fs\.existsSync\(filePath\)\) \{([\s\S]*?)\n        \}/);
+ assert.ok(preexisting,'post-exists decision is missing');
+ assert.match(preexisting[1],/acknowledgeExistingPost\(state,/);
+ assert.doesNotMatch(preexisting[1],/markPublished\(state,/);
+ assert.match(engine,/safeWriteSync\(filePath, html, 'utf8'\);[\s\S]{0,300}markPublished\(state,/);
+ assert.match(engine,/state\.lastIngestion\.reportsGenerated = newSlugs\.length/);
+});
 test('reconciles six genuinely generated reports without rewriting timestamps or items',()=>{
  const f=files();try{assert.deepEqual(finalizePublicationCounts(state(),f.wp,f.ap),{status:'RECONCILED',total:6533});
  const [w,a]=f.read();assert.equal(w.totalPublished,6533);assert.equal(a.total_published,6533);
