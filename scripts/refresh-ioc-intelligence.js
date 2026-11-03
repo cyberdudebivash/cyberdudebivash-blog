@@ -34,7 +34,18 @@ const PATHS = {
   summary: path.join(ROOT, 'api', 'intel', 'iocs.json'),
 };
 const ALLOWED_HOST = /(^|\.)abuse\.ch$/;
-const USER_AGENT = 'CYBERDUDEBIVASH-SENTINEL-APEX-IOC/1.0 (+https://blog.cyberdudebivash.in)';
+const USER_AGENT = 'CYBERDUDEBIVASH-SENTINEL-APEX-IOC/1.0 (+https://soc.cyberdudebivash.in)';
+const LICENSE_GATED = new Set(['threatfox','urlhaus','malwarebazaar']);
+function assertProviderAccess(source) {
+  if (LICENSE_GATED.has(source.id) &&
+      process.env.CDB_ABUSE_CH_COMMERCIAL_USE_APPROVED !== 'true') {
+    throw new Error('ABUSE_CH_COMMERCIAL_USE_NOT_APPROVED');
+  }
+  // This legacy CSV export has returned HTTP 410 in real publisher logs.
+  // Do not retry it even with an approved key. Migrating requires a separately
+  // reviewed licensed API adapter with source provenance and negative tests.
+  if (source.id === 'malwarebazaar') throw new Error('MALWAREBAZAAR_LEGACY_EXPORT_RETIRED');
+}
 
 function log(msg) { console.log(`[IOC] ${msg}`); }
 
@@ -50,6 +61,7 @@ function assertSourceUrl(url) {
 /** Bounded fetch: timeout, byte cap, no redirects, conditional GET. */
 async function fetchSource(source, cache) {
   assertSourceUrl(source.url);
+  assertProviderAccess(source); // fail before network, timer, or conditional headers
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), Number(source.timeout_ms) || 30000);
   try {
@@ -97,7 +109,7 @@ function readOffline(dir, source) {
 
 function errorClass(e) {
   const m = String((e && e.message) || e || 'error');
-  return /^(timeout|response_too_large|source_url_not_allowed|offline_fixture_missing|http_\d{3}|invalid_json|unexpected_shape|missing_header|missing_column_[a-z_]+|unsupported_format)$/.test(m)
+  return /^(ABUSE_CH_COMMERCIAL_USE_NOT_APPROVED|MALWAREBAZAAR_LEGACY_EXPORT_RETIRED|timeout|response_too_large|source_url_not_allowed|offline_fixture_missing|http_\d{3}|invalid_json|unexpected_shape|missing_header|missing_column_[a-z_]+|unsupported_format)$/.test(m)
     ? m : 'fetch_error';
 }
 
@@ -170,4 +182,4 @@ if (require.main === module) {
   main().catch(e => { console.error(`[IOC] refresh failed: ${errorClass(e)}`); process.exit(1); });
 }
 
-module.exports = { refresh, fetchSource, assertSourceUrl, readOffline, PATHS };
+module.exports = { refresh, fetchSource, assertSourceUrl, assertProviderAccess, readOffline, PATHS };
