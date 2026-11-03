@@ -105,6 +105,22 @@ test('all public HTML receives the safe SOC renderer but JSON evidence is not re
   assert.match(source('generate-rss.js'),/SENTINEL APEX SOC — Hybrid Security Operations/);
 });
 
+test('P0 revenue: homepage prioritizes scoped SOC assessment without stale-feed sales claims', () => {
+  const sourceText = source('index.html');
+  const rendered = build(sourceText);
+  for (const [phase, html] of [['source', sourceText], ['rendered', rendered]]) {
+    const assessment = html.indexOf('class="cdb-btn primary" href="/soc-readiness-assessment.html"');
+    const intelligence = html.indexOf('class="cdb-btn" href="/intel/"');
+    assert.ok(assessment > 0, phase + ' scoped assessment is primary customer CTA');
+    assert.ok(intelligence > assessment, phase + ' keeps CTI discovery without displacing sellable assessment');
+    assert.match(html, /Request Scoped SOC Assessment/);
+    assert.match(html, /Source-attributed threat intelligence/);
+    assert.doesNotMatch(html, /<strong>LIVE<\/strong> First-party intelligence/);
+    assert.doesNotMatch(html, /<a class="cdb-btn primary" href="\/intel\/"/);
+    assert.match(html, /Managed customer SOC monitoring and response are subject to an approved service scope/);
+  }
+});
+
 test('P0 privacy: public SOC homepage JSON-LD omits standalone proprietor PAN', () => {
   for (const html of [source('index.html'), build(source('index.html'))]) {
     const blocks = [...html.matchAll(/<script\s+type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
