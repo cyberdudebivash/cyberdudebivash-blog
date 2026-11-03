@@ -6,8 +6,8 @@
 
 | Id | Export | Tier | Licence | Ingest filter | Cap/run |
 |---|---|---|---|---|---|
-| `threatfox` | `https://threatfox.abuse.ch/export/json/recent/` | B | CC0, per abuse.ch terms | `confidence_level ≥ 75`; hashes only with malware family | 300 |
-| `urlhaus` | `https://urlhaus.abuse.ch/downloads/json_recent/` | B | CC0 | `url_status == online` | 200 |
+| `threatfox` | legacy community export; approved access required | B | Commercial use not certified | `confidence_level ≥ 75`; hashes only with malware family | 300 |
+| `urlhaus` | legacy community export; approved access required | B | Commercial use not certified | `url_status == online` | 200 |
 | `feodotracker` | `https://feodotracker.abuse.ch/downloads/ipblocklist.json` | B | CC0 | — (aging decides) | 200 |
 | `malwarebazaar` | legacy CSV export (HTTP 410, blocked) | B | Commercial rights not certified | Requires a separately reviewed licensed API adapter | 150 |
 
