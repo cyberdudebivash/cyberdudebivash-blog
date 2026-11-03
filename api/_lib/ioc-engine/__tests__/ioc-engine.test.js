@@ -530,18 +530,21 @@ describe('refresh — isolation, last-known-good, atomic publish, SSRF/size guar
       await expect(fetchSource(SRC.malwarebazaar,null)).rejects.toThrow('MALWAREBAZAAR_LEGACY_EXPORT_RETIRED');
       expect(networkCalls).toBe(0);
       expect(() => assertProviderAccess(SRC.feodotracker)).not.toThrow();
-      const r = await refresh({
-        now:NOW,fetcher:async source => ({text:EXPORTS[source.id](),status:200,bytes:1}),
-        paths:(()=>{
-          const d=fs.mkdtempSync(path.join(os.tmpdir(),'ioc-license-fixture-'));
-          const p={config:path.join(d,'config.json'),store:path.join(d,'store.json'),
-            feed:path.join(d,'feed.json'),summary:path.join(d,'summary.json')};
-          fs.writeFileSync(p.config,JSON.stringify(CONFIG));
-          return p;
-        })(),
-      });
-      expect(r.published).toBe(true); // Injected offline fixtures do not make external requests.
-      expect(networkCalls).toBe(0);
+      // An injected fixture fetcher is strictly offline; protect the
+      // contract without implicitly authorizing remote provider requests.
+      const d=fs.mkdtempSync(path.join(os.tmpdir(),'ioc-license-fixture-'));
+      try {
+        const p={config:path.join(d,'config.json'),store:path.join(d,'store.json'),
+          feed:path.join(d,'feed.json'),summary:path.join(d,'summary.json')};
+        fs.writeFileSync(p.config,JSON.stringify(CONFIG));
+        const r=await refresh({
+          now:NOW,
+          fetcher:async source => ({text:EXPORTS[source.id](),status:200,bytes:1}),
+          paths:p,
+        });
+        expect(r.published).toBe(true);
+        expect(networkCalls).toBe(0);
+      } finally { fs.rmSync(d,{recursive:true,force:true}); }
     } finally {
       global.fetch = realFetch;
       if (previous === undefined) delete process.env.CDB_ABUSE_CH_COMMERCIAL_USE_APPROVED;
