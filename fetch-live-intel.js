@@ -473,6 +473,22 @@ function markPublished(state, item) {
   state.published.unshift({ id: item.id, slug: item.slug, date: isoNow(), title: item.title });
   state.totalPublished = (state.totalPublished || 0) + 1;
 }
+// A post file that already exists is NOT a newly generated publication.
+// Refresh the dedup window so a lost/expired state entry does not reprocess
+// it every run, but never advance the cumulative report count or feed clock.
+// State identity/count checks are fail closed; do not silently reset the ledger.
+function acknowledgeExistingPost(state, item) {
+  if (!state || !Array.isArray(state.published) ||
+      !Number.isSafeInteger(state.totalPublished) || state.totalPublished < 0 ||
+      !item || typeof item.id !== 'string' || !item.id.trim() ||
+      typeof item.slug !== 'string' || !item.slug.trim() ||
+      typeof item.title !== 'string' || !item.title.trim()) {
+    throw new Error('EXISTING_POST_DEDUP_INVALID');
+  }
+  state.published = state.published.filter(entry => entry && entry.id !== item.id);
+  state.published.unshift({ id: item.id, slug: item.slug, date: isoNow(), title: item.title });
+  return { status: 'EXISTING_FILE_DEDUP_ONLY', total: state.totalPublished };
+}
 
 // ── SOURCE 1: NVD CVE API v2.0 ─────────────────────────────────────────
 async function fetchNVD(state) {
@@ -3368,7 +3384,12 @@ async function main() {
         const { slug, title, html } = generatePostHTML(item);
         const filePath = path.join(CFG.postsDir, `${slug}.html`);
         if (fs.existsSync(filePath)) {
-          markPublished(state, { id:item.id, slug, title });
+          // Existing post is not a new publication. Do not manufacture a
+          // cumulative report count or claim a new article was generated.
+          const existing = fs.statSync(filePath);
+          if (!existing.isFile() || existing.size === 0) throw new Error('EXISTING_POST_FILE_INVALID');
+          acknowledgeExistingPost(state, { id:item.id, slug, title });
+          log(`EXISTING_POST_DEDUP_ONLY: ${slug}.html — original file preserved, report count unchanged.`);
           continue;
         }
 
@@ -3469,7 +3490,7 @@ if (require.main === module) {
     genAttackChain, computePriorityScore, correlateAndMerge,
     extractSentinelApexRecords, normalizeSentinelApexRecord,
     sapexCanonicalId, sapexNativeMitre, fetchSentinelApex,
-    watermarkStart,
+    watermarkStart, acknowledgeExistingPost,
     recordSourceSuccess, recordSourceFailure, getSourceHealthReport,
   };
 }
