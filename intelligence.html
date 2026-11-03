@@ -1321,14 +1321,13 @@ body {
 
     <!-- Newsletter -->
     <div class="sidebar-widget">
-      <div class="widget-title">📧 Intel Newsletter</div>
+      <div class="widget-title">CTI Briefing Requests</div>
       <div style="font-size:12px;color:var(--apex-muted);margin-bottom:14px;line-height:1.5">
-        Get weekly threat intelligence summaries delivered to your inbox every Monday.
+        Request a scoped intelligence briefing for your security team. Delivery frequency, coverage, fees and acceptance are confirmed in writing; this is not automatic enrollment.
       </div>
-      <form class="newsletter-form" onsubmit="handleNewsletterSubmit(event)">
-        <input type="email" class="newsletter-input" placeholder="your@email.com" required aria-label="Email address">
-        <button type="submit" class="newsletter-btn">Subscribe to Intel Feed</button>
-      </form>
+      <div class="newsletter-form" role="group" aria-label="Intelligence briefing enquiry">
+        <a href="/contact.html" class="newsletter-btn" style="display:block;text-align:center;text-decoration:none">Request a CTI Briefing</a>
+      </div>
     </div>
   </aside>
 </div>
@@ -1356,14 +1355,9 @@ body {
   <div style="max-width:1400px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;align-items:center">
     <!-- Newsletter -->
     <div>
-      <div style="font-size:14px;font-weight:800;color:#fff;margin-bottom:8px">⚡ FREE Threat Intelligence Newsletter</div>
-      <div style="font-size:12px;color:var(--apex-muted);margin-bottom:12px">Weekly zero-day alerts, CVE roundups & ransomware IOC feeds — source-attributed, consent-based, unsubscribe anytime</div>
-      <form action="https://formsubmit.co/bivash@cyberdudebivash.com" method="POST" style="display:flex;gap:8px;flex-wrap:wrap">
-        <input type="hidden" name="_subject" value="CYBERDUDEBIVASH SENTINEL APEX Newsletter Subscriber">
-        <input type="hidden" name="_next" value="https://blog.cyberdudebivash.in/?subscribed=1">
-        <input type="email" name="email" placeholder="your@company.com" required style="flex:1;min-width:180px;background:var(--apex-surface);border:1px solid var(--apex-border);color:var(--apex-text);padding:8px 12px;border-radius:6px;font-size:12px;outline:none">
-        <button type="submit" style="background:linear-gradient(135deg,#00ffe0,#0099ff);color:#000;font-weight:700;padding:8px 16px;border-radius:6px;border:none;cursor:pointer;font-size:12px;white-space:nowrap">Subscribe →</button>
-      </form>
+      <div style="font-size:14px;font-weight:800;color:#fff;margin-bottom:8px">Threat Intelligence Briefings</div>
+      <div style="font-size:12px;color:var(--apex-muted);margin-bottom:12px">Request a source-linked CTI briefing covering relevant vulnerabilities and adversary activity. No newsletter enrollment or alert delivery is assumed until scope and consent are confirmed.</div>
+      <a href="/contact.html" style="display:inline-block;background:linear-gradient(135deg,#00ffe0,#0099ff);color:#000;font-weight:700;padding:8px 16px;border-radius:6px;text-decoration:none;font-size:12px">Discuss CTI Delivery →</a>
     </div>
     <!-- Plans CTA -->
     <div style="text-align:center;border:1px solid #00ffe033;border-radius:10px;padding:16px">
@@ -2646,14 +2640,8 @@ function toggleArchive() {
   if (isOpen) renderArchive();
 }
 
-// ==================== NEWSLETTER ====================
-function handleNewsletterSubmit(e) {
-  e.preventDefault();
-  const btn = e.target.querySelector('.newsletter-btn');
-  btn.textContent = '✓ Subscribed! Welcome to CYBERDUDEBIVASH SENTINEL APEX Intel.';
-  btn.style.background = 'var(--apex-green)';
-  btn.disabled = true;
-}
+// CTI briefing enquiries use the existing contact route; no client-side subscription
+// success is simulated, and this page does not collect an address.
 
 // ==================== SECURITY TIPS 2026 ====================
 const SECURITY_TIPS = [
