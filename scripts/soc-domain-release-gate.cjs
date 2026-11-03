@@ -18,6 +18,7 @@ const SOURCE_FILES = Object.freeze({
   router: 'workers/lib/router.js',
   routeTable: 'workers/lib/route-table.js',
   homepage: 'index.html',
+  pricing: 'pricing.html',
   robots: 'robots.txt',
   builder: 'scripts/build-cloudflare-assets.js',
   seoEngine: 'seo-engine.js',
@@ -68,6 +69,14 @@ function evaluate(sources, phase = 'stage') {
       'Homepage canonical URL has not migrated to SOC');
     requireCheck(home.includes('<meta property="og:url" content="https://soc.cyberdudebivash.in/">'),
       'Homepage Open Graph URL has not migrated to SOC');
+    const pricing = sources.pricing || '';
+    requireCheck(pricing.includes('<link rel="canonical" href="https://soc.cyberdudebivash.in/pricing.html">'),
+      'Pricing canonical URL has not migrated to SOC');
+    requireCheck(pricing.includes('<meta property="og:url" content="https://soc.cyberdudebivash.in/pricing.html">'),
+      'Pricing Open Graph URL has not migrated to SOC');
+    requireCheck(pricing.includes('"url": "https://soc.cyberdudebivash.in/pricing.html"') &&
+      pricing.includes('"isPartOf": { "@id": "https://soc.cyberdudebivash.in/#website" }'),
+      'Pricing structured-data identity has not migrated to SOC');
     requireCheck((sources.robots || '').includes('Sitemap: https://soc.cyberdudebivash.in/sitemap.xml'),
       'robots.txt does not advertise SOC sitemap');
     requireCheck((sources.builder || '').includes("const canonicalHost = 'https://soc.cyberdudebivash.in'"),
