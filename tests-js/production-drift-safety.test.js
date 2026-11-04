@@ -483,3 +483,25 @@ test('P0: Blogger runtime/config source changes are operational and never grant 
     assert.deepEqual(classified.unknown, [unknown]);
   }
 });
+
+
+test('P0 commerce smoke is independent of stale CTI and remains manual-release gated', () => {
+  const file='scripts/check-soc-public-commerce.cjs';
+  assert.equal(isReviewedOperationalPath(file),true);
+  const classified=classify(compare([file,'.github/workflows/smoke-test.yml']),BASE,HEAD,paths);
+  assert.equal(classified.state,'manual_release_required');
+  assert.deepEqual(classified.unknown,[]);
+  const unknown='scripts/check-soc-public-commerce-v2.cjs';
+  assert.equal(isReviewedOperationalPath(unknown),false);
+  assert.equal(state([file,unknown]),'blocked');
+  const smoke=fs.readFileSync(path.join(root,'.github/workflows/smoke-test.yml'),'utf8');
+  const label='P0: Current paid checkout integrity';
+  const pos=smoke.indexOf(label);
+  assert.ok(pos>0,'independent commerce monitor step must be present');
+  const step=smoke.slice(pos);
+  assert.ok(step.includes('if: ' + '${{ !cancelled() }}'));
+  assert.ok(step.includes('node --test tests-js/soc-public-commerce.test.js'));
+  assert.ok(step.includes('node scripts/check-soc-public-commerce.cjs'));
+  assert.ok(!step.includes('if: success()'));
+
+});
