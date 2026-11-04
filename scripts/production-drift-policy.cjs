@@ -82,6 +82,12 @@ const REVIEWED_OPERATIONAL_FILES = new Set([
   // provider-response contract. Explicitly reviewed operational dependency.
   // NOT a benign script or permission to deploy, invoke, or purchase API access.
   'scripts/malwarebazaar-access-contract.cjs',
+  // P0 #433/#543: CTI publisher exclusive-create lock, required by
+  // fetch-live-intel.js. Audited: a 82-line module with no network, secret or
+  // Worker/Pages bundle usage; it only guards the publisher process. OPERATIONAL,
+  // not benign: any change still requires operator-reviewed release. NOT a
+  // claim of correctness, deployment or GO, and it classifies this one path only.
+  'scripts/cti-publisher-lock.cjs',
   // P0 #539: independently inspected IOC source registry and fetcher changed
   // commercial-use authorization and disabled the retired MalwareBazaar export.
   // These are OPERATIONAL, not benign, and still require human release review.
