@@ -168,24 +168,10 @@ function safeWriteSync(filePath, data, encoding = 'utf8') {
 }
 
 // ── PHASE 3: LOCK MECHANISM — prevents overlapping runs ─────────────────
-function acquireLock() {
-  try {
-    if (fs.existsSync(CFG.lockPath)) {
-      const lockData = JSON.parse(fs.readFileSync(CFG.lockPath, 'utf8'));
-      const ageMs = Date.now() - (lockData.acquired || 0);
-      if (ageMs < 10 * 60000) { // 10 min max lock age
-        warn(`Pipeline already running (lock age ${Math.round(ageMs/1000)}s). Aborting.`);
-        return false;
-      }
-      warn(`Stale lock found (${Math.round(ageMs/60000)} min old). Overriding.`);
-    }
-    fs.writeFileSync(CFG.lockPath, JSON.stringify({ acquired: Date.now(), pid: process.pid }), 'utf8');
-    return true;
-  } catch(e) { warn(`Lock acquire failed: ${e.message}`); return true; } // fail-open
-}
-function releaseLock() {
-  try { if (fs.existsSync(CFG.lockPath)) fs.unlinkSync(CFG.lockPath); } catch(_) {}
-}
+const { createPublisherLock } = require('./scripts/cti-publisher-lock.cjs');
+const publisherLock = createPublisherLock({ lockPath: CFG.lockPath, warn });
+function acquireLock() { return publisherLock.acquire(); }
+function releaseLock() { return publisherLock.release(); }
 
 // ── PHASE 2: PER-SOURCE TIMEOUT WRAPPER ────────────────────────────────
 async function fetchWithTimeout(fetchFn, sourceKey, timeoutMs) {
@@ -3173,7 +3159,7 @@ async function main() {
   log('═'.repeat(65));
 
   // ── PHASE 3: LOCK — no overlapping runs ───────────────────────────
-  if (!acquireLock()) { process.exit(0); }
+  if (!acquireLock()) { process.exitCode = 2; return; }
   let lockReleased = false;
   const safeRelease = () => { if (!lockReleased) { lockReleased = true; releaseLock(); } };
   process.on('exit', safeRelease);
