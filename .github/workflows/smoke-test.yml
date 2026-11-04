@@ -143,31 +143,11 @@ jobs:
         run: |
           node scripts/certify-soc-s2n-api-release.cjs --monitor-public
 
-      - name: "💳 Pricing integrity — live check"
-        if: success()
+      # P0 commerce cannot be hidden by an unrelated CTI freshness failure.
+      # This is a read-only, bounded GET-only contract/CTA monitor. Passing it
+      # does NOT prove a paid transaction or production managed-SOC readiness.
+      - name: "💳 P0: Current paid checkout integrity — independent of CTI freshness"
+        if: ${{ !cancelled() }}
         run: |
-          echo "🔍 Verifying deployed pricing matches the canonical backend price..."
-          FAILED=0
-
-          PLANS_JSON=$(curl -s --max-time 15 "https://blog.cyberdudebivash.in/api/v1/billing?action=plans")
-          PRO_AMOUNT=$(echo "$PLANS_JSON" | node -e "
-            let d=''; process.stdin.on('data',c=>d+=c); process.stdin.on('end',()=>{
-              try { console.log(JSON.parse(d).plans.pro.amount); } catch(e) { console.log('PARSE_ERROR'); }
-            });")
-          if [ "$PRO_AMOUNT" != "1499" ]; then
-            echo "::error title=Pricing API Regression::GET /api/v1/billing?action=plans returned pro.amount=${PRO_AMOUNT}, expected 1499."
-            FAILED=1
-          else
-            echo "✅ Canonical plans API reports pro.amount=1499"
-          fi
-
-          PRICING_HTML=$(curl -s --max-time 15 "https://blog.cyberdudebivash.in/pricing.html")
-          if echo "$PRICING_HTML" | grep -qE '\$49(/mo|/month)?[^0-9]|₹4,099'; then
-            echo "::error title=Pricing Page Regression::pricing.html appears to display the old \$49/₹4,099 price."
-            FAILED=1
-          else
-            echo "✅ pricing.html shows no trace of the old price"
-          fi
-
-          [ "$FAILED" -eq 0 ] || exit 1
-
+          node --test tests-js/soc-public-commerce.test.js
+          node scripts/check-soc-public-commerce.cjs
