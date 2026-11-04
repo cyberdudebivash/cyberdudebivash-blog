@@ -549,7 +549,13 @@ async function fetchCISAKev(state) {
   try {
     const raw = await fetchWithRetry(CFG.cisaKevUrl);
     const data = JSON.parse(raw);
-    const items = (data.vulnerabilities||[]).filter(v => new Date(v.dateAdded) >= cutoff).map(v => {
+    // KEV `dateAdded` is a calendar date (YYYY-MM-DD), which Date parses as 00:00 UTC.
+    // `cutoff` is an instant (min(lastFetch, now-4h)), so comparing the two raw dropped
+    // every entry added earlier in the cutoff's UTC day -- i.e. all of them, since CISA
+    // publishes during the day. Compare at date granularity: keep entries whose date is
+    // on or after the cutoff's UTC day. Re-seen entries are deduped by id downstream.
+    const cutoffDay = new Date(Date.UTC(cutoff.getUTCFullYear(), cutoff.getUTCMonth(), cutoff.getUTCDate()));
+    const items = (data.vulnerabilities||[]).filter(v => new Date(v.dateAdded) >= cutoffDay).map(v => {
       const iocs = []; // KEV descriptions contain reference domains, not vetted malicious indicators.
       return { source:'cisa_kev', type:'CVE_REPORT', id:v.cveID,
         title:`${v.cveID}: ${v.vulnerabilityName} — CISA KEV Active Exploitation`,
@@ -3474,5 +3480,6 @@ if (require.main === module) {
     sapexCanonicalId, sapexNativeMitre, fetchSentinelApex,
     watermarkStart, acknowledgeExistingPost,
     recordSourceSuccess, recordSourceFailure, getSourceHealthReport,
+    fetchCISAKev,
   };
 }
