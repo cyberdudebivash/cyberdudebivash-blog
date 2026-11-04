@@ -79,6 +79,11 @@ const REVIEWED_OPERATIONAL_FILES = new Set([
   // provider-response contract. Explicitly reviewed operational dependency.
   // NOT a benign script or permission to deploy, invoke, or purchase API access.
   'scripts/malwarebazaar-access-contract.cjs',
+  // P0 #539: independently inspected IOC source registry and fetcher changed
+  // commercial-use authorization and disabled the retired MalwareBazaar export.
+  // These are OPERATIONAL, not benign, and still require human release review.
+  'config/ioc-sources.json',
+  'scripts/refresh-ioc-intelligence.js',
   // #433/#434: verified Blogger publisher runtime and its source catalog are
   // operational/release-critical. Changes still require manual customer
   // delivery review; never exempt via automation/** wildcard or mark benign.
