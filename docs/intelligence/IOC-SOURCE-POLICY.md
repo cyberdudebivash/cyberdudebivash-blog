@@ -6,12 +6,12 @@
 
 | Id | Export | Tier | Licence | Ingest filter | Cap/run |
 |---|---|---|---|---|---|
-| `threatfox` | `https://threatfox.abuse.ch/export/json/recent/` | B | CC0, per abuse.ch terms | `confidence_level ≥ 75`; hashes only with malware family | 300 |
-| `urlhaus` | `https://urlhaus.abuse.ch/downloads/json_recent/` | B | CC0 | `url_status == online` | 200 |
+| `threatfox` | legacy community export; approved access required | B | Commercial use not certified | `confidence_level ≥ 75`; hashes only with malware family | 300 |
+| `urlhaus` | legacy community export; approved access required | B | Commercial use not certified | `url_status == online` | 200 |
 | `feodotracker` | `https://feodotracker.abuse.ch/downloads/ipblocklist.json` | B | CC0 | — (aging decides) | 200 |
-| `malwarebazaar` | `https://bazaar.abuse.ch/export/csv/recent/` | B | CC0 | sample must carry a `signature` | 150 |
+| `malwarebazaar` | legacy CSV export (HTTP 410, blocked) | B | Commercial rights not certified | Requires a separately reviewed licensed API adapter | 150 |
 
-- **Why these sources:** each publishes structured indicator records with an explicit indicator field and type, a stable record URL, timestamps, and a licence that permits commercial redistribution. They need no API key; the keyed abuse.ch APIs previously used return 401.
+- **Commercial-use warning (2026-11-03):** the previous claim that these exports automatically permit commercial redistribution was not certified. Spamhaus' current abuse.ch documentation distinguishes community access from rights to use its data in commercial products. ThreatFox and URLhaus exports are blocked at network fetch unless the existing `CDB_ABUSE_CH_COMMERCIAL_USE_APPROVED=true` flag reflects independently verified permission. MalwareBazaar's legacy CSV route has returned HTTP 410 and is blocked regardless of that flag until a separately approved authenticated API adapter is implemented. Feodo Tracker has a different product policy and remains subject to separate source terms review. Do not set the approval flag or purchase enhanced access without owner authorization.
 - **Tier B:** a reputable community or curated feed. Tier A (vendor or government advisories with first-party IOCs) is not ingested yet. Advisory prose is never an IOC source (ICF-P0-009).
 - **Adding a source** requires all of the following:
   - a structured export;

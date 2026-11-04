@@ -513,6 +513,45 @@ describe('refresh — isolation, last-known-good, atomic publish, SSRF/size guar
     expect(assertSourceUrl('https://urlhaus.abuse.ch/downloads/json_recent/').hostname).toBe('urlhaus.abuse.ch');
   });
 
+  test('commercial IOC sources are denied before network without explicit verified access', async () => {
+    const previous = process.env.CDB_ABUSE_CH_COMMERCIAL_USE_APPROVED;
+    const realFetch = global.fetch;
+    const { assertProviderAccess } = require('../../../../scripts/refresh-ioc-intelligence');
+    let networkCalls = 0;
+    try {
+      delete process.env.CDB_ABUSE_CH_COMMERCIAL_USE_APPROVED;
+      global.fetch = async () => { networkCalls++; throw new Error('network_unsafe'); };
+      for (const id of ['threatfox','urlhaus','malwarebazaar']) {
+        expect(() => assertProviderAccess(SRC[id])).toThrow('ABUSE_CH_COMMERCIAL_USE_NOT_APPROVED');
+        await expect(fetchSource(SRC[id],null)).rejects.toThrow('ABUSE_CH_COMMERCIAL_USE_NOT_APPROVED');
+      }
+      expect(networkCalls).toBe(0);
+      process.env.CDB_ABUSE_CH_COMMERCIAL_USE_APPROVED = 'true';
+      await expect(fetchSource(SRC.malwarebazaar,null)).rejects.toThrow('MALWAREBAZAAR_LEGACY_EXPORT_RETIRED');
+      expect(networkCalls).toBe(0);
+      expect(() => assertProviderAccess(SRC.feodotracker)).not.toThrow();
+      // An injected fixture fetcher is strictly offline; protect the
+      // contract without implicitly authorizing remote provider requests.
+      const d=fs.mkdtempSync(path.join(os.tmpdir(),'ioc-license-fixture-'));
+      try {
+        const p={config:path.join(d,'config.json'),store:path.join(d,'store.json'),
+          feed:path.join(d,'feed.json'),summary:path.join(d,'summary.json')};
+        fs.writeFileSync(p.config,JSON.stringify(CONFIG));
+        const r=await refresh({
+          now:NOW,
+          fetcher:async source => ({text:EXPORTS[source.id](),status:200,bytes:1}),
+          paths:p,
+        });
+        expect(r.published).toBe(true);
+        expect(networkCalls).toBe(0);
+      } finally { fs.rmSync(d,{recursive:true,force:true}); }
+    } finally {
+      global.fetch = realFetch;
+      if (previous === undefined) delete process.env.CDB_ABUSE_CH_COMMERCIAL_USE_APPROVED;
+      else process.env.CDB_ABUSE_CH_COMMERCIAL_USE_APPROVED = previous;
+    }
+  });
+
   test('oversized responses are aborted; redirects are refused', async () => {
     const realFetch = global.fetch;
     try {
