@@ -498,8 +498,10 @@ test('P0 commerce smoke is independent of stale CTI and remains manual-release g
   const label='P0: Current paid checkout integrity';
   const pos=smoke.indexOf(label);
   assert.ok(pos>0,'independent commerce monitor step must be present');
-  assert.match(smoke.slice(pos),/if: \\\$\\{\\{ !cancelled\\(\\) \\$\\}\\}/);
-  assert.match(smoke.slice(pos),/node --test tests-js\\/soc-public-commerce\\.test\\.js/);
-  assert.match(smoke.slice(pos),/node scripts\\/check-soc-public-commerce\\.cjs/);
-  assert.doesNotMatch(smoke.slice(pos),/if: success\\(\\)/);
+  const step=smoke.slice(pos);
+  assert.ok(step.includes('if: ' + '${{ !cancelled() }}'));
+  assert.ok(step.includes('node --test tests-js/soc-public-commerce.test.js'));
+  assert.ok(step.includes('node scripts/check-soc-public-commerce.cjs'));
+  assert.ok(!step.includes('if: success()'));
+
 });
