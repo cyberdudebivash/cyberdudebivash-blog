@@ -33,6 +33,27 @@ Rules for the blog:
 - Premium intelligence reports are still sold on the blog (Intelligence
   Store, INR via Razorpay, `config/premium-catalog.json`).
 
+### Independent P0 public-commerce smoke (4 November 2026)
+
+The SOC/legacy root feed and S2N freshness gates are intentionally release-blocking.
+They must not prevent an independent read-only commerce alert from executing.
+The `.github/workflows/smoke-test.yml` commerce step uses `if: !cancelled()`
+and runs `scripts/check-soc-public-commerce.cjs` even when feed freshness fails.
+Its only network calls are bounded, unauthenticated GETs to public endpoints.
+
+It checks that the legacy blog `billing?action=plans` returns `on_sale:false`,
+that its historical Pro record stays at ₹1,499 solely for old-order processing,
+and that its checkout pointer targets the approved platform. It pins the active
+platform's published PRO / Enterprise / MSSP monthly and annual price contract
+(`/api/pricing`; INR paise and USD display), validates both public pricing
+pages' canonical plan links, and checks that the platform checkout HTML is
+reachable. Changes to these amounts require an explicit commercial decision
+and corresponding source/test update. All negative fixtures run offline.
+
+**Boundary:** A PASS proves publicly visible pricing/CTA consistency only.
+It is not a successful Razorpay payment, subscription provisioning, customer
+alert receipt, production deployment, or authorization for managed-SOC GA.
+
 ## Legacy blog plans (no longer sold)
 
 `api/_lib/payment-utils.js`'s `PLANS` remains the record of what existing
