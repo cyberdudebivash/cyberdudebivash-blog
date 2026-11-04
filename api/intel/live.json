@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-04T15:14:54.376Z",
+  "generated": "2026-11-04T21:26:50.689Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,56 +7,139 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 7077,
+  "total_published": 7092,
   "s2n_stats": {
-    "passed": 107,
+    "passed": 118,
     "suppressed": 6,
-    "avg_qs": 0.51
+    "avg_qs": 0.504
   },
   "items": [
     {
-      "id": "CVE-2026-55040",
-      "title": "The Race Against the 3-Day Clock: How Rapid7 Helps Meet BOD 26-04 Compliance",
-      "description": "Introduction to BOD 26-04 On June 10, 2026, CISA issued Binding Operational Directive 26-04, \"Prioritizing Security Updates Based on Risk.\" Strip away the regulatory language and it reads like a single operational fact: for a vulnerability that is actively exploited, publicly reachable, and grants a",
-      "cvss": 7.5,
-      "final_ps": 83,
-      "quality_score": 0.613,
+      "id": "CVE-2026-111497",
+      "title": "CVE-2026-111497 — google brotli CVSS 9.8 Critical Vulnerability",
+      "description": "A buffer overflow vulnerability in the Brotli decoder (c/dec/decode.c) in Google Brotli versions 1.0.3 through 1.2.0 on all platforms allows a remote unauthenticated attacker to corrupt adjacent decoder state memory, disclose sensitive memory contents, cause a denial of service, or potentially execu",
+      "cvss": 9.8,
+      "final_ps": 68,
+      "quality_score": 0.5,
       "threat_level": "HIGH",
-      "type": "ZERO_DAY",
-      "source": "rapid7",
+      "type": "CVE_REPORT",
+      "source": "nvd",
       "sources_confirmed": 1,
       "merged_sources": [
-        "rapid7"
+        "nvd"
       ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
-      "exploited": true,
+      "first_seen": "2026-10-22",
+      "last_seen": "2026-10-22",
+      "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "rapid7",
-      "product": "Threat Intelligence",
+      "vendor": "google",
+      "product": "brotli",
       "due_date": null,
-      "cves": [
-        "CVE-2026-55040",
-        "CVE-2026-63520",
-        "CVE-2026-0300",
-        "CVE-2026-18577",
-        "CVE-2026-18556"
-      ],
+      "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://www.rapid7.com/blog/post/it-racing-the-three-day-clock-cisa-bod-26-04"
+        "https://github.com/andybalholm/brotli/releases/tag/v1.2.7",
+        "https://nodejs.org/en/blog/vulnerability/october-2026-security-releases#nodejs-brotli-decoder-out-of-bounds-write-permits-remote-code-execution-cve-2026-111497---high",
+        "http://www.openwall.com/lists/oss-security/2026/10/23/25",
+        "http://www.openwall.com/lists/oss-security/2026/10/24/6"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.85 (rapid7)",
+          "source_weight=1.00 (nvd)",
           "data_confidence=1.00",
-          "recency=0d (score=1.00)",
-          "QS=0.613"
+          "recency=13d (score=0.20)",
+          "QS=0.500"
         ],
         "priority": [
-          "+8 exploited_in_wild",
-          "+7 zero_day"
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-109618",
+      "title": "CVE-2026-109618 — php php CVSS 9.8 Critical Vulnerability",
+      "description": "PHP uses longjmp() for out-of-memory (OOM) errors to exit the current context and abort handling of the request. Some contexts may not properly account for this scenario and leave request memory in an uninitialized state before performing an allocation. The subsequent request cleanup procedure may r",
+      "cvss": 9.8,
+      "final_ps": 68,
+      "quality_score": 0.5,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-10-21",
+      "last_seen": "2026-10-21",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "php",
+      "product": "php",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w",
+        "http://seclists.org/fulldisclosure/2026/Oct/51",
+        "http://www.openwall.com/lists/oss-security/2026/10/21/6",
+        "http://www.openwall.com/lists/oss-security/2026/10/23/5"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=1.00",
+          "recency=14d (score=0.20)",
+          "QS=0.500"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-95649",
+      "title": "CVE-2026-95649 - IRISPowerscan Insufficient restriction of untrusted scripts allows arbitrary code execution",
+      "description": "CVE-2026-95649 - IRISPowerscan Insufficient restriction of untrusted scripts allows arbitrary code execution",
+      "cvss": 9.8,
+      "final_ps": 60,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-95649"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-95649"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
         ],
         "suppression": null,
         "merge": null
@@ -106,126 +189,40 @@
       }
     },
     {
-      "id": "CVE-2026-44266",
-      "title": "Low Security Vulnerability (CVE-2026-44266)",
-      "description": "CVE-2026-44266",
-      "cvss": 9.8,
-      "final_ps": 58,
-      "quality_score": 0.443,
+      "id": "CVE-2026-109593",
+      "title": "SonicWall Won't Patch EoL GMS Flaws That Could Expose Files, Alter Database Records",
+      "description": "SonicWall has warned of two vulnerabilities impacting end-of-life Global Management System (GMS) systems that it said will not be patched. Details of the security flaws, which affect SonicWall GMS 9.5.2 and earlier versions, are below - CVE-2026-109593 (CVSS score: 9.1) - An unauthenticated file rea",
+      "cvss": 9.1,
+      "final_ps": 59,
+      "quality_score": 0.478,
       "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
+      "type": "AI_SECURITY",
+      "source": "thehackernews",
       "sources_confirmed": 1,
       "merged_sources": [
-        "sentinel_apex"
+        "thehackernews"
       ],
-      "first_seen": "2026-11-03",
-      "last_seen": "2026-11-03",
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "",
-      "product": "",
+      "vendor": "The Hacker News",
+      "product": "Threat Intelligence",
       "due_date": null,
       "cves": [
-        "CVE-2026-44266"
+        "CVE-2026-109593"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://vulners.com/nvd/NVD:CVE-2026-44266?utm_source=rss&utm_medium=rss&utm_campaign=rss"
+        "https://thehackernews.com/2026/11/sonicwall-wont-patch-eol-gms-flaws-that.html"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
+          "source_weight=0.55 (thehackernews)",
+          "data_confidence=1.00",
           "recency=0d (score=1.00)",
-          "QS=0.443"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-63492",
-      "title": "CVE-2026-63492 - AVideo OS Command Injection",
-      "description": "CVE-2026-63492 - AVideo OS Command Injection",
-      "cvss": 9,
-      "final_ps": 57,
-      "quality_score": 0.443,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-11-03",
-      "last_seen": "2026-11-03",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-63492"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-63492"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.443"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-63494",
-      "title": "CVE-2026-63494 - AVideo OS Command Injection Vulnerability",
-      "description": "CVE-2026-63494 - AVideo OS Command Injection Vulnerability",
-      "cvss": 9,
-      "final_ps": 57,
-      "quality_score": 0.443,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-11-03",
-      "last_seen": "2026-11-03",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-63494"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-63494"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.443"
+          "QS=0.478"
         ],
         "priority": [
           "+10 CVSS≥9"
@@ -495,6 +492,92 @@
       }
     },
     {
+      "id": "CVE-2026-104799",
+      "title": "Low Security Vulnerability (CVE-2026-104799)",
+      "description": "CVE-2026-104799",
+      "cvss": 8.8,
+      "final_ps": 47,
+      "quality_score": 0.443,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-104799"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://vulners.com/nvd/NVD:CVE-2026-104799?utm_source=rss&utm_medium=rss&utm_campaign=rss"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.443"
+        ],
+        "priority": [
+          "base_ps=47 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-120554",
+      "title": "Low Security Vulnerability (CVE-2026-120554)",
+      "description": "CVE-2026-120554",
+      "cvss": 8.8,
+      "final_ps": 47,
+      "quality_score": 0.443,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-120554"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://vulners.com/nvd/NVD:CVE-2026-120554?utm_source=rss&utm_medium=rss&utm_campaign=rss"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.443"
+        ],
+        "priority": [
+          "base_ps=47 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
       "id": "CVE-2026-58644",
       "title": "CISA Adds Exploited SharePoint RCE Zero-Day CVE-2026-58644 to KEV",
       "description": "",
@@ -532,6 +615,49 @@
           "+10 CVSS≥9",
           "+8 exploited_in_wild",
           "+7 zero_day"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-110022",
+      "title": "Low Security Vulnerability (CVE-2026-110022)",
+      "description": "CVE-2026-110022",
+      "cvss": 8.4,
+      "final_ps": 45,
+      "quality_score": 0.443,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-110022"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://vulners.com/nvd/NVD:CVE-2026-110022?utm_source=rss&utm_medium=rss&utm_campaign=rss"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.443"
+        ],
+        "priority": [
+          "base_ps=45 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -807,6 +933,178 @@
       }
     },
     {
+      "id": "CVE-2026-121957",
+      "title": "Low Security Vulnerability (CVE-2026-121957)",
+      "description": "CVE-2026-121957",
+      "cvss": 7.5,
+      "final_ps": 44,
+      "quality_score": 0.443,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-121957"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://vulners.com/nvd/NVD:CVE-2026-121957?utm_source=rss&utm_medium=rss&utm_campaign=rss"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.443"
+        ],
+        "priority": [
+          "base_ps=44 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-121956",
+      "title": "Low Security Vulnerability (CVE-2026-121956)",
+      "description": "CVE-2026-121956",
+      "cvss": 7.5,
+      "final_ps": 44,
+      "quality_score": 0.443,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-121956"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://vulners.com/nvd/NVD:CVE-2026-121956?utm_source=rss&utm_medium=rss&utm_campaign=rss"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.443"
+        ],
+        "priority": [
+          "base_ps=44 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-80335",
+      "title": "CVE-2026-80335 - Out-of-bounds Write in Bootloader",
+      "description": "CVE-2026-80335 - Out-of-bounds Write in Bootloader",
+      "cvss": 7.6,
+      "final_ps": 44,
+      "quality_score": 0.443,
+      "threat_level": "LOW",
+      "type": "MALWARE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-80335"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-80335"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.443"
+        ],
+        "priority": [
+          "base_ps=44 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-84730",
+      "title": "CVE-2026-84730 - ASUS Router AiCloud Stack-Based Buffer Overflow",
+      "description": "CVE-2026-84730 - ASUS Router AiCloud Stack-Based Buffer Overflow",
+      "cvss": 7.2,
+      "final_ps": 42,
+      "quality_score": 0.443,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-84730"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-84730"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.443"
+        ],
+        "priority": [
+          "base_ps=42 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
       "id": "CVE-2026-54121",
       "title": "PoC exploit released for critical AD CS domain-takeover flaw (CVE-2026-54121)",
       "description": "",
@@ -973,6 +1271,49 @@
         "priority": [
           "+10 CVSS≥9",
           "+8 exploited_in_wild"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
+      "id": "CVE-2026-121959",
+      "title": "CVE-2026-121959 - FreeRDP before 3.32.2 Infinite Loop via Truncated WebSocket Frame",
+      "description": "CVE-2026-121959 - FreeRDP before 3.32.2 Infinite Loop via Truncated WebSocket Frame",
+      "cvss": 6.5,
+      "final_ps": 41,
+      "quality_score": 0.453,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-121959"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-121959"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.50",
+          "recency=0d (score=1.00)",
+          "QS=0.453"
+        ],
+        "priority": [
+          "base_ps=41 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -1793,6 +2134,49 @@
       }
     },
     {
+      "id": "CVE-2026-121963",
+      "title": "CVE-2026-121963 - FreeRDP before 3.32.2 Use-After-Free via Dynamic rdpsnd Channel Close",
+      "description": "CVE-2026-121963 - FreeRDP before 3.32.2 Use-After-Free via Dynamic rdpsnd Channel Close",
+      "cvss": 5.9,
+      "final_ps": 40,
+      "quality_score": 0.453,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-121963"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-121963"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.50",
+          "recency=0d (score=1.00)",
+          "QS=0.453"
+        ],
+        "priority": [
+          "base_ps=40 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      }
+    },
+    {
       "id": "CVE-2026-112292",
       "title": "CVE-2026-112292 - CheckCle through 1.6.0 Missing Authorization via Empty PocketBase API Rules",
       "description": "",
@@ -1922,7 +2306,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2025-71417",
@@ -1966,7 +2352,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2025-71418",
@@ -2010,7 +2398,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2023-54394",
@@ -2054,7 +2444,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2023-2868",
@@ -2098,7 +2490,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2023-27372",
@@ -2142,7 +2536,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2026-23550",
@@ -2186,7 +2582,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2026-33017",
@@ -2230,7 +2628,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2026-61511",
@@ -2274,7 +2674,9 @@
         ],
         "suppression": null,
         "merge": null
-      }
+      },
+      "suppressed": false,
+      "suppression_reason": null
     },
     {
       "id": "CVE-2024-4898",
@@ -2952,335 +3354,10 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-97229",
-      "title": "Max-Severity GitLab Vulnerability Exploited Against Alpine Linux",
-      "description": "Tracked as CVE-2026-97229, the bug allows unauthenticated attackers to execute arbitrary code on the server. The post Max-Severity GitLab Vulnerability Exploited Against Alpine Linux appeared first on SecurityWeek .",
+      "id": "CVE-2026-121932",
+      "title": "CVE-2026-121932 — Unknown Vendor A vulnerability was CVSS 10 Critical Vulnerability",
+      "description": "A vulnerability was detected in Linksys E5350 1.0.00.037. This affects the function system of the file /wizard/apply.cgi. Performing a manipulation of the argument ping_ip/traceroute_ip results in os command injection. The attack may be initiated remotely. The exploit is now public and may be used. ",
       "cvss": 10,
-      "final_ps": 39,
-      "quality_score": 0.52,
-      "threat_level": "HIGH",
-      "type": "AI_SECURITY",
-      "source": "securityweek",
-      "sources_confirmed": 2,
-      "merged_sources": [
-        "thehackernews",
-        "securityweek"
-      ],
-      "first_seen": "2026-10-30",
-      "last_seen": "2026-10-30",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "SecurityWeek",
-      "product": "Threat Intelligence",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-97229"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://thehackernews.com/2026/10/cisa-adds-actively-exploited-gitlab-rce.html",
-        "https://www.securityweek.com/max-severity-gitlab-vulnerability-exploited-against-alpine-linux/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.70 (securityweek)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.520"
-        ],
-        "priority": [
-          "+10 CVSS≥9",
-          "+8 exploited_in_wild"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-109618",
-      "title": "PHP2Shell security flaws now sucessfully exploited in the wild",
-      "description": "Two critical RCE vulnerabilities (CVE-2026-109618 and CVE-2026-109619), collectively tracked as PHP2Shell, have been successfully exploited in the wild. [...]",
-      "cvss": 9.8,
-      "final_ps": 38,
-      "quality_score": 0.497,
-      "threat_level": "HIGH",
-      "type": "CLOUD_SECURITY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-26",
-      "last_seen": "2026-10-26",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-109618",
-        "CVE-2026-109619"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.bleepingcomputer.com/news/security/php2shell-security-flaws-now-sucessfully-exploited-in-the-wild/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.497"
-        ],
-        "priority": [
-          "+10 CVSS≥9",
-          "+8 exploited_in_wild"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-58115",
-      "title": "Attackers Exploit Critical Siemens IoT2050 Flaw to Plant Remote Command Backdoors",
-      "description": "A maximum-severity security flaw impacting Siemens SIMATIC IoT2050 Advanced devices has come under active exploitation, VulnCheck has revealed. The vulnerability, tracked as CVE-2026-58115 (CVSS score: 10.0), is a case of missing authentication for a critical function that could be exploited by an u",
-      "cvss": 10,
-      "final_ps": 37,
-      "quality_score": 0.483,
-      "threat_level": "HIGH",
-      "type": "MALWARE_REPORT",
-      "source": "thehackernews",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "thehackernews"
-      ],
-      "first_seen": "2026-11-03",
-      "last_seen": "2026-11-03",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "The Hacker News",
-      "product": "Threat Intelligence",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-58115"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://thehackernews.com/2026/11/attackers-exploit-critical-siemens.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.55 (thehackernews)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.483"
-        ],
-        "priority": [
-          "+10 CVSS≥9",
-          "+8 exploited_in_wild"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-75650",
-      "title": "Hackers Exploit Adobe Commerce Zero-Day to Deploy PSK Agent RAT and Remotely Control Servers",
-      "description": "Attackers are abusing a serious flaw in Adobe Commerce and Magento to install a hidden remote access tool called PSK Agent on online store servers. Once it is running, they can run commands, route traffic through the server, and keep access even after a restart. The flaw, named S... [Full analysis a",
-      "cvss": 10,
-      "final_ps": 35,
-      "quality_score": 0.438,
-      "threat_level": "HIGH",
-      "type": "ZERO_DAY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-11-03",
-      "last_seen": "2026-11-03",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-75650"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cybersecuritynews.com/adobe-commerce-zero-day/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9",
-          "+7 zero_day"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-20127",
-      "title": "Hackers Exploit Critical Cisco SD-WAN 0-Day Flaw to Deploy KeyDrift Malware and Steal Encryption Keys",
-      "description": "A state-linked hacking group used a maximum-severity Cisco SD-WAN zero-day flaw to break into network controllers and install a custom malware framework called KeyDrift. The flaw is CVE-2026-20127. It carries a CVSS score of 10.0 and lets a remote attacker skip authentication and... [Full analysis a",
-      "cvss": 10,
-      "final_ps": 35,
-      "quality_score": 0.438,
-      "threat_level": "HIGH",
-      "type": "ZERO_DAY",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-10-29",
-      "last_seen": "2026-10-29",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-20127"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cybersecuritynews.com/critical-cisco-sd-wan-0-day-flaw/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9",
-          "+7 zero_day"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-121597",
-      "title": "CVE-2026-121597 — Unknown Vendor A weakness has CVSS 9.9 Critical Vulnerability",
-      "description": "A weakness has been identified in TOTOLINK A950RG 4.1.2cu.5268_B20221104. This affects the function setAppEasyWizardConfig of the file /cgi-bin/cstecgi.cgi of the component Easy Setup Wizard Handler. Executing a manipulation of the argument functionType can lead to stack-based buffer overflow. The a",
-      "cvss": 9.9,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "A weakness has",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://gist.github.com/H3rmesk1t/49d6ccded59379651568e0bdc6b5624c",
-        "https://vuldb.com/cve/CVE-2026-121597",
-        "https://vuldb.com/submit/1022558",
-        "https://vuldb.com/vuln/430439"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-121598",
-      "title": "CVE-2026-121598 — Unknown Vendor A security vulnerability CVSS 9.9 Critical Vulnerability",
-      "description": "A security vulnerability has been detected in TOTOLINK A950RG 4.1.2cu.5268_B20221104. This impacts the function strcpy of the file /cgi-bin/cstecgi.cgi of the component Basic Wireless Configuration Handler. The manipulation of the argument wepkey leads to stack-based buffer overflow. It is possible ",
-      "cvss": 9.9,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "A security vulnerability",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://gist.github.com/H3rmesk1t/e283a4f3224cbd0a57d4392de60bd2c6",
-        "https://vuldb.com/cve/CVE-2026-121598",
-        "https://vuldb.com/submit/1022559",
-        "https://vuldb.com/vuln/430440"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-121599",
-      "title": "CVE-2026-121599 — Unknown Vendor A vulnerability was CVSS 9.9 Critical Vulnerability",
-      "description": "A vulnerability was detected in TOTOLINK A950RG 4.1.2cu.5268_B20221104. Affected is the function setWiFiMultipleConfig/delWiFiMultipleConfig of the file /cgi-bin/cstecgi.cgi of the component Multi-SSID Configuration. The manipulation of the argument wepkey2/wepkey3 results in stack-based buffer over",
-      "cvss": 9.9,
       "final_ps": 31,
       "quality_score": 0.525,
       "threat_level": "HIGH",
@@ -3301,10 +3378,10 @@
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://gist.github.com/H3rmesk1t/44673654282c9b21bc8971bab7e4b8a3",
-        "https://vuldb.com/cve/CVE-2026-121599",
-        "https://vuldb.com/submit/1022561",
-        "https://vuldb.com/vuln/430441"
+        "https://github.com/Zimo-666/E5350-cves/tree/main/01-wizard-preauth-command-injection",
+        "https://vuldb.com/cve/CVE-2026-121932",
+        "https://vuldb.com/submit/1024275",
+        "https://vuldb.com/submit/1024277"
       ],
       "explanation": {
         "quality": [
@@ -3323,10 +3400,10 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-121600",
-      "title": "CVE-2026-121600 — Unknown Vendor A flaw has CVSS 9.9 Critical Vulnerability",
-      "description": "A flaw has been found in TOTOLINK A950RG 4.1.2cu.5268_B20221104. Affected by this vulnerability is the function setMacFilterRules of the file /cgi-bin/cstecgi.cgi of the component MAC Filter Handler. This manipulation of the argument addEffect causes stack-based buffer overflow. The attack can be in",
-      "cvss": 9.9,
+      "id": "CVE-2026-121933",
+      "title": "CVE-2026-121933 — Unknown Vendor A flaw has CVSS 10 Critical Vulnerability",
+      "description": "A flaw has been found in Linksys E5350 1.0.00.037. This impacts the function save_settings of the file /wizard/apply.cgi of the component Setup Wizard. Executing a manipulation of the argument wizard_router_pwd can lead to missing authentication. The attack may be launched remotely. The exploit has ",
+      "cvss": 10,
       "final_ps": 31,
       "quality_score": 0.525,
       "threat_level": "HIGH",
@@ -3347,10 +3424,10 @@
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://gist.github.com/H3rmesk1t/217c00b12e04fcde07c453a55579f808",
-        "https://vuldb.com/cve/CVE-2026-121600",
-        "https://vuldb.com/submit/1022562",
-        "https://vuldb.com/vuln/430442"
+        "https://github.com/Zimo-666/E5350-cves/tree/main/02-empty-admin-password-auth-bypass",
+        "https://vuldb.com/cve/CVE-2026-121933",
+        "https://vuldb.com/submit/1024276",
+        "https://vuldb.com/vuln/431045"
       ],
       "explanation": {
         "quality": [
@@ -3369,10 +3446,10 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-121606",
-      "title": "CVE-2026-121606 — Unknown Vendor A vulnerability has CVSS 10 Critical Vulnerability",
-      "description": "A vulnerability has been found in Qihoo 360 D621-2, D603-2, D600-2, D619, D606-6 and D706 up to 6.4.9. Affected by this issue is the function verify_sign of the file fs2/bin/iscm of the component Firmware Signature Verification. Such manipulation of the argument sign leads to improper verification o",
-      "cvss": 10,
+      "id": "CVE-2025-71457",
+      "title": "CVE-2025-71457 — Unknown Vendor vtenext 25.02 before CVSS 9.8 Critical Vulnerability",
+      "description": "vtenext 25.02 before 25.02.1 contains an authentication bypass vulnerability that allows unauthenticated attackers to change any account password via hub/rpwd.php without token verification. Attackers knowing a valid user_name can send action=change_password to RecoverPwd::displayChangePwd() and log",
+      "cvss": 9.8,
       "final_ps": 31,
       "quality_score": 0.525,
       "threat_level": "HIGH",
@@ -3388,15 +3465,15 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "A vulnerability has",
+      "product": "vtenext 25.02 before",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://gist.github.com/gajgdm6-cpu/cf98af20ddb77f27a7c112214a6280f7",
-        "https://vuldb.com/cve/CVE-2026-121606",
-        "https://vuldb.com/submit/1023261",
-        "https://vuldb.com/vuln/430443"
+        "https://0xbro.red/posts/vtenext-25-02-a-three-way-path-to-rce/",
+        "https://blog.sicuranext.com/vtenext-25-02-a-three-way-path-to-rce/",
+        "https://usermanual.vtenext.com/books/release-notes-history/page/vtenext-25021-release-note",
+        "https://www.vulncheck.com/advisories/vtenext-25.02-before-25.02.1-unverified-password-change-via-hub-rpwd-php"
       ],
       "explanation": {
         "quality": [
@@ -3415,55 +3492,9 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-121607",
-      "title": "CVE-2026-121607 — Unknown Vendor A vulnerability was CVSS 10 Critical Vulnerability",
-      "description": "A vulnerability was found in Qihoo 360 D603-2, D600-2, D606-6 and D706 up to 6.4.9. This affects the function testspeed_command of the file /fs2/bin/iscm. Performing a manipulation of the argument host results in os command injection. The attack may be initiated remotely. The exploit has been made p",
-      "cvss": 10,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "A vulnerability was",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://gist.github.com/gajgdm6-cpu/e8ef7f512bebb987b0119562873afd5a",
-        "https://vuldb.com/cve/CVE-2026-121607",
-        "https://vuldb.com/submit/1023262",
-        "https://vuldb.com/vuln/430444"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-121609",
-      "title": "CVE-2026-121609 — Unknown Vendor A vulnerability was CVSS 10 Critical Vulnerability",
-      "description": "A vulnerability was identified in Qihoo 360 Whole Home Router M5 4.0.17.1566. This issue affects the function Home of the file /etc/init.d/mpt of the component Boot Script. The manipulation leads to hard-coded credentials. Remote exploitation of the attack is possible. The exploit is publicly availa",
+      "id": "CVE-2026-122013",
+      "title": "CVE-2026-122013 — Unknown Vendor A vulnerability was CVSS 10 Critical Vulnerability",
+      "description": "A vulnerability was detected in Comfast CF-WR632AX 2.6.0.1. Affected by this vulnerability is an unknown functionality of the file /usr/bin/webmgnt of the component Multipart Parser. Performing a manipulation of the argument filename results in path traversal. It is possible to initiate the attack r",
       "cvss": 10,
       "final_ps": 31,
       "quality_score": 0.525,
@@ -3485,10 +3516,10 @@
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://gist.github.com/gajgdm6-cpu/c8c3bbdeb51c076317834b41c3a919f2",
-        "https://vuldb.com/cve/CVE-2026-121609",
-        "https://vuldb.com/submit/1023264",
-        "https://vuldb.com/vuln/430446"
+        "https://github.com/FoundTL/COMFAST-CF-WR632AX-Wi-Fi-6-Router",
+        "https://vuldb.com/cve/CVE-2026-122013",
+        "https://vuldb.com/submit/1023251",
+        "https://vuldb.com/vuln/431080"
       ],
       "explanation": {
         "quality": [
@@ -3507,10 +3538,10 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-121615",
-      "title": "CVE-2026-121615 — Unknown Vendor A vulnerability was CVSS 10 Critical Vulnerability",
-      "description": "A vulnerability was determined in Linksys E5600 1.1.0.26. Affected is an unknown function of the file /cgi-bin/mesh_login.cgi of the component Login Handler. Executing a manipulation can lead to improper authentication. The attack can be launched remotely. The exploit has been publicly disclosed and",
-      "cvss": 10,
+      "id": "CVE-2026-82418",
+      "title": "CVE-2026-82418 — Unknown Vendor IBM Watson Speech CVSS 9.8 Critical Vulnerability",
+      "description": "IBM Watson Speech Services Cartridge 4.0.0 through 5.4.0 could allow a remote attacker to execute arbitrary code due to a use-after-free vulnerability.",
+      "cvss": 9.8,
       "final_ps": 31,
       "quality_score": 0.525,
       "threat_level": "HIGH",
@@ -3526,15 +3557,12 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "A vulnerability was",
+      "product": "IBM Watson Speech",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/Zimo-666/E5600-cves/tree/main/02-mesh-login-auth-bypass",
-        "https://vuldb.com/cve/CVE-2026-121615",
-        "https://vuldb.com/submit/1023310",
-        "https://vuldb.com/vuln/430463"
+        "https://www.ibm.com/support/pages/node/7293510"
       ],
       "explanation": {
         "quality": [
@@ -3553,10 +3581,10 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-112354",
-      "title": "CVE-2026-112354 — Unknown Vendor Etrel INCH AC CVSS 9.8 Critical Vulnerability",
-      "description": "Etrel INCH AC charging station management web interface prior to firmware versions 7.1.2 and 8.0.1 contains a hard-coded default credentials vulnerability that allows remote attackers to gain full Administrator access by authenticating with the factory-default account. Attackers can log in over clea",
-      "cvss": 9.8,
+      "id": "CVE-2026-121930",
+      "title": "CVE-2026-121930 — Unknown Vendor A weakness has CVSS 9.1 Critical Vulnerability",
+      "description": "A weakness has been identified in Linksys WRT54GL 4.30.18. The affected element is the function system of the file apply.cgi of the component Ping Diagnostic. This manipulation of the argument ping_ip causes os command injection. The attack can be initiated remotely. The exploit has been made availa",
+      "cvss": 9.1,
       "final_ps": 31,
       "quality_score": 0.525,
       "threat_level": "HIGH",
@@ -3566,20 +3594,21 @@
       "merged_sources": [
         "nvd"
       ],
-      "first_seen": "2026-11-03",
-      "last_seen": "2026-11-03",
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "Etrel INCH AC",
+      "product": "A weakness has",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://etrel.atlassian.net/wiki/spaces/EKC/pages/5064097853/Etrel+INCH+Firmware",
-        "https://etrel.com/",
-        "https://www.vulncheck.com/advisories/etrel-inch-ac-charging-station-hard-coded-default-credentials"
+        "https://github.com/Zimo-666/WRT54GL-cves/tree/main/CVE-TBD-ping-ip-command-injection",
+        "https://vuldb.com/cve/CVE-2026-121930",
+        "https://vuldb.com/submit/1024098",
+        "https://vuldb.com/vuln/431042"
       ],
       "explanation": {
         "quality": [
@@ -3598,9 +3627,55 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-111497",
-      "title": "CVE-2026-111497 — google brotli CVSS 9.8 Critical Vulnerability",
-      "description": "A buffer overflow vulnerability in the Brotli decoder (c/dec/decode.c) in Google Brotli versions 1.0.3 through 1.2.0 on all platforms allows a remote unauthenticated attacker to corrupt adjacent decoder state memory, disclose sensitive memory contents, cause a denial of service, or potentially execu",
+      "id": "CVE-2026-121931",
+      "title": "CVE-2026-121931 — Unknown Vendor A security vulnerability CVSS 9.1 Critical Vulnerability",
+      "description": "A security vulnerability has been detected in Linksys WRT54GL 4.30.18. The impacted element is the function system of the file apply.cgi of the component Traceroute Diagnostic Function. Such manipulation of the argument traceroute_ip leads to os command injection. The attack can be launched remotely",
+      "cvss": 9.1,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "A security vulnerability",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/Zimo-666/WRT54GL-cves/tree/main/CVE-TBD-traceroute-ip-command-injection",
+        "https://vuldb.com/cve/CVE-2026-121931",
+        "https://vuldb.com/submit/1024099",
+        "https://vuldb.com/vuln/431043"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2024-54465",
+      "title": "CVE-2024-54465 — apple macos CVSS 9.8 Critical Vulnerability",
+      "description": "A logic issue was addressed with improved state management. This issue is fixed in macOS Sequoia 15.2. An app may be able to elevate privileges.",
       "cvss": 9.8,
       "final_ps": 31,
       "quality_score": 0.525,
@@ -3611,21 +3686,19 @@
       "merged_sources": [
         "nvd"
       ],
-      "first_seen": "2026-10-22",
-      "last_seen": "2026-10-22",
+      "first_seen": "2024-12-12",
+      "last_seen": "2024-12-12",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "google",
-      "product": "brotli",
+      "vendor": "apple",
+      "product": "macos",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/andybalholm/brotli/releases/tag/v1.2.7",
-        "https://nodejs.org/en/blog/vulnerability/october-2026-security-releases#nodejs-brotli-decoder-out-of-bounds-write-permits-remote-code-execution-cve-2026-111497---high",
-        "http://www.openwall.com/lists/oss-security/2026/10/23/25",
-        "http://www.openwall.com/lists/oss-security/2026/10/24/6"
+        "https://support.apple.com/en-us/121839",
+        "http://seclists.org/fulldisclosure/2024/Dec/7"
       ],
       "explanation": {
         "quality": [
@@ -3644,9 +3717,9 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-46633",
-      "title": "CVE-2026-46633 — symfony twig CVSS 9.8 Critical Vulnerability",
-      "description": "Twig is a template language for PHP. Starting in 1.15.1 and prior to 3.26.0, Compiler::string() does not escape single quotes when a template name from a {% use %} tag is placed inside a PHP single-quoted string literal, allowing a crafted template name to terminate the string and inject arbitrary P",
+      "id": "CVE-2023-6816",
+      "title": "CVE-2023-6816 — x.org x server CVSS 9.8 Critical Vulnerability",
+      "description": "A flaw was found in X.Org server. Both DeviceFocusEvent and the XIQueryPointer reply contain a bit for each logical button currently down. Buttons can be arbitrarily mapped to any value up to 255, but the X.Org Server was only allocating space for the device's particular number of buttons, leading t",
       "cvss": 9.8,
       "final_ps": 31,
       "quality_score": 0.525,
@@ -3657,21 +3730,21 @@
       "merged_sources": [
         "nvd"
       ],
-      "first_seen": "2026-07-14",
-      "last_seen": "2026-07-14",
+      "first_seen": "2024-01-18",
+      "last_seen": "2024-01-18",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "symfony",
-      "product": "twig",
+      "vendor": "x.org",
+      "product": "x server",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://gist.github.com/vladko312/d61b950f168c791db4786b83dc7a81e6",
-        "https://github.com/FriendsOfPHP/security-advisories/blob/master/twig/twig/CVE-2026-46633.yaml",
-        "https://github.com/twigphp/Twig/commit/679447fa29083043665482ccf7d64372472621b8",
-        "https://github.com/twigphp/Twig/commit/a2c6db7ea7d2c90923e6708019ec1442526d1c30"
+        "https://access.redhat.com/errata/RHSA-2024:0320",
+        "https://access.redhat.com/errata/RHSA-2024:0557",
+        "https://access.redhat.com/errata/RHSA-2024:0558",
+        "https://access.redhat.com/errata/RHSA-2024:0597"
       ],
       "explanation": {
         "quality": [
@@ -3690,44 +3763,44 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-39892",
-      "title": "CVE-2026-39892 — cryptography.io cryptography CVSS 9.8 Critical Vulnerability",
-      "description": "cryptography is a package designed to expose cryptographic primitives and recipes to Python developers. From 45.0.0 to before 46.0.7, if a non-contiguous buffer was passed to APIs which accepted Python buffers (e.g. Hash.update()), this could lead to buffer overflows. This vulnerability is fixed in ",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
+      "id": "CVE-2024-27834",
+      "title": "CVE-2024-27834: Apple Multiple Products Improper Authentication Vulnerability — CISA KEV Active Exploitation",
+      "description": "Apple iOS, iPadOS, macOS, Safari, tvOS and watchOS 10.5 contain an improper authentication vulnerability which could allow an attacker with arbitrary read and write capability to bypass pointer authentication.",
+      "cvss": null,
+      "final_ps": 29,
+      "quality_score": 0.515,
+      "threat_level": "CRITICAL",
       "type": "CVE_REPORT",
-      "source": "nvd",
+      "source": "cisa_kev",
       "sources_confirmed": 1,
       "merged_sources": [
-        "nvd"
+        "cisa_kev"
       ],
-      "first_seen": "2026-04-08",
-      "last_seen": "2026-04-08",
-      "exploited": false,
-      "cisa_kev": false,
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": true,
+      "cisa_kev": true,
       "ransomware": false,
-      "vendor": "cryptography.io",
-      "product": "cryptography",
-      "due_date": null,
+      "vendor": "Apple",
+      "product": "Multiple Products",
+      "due_date": "2026-11-18",
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/pyca/cryptography/commit/622d672e429a7cff836a23c5903683dbec1901f5",
-        "https://github.com/pyca/cryptography/commit/c09d38ae52de7d95fe683b7a7c496f5751616f27",
-        "https://github.com/pyca/cryptography/security/advisories/GHSA-p423-j2cm-9vmq",
-        "https://github.com/pypa/advisory-database/tree/main/vulns/cryptography/PYSEC-2026-36.yaml"
+        "https://support.apple.com/en-us/120896",
+        "https://support.apple.com/en-us/120898",
+        "https://support.apple.com/en-us/120901",
+        "https://support.apple.com/en-us/120902"
       ],
       "explanation": {
         "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
+          "source_weight=1.00 (cisa_kev)",
+          "data_confidence=0.40",
           "recency=0d (score=1.00)",
-          "QS=0.525"
+          "QS=0.515"
         ],
         "priority": [
-          "+10 CVSS≥9"
+          "+8 exploited_in_wild"
         ],
         "suppression": null,
         "merge": null
@@ -3736,53 +3809,9 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2024-53677",
-      "title": "CVE-2024-53677 — apache struts CVSS 9.8 Critical Vulnerability",
-      "description": "File upload logic in Apache Struts is flawed. An attacker can manipulate file upload params to enable paths traversal and under some circumstances this can lead to uploading a malicious file which can be used to perform Remote Code Execution.\n\nThis issue affects Apache Struts: from 2.0.0 before 6.4.",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2024-12-11",
-      "last_seen": "2024-12-11",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "apache",
-      "product": "struts",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://cwiki.apache.org/confluence/display/WW/S2-067",
-        "https://security.netapp.com/advisory/ntap-20250103-0005/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-95649",
-      "title": "CVE-2026-95649 - IRISPowerscan Insufficient restriction of untrusted scripts allows arbitrary code execution",
-      "description": "CVE-2026-95649 - IRISPowerscan Insufficient restriction of untrusted scripts allows arbitrary code execution",
+      "id": "CVE-2026-58868",
+      "title": "CVE-2026-58868: Critical Android Bug Could Let Attackers Run Remote Code",
+      "description": "Critical Android flaw CVE-2026-58868 could allow remote code execution without user interaction on devices running Android 14 through 17. Google has fixed CVE-2026-58868, a critical Android vulnerability affecting versions 14 through 17. The flaw is a critical Android vulnerabili... [Full analysis a",
       "cvss": 9.8,
       "final_ps": 28,
       "quality_score": 0.438,
@@ -3802,11 +3831,11 @@
       "product": "",
       "due_date": null,
       "cves": [
-        "CVE-2026-95649"
+        "CVE-2026-58868"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-95649"
+        "https://securityaffairs.com/202414/mobile-2/cve-2026-58868-critical-android-bug-could-let-attackers-run-remote-code.html"
       ],
       "explanation": {
         "quality": [
@@ -3825,9 +3854,9 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-121816",
-      "title": "CVE-2026-121816 — Unknown Vendor Herowatch Mini developed CVSS 8.8 High Severity Vulnerability",
-      "description": "Herowatch Mini developed by About Time Technologies has a Missing Authentication vulnerability. Unauthenticated remote attackers can connect to the affected device's ADB service and obtain an ADB shell, thereby accessing device resources or performing related operations.",
+      "id": "CVE-2026-57853",
+      "title": "CVE-2026-57853 — Unknown Vendor DataGerry before 3.3.0 CVSS 8.8 High Severity Vulnerability",
+      "description": "DataGerry before 3.3.0 contains a server-side template injection vulnerability that allows authenticated attackers with base.docapi.template.add permission to store arbitrary Jinja2 payloads in the template_data field via POST /rest/docapi/template, which is later rendered in a non-sandboxed Jinja2 ",
       "cvss": 8.8,
       "final_ps": 21,
       "quality_score": 0.525,
@@ -3844,13 +3873,14 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "Herowatch Mini developed",
+      "product": "DataGerry before 3.3.0",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://www.twcert.org.tw/en/cp-139-11356-8292a-2.html",
-        "https://www.twcert.org.tw/tw/cp-132-11355-341da-1.html"
+        "https://docs.datagerry.com/en/latest/reference/changelog.html",
+        "https://github.com/DataGerry/DataGerry/releases/tag/3.3.0",
+        "https://www.vulncheck.com/advisories/datagerry-ssti-via-docapi-template-rendering"
       ],
       "explanation": {
         "quality": [
@@ -3869,9 +3899,9 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-121940",
-      "title": "CVE-2026-121940 — Unknown Vendor Stonewuu ai-fusion-video before CVSS 8.8 High Severity Vulnerability",
-      "description": "Stonewuu ai-fusion-video before 1.3.0 contains an insecure direct object reference vulnerability that allows authenticated users to access other users' projects by supplying unscoped object ids. Attackers can enumerate auto-increment ids on /api/project, /api/asset and /api/script handlers to read, ",
+      "id": "CVE-2026-11376",
+      "title": "CVE-2026-11376 — Unknown Vendor IBM MQ 9.2.0.0 CVSS 8.8 High Severity Vulnerability",
+      "description": "IBM MQ 9.2.0.0 through 9.2.0.44 LTS, 9.3.0.0 through 9.3.0.42 LTS, 9.4.0.0 through 9.4.0.26 LTS, 9.4.0.0 through 9.4.5.1 CD, and 10.0.0.0 through 10.0.0.5 LTS and CD could allow an authenticated attacker to cause a denial of service or potentially execute arbitrary code due to an integer overflow wh",
       "cvss": 8.8,
       "final_ps": 21,
       "quality_score": 0.525,
@@ -3888,15 +3918,12 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "Stonewuu ai-fusion-video before",
+      "product": "IBM MQ 9.2.0.0",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/Stonewuu/ai-fusion-video/blob/v1.2.0/ai-fusion-video/src/main/java/com/stonewu/fusion/controller/project/ProjectController.java#L37-L113",
-        "https://github.com/Stonewuu/ai-fusion-video/commit/4724a1a4173171c3d4d067f38840a6093a8c4d46",
-        "https://github.com/Stonewuu/ai-fusion-video/issues/69",
-        "https://hackmd.io/@hieuPenguinnn/ai-fusion-video-idor-bola-project-asset"
+        "https://www.ibm.com/support/pages/node/7294498"
       ],
       "explanation": {
         "quality": [
@@ -3915,9 +3942,190 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-121939",
-      "title": "CVE-2026-121939 — Unknown Vendor Databasement before 1.10.9 CVSS 8.1 High Severity Vulnerability",
-      "description": "Databasement before 1.10.9 contains an authentication bypass vulnerability in OAuthService::findOrCreateLocalUser() that links OIDC identities to local users by email without checking email_verified. Attackers can register an identity provider account with a victim's unverified email to log in as an",
+      "id": "CVE-2026-122133",
+      "title": "CVE-2026-122133 — Unknown Vendor Mistral Vibe before CVSS 8.8 High Severity Vulnerability",
+      "description": "Mistral Vibe before 2.25.5 on Windows contains an untrusted search path vulnerability that allows attackers to execute code by placing git.exe in a repository root. Attackers can lure users into opening a crafted repository so SessionLogger and ProjectContextProvider run the malicious git.exe at ses",
+      "cvss": 8.8,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Mistral Vibe before",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/mistralai/mistral-vibe",
+        "https://github.com/mistralai/mistral-vibe/blob/v2.25.4/vibe/core/session/session_logger.py#L137-L141",
+        "https://github.com/mistralai/mistral-vibe/blob/v2.25.4/vibe/core/system_prompt.py#L51-L64",
+        "https://github.com/mistralai/mistral-vibe/blob/v2.25.5/CHANGELOG.md?plain=1#L81"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-122134",
+      "title": "CVE-2026-122134 — Unknown Vendor Mistral Vibe before CVSS 8.8 High Severity Vulnerability",
+      "description": "Mistral Vibe before 2.25.7 contains a remote code execution vulnerability that allows attackers to run commands by configuring malicious Git clean or process filter drivers in a repository. When a user opens a crafted repository, ProjectContextProvider._fetch_git_status runs git status at startup, i",
+      "cvss": 8.8,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Mistral Vibe before",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/mistralai/mistral-vibe",
+        "https://github.com/mistralai/mistral-vibe/blob/v2.25.5/vibe/core/system_prompt.py#L108-L120",
+        "https://github.com/mistralai/mistral-vibe/blob/v2.25.7/CHANGELOG.md?plain=1#L17",
+        "https://github.com/mistralai/mistral-vibe/commit/4a96003186b166d55b9f06895c45bb136eef61cd"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-122135",
+      "title": "CVE-2026-122135 — Unknown Vendor Mistral Vibe before CVSS 8.8 High Severity Vulnerability",
+      "description": "Mistral Vibe before 3.0.3 contains a remote code execution vulnerability that allows attackers to run commands by abusing repository-configured gpg.program during project context collection. A crafted repository setting gpg.program and log.showSignature with a signed commit makes git log execute the",
+      "cvss": 8.8,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Mistral Vibe before",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/mistralai/mistral-vibe",
+        "https://github.com/mistralai/mistral-vibe/blob/v3.0.2/vibe/core/system_prompt.py#L52-L67",
+        "https://github.com/mistralai/mistral-vibe/blob/v3.0.3/CHANGELOG.md?plain=1#L113",
+        "https://github.com/mistralai/mistral-vibe/commit/7bb48f213ac677f943d5c791199ed3dddf302f00"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-11724",
+      "title": "CVE-2026-11724 — Unknown Vendor IBM MQ 9.2.0.0 CVSS 8.5 High Severity Vulnerability",
+      "description": "IBM MQ 9.2.0.0 through 9.2.0.44 LTS, 9.3.0.0 through 9.3.0.42 LTS, 9.4.0.0 through 9.4.0.26 LTS, 9.4.0.0 through 9.4.5.1 CD, and 10.0.0.0 through 10.0.0.5 LTS and CD could allow an authenticated attacker to execute arbitrary code on a Managed File Transfer agent host due to improper validation of me",
+      "cvss": 8.5,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "IBM MQ 9.2.0.0",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.ibm.com/support/pages/node/7294503"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2025-71456",
+      "title": "CVE-2025-71456 — Unknown Vendor vtenext before 25.02.2 CVSS 8.1 High Severity Vulnerability",
+      "description": "vtenext before 25.02.2 contains an SQL injection vulnerability that allows authenticated low-privileged users to inject SQL by supplying a crafted fieldname parameter to modules/Fax/EditView.php. Attackers can read arbitrary database contents, including password reset tokens stored in vte_userauthto",
       "cvss": 8.1,
       "final_ps": 21,
       "quality_score": 0.525,
@@ -3934,15 +4142,15 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "Databasement before 1.10.9",
+      "product": "vtenext before 25.02.2",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/David-Crty/databasement/blob/v1.10.8/app/Services/OAuthService.php#L55-L68",
-        "https://github.com/David-Crty/databasement/commit/b7f4079c02b7ce3f1cf2844de182e809636c3382",
-        "https://github.com/David-Crty/databasement/releases/tag/v1.10.9",
-        "https://github.com/David-Crty/databasement/security/advisories/GHSA-mh6w-2cch-w8v8"
+        "https://0xbro.red/posts/vtenext-25-02-a-three-way-path-to-rce/",
+        "https://blog.sicuranext.com/vtenext-25-02-a-three-way-path-to-rce/",
+        "https://usermanual.vtenext.com/books/release-notes-history/page/vtenext-25022-release-note",
+        "https://www.vulncheck.com/advisories/vtenext-before-25.02.2-sql-injection-via-fieldname-in-fax-editview"
       ],
       "explanation": {
         "quality": [
@@ -3961,10 +4169,10 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-121818",
-      "title": "CVE-2026-121818 — Unknown Vendor Herowatch Mini developed CVSS 7.8 High Severity Vulnerability",
-      "description": "Herowatch Mini developed by About Time Technologies has a system signing vulnerability. Authenticated local attackers can exploit a publicly available test key to sign malicious programs, allowing them to elevate privileges and execute arbitrary code.",
-      "cvss": 7.8,
+      "id": "CVE-2026-122130",
+      "title": "CVE-2026-122130 — Unknown Vendor CESNET ipfixcol2 2.3.0 CVSS 8.2 High Severity Vulnerability",
+      "description": "CESNET ipfixcol2 2.3.0 before 2.9.0 contains an integer overflow vulnerability in the Forwarder output plugin that allows unauthenticated IPFIX exporters to overflow a heap buffer by wrapping uint16_t message length counters. Attackers can send near-65535-byte data sets and large templates to a coll",
+      "cvss": 8.2,
       "final_ps": 21,
       "quality_score": 0.525,
       "threat_level": "MEDIUM",
@@ -3980,13 +4188,15 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "Herowatch Mini developed",
+      "product": "CESNET ipfixcol2 2.3.0",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://www.twcert.org.tw/en/cp-139-11362-1e829-2.html",
-        "https://www.twcert.org.tw/tw/cp-132-11360-ab123-1.html"
+        "https://github.com/CESNET/ipfixcol2",
+        "https://github.com/CESNET/ipfixcol2/blob/v2.8.0/src/plugins/output/forwarder/src/Message.cpp#L134-L156",
+        "https://github.com/CESNET/ipfixcol2/commit/ad206f6217257b06b139f1b2bce50d52f5bc6acb",
+        "https://github.com/CESNET/ipfixcol2/releases/tag/v2.9.0"
       ],
       "explanation": {
         "quality": [
@@ -4005,10 +4215,10 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-121941",
-      "title": "CVE-2026-121941 — Unknown Vendor libmt32emu before 2.8.4 CVSS 7.8 High Severity Vulnerability",
-      "description": "libmt32emu before 2.8.4 contains a heap buffer overflow vulnerability in MidiStreamParserImpl::parseSysex that allows attackers to write past a heap allocation by supplying oversized unterminated SysEx messages. Attackers can feed more than 32768 SysEx data bytes through the mt32emu_parse_stream API",
-      "cvss": 7.8,
+      "id": "CVE-2026-122224",
+      "title": "CVE-2026-122224 — Unknown Vendor WebVirtCloud through commit CVSS 8.1 High Severity Vulnerability",
+      "description": "WebVirtCloud through commit bb920b0 contains a missing authorization vulnerability that allows low-privileged authenticated users to reach MigrateViewSet and CreateInstanceViewSet because no permission_classes are declared, so Django REST Framework defaults to AllowAny. Attackers can send requests t",
+      "cvss": 8.1,
       "final_ps": 21,
       "quality_score": 0.525,
       "threat_level": "MEDIUM",
@@ -4024,15 +4234,15 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "libmt32emu before 2.8.4",
+      "product": "WebVirtCloud through commit",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/munt/munt/blob/libmt32emu_2_8_3/mt32emu/src/MidiStreamParser.cpp#L223-L257",
-        "https://github.com/munt/munt/commit/1749f7fed5cdb3a9015acce076a1512b1615dc3b",
-        "https://github.com/munt/munt/issues/149",
-        "https://hackmd.io/@haindpwn/munt-midistreamparser-oversized-sysex-heap-overflow"
+        "https://github.com/catborise/webvirtcloud/commit/1227674d8f5a5230e5c654267773aca4ebc5c717",
+        "https://github.com/retspen/webvirtcloud",
+        "https://github.com/retspen/webvirtcloud/blob/bb920b0a7ffdf00c09e994dc2e45f05bc9ec1bb3/instances/api/viewsets.py#L125-L162",
+        "https://github.com/retspen/webvirtcloud/blob/bb920b0a7ffdf00c09e994dc2e45f05bc9ec1bb3/instances/api/viewsets.py#L174-L183"
       ],
       "explanation": {
         "quality": [
@@ -4051,9 +4261,9 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-121817",
-      "title": "CVE-2026-121817 — Unknown Vendor Herowatch Go Server CVSS 7.5 High Severity Vulnerability",
-      "description": "Herowatch Go Server developed by About Time Technologies has a Insecure Direct Object Reference vulnerability. Authenticated remote attackers can modify specific parameters to access or operate other users' data and functions.",
+      "id": "CVE-2026-10859",
+      "title": "CVE-2026-10859 — Unknown Vendor IBM MQ 9.2.0.0 CVSS 7.5 High Severity Vulnerability",
+      "description": "IBM MQ 9.2.0.0 through 9.2.0.44 LTS, 9.3.0.0 through 9.3.0.42 LTS, 9.4.0.0 through 9.4.0.26 LTS, 9.4.0.0 through 9.4.5.1 CD, and 10.0.0.0 through 10.0.0.5 LTS and CD could allow an authenticated attacker to execute arbitrary code on consumer applications due to insecure deserialization of ObjectMess",
       "cvss": 7.5,
       "final_ps": 21,
       "quality_score": 0.525,
@@ -4070,13 +4280,12 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "Herowatch Go Server",
+      "product": "IBM MQ 9.2.0.0",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://www.twcert.org.tw/en/cp-139-11364-0dce6-2.html",
-        "https://www.twcert.org.tw/tw/cp-132-11366-d92ac-1.html"
+        "https://www.ibm.com/support/pages/node/7294664"
       ],
       "explanation": {
         "quality": [
@@ -4095,10 +4304,10 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-121945",
-      "title": "CVE-2026-121945 — Unknown Vendor CoopCycle coopcycle-web before CVSS 7.6 High Severity Vulnerability",
-      "description": "CoopCycle coopcycle-web before 6.20.1 contains a broken access control vulnerability that allows any courier to read and modify every incident because Incident operations only check ROLE_COURIER. Attackers can enumerate sequential incident ids and use PUT /api/incidents/{id}/action to re-price, canc",
-      "cvss": 7.6,
+      "id": "CVE-2026-122127",
+      "title": "CVE-2026-122127 — Unknown Vendor CESNET ipfixcol2 2.7.1 CVSS 7.5 High Severity Vulnerability",
+      "description": "CESNET ipfixcol2 2.7.1 before 2.9.0 contains a heap-based buffer overflow in Lz4Decoder.cpp that allows unauthenticated network peers to write past heap buffers. Attackers can declare a small ring buffer_size followed by a large decompressed_size to write up to 65535 controlled bytes and crash the c",
+      "cvss": 7.5,
       "final_ps": 21,
       "quality_score": 0.525,
       "threat_level": "MEDIUM",
@@ -4114,15 +4323,15 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "CoopCycle coopcycle-web before",
+      "product": "CESNET ipfixcol2 2.7.1",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/coopcycle/coopcycle-web/blob/v6.19.1/src/Entity/Incident/Incident.php#L43-L71",
-        "https://github.com/coopcycle/coopcycle-web/commit/d997393d128afa1febe34e8f295b9511c12d19a0",
-        "https://github.com/coopcycle/coopcycle-web/issues/5390",
-        "https://hackmd.io/@hieund/coopcycle-incident-courier-cross-tenant-bola"
+        "https://github.com/CESNET/ipfixcol2",
+        "https://github.com/CESNET/ipfixcol2/blob/v2.8.0/src/plugins/input/tcp/src/Lz4Decoder.cpp#L139-L151",
+        "https://github.com/CESNET/ipfixcol2/commit/fd5cb168efb4b864d33f655174711b2779cef502",
+        "https://github.com/CESNET/ipfixcol2/releases/tag/v2.9.0"
       ],
       "explanation": {
         "quality": [
@@ -4141,10 +4350,10 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-115498",
-      "title": "CVE-2026-115498 — Unknown Vendor The Slim Jetpack CVSS 7.2 High Severity Vulnerability",
-      "description": "The Slim Jetpack plugin for WordPress is vulnerable to Stored Cross-Site Scripting via the 'g<PAGE_ID>-website (Website contact-field)' parameter in all versions up to, and including, 2.7.0.1 due to insufficient input sanitization and output escaping. This makes it possible for unauthenticated attac",
-      "cvss": 7.2,
+      "id": "CVE-2026-12356",
+      "title": "CVE-2026-12356 — Unknown Vendor IBM MQ 9.2.0.0 CVSS 7.5 High Severity Vulnerability",
+      "description": "IBM MQ 9.2.0.0 through 9.2.0.44 LTS, 9.3.0.0 through 9.3.0.42 LTS, 9.4.0.0 through 9.4.0.26 LTS, 9.4.0.0 through 9.4.5.1 CD, and 10.0.0.0 through 10.0.0.5 LTS and CD could allow an authenticated user with command queue access to execute arbitrary code by injecting malicious arguments into Ant script",
+      "cvss": 7.5,
       "final_ps": 21,
       "quality_score": 0.525,
       "threat_level": "MEDIUM",
@@ -4160,15 +4369,12 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "The Slim Jetpack",
+      "product": "IBM MQ 9.2.0.0",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://plugins.trac.wordpress.org/browser/slimjetpack/tags/2.7.0.1/modules/contact-form/admin.php#L232",
-        "https://plugins.trac.wordpress.org/browser/slimjetpack/tags/2.7.0.1/modules/contact-form/grunion-contact-form.php#L1277",
-        "https://plugins.trac.wordpress.org/browser/slimjetpack/tags/2.7.0.1/modules/contact-form/grunion-contact-form.php#L138",
-        "https://www.wordfence.com/threat-intel/vulnerabilities/id/9f66de2d-623d-4009-b05e-c764cecb5d91?source=cve"
+        "https://www.ibm.com/support/pages/node/7294642"
       ],
       "explanation": {
         "quality": [
@@ -4176,243 +4382,6 @@
           "data_confidence=0.75",
           "recency=0d (score=1.00)",
           "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-97397",
-      "title": "CVE-2026-97397 — Unknown Vendor The Remove Google CVSS 7.2 High Severity Vulnerability",
-      "description": "The Remove Google Fonts – Disable, Block, or Replace with Bunny Fonts for GDPR Compliance plugin for WordPress is vulnerable to Stored Cross-Site Scripting via Comment Field via Regex-Mangled Output Buffer in all versions up to, and including, 1.7 due to insufficient input sanitization and output es",
-      "cvss": 7.2,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "The Remove Google",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://plugins.trac.wordpress.org/browser/use-bunnyfont-host-google-fonts/tags/1.7/bunnyfont.php#L162",
-        "https://plugins.trac.wordpress.org/browser/use-bunnyfont-host-google-fonts/tags/1.7/bunnyfont.php#L248",
-        "https://plugins.trac.wordpress.org/browser/use-bunnyfont-host-google-fonts/tags/1.7/bunnyfont.php#L253",
-        "https://www.wordfence.com/threat-intel/vulnerabilities/id/79ff2a5d-ee75-4dc2-85a0-6eb1a032678c?source=cve"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-121946",
-      "title": "CVE-2026-121946 — Unknown Vendor zbateson mail-mime-parser before CVSS 7.2 High Severity Vulnerability",
-      "description": "zbateson mail-mime-parser before 3.0.9 and 4.x before 4.0.6 contains a CRLF header injection vulnerability in message-building helpers that fail to strip CR and LF characters. Attackers supplying crafted MIME type, charset, encoding, micalg, or protocol values can inject extra header lines such as a",
-      "cvss": 7.2,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "zbateson mail-mime-parser before",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/zbateson/mail-mime-parser/blob/4.0.5/src/Message/Helper/MultipartHelper.php#L270-L273",
-        "https://github.com/zbateson/mail-mime-parser/commit/1fa840ef367958e991e6840b4e3ffd41aca9d147",
-        "https://github.com/zbateson/mail-mime-parser/commit/b032920875c6cb35bb2ddd7abfd7e98608d75bc0",
-        "https://github.com/zbateson/mail-mime-parser/commit/c31c62ccc3e66a7a7da0d79954ef83807f9daa20"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-120554",
-      "title": "CVE-2026-120554 — Unknown Vendor The Import and CVSS 8.8 High Severity Vulnerability",
-      "description": "The Import and export users and customers plugin for WordPress is vulnerable to Privilege Escalation in all versions up to, and including, 2.5.11 This is due to a non-atomic multi-option write sequence in the `ACUI_Cron::save_settings()` function, which persists `acui_cron_activated`, `acui_cron_con",
-      "cvss": 8.8,
-      "final_ps": 21,
-      "quality_score": 0.535,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 2,
-      "merged_sources": [
-        "nvd",
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "The Import and",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-120554"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://plugins.trac.wordpress.org/browser/import-users-from-csv-with-meta/tags/2.5.7/classes/cron.php#L101",
-        "https://plugins.trac.wordpress.org/browser/import-users-from-csv-with-meta/tags/2.5.7/classes/cron.php#L166",
-        "https://plugins.trac.wordpress.org/browser/import-users-from-csv-with-meta/tags/2.5.7/classes/cron.php#L49",
-        "https://plugins.trac.wordpress.org/browser/import-users-from-csv-with-meta/tags/2.5.7/classes/import.php#L1104"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.535"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-104799",
-      "title": "CVE-2026-104799 — Unknown Vendor The Mobile builder CVSS 8.8 High Severity Vulnerability",
-      "description": "The Mobile builder plugin for WordPress is vulnerable to Privilege Escalation in all versions up to, and including, 1.4.2 via the `wcfmmp_profile_settings()` REST handler exposed at `POST /mobile-builder/v1/wcfm-profile-settings`. This is due to a PHP loose-comparison logic flaw in the meta key allo",
-      "cvss": 8.8,
-      "final_ps": 21,
-      "quality_score": 0.535,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 2,
-      "merged_sources": [
-        "nvd",
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "The Mobile builder",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-104799"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://plugins.trac.wordpress.org/browser/mobile-builder/trunk/api/class-mobile-builder-wcfm.php#L344",
-        "https://plugins.trac.wordpress.org/browser/mobile-builder/trunk/api/class-mobile-builder-wcfm.php#L78",
-        "https://plugins.trac.wordpress.org/browser/mobile-builder/trunk/api/class-mobile-builder-wcfm.php#L87",
-        "https://plugins.trac.wordpress.org/browser/mobile-builder/trunk/api/class-mobile-builder-wcfm.php#L88"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.535"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-110022",
-      "title": "CVE-2026-110022 — Unknown Vendor The PFI plugin CVSS 8.4 High Severity Vulnerability",
-      "description": "The PFI plugin framework deploys executable assemblies (DLLs) from a signed plugin package into the local plugin repository and loads them via reflection, but the deployment routine processes archive entries that were never covered by the signature verification. An unauthenticated local attacker can",
-      "cvss": 8.4,
-      "final_ps": 21,
-      "quality_score": 0.535,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 2,
-      "merged_sources": [
-        "nvd",
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "The PFI plugin",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-110022"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.certvde.com/en/advisories/VDE-2026-121/",
-        "https://vulners.com/nvd/NVD:CVE-2026-110022?utm_source=rss&utm_medium=rss&utm_campaign=rss"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.535"
         ],
         "priority": [
           "base_ps=21 (no boosts)"
