@@ -73,6 +73,37 @@ test('P0 #433/#536: licensed MalwareBazaar source contract stays manual-review g
   assert.deepEqual(renamed.operational,[file]);
 });
 
+test('P0 #539: commercial IOC registry and refresh transport require manual operational release', () => {
+  const sources=['config/ioc-sources.json','scripts/refresh-ioc-intelligence.js'];
+  for (const file of sources) assert.equal(isReviewedOperationalPath(file),true,file);
+  const result=classify(compare(sources),BASE,HEAD,paths);
+  assert.equal(result.state,'manual_release_required');
+  assert.deepEqual(result.operational,sources.slice().sort());
+  assert.deepEqual(result.unknown,[]);
+  assert.deepEqual(result.benign,[]);
+  assert.deepEqual(result.production,[]);
+  assert.match(renderDriftSummary(HEAD,BASE,result),/Manual release and independent postdeploy certification required/);
+  const unknown=[
+    'config/ioc-sources-replacement.json',
+    'scripts/refresh-ioc-intelligence-v2.js',
+    'scripts/unapproved-licensed-ioc-source.js'
+  ];
+  for (const file of unknown) {
+    assert.equal(isReviewedOperationalPath(file),false,file);
+    const blocked=classify(compare([...sources,file]),BASE,HEAD,paths);
+    assert.equal(blocked.state,'blocked',file);
+    assert.ok(blocked.unknown.includes(file),file);
+    assert.equal(blocked.operational.length,2);
+  }
+  for (const original of sources) {
+    const rename=compare([]);
+    rename.files=[{filename:'docs/retired-ioc-source.md',previous_filename:original,status:'renamed'}];
+    const classified=classify(rename,BASE,HEAD,paths);
+    assert.equal(classified.state,'manual_release_required');
+    assert.deepEqual(classified.operational,[original]);
+  }
+});
+
 test('P0 customer-data recovery RUNBOOKS.md is operator-reviewed, not a benign document', () => {
   const result = classify(compare(['RUNBOOKS.md']),BASE,HEAD,paths);
   assert.equal(result.state,'manual_release_required');
