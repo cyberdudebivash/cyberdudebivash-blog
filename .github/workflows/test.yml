@@ -172,6 +172,8 @@ jobs:
         run: node scripts/soc-native-d1-local-certify.cjs
       - name: Validate production entrypoint syntax
         run: node --check fetch-live-intel.js
+      - name: P0 CTI publisher exclusive lock fail-closed regression
+        run: node --test tests-js/cti-publisher-lock.test.js
       - name: SOC identity and all-pages UX regression contract
         run: node --test tests-js/soc-platform-presentation.test.js
       - name: P0 Enterprise cost planner truth and customer-claim safety
