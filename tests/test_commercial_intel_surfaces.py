@@ -864,7 +864,8 @@ def test_homepage_exposes_premium_soc2_cti_brand_and_live_hero():
     css = Path("apex-command-center.css").read_text(encoding="utf-8")
     runtime = Path("apex-command-center.js").read_text(encoding="utf-8")
     for required in [
-        "CYBERDUDEBIVASH SENTINEL APEX — Threat Intelligence & SOC Readiness",
+        # #542 deliberately replaced the legacy business-brand prefix with the product brand.
+        "SENTINEL APEX SOC — Threat Intelligence & SOC Readiness",
         "SENTINEL APEX THREAT INTELLIGENCE &amp; SOC READINESS",
         "Enterprise Security Intelligence",
         "Assurance Disclosures",
@@ -907,7 +908,7 @@ def test_homepage_exposes_premium_soc2_cti_brand_and_live_hero():
 def test_homepage_command_center_meets_enterprise_visibility_floor():
     html = Path("index.html").read_text(encoding="utf-8-sig")
     css = Path("apex-command-center.css").read_text(encoding="utf-8")
-    assert "CYBERDUDEBIVASH SENTINEL APEX — Threat Intelligence & SOC Readiness" in html
+    assert "SENTINEL APEX SOC — Threat Intelligence & SOC Readiness" in html
     assert "/apex-command-center.css?v=20260928-brandhero1" in html
     assert "/apex-command-center.js?v=20260928-brandhero1" in html
     for required in [
