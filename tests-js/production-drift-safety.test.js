@@ -104,6 +104,36 @@ test('P0 #539: commercial IOC registry and refresh transport require manual oper
   }
 });
 
+test('P0 #433/#543: CTI publisher lock is an operator-reviewed operational input, not an unknown that blocks every release', () => {
+  // Real evidence: drift run 41855823264 on main 27b53845 reported
+  // "decision: blocked / unknown files: 1 / scripts/cti-publisher-lock.cjs".
+  const file='scripts/cti-publisher-lock.cjs';
+  assert.equal(isReviewedOperationalPath(file),true,file);
+  const result=classify(compare([file]),BASE,HEAD,paths);
+  assert.equal(result.state,'manual_release_required');
+  assert.deepEqual(result.operational,[file]);
+  assert.deepEqual(result.unknown,[]);
+  // It must never be downgraded: not benign, not a Worker/Pages production path,
+  // and never a deployment approval.
+  assert.deepEqual(result.benign,[]);
+  assert.deepEqual(result.production,[]);
+  assert.match(renderDriftSummary(HEAD,BASE,result),/Manual release and independent postdeploy certification required/);
+  // Fail-closed neighbours stay blocked: near-miss names and unlisted sibling scripts.
+  for (const unlisted of ['scripts/cti-publisher-lock.js','scripts/cti-publisher-lock-v2.cjs','scripts/cti-publisher-unlock.cjs']) {
+    assert.equal(isReviewedOperationalPath(unlisted),false,unlisted);
+    const blocked=classify(compare([file,unlisted]),BASE,HEAD,paths);
+    assert.equal(blocked.state,'blocked',unlisted);
+    assert.ok(blocked.unknown.includes(unlisted),unlisted);
+    assert.deepEqual(blocked.operational,[file]);
+  }
+  // A rename away cannot launder the reviewed path into a benign document.
+  const rename=compare([]);
+  rename.files=[{filename:'docs/retired-lock.md',previous_filename:file,status:'renamed'}];
+  const renamed=classify(rename,BASE,HEAD,paths);
+  assert.equal(renamed.state,'manual_release_required');
+  assert.deepEqual(renamed.operational,[file]);
+});
+
 test('P0 customer-data recovery RUNBOOKS.md is operator-reviewed, not a benign document', () => {
   const result = classify(compare(['RUNBOOKS.md']),BASE,HEAD,paths);
   assert.equal(result.state,'manual_release_required');
