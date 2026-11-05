@@ -249,8 +249,8 @@ jobs:
               echo "Push failed, retrying in $((attempt * 3))s..."
               sleep $((attempt * 3))s
             else
-              echo "Push failed after 3 attempts — state will sync next run"
-              exit 0
+              echo "Push failed after 3 attempts — publication state NOT persisted; fail closed for operator reconciliation"
+              exit 1
             fi
           done
 
