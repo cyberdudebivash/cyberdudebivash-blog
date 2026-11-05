@@ -7,11 +7,16 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const customerRelease = path.join(root, '.github/workflows/customer-release-certification.yml');
 const publisher = path.join(root, '.github/workflows/blogger-syndication.yml');
+const aiSecurity = path.join(root, '.github/workflows/ai-security-intel.yml');
 const requiredIssueNumbers = [222, 360, 418, 432, 433, 434, 494];
 
 function bloggerStatePushFailsClosed(text) {
   const match = text.match(/Push failed after 3 attempts[^\r\n]*\r?\n\s*exit\s+(\d+)\b/);
   return match !== null && Number(match[1]) !== 0;
+}
+
+function aiSecurityPushFailsClosed(text) {
+  return /for i in 1 2 3 4; do[\s\S]*?if \[ "\$pushed" != "true" \]; then\r?\n\s*echo [^\r\n]+\r?\n\s*exit 1\b/.test(text);
 }
 
 function customerReleaseIsFailClosed(text) {
@@ -53,4 +58,15 @@ test('negative: removing either dual-host public certification gate blocks globa
   const actual = fs.readFileSync(customerRelease, 'utf8');
   assert.equal(customerReleaseIsFailClosed(actual.replace('node scripts/certify-soc-public-feed-parity.cjs', 'echo disabled')), false);
   assert.equal(customerReleaseIsFailClosed(actual.replace('node scripts/certify-soc-s2n-api-release.cjs --monitor-public', 'echo disabled')), false);
+});
+
+test('AI security intelligence publisher fails closed after exhausting Git push retries', () => {
+  assert.equal(aiSecurityPushFailsClosed(fs.readFileSync(aiSecurity, 'utf8')), true);
+});
+
+test('negative: AI security persistence failure cannot be green', () => {
+  const actual = fs.readFileSync(aiSecurity, 'utf8');
+  const unsafe = actual.replace(/(if \[ "\$pushed" != "true" \]; then\r?\n\s*echo [^\r\n]+\r?\n\s*)exit 1\b/, '$1exit 0');
+  assert.notEqual(unsafe, actual, 'negative fixture must change the real failure branch');
+  assert.equal(aiSecurityPushFailsClosed(unsafe), false);
 });

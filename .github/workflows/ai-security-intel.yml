@@ -94,8 +94,13 @@ jobs:
           git add api/intel/ai-security.json ai-security/ ai-security-intel-state.json ai-security-intel-memory.json 2>/dev/null || true
           STATS=$(node -e "try{const s=require('./ai-security-intel-state.json').lastStats||{};console.log('pub='+(s.published||0)+' p1='+(s.p1||0)+' leads='+(s.leadsHeld||0))}catch(e){console.log('updated')}")
           git commit -m "SENTINEL APEX AI-SEC: ${STATS} [$(date -u '+%Y-%m-%dT%H:%M:%SZ')] [skip ci]" || { echo "nothing to commit"; exit 0; }
+          pushed=false
           for i in 1 2 3 4; do
-            if git push origin HEAD; then echo "✅ pushed"; break; fi
+            if git push origin HEAD; then echo "✅ pushed"; pushed=true; break; fi
             echo "push failed, retrying in $((2**i))s"; git pull --rebase origin "$(git rev-parse --abbrev-ref HEAD)" || { echo "⚠️ Rebase conflict — aborting cleanly, will retry"; git rebase --abort 2>/dev/null || true; }; sleep $((2**i))
           done
+          if [ "$pushed" != "true" ]; then
+            echo "::error title=AI Security Intelligence State Persistence Failed::Four Git pushes failed; publisher state not saved to main. Operator reconciliation required."
+            exit 1
+          fi
 
