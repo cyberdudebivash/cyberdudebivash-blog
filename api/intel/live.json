@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-04T21:26:50.689Z",
+  "generated": "2026-11-05T01:42:31.354Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -7,93 +7,93 @@
   "docs": "https://blog.cyberdudebivash.in/api.html",
   "endpoint": "/api/intel/live.json",
   "description": "S2N live threat intelligence feed — top 100 items by final_ps",
-  "total_published": 7092,
+  "total_published": 7107,
   "s2n_stats": {
-    "passed": 118,
-    "suppressed": 6,
-    "avg_qs": 0.504
+    "passed": 117,
+    "suppressed": 4,
+    "avg_qs": 0.506
   },
   "items": [
     {
-      "id": "CVE-2026-111497",
-      "title": "CVE-2026-111497 — google brotli CVSS 9.8 Critical Vulnerability",
-      "description": "A buffer overflow vulnerability in the Brotli decoder (c/dec/decode.c) in Google Brotli versions 1.0.3 through 1.2.0 on all platforms allows a remote unauthenticated attacker to corrupt adjacent decoder state memory, disclose sensitive memory contents, cause a denial of service, or potentially execu",
-      "cvss": 9.8,
-      "final_ps": 68,
-      "quality_score": 0.5,
-      "threat_level": "HIGH",
+      "id": "CVE-2024-27834",
+      "title": "CVE-2024-27834: Apple Multiple Products Improper Authentication Vulnerability — CISA KEV Active Exploitation",
+      "description": "Apple iOS, iPadOS, macOS, Safari, tvOS and watchOS 10.5 contain an improper authentication vulnerability which could allow an attacker with arbitrary read and write capability to bypass pointer authentication.",
+      "cvss": 0,
+      "final_ps": 93,
+      "quality_score": 0.565,
+      "threat_level": "CRITICAL",
       "type": "CVE_REPORT",
-      "source": "nvd",
+      "source": "cisa_kev",
       "sources_confirmed": 1,
       "merged_sources": [
-        "nvd"
+        "cisa_kev"
       ],
-      "first_seen": "2026-10-22",
-      "last_seen": "2026-10-22",
-      "exploited": false,
-      "cisa_kev": false,
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": true,
+      "cisa_kev": true,
       "ransomware": false,
-      "vendor": "google",
-      "product": "brotli",
-      "due_date": null,
+      "vendor": "Apple",
+      "product": "Multiple Products",
+      "due_date": "2026-11-18",
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/andybalholm/brotli/releases/tag/v1.2.7",
-        "https://nodejs.org/en/blog/vulnerability/october-2026-security-releases#nodejs-brotli-decoder-out-of-bounds-write-permits-remote-code-execution-cve-2026-111497---high",
-        "http://www.openwall.com/lists/oss-security/2026/10/23/25",
-        "http://www.openwall.com/lists/oss-security/2026/10/24/6"
+        "https://support.apple.com/en-us/120896",
+        "https://support.apple.com/en-us/120898",
+        "https://support.apple.com/en-us/120901",
+        "https://support.apple.com/en-us/120902"
       ],
       "explanation": {
         "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=1.00",
-          "recency=13d (score=0.20)",
-          "QS=0.500"
+          "source_weight=1.00 (cisa_kev)",
+          "data_confidence=0.65",
+          "recency=1d (score=0.85)",
+          "QS=0.565"
         ],
         "priority": [
-          "+10 CVSS≥9"
+          "+15 CISA_KEV",
+          "+8 exploited_in_wild"
         ],
         "suppression": null,
         "merge": null
       }
     },
     {
-      "id": "CVE-2026-109618",
-      "title": "CVE-2026-109618 — php php CVSS 9.8 Critical Vulnerability",
-      "description": "PHP uses longjmp() for out-of-memory (OOM) errors to exit the current context and abort handling of the request. Some contexts may not properly account for this scenario and leave request memory in an uninitialized state before performing an allocation. The subsequent request cleanup procedure may r",
+      "id": "CVE-2026-58868",
+      "title": "CVE-2026-58868: Critical Android Bug Could Let Attackers Run Remote Code",
+      "description": "Critical Android flaw CVE-2026-58868 could allow remote code execution without user interaction on devices running Android 14 through 17. Google has fixed CVE-2026-58868, a critical Android vulnerability affecting versions 14 through 17. The flaw is a critical Android vulnerabili... [Full analysis a",
       "cvss": 9.8,
-      "final_ps": 68,
-      "quality_score": 0.5,
-      "threat_level": "HIGH",
+      "final_ps": 60,
+      "quality_score": 0.493,
+      "threat_level": "MEDIUM",
       "type": "CVE_REPORT",
-      "source": "nvd",
+      "source": "sentinel_apex",
       "sources_confirmed": 1,
       "merged_sources": [
-        "nvd"
+        "sentinel_apex"
       ],
-      "first_seen": "2026-10-21",
-      "last_seen": "2026-10-21",
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "php",
-      "product": "php",
+      "vendor": "",
+      "product": "",
       "due_date": null,
-      "cves": [],
+      "cves": [
+        "CVE-2026-58868"
+      ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w",
-        "http://seclists.org/fulldisclosure/2026/Oct/51",
-        "http://www.openwall.com/lists/oss-security/2026/10/21/6",
-        "http://www.openwall.com/lists/oss-security/2026/10/23/5"
+        "https://securityaffairs.com/202414/mobile-2/cve-2026-58868-critical-android-bug-could-let-attackers-run-remote-code.html"
       ],
       "explanation": {
         "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=1.00",
-          "recency=14d (score=0.20)",
-          "QS=0.500"
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.70",
+          "recency=0d (score=1.00)",
+          "QS=0.493"
         ],
         "priority": [
           "+10 CVSS≥9"
@@ -180,49 +180,6 @@
           "data_confidence=0.70",
           "recency=0d (score=1.00)",
           "QS=0.493"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      }
-    },
-    {
-      "id": "CVE-2026-109593",
-      "title": "SonicWall Won't Patch EoL GMS Flaws That Could Expose Files, Alter Database Records",
-      "description": "SonicWall has warned of two vulnerabilities impacting end-of-life Global Management System (GMS) systems that it said will not be patched. Details of the security flaws, which affect SonicWall GMS 9.5.2 and earlier versions, are below - CVE-2026-109593 (CVSS score: 9.1) - An unauthenticated file rea",
-      "cvss": 9.1,
-      "final_ps": 59,
-      "quality_score": 0.478,
-      "threat_level": "MEDIUM",
-      "type": "AI_SECURITY",
-      "source": "thehackernews",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "thehackernews"
-      ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "The Hacker News",
-      "product": "Threat Intelligence",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-109593"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://thehackernews.com/2026/11/sonicwall-wont-patch-eol-gms-flaws-that.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.55 (thehackernews)",
-          "data_confidence=1.00",
-          "recency=0d (score=1.00)",
-          "QS=0.478"
         ],
         "priority": [
           "+10 CVSS≥9"
@@ -2306,9 +2263,7 @@
         ],
         "suppression": null,
         "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
+      }
     },
     {
       "id": "CVE-2025-71417",
@@ -3354,6 +3309,142 @@
       "suppression_reason": null
     },
     {
+      "id": "CVE-2026-122051",
+      "title": "CVE-2026-122051 — Unknown Vendor A flaw has CVSS 10 Critical Vulnerability",
+      "description": "A flaw has been found in Edimax BR-6208AC 1.32. Affected by this vulnerability is an unknown functionality of the file /goform/mp. Executing a manipulation can lead to command injection. The attack may be launched remotely. The exploit has been published and may be used. The vendor was contacted ear",
+      "cvss": 10,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-05",
+      "last_seen": "2026-11-05",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "A flaw has",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/fizz-is-on-the-way/Iot_vuls/tree/main/BR-6208AC/RCE_mp",
+        "https://vuldb.com/cve/CVE-2026-122051",
+        "https://vuldb.com/submit/1025459",
+        "https://vuldb.com/vuln/431135"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-54378",
+      "title": "CVE-2026-54378 — Unknown Vendor VitaFit cloud API CVSS 9.6 Critical Vulnerability",
+      "description": "VitaFit cloud API before 2026-10-30 contained a broken access control vulnerability that allows any authenticated user to obtain temporary AWS credentials by calling the POST /front/user/s3/token/ endpoint. Attackers can use these improperly scoped credentials to list the shared storage bucket and r",
+      "cvss": 9.6,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "VitaFit cloud API",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/je-lv/vitafit-security-research",
+        "https://play.google.com/store/apps/details?id=com.vt.vitafit",
+        "https://www.vulncheck.com/advisories/vitafit-cloud-api-broken-access-control-via-s3-token-endpoint"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-54384",
+      "title": "CVE-2026-54384 — Unknown Vendor VitaFit cloud API CVSS 9.8 Critical Vulnerability",
+      "description": "VitaFit cloud API before 2026-10-30 contained an authentication bypass vulnerability that allows remote attackers to obtain a full session for a victim's account by submitting a linked Google or Facebook account identifier to the POST /front/login/sns/ endpoint without providing proof of ownership f",
+      "cvss": 9.8,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "VitaFit cloud API",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/je-lv/vitafit-security-research",
+        "https://play.google.com/store/apps/details?id=com.vt.vitafit",
+        "https://www.vulncheck.com/advisories/vitafit-cloud-api-authentication-bypass-via-post-front-login-sns"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
       "id": "CVE-2026-121932",
       "title": "CVE-2026-121932 — Unknown Vendor A vulnerability was CVSS 10 Critical Vulnerability",
       "description": "A vulnerability was detected in Linksys E5350 1.0.00.037. This affects the function system of the file /wizard/apply.cgi. Performing a manipulation of the argument ping_ip/traceroute_ip results in os command injection. The attack may be initiated remotely. The exploit is now public and may be used. ",
@@ -3400,10 +3491,10 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-121933",
-      "title": "CVE-2026-121933 — Unknown Vendor A flaw has CVSS 10 Critical Vulnerability",
-      "description": "A flaw has been found in Linksys E5350 1.0.00.037. This impacts the function save_settings of the file /wizard/apply.cgi of the component Setup Wizard. Executing a manipulation of the argument wizard_router_pwd can lead to missing authentication. The attack may be launched remotely. The exploit has ",
-      "cvss": 10,
+      "id": "CVE-2026-4408",
+      "title": "CVE-2026-4408 — redhat openshift container platform CVSS 9 Critical Vulnerability",
+      "description": "A flaw was found in Samba. A remote attacker can exploit a misconfiguration in Samba file servers and classic domain controllers that use the \"check password script\" feature. If this script is configured with the %u substitution character, the client-controlled username is passed without proper esca",
+      "cvss": 9,
       "final_ps": 31,
       "quality_score": 0.525,
       "threat_level": "HIGH",
@@ -3413,21 +3504,21 @@
       "merged_sources": [
         "nvd"
       ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
+      "first_seen": "2026-05-28",
+      "last_seen": "2026-05-28",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "A flaw has",
+      "vendor": "redhat",
+      "product": "openshift container platform",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/Zimo-666/E5350-cves/tree/main/02-empty-admin-password-auth-bypass",
-        "https://vuldb.com/cve/CVE-2026-121933",
-        "https://vuldb.com/submit/1024276",
-        "https://vuldb.com/vuln/431045"
+        "https://access.redhat.com/errata/RHSA-2026:22644",
+        "https://access.redhat.com/errata/RHSA-2026:22963",
+        "https://access.redhat.com/errata/RHSA-2026:25049",
+        "https://access.redhat.com/errata/RHSA-2026:25979"
       ],
       "explanation": {
         "quality": [
@@ -3446,9 +3537,98 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2025-71457",
-      "title": "CVE-2025-71457 — Unknown Vendor vtenext 25.02 before CVSS 9.8 Critical Vulnerability",
-      "description": "vtenext 25.02 before 25.02.1 contains an authentication bypass vulnerability that allows unauthenticated attackers to change any account password via hub/rpwd.php without token verification. Attackers knowing a valid user_name can send action=change_password to RecoverPwd::displayChangePwd() and log",
+      "id": "CVE-2025-12543",
+      "title": "CVE-2025-12543 — redhat build of apache camel CVSS 9.6 Critical Vulnerability",
+      "description": "A flaw was found in the Undertow HTTP server core, which is used in WildFly, JBoss EAP, and other Java applications. The Undertow library fails to properly validate the Host header in incoming HTTP requests.As a result, requests containing malformed or malicious Host headers are processed without re",
+      "cvss": 9.6,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-01-07",
+      "last_seen": "2026-01-07",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "redhat",
+      "product": "build of apache camel",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://access.redhat.com/errata/RHSA-2026:0383",
+        "https://access.redhat.com/errata/RHSA-2026:0384",
+        "https://access.redhat.com/errata/RHSA-2026:0386",
+        "https://access.redhat.com/errata/RHSA-2026:33371"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2025-67288",
+      "title": "CVE-2025-67288 — umbraco umbraco cms CVSS 10 Critical Vulnerability",
+      "description": "An arbitrary file upload vulnerability in Umbraco CMS v16.3.3 allows attackers to execute arbitrary code by uploading a crafted PDF file. NOTE: this is disputed by the Supplier because the responsibility for file validation (as shown in the documentation) belongs to the system administrator who is i",
+      "cvss": 10,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2025-12-22",
+      "last_seen": "2025-12-22",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "umbraco",
+      "product": "umbraco cms",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/vuquyen03/CVE/tree/main/CVE-2025-67288"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2025-65602",
+      "title": "CVE-2025-65602 — chancms chancms CVSS 9.8 Critical Vulnerability",
+      "description": "A template injection vulnerability in the /vip/v1/file/save component of ChanCMS v3.3.4 allows attackers to execute arbitrary code via a crafted POST request.",
       "cvss": 9.8,
       "final_ps": 31,
       "quality_score": 0.525,
@@ -3459,21 +3639,20 @@
       "merged_sources": [
         "nvd"
       ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
+      "first_seen": "2025-12-10",
+      "last_seen": "2025-12-10",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "vtenext 25.02 before",
+      "vendor": "chancms",
+      "product": "chancms",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://0xbro.red/posts/vtenext-25-02-a-three-way-path-to-rce/",
-        "https://blog.sicuranext.com/vtenext-25-02-a-three-way-path-to-rce/",
-        "https://usermanual.vtenext.com/books/release-notes-history/page/vtenext-25021-release-note",
-        "https://www.vulncheck.com/advisories/vtenext-25.02-before-25.02.1-unverified-password-change-via-hub-rpwd-php"
+        "https://gitee.com/chancms/ChanCMS",
+        "https://www.notion.so/ChanCMS-Unauthenticated-RCE-2a3ee9235ba380fc9973e16c06258689",
+        "https://www.notion.so/ChanCMS-Unauthenticated-RCE-2a3ee9235ba380fc9973e16c06258689?source=copy_link"
       ],
       "explanation": {
         "quality": [
@@ -3492,13 +3671,557 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-122013",
-      "title": "CVE-2026-122013 — Unknown Vendor A vulnerability was CVSS 10 Critical Vulnerability",
-      "description": "A vulnerability was detected in Comfast CF-WR632AX 2.6.0.1. Affected by this vulnerability is an unknown functionality of the file /usr/bin/webmgnt of the component Multipart Parser. Performing a manipulation of the argument filename results in path traversal. It is possible to initiate the attack r",
+      "id": "CVE-2025-63531",
+      "title": "CVE-2025-63531 — shridharshukl blood bank management system CVSS 10 Critical Vulnerability",
+      "description": "A SQL injection vulnerability exists in the Blood Bank Management System 1.0 within the receiverLogin.php component. The application fails to properly sanitize user-supplied input in SQL queries, allowing an attacker to inject arbitrary SQL code. By manipulating the remail and rpassword fields, an a",
       "cvss": 10,
       "final_ps": 31,
       "quality_score": 0.525,
       "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2025-12-01",
+      "last_seen": "2025-12-01",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "shridharshukl",
+      "product": "blood bank management system",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://drive.google.com/file/d/12yeOXW_sN69QjsQtW0_k9AGqozi1s0di/view?usp=sharing",
+        "https://github.com/Shridharshukl/Blood-Bank-Management-System",
+        "https://github.com/kiwi865/CVEs/blob/main/CVE-2025-63531.md"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2025-55469",
+      "title": "CVE-2025-55469 — youlai youlai-boot CVSS 9.8 Critical Vulnerability",
+      "description": "Incorrect access control in youlai-boot v2.21.1 allows attackers to escalate privileges and access the Administrator backend.",
+      "cvss": 9.8,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2025-11-26",
+      "last_seen": "2025-11-26",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "youlai",
+      "product": "youlai-boot",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://gist.github.com/old6ma/d6e19c9efbe28431f4c27c063cc9cbb8",
+        "https://gitee.com/youlaiorg/youlai-boot",
+        "https://gitee.com/youlaiorg/youlai-boot/issues/ICFCOK",
+        "https://gitee.com/youlaiorg/youlai-boot/issues/ICFCOK"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2024-3094",
+      "title": "CVE-2024-3094 — tukaani xz CVSS 10 Critical Vulnerability",
+      "description": "Malicious code was discovered in the upstream tarballs of xz, starting with version 5.6.0. \r\nThrough a series of complex obfuscations, the liblzma build process extracts a prebuilt object file from a disguised test file existing in the source code, which is then used to modify specific functions in ",
+      "cvss": 10,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2024-03-29",
+      "last_seen": "2024-03-29",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "tukaani",
+      "product": "xz",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://access.redhat.com/security/cve/CVE-2024-3094",
+        "https://bugzilla.redhat.com/show_bug.cgi?id=2272210",
+        "https://www.openwall.com/lists/oss-security/2024/03/29/4",
+        "https://www.redhat.com/en/blog/urgent-security-alert-fedora-41-and-rawhide-users"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-122050",
+      "title": "CVE-2026-122050 — Unknown Vendor A vulnerability was CVSS 7.3 High Severity Vulnerability",
+      "description": "A vulnerability was found in Campcodes Complete Sales and Inventory System with Credit Management 1.0. This issue affects some unknown processing of the file /ahira/login.php. Performing a manipulation of the argument branch results in sql injection. The attack is possible to be carried out remotely",
+      "cvss": 7.3,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-05",
+      "last_seen": "2026-11-05",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "A vulnerability was",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://tracexlabs.com/releases/campcodes-complete-sales-and-inventory-system-login-sqli.html",
+        "https://vuldb.com/cve/CVE-2026-122050",
+        "https://vuldb.com/submit/1025183",
+        "https://vuldb.com/vuln/431128"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-122146",
+      "title": "CVE-2026-122146 — Unknown Vendor A weakness has CVSS 7.3 High Severity Vulnerability",
+      "description": "A weakness has been identified in 101arrowz fflate up to 0.8.3. This issue affects the function unzipSync of the file esm/index.mjs. This manipulation causes memory corruption. It is possible to initiate the attack remotely. The exploit has been made available to the public and could be used for att",
+      "cvss": 7.3,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-05",
+      "last_seen": "2026-11-05",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "A weakness has",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/ictrun/java/issues/9",
+        "https://vuldb.com/cve/CVE-2026-122146",
+        "https://vuldb.com/submit/1027352",
+        "https://vuldb.com/vuln/431150"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-54376",
+      "title": "CVE-2026-54376 — Unknown Vendor VitaFit Android application CVSS 8.2 High Severity Vulnerability",
+      "description": "VitaFit Android application (com.vt.vitafit) before 2.8.1.0 contains an insecure custom URI scheme vulnerability that allows a malicious application to intercept Fitbit login tokens by registering the same callback scheme (vitafit://vtio.cn). Attackers can capture the 30-day Fitbit authorization tok",
+      "cvss": 8.2,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "VitaFit Android application",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/je-lv/vitafit-security-research",
+        "https://play.google.com/store/apps/details?id=com.vt.vitafit",
+        "https://www.vulncheck.com/advisories/vitafit-android-custom-uri-scheme-token-hijacking"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-122299",
+      "title": "CVE-2026-122299 — Unknown Vendor Dulwich before 1.2.20 CVSS 8.8 High Severity Vulnerability",
+      "description": "Dulwich before 1.2.20 contains a commit object parsing vulnerability where the read path in _parse_commit resolves a duplicate tree header to the last occurrence instead of the first, diverging from core git's resolution behavior, while Poetry 2.5.1 ships this version and uses dulwich by default for",
+      "cvss": 8.8,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Dulwich before 1.2.20",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/jelmer/dulwich/commit/b77f385b4b0d2d2c7f5ac39dae628948f7ad3a96",
+        "https://github.com/jelmer/dulwich/releases/tag/dulwich-1.2.20",
+        "https://www.vulncheck.com/advisories/dulwich-before-commit-parser-tree-header-misinterpretation"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-54372",
+      "title": "CVE-2026-54372 — Unknown Vendor VitaFit Android application CVSS 8.8 High Severity Vulnerability",
+      "description": "VitaFit Android application (com.vt.vitafit) before 2.8.1.0 contains an insecure TLS/SSL certificate validation vulnerability that allows network-based attackers to intercept and modify HTTPS traffic by exploiting a custom X509TrustManager that trusts all certificates and a hostname verifier that ac",
+      "cvss": 8.8,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "VitaFit Android application",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/je-lv/vitafit-security-research",
+        "https://play.google.com/store/apps/details?id=com.vt.vitafit",
+        "https://www.vulncheck.com/advisories/vitafit-android-insecure-tls-certificate-validation"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-54375",
+      "title": "CVE-2026-54375 — Unknown Vendor VitaFit Android application CVSS 8.4 High Severity Vulnerability",
+      "description": "VitaFit Android application (com.vt.vitafit) before 2.8.1.0 contains an insecure session management vulnerability that allows attackers to extract or intercept unencrypted m_session_id tokens stored in application backups, which remain valid for ten years. Attackers can use a stolen session token to",
+      "cvss": 8.4,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "VitaFit Android application",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/je-lv/vitafit-security-research",
+        "https://play.google.com/store/apps/details?id=com.vt.vitafit",
+        "https://www.vulncheck.com/advisories/vitafit-android-long-lived-session-token-exposure"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-54374",
+      "title": "CVE-2026-54374 — Unknown Vendor VitaFit Android application CVSS 7.5 High Severity Vulnerability",
+      "description": "VitaFit Android application (com.vt.vitafit) before 2.8.1.0 contains a hardcoded credentials vulnerability that allows attackers to extract confidential third-party integration secrets by decompiling the APK. Attackers can retrieve embedded WeChat, Tencent QQ, and Fitbit credentials from the decompi",
+      "cvss": 7.5,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "VitaFit Android application",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/je-lv/vitafit-security-research",
+        "https://play.google.com/store/apps/details?id=com.vt.vitafit",
+        "https://www.vulncheck.com/advisories/vitafit-android-hardcoded-credentials-disclosure"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-54381",
+      "title": "CVE-2026-54381 — Unknown Vendor VitaFit cloud API CVSS 7.5 High Severity Vulnerability",
+      "description": "VitaFit cloud API before 2026-10-30 contained a misconfigured cloud storage bucket vulnerability that allows unauthenticated attackers to list and download stored files without authentication. Attackers can enumerate the publicly accessible bucket containing 129,947 objects, including 126,881 user-u",
+      "cvss": 7.5,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "VitaFit cloud API",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/je-lv/vitafit-security-research",
+        "https://play.google.com/store/apps/details?id=com.vt.vitafit",
+        "https://www.vulncheck.com/advisories/vitafit-cloud-api-storage-bucket-unauthenticated-access-information-disclosure"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-54382",
+      "title": "CVE-2026-54382 — Unknown Vendor VitaFit cloud API CVSS 7.7 High Severity Vulnerability",
+      "description": "VitaFit cloud API before 2026-10-30 contained an improper access control vulnerability in its Cognito-issued AWS role that allows authenticated attackers to perform s3:PutObject operations across the entire shared bucket instead of being restricted to their own folder. Attackers can overwrite other ",
+      "cvss": 7.7,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-04",
+      "last_seen": "2026-11-04",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "VitaFit cloud API",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/je-lv/vitafit-security-research",
+        "https://play.google.com/store/apps/details?id=com.vt.vitafit",
+        "https://www.vulncheck.com/advisories/vitafit-cloud-api-aws-iam-misconfiguration-via-cognito-s3-access"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null
+    },
+    {
+      "id": "CVE-2026-122019",
+      "title": "CVE-2026-122019 — Unknown Vendor A vulnerability was CVSS 7.3 High Severity Vulnerability",
+      "description": "A vulnerability was identified in 6amTech 6valley 16.0. Impacted is the function existingAccountCheck of the file /api/v1/auth/existing-account-check of the component Social Login Flow. Such manipulation of the argument user_response leads to authorization bypass. The attack may be launched remotely",
+      "cvss": 7.3,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "MEDIUM",
       "type": "CVE_REPORT",
       "source": "nvd",
       "sources_confirmed": 1,
@@ -3516,10 +4239,10 @@
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/FoundTL/COMFAST-CF-WR632AX-Wi-Fi-6-Router",
-        "https://vuldb.com/cve/CVE-2026-122013",
-        "https://vuldb.com/submit/1023251",
-        "https://vuldb.com/vuln/431080"
+        "https://github.com/oscar2744/CVE-Submit/issues/3",
+        "https://vuldb.com/cve/CVE-2026-122019",
+        "https://vuldb.com/submit/1024992",
+        "https://vuldb.com/vuln/431085"
       ],
       "explanation": {
         "quality": [
@@ -3529,7 +4252,7 @@
           "QS=0.525"
         ],
         "priority": [
-          "+10 CVSS≥9"
+          "base_ps=21 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -3538,13 +4261,13 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-82418",
-      "title": "CVE-2026-82418 — Unknown Vendor IBM Watson Speech CVSS 9.8 Critical Vulnerability",
-      "description": "IBM Watson Speech Services Cartridge 4.0.0 through 5.4.0 could allow a remote attacker to execute arbitrary code due to a use-after-free vulnerability.",
-      "cvss": 9.8,
-      "final_ps": 31,
+      "id": "CVE-2026-122038",
+      "title": "CVE-2026-122038 — Unknown Vendor A vulnerability was CVSS 7.3 High Severity Vulnerability",
+      "description": "A vulnerability was identified in krupalshah EmployeeRecruitmentSystem up to 922ff6d208278282e7c8e36d70d9ae356adec9fe. Affected by this issue is the function mysql_query of the file source/reqformprocessing.php of the component Requirement Board Update Handler. Such manipulation leads to sql injecti",
+      "cvss": 7.3,
+      "final_ps": 21,
       "quality_score": 0.525,
-      "threat_level": "HIGH",
+      "threat_level": "MEDIUM",
       "type": "CVE_REPORT",
       "source": "nvd",
       "sources_confirmed": 1,
@@ -3557,12 +4280,15 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "IBM Watson Speech",
+      "product": "A vulnerability was",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://www.ibm.com/support/pages/node/7293510"
+        "https://github.com/Rin471/CVE-/issues/1",
+        "https://vuldb.com/cve/CVE-2026-122038",
+        "https://vuldb.com/submit/1025067",
+        "https://vuldb.com/vuln/431103"
       ],
       "explanation": {
         "quality": [
@@ -3572,7 +4298,7 @@
           "QS=0.525"
         ],
         "priority": [
-          "+10 CVSS≥9"
+          "base_ps=21 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -3581,59 +4307,13 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-121930",
-      "title": "CVE-2026-121930 — Unknown Vendor A weakness has CVSS 9.1 Critical Vulnerability",
-      "description": "A weakness has been identified in Linksys WRT54GL 4.30.18. The affected element is the function system of the file apply.cgi of the component Ping Diagnostic. This manipulation of the argument ping_ip causes os command injection. The attack can be initiated remotely. The exploit has been made availa",
-      "cvss": 9.1,
-      "final_ps": 31,
+      "id": "CVE-2026-122047",
+      "title": "CVE-2026-122047 — Unknown Vendor A security vulnerability CVSS 7.3 High Severity Vulnerability",
+      "description": "A security vulnerability has been detected in Campcodes Complete Advance Loan Management System 1.0. This affects the function move_uploaded_file of the file /loan/application/banner.php. Such manipulation of the argument image leads to unrestricted upload. The attack may be launched remotely. The e",
+      "cvss": 7.3,
+      "final_ps": 21,
       "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "A weakness has",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/Zimo-666/WRT54GL-cves/tree/main/CVE-TBD-ping-ip-command-injection",
-        "https://vuldb.com/cve/CVE-2026-121930",
-        "https://vuldb.com/submit/1024098",
-        "https://vuldb.com/vuln/431042"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-121931",
-      "title": "CVE-2026-121931 — Unknown Vendor A security vulnerability CVSS 9.1 Critical Vulnerability",
-      "description": "A security vulnerability has been detected in Linksys WRT54GL 4.30.18. The impacted element is the function system of the file apply.cgi of the component Traceroute Diagnostic Function. Such manipulation of the argument traceroute_ip leads to os command injection. The attack can be launched remotely",
-      "cvss": 9.1,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
+      "threat_level": "MEDIUM",
       "type": "CVE_REPORT",
       "source": "nvd",
       "sources_confirmed": 1,
@@ -3651,236 +4331,10 @@
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/Zimo-666/WRT54GL-cves/tree/main/CVE-TBD-traceroute-ip-command-injection",
-        "https://vuldb.com/cve/CVE-2026-121931",
-        "https://vuldb.com/submit/1024099",
-        "https://vuldb.com/vuln/431043"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2024-54465",
-      "title": "CVE-2024-54465 — apple macos CVSS 9.8 Critical Vulnerability",
-      "description": "A logic issue was addressed with improved state management. This issue is fixed in macOS Sequoia 15.2. An app may be able to elevate privileges.",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2024-12-12",
-      "last_seen": "2024-12-12",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "apple",
-      "product": "macos",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://support.apple.com/en-us/121839",
-        "http://seclists.org/fulldisclosure/2024/Dec/7"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2023-6816",
-      "title": "CVE-2023-6816 — x.org x server CVSS 9.8 Critical Vulnerability",
-      "description": "A flaw was found in X.Org server. Both DeviceFocusEvent and the XIQueryPointer reply contain a bit for each logical button currently down. Buttons can be arbitrarily mapped to any value up to 255, but the X.Org Server was only allocating space for the device's particular number of buttons, leading t",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "HIGH",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2024-01-18",
-      "last_seen": "2024-01-18",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "x.org",
-      "product": "x server",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://access.redhat.com/errata/RHSA-2024:0320",
-        "https://access.redhat.com/errata/RHSA-2024:0557",
-        "https://access.redhat.com/errata/RHSA-2024:0558",
-        "https://access.redhat.com/errata/RHSA-2024:0597"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2024-27834",
-      "title": "CVE-2024-27834: Apple Multiple Products Improper Authentication Vulnerability — CISA KEV Active Exploitation",
-      "description": "Apple iOS, iPadOS, macOS, Safari, tvOS and watchOS 10.5 contain an improper authentication vulnerability which could allow an attacker with arbitrary read and write capability to bypass pointer authentication.",
-      "cvss": null,
-      "final_ps": 29,
-      "quality_score": 0.515,
-      "threat_level": "CRITICAL",
-      "type": "CVE_REPORT",
-      "source": "cisa_kev",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "cisa_kev"
-      ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
-      "exploited": true,
-      "cisa_kev": true,
-      "ransomware": false,
-      "vendor": "Apple",
-      "product": "Multiple Products",
-      "due_date": "2026-11-18",
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://support.apple.com/en-us/120896",
-        "https://support.apple.com/en-us/120898",
-        "https://support.apple.com/en-us/120901",
-        "https://support.apple.com/en-us/120902"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (cisa_kev)",
-          "data_confidence=0.40",
-          "recency=0d (score=1.00)",
-          "QS=0.515"
-        ],
-        "priority": [
-          "+8 exploited_in_wild"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-58868",
-      "title": "CVE-2026-58868: Critical Android Bug Could Let Attackers Run Remote Code",
-      "description": "Critical Android flaw CVE-2026-58868 could allow remote code execution without user interaction on devices running Android 14 through 17. Google has fixed CVE-2026-58868, a critical Android vulnerability affecting versions 14 through 17. The flaw is a critical Android vulnerabili... [Full analysis a",
-      "cvss": 9.8,
-      "final_ps": 28,
-      "quality_score": 0.438,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-58868"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://securityaffairs.com/202414/mobile-2/cve-2026-58868-critical-android-bug-could-let-attackers-run-remote-code.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.45",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-57853",
-      "title": "CVE-2026-57853 — Unknown Vendor DataGerry before 3.3.0 CVSS 8.8 High Severity Vulnerability",
-      "description": "DataGerry before 3.3.0 contains a server-side template injection vulnerability that allows authenticated attackers with base.docapi.template.add permission to store arbitrary Jinja2 payloads in the template_data field via POST /rest/docapi/template, which is later rendered in a non-sandboxed Jinja2 ",
-      "cvss": 8.8,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "DataGerry before 3.3.0",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://docs.datagerry.com/en/latest/reference/changelog.html",
-        "https://github.com/DataGerry/DataGerry/releases/tag/3.3.0",
-        "https://www.vulncheck.com/advisories/datagerry-ssti-via-docapi-template-rendering"
+        "https://tracexlabs.com/releases/campcodes-advance-loan-management-unauth-rce-upload.html",
+        "https://vuldb.com/cve/CVE-2026-122047",
+        "https://vuldb.com/submit/1025177",
+        "https://vuldb.com/vuln/431115"
       ],
       "explanation": {
         "quality": [
@@ -3899,10 +4353,10 @@
       "suppression_reason": null
     },
     {
-      "id": "CVE-2026-11376",
-      "title": "CVE-2026-11376 — Unknown Vendor IBM MQ 9.2.0.0 CVSS 8.8 High Severity Vulnerability",
-      "description": "IBM MQ 9.2.0.0 through 9.2.0.44 LTS, 9.3.0.0 through 9.3.0.42 LTS, 9.4.0.0 through 9.4.0.26 LTS, 9.4.0.0 through 9.4.5.1 CD, and 10.0.0.0 through 10.0.0.5 LTS and CD could allow an authenticated attacker to cause a denial of service or potentially execute arbitrary code due to an integer overflow wh",
-      "cvss": 8.8,
+      "id": "CVE-2026-122048",
+      "title": "CVE-2026-122048 — Unknown Vendor A vulnerability was CVSS 7.3 High Severity Vulnerability",
+      "description": "A vulnerability was identified in Campcodes Division Regional Athletic Meet Game Result Matrix System up to 2.1. This affects an unknown function of the file /dipam/check-user.php. Such manipulation of the argument abbr leads to sql injection. It is possible to launch the attack remotely. The exploi",
+      "cvss": 7.3,
       "final_ps": 21,
       "quality_score": 0.525,
       "threat_level": "MEDIUM",
@@ -3918,463 +4372,15 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "IBM MQ 9.2.0.0",
+      "product": "A vulnerability was",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://www.ibm.com/support/pages/node/7294498"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-122133",
-      "title": "CVE-2026-122133 — Unknown Vendor Mistral Vibe before CVSS 8.8 High Severity Vulnerability",
-      "description": "Mistral Vibe before 2.25.5 on Windows contains an untrusted search path vulnerability that allows attackers to execute code by placing git.exe in a repository root. Attackers can lure users into opening a crafted repository so SessionLogger and ProjectContextProvider run the malicious git.exe at ses",
-      "cvss": 8.8,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Mistral Vibe before",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/mistralai/mistral-vibe",
-        "https://github.com/mistralai/mistral-vibe/blob/v2.25.4/vibe/core/session/session_logger.py#L137-L141",
-        "https://github.com/mistralai/mistral-vibe/blob/v2.25.4/vibe/core/system_prompt.py#L51-L64",
-        "https://github.com/mistralai/mistral-vibe/blob/v2.25.5/CHANGELOG.md?plain=1#L81"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-122134",
-      "title": "CVE-2026-122134 — Unknown Vendor Mistral Vibe before CVSS 8.8 High Severity Vulnerability",
-      "description": "Mistral Vibe before 2.25.7 contains a remote code execution vulnerability that allows attackers to run commands by configuring malicious Git clean or process filter drivers in a repository. When a user opens a crafted repository, ProjectContextProvider._fetch_git_status runs git status at startup, i",
-      "cvss": 8.8,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Mistral Vibe before",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/mistralai/mistral-vibe",
-        "https://github.com/mistralai/mistral-vibe/blob/v2.25.5/vibe/core/system_prompt.py#L108-L120",
-        "https://github.com/mistralai/mistral-vibe/blob/v2.25.7/CHANGELOG.md?plain=1#L17",
-        "https://github.com/mistralai/mistral-vibe/commit/4a96003186b166d55b9f06895c45bb136eef61cd"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-122135",
-      "title": "CVE-2026-122135 — Unknown Vendor Mistral Vibe before CVSS 8.8 High Severity Vulnerability",
-      "description": "Mistral Vibe before 3.0.3 contains a remote code execution vulnerability that allows attackers to run commands by abusing repository-configured gpg.program during project context collection. A crafted repository setting gpg.program and log.showSignature with a signed commit makes git log execute the",
-      "cvss": 8.8,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Mistral Vibe before",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/mistralai/mistral-vibe",
-        "https://github.com/mistralai/mistral-vibe/blob/v3.0.2/vibe/core/system_prompt.py#L52-L67",
-        "https://github.com/mistralai/mistral-vibe/blob/v3.0.3/CHANGELOG.md?plain=1#L113",
-        "https://github.com/mistralai/mistral-vibe/commit/7bb48f213ac677f943d5c791199ed3dddf302f00"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-11724",
-      "title": "CVE-2026-11724 — Unknown Vendor IBM MQ 9.2.0.0 CVSS 8.5 High Severity Vulnerability",
-      "description": "IBM MQ 9.2.0.0 through 9.2.0.44 LTS, 9.3.0.0 through 9.3.0.42 LTS, 9.4.0.0 through 9.4.0.26 LTS, 9.4.0.0 through 9.4.5.1 CD, and 10.0.0.0 through 10.0.0.5 LTS and CD could allow an authenticated attacker to execute arbitrary code on a Managed File Transfer agent host due to improper validation of me",
-      "cvss": 8.5,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "IBM MQ 9.2.0.0",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.ibm.com/support/pages/node/7294503"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2025-71456",
-      "title": "CVE-2025-71456 — Unknown Vendor vtenext before 25.02.2 CVSS 8.1 High Severity Vulnerability",
-      "description": "vtenext before 25.02.2 contains an SQL injection vulnerability that allows authenticated low-privileged users to inject SQL by supplying a crafted fieldname parameter to modules/Fax/EditView.php. Attackers can read arbitrary database contents, including password reset tokens stored in vte_userauthto",
-      "cvss": 8.1,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "vtenext before 25.02.2",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://0xbro.red/posts/vtenext-25-02-a-three-way-path-to-rce/",
-        "https://blog.sicuranext.com/vtenext-25-02-a-three-way-path-to-rce/",
-        "https://usermanual.vtenext.com/books/release-notes-history/page/vtenext-25022-release-note",
-        "https://www.vulncheck.com/advisories/vtenext-before-25.02.2-sql-injection-via-fieldname-in-fax-editview"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-122130",
-      "title": "CVE-2026-122130 — Unknown Vendor CESNET ipfixcol2 2.3.0 CVSS 8.2 High Severity Vulnerability",
-      "description": "CESNET ipfixcol2 2.3.0 before 2.9.0 contains an integer overflow vulnerability in the Forwarder output plugin that allows unauthenticated IPFIX exporters to overflow a heap buffer by wrapping uint16_t message length counters. Attackers can send near-65535-byte data sets and large templates to a coll",
-      "cvss": 8.2,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "CESNET ipfixcol2 2.3.0",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/CESNET/ipfixcol2",
-        "https://github.com/CESNET/ipfixcol2/blob/v2.8.0/src/plugins/output/forwarder/src/Message.cpp#L134-L156",
-        "https://github.com/CESNET/ipfixcol2/commit/ad206f6217257b06b139f1b2bce50d52f5bc6acb",
-        "https://github.com/CESNET/ipfixcol2/releases/tag/v2.9.0"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-122224",
-      "title": "CVE-2026-122224 — Unknown Vendor WebVirtCloud through commit CVSS 8.1 High Severity Vulnerability",
-      "description": "WebVirtCloud through commit bb920b0 contains a missing authorization vulnerability that allows low-privileged authenticated users to reach MigrateViewSet and CreateInstanceViewSet because no permission_classes are declared, so Django REST Framework defaults to AllowAny. Attackers can send requests t",
-      "cvss": 8.1,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "WebVirtCloud through commit",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/catborise/webvirtcloud/commit/1227674d8f5a5230e5c654267773aca4ebc5c717",
-        "https://github.com/retspen/webvirtcloud",
-        "https://github.com/retspen/webvirtcloud/blob/bb920b0a7ffdf00c09e994dc2e45f05bc9ec1bb3/instances/api/viewsets.py#L125-L162",
-        "https://github.com/retspen/webvirtcloud/blob/bb920b0a7ffdf00c09e994dc2e45f05bc9ec1bb3/instances/api/viewsets.py#L174-L183"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-10859",
-      "title": "CVE-2026-10859 — Unknown Vendor IBM MQ 9.2.0.0 CVSS 7.5 High Severity Vulnerability",
-      "description": "IBM MQ 9.2.0.0 through 9.2.0.44 LTS, 9.3.0.0 through 9.3.0.42 LTS, 9.4.0.0 through 9.4.0.26 LTS, 9.4.0.0 through 9.4.5.1 CD, and 10.0.0.0 through 10.0.0.5 LTS and CD could allow an authenticated attacker to execute arbitrary code on consumer applications due to insecure deserialization of ObjectMess",
-      "cvss": 7.5,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "IBM MQ 9.2.0.0",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.ibm.com/support/pages/node/7294664"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-122127",
-      "title": "CVE-2026-122127 — Unknown Vendor CESNET ipfixcol2 2.7.1 CVSS 7.5 High Severity Vulnerability",
-      "description": "CESNET ipfixcol2 2.7.1 before 2.9.0 contains a heap-based buffer overflow in Lz4Decoder.cpp that allows unauthenticated network peers to write past heap buffers. Attackers can declare a small ring buffer_size followed by a large decompressed_size to write up to 65535 controlled bytes and crash the c",
-      "cvss": 7.5,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "CESNET ipfixcol2 2.7.1",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/CESNET/ipfixcol2",
-        "https://github.com/CESNET/ipfixcol2/blob/v2.8.0/src/plugins/input/tcp/src/Lz4Decoder.cpp#L139-L151",
-        "https://github.com/CESNET/ipfixcol2/commit/fd5cb168efb4b864d33f655174711b2779cef502",
-        "https://github.com/CESNET/ipfixcol2/releases/tag/v2.9.0"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null
-    },
-    {
-      "id": "CVE-2026-12356",
-      "title": "CVE-2026-12356 — Unknown Vendor IBM MQ 9.2.0.0 CVSS 7.5 High Severity Vulnerability",
-      "description": "IBM MQ 9.2.0.0 through 9.2.0.44 LTS, 9.3.0.0 through 9.3.0.42 LTS, 9.4.0.0 through 9.4.0.26 LTS, 9.4.0.0 through 9.4.5.1 CD, and 10.0.0.0 through 10.0.0.5 LTS and CD could allow an authenticated user with command queue access to execute arbitrary code by injecting malicious arguments into Ant script",
-      "cvss": 7.5,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-04",
-      "last_seen": "2026-11-04",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "IBM MQ 9.2.0.0",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.ibm.com/support/pages/node/7294642"
+        "https://tracexlabs.com/releases/campcodes-athletic-checkuser-sqli.html",
+        "https://vuldb.com/cve/CVE-2026-122048",
+        "https://vuldb.com/submit/1025181",
+        "https://vuldb.com/vuln/431121"
       ],
       "explanation": {
         "quality": [
