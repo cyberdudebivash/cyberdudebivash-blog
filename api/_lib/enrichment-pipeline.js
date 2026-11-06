@@ -64,6 +64,30 @@ const {
 } = require('./threat-scorer');
 const { dataProfile } = require('./tier-entitlements');
 
+/* CVSS is a NULLABLE measurement: null means "no authoritative score available" (for
+   example a CVE that CISA added to KEV before NVD analysed it), while 0 is a genuine,
+   source-verified 0.0. The two must stay distinguishable, so "unknown" is never coerced
+   into a number: downstream renderers key off null to print "Not assigned"/UNASSESSED
+   instead of "CVSS 0"/LOW. Only a finite number, or a numeric string, within [0, 10]
+   counts as a score; anything else (NaN, Infinity, out-of-range, booleans, text) is
+   unscored rather than an invented value. `cvssScore` is a legacy alias, used when `cvss`
+   is absent/invalid or is the historic 0 placeholder and the alias carries a real score. */
+function coerceCvss(raw) {
+  if (typeof raw === 'number') return Number.isFinite(raw) && raw >= 0 && raw <= 10 ? raw : null;
+  if (typeof raw === 'string' && raw.trim() !== '') {
+    const n = Number(raw);
+    return Number.isFinite(n) && n >= 0 && n <= 10 ? n : null;
+  }
+  return null;
+}
+function normalizeCvss(item) {
+  const primary = coerceCvss(item.cvss);
+  const alias   = coerceCvss(item.cvssScore);
+  if (primary === null) return alias;
+  if (primary === 0 && alias !== null && alias > 0) return alias;
+  return primary;
+}
+
 /* ═══════════════════════════════════════════════════════════════════════
    STEP 1: VALIDATE + EXTRACT
 ═══════════════════════════════════════════════════════════════════════ */
@@ -92,7 +116,7 @@ function validateAndExtract(items) {
       id,
       title:     String(item.title || ''),
       desc:      String(item.desc || item.description || item.summary || ''),
-      cvss:      parseFloat(item.cvss || item.cvssScore || 0) || 0,
+      cvss:      normalizeCvss(item),
       exploited: !!(item.exploited),
       cisa_kev:  !!(item.cisaKev || item.cisa_kev),
       ransomware: !!(item.ransomware || item.type === 'RANSOMWARE'),
