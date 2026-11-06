@@ -170,6 +170,8 @@ jobs:
         run: node --test tests-js/cloudflare-routine-release-dns-safety.test.js
       - name: P0 — SOC dual-host pricing canonical source guard
         run: node --test scripts/soc-domain-release-gate.test.cjs
+      - name: P0 — Customer pricing evidence rejects stale and unverifiable intelligence
+        run: node --test tests-js/soc-pricing-evidence.test.js
       - name: P0 — Zero-overage shared Cloudflare account budget, logging, and release control
         run: node --test tests-js/cloudflare-account-zero-overage-gate.test.js
       - name: Rehearse complete migrations and quota against Wrangler local D1 only

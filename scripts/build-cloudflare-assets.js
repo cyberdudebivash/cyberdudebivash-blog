@@ -34,7 +34,7 @@ const PUBLIC_ROOT_FILES = [
   'ai-monetization-engine.js', 'analytics-engine.js', 'auto-intel-engine.js',
   'banner-orchestrator.js', 'conversion-engine.js', 'email-engine.js',
   'live-feed-widget.js', 'monetization.js', 'payment-engine.js',
-  'payment-flow.js', 'intel-plans.js', 'revenue-conversion-v19.js', 'revenue-cta-block.js',
+  'payment-flow.js', 'intel-plans.js', 'pricing-trust.js', 'revenue-conversion-v19.js', 'revenue-cta-block.js',
   'security-engine.js', 'seo-engine.js', 'ux-controller.js', 'apex-command-center.js', 'customer-experience.js', 'runtime-state.js',
   'soc-platform-ui.css', 'soc-cti-console.css', 'soc-intelligence-desk.css', 'soc-intelligence-desk.js', 'soc-triage-workspace.js', 'soc-taxonomy-pivots.js', 'soc-hybrid-workspace.js', 'soc-evidence-drawer.js',
   // GCII v1 is referenced by soc.html; both scripts must ship in the bounded public bundle.
