@@ -23,10 +23,22 @@ concurrency:
 jobs:
   verify-historical-backup:
     name: "Read-only historical AES-GCM and restore-schema proof"
-    if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && github.repository == 'cyberdudebivash/cyberdudebivash-blog' && inputs.confirmation == 'VERIFY_HISTORICAL_BACKUP_OFFLINE' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && github.repository == 'cyberdudebivash/cyberdudebivash-blog' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - name: "P0 fail closed on invalid manual owner confirmation"
+        shell: bash
+        env:
+          APPROVAL_CONFIRMATION: ${{ inputs.confirmation }}
+        run: |
+          set -euo pipefail
+          if [[ "$APPROVAL_CONFIRMATION" != 'VERIFY_HISTORICAL_BACKUP_OFFLINE' ]]; then
+            echo '::error title=Backup proof not authorized::Required manual confirmation did not match.'
+            exit 2
+          fi
+          echo 'P0_MANUAL_OWNER_CONFIRMATION=ACCEPTED'
+
       - name: "Checkout manually approved main SHA without persisted token"
         uses: actions/checkout@v5
         with:

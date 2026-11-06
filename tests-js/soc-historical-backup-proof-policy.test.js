@@ -16,7 +16,11 @@ const check = files => classify({
 test('manual-only confirmed workflow has no scheduled, PR or push trigger', () => {
   assert.match(yaml, /on:\s*\n\s*workflow_dispatch:/);
   assert.doesNotMatch(yaml, /^\s*(schedule|push|pull_request|pull_request_target):/m);
-  assert.match(yaml, /inputs\.confirmation == 'VERIFY_HISTORICAL_BACKUP_OFFLINE'/);
+  assert.ok(yaml.includes('APPROVAL_CONFIRMATION: ' + String.fromCharCode(36) + '{{ inputs.confirmation }}'));
+  assert.ok(yaml.includes('P0 fail closed on invalid manual owner confirmation'));
+  assert.ok(yaml.includes("if [[ \"$APPROVAL_CONFIRMATION\" != 'VERIFY_HISTORICAL_BACKUP_OFFLINE' ]]; then"));
+  assert.match(yaml, /Backup proof not authorized[\s\S]*?exit 2/);
+  assert.ok(!yaml.split('\n').some(line => line.trim().startsWith('if:') && line.includes('inputs.confirmation')));
   assert.match(yaml, /github\.ref == 'refs\/heads\/main'/);
   assert.match(yaml, /github\.repository == 'cyberdudebivash\/cyberdudebivash-blog'/);
   assert.match(yaml, /timeout-minutes:\s*5/);
