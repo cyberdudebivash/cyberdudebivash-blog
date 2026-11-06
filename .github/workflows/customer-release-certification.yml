@@ -47,12 +47,12 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            // #219 is a long-horizon Search Console recovery incident. Its risk is
-            // controlled by the bounded Blogger publication lane and cannot be
-            // truthfully resolved by a single release. #222 remains the hard
-            // release blocker because its acceptance criteria are immediately
-            // observable on the live customer surface.
-            const blockers = [222];
+            // #219 remains a long-horizon Search Console incident, controlled
+            // by separate bounded publication checks. Global customer release
+            // requires the known open CTI/SOC delivery, tenant, outbox,
+            // customer receipt and backup-recovery P0 issues below to close
+            // on independent production evidence.
+            const blockers = [222, 360, 418, 432, 433, 434, 494];
             const open = [];
             for (const issue_number of blockers) {
               const { data } = await github.rest.issues.get({
@@ -138,6 +138,14 @@ jobs:
             echo "PASS $code $url"
           done
 
+      # A customer-global GO must prove BOTH production hostnames and both
+      # distinct intelligence assets, not merely HTTP 200 on a CTI page.
+      # These are read-only checks: no Cloudflare, D1, R2 or GitHub mutation.
+      - name: "P0 — Certify SOC and legacy public root-feed bytes against real source"
+        run: node scripts/certify-soc-public-feed-parity.cjs
+
+      - name: "P0 — Certify SOC and legacy S2N API real report freshness"
+        run: node scripts/certify-soc-s2n-api-release.cjs --monitor-public
       - name: "Release verdict"
         run: |
           echo "CUSTOMER_RELEASE_STATUS=GO"
