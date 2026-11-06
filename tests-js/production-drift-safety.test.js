@@ -561,3 +561,19 @@ test('P0 #547 merged publisher/GA control workflows require operator review, unk
   assert.deepEqual(blocked.unknown, [unreviewed]);
   assert.deepEqual(blocked.operational, known.slice().sort());
 });
+
+
+test('P0 smoke checkout and Node 22 precede content and customer revenue checks', () => {
+  const smoke = fs.readFileSync(path.join(root,'.github/workflows/smoke-test.yml'),'utf8');
+  const checkout = smoke.indexOf('name: "📥 Read-only snapshot source checkout"');
+  const node22 = smoke.indexOf('name: "⚙️ Node.js 22 for deterministic public feed certification"');
+  const content = smoke.indexOf('name: "🔍 Content integrity check"');
+  const s2n = smoke.indexOf('name: "🛡️ P0: Verify SOC and blog public S2N API freshness and report IDs"');
+  const commerce = smoke.indexOf('name: "💳 P0: Current paid checkout integrity — independent of CTI freshness"');
+  assert.ok(checkout > 0 && checkout < node22 && node22 < content && content < s2n && s2n < commerce);
+  assert.match(smoke, /uses: actions\/checkout@v5[\s\S]*?persist-credentials: false/);
+  assert.match(smoke, /uses: actions\/setup-node@v5[\s\S]*?node-version: '22'/);
+  assert.match(smoke, /node scripts\/certify-soc-s2n-api-release\.cjs --monitor-public/);
+  assert.match(smoke, /node --test tests-js\/soc-public-commerce\.test\.js/);
+  assert.match(smoke, /node scripts\/check-soc-public-commerce\.cjs/);
+});
