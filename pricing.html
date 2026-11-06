@@ -138,6 +138,13 @@
     .trust-item { text-align: center; }
     .trust-num { font-size: 1.5rem; font-weight: 800; color: var(--cyan); }
     .trust-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+    .pricing-evidence { max-width: 900px; margin: 12px auto 0; padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius); background: rgba(255,255,255,0.02); color: var(--muted); font-size: 0.88rem; line-height: 1.55; }
+    .pricing-evidence a { color: var(--cyan); text-underline-offset: 3px; }
+    .pricing-evidence[data-state="STALE"], .pricing-evidence[data-state="DEGRADED"] { border-color: rgba(251,191,36,0.45); color: #f1cc83; }
+    .pricing-evidence[data-state="UNAVAILABLE"] { border-color: rgba(255,107,129,0.45); color: #ffb3c2; }
+    #pricing-feed-status[data-state="HEALTHY"] { color: #67f5b5; }
+    #pricing-feed-status[data-state="STALE"], #pricing-feed-status[data-state="DEGRADED"] { color: #f1cc83; }
+    #pricing-feed-status[data-state="UNAVAILABLE"] { color: #ffb3c2; }
 
     /* ── Pricing Grid ─────────────────────────────── */
     .pricing-section { padding: 4rem 1.5rem; max-width: 1200px; margin: 0 auto; }
@@ -595,32 +602,36 @@
 
 <!-- ── Hero ────────────────────────────────────────────────────── -->
 <section class="hero">
-  <div class="hero-eyebrow">⚡ Production-Ready Threat Intelligence</div>
-  <h1>Security Intelligence That<br><span>Actually Protects</span></h1>
-  <p class="hero-sub">Start with a free API key here. Paid plans are sold and managed on the Sentinel APEX platform — pick the one that fits your security team.</p>
+  <div class="hero-eyebrow">Evidence-led threat intelligence · Transparent subscription terms</div>
+  <h1>Security Intelligence With<br><span>Verifiable Provenance</span></h1>
+  <p class="hero-sub">Explore the last published intelligence snapshot and its timestamp. Paid plan pricing and payment terms are confirmed on the Sentinel APEX checkout platform.</p>
 
   <div class="trust-bar">
     <div class="trust-item">
-      <div class="trust-num" id="stat-threats">4,200+</div>
-      <div class="trust-label">Threats Tracked</div>
+      <div class="trust-num" id="stat-threats">—</div>
+      <div class="trust-label">Reports in last served snapshot</div>
     </div>
     <div class="trust-item">
-      <div class="trust-num" id="stat-cves">890+</div>
-      <div class="trust-label">CVEs Indexed</div>
+      <div class="trust-num" id="stat-cves">—</div>
+      <div class="trust-label">Snapshot generated (UTC)</div>
     </div>
     <div class="trust-item">
-      <div class="trust-num">Measured</div>
-      <div class="trust-label">API Uptime</div>
+      <div class="trust-num" id="pricing-feed-status" data-state="UNAVAILABLE">NOT VERIFIED</div>
+      <div class="trust-label">Feed freshness</div>
     </div>
     <div class="trust-item">
-      <div class="trust-num">&lt;80ms</div>
-      <div class="trust-label">Avg Latency</div>
+      <div class="trust-num">Not asserted</div>
+      <div class="trust-label">Historical uptime / latency</div>
     </div>
     <div class="trust-item">
-      <div class="trust-num">STIX 2.1</div>
-      <div class="trust-label">Standard Export</div>
+      <div class="trust-num">At checkout</div>
+      <div class="trust-label">Final plan price</div>
     </div>
   </div>
+  <p class="pricing-evidence" id="pricing-evidence" data-state="UNAVAILABLE" role="status" aria-live="polite" aria-atomic="true">
+    <span id="pricing-feed-message">Publication freshness has not yet been verified in this browser.</span>
+    <a href="/service-status.html">See service evidence and SLA boundaries</a>.
+  </p>
 </section>
 
 <!-- ── Pricing Cards ────────────────────────────────────────────── -->
@@ -823,6 +834,8 @@
 <div class="toast-stack" id="toastStack"></div>
 
 <script src="/intel-plans.js" defer></script>
+<script src="/runtime-state.js" defer></script>
+<script src="/pricing-trust.js" defer></script>
 <script>
 'use strict';
 
@@ -853,18 +866,9 @@ function toggleFaq(btn) {
   }, { passive: true });
 })();
 
-/* ── Load platform stats ──────────────────────────────────────────── */
-(async function loadStats() {
-  try {
-    const res = await fetch(`${API_BASE}/intel?action=stats`);
-    if (!res.ok) return;
-    const data = await res.json();
-    const s = data.stats || {};
-    if (s.total_threats) document.getElementById('stat-threats').textContent = (s.total_threats).toLocaleString() + '+';
-    if (s.total_cves)    document.getElementById('stat-cves').textContent    = (s.total_cves).toLocaleString() + '+';
-  } catch (_) {}
-})();
-
+/* Trusted snapshot evidence is handled by pricing-trust.js using the
+   existing runtime-state.js 90/180-minute freshness policy. */
+ 
 /* ── Handle #upgrade=plan hash (old links) ─────────────────────────── */
 (function checkHash() {
   const m = window.location.hash.match(/[?#&]upgrade=(starter|pro|team|enterprise|mssp)/i);
