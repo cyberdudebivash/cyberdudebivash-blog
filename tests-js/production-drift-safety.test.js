@@ -535,3 +535,45 @@ test('P0 commerce smoke is independent of stale CTI and remains manual-release g
   assert.ok(!step.includes('if: success()'));
 
 });
+
+
+test('P0 #547 merged publisher/GA control workflows require operator review, unknown still blocks', () => {
+  const known = [
+    '.github/workflows/ai-security-intel.yml',
+    '.github/workflows/blogger-syndication.yml',
+    '.github/workflows/customer-release-certification.yml'
+  ];
+  for (const file of known) {
+    assert.equal(isReviewedOperationalPath(file), true, file);
+  }
+  const result = classify(compare(known), BASE, HEAD, paths);
+  assert.equal(result.state, 'manual_release_required');
+  assert.deepEqual(result.operational, known.slice().sort());
+  assert.deepEqual(result.unknown, []);
+  assert.deepEqual(result.benign, []);
+  assert.equal(result.production.length, 0);
+  assert.match(renderDriftSummary(HEAD, BASE, result), /Manual release and independent postdeploy certification required/);
+
+  const unreviewed = '.github/workflows/future-unreviewed-writer.yml';
+  assert.equal(isReviewedOperationalPath(unreviewed), false);
+  const blocked = classify(compare([...known, unreviewed]), BASE, HEAD, paths);
+  assert.equal(blocked.state, 'blocked');
+  assert.deepEqual(blocked.unknown, [unreviewed]);
+  assert.deepEqual(blocked.operational, known.slice().sort());
+});
+
+
+test('P0 smoke checkout and Node 22 precede content and customer revenue checks', () => {
+  const smoke = fs.readFileSync(path.join(root,'.github/workflows/smoke-test.yml'),'utf8');
+  const checkout = smoke.indexOf('name: "📥 Read-only snapshot source checkout"');
+  const node22 = smoke.indexOf('name: "⚙️ Node.js 22 for deterministic public feed certification"');
+  const content = smoke.indexOf('name: "🔍 Content integrity check"');
+  const s2n = smoke.indexOf('name: "🛡️ P0: Verify SOC and blog public S2N API freshness and report IDs"');
+  const commerce = smoke.indexOf('name: "💳 P0: Current paid checkout integrity — independent of CTI freshness"');
+  assert.ok(checkout > 0 && checkout < node22 && node22 < content && content < s2n && s2n < commerce);
+  assert.match(smoke, /uses: actions\/checkout@v5[\s\S]*?persist-credentials: false/);
+  assert.match(smoke, /uses: actions\/setup-node@v5[\s\S]*?node-version: '22'/);
+  assert.match(smoke, /node scripts\/certify-soc-s2n-api-release\.cjs --monitor-public/);
+  assert.match(smoke, /node --test tests-js\/soc-public-commerce\.test\.js/);
+  assert.match(smoke, /node scripts\/check-soc-public-commerce\.cjs/);
+});

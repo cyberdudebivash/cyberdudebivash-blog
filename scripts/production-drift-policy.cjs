@@ -38,6 +38,12 @@ const REVIEWED_OPERATIONAL_FILES = new Set([
   '.github/workflows/alert-delivery.yml',
   '.github/workflows/intelligence-hub.yml',
   '.github/workflows/workflow-security-gate.yml',
+  // P0 #547 merge: these three production publication/GA policy workflows
+  // were reviewed in exact-head CI and remain OPERATIONAL, not benign.
+  // Any change still requires operator-reviewed release; no auto-deploy.
+  '.github/workflows/ai-security-intel.yml',
+  '.github/workflows/blogger-syndication.yml',
+  '.github/workflows/customer-release-certification.yml',
   'OPERATIONS.md',
   // P0 #494: emergency customer-data backup/restore controls are operational
   // instructions: changes require human review, never benign-only release.
