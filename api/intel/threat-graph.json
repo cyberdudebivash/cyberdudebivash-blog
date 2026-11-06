@@ -1,15 +1,15 @@
 {
-  "generated": "2026-11-05T23:27:00.839Z",
+  "generated": "2026-11-06T03:35:00.746Z",
   "version": "1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX v4.0",
   "stats": {
-    "total_nodes": 17602,
+    "total_nodes": 17604,
     "actors": 8,
-    "cves": 8368,
-    "campaigns": 2244,
+    "cves": 8369,
+    "campaigns": 2245,
     "malware": 0,
     "iocs": 911,
-    "edges": 5008
+    "edges": 5009
   },
   "nodes": {
     "actor:lockbit": {
@@ -327602,7 +327602,7 @@
       "attributes": {
         "cvss": 7.3,
         "threat_level": "LOW",
-        "priority_score": 42,
+        "priority_score": 40,
         "exploited": false,
         "cisa_kev": false,
         "ransomware": false,
@@ -330704,6 +330704,44 @@
       "connections": [
         {
           "target": "CVE-2026-97847",
+          "relationship": "includes",
+          "confidence": 1
+        }
+      ]
+    },
+    "CVE-2025-71458": {
+      "id": "CVE-2025-71458",
+      "type": "CVE",
+      "name": "CVE-2025-71458 — Unknown Vendor FTS3 Web Monitoring CVSS 7.5 High Severity Vulnerability",
+      "attributes": {
+        "cvss": 7.5,
+        "threat_level": "MEDIUM",
+        "priority_score": 63,
+        "exploited": false,
+        "cisa_kev": false,
+        "ransomware": false,
+        "vendor": "Unknown Vendor",
+        "product": "FTS3 Web Monitoring",
+        "published": "2026-11-06",
+        "type": "CVE_REPORT"
+      },
+      "connections": []
+    },
+    "campaign:cve-2025-71458": {
+      "id": "campaign:cve-2025-71458",
+      "type": "Campaign",
+      "name": "Unknown FTS3 Exploitation Campaign",
+      "attributes": {
+        "severity": "MEDIUM",
+        "item_count": 1,
+        "first_seen": "2026-11-06",
+        "last_seen": "2026-11-06",
+        "confidence": 0.9,
+        "reasoning": "1 intel item(s) clustered with composite confidence 0.900 | Single CVE basis: CVE-2025-71458"
+      },
+      "connections": [
+        {
+          "target": "CVE-2025-71458",
           "relationship": "includes",
           "confidence": 1
         }
@@ -375965,6 +376003,15 @@
       "relationship": "includes",
       "confidence": 1,
       "first_seen": "2026-11-05",
+      "sources": []
+    },
+    {
+      "id": "campaign:cve-2025-71458→includes→CVE-2025-71458",
+      "source": "campaign:cve-2025-71458",
+      "target": "CVE-2025-71458",
+      "relationship": "includes",
+      "confidence": 1,
+      "first_seen": "2026-11-06",
       "sources": []
     }
   ]
