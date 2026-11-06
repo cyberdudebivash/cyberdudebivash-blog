@@ -535,3 +535,29 @@ test('P0 commerce smoke is independent of stale CTI and remains manual-release g
   assert.ok(!step.includes('if: success()'));
 
 });
+
+
+test('P0 #547 merged publisher/GA control workflows require operator review, unknown still blocks', () => {
+  const known = [
+    '.github/workflows/ai-security-intel.yml',
+    '.github/workflows/blogger-syndication.yml',
+    '.github/workflows/customer-release-certification.yml'
+  ];
+  for (const file of known) {
+    assert.equal(isReviewedOperationalPath(file), true, file);
+  }
+  const result = classify(compare(known), BASE, HEAD, paths);
+  assert.equal(result.state, 'manual_release_required');
+  assert.deepEqual(result.operational, known.slice().sort());
+  assert.deepEqual(result.unknown, []);
+  assert.deepEqual(result.benign, []);
+  assert.equal(result.production.length, 0);
+  assert.match(renderDriftSummary(HEAD, BASE, result), /Manual release and independent postdeploy certification required/);
+
+  const unreviewed = '.github/workflows/future-unreviewed-writer.yml';
+  assert.equal(isReviewedOperationalPath(unreviewed), false);
+  const blocked = classify(compare([...known, unreviewed]), BASE, HEAD, paths);
+  assert.equal(blocked.state, 'blocked');
+  assert.deepEqual(blocked.unknown, [unreviewed]);
+  assert.deepEqual(blocked.operational, known.slice().sort());
+});
