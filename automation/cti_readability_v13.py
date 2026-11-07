@@ -42,7 +42,18 @@ _CSS = r"""<style id="cdb-cti-readability-v13-css">
 .cdb-cti-dossier .cdbv12-cover{max-width:100%!important}
 @media(max-width:760px){.cdb-cti-dossier{padding-inline:clamp(12px,3vw,19px)!important}.cdb-cti-dossier .cdbd-nav{top:0!important}.cdb-cti-dossier .cdbd-nav>div{overscroll-behavior-x:contain}.cdb-cti-dossier :is(.cdbv12-nav,.cdbv11-intel-actions nav){gap:8px!important}.cdb-cti-dossier table{display:block!important;overflow-x:auto!important}}
 @media(prefers-reduced-motion:reduce){.cdb-cti-dossier *{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
-@media print{.cdb-cti-dossier{background:#fff!important;color:#111!important;box-shadow:none!important}.cdb-cti-dossier :is(p,li,td,th){color:#111!important}.cdb-cti-dossier :is(.cdbd-command,.cdbv12-cover,.cdbv11-intel-actions){box-shadow:none!important;break-inside:avoid}.cdb-cti-dossier :is(.cdbd-nav,.cdbv12-nav){display:none!important}}
+@media print{
+.cdb-cti-dossier{background:#fff!important;color:#182635!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:0!important}
+.cdb-cti-dossier :is(.cdbd-command,.cdbd-kpi,.cdbd-matrix,.cdbv12-cover,.cdbv12-grid,.cdbv12-grid>div,.cdbv12-status,.cdbv12-brief>div,.cdbv11-intel-actions,.cdbv8-panel,.cdbv9-panel,.cdbv10-panel){background:#fff!important;color:#182635!important;box-shadow:none!important;text-shadow:none!important;border-color:#b8c6d1!important}
+.cdb-cti-dossier :is(h1,h2,h3,h4,h5,h6,p,li,td,th,small,span,strong,b,em,blockquote,code,pre){color:#182635!important;text-shadow:none!important}
+.cdb-cti-dossier :is(a,a:visited){color:#064a70!important;text-decoration:underline!important}
+.cdb-cti-dossier :is(.cdbd-nav,.cdbv12-nav,.cdbv11-intel-actions nav){display:none!important}
+.cdb-cti-dossier :is(.cdbd-command,.cdbv12-cover,.cdbv11-intel-actions){break-inside:auto!important;overflow:visible!important}
+.cdb-cti-dossier .cdbd-command:after{display:none!important}
+.cdb-cti-dossier :is(.cdbd-kpi,.cdbv12-grid>div,tr){break-inside:avoid!important}
+.cdb-cti-dossier table{display:table!important;width:100%!important;overflow:visible!important}
+.cdb-cti-dossier :is(pre,code){white-space:pre-wrap!important;overflow:visible!important;overflow-wrap:anywhere!important}
+}
 </style>"""
 
 
