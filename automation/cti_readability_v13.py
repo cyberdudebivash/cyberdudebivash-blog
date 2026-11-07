@@ -53,6 +53,15 @@ _CSS = r"""<style id="cdb-cti-readability-v13-css">
 .cdb-cti-dossier :is(.cdbd-kpi,.cdbv12-grid>div,tr){break-inside:avoid!important}
 .cdb-cti-dossier table{display:table!important;width:100%!important;overflow:visible!important}
 .cdb-cti-dossier :is(pre,code){white-space:pre-wrap!important;overflow:visible!important;overflow-wrap:anywhere!important}
+/* Preserve offline executive/technical evidence contrast: screen tables, pre,
+   lists and section headers otherwise retain near-black backgrounds. */
+.cdb-cti-dossier .cdbd-section-title{background:#fff!important;color:#182635!important;text-shadow:none!important;box-shadow:none!important;break-after:avoid-page!important}
+.cdb-cti-dossier :is(table,thead,tbody,tfoot,tr,th,td,ul,ol,blockquote,pre,code){background:#fff!important;color:#182635!important;box-shadow:none!important}
+.cdb-cti-dossier :is(table,pre,blockquote,ul,ol){border-color:#b8c6d1!important}
+.cdb-cti-dossier :is(th,td){border-bottom-color:#b8c6d1!important;overflow-wrap:anywhere!important}
+.cdb-cti-dossier thead{display:table-header-group!important}
+.cdb-cti-dossier tfoot{display:table-footer-group!important}
+.cdb-cti-dossier :is(h2,h3,h4){break-after:avoid-page!important}
 }
 </style>"""
 
