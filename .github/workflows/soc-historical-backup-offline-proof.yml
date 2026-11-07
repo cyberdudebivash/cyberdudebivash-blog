@@ -1,0 +1,117 @@
+name: "P0 SOC — Historical Encrypted Backup Secret Continuity (No Writes)"
+
+# Manual-only: verifies the Nov 5 artifact against the pre-existing Actions
+# secret, without uploading plaintext or touching production Redis / D1.
+# No workflow run should be dispatched without explicit owner budget approval.
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: "Type VERIFY_HISTORICAL_BACKUP_OFFLINE to approve one no-write CI job"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: soc-historical-backup-offline-proof
+  cancel-in-progress: false
+
+jobs:
+  verify-historical-backup:
+    name: "Read-only historical AES-GCM and restore-schema proof"
+    if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && github.repository == 'cyberdudebivash/cyberdudebivash-blog' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: "P0 fail closed on invalid manual owner confirmation"
+        shell: bash
+        env:
+          APPROVAL_CONFIRMATION: ${{ inputs.confirmation }}
+        run: |
+          set -euo pipefail
+          if [[ "$APPROVAL_CONFIRMATION" != 'VERIFY_HISTORICAL_BACKUP_OFFLINE' ]]; then
+            echo '::error title=Backup proof not authorized::Required manual confirmation did not match.'
+            exit 2
+          fi
+          echo 'P0_MANUAL_OWNER_CONFIRMATION=ACCEPTED'
+
+      - name: "Checkout manually approved main SHA without persisted token"
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: "Use known-compatible Node 22"
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - name: "Confirm pinned audited source and historical artifact SHA-256"
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          umask 077
+          [[ "$(git rev-parse HEAD:scripts/restore-customer-data.js)" == '692ee1f2f2a8894e5782972b61d3e2f820b2581f' ]] || {
+            echo '::error title=Backup proof blocked::Restore source has changed; review required.'; exit 1;
+          }
+          [[ "$(git rev-parse HEAD:scripts/backup-customer-data.js)" == '0933115405f0c70c22c34cdbe19ea451486fbad0' ]] || {
+            echo '::error title=Backup proof blocked::Decrypt source has changed; review required.'; exit 1;
+          }
+          dir="$RUNNER_TEMP/cdb-soc-p0-proof"
+          mkdir -m 0700 -p "$dir"
+          gh run download 42013963858 \
+            --repo "$GITHUB_REPOSITORY" \
+            --name customer-data-backup-42013963858 \
+            --dir "$dir"
+          artifact="$dir/customer-data.enc"
+          [[ -f "$artifact" && ! -L "$artifact" ]] || {
+            echo '::error title=Backup proof blocked::Historical ciphertext unavailable.'; exit 1;
+          }
+          [[ "$(find "$dir" -type f | wc -l | tr -d ' ')" == '1' ]] || exit 1
+          [[ "$(stat -c '%s' "$artifact")" == '14302' ]] || {
+            echo '::error title=Backup proof blocked::Historical ciphertext size mismatch.'; exit 1;
+          }
+          actual="$(sha256sum "$artifact" | cut -d' ' -f1)"
+          [[ "$actual" == '80973d53b2350260f2c4b478b2ee6a8f71f4ffa86476a2a1080c16d174606438' ]] || {
+            echo '::error title=Backup proof blocked::Historical ciphertext SHA-256 mismatch.'; exit 1;
+          }
+          echo 'P0_HISTORICAL_BACKUP_ARTIFACT_INTEGRITY=PASS'
+          echo 'P0_HISTORICAL_PROOF_MODE=READ_ONLY'
+
+      - name: "Decrypt and validate locally with existing secret, no restore"
+        shell: bash
+        env:
+          BACKUP_ENCRYPTION_KEY: ${{ secrets.BACKUP_ENCRYPTION_KEY }}
+        run: |
+          set -euo pipefail
+          unset NODE_OPTIONS NODE_PATH NODE_EXTRA_CA_CERTS
+          if [[ ! "${BACKUP_ENCRYPTION_KEY:-}" =~ ^[0-9a-fA-F]{64}$ ]]; then
+            echo '::error title=Historical backup recovery blocked::Stored Actions encryption key unavailable or malformed.'
+            exit 2
+          fi
+          # Never supply --confirm or --confirm-production.
+          # Suppress any decrypted schema, customer identifiers, and exception output.
+          if node scripts/restore-customer-data.js \
+             "$RUNNER_TEMP/cdb-soc-p0-proof/customer-data.enc" >/dev/null 2>&1; then
+            echo 'P0_HISTORICAL_BACKUP_OFFLINE_DECRYPT_AND_SCHEMA=PASS'
+            echo 'P0_EXISTING_ACTIONS_SECRET_MATCHES_NOV5_ARTIFACT=true'
+          else
+            echo '::error title=Historical backup proof failed::Stored Actions key could not decrypt/validate the pinned artifact. Do not rotate it.'
+            exit 2
+          fi
+          echo 'P0_ISOLATED_REDIS_RESTORE_VERIFIED=false'
+          echo 'P0_RPO_RTO_VERIFIED=false'
+          echo 'P0_PRODUCTION_DATA_MUTATION=false'
+
+      - name: "Remove temporary encrypted artifact"
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf -- "$RUNNER_TEMP/cdb-soc-p0-proof"
+          echo 'P0_TEMP_ARTIFACT_CLEANUP_ATTEMPTED=true'

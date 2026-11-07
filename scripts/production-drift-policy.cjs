@@ -44,6 +44,8 @@ const REVIEWED_OPERATIONAL_FILES = new Set([
   '.github/workflows/ai-security-intel.yml',
   '.github/workflows/blogger-syndication.yml',
   '.github/workflows/customer-release-certification.yml',
+  // #494: secret continuity proof is operator-reviewed, never benign/release-approved.
+  '.github/workflows/soc-historical-backup-offline-proof.yml',
   'OPERATIONS.md',
   // P0 #494: emergency customer-data backup/restore controls are operational
   // instructions: changes require human review, never benign-only release.
