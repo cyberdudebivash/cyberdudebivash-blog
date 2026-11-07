@@ -83,3 +83,47 @@ def test_report_evidence_is_untouched_even_with_untrusted_text():
     assert soup.select_one("script") is None
     assert "&lt;script&gt;" in out
     assert "source not independently verified" in out.lower()
+
+
+def test_print_dark_screen_surfaces_are_reset_for_ciso_evidence_exports():
+    """Print-only white surfaces protect analytical text from dark-background bleed."""
+    source = (
+        '<article class="cdb-cti-dossier">'
+        '<h2 class="cdbd-section-title">Verified facts</h2>'
+        '<table><thead><tr><th>Source</th></tr></thead>'
+        '<tbody><tr><td>TLP:CLEAR confirmed provenance</td></tr></tbody></table>'
+        '<ul><li>No customer exposure established</li></ul>'
+        '<pre><code>indicator=source_qualified</code></pre>'
+        '<a href="https://vendor.example/advisory">Vendor citation</a>'
+        '</article>'
+    )
+    output = enhance_cti_readability_v13(source)
+    soup = BeautifulSoup(output, "html.parser")
+    css = soup.select_one("#cdb-cti-readability-v13-css").get_text()
+    screen, paper = css.split("@media print{", 1)
+    # The normal dark-mode customer interface is unchanged.
+    assert ".cdb-cti-dossier .cdbd-section-title{background:#fff!important" not in screen
+    assert ".cdb-cti-dossier .cdbd-section-title{background:#fff!important" in paper
+    for selector in (
+        ":is(table,thead,tbody,tfoot,tr,th,td,ul,ol,blockquote,pre,code)",
+        ":is(table,pre,blockquote,ul,ol)",
+    ):
+        assert ".cdb-cti-dossier " + selector in paper
+    assert "background:#fff!important;color:#182635!important;box-shadow:none!important" in paper
+    assert ".cdb-cti-dossier thead{display:table-header-group!important}" in paper
+    assert ".cdb-cti-dossier tfoot{display:table-footer-group!important}" in paper
+    assert ".cdb-cti-dossier :is(h2,h3,h4){break-after:avoid-page!important}" in paper
+    # Content, evidence classification, citation and report identity are untouched.
+    assert soup.select_one(".cdb-cti-dossier").get_text(" ", strip=True) == (
+        BeautifulSoup(source, "html.parser").get_text(" ", strip=True)
+    )
+    assert soup.select_one('a[href="https://vendor.example/advisory"]') is not None
+    assert enhance_cti_readability_v13(output) == output
+
+
+def test_print_theme_never_changes_unrecognized_or_entitlement_layout():
+    untouched = '<main><p>TLP:AMBER customer-only source. Not an authorized public report.</p></main>'
+    assert enhance_cti_readability_v13(untouched) == untouched
+    assert "window.location" not in enhance_cti_readability_v13(
+        '<article class="cdb-cti-dossier"><p>Evidence-only</p></article>'
+    )
