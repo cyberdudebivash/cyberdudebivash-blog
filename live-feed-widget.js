@@ -45,7 +45,7 @@
   function classifyFeedTimestamp(value, nowMillis) {
     var now = Number.isFinite(nowMillis) ? nowMillis : Date.now();
     var stamp = typeof value === 'string' && value.trim() ? Date.parse(value) : NaN;
-    if (!Number.isFinite(stamp) || stamp < 0 || stamp > now + 5 * 60000) {
+    if (!Number.isFinite(stamp) || stamp < 0 || stamp > now) {
       return { state: 'unverified', publishedAt: null };
     }
     return {
