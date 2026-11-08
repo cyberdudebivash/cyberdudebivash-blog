@@ -25,7 +25,7 @@
     // requests (docs/operations/CLOUDFLARE-COST-GUARDRAILS.md).
     REFRESH_MS:  15 * 60 * 1000,
     MAX_CARDS:   15,               // v5: show more cards
-    LOOKBACK_DAYS: 30
+    LOOKBACK_DAYS: 1
   };
 
   /* ── HELPERS ─────────────────────────────────────────────── */
@@ -194,7 +194,7 @@
     else return null;
     var cutoff = new Date(Date.now() - CFG.LOOKBACK_DAYS*86400000);
     return vulns
-      .filter(function(v){ return v.cveID && new Date(v.dateAdded)>=cutoff; })
+      .filter(function(v){ var t=Date.parse(v.dateAdded); return v.cveID && Number.isFinite(t) && t>=cutoff.getTime() && t<=Date.now(); })
       .sort(function(a,b){ return new Date(b.dateAdded)-new Date(a.dateAdded); })
       .slice(0, CFG.MAX_CARDS)
       .map(normaliseCISA);
@@ -251,12 +251,17 @@
       return b.time-a.time || b.priority-a.priority || a.index-b.index;
     });
     var recent = dated.filter(function(record) { return record.time >= cutoff; });
-    var archived = recent.length === 0;
-    // Keep archival evidence browsable when there are no qualifying new
-    // reports, but explicitly label it archival in the renderer.
-    return (archived ? dated : recent).slice(0, CFG.MAX_CARDS).map(function(record) {
-      record.item._reportAddedAt = new Date(record.time).toISOString();
-      record.item._contentArchived = archived;
+    // Never substitute historical records when the customer asks for live intel.
+    var seen = Object.create(null);
+    return recent.filter(function(record) {
+      var key = String(record.item.id || record.item.link || record.item.slug || '').trim();
+      if (!key || seen[key]) return false;
+      seen[key] = true;
+      return true;
+    }).slice(0, CFG.MAX_CARDS).map(function(record) {
+      record.item.published = new Date(record.time).toISOString();
+      record.item._reportAddedAt = record.item.published;
+      record.item._contentArchived = false;
       return record.item;
     });
   }
@@ -268,10 +273,14 @@
       .then(function(data) {
         if (data && Array.isArray(data.items) && data.items.length) {
           var selected = selectLocalItems(data.items);
+          var generated = (data.metadata&&data.metadata.generated)||data.generatedAt||data.lastUpdated||null;
+          if (classifyFeedTimestamp(generated).state !== 'current') return [];
           if (selected.length) {
-            var generated = (data.metadata&&data.metadata.generated)||data.generatedAt||data.lastUpdated||null;
             return selected.map(function(item){ item._feedGenerated=generated; return item; });
           }
+          // A valid first-party feed with no new reports must not fall back
+          // to archival or unrelated third-party data presented as local.
+          return [];
         }
         // 2. CISA direct
         return xhrFetch(CFG.CISA_DIRECT, 10000).then(function(d) {
@@ -425,7 +434,10 @@
   function doFetch(container, refresh) {
     if (!refresh) {
       var cached = getCache();
-      if (cached && cached.length) { render(cached, container, false); return Promise.resolve(); }
+      if (cached && cached.length && classifyFeedTimestamp(cached[0]._feedGenerated).state === 'current' &&
+          cached.every(function(item){ var t=Date.parse(item._reportAddedAt || item.published); return Number.isFinite(t) && t <= Date.now() && t >= Date.now()-86400000; })) {
+        render(cached, container, false); return Promise.resolve();
+      }
       skeleton(container);
     }
     return pipeline().then(function(items) {
