@@ -242,7 +242,7 @@
       var value = raw._addedAt || raw.pubDate || raw.published || raw.dateAdded;
       var ts = typeof value === 'string' && value.trim() ? Date.parse(value) : NaN;
       // No unknown or impossible report time should claim a 'recent' slot.
-      if (!Number.isFinite(ts) || ts < 0 || ts > now + 5 * 60000) return null;
+      if (!Number.isFinite(ts) || ts < 0 || ts > now) return null;
       var item = normaliseLocal(raw);
       if (!item) return null;
       return {item:item, time:ts, priority:Number(raw.priority)||0, index:index};
