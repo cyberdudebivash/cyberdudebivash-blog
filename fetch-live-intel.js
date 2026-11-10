@@ -2808,20 +2808,13 @@ function generatePostCard(item, slug, title) {
 
 // ── INDEX.HTML UPDATER ─────────────────────────────────────────────────
 function updateIndexHTML(newCards) {
-  if (!fs.existsSync(CFG.indexPath)) { warn('index.html not found.'); return; }
-  let html = fs.readFileSync(CFG.indexPath, 'utf8');
-  html = html.replace(/\s*<!-- AUTO-GENERATED:[\s\S]*?<\/a>/g, '');
-  const MARKER = '<!-- POST 1 — FEATURED -->';
-  if (!html.includes(MARKER)) { warn('Injection marker not found in index.html.'); return; }
-  const cardBlock = newCards.map(c=>c.card).join('\n');
-  html = html.replace(MARKER, `${cardBlock}\n\n    ${MARKER}`);
-  const today = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}).toUpperCase();
-  html = html.replace(/BREAKING INTELLIGENCE &mdash;[^<]+ &mdash; UPDATED LIVE/, `BREAKING INTELLIGENCE &mdash; ${today} &mdash; UPDATED LIVE`);
-  // An interrupted or malformed auto-publish must not duplicate public
-  // containers or silently revive the historic broken homepage.
+  // The live homepage is intentionally feed-driven. Historical research belongs
+  // in the archive and RSS/search outputs, never as cached homepage cards.
+  // Fail closed on a damaged scaffold instead of silently writing more HTML.
+  if (!fs.existsSync(CFG.indexPath)) throw new Error('P0 homepage missing: index.html');
+  const html = fs.readFileSync(CFG.indexPath, 'utf8');
   require('./scripts/soc-homepage-integrity').assertHomepageIntegrity(html, 'publisher index.html');
-  safeWriteSync(CFG.indexPath, html, 'utf8');
-  log(`index.html updated: +${newCards.length} cards.`);
+  log(`Live homepage verified unchanged; ${newCards.length} new report(s) remain in the published archive/feed outputs.`);
 }
 
 // ── RSS.XML UPDATER ────────────────────────────────────────────────────
