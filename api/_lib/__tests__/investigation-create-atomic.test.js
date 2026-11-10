@@ -35,7 +35,7 @@ test('P0 creation fails closed on stale or ambiguous Redis reply',async()=>{
 
 test('P0 creation rejects invalid record before touching Redis',async()=>{
   const evalFn=jest.fn(async()=>['OK',record.id]);
-  for(const patch of [{title:''},{assignee:'client forged owner'},{status:'closed'},{priority:0}]){
+  for(const patch of [{title:''},{assignee:'client forged owner'},{status:'closed'},{priority:0},{adminOverride:true}]){
     await expect(atomicCreateInvestigation({
       redis:{eval:evalFn},investigation:{...record,...patch},now
     })).rejects.toThrow('SOC_INVESTIGATION_CREATE_INVALID_RECORD');
