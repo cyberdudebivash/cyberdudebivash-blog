@@ -1,6 +1,7 @@
 'use strict';
 
 const crypto = require('crypto');
+const { atomicCreateInvestigation } = require('./investigation-create-atomic');
 const { atomicReassign } = require('./investigation-assignment-atomic');
 const { atomicCloseInvestigation } = require('./investigation-closure-atomic');
 const { isInternalLead, isValidObjectId } = require('./workbench-object-scope');
@@ -50,26 +51,13 @@ class InvestigationManager {
       version: 1,
     };
 
-    // #455: creation writes the record and indexes in separate Redis operations.
-    // A failed intermediate write can leave incomplete index membership;
-    // transactional or idempotent reconciliation is required before release.
-    const investKey = `investigation:${investigationId}`;
-    await this.redis.hset(investKey, Object.entries(investigation).flat());
-    await this.redis.expire(investKey, 31536000);
-
-    // Add to index
-    await this.redis.zadd('investigations:all', Date.now(), investigationId);
-    await this.redis.zadd(`investigations:by:status:${investigation.status}`, Date.now(), investigationId);
-    await this.redis.zadd(`investigations:by:priority:${investigation.priority}`, Date.now(), investigationId);
-    if (assignee && assignee !== 'unassigned') {
-      await this.redis.zadd(`investigations:assigned:${assignee}`, Date.now(), investigationId);
-    }
-
-    // Record audit
-    await this.recordInvestigationAudit(investigationId, 'CREATE', 'system', {
-      title,
-      priority,
-      assignee,
+    // Commit the hash, TTL, owner/status/priority/all indexes and CREATE audit
+    // in one Redis EVAL. A partial multi-command create could leave an
+    // invisible case or a stale worklist membership on a mid-write failure.
+    await atomicCreateInvestigation({
+      redis: this.redis,
+      investigation,
+      now: new Date(now),
     });
 
     return investigation;
