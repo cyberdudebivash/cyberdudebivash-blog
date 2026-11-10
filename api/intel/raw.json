@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-10T19:56:09.529Z",
+  "generated": "2026-11-10T23:22:47.179Z",
   "version": "5.1",
   "engine": "SENTINEL APEX S2N v1.0",
   "platform": "CYBERDUDEBIVASH SENTINEL APEX",
@@ -8,7 +8,7 @@
   "endpoint": "/api/intel/raw.json",
   "description": "Raw unfiltered S2N feed — all items including suppressed. Enterprise tier.",
   "note": "Access requires Enterprise API key. Includes suppression_reason and full IOC data.",
-  "count": 151,
+  "count": 140,
   "items": [
     {
       "id": "CVE-2026-111560",
@@ -59,47 +59,45 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-119191",
-      "title": "Forge: ASN.1 resource exhaustion via BIT STRING decoding in asn1.fromDer",
-      "description": "### Summary\n`asn1.fromDer()` decodes the contents of BIT STRINGs as ASN.1 by default. That decode ignored the `maxDepth` recursion limit (an incomplete fix of CVE-2025-66031) and also decoded nested BIT STRINGs, keeping a full copy of the decoded contents at each level, so small crafted DER or PEM i",
-      "cvss": 7.5,
-      "final_ps": 60,
-      "quality_score": 0.578,
-      "threat_level": "MEDIUM",
+      "id": "CVE-2026-116606",
+      "title": "CVE-2026-116606: Barracuda Networks Email Security Gateway (ESG) Authentication Bypass Using an Alternate Path or Channe",
+      "description": "Barracuda Networks Email Security Gateway (ESG) contains an authentication bypass using an alternate path or channel that could allow an unauthenticated remote attacker to invoke a configuration-import function and restore a crafted, compatible backup archive, resulting in unauthorized modification ",
+      "cvss": null,
+      "final_ps": 95,
+      "quality_score": 0.58,
+      "threat_level": "CRITICAL",
       "type": "CVE_REPORT",
-      "source": "github_advisories",
+      "source": "cisa_kev",
       "sources_confirmed": 1,
       "merged_sources": [
-        "github_advisories"
+        "cisa_kev"
       ],
       "first_seen": "2026-11-10",
       "last_seen": "2026-11-10",
-      "exploited": false,
-      "cisa_kev": false,
+      "exploited": true,
+      "cisa_kev": true,
       "ransomware": false,
-      "vendor": "npm",
-      "product": "node-forge",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-119191",
-        "CVE-2026-119191"
-      ],
+      "vendor": "Barracuda Networks",
+      "product": "Barracuda Email Security Gateway (ESG)",
+      "due_date": "2026-11-13",
+      "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-rhr8-3pm8-cq29",
-        "https://github.com/digitalbazaar/forge/security/advisories/GHSA-rhr8-3pm8-cq29",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-119191",
-        "https://github.com/digitalbazaar/forge/commit/24035c181f41885ea3ec7279e6c0fcf270b6ec4b"
+        "https://trust.barracuda.com/security/pre-authentication-authorization-bypass-command-injection",
+        "https://github.com/mandiant/Vulnerability-Disclosures/blob/master/2026/MNDT-2026-0042.md",
+        "https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk",
+        "https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=1.00",
+          "source_weight=1.00 (cisa_kev)",
+          "data_confidence=0.65",
           "recency=0d (score=1.00)",
-          "QS=0.578"
+          "QS=0.580"
         ],
         "priority": [
-          "base_ps=60 (no boosts)"
+          "+15 CISA_KEV",
+          "+8 exploited_in_wild"
         ],
         "suppression": null,
         "merge": null
@@ -109,47 +107,42 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-119192",
-      "title": "Forge: RSA PKCS#1 v1.5 signature forgery via non-canonical DigestInfo encoding",
-      "description": "### Summary\nRSASSA-PKCS1-v1_5 signature verification (`publicKey.verify()` with the default scheme, also used by X.509 certificate and PKCS#7 verification) accepted non-canonical BER encodings of the DigestInfo, such as NULL parameters with content and non-minimal lengths. These leave attacker-contr",
-      "cvss": 7.5,
-      "final_ps": 60,
-      "quality_score": 0.578,
-      "threat_level": "MEDIUM",
+      "id": "CVE-2026-76964",
+      "title": "CVE-2026-76964 — Unknown Vendor SAP NetWeaver Application CVSS 10 Critical Vulnerability",
+      "description": "SAP NetWeaver Application Server ABAP does not sufficiently validate certain network input processed by an internal component. An unauthenticated attacker could send specially crafted network traffic to trigger a memory corruption condition in the affected functionality. Successful exploitation coul",
+      "cvss": 10,
+      "final_ps": 76,
+      "quality_score": 0.58,
+      "threat_level": "HIGH",
       "type": "CVE_REPORT",
-      "source": "github_advisories",
+      "source": "nvd",
       "sources_confirmed": 1,
       "merged_sources": [
-        "github_advisories"
+        "nvd"
       ],
       "first_seen": "2026-11-10",
       "last_seen": "2026-11-10",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "npm",
-      "product": "node-forge",
+      "vendor": "Unknown Vendor",
+      "product": "SAP NetWeaver Application",
       "due_date": null,
-      "cves": [
-        "CVE-2026-119192",
-        "CVE-2026-119192"
-      ],
+      "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-6qrw-m8cv-hcxf",
-        "https://github.com/digitalbazaar/forge/security/advisories/GHSA-2g46-22mc-6gwp",
-        "https://github.com/digitalbazaar/forge/security/advisories/GHSA-6qrw-m8cv-hcxf",
-        "https://github.com/digitalbazaar/forge/commit/2bce9d477a2ff436e86ff9694ae999f1552aa2bb"
+        "https://me.sap.com/notes/3778530",
+        "https://url.sap/sapsecuritypatchday"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.95 (github_advisories)",
+          "source_weight=1.00 (nvd)",
           "data_confidence=1.00",
           "recency=0d (score=1.00)",
-          "QS=0.578"
+          "QS=0.580"
         ],
         "priority": [
-          "base_ps=60 (no boosts)"
+          "+10 CVSS≥9"
         ],
         "suppression": null,
         "merge": null
@@ -159,47 +152,87 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-102650",
-      "title": "Nuxt Content: Unauthenticated SQLite Function DoS via Content Query API",
-      "description": "### Summary The `POST /__nuxt_content/:collection/query` endpoint in `@nuxt/content` accepts an attacker-controlled `sql` field from the HTTP request body and executes it against a local SQLite database after passing it through an insufficient validator (`assertSafeQuery`). The validator only blocks",
-      "cvss": 7.5,
-      "final_ps": 60,
-      "quality_score": 0.578,
-      "threat_level": "MEDIUM",
+      "id": "CVE-2026-76965",
+      "title": "CVE-2026-76965 — Unknown Vendor SAP NetWeaver Application CVSS 9.9 Critical Vulnerability",
+      "description": "SAP NetWeaver Application Server ABAP and ABAP Platform does not perform necessary authorization checks for certain internal functionality. An attacker with low privileges could invoke affected functionality to execute arbitrary operating system commands on the underlying host. Successful exploitati",
+      "cvss": 9.9,
+      "final_ps": 76,
+      "quality_score": 0.58,
+      "threat_level": "HIGH",
       "type": "CVE_REPORT",
-      "source": "github_advisories",
+      "source": "nvd",
       "sources_confirmed": 1,
       "merged_sources": [
-        "github_advisories"
+        "nvd"
       ],
       "first_seen": "2026-11-10",
       "last_seen": "2026-11-10",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "npm",
-      "product": "@nuxt/content",
+      "vendor": "Unknown Vendor",
+      "product": "SAP NetWeaver Application",
       "due_date": null,
-      "cves": [
-        "CVE-2026-102650",
-        "CVE-2026-102650"
-      ],
+      "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-xxrh-5hgg-gj4h",
-        "https://github.com/nuxt/content/security/advisories/GHSA-xxrh-5hgg-gj4h",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-102650",
-        "https://github.com/nuxt/content/pull/3819"
+        "https://me.sap.com/notes/3792735",
+        "https://url.sap/sapsecuritypatchday"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.95 (github_advisories)",
+          "source_weight=1.00 (nvd)",
           "data_confidence=1.00",
           "recency=0d (score=1.00)",
-          "QS=0.578"
+          "QS=0.580"
         ],
         "priority": [
-          "base_ps=60 (no boosts)"
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-123549",
+      "title": "CVE-2026-123549 — Unknown Vendor OpenAM before 16.1.4 CVSS 9.8 Critical Vulnerability",
+      "description": "OpenAM before 16.1.4 fails to enforce the Valid Creation Attributes list during self-registration, allowing anonymous attackers to set restricted attributes including group membership. Attackers can register through the legacy self-service REST endpoint or User Self-Service flow to join administrati",
+      "cvss": 9.8,
+      "final_ps": 72,
+      "quality_score": 0.545,
+      "threat_level": "HIGH",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-08",
+      "last_seen": "2026-11-08",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "OpenAM before 16.1.4",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/OpenIdentityPlatform/OpenAM/security/advisories/GHSA-jv8f-m88g-h6mm",
+        "https://www.vulncheck.com/advisories/openam-before-16.1.4-privilege-escalation-via-self-registration-attribute-bypass"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=1.00",
+          "recency=2d (score=0.65)",
+          "QS=0.545"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
         ],
         "suppression": null,
         "merge": null
@@ -255,41 +288,44 @@
       "iocs": []
     },
     {
-      "id": "THEHACKERNEWS-2ca6d71153dd163e",
-      "title": "SAP Patches Four CVSS 10.0 Flaws, Including Two Enabling Remote Code Execution",
-      "description": "Four flaws that attackers could exploit without logging in were fixed today as part of SAP's monthly Security Patch Day—the vendor rates all four 10.0, the maximum CVSS score. Three are in the SAP NetWeaver application server, the software SAP systems run on, and one is in the Web Dispatcher, which ",
-      "cvss": 10,
+      "id": "GHSA-70ef65cb9882207f",
+      "title": "Duplicate Advisory: Microsoft Security Advisory CVE-2026-114157 - ASP.NET Core Security Feature Bypass Vulnerability",
+      "description": "## Duplicate Advisory This advisory has been withdrawn because it is a duplicate of GHSA-7phj-vgxq-r67h. This link is maintained to preserve external references. ## Original Description\nConcurrent execution using shared resource with improper synchronization ('race condition') in ASP.NET Core allows",
+      "cvss": 7.5,
       "final_ps": 59,
-      "quality_score": 0.448,
+      "quality_score": 0.548,
       "threat_level": "MEDIUM",
-      "type": "CLOUD_SECURITY",
-      "source": "thehackernews",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
       "sources_confirmed": 1,
       "merged_sources": [
-        "thehackernews"
+        "github_advisories"
       ],
       "first_seen": "2026-11-10",
       "last_seen": "2026-11-10",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "The Hacker News",
-      "product": "Threat Intelligence",
+      "vendor": "nuget",
+      "product": "Microsoft.AspNetCore.App.Runtime.win-arm64",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://thehackernews.com/2026/11/sap-patches-four-cvss-100-flaws.html"
+        "https://github.com/advisories/GHSA-95x6-7hq8-2c37",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-114157",
+        "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-114157",
+        "https://github.com/advisories/GHSA-95x6-7hq8-2c37"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.55 (thehackernews)",
+          "source_weight=0.95 (github_advisories)",
           "data_confidence=1.00",
           "recency=0d (score=1.00)",
-          "QS=0.448"
+          "QS=0.547"
         ],
         "priority": [
-          "+10 CVSS≥9"
+          "base_ps=59 (no boosts)"
         ],
         "suppression": "Single-source item with no CVE IDs or IOCs",
         "merge": null
@@ -299,42 +335,235 @@
       "iocs": []
     },
     {
-      "id": "BLEEPINGCOMPUTER-fe53b13de72471c2",
-      "title": "Microsoft November 2026 Patch Tuesday fixes 1,235 flaws, Outlook zero-day",
-      "description": "Today is Microsoft's November 2026 Patch Tuesday, with security updates addressing a record-breaking 1,235 flaws, including one actively exploited Microsoft Outlook zero-day vulnerability. [...]",
-      "cvss": null,
+      "id": "GHSA-84c0db8ead9424c4",
+      "title": "Duplicate Advisory: Microsoft Security Advisory CVE-2026-114154 - ASP.NET Core Denial of Service Vulnerability",
+      "description": "## Duplicate Advisory This advisory has been withdrawn because it is a duplicate of GHSA-3893-7fxc-qvff. This link is maintained to preserve external references. ## Original Description\nUncontrolled resource consumption in ASP.NET Core allows an unauthorized attacker to deny service over a network.",
+      "cvss": 7.5,
       "final_ps": 59,
-      "quality_score": 0.48,
+      "quality_score": 0.548,
       "threat_level": "MEDIUM",
-      "type": "ZERO_DAY",
-      "source": "bleepingcomputer",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
       "sources_confirmed": 1,
       "merged_sources": [
-        "bleepingcomputer"
+        "github_advisories"
       ],
       "first_seen": "2026-11-10",
       "last_seen": "2026-11-10",
-      "exploited": true,
+      "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "BleepingComputer",
-      "product": "Threat Intelligence",
+      "vendor": "nuget",
+      "product": "Microsoft.AspNetCore.Server.HttpSys",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://www.bleepingcomputer.com/news/microsoft/microsoft-november-2026-patch-tuesday-fixes-1-235-flaws-outlook-zero-day/"
+        "https://github.com/advisories/GHSA-49q5-vjx7-5gwr",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-114154",
+        "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-114154",
+        "https://github.com/advisories/GHSA-49q5-vjx7-5gwr"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.72 (bleepingcomputer)",
-          "data_confidence=0.65",
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
           "recency=0d (score=1.00)",
-          "QS=0.480"
+          "QS=0.547"
         ],
         "priority": [
-          "+8 exploited_in_wild",
-          "+7 zero_day"
+          "base_ps=59 (no boosts)"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "iocs": []
+    },
+    {
+      "id": "GHSA-e2643b029c51353a",
+      "title": "Duplicate Advisory: Microsoft Security Advisory CVE-2026-114147 - ASP.NET Core Denial of Service Vulnerability",
+      "description": "## Duplicate Advisory This advisory has been withdrawn because it is a duplicate of GHSA-wr8v-9x5q-ggcm. This link is maintained to preserve external references. ## Original Description\nMissing release of memory after effective lifetime in ASP.NET Core allows an unauthorized attacker to deny service",
+      "cvss": 7.5,
+      "final_ps": 59,
+      "quality_score": 0.548,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "nuget",
+      "product": "Microsoft.AspNetCore.SignalR.StackExchangeRedis",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-gxg8-5rwf-cg43",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-114147",
+        "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-114147",
+        "https://github.com/advisories/GHSA-gxg8-5rwf-cg43"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.547"
+        ],
+        "priority": [
+          "base_ps=59 (no boosts)"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-126083",
+      "title": "Action Pack: Possible IP spoofing in Action Dispatch RemoteIp",
+      "description": "### Impact\nSince Rails 8.1.0, `ActionDispatch::RemoteIp` derives `request.remote_ip` from `Rack::Request#forwarded_for`, which under Rack 3 reads the RFC 7239 `Forwarded` header in preference to `X-Forwarded-For`. When a reverse proxy appends the client address to `X-Forwarded-For` but passes a clie",
+      "cvss": 7.4,
+      "final_ps": 59,
+      "quality_score": 0.578,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "rubygems",
+      "product": "actionpack",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-126083",
+        "CVE-2026-126083"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-2gff-2mmg-m73p",
+        "https://github.com/rails/rails/security/advisories/GHSA-2gff-2mmg-m73p",
+        "https://github.com/rails/rails/commit/2a01a5ac521184419d9a92fa2c25e102e68cd227",
+        "https://github.com/rails/rails/releases/tag/v8.1.4.1"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.578"
+        ],
+        "priority": [
+          "base_ps=59 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "GHSA-ab7cb107b416865a",
+      "title": "Duplicate Advisory: Microsoft Security Advisory CVE-2026-120792 - Aspire Information Disclosure Vulnerability",
+      "description": "## Duplicate Advisory This advisory has been withdrawn because it is a duplicate of GHSA-q6jf-24jf-m3cg. This link is maintained to preserve external references. ## Original Description\nInsertion of sensitive information into log file in .NET Aspire allows an authorized attacker to disclose informat",
+      "cvss": 7.3,
+      "final_ps": 58,
+      "quality_score": 0.548,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "nuget",
+      "product": "Aspire.Cli",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-fgfw-85w4-gx99",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-120792",
+        "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-120792",
+        "https://github.com/advisories/GHSA-fgfw-85w4-gx99"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.547"
+        ],
+        "priority": [
+          "base_ps=58 (no boosts)"
+        ],
+        "suppression": "Single-source item with no CVE IDs or IOCs",
+        "merge": null
+      },
+      "suppressed": true,
+      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
+      "iocs": []
+    },
+    {
+      "id": "GHSA-67affaec28fef976",
+      "title": "Duplicate Advisory: Microsoft Security Advisory CVE-2026-120778 - Aspire Elevation of Privilege Vulnerability",
+      "description": "## Duplicate Advisory This advisory has been withdrawn because it is a duplicate of GHSA-m63f-xhvm-6mv5. This link is maintained to preserve external references. ## Original Description\nCreation of temporary file in directory with insecure permissions in .NET Aspire allows an authorized attacker to ",
+      "cvss": 7.3,
+      "final_ps": 58,
+      "quality_score": 0.548,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "nuget",
+      "product": "Aspire.Cli",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-hfpm-4fc4-g2wc",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-120778",
+        "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-120778",
+        "https://github.com/advisories/GHSA-hfpm-4fc4-g2wc"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=1.00",
+          "recency=0d (score=1.00)",
+          "QS=0.547"
+        ],
+        "priority": [
+          "base_ps=58 (no boosts)"
         ],
         "suppression": "Single-source item with no CVE IDs or IOCs",
         "merge": null
@@ -390,38 +619,38 @@
       "iocs": []
     },
     {
-      "id": "SENTINELAPEX-a2fee12dc4ce",
-      "title": "Microsoft November 2026 Patch Tuesday Fixes 1,093 Vulnerabilities Including Outlook Zero-Day",
-      "description": "Microsoft has released its November 2026 Patch Tuesday updates, fixing 1,093 newly released vulnerabilities across Windows, Office, SQL Server, SharePoint, Exchange Server, Azure services, and developer tools. The release includes one actively exploited zero-day in Microsoft Outl... [Full analysis a",
+      "id": "DARKREADING-220c3b4653f27c0d",
+      "title": "November Patch Tuesday: An Overflowing Cornucopia of CVEs",
+      "description": "Microsoft serves up an actively exploited Outlook zero-day, and a wave of critical Exchange, SharePoint, Windows Search, and LDAP bugs that exhausted defenders need to prioritize fast.",
       "cvss": null,
-      "final_ps": 58,
-      "quality_score": 0.452,
+      "final_ps": 57,
+      "quality_score": 0.438,
       "threat_level": "MEDIUM",
       "type": "ZERO_DAY",
-      "source": "sentinel_apex",
+      "source": "darkreading",
       "sources_confirmed": 1,
       "merged_sources": [
-        "sentinel_apex"
+        "darkreading"
       ],
       "first_seen": "2026-11-10",
       "last_seen": "2026-11-10",
       "exploited": true,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "",
-      "product": "",
+      "vendor": "darkreading",
+      "product": "Threat Intelligence",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://cybersecuritynews.com/microsoft-november-2026-patch-tuesday/"
+        "https://www.darkreading.com/vulnerabilities-threats/november-patch-tuesday-cornucopia-cves"
       ],
       "explanation": {
         "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.35",
+          "source_weight=0.55 (darkreading)",
+          "data_confidence=0.65",
           "recency=0d (score=1.00)",
-          "QS=0.452"
+          "QS=0.438"
         ],
         "priority": [
           "+8 exploited_in_wild",
@@ -435,12 +664,12 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-123543",
-      "title": "CVE-2026-123543 — Unknown Vendor OpenAM before 16.1.4 CVSS 7.5 High Severity Vulnerability",
-      "description": "OpenAM before 16.1.4 contains a denial of service vulnerability that allows unauthenticated attackers to exhaust server resources by sending serialized Java data without size or structure limits. Attackers can send small crafted requests to remote SDK endpoints, classic login pages, or the administr",
-      "cvss": 7.5,
-      "final_ps": 57,
-      "quality_score": 0.545,
+      "id": "CVE-2026-47304",
+      "title": "CVE-2026-47304 — microsoft .net framework CVSS 8.1 High Severity Vulnerability",
+      "description": "Improper verification of cryptographic signature in .NET allows an unauthorized attacker to bypass a security feature over a network.",
+      "cvss": 8.1,
+      "final_ps": 54,
+      "quality_score": 0.485,
       "threat_level": "MEDIUM",
       "type": "CVE_REPORT",
       "source": "nvd",
@@ -448,620 +677,28 @@
       "merged_sources": [
         "nvd"
       ],
-      "first_seen": "2026-11-08",
-      "last_seen": "2026-11-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "OpenAM before 16.1.4",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/OpenIdentityPlatform/OpenAM/security/advisories/GHSA-x7wr-5gxg-v833",
-        "https://www.vulncheck.com/advisories/openam-before-16.1.4-unauthenticated-dos-via-unbounded-java-deserialisation"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=1.00",
-          "recency=2d (score=0.65)",
-          "QS=0.545"
-        ],
-        "priority": [
-          "base_ps=57 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-123555",
-      "title": "CVE-2026-123555 — Unknown Vendor Zebra from 2.3.0 CVSS 7.5 High Severity Vulnerability",
-      "description": "Zebra from 2.3.0 before 7.0.0 contains a denial of service vulnerability that allows unauthenticated peers to evade misbehavior scoring by sending transactions or blocks with invalid transparent scripts. Attackers can flood mempool with script-failing transactions or serve forged v5 block bodies wit",
-      "cvss": 7.5,
-      "final_ps": 57,
-      "quality_score": 0.545,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-08",
-      "last_seen": "2026-11-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Zebra from 2.3.0",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/ZcashFoundation/zebra/commit/e8db87eb69254e0d4eedd058eadd48bdfa09065a",
-        "https://github.com/ZcashFoundation/zebra/security/advisories/GHSA-jq45-ghw5-v37x",
-        "https://www.vulncheck.com/advisories/zebra-2.3.0-before-7.0.0-denial-of-service-via-unscored-script-verification-failures"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=1.00",
-          "recency=2d (score=0.65)",
-          "QS=0.545"
-        ],
-        "priority": [
-          "base_ps=57 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-123559",
-      "title": "CVE-2026-123559 — Unknown Vendor Zebra before 7.0.0 CVSS 7.5 High Severity Vulnerability",
-      "description": "Zebra before 7.0.0 contains an inefficient algorithmic complexity vulnerability that allows unauthenticated peers to exhaust verification threads by submitting transactions with many transparent inputs. Attackers can relay invalid transactions with tens of thousands of inputs, forcing quadratic ZIP-",
-      "cvss": 7.5,
-      "final_ps": 57,
-      "quality_score": 0.545,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-08",
-      "last_seen": "2026-11-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Zebra before 7.0.0",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/ZcashFoundation/zebra/security/advisories/GHSA-j4cw-58mj-7w6v",
-        "https://www.vulncheck.com/advisories/zebra-before-7.0.0-denial-of-service-via-quadratic-sighash-computation"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=1.00",
-          "recency=2d (score=0.65)",
-          "QS=0.545"
-        ],
-        "priority": [
-          "base_ps=57 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-123560",
-      "title": "CVE-2026-123560 — Unknown Vendor Zebra before 7.0.0 CVSS 7.5 High Severity Vulnerability",
-      "description": "Zebra before 7.0.0 contains an incomplete cleanup vulnerability that allows unauthenticated peers to stall initial sync by serving a forged checkpoint block body. Attackers can supply a body with forged authorizing data near the final checkpoint, leaving rejected hashes in the sent-hash set so the n",
-      "cvss": 7.5,
-      "final_ps": 57,
-      "quality_score": 0.545,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-08",
-      "last_seen": "2026-11-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Zebra before 7.0.0",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/ZcashFoundation/zebra/security/advisories/GHSA-9hq5-pfgc-cx5h",
-        "https://www.vulncheck.com/advisories/zebra-before-7.0.0-sync-denial-of-service-via-forged-checkpoint-block-body"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=1.00",
-          "recency=2d (score=0.65)",
-          "QS=0.545"
-        ],
-        "priority": [
-          "base_ps=57 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-123563",
-      "title": "CVE-2026-123563 — Unknown Vendor Devalue before 5.9.3 CVSS 7.5 High Severity Vulnerability",
-      "description": "Devalue before 5.9.3 contains a validation bypass vulnerability that allows custom ArrayBuffer revivers to skip typed-array allocation checks in the parse function. Attackers can supply very small crafted input processed by a malformed ArrayBuffer reviver to allocate massive ArrayBuffers, causing me",
-      "cvss": 7.5,
-      "final_ps": 57,
-      "quality_score": 0.545,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-08",
-      "last_seen": "2026-11-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Devalue before 5.9.3",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/sveltejs/devalue/security/advisories/GHSA-r9w8-h9r3-54w4",
-        "https://www.vulncheck.com/advisories/devalue-before-5.9.3-typed-array-allocation-validation-bypass-via-parse"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=1.00",
-          "recency=2d (score=0.65)",
-          "QS=0.545"
-        ],
-        "priority": [
-          "base_ps=57 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-123564",
-      "title": "CVE-2026-123564 — Unknown Vendor Sveltejs devalue from CVSS 7.5 High Severity Vulnerability",
-      "description": "Sveltejs devalue from 1.0.0 before 5.9.3 contains a memory exhaustion flaw in uneval, whose generated code for sparse arrays allocates memory proportional to the array's declared length when evaluated. Attackers who can influence a very large sparse array serialized by an application can exhaust mem",
-      "cvss": 7.5,
-      "final_ps": 57,
-      "quality_score": 0.545,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-08",
-      "last_seen": "2026-11-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Sveltejs devalue from",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/sveltejs/devalue/security/advisories/GHSA-wf3x-273g-mvxv",
-        "https://www.vulncheck.com/advisories/sveltejs-devalue-before-5.9.3-memory-exhaustion-via-uneval-sparse-arrays"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=1.00",
-          "recency=2d (score=0.65)",
-          "QS=0.545"
-        ],
-        "priority": [
-          "base_ps=57 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-123571",
-      "title": "CVE-2026-123571 — Unknown Vendor Hickory DNS from CVSS 7.5 High Severity Vulnerability",
-      "description": "Hickory DNS from 0.26.0 before 0.26.2 contains an integer underflow vulnerability in TSIG RDATA decoding that allows remote attackers to trigger a panic via malformed records. Attackers can send a crafted TSIG record in DNS wire format to cause unchecked subtraction underflow, crashing builds with o",
-      "cvss": 7.5,
-      "final_ps": 57,
-      "quality_score": 0.545,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-08",
-      "last_seen": "2026-11-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Hickory DNS from",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/hickory-dns/hickory-dns/security/advisories/GHSA-x962-5xwx-fr8x",
-        "https://www.vulncheck.com/advisories/hickory-dns-from-0.26.0-before-0.26.2-panic-via-tsig-rdata-decoding"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=1.00",
-          "recency=2d (score=0.65)",
-          "QS=0.545"
-        ],
-        "priority": [
-          "base_ps=57 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-123575",
-      "title": "CVE-2026-123575 — Unknown Vendor Hickory DNS before CVSS 7.5 High Severity Vulnerability",
-      "description": "Hickory DNS before 0.26.2 contains a resource exhaustion vulnerability in its DNS-over-HTTPS HTTP/2 server that lacks sufficient timeouts or limits for incomplete request bodies. Remote attackers can open DoH connections, send incomplete request bodies, and hold connections open to exhaust server me",
-      "cvss": 7.5,
-      "final_ps": 57,
-      "quality_score": 0.545,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-08",
-      "last_seen": "2026-11-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Hickory DNS before",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/hickory-dns/hickory-dns/security/advisories/GHSA-g5xf-qv55-wv37",
-        "https://www.vulncheck.com/advisories/hickory-dns-before-0.26.2-doh-memory-exhaustion-via-incomplete-request-bodies"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=1.00",
-          "recency=2d (score=0.65)",
-          "QS=0.545"
-        ],
-        "priority": [
-          "base_ps=57 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-123576",
-      "title": "CVE-2026-123576 — Unknown Vendor Hickory DNS 0.24.0 CVSS 7.5 High Severity Vulnerability",
-      "description": "Hickory DNS 0.24.0 through 0.26.1 contains a memory exhaustion vulnerability that allows remote attackers to consume server resources by sending incomplete DNS-over-QUIC request bodies. Attackers can open many connections and send only large length prefixes, causing pre-allocated buffers to persist ",
-      "cvss": 7.5,
-      "final_ps": 57,
-      "quality_score": 0.545,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-08",
-      "last_seen": "2026-11-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Hickory DNS 0.24.0",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/hickory-dns/hickory-dns/security/advisories/GHSA-2f4m-fq7w-mrgx",
-        "https://www.vulncheck.com/advisories/hickory-dns-0.24.0-through-0.26.1-memory-exhaustion-via-dns-over-quic-requests"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=1.00",
-          "recency=2d (score=0.65)",
-          "QS=0.545"
-        ],
-        "priority": [
-          "base_ps=57 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-123580",
-      "title": "CVE-2026-123580 — Unknown Vendor Hickory DNS hickory-net CVSS 7.5 High Severity Vulnerability",
-      "description": "Hickory DNS hickory-net 0.26.0-beta.1 before 0.26.2 and hickory-proto through 0.26.0-alpha.1 perform insufficient checks on NSEC3 record names during DNSSEC verification, comparing only the hashed label without confirming the record belongs to the correct zone. Attackers can supply NSEC3 records fro",
-      "cvss": 7.5,
-      "final_ps": 57,
-      "quality_score": 0.545,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-08",
-      "last_seen": "2026-11-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Hickory DNS hickory-net",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/hickory-dns/hickory-dns/security/advisories/GHSA-p2jv-r3m3-7wf4",
-        "https://www.vulncheck.com/advisories/hickory-dns-0.26.0-beta.1-before-0.26.2-dnssec-nonexistence-proof-forgery-via-nsec3"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=1.00",
-          "recency=2d (score=0.65)",
-          "QS=0.545"
-        ],
-        "priority": [
-          "base_ps=57 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-123588",
-      "title": "CVE-2026-123588 — Unknown Vendor The recursive resolver CVSS 7.5 High Severity Vulnerability",
-      "description": "The recursive resolver in Hickory DNS (all versions of the hickory-recursor crate, and hickory-resolver 0.26.0 before 0.26.2) caches an empty connection pool when it follows a referral with no glue records and all queries for the name servers' IP addresses fail. An attacker able to spoof DNS respons",
-      "cvss": 7.5,
-      "final_ps": 57,
-      "quality_score": 0.545,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-08",
-      "last_seen": "2026-11-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "The recursive resolver",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/hickory-dns/hickory-dns/security/advisories/GHSA-9px7-7m25-f6q2",
-        "https://www.vulncheck.com/advisories/hickory-dns-recursive-resolver-denial-of-service-via-cached-empty-connection-pool"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=1.00",
-          "recency=2d (score=0.65)",
-          "QS=0.545"
-        ],
-        "priority": [
-          "base_ps=57 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-123520",
-      "title": "CVE-2026-123520 — Unknown Vendor Vikunja from 0.18.0 CVSS 7.1 High Severity Vulnerability",
-      "description": "Vikunja from 0.18.0 before 2.7.1 contains a privilege escalation vulnerability that allows team owners to gain admin or ownership of read-only shared projects by deleting accounts. Attackers can create a bot, add it to their team, and delete it through the bots endpoint, triggering ensureProjectAdmi",
-      "cvss": 7.1,
-      "final_ps": 56,
-      "quality_score": 0.545,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-08",
-      "last_seen": "2026-11-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Vikunja from 0.18.0",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/go-vikunja/vikunja/security/advisories/GHSA-hq66-9qg8-jwqg",
-        "https://www.vulncheck.com/advisories/vikunja-0.18.0-before-2.7.1-privilege-escalation-via-account-deletion"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=1.00",
-          "recency=2d (score=0.65)",
-          "QS=0.545"
-        ],
-        "priority": [
-          "base_ps=56 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-119345",
-      "title": "Cocos AI Intra-handshake attested TLS implementation is vulnerable to TOCTOU Attacks",
-      "description": "### Summary\nAn attacker who can modify the attested workload’s code, memory-backed state, or configuration after the initial attestation — but without necessarily terminating the existing TLS connection — can cause the peer to continue trusting the connection as if the originally attested state were",
-      "cvss": 6.3,
-      "final_ps": 55,
-      "quality_score": 0.538,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-11-10",
-      "last_seen": "2026-11-10",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "go",
-      "product": "github.com/ultravioletrs/cocos",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-119345",
-        "CVE-2026-119345"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-ghwv-vrp2-2975",
-        "https://github.com/ultravioletrs/cocos/security/advisories/GHSA-ghwv-vrp2-2975",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-119345",
-        "https://github.com/ultravioletrs/cocos/pull/582"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.80",
-          "recency=0d (score=1.00)",
-          "QS=0.538"
-        ],
-        "priority": [
-          "base_ps=55 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2023-38186",
-      "title": "CVE-2023-38186 — microsoft windows 10 21h2 CVSS 8.8 High Severity Vulnerability",
-      "description": "Windows Mobile Device Management Elevation of Privilege Vulnerability",
-      "cvss": 8.8,
-      "final_ps": 53,
-      "quality_score": 0.435,
-      "threat_level": "MEDIUM",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2023-08-08",
-      "last_seen": "2023-08-08",
+      "first_seen": "2026-07-14",
+      "last_seen": "2026-07-14",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "microsoft",
-      "product": "windows 10 21h2",
+      "product": ".net framework",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2023-38186",
-        "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2023-38186"
+        "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-47304"
       ],
       "explanation": {
         "quality": [
           "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=1190d (score=0.05)",
-          "QS=0.435"
+          "data_confidence=1.00",
+          "recency=119d (score=0.05)",
+          "QS=0.485"
         ],
         "priority": [
-          "base_ps=53 (no boosts)"
+          "base_ps=54 (no boosts)"
         ],
         "suppression": null,
         "merge": null
@@ -1071,10 +708,10 @@
       "iocs": []
     },
     {
-      "id": "CVE-2022-4146",
-      "title": "CVE-2022-4146 — hitachi replication manager CVSS 7.3 High Severity Vulnerability",
-      "description": "Expression Language Injection vulnerability in Hitachi Replication Manager on Windows, Linux, Solaris allows Code Injection.This issue affects Hitachi Replication Manager: before 8.8.5-02.\n\n",
-      "cvss": 7.3,
+      "id": "CVE-2026-58016",
+      "title": "CVE-2026-58016 — gnome glib CVSS 7.5 High Severity Vulnerability",
+      "description": "A flaw was found in GLib. A state confusion issue exists in g_dbus_node_info_new_for_xml() in the gio/gdbusintrospection.c file when processing malformed D-Bus introspection XML, specifically with a `node` element nested within other elements like `method`, `signal`, `property` or `arg`. This issue ",
+      "cvss": 7.5,
       "final_ps": 52,
       "quality_score": 0.485,
       "threat_level": "MEDIUM",
@@ -1084,25 +721,27 @@
       "merged_sources": [
         "nvd"
       ],
-      "first_seen": "2023-07-18",
-      "last_seen": "2023-07-18",
+      "first_seen": "2026-06-30",
+      "last_seen": "2026-06-30",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "hitachi",
-      "product": "replication manager",
+      "vendor": "gnome",
+      "product": "glib",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://www.hitachi.com/products/it/software/security/info/vuls/hitachi-sec-2023-123/index.html",
-        "https://www.hitachi.com/products/it/software/security/info/vuls/hitachi-sec-2023-123/index.html"
+        "https://access.redhat.com/errata/RHSA-2026:42063",
+        "https://access.redhat.com/errata/RHSA-2026:42089",
+        "https://access.redhat.com/errata/RHSA-2026:42090",
+        "https://access.redhat.com/errata/RHSA-2026:44481"
       ],
       "explanation": {
         "quality": [
           "source_weight=1.00 (nvd)",
           "data_confidence=1.00",
-          "recency=1211d (score=0.05)",
+          "recency=133d (score=0.05)",
           "QS=0.485"
         ],
         "priority": [
@@ -1438,6 +1077,52 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-92544",
+      "title": "CVE-2026-92544 - Kong Gateway SQL Injection",
+      "description": "CVE-2026-92544 - Kong Gateway SQL Injection",
+      "cvss": 8.8,
+      "final_ps": 47,
+      "quality_score": 0.443,
+      "threat_level": "MEDIUM",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-92544"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-92544"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.443"
+        ],
+        "priority": [
+          "base_ps=47 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
       "id": "CVE-2026-12573",
       "title": "Low Security Vulnerability (CVE-2026-12573)",
       "description": "CVE-2026-12573",
@@ -1711,50 +1396,6 @@
       },
       "suppressed": false,
       "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "BLEEPINGCOMPUTER-6ba7d81c96257ae7",
-      "title": "Critical Xen Orchestra auth bypass flaw exploited to hijack VM servers",
-      "description": "A critical authentication bypass vulnerability in Xen Orchestra is being actively exploited in attacks that could grant administrator privileges and allow takeover of XCP-ng virtualization hosts. [...]",
-      "cvss": null,
-      "final_ps": 46,
-      "quality_score": 0.48,
-      "threat_level": "MEDIUM",
-      "type": "NEWS_REPORT",
-      "source": "bleepingcomputer",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "bleepingcomputer"
-      ],
-      "first_seen": "2026-11-10",
-      "last_seen": "2026-11-10",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "BleepingComputer",
-      "product": "Threat Intelligence",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.bleepingcomputer.com/news/security/critical-xen-orchestra-auth-bypass-flaw-exploited-to-hijack-vm-servers/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.72 (bleepingcomputer)",
-          "data_confidence=0.65",
-          "recency=0d (score=1.00)",
-          "QS=0.480"
-        ],
-        "priority": [
-          "+8 exploited_in_wild"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
       "iocs": []
     },
     {
@@ -2045,6 +1686,144 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-95781",
+      "title": "Low Security Vulnerability (CVE-2026-95781)",
+      "description": "CVE-2026-95781",
+      "cvss": 7.5,
+      "final_ps": 44,
+      "quality_score": 0.443,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-95781"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://vulners.com/nvd/NVD:CVE-2026-95781?utm_source=rss&utm_medium=rss&utm_campaign=rss"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.443"
+        ],
+        "priority": [
+          "base_ps=44 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-107372",
+      "title": "CVE-2026-107372 - Auth0-ai-js Authorization Bypass in RAG Context Retrieval",
+      "description": "CVE-2026-107372 - Auth0-ai-js Authorization Bypass in RAG Context Retrieval",
+      "cvss": 7.5,
+      "final_ps": 44,
+      "quality_score": 0.443,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-107372"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-107372"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.443"
+        ],
+        "priority": [
+          "base_ps=44 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-108167",
+      "title": "CVE-2026-108167 - Auth0-ai-python FGA Retriever Authorization Bypass",
+      "description": "CVE-2026-108167 - Auth0-ai-python FGA Retriever Authorization Bypass",
+      "cvss": 7.5,
+      "final_ps": 44,
+      "quality_score": 0.443,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-108167"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://cvefeed.io/vuln/detail/CVE-2026-108167"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.45",
+          "recency=0d (score=1.00)",
+          "QS=0.443"
+        ],
+        "priority": [
+          "base_ps=44 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
       "id": "CVE-2026-12266",
       "title": "CVE-2026-12266 - Authenticated Broken Access Control",
       "description": "CVE-2026-12266 - Authenticated Broken Access Control",
@@ -2091,100 +1870,6 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-88968",
-      "title": "Claude Code: TOCTOU Race in Edit Tool Allows File Writes Outside the Workspace",
-      "description": "Claude Code validated Edit tool targets using point-in-time pathname and symlink resolution that was not bound to the underlying directory inodes or file descriptors. On macOS, a process running inside Claude Code's Bash sandbox could exploit the resulting time-of-check to time-of-use window by atom",
-      "cvss": 0,
-      "final_ps": 44,
-      "quality_score": 0.508,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-11-09",
-      "last_seen": "2026-11-09",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "npm",
-      "product": "@anthropic-ai/claude-code",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-88968",
-        "CVE-2026-88968"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-5xjx-9qx6-jcrv",
-        "https://github.com/anthropics/claude-code/security/advisories/GHSA-5xjx-9qx6-jcrv",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-88968",
-        "https://github.com/anthropics/claude-code/releases/tag/v2.1.251"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.65",
-          "recency=0d (score=1.00)",
-          "QS=0.508"
-        ],
-        "priority": [
-          "+3 supply_chain"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "THEHACKERNEWS-46e9a0b4b613a459",
-      "title": "Hackers Exploit Critical Xen Orchestra Auth Bypass Flaw to Gain Admin Access",
-      "description": "French software company Vates VMS has warned of a critical security vulnerability in Xen Orchestra that it said is being actively exploited in the wild. The authentication bypass flaw, which does not yet have a CVE identifier, is tracked as VSA-2026-062. \"REST cookie parsing turns authenticationToke",
-      "cvss": null,
-      "final_ps": 44,
-      "quality_score": 0.438,
-      "threat_level": "LOW",
-      "type": "NEWS_REPORT",
-      "source": "thehackernews",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "thehackernews"
-      ],
-      "first_seen": "2026-11-10",
-      "last_seen": "2026-11-10",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "The Hacker News",
-      "product": "Threat Intelligence",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://thehackernews.com/2026/11/hackers-exploit-critical-xen-orchestra.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.55 (thehackernews)",
-          "data_confidence=0.65",
-          "recency=0d (score=1.00)",
-          "QS=0.438"
-        ],
-        "priority": [
-          "+8 exploited_in_wild"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
-      "iocs": []
-    },
-    {
       "id": "CVE-2026-109830",
       "title": "Low Security Vulnerability (CVE-2026-109830)",
       "description": "CVE-2026-109830",
@@ -2228,184 +1913,6 @@
       },
       "suppressed": false,
       "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-123367",
-      "title": "CVE-2026-123367 - ThorVG: Heap buffer overflow (OOB write) in bundled jpgd JPEG decoder",
-      "description": "CVE-2026-123367 - ThorVG: Heap buffer overflow (OOB write) in bundled jpgd JPEG decoder",
-      "cvss": 7.2,
-      "final_ps": 43,
-      "quality_score": 0.478,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-11-09",
-      "last_seen": "2026-11-09",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-123367"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://cvefeed.io/vuln/detail/CVE-2026-123367"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.70",
-          "recency=1d (score=0.85)",
-          "QS=0.478"
-        ],
-        "priority": [
-          "base_ps=43 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "RECORDED_FUTURE-cc83f20cc17567c1",
-      "title": "GhostFrame: A new ESXi Implant Linked to Settra Ransomware",
-      "description": "GhostFrame is a new post-exploitation framework targeting VMware ESXi environments, linked to TAG-218 and Settra ransomware.",
-      "cvss": null,
-      "final_ps": 43,
-      "quality_score": 0.428,
-      "threat_level": "LOW",
-      "type": "RANSOMWARE",
-      "source": "recorded_future",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "recorded_future"
-      ],
-      "first_seen": "2026-11-10",
-      "last_seen": "2026-11-10",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": true,
-      "vendor": "recorded_future",
-      "product": "Threat Intelligence",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.recordedfuture.com/blog/ghostframe-esxi-implant-settra-ransomware"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.75 (recorded_future)",
-          "data_confidence=0.65",
-          "recency=0d (score=1.00)",
-          "QS=0.427"
-        ],
-        "priority": [
-          "+10 ransomware_confirmed"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
-      "iocs": []
-    },
-    {
-      "id": "BLEEPINGCOMPUTER-1a4172a409f8e6de",
-      "title": "Ransomware recovery is now a client retention metric",
-      "description": "Recovering from ransomware doesn't guarantee an MSP will retain its clients, especially when delays, poor communication, and unexpected costs undermine trust. Kaseya examines how disconnected recovery tools create these problems and how integrated workflows can improve response times, transparency, ",
-      "cvss": null,
-      "final_ps": 42,
-      "quality_score": 0.42,
-      "threat_level": "LOW",
-      "type": "RANSOMWARE",
-      "source": "bleepingcomputer",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "bleepingcomputer"
-      ],
-      "first_seen": "2026-11-10",
-      "last_seen": "2026-11-10",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": true,
-      "vendor": "BleepingComputer",
-      "product": "Threat Intelligence",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.bleepingcomputer.com/news/security/ransomware-recovery-is-now-a-client-retention-metric/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.72 (bleepingcomputer)",
-          "data_confidence=0.65",
-          "recency=0d (score=1.00)",
-          "QS=0.420"
-        ],
-        "priority": [
-          "+10 ransomware_confirmed"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
-      "iocs": []
-    },
-    {
-      "id": "BLEEPINGCOMPUTER-87252b3802f69bd2",
-      "title": "Vanderbilt University hit in BYOD ransomware attack, data theft claimed",
-      "description": "Vanderbilt University warns it is responding to a cyberattack claimed by the BYOD ransomware gang, which claims to have encrypted the university's databases and stolen sensitive student, employee, and research data. [...]",
-      "cvss": null,
-      "final_ps": 42,
-      "quality_score": 0.42,
-      "threat_level": "LOW",
-      "type": "RANSOMWARE",
-      "source": "bleepingcomputer",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "bleepingcomputer"
-      ],
-      "first_seen": "2026-11-09",
-      "last_seen": "2026-11-09",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": true,
-      "vendor": "BleepingComputer",
-      "product": "Threat Intelligence",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.bleepingcomputer.com/news/security/vanderbilt-university-hit-in-byod-ransomware-attack-data-theft-claimed/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.72 (bleepingcomputer)",
-          "data_confidence=0.65",
-          "recency=0d (score=1.00)",
-          "QS=0.420"
-        ],
-        "priority": [
-          "+10 ransomware_confirmed"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
       "iocs": []
     },
     {
@@ -2634,50 +2141,6 @@
       },
       "suppressed": false,
       "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "SENTINELAPEX-8591853d497a",
-      "title": "BYOD Ransomware Group Allegedly Claims Toyota Data Breach",
-      "description": "The BYOD ransomware group has allegedly claimed a Toyota data breach, saying it obtained personal information and access involving kiosk devices. A supplied screenshot shows a Toyota listing updated on November 10, 2026. The claim remains unverified, and the material does not est... [Full analysis a",
-      "cvss": null,
-      "final_ps": 41,
-      "quality_score": 0.392,
-      "threat_level": "LOW",
-      "type": "RANSOMWARE",
-      "source": "sentinel_apex",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "sentinel_apex"
-      ],
-      "first_seen": "2026-11-10",
-      "last_seen": "2026-11-10",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": true,
-      "vendor": "",
-      "product": "",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://cybersecuritynews.com/toyota-data-breach-claim/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.85 (sentinel_apex)",
-          "data_confidence=0.35",
-          "recency=0d (score=1.00)",
-          "QS=0.392"
-        ],
-        "priority": [
-          "+10 ransomware_confirmed"
-        ],
-        "suppression": "Single-source item with no CVE IDs or IOCs",
-        "merge": null
-      },
-      "suppressed": true,
-      "suppression_reason": "Single-source item with no CVE IDs or IOCs",
       "iocs": []
     },
     {
@@ -4304,6 +3767,52 @@
       "iocs": []
     },
     {
+      "id": "CVE-2026-95786",
+      "title": "Low Security Vulnerability (CVE-2026-95786)",
+      "description": "CVE-2026-95786",
+      "cvss": 6.5,
+      "final_ps": 39,
+      "quality_score": 0.403,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "sentinel_apex",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "sentinel_apex"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "",
+      "product": "",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-95786"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://vulners.com/nvd/NVD:CVE-2026-95786?utm_source=rss&utm_medium=rss&utm_campaign=rss"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.85 (sentinel_apex)",
+          "data_confidence=0.25",
+          "recency=0d (score=1.00)",
+          "QS=0.403"
+        ],
+        "priority": [
+          "base_ps=39 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
       "id": "CVE-2026-63287",
       "title": "CVE-2026-63287 - AXIS Camera Station Improper Authorization Vulnerability",
       "description": "CVE-2026-63287 - AXIS Camera Station Improper Authorization Vulnerability",
@@ -4626,57 +4135,8 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-116606",
-      "title": "CVE-2026-116606: Barracuda Networks Email Security Gateway (ESG) Authentication Bypass Using an Alternate Path or Channe",
-      "description": "",
-      "cvss": 7.8,
-      "final_ps": 32,
-      "quality_score": 0.595,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "cisa_kev",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "cisa_kev"
-      ],
-      "first_seen": "2026-11-10",
-      "last_seen": "2026-11-10",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Barracuda Networks",
-      "product": "Barracuda Email Security Gateway (ESG)",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-116606"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://trust.barracuda.com/security/pre-authentication-authorization-bypass-command-injection",
-        "https://github.com/mandiant/Vulnerability-Disclosures/blob/master/2026/MNDT-2026-0042.md",
-        "https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk",
-        "https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (cisa_kev)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.595"
-        ],
-        "priority": [
-          "+8 exploited_in_wild"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-109803",
-      "title": "CVE-2026-109803 — Unknown Vendor SAP NetWeaver Knowledge CVSS 9.9 Critical Vulnerability",
+      "id": "CVE-2026-113579",
+      "title": "CVE-2026-113579 — Unknown Vendor Adobe Experience Manager CVSS 9.9 Critical Vulnerability",
       "description": "",
       "cvss": 9.9,
       "final_ps": 31,
@@ -4694,13 +4154,12 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "SAP NetWeaver Knowledge",
+      "product": "Adobe Experience Manager",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://me.sap.com/notes/3809153",
-        "https://url.sap/sapsecuritypatchday"
+        "https://www.adobe.com/trust/security/products/experience-manager/apsb26-189.html"
       ],
       "explanation": {
         "quality": [
@@ -4720,102 +4179,8 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-125370",
-      "title": "CVE-2026-125370 — Unknown Vendor Kubero 3.0.0 through CVSS 9.8 Critical Vulnerability",
-      "description": "",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-10",
-      "last_seen": "2026-11-10",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Kubero 3.0.0 through",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/kubero-dev/kubero",
-        "https://github.com/kubero-dev/kubero/blob/bcb52376b19347b8c36bc445ddf3e4bff4a5c168/server/src/auth/strategies/jwt.strategy.ts#L13-L32",
-        "https://github.com/kubero-dev/kubero/issues/786",
-        "https://www.vulncheck.com/advisories/kubero-3.0.0-through-3.1.1-authentication-bypass-via-hardcoded-jwt-secret"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-125383",
-      "title": "CVE-2026-125383 — Unknown Vendor INDOTALENT WHMS (Asp.Net-Core-Inventory-Order-Management-System) CVSS 9.8 Critical Vuln",
-      "description": "",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-10",
-      "last_seen": "2026-11-10",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "INDOTALENT WHMS (Asp.Net-Core-Inventory-Order-Management-System)",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/go2ismail/Asp.Net-Core-Inventory-Order-Management-System",
-        "https://github.com/go2ismail/Asp.Net-Core-Inventory-Order-Management-System/blob/v9.20250118/Presentation/ASPNET/appsettings.json#L38-L44",
-        "https://github.com/go2ismail/Asp.Net-Core-Inventory-Order-Management-System/commit/65609b5b88cb4f156e8164f33b8db8c63f5c125b",
-        "https://github.com/go2ismail/Asp.Net-Core-Inventory-Order-Management-System/commit/ded7d8a9457c780dfd4f5ea74d7e72111fafaea6"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-109795",
-      "title": "CVE-2026-109795 — Unknown Vendor SAP NetWeaver does CVSS 9.9 Critical Vulnerability",
+      "id": "CVE-2026-113580",
+      "title": "CVE-2026-113580 — Unknown Vendor Adobe Experience Manager CVSS 9.9 Critical Vulnerability",
       "description": "",
       "cvss": 9.9,
       "final_ps": 31,
@@ -4833,13 +4198,12 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "SAP NetWeaver does",
+      "product": "Adobe Experience Manager",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://me.sap.com/notes/3834842",
-        "https://url.sap/sapsecuritypatchday"
+        "https://www.adobe.com/trust/security/products/experience-manager/apsb26-189.html"
       ],
       "explanation": {
         "quality": [
@@ -4859,145 +4223,8 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-120017",
-      "title": "CVE-2026-120017 — Unknown Vendor SAP NetWeaver AS CVSS 10 Critical Vulnerability",
-      "description": "",
-      "cvss": 10,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-10",
-      "last_seen": "2026-11-10",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "SAP NetWeaver AS",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://me.sap.com/notes/3849308",
-        "https://url.sap/sapsecuritypatchday"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-125086",
-      "title": "CVE-2026-125086 — Unknown Vendor A vulnerability has CVSS 10 Critical Vulnerability",
-      "description": "",
-      "cvss": 10,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-10",
-      "last_seen": "2026-11-10",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "A vulnerability has",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/XueDugu/dlink-m60-easymesh-mqtt-credential-evidence",
-        "https://vuldb.com/cve/CVE-2026-125086",
-        "https://vuldb.com/submit/1042370",
-        "https://vuldb.com/vuln/433197"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-76964",
-      "title": "CVE-2026-76964 — Unknown Vendor SAP NetWeaver Application CVSS 10 Critical Vulnerability",
-      "description": "",
-      "cvss": 10,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-10",
-      "last_seen": "2026-11-10",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "SAP NetWeaver Application",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://me.sap.com/notes/3778530",
-        "https://url.sap/sapsecuritypatchday"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-76965",
-      "title": "CVE-2026-76965 — Unknown Vendor SAP NetWeaver Application CVSS 9.9 Critical Vulnerability",
+      "id": "CVE-2026-114371",
+      "title": "CVE-2026-114371 — Unknown Vendor Adobe Experience Manager CVSS 9.9 Critical Vulnerability",
       "description": "",
       "cvss": 9.9,
       "final_ps": 31,
@@ -5015,12 +4242,716 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "SAP NetWeaver Application",
+      "product": "Adobe Experience Manager",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://me.sap.com/notes/3792735",
+        "https://www.adobe.com/trust/security/products/experience-manager/apsb26-189.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-119017",
+      "title": "CVE-2026-119017 — Unknown Vendor Adobe Experience Manager CVSS 9.9 Critical Vulnerability",
+      "description": "",
+      "cvss": 9.9,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Adobe Experience Manager",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/experience-manager/apsb26-189.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-121349",
+      "title": "CVE-2026-121349 — Unknown Vendor Adobe Connect is CVSS 9.6 Critical Vulnerability",
+      "description": "",
+      "cvss": 9.6,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Adobe Connect is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/connect/apsb26-191.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-121351",
+      "title": "CVE-2026-121351 — Unknown Vendor Adobe Connect is CVSS 10 Critical Vulnerability",
+      "description": "",
+      "cvss": 10,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Adobe Connect is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/connect/apsb26-191.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-121352",
+      "title": "CVE-2026-121352 — Unknown Vendor Adobe Connect is CVSS 10 Critical Vulnerability",
+      "description": "",
+      "cvss": 10,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Adobe Connect is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/connect/apsb26-191.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-121353",
+      "title": "CVE-2026-121353 — Unknown Vendor Adobe Connect is CVSS 10 Critical Vulnerability",
+      "description": "",
+      "cvss": 10,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Adobe Connect is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/connect/apsb26-191.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-121354",
+      "title": "CVE-2026-121354 — Unknown Vendor Adobe Connect is CVSS 9.9 Critical Vulnerability",
+      "description": "",
+      "cvss": 9.9,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Adobe Connect is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/connect/apsb26-191.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-121356",
+      "title": "CVE-2026-121356 — Unknown Vendor Adobe Connect is CVSS 10 Critical Vulnerability",
+      "description": "",
+      "cvss": 10,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Adobe Connect is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/connect/apsb26-191.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-121887",
+      "title": "CVE-2026-121887 — Unknown Vendor Adobe Connect is CVSS 9.9 Critical Vulnerability",
+      "description": "",
+      "cvss": 9.9,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Adobe Connect is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/connect/apsb26-191.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-121889",
+      "title": "CVE-2026-121889 — Unknown Vendor Adobe Connect is CVSS 10 Critical Vulnerability",
+      "description": "",
+      "cvss": 10,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Adobe Connect is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/connect/apsb26-191.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-121892",
+      "title": "CVE-2026-121892 — Unknown Vendor Adobe Connect is CVSS 9.9 Critical Vulnerability",
+      "description": "",
+      "cvss": 9.9,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Adobe Connect is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/connect/apsb26-191.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-121894",
+      "title": "CVE-2026-121894 — Unknown Vendor Adobe Connect is CVSS 9.9 Critical Vulnerability",
+      "description": "",
+      "cvss": 9.9,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Adobe Connect is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/connect/apsb26-191.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-121896",
+      "title": "CVE-2026-121896 — Unknown Vendor Adobe Connect is CVSS 9.9 Critical Vulnerability",
+      "description": "",
+      "cvss": 9.9,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Adobe Connect is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/connect/apsb26-191.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-121898",
+      "title": "CVE-2026-121898 — Unknown Vendor Adobe Connect is CVSS 9.9 Critical Vulnerability",
+      "description": "",
+      "cvss": 9.9,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Adobe Connect is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/connect/apsb26-191.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-121904",
+      "title": "CVE-2026-121904 — Unknown Vendor Adobe Connect is CVSS 9.6 Critical Vulnerability",
+      "description": "",
+      "cvss": 9.6,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Adobe Connect is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/connect/apsb26-191.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-121906",
+      "title": "CVE-2026-121906 — Unknown Vendor Adobe Connect is CVSS 9.9 Critical Vulnerability",
+      "description": "",
+      "cvss": 9.9,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Adobe Connect is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/connect/apsb26-191.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-89103",
+      "title": "CVE-2026-89103 — Unknown Vendor SAP Gateway activates CVSS 10 Critical Vulnerability",
+      "description": "",
+      "cvss": 10,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "SAP Gateway activates",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://me.sap.com/notes/3798345",
         "https://url.sap/sapsecuritypatchday"
       ],
       "explanation": {
@@ -5041,8 +4972,97 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-109798",
-      "title": "CVE-2026-109798 — Unknown Vendor SAP BusinessObjects Business CVSS 9.1 Critical Vulnerability",
+      "id": "CVE-2026-89119",
+      "title": "CVE-2026-89119 — Unknown Vendor SAP Web Dispatcher CVSS 9.6 Critical Vulnerability",
+      "description": "",
+      "cvss": 9.6,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "SAP Web Dispatcher",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://me.sap.com/notes/3804858",
+        "https://url.sap/sapsecuritypatchday"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-121902",
+      "title": "CVE-2026-121902 — Unknown Vendor Adobe Connect is CVSS 9.4 Critical Vulnerability",
+      "description": "",
+      "cvss": 9.4,
+      "final_ps": 31,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Adobe Connect is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/connect/apsb26-191.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "+10 CVSS≥9"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-121355",
+      "title": "CVE-2026-121355 — Unknown Vendor Adobe Connect is CVSS 9.1 Critical Vulnerability",
       "description": "",
       "cvss": 9.1,
       "final_ps": 31,
@@ -5060,292 +5080,12 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "SAP BusinessObjects Business",
+      "product": "Adobe Connect is",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://me.sap.com/notes/3799117",
-        "https://url.sap/sapsecuritypatchday"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-124560",
-      "title": "CVE-2026-124560 — Unknown Vendor A vulnerability was CVSS 9.8 Critical Vulnerability",
-      "description": "",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-09",
-      "last_seen": "2026-11-09",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "A vulnerability was",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/Zimo-666/DIR-878-cves/tree/main/01-captcha-uid-heap-overflow",
-        "https://vuldb.com/cve/CVE-2026-124560",
-        "https://vuldb.com/submit/1035616",
-        "https://vuldb.com/vuln/432892"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-124577",
-      "title": "CVE-2026-124577 — Unknown Vendor A weakness has CVSS 9.8 Critical Vulnerability",
-      "description": "",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-09",
-      "last_seen": "2026-11-09",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "A weakness has",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://vuldb.com/cve/CVE-2026-124577",
-        "https://vuldb.com/submit/1038184",
-        "https://vuldb.com/vuln/432923",
-        "https://vuldb.com/vuln/432923/cti"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-124580",
-      "title": "CVE-2026-124580 — Unknown Vendor A vulnerability was CVSS 10 Critical Vulnerability",
-      "description": "",
-      "cvss": 10,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-09",
-      "last_seen": "2026-11-09",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "A vulnerability was",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/Walnut1337/Feiyuxing_VROS_command_injection/blob/main/README.md",
-        "https://github.com/Walnut1337/Feiyuxing_VROS_command_injection/blob/main/poc_weixin_auth.py",
-        "https://vuldb.com/cve/CVE-2026-124580",
-        "https://vuldb.com/submit/1038438"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-124585",
-      "title": "CVE-2026-124585 — Unknown Vendor A vulnerability was CVSS 9.9 Critical Vulnerability",
-      "description": "",
-      "cvss": 9.9,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-09",
-      "last_seen": "2026-11-09",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "A vulnerability was",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/C0KE/Feiyuxing-VROS-add_expmac-RCE/blob/main/poc_add_expmac.py",
-        "https://vuldb.com/cve/CVE-2026-124585",
-        "https://vuldb.com/submit/1039019",
-        "https://vuldb.com/vuln/433009"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-124079",
-      "title": "CVE-2026-124079 — Unknown Vendor rConfig Core 8.0.0 CVSS 9.8 Critical Vulnerability",
-      "description": "",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-09",
-      "last_seen": "2026-11-09",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "rConfig Core 8.0.0",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/rconfig/rconfig/releases/tag/core-8.2.19",
-        "https://www.rconfig.com/security-advisories",
-        "https://www.vulncheck.com/advisories/rconfig-core-before-and-rconfig-pro-before-rce-via-unauthenticated-redis-queue-poisoning"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-123549",
-      "title": "CVE-2026-123549 — Unknown Vendor OpenAM before 16.1.4 CVSS 9.8 Critical Vulnerability",
-      "description": "",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-08",
-      "last_seen": "2026-11-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "OpenAM before 16.1.4",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/OpenIdentityPlatform/OpenAM/security/advisories/GHSA-jv8f-m88g-h6mm",
-        "https://www.vulncheck.com/advisories/openam-before-16.1.4-privilege-escalation-via-self-registration-attribute-bypass"
+        "https://www.adobe.com/trust/security/products/connect/apsb26-191.html"
       ],
       "explanation": {
         "quality": [
@@ -5545,52 +5285,8 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-107331",
-      "title": "CVE-2026-107331 — Unknown Vendor IBM DataStage on CVSS 9.9 Critical Vulnerability",
-      "description": "",
-      "cvss": 9.9,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-08",
-      "last_seen": "2026-11-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "IBM DataStage on",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.ibm.com/support/pages/node/7294270"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2023-39405",
-      "title": "CVE-2023-39405 — huawei emui CVSS 9.8 Critical Vulnerability",
+      "id": "CVE-2026-111497",
+      "title": "CVE-2026-111497 — google brotli CVSS 9.8 Critical Vulnerability",
       "description": "",
       "cvss": 9.8,
       "final_ps": 31,
@@ -5602,576 +5298,21 @@
       "merged_sources": [
         "nvd"
       ],
-      "first_seen": "2023-08-13",
-      "last_seen": "2023-08-13",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "huawei",
-      "product": "emui",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://consumer.huawei.com/en/support/bulletin/2023/8/",
-        "https://device.harmonyos.com/en/docs/security/update/security-bulletins-202308-0000001667644725",
-        "https://consumer.huawei.com/en/support/bulletin/2023/8/",
-        "https://device.harmonyos.com/en/docs/security/update/security-bulletins-202308-0000001667644725"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2023-35085",
-      "title": "CVE-2023-35085 — ui unifi uap firmware CVSS 9.8 Critical Vulnerability",
-      "description": "",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2023-08-10",
-      "last_seen": "2023-08-10",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "ui",
-      "product": "unifi uap firmware",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://community.ui.com/releases/Security-Advisory-Bulletin-035-035/91107858-9884-44df-b1c6-63c6499f6e56",
-        "https://community.ui.com/releases/Security-Advisory-Bulletin-035-035/91107858-9884-44df-b1c6-63c6499f6e56"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2023-38034",
-      "title": "CVE-2023-38034 — ui unifi uap firmware CVSS 9.8 Critical Vulnerability",
-      "description": "",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2023-08-10",
-      "last_seen": "2023-08-10",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "ui",
-      "product": "unifi uap firmware",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://community.ui.com/releases/Security-Advisory-Bulletin-035-035/91107858-9884-44df-b1c6-63c6499f6e56",
-        "https://community.ui.com/releases/Security-Advisory-Bulletin-035-035/91107858-9884-44df-b1c6-63c6499f6e56"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2022-4920",
-      "title": "CVE-2022-4920 — google chrome CVSS 9.6 Critical Vulnerability",
-      "description": "",
-      "cvss": 9.6,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2023-07-29",
-      "last_seen": "2023-07-29",
+      "first_seen": "2026-10-22",
+      "last_seen": "2026-10-22",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "google",
-      "product": "chrome",
+      "product": "brotli",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://chromereleases.googleblog.com/2022/04/stable-channel-update-for-desktop_26.html",
-        "https://crbug.com/1306861",
-        "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/PQKT7EGDD2P3L7S3NXEDDRCPK4NNZNWJ/",
-        "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/YKLJ3B3D5BCVWE3QNP4N7HHF26OHD567/"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2022-4924",
-      "title": "CVE-2022-4924 — google chrome CVSS 9.6 Critical Vulnerability",
-      "description": "",
-      "cvss": 9.6,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2023-07-29",
-      "last_seen": "2023-07-29",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "google",
-      "product": "chrome",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://chromereleases.googleblog.com/2022/01/stable-channel-update-for-desktop.html",
-        "https://crbug.com/1272967",
-        "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/PQKT7EGDD2P3L7S3NXEDDRCPK4NNZNWJ/",
-        "https://chromereleases.googleblog.com/2022/01/stable-channel-update-for-desktop.html"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2023-28531",
-      "title": "CVE-2023-28531 — openbsd openssh CVSS 9.8 Critical Vulnerability",
-      "description": "",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2023-03-17",
-      "last_seen": "2023-03-17",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "openbsd",
-      "product": "openssh",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/AN2UDTXEUSKFIOIYMV6JNI5VSBMYZOFT/",
-        "https://security.gentoo.org/glsa/202307-01",
-        "https://security.netapp.com/advisory/ntap-20230413-0008/",
-        "https://www.debian.org/security/2023/dsa-5586"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2022-3760",
-      "title": "CVE-2022-3760 — miateknoloji mia-med CVSS 9.8 Critical Vulnerability",
-      "description": "",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2023-03-07",
-      "last_seen": "2023-03-07",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "miateknoloji",
-      "product": "mia-med",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://siberguvenlik.gov.tr/guvenlik-bildirimleri/detay/tr-23-0130",
-        "https://www.usom.gov.tr/bildirim/tr-23-0130",
-        "https://www.usom.gov.tr/bildirim/tr-23-0130"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2022-2504",
-      "title": "CVE-2022-2504 — sdd-baro project sdd-baro CVSS 9.8 Critical Vulnerability",
-      "description": "",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2023-02-23",
-      "last_seen": "2023-02-23",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "sdd-baro project",
-      "product": "sdd-baro",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://siberguvenlik.gov.tr/guvenlik-bildirimleri/detay/tr-23-0107",
-        "https://www.usom.gov.tr/bildirim/tr-23-0107",
-        "https://www.usom.gov.tr/bildirim/tr-23-0107"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2022-45088",
-      "title": "CVE-2022-45088 — gruparge smartpower web CVSS 9.8 Critical Vulnerability",
-      "description": "",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2023-02-12",
-      "last_seen": "2023-02-12",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "gruparge",
-      "product": "smartpower web",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://siberguvenlik.gov.tr/guvenlik-bildirimleri/detay/tr-23-0066",
-        "https://www.usom.gov.tr/bildirim/tr-23-0066",
-        "https://www.usom.gov.tr/bildirim/tr-23-0066"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2022-22274",
-      "title": "CVE-2022-22274 — sonicwall sonicos CVSS 9.8 Critical Vulnerability",
-      "description": "",
-      "cvss": 9.8,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2022-03-25",
-      "last_seen": "2022-03-25",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "sonicwall",
-      "product": "sonicos",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://psirt.global.sonicwall.com/vuln-detail/SNWLID-2022-0003",
-        "https://psirt.global.sonicwall.com/vuln-detail/SNWLID-2022-0003"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2023-39385",
-      "title": "CVE-2023-39385 — huawei emui CVSS 9.1 Critical Vulnerability",
-      "description": "",
-      "cvss": 9.1,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2023-08-13",
-      "last_seen": "2023-08-13",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "huawei",
-      "product": "emui",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://consumer.huawei.com/en/support/bulletin/2023/8/",
-        "https://device.harmonyos.com/en/docs/security/update/security-bulletins-202308-0000001667644725",
-        "https://consumer.huawei.com/en/support/bulletin/2023/8/",
-        "https://device.harmonyos.com/en/docs/security/update/security-bulletins-202308-0000001667644725"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2023-39398",
-      "title": "CVE-2023-39398 — huawei emui CVSS 9.1 Critical Vulnerability",
-      "description": "",
-      "cvss": 9.1,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2023-08-13",
-      "last_seen": "2023-08-13",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "huawei",
-      "product": "emui",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://consumer.huawei.com/en/support/bulletin/2023/8/",
-        "https://device.harmonyos.com/en/docs/security/update/security-bulletins-202308-0000001667644725",
-        "https://consumer.huawei.com/en/support/bulletin/2023/8/",
-        "https://device.harmonyos.com/en/docs/security/update/security-bulletins-202308-0000001667644725"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "+10 CVSS≥9"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2023-39399",
-      "title": "CVE-2023-39399 — huawei emui CVSS 9.1 Critical Vulnerability",
-      "description": "",
-      "cvss": 9.1,
-      "final_ps": 31,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2023-08-13",
-      "last_seen": "2023-08-13",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "huawei",
-      "product": "emui",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://consumer.huawei.com/en/support/bulletin/2023/8/",
-        "https://device.harmonyos.com/en/docs/security/update/security-bulletins-202308-0000001667644725",
-        "https://consumer.huawei.com/en/support/bulletin/2023/8/",
-        "https://device.harmonyos.com/en/docs/security/update/security-bulletins-202308-0000001667644725"
+        "https://github.com/andybalholm/brotli/releases/tag/v1.2.7",
+        "https://nodejs.org/en/blog/vulnerability/october-2026-security-releases#nodejs-brotli-decoder-out-of-bounds-write-permits-remote-code-execution-cve-2026-111497---high",
+        "http://www.openwall.com/lists/oss-security/2026/10/23/25",
+        "http://www.openwall.com/lists/oss-security/2026/10/24/6"
       ],
       "explanation": {
         "quality": [
@@ -6336,7 +5477,7 @@
       "description": "",
       "cvss": null,
       "final_ps": 29,
-      "quality_score": 0.515,
+      "quality_score": 0.525,
       "threat_level": "LOW",
       "type": "CVE_REPORT",
       "source": "cisa_kev",
@@ -6352,7 +5493,9 @@
       "vendor": "Google",
       "product": "Chromium",
       "due_date": null,
-      "cves": [],
+      "cves": [
+        "CVE-2026-125350"
+      ],
       "ioc_count": 0,
       "refs": [
         "https://chromereleases.googleblog.com/2026/11/stable-channel-update-for-desktop_018223192.html",
@@ -6365,7 +5508,7 @@
           "source_weight=1.00 (cisa_kev)",
           "data_confidence=0.40",
           "recency=0d (score=1.00)",
-          "QS=0.515"
+          "QS=0.525"
         ],
         "priority": [
           "+8 exploited_in_wild"
@@ -6378,297 +5521,10 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-102895",
-      "title": "CVE-2026-102895: GPUStack Improper Authentication Vulnerability — CISA KEV Active Exploitation",
+      "id": "CVE-2026-113526",
+      "title": "CVE-2026-113526 — Unknown Vendor After Effects is CVSS 8.6 High Severity Vulnerability",
       "description": "",
-      "cvss": null,
-      "final_ps": 29,
-      "quality_score": 0.515,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "cisa_kev",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "cisa_kev"
-      ],
-      "first_seen": "2026-11-09",
-      "last_seen": "2026-11-09",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "GPUStack",
-      "product": "GPUStack",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/gpustack/gpustack/security/advisories/GHSA-gj9m-f8ph-pmhr",
-        "https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk",
-        "https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-102895"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (cisa_kev)",
-          "data_confidence=0.40",
-          "recency=0d (score=1.00)",
-          "QS=0.515"
-        ],
-        "priority": [
-          "+8 exploited_in_wild"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-123158",
-      "title": "CVE-2026-123158: OpenBSD OpenSSH Unexpected Status Code or Return Value Vulnerability — CISA KEV Active Exploitation",
-      "description": "",
-      "cvss": null,
-      "final_ps": 29,
-      "quality_score": 0.515,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "cisa_kev",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "cisa_kev"
-      ],
-      "first_seen": "2026-11-09",
-      "last_seen": "2026-11-09",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "OpenBSD",
-      "product": "OpenSSH",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.openssh.org/releasenotes.html",
-        "https://alpinelinux.org/posts/2026-11-05-openssh-password-authentication-bypass/",
-        "https://github.com/openssh/openssh-portable/commit/4353fdc43ef646c43a8dda7025cc1a898caf1482",
-        "https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (cisa_kev)",
-          "data_confidence=0.40",
-          "recency=0d (score=1.00)",
-          "QS=0.515"
-        ],
-        "priority": [
-          "+8 exploited_in_wild"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-116779",
-      "title": "CVE-2026-116779: SignalWire FreeSwitch Code Injection Vulnerability — CISA KEV Active Exploitation",
-      "description": "",
-      "cvss": null,
-      "final_ps": 29,
-      "quality_score": 0.515,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "cisa_kev",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "cisa_kev"
-      ],
-      "first_seen": "2026-11-09",
-      "last_seen": "2026-11-09",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "SignalWire",
-      "product": "FreeSwitch",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/signalwire/freeswitch/security/advisories/GHSA-mg63-h38w-8p9p",
-        "https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk",
-        "https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-116779"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (cisa_kev)",
-          "data_confidence=0.40",
-          "recency=0d (score=1.00)",
-          "QS=0.515"
-        ],
-        "priority": [
-          "+8 exploited_in_wild"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-123218",
-      "title": "CVE-2026-123218: IBM Aspera Faspex Incorrect Authorization Vulnerability — CISA KEV Active Exploitation",
-      "description": "",
-      "cvss": null,
-      "final_ps": 29,
-      "quality_score": 0.515,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "cisa_kev",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "cisa_kev"
-      ],
-      "first_seen": "2026-11-09",
-      "last_seen": "2026-11-09",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "IBM",
-      "product": "Aspera Faspex",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.ibm.com/support/pages/node/7295921",
-        "https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk",
-        "https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-123218"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (cisa_kev)",
-          "data_confidence=0.40",
-          "recency=0d (score=1.00)",
-          "QS=0.515"
-        ],
-        "priority": [
-          "+8 exploited_in_wild"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CISA-da357fb199bc2ee2",
-      "title": "CISA Adds Four Known Exploited Vulnerabilities to Catalog",
-      "description": "",
-      "cvss": null,
-      "final_ps": 28,
-      "quality_score": 0.505,
-      "threat_level": "LOW",
-      "type": "ADVISORY",
-      "source": "cisa_alerts",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "cisa_alerts"
-      ],
-      "first_seen": "2026-11-09",
-      "last_seen": "2026-11-09",
-      "exploited": true,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "CISA US-CERT",
-      "product": "Multiple Products",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-102895",
-        "CVE-2026-116779",
-        "CVE-2026-123158",
-        "CVE-2026-123218"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://www.cisa.gov/news-events/alerts/2026/11/09/cisa-adds-four-known-exploited-vulnerabilities-catalog"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (cisa_alerts)",
-          "data_confidence=0.40",
-          "recency=0d (score=1.00)",
-          "QS=0.505"
-        ],
-        "priority": [
-          "+8 exploited_in_wild"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-113663",
-      "title": "AG2: Newline injection in SandboxShellTool bypasses allowed=[...] and readonly=True, enabling arbitrary command executio",
-      "description": "",
-      "cvss": 8.8,
-      "final_ps": 21,
-      "quality_score": 0.523,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "github_advisories",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "github_advisories"
-      ],
-      "first_seen": "2026-11-10",
-      "last_seen": "2026-11-10",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "pip",
-      "product": "ag2",
-      "due_date": null,
-      "cves": [
-        "CVE-2026-113663",
-        "CVE-2026-113663"
-      ],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/advisories/GHSA-2h4w-29cv-2cmv",
-        "https://github.com/ag2ai/ag2/security/advisories/GHSA-2h4w-29cv-2cmv",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-113663",
-        "https://github.com/ag2ai/ag2/commit/3cd86726bb731eb11d6270f0ef9e50e42b5abb39"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=0.95 (github_advisories)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-123572",
-      "title": "CVE-2026-123572 — Unknown Vendor Hickory-dns from 0.20.1 CVSS 7.5 High Severity Vulnerability",
-      "description": "",
-      "cvss": 7.5,
+      "cvss": 8.6,
       "final_ps": 21,
       "quality_score": 0.525,
       "threat_level": "LOW",
@@ -6678,19 +5534,18 @@
       "merged_sources": [
         "nvd"
       ],
-      "first_seen": "2026-11-08",
-      "last_seen": "2026-11-08",
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "Unknown Vendor",
-      "product": "Hickory-dns from 0.20.1",
+      "product": "After Effects is",
       "due_date": null,
       "cves": [],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/hickory-dns/hickory-dns/security/advisories/GHSA-hx8c-fjhc-hmf5",
-        "https://www.vulncheck.com/advisories/hickory-dns-0.20.1-before-0.26.2-panic-dos-via-svcb-https-zone-parser"
+        "https://www.adobe.com/trust/security/products/after-effects/apsb26-100.html"
       ],
       "explanation": {
         "quality": [
@@ -6710,10 +5565,635 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-118670",
-      "title": "OHIF Viewers: DOM-Based Cross Site Scripting (XSS) through MIME type of document",
+      "id": "CVE-2026-126186",
+      "title": "Active Storage: Possible arbitrary file read and remote code execution in video previews, analysis and image processing",
       "description": "",
       "cvss": 8.8,
+      "final_ps": 21,
+      "quality_score": 0.523,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "github_advisories",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "github_advisories"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "rubygems",
+      "product": "activestorage",
+      "due_date": null,
+      "cves": [
+        "CVE-2026-126186",
+        "CVE-2026-126186"
+      ],
+      "ioc_count": 0,
+      "refs": [
+        "https://github.com/advisories/GHSA-v924-7rp8-4mxh",
+        "https://github.com/rails/rails/security/advisories/GHSA-v924-7rp8-4mxh",
+        "https://github.com/rails/rails/commit/72136ff39153bc8d63ecbc899993848eb3d6573e",
+        "https://github.com/rails/rails/commit/8106938fb0a595f11006dd1497cd409e27d7d636"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=0.95 (github_advisories)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.523"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-104352",
+      "title": "CVE-2026-104352 — Unknown Vendor Premiere Pro is CVSS 7.8 High Severity Vulnerability",
+      "description": "",
+      "cvss": 7.8,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Premiere Pro is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/premiere/apsb26-101.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-110085",
+      "title": "CVE-2026-110085 — Unknown Vendor Premiere Pro is CVSS 7.8 High Severity Vulnerability",
+      "description": "",
+      "cvss": 7.8,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Premiere Pro is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/premiere/apsb26-101.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-110086",
+      "title": "CVE-2026-110086 — Unknown Vendor Premiere Pro is CVSS 7.8 High Severity Vulnerability",
+      "description": "",
+      "cvss": 7.8,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Premiere Pro is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/premiere/apsb26-101.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-110088",
+      "title": "CVE-2026-110088 — Unknown Vendor Premiere Pro is CVSS 7.8 High Severity Vulnerability",
+      "description": "",
+      "cvss": 7.8,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Premiere Pro is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/premiere/apsb26-101.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-110089",
+      "title": "CVE-2026-110089 — Unknown Vendor Premiere Pro is CVSS 7.8 High Severity Vulnerability",
+      "description": "",
+      "cvss": 7.8,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Premiere Pro is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/premiere/apsb26-101.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-113512",
+      "title": "CVE-2026-113512 — Unknown Vendor After Effects is CVSS 7.8 High Severity Vulnerability",
+      "description": "",
+      "cvss": 7.8,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "After Effects is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/after-effects/apsb26-100.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-113516",
+      "title": "CVE-2026-113516 — Unknown Vendor After Effects is CVSS 7.8 High Severity Vulnerability",
+      "description": "",
+      "cvss": 7.8,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "After Effects is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/after-effects/apsb26-100.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-113517",
+      "title": "CVE-2026-113517 — Unknown Vendor After Effects is CVSS 7.8 High Severity Vulnerability",
+      "description": "",
+      "cvss": 7.8,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "After Effects is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/after-effects/apsb26-100.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-113530",
+      "title": "CVE-2026-113530 — Unknown Vendor After Effects is CVSS 7.8 High Severity Vulnerability",
+      "description": "",
+      "cvss": 7.8,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "After Effects is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/after-effects/apsb26-100.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-113536",
+      "title": "CVE-2026-113536 — Unknown Vendor After Effects is CVSS 7.8 High Severity Vulnerability",
+      "description": "",
+      "cvss": 7.8,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "After Effects is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/after-effects/apsb26-100.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-113541",
+      "title": "CVE-2026-113541 — Unknown Vendor Media Encoder is CVSS 7.8 High Severity Vulnerability",
+      "description": "",
+      "cvss": 7.8,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Media Encoder is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/media-encoder/apsb26-103.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-113553",
+      "title": "CVE-2026-113553 — Unknown Vendor Audition is affected CVSS 7.8 High Severity Vulnerability",
+      "description": "",
+      "cvss": 7.8,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Audition is affected",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/audition/apsb26-102.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-115483",
+      "title": "CVE-2026-115483 — Unknown Vendor The Everest Forms CVSS 7.5 High Severity Vulnerability",
+      "description": "",
+      "cvss": 7.5,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "The Everest Forms",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://plugins.trac.wordpress.org/browser/everest-forms/tags/3.6.3/includes/abstracts/class-evf-form-fields-upload.php#L1637",
+        "https://plugins.trac.wordpress.org/browser/everest-forms/tags/3.6.3/includes/abstracts/class-evf-form-fields-upload.php#L1645",
+        "https://plugins.trac.wordpress.org/browser/everest-forms/tags/3.6.3/includes/abstracts/class-evf-form-fields-upload.php#L1717",
+        "https://plugins.trac.wordpress.org/browser/everest-forms/tags/3.6.3/includes/abstracts/class-evf-form-fields-upload.php#L1727"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-125117",
+      "title": "Mongoose walks into inherited properties when hydrating, setting, and merging, allowing overwrites of built-in functions",
+      "description": "",
+      "cvss": 8.2,
       "final_ps": 21,
       "quality_score": 0.523,
       "threat_level": "LOW",
@@ -6729,18 +6209,18 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "npm",
-      "product": "@ohif/extension-dicom-pdf",
+      "product": "mongoose",
       "due_date": null,
       "cves": [
-        "CVE-2026-118670",
-        "CVE-2026-118670"
+        "CVE-2026-125117",
+        "CVE-2026-125117"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-xwgp-w3pj-q5h3",
-        "https://github.com/OHIF/Viewers/security/advisories/GHSA-xwgp-w3pj-q5h3",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-118670",
-        "https://github.com/OHIF/Viewers/pull/6228"
+        "https://github.com/advisories/GHSA-8332-j7wj-wjw4",
+        "https://github.com/Automattic/mongoose/security/advisories/GHSA-8332-j7wj-wjw4",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-125117",
+        "https://github.com/Automattic/mongoose/commit/18b5513dd463731a2caf0d3395ef1d9eb0735f50"
       ],
       "explanation": {
         "quality": [
@@ -6760,10 +6240,54 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-103002",
-      "title": "GPUStack: Missing authorization on several cluster and resource endpoints allows cross-user access and cluster takeover",
+      "id": "CVE-2026-110091",
+      "title": "CVE-2026-110091 — Unknown Vendor Premiere Pro is CVSS 7.1 High Severity Vulnerability",
       "description": "",
-      "cvss": 8.8,
+      "cvss": 7.1,
+      "final_ps": 21,
+      "quality_score": 0.525,
+      "threat_level": "LOW",
+      "type": "CVE_REPORT",
+      "source": "nvd",
+      "sources_confirmed": 1,
+      "merged_sources": [
+        "nvd"
+      ],
+      "first_seen": "2026-11-10",
+      "last_seen": "2026-11-10",
+      "exploited": false,
+      "cisa_kev": false,
+      "ransomware": false,
+      "vendor": "Unknown Vendor",
+      "product": "Premiere Pro is",
+      "due_date": null,
+      "cves": [],
+      "ioc_count": 0,
+      "refs": [
+        "https://www.adobe.com/trust/security/products/premiere/apsb26-101.html"
+      ],
+      "explanation": {
+        "quality": [
+          "source_weight=1.00 (nvd)",
+          "data_confidence=0.75",
+          "recency=0d (score=1.00)",
+          "QS=0.525"
+        ],
+        "priority": [
+          "base_ps=21 (no boosts)"
+        ],
+        "suppression": null,
+        "merge": null
+      },
+      "suppressed": false,
+      "suppression_reason": null,
+      "iocs": []
+    },
+    {
+      "id": "CVE-2026-114149",
+      "title": "Microsoft Security Advisory CVE-2026-114149 - ASP.NET Core Denial of Service Vulnerability",
+      "description": "",
+      "cvss": 7.5,
       "final_ps": 21,
       "quality_score": 0.523,
       "threat_level": "LOW",
@@ -6778,19 +6302,19 @@
       "exploited": false,
       "cisa_kev": false,
       "ransomware": false,
-      "vendor": "pip",
-      "product": "gpustack",
+      "vendor": "nuget",
+      "product": "Microsoft.AspNetCore.App.Runtime.linux-arm",
       "due_date": null,
       "cves": [
-        "CVE-2026-103002",
-        "CVE-2026-103002"
+        "CVE-2026-114149",
+        "CVE-2026-114149"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-3hch-x692-6qj3",
-        "https://github.com/gpustack/gpustack/security/advisories/GHSA-3hch-x692-6qj3",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-103002",
-        "https://github.com/gpustack/gpustack/pull/5911"
+        "https://github.com/advisories/GHSA-x33c-w48q-qrgc",
+        "https://github.com/dotnet/aspnetcore/security/advisories/GHSA-x33c-w48q-qrgc",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-114149",
+        "https://github.com/dotnet/announcements/issues/511"
       ],
       "explanation": {
         "quality": [
@@ -6810,8 +6334,8 @@
       "iocs": []
     },
     {
-      "id": "CVE-2026-125111",
-      "title": "Rack: Multipart parsing allows DoS via unbounded scan buffer growth",
+      "id": "CVE-2026-126080",
+      "title": "Active Support: Possible DoS vulnerability in Active Support safe_constantize",
       "description": "",
       "cvss": 7.5,
       "final_ps": 21,
@@ -6829,18 +6353,18 @@
       "cisa_kev": false,
       "ransomware": false,
       "vendor": "rubygems",
-      "product": "rack",
+      "product": "activesupport",
       "due_date": null,
       "cves": [
-        "CVE-2026-125111",
-        "CVE-2026-125111"
+        "CVE-2026-126080",
+        "CVE-2026-126080"
       ],
       "ioc_count": 0,
       "refs": [
-        "https://github.com/advisories/GHSA-5v64-555j-wjxm",
-        "https://github.com/rack/rack/security/advisories/GHSA-5v64-555j-wjxm",
-        "https://nvd.nist.gov/vuln/detail/CVE-2026-125111",
-        "https://github.com/rack/rack/commit/244e75a840cee0823f86d5d01dc374505a8abed8"
+        "https://github.com/advisories/GHSA-8474-xrp6-wh69",
+        "https://github.com/rails/rails/security/advisories/GHSA-8474-xrp6-wh69",
+        "https://github.com/rails/rails/commit/210ac22d446c8e2625b091e79256806b836eee20",
+        "https://github.com/rails/rails/commit/95aa9e416016524956d4904fed96eaed079580bb"
       ],
       "explanation": {
         "quality": [
@@ -6848,96 +6372,6 @@
           "data_confidence=0.75",
           "recency=0d (score=1.00)",
           "QS=0.523"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-123531",
-      "title": "CVE-2026-123531 — Unknown Vendor Vikunja from 1.0.0 CVSS 8.8 High Severity Vulnerability",
-      "description": "",
-      "cvss": 8.8,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-08",
-      "last_seen": "2026-11-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Vikunja from 1.0.0",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/go-vikunja/vikunja/security/advisories/GHSA-v579-5fwc-gr28",
-        "https://www.vulncheck.com/advisories/vikunja-1.0.0-before-2.7.1-pagination-limit-bypass-via-page-0-parameter"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
-        ],
-        "priority": [
-          "base_ps=21 (no boosts)"
-        ],
-        "suppression": null,
-        "merge": null
-      },
-      "suppressed": false,
-      "suppression_reason": null,
-      "iocs": []
-    },
-    {
-      "id": "CVE-2026-123595",
-      "title": "CVE-2026-123595 — Unknown Vendor Hickory DNS hickory-proto CVSS 8.8 High Severity Vulnerability",
-      "description": "",
-      "cvss": 8.8,
-      "final_ps": 21,
-      "quality_score": 0.525,
-      "threat_level": "LOW",
-      "type": "CVE_REPORT",
-      "source": "nvd",
-      "sources_confirmed": 1,
-      "merged_sources": [
-        "nvd"
-      ],
-      "first_seen": "2026-11-08",
-      "last_seen": "2026-11-08",
-      "exploited": false,
-      "cisa_kev": false,
-      "ransomware": false,
-      "vendor": "Unknown Vendor",
-      "product": "Hickory DNS hickory-proto",
-      "due_date": null,
-      "cves": [],
-      "ioc_count": 0,
-      "refs": [
-        "https://github.com/hickory-dns/hickory-dns/security/advisories/GHSA-624w-vvww-xvpw",
-        "https://www.vulncheck.com/advisories/hickory-dns-through-0.26.0-alpha.1-dnssec-validation-bypass-via-ancestor-delegation-nsec3"
-      ],
-      "explanation": {
-        "quality": [
-          "source_weight=1.00 (nvd)",
-          "data_confidence=0.75",
-          "recency=0d (score=1.00)",
-          "QS=0.525"
         ],
         "priority": [
           "base_ps=21 (no boosts)"
