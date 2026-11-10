@@ -96,7 +96,8 @@ test('P0 create: Lua preflights WRONGTYPE before any HSET/ZADD/EXPIRE',()=>{
   for(const marker of ['HOLD_RECORD_EXISTS','HOLD_INDEX_TYPE','HOLD_INVALID_FIELDS']){
     assert(CREATE_SCRIPT.indexOf(marker)<firstWrite,marker);
   }
-  assert.equal((CREATE_SCRIPT.match(/redis\.call\('ZADD'/g)||[]).length,4);
+  assert.equal((CREATE_SCRIPT.match(/redis\.call\('ZADD'/g)||[]).length,5,
+    'global, status, priority, conditional owner and audit indexes');
 });
 
 test('P0 manager uses EVAL only; never separately indexes an uncommitted case',async()=>{
