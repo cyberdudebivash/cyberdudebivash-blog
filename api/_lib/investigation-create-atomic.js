@@ -32,7 +32,19 @@ async function atomicCreateInvestigation({redis,investigation,now=new Date()}={}
     throw new Error('SOC_INVESTIGATION_CREATE_ATOMIC_REDIS_UNAVAILABLE');
   }
   const x=investigation;
-  if(!x || typeof x!=='object' ||
+  // Reject unexpected fields before forwarding anything into Redis HSET.
+  // The manager owns this exact record schema, not a browser-supplied map.
+  const fieldsAllowed=new Set([
+    'id','title','description','priority','status','assignee','createdAt',
+    'createdBy','updatedAt','linkedIntelligence','linkedEntities',
+    'caseCount','evidenceCount','noteCount','version'
+  ]);
+  if(!x || typeof x!=='object' || Array.isArray(x) ||
+     Object.keys(x).length!==fieldsAllowed.size ||
+     Object.keys(x).some(key=>!fieldsAllowed.has(key))){
+    throw new Error('SOC_INVESTIGATION_CREATE_INVALID_RECORD');
+  }
+  if(
      typeof x.id!=='string' || !/^[0-9a-f]{32}$/.test(x.id) ||
      typeof x.title!=='string' || !x.title.trim() || x.title.length>4096 ||
      typeof x.description!=='string' || x.description.length>16384 ||
