@@ -39,8 +39,8 @@ describe('SOC public homepage canary — read-only fail-closed edge checks',()=>
     expect(inspectResponseBody(legacy).status).toBe('FAIL');
   });
   test('rejects orphaned threat-card excerpt and preserves page source confidentiality',()=>{
-    const bad=html.replace('<!-- POST 1 — FEATURED -->',
-      ') in the ClassDefinition UID validation regex\n<!-- POST 1 — FEATURED -->');
+    const bad=html.replace('<!-- Historical static cards removed',
+      ') in the ClassDefinition UID validation regex\n<!-- Historical static cards removed');
     const r=inspectResponseBody(bad);
     expect(r.status).toBe('FAIL');
     expect(JSON.stringify(r)).not.toContain('ClassDefinition UID');

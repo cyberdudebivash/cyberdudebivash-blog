@@ -83,7 +83,8 @@ test('SOC browser widget classifies genuine source age, not browser fetch time',
  assert.equal(classify('2026-10-30T08:59:00Z',now).state,'stale');
  assert.equal(classify('2026-10-30T09:00:00Z',now).state,'current');
  assert.equal(classify('2026-10-30T12:05:01Z',now).state,'unverified');
- assert.equal(classify('2026-10-30T12:05:00Z',now).state,'current');
+ // Even a small future skew must not be represented as verified current publication.
+ assert.equal(classify('2026-10-30T12:05:00Z',now).state,'unverified');
  for(const bad of [null,undefined,'','NaN','definitely-not-a-date',{},12345]){
    const result=classify(bad,now);
    assert.equal(result.state,'unverified',String(bad));
@@ -186,7 +187,7 @@ test('SOC customer widget prioritizes report age, not high-priority archival fil
  assert.equal(rows[0].id,'ARCHIVE-HIGH');
 });
 
-test('SOC source selector enforces 15-card bound and labels an archival-only corpus',()=>{
+test('SOC source selector excludes archival reports and caps recent feed at 15 cards',()=>{
  const vm=require('node:vm');
  const source=fs.readFileSync(path.join(__dirname,'..','live-feed-widget.js'),'utf8');
  const sandbox={
@@ -200,12 +201,16 @@ test('SOC source selector enforces 15-card bound and labels an archival-only cor
  const archives=Array.from({length:150},(_,i)=>({
    id:'OLD-'+i,priority:100-i,_addedAt:new Date(now-(60+i)*86400000).toISOString(),
  }));
- const result=select(archives,now);
- assert.equal(result.length,15,'must never render the full 150-item priority-ranked corpus');
- assert.equal(result[0].id,'OLD-0');
- assert(result.every(r=>r._contentArchived===true));
+ assert.equal(select(archives,now).length,0,
+   'historical reports belong in the archive, not the live customer dashboard');
+ const recent=Array.from({length:150},(_,i)=>({
+   id:'CURRENT-'+i,priority:100-i,_addedAt:new Date(now-i*60000).toISOString(),
+ }));
+ const result=select(recent,now);
+ assert.equal(result.length,15,'cap a 150-report recent source at 15 cards');
+ assert.equal(result[0].id,'CURRENT-0');
+ assert(result.every(r=>r._contentArchived===false));
  assert.equal(select([{id:'NO_DATE'},{id:'FUTURE',_addedAt:'2099-01-01'}],now).length,0);
- assert.match(source,/ARCHIVAL INTEL — NO RECENT REPORTS/);
  assert.match(source,/No reports added in last/);
  assert.match(source,/selectLocalItems\(data\.items\)/);
 });

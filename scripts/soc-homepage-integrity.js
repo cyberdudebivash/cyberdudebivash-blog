@@ -17,7 +17,11 @@ function assertHomepageIntegrity(html, source = 'index.html') {
     ['single statistics bar', count(/<div\b[^>]*class=["'][^"']*\bstats-bar\b/gi) === 1],
     ['single AI spotlight', count(/<section\b[^>]*class=["'][^"']*\bai-spotlight\b/gi) === 1],
     ['single featured intelligence', count(/<div\b[^>]*class=["'][^"']*\bfeatured-intel-section\b/gi) === 1],
-    ['featured report marker exists', count(/<!--\s*POST 1 — FEATURED\s*-->/gi) === 1],
+    // The homepage is a verified feed surface; static report cards belong in the archive.
+    ['no static generated homepage reports', count(/\bdata-intel-auto\s*=/gi) === 0 &&
+      count(/<!--\s*AUTO-GENERATED:/gi) === 0 &&
+      count(/<!--\s*POST 1 — FEATURED\s*-->/gi) === 0],
+    ['historical archive is linked separately', count(/\bclass=["'][^"']*\bsoc-archive-navigation\b/gi) === 1],
     ['no orphaned card tail', !/^\s*\)\s+in the ClassDefinition UID validation regex/im.test(text)],
     ['truthful SOC product title', /<title>[^<]*Threat Intelligence\s*&(?:amp;)?\s*SOC Readiness[^<]*<\/title>/i.test(text) &&
       !/<title>[^<]*SOC\s*2\s*&/i.test(text)],
