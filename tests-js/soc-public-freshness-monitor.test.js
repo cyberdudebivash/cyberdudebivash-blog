@@ -212,7 +212,7 @@ test('SOC source selector excludes archival reports and caps recent feed at 15 c
  assert(result.every(r=>r._contentArchived===false));
  assert.equal(select([{id:'NO_DATE'},{id:'FUTURE',_addedAt:'2099-01-01'}],now).length,0);
  assert.match(source,/No reports added in last/);
- assert.match(source,/selectLocalItems\\(data\\.items\\)/);
+ assert.match(source,/selectLocalItems\(data\.items\)/);
 });
 
 test('SOC genuine 150-row fixture is recency-ranked and DOM bounded',()=>{
