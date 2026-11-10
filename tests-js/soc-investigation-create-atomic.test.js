@@ -56,6 +56,7 @@ test('P0 create: unassigned index receives no writes',async()=>{
 test('P0 create: incomplete or untrusted payload is rejected before Redis',async()=>{
   for(const patch of [
     {id:'invalid'},{title:''},{title:'a'.repeat(4097)},
+    {adminOverride:true},
     {description:null},{description:'d'.repeat(16385)},
     {assignee:'bad owner'},{createdBy:'bad owner'},
     {priority:0},{priority:9},{priority:'4'},{status:'closed'},
