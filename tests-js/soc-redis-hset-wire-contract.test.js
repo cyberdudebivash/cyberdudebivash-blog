@@ -16,10 +16,11 @@ function fakeTransport(t) {
     const parts = opts.method === 'POST' ? JSON.parse(opts.body)
       : new URL(url).pathname.split('/').filter(Boolean).map(decodeURIComponent);
     calls.push({parts,method:opts.method||'GET',url});
-    if (failWrites && parts[0] === 'HSET') return {ok:false,status:503};
-    if (rejectAtApplicationLayer && parts[0] === 'HSET') {
+    if (failWrites && (parts[0] === 'HSET' || parts[0] === 'EVAL')) return {ok:false,status:503};
+    if (rejectAtApplicationLayer && (parts[0] === 'HSET' || parts[0] === 'EVAL')) {
       return {ok:true,json:async()=>({error:'WRONGTYPE Operation against a key holding wrong value'})};
     }
+    if (parts[0] === 'EVAL') return {ok:true,json:async()=>({result:['OK',parts[11]]})};
     return {ok:true,json:async()=>({result:1})};
   };
   t.after(()=>{global.fetch=oldFetch;});
@@ -34,26 +35,27 @@ function asFields(parts) {
   for(let i=0;i<raw.length;i+=2) obj[raw[i]]=raw[i+1];
   return obj;
 }
-test('P0: createInvestigation sends all investigation fields in one valid HSET',async t=>{
+test('P0: createInvestigation uses one atomic EVAL for hash and owner/status/priority indexes',async t=>{
   const {calls}=fakeTransport(t);
   const manager=new InvestigationManager(redis,null,null);
-  manager.recordInvestigationAudit=async()=>{};
+  manager.recordInvestigationAudit=async()=>{throw Error('SPLIT_AUDIT_NOT_ALLOWED');};
   const investigation=await manager.createInvestigation('Title','Description','HIGH','alice',['ioc-1'],'analyst');
-  const cmds=hsets(calls);
-  assert.equal(cmds.length,1);
-  assert.equal(cmds[0].method,'POST','large multi-field writes must not use URLs');
-  assert.equal(cmds[0].url,'https://redis.invalid');
-  assert.equal(cmds[0].parts[1],'investigation:'+investigation.id);
-  const fields=asFields(cmds[0].parts);
+  assert.deepEqual(calls.map(x=>x.parts[0]),['EVAL']);
+  const cmd=calls[0];
+  assert.equal(cmd.method,'POST','Lua script must not be sent in URL query/path');
+  assert.equal(cmd.url,'https://redis.invalid');
+  assert.equal(cmd.parts[2],'6','six explicit Redis keys for atomic creation');
+  assert.equal(cmd.parts[3],'investigation:'+investigation.id);
+  assert.equal(cmd.parts[6],'investigations:by:priority:4');
+  assert.equal(cmd.parts[7],'investigations:assigned:alice');
+  const fields=asFields(['HSET','investigation:'+investigation.id,...JSON.parse(cmd.parts[9])]);
   assert.equal(fields.title,'Title');
   assert.equal(fields.assignee,'alice');
   assert.equal(fields.priority,'4');
   assert.equal(fields.status,'open');
   assert.equal(fields.version,'1');
   assert.deepEqual(JSON.parse(fields.linkedIntelligence),['ioc-1']);
-  assert(!cmds[0].parts.includes('undefined'));
-  assert(calls.some(x=>x.parts[0]==='EXPIRE'&&x.parts[1]==='investigation:'+investigation.id));
-  assert(calls.some(x=>x.parts[0]==='ZADD'&&x.parts[1]==='investigations:assigned:alice'));
+  assert(!cmd.parts.includes('undefined'));
 });
 test('P0: metadata-only update sends title, description, version and timestamp',async t=>{
   const {calls}=fakeTransport(t);
@@ -97,8 +99,8 @@ test('P0: HTTP failure stops create before expiry, indexes, and audit',async t=>
   const {calls,fail}=fakeTransport(t);fail();
   const manager=new InvestigationManager(redis,null,null);
   manager.recordInvestigationAudit=async()=>{throw Error('AUDIT_NOT_ALLOWED');};
-  await assert.rejects(manager.createInvestigation('T','D','HIGH','alice'),/Redis HSET HTTP 503/);
-  assert.deepEqual(calls.map(x=>x.parts[0]),['HSET']);
+  await assert.rejects(manager.createInvestigation('T','D','HIGH','alice'),/Redis EVAL HTTP 503/);
+  assert.deepEqual(calls.map(x=>x.parts[0]),['EVAL']);
 });
 
 test('P0: HTTP 200 with Upstash error body also fails closed before any indexes',async t=>{
@@ -106,6 +108,6 @@ test('P0: HTTP 200 with Upstash error body also fails closed before any indexes'
   const manager=new InvestigationManager(redis,null,null);
   manager.recordInvestigationAudit=async()=>{throw Error('AUDIT_NOT_ALLOWED');};
   await assert.rejects(manager.createInvestigation('T','D','HIGH','alice'),
-    /SOC_REDIS_HSET_SERVER_REJECTED/);
-  assert.deepEqual(calls.map(x=>x.parts[0]),['HSET']);
+    /SOC_REDIS_EVAL_SERVER_REJECTED/);
+  assert.deepEqual(calls.map(x=>x.parts[0]),['EVAL']);
 });
