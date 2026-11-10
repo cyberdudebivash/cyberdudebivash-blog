@@ -12,8 +12,9 @@ const publisher = fs.readFileSync(path.join(ROOT,'fetch-live-intel.js'),'utf8');
 describe('P0 SOC homepage — source and publisher integrity',() => {
   test('accepts the repaired original homepage, preserving customer CTI content',() => {
     expect(assertHomepageIntegrity(index)).toBe(index);
-    expect(index).toContain('<!-- POST 1 — FEATURED -->');
-    expect(index).toMatch(/data-intel-auto=/);
+    expect(index).not.toContain('<!-- POST 1 — FEATURED -->');
+    expect(index).not.toMatch(/data-intel-auto=/);
+    expect(index).toContain('class="soc-archive-navigation"');
     expect(index).toContain('https://blog.cyberdudebivash.in/');
     expect(index).toContain('customer-assurance.html');
   });
@@ -47,9 +48,24 @@ describe('P0 SOC homepage — source and publisher integrity',() => {
   });
 
   test('rejects original fragmented CVE card text',() => {
-    const corrupted = index.replace('<!-- POST 1 — FEATURED -->',
-      ') in the ClassDefinition UID validation regex\n<!-- POST 1 — FEATURED -->');
+    const corrupted = index.replace('<!-- Historical static cards removed',
+      ') in the ClassDefinition UID validation regex\n<!-- Historical static cards removed');
     expect(() => assertHomepageIntegrity(corrupted)).toThrow('orphaned card tail');
+  });
+
+
+  test('rejects generated static cards or a missing archive link on the live homepage',() => {
+    const injected = index.replace('<!-- Historical static cards removed',
+      '<!-- AUTO-GENERATED: TEST -->\\n<a data-intel-auto="TEST" href="posts/old.html">Old item</a>\\n<!-- Historical static cards removed');
+    expect(() => assertHomepageIntegrity(injected)).toThrow('no static generated homepage reports');
+    const noArchive = index.replace('class="soc-archive-navigation"', 'class="archive-unlinked"');
+    expect(() => assertHomepageIntegrity(noArchive)).toThrow('historical archive is linked separately');
+  });
+
+  test('publisher cannot silently reinsert historical report cards',() => {
+    expect(publisher).not.toContain("const MARKER = '<!-- POST 1 — FEATURED -->'");
+    expect(publisher).not.toContain('html.replace(MARKER,');
+    expect(publisher).toContain('Live homepage verified unchanged');
   });
 
   test('product identity and SEO avoid unsupported live SOC and independent SOC 2 certification claims',() => {
