@@ -2,11 +2,11 @@
   "platform": "CYBERDUDEBIVASH SENTINEL APEX — AI Security Intelligence Division",
   "endpoint": "/api/intel/ai-security.json",
   "doctrine": "Sentinel-APEX/prompts/ai-security-master-prompt.md",
-  "generated": "2026-11-10T20:45:26.777Z",
+  "generated": "2026-11-11T01:49:57.525Z",
   "disclaimer": "Evidence-graded AI security intelligence. Confidence and evidence labels attached per item. Community leads are corroborated before publication.",
   "stats": {
-    "published": 21,
-    "p1": 3,
+    "published": 13,
+    "p1": 0,
     "leadsHeld": 2,
     "analystReports": 0,
     "sourcesOk": 5,
@@ -21,24 +21,16 @@
         "error": "HTTP 429"
       },
       {
-        "name": "NVD (AI/LLM keyword)",
-        "key": "nvd_ai",
+        "name": "NVD (prompt injection)",
+        "key": "nvd_pi",
         "tier": 1,
         "status": "ok",
         "items": 40,
         "error": null
       },
       {
-        "name": "arXiv cs.CR (LLM security)",
-        "key": "arxiv_sec",
-        "tier": 2,
-        "status": "ok",
-        "items": 30,
-        "error": null
-      },
-      {
-        "name": "NVD (prompt injection)",
-        "key": "nvd_pi",
+        "name": "NVD (AI/LLM keyword)",
+        "key": "nvd_ai",
         "tier": 1,
         "status": "ok",
         "items": 40,
@@ -53,6 +45,14 @@
         "error": null
       },
       {
+        "name": "arXiv cs.CR (LLM security)",
+        "key": "arxiv_sec",
+        "tier": 2,
+        "status": "ok",
+        "items": 30,
+        "error": null
+      },
+      {
         "name": "r/MachineLearning",
         "key": "reddit_ml",
         "tier": 3,
@@ -61,7 +61,7 @@
         "error": null
       }
     ],
-    "runtimeMs": 944
+    "runtimeMs": 978
   },
   "frameworks": {
     "owasp_llm_top10": {
@@ -88,468 +88,8 @@
       "AML.T0057": "LLM Data Leakage"
     }
   },
-  "count": 21,
+  "count": 13,
   "items": [
-    {
-      "id": "bc77d55436324ee9",
-      "title": "Code Graph RAG structural tools follow out-of-root symlinks",
-      "url": "https://github.com/advisories/GHSA-85gg-2gfq-q95m",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-11-09T22:16:41Z",
-      "cve": "CVE-2026-87008",
-      "severity": "high",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "agent_tool",
-          "label": "Agentic / Tool / MCP Exploitation"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM06",
-          "name": "Sensitive Information Disclosure / Excessive Agency"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0053",
-          "name": "LLM Plugin Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": true,
-          "mcp": true,
-          "rag": true,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "high"
-      },
-      "enterprise_impact": {
-        "score": 73,
-        "priority": "P1"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Log every agent tool call with arguments; alert on tools reaching unexpected hosts, filesystem paths, or privileged actions.",
-        "hunt": "Trace agent action chains for excessive-agency patterns (self-granted scope, unbounded loops, denial-of-wallet spend)."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "b77b5756ce8351ff",
-      "title": "Code Graph RAG: MCP paginated read_file path traversal / arbitrary file read",
-      "url": "https://github.com/advisories/GHSA-vvr2-h2jp-838m",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-11-09T21:21:32Z",
-      "cve": "CVE-2026-77604",
-      "severity": "high",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "supply_chain",
-          "label": "AI Supply Chain"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM05",
-          "name": "Supply Chain Vulnerabilities"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0010",
-          "name": "ML Supply Chain Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": true,
-          "rag": true,
-          "tool_use": false,
-          "supply_chain": true
-        },
-        "level": "high"
-      },
-      "enterprise_impact": {
-        "score": 73,
-        "priority": "P1"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Alert on model artifact downloads from non-allowlisted registries; scan pickled/`.pt` model files for arbitrary code (Fickling, ModelScan).",
-        "hunt": "Review CI/CD and notebook hosts for outbound connections initiated during model load."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "f14192a07ea6ade0",
-      "title": "Kubeflow Pipelines API server lacks authorization for shared pipeline uploads",
-      "url": "https://github.com/advisories/GHSA-rjr3-43j3-4q8g",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-11-09T22:22:41Z",
-      "cve": "CVE-2026-77596",
-      "severity": "critical",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "infra",
-          "label": "AI Infrastructure / Inference Server"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM05",
-          "name": "Supply Chain Vulnerabilities"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0010",
-          "name": "ML Supply Chain Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": false,
-          "rag": true,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "elevated"
-      },
-      "enterprise_impact": {
-        "score": 65,
-        "priority": "P1"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Expose-check inference servers (Triton/vLLM/Ollama/MLflow/Ray) for unauthenticated management endpoints.",
-        "hunt": "Shodan/asset-inventory sweep for AI infra bound to 0.0.0.0 without auth."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "881f2203eee1ea5e",
-      "title": "AG2: Newline injection in SandboxShellTool bypasses allowed=[...] and readonly=True, enabling arbitrary command execution",
-      "url": "https://github.com/advisories/GHSA-2h4w-29cv-2cmv",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-11-10T15:57:17Z",
-      "cve": "CVE-2026-113663",
-      "severity": "high",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "prompt_injection",
-          "label": "Prompt Injection"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM01",
-          "name": "Prompt Injection"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0051",
-          "name": "LLM Prompt Injection"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": false,
-          "rag": true,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "elevated"
-      },
-      "enterprise_impact": {
-        "score": 63,
-        "priority": "P2"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Monitor LLM gateway logs for delimiter-breaking tokens, role-swap phrases (\"ignore previous\", \"you are now\"), and base64/hex blobs in user or retrieved content.",
-        "hunt": "Correlate anomalous tool-invocation sequences that immediately follow untrusted content ingestion (email, web, RAG chunks)."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "a329c2bf0c861465",
-      "title": "fast-agent: `fast-agent serve` binds HTTP to 0.0.0.0 with no authentication by default; with --shell this is unauthenticated remote command execution",
-      "url": "https://github.com/advisories/GHSA-9vhv-g5hf-m7m7",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-11-09T22:01:34Z",
-      "cve": "CVE-2026-102610",
-      "severity": "medium",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "supply_chain",
-          "label": "AI Supply Chain"
-        },
-        {
-          "id": "agent_tool",
-          "label": "Agentic / Tool / MCP Exploitation"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM05",
-          "name": "Supply Chain Vulnerabilities"
-        },
-        {
-          "id": "LLM06",
-          "name": "Sensitive Information Disclosure / Excessive Agency"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0010",
-          "name": "ML Supply Chain Compromise"
-        },
-        {
-          "id": "AML.T0053",
-          "name": "LLM Plugin Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": true,
-          "rag": false,
-          "tool_use": false,
-          "supply_chain": true
-        },
-        "level": "elevated"
-      },
-      "enterprise_impact": {
-        "score": 50,
-        "priority": "P2"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Alert on model artifact downloads from non-allowlisted registries; scan pickled/`.pt` model files for arbitrary code (Fickling, ModelScan).",
-        "hunt": "Review CI/CD and notebook hosts for outbound connections initiated during model load."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "5543d65b47d24a48",
-      "title": "Kubeflow Pipelines: Reflected XSS in the frontend pod information and events error responses",
-      "url": "https://github.com/advisories/GHSA-g3qx-frcg-j979",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-11-09T23:25:58Z",
-      "cve": "CVE-2026-88986",
-      "severity": "medium",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "infra",
-          "label": "AI Infrastructure / Inference Server"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM05",
-          "name": "Supply Chain Vulnerabilities"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0010",
-          "name": "ML Supply Chain Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": false,
-          "rag": true,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "elevated"
-      },
-      "enterprise_impact": {
-        "score": 40,
-        "priority": "P2"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Expose-check inference servers (Triton/vLLM/Ollama/MLflow/Ray) for unauthenticated management endpoints.",
-        "hunt": "Shodan/asset-inventory sweep for AI infra bound to 0.0.0.0 without auth."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "64988c8b8132c20e",
-      "title": "Kubeflow Pipelines — API server fetches a caller-supplied pipelineURL without host validation",
-      "url": "https://github.com/advisories/GHSA-f7vj-6669-qvv4",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-11-09T22:44:17Z",
-      "cve": "CVE-2026-88983",
-      "severity": "medium",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "infra",
-          "label": "AI Infrastructure / Inference Server"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM05",
-          "name": "Supply Chain Vulnerabilities"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0010",
-          "name": "ML Supply Chain Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": false,
-          "rag": true,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "elevated"
-      },
-      "enterprise_impact": {
-        "score": 40,
-        "priority": "P2"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Expose-check inference servers (Triton/vLLM/Ollama/MLflow/Ray) for unauthenticated management endpoints.",
-        "hunt": "Shodan/asset-inventory sweep for AI infra bound to 0.0.0.0 without auth."
-      },
-      "has_analyst_report": false
-    },
-    {
-      "id": "cff87c42082b0f6e",
-      "title": "Kubeflow Pipelines: Cross-tenant execution-cache poisoning / output substitution via a namespace-blind cache key in the cache webhook (multi-user)",
-      "url": "https://github.com/advisories/GHSA-2xwh-426q-42c5",
-      "source": "GitHub Security Advisories",
-      "tier": 1,
-      "published": "2026-11-09T22:43:33Z",
-      "cve": "CVE-2026-88982",
-      "severity": "medium",
-      "cvss": null,
-      "evidence_label": "VERIFIED_ADVISORY",
-      "categories": [
-        {
-          "id": "infra",
-          "label": "AI Infrastructure / Inference Server"
-        }
-      ],
-      "owasp_llm": [
-        {
-          "id": "LLM05",
-          "name": "Supply Chain Vulnerabilities"
-        }
-      ],
-      "mitre_atlas": [
-        {
-          "id": "AML.T0010",
-          "name": "ML Supply Chain Compromise"
-        }
-      ],
-      "agent_risk": {
-        "flags": {
-          "agentic": false,
-          "mcp": false,
-          "rag": true,
-          "tool_use": false,
-          "supply_chain": false
-        },
-        "level": "elevated"
-      },
-      "enterprise_impact": {
-        "score": 40,
-        "priority": "P2"
-      },
-      "confidence": {
-        "source": "HIGH",
-        "evidence": "HIGH",
-        "overall": "HIGH",
-        "rationale": "Authoritative source (GitHub Security Advisories) with assigned CVE."
-      },
-      "corroboration": 1,
-      "detection": {
-        "detect": "Expose-check inference servers (Triton/vLLM/Ollama/MLflow/Ray) for unauthenticated management endpoints.",
-        "hunt": "Shodan/asset-inventory sweep for AI infra bound to 0.0.0.0 without auth."
-      },
-      "has_analyst_report": false
-    },
     {
       "id": "aa4ab0d1dc9423ec",
       "title": "Agents of Chaos: A Systematization of Knowledge (SoK) on Malicious Attacks on Agentic AI Systems",
