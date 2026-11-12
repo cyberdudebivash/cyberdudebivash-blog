@@ -121,8 +121,8 @@ test('customer SOC desk selects only report additions from the last 24h and dedu
     {id:'RECENT-A', title:'Recent report A', _addedAt:'2026-11-12T11:00:00Z', pubDate:'2026-11-11', source:'CISA', link:'/posts/report-a.html'},
     {id:'FUTURE', title:'Future-dated report', _addedAt:'2026-11-12T12:00:01Z'},
     {id:'UNKNOWN', title:'Unverified report date'},
-    {id:'RECENT-B', title:'Recent report B', _addedAt:'2026-11-12T11:40:00Z', threatLevel:'HIGH'},
-    {id:'RECENT-A', title:'Older duplicate', _addedAt:'2026-11-12T09:00:00Z'}
+    {id:'RECENT-B', title:'Recent report B', _addedAt:'2026-11-12T11:40:00Z', pubDate:'2026-11-12', threatLevel:'HIGH'},
+    {id:'RECENT-A', title:'Older duplicate', _addedAt:'2026-11-12T09:00:00Z', pubDate:'2026-11-12'}
   ] };
   const recent = desk.selectRecentRecords(feed, now);
   assert.deepEqual(recent.map(record => record.id), ['RECENT-B','RECENT-A']);
@@ -150,7 +150,7 @@ test('customer SOC desk selects only report additions from the last 24h and dedu
 test('recent selection enforces the 24h boundary and uses individual timestamps, not the feed heartbeat', () => {
   const now = Date.parse('2026-11-12T12:00:00Z');
   const feed = {generatedAt: '2026-11-12T11:59:00Z', items: [
-    {id:'BOUNDARY', title:'Exactly 24h old', _addedAt:'2026-11-11T12:00:00Z'},
+    {id:'BOUNDARY', title:'Exactly 24h old', _addedAt:'2026-11-11T12:00:00Z', pubDate:'2026-11-11'},
     {id:'TOO-OLD', title:'Older than 24h', _addedAt:'2026-11-11T11:59:59Z'},
     {id:'BAD-CLOCK', title:'Invalid record clock', _addedAt:'not-a-date'},
     {id:'NO-TITLE', _addedAt:'2026-11-12T11:00:00Z'},

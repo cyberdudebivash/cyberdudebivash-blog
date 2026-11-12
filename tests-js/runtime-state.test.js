@@ -556,3 +556,54 @@ describe('live record freshness: shared policy, widget agreement and markup', ()
     assert.equal(cssV[1], jsV[1], 'stylesheet and script that depend on each other are bumped together');
   });
 });
+
+describe('shared live authority: timestamp strictness and pipeline evidence', () => {
+  const NOWMS = Date.parse('2026-11-12T12:00:00Z');
+  const rec = (added, pub) => ({ id: 'x', title: 't', _addedAt: added, pubDate: pub });
+  const why = (item) => RS.classifyRecord(item, NOWMS).reason;
+
+  test('a machine timestamp must be a full date-time WITH an offset', () => {
+    assert.equal(why(rec('2026-11-12T11:00:00Z', '2026-11-12')), 'LIVE');
+    assert.equal(why(rec('2026-11-12T11:00:00.123Z', '2026-11-12')), 'LIVE');
+    assert.equal(why(rec('2026-11-12T16:30:00+05:30', '2026-11-12')), 'LIVE', 'an explicit offset is an unambiguous instant');
+    assert.equal(why(rec('2026-11-12T11:00:00', '2026-11-12')), 'INVALID_TIMESTAMP', 'zone-less = local time in the browser');
+    assert.equal(why(rec('2026-11-12T11:00', '2026-11-12')), 'INVALID_TIMESTAMP');
+    assert.equal(why(rec('2026-11-12', '2026-11-12')), 'INVALID_TIMESTAMP', 'a date alone is not a report-addition instant');
+    assert.equal(why(rec('Thu, 12 Nov 2026 11:00:00 GMT', '2026-11-12')), 'INVALID_TIMESTAMP', 'only ISO-8601 is accepted');
+  });
+
+  test('a source publication date may be date-only or a zoned date-time, never zone-less', () => {
+    assert.equal(why(rec('2026-11-12T11:00:00Z', '2026-11-12')), 'LIVE');
+    assert.equal(why(rec('2026-11-12T11:00:00Z', '2026-11-12T09:00:00Z')), 'LIVE');
+    assert.equal(why(rec('2026-11-12T11:00:00Z', '2026-11-12T09:00:00')), 'INVALID_TIMESTAMP');
+    assert.equal(why(rec('2026-11-12T11:00:00Z', 'November 12 2026')), 'INVALID_TIMESTAMP');
+  });
+
+  test('pipelineAllowsLive: only HEALTHY or a MEASURED, evidenced delay may show records', () => {
+    const iso = m => new Date(NOWMS - m * 60000).toISOString();
+    const ok = (state, ageMinutes, timestamp) => RS.pipelineAllowsLive({ state, ageMinutes, timestamp }, NOWMS);
+    assert.equal(ok('HEALTHY', 30, iso(30)), true);
+    assert.equal(ok('DEGRADED', 120, iso(120)), true, 'a measured 2 h delay');
+    assert.equal(ok('DEGRADED', 180, iso(180)), true, 'the stale limit is inclusive');
+    assert.equal(ok('DEGRADED', 181, iso(181)), false);
+    assert.equal(ok('DEGRADED', null, null), false, 'DEGRADED without a clock is absence of evidence');
+    assert.equal(ok('DEGRADED', null, iso(60)), false);
+    assert.equal(ok('DEGRADED', 60, null), false);
+    assert.equal(ok('HEALTHY', 30, new Date(NOWMS + 3600000).toISOString()), false, 'future timestamp');
+    assert.equal(ok('HEALTHY', 30, iso(600)), false, 'age and timestamp must agree');
+    assert.equal(ok('HEALTHY', -5, iso(0)), false);
+    for (const state of ['STALE', 'UNAVAILABLE', 'CHECKING', 'UNVERIFIED', undefined]) assert.equal(ok(state, 10, iso(10)), false, String(state));
+    for (const bad of [null, undefined, {}, 'HEALTHY', 7]) assert.equal(RS.pipelineAllowsLive(bad, NOWMS), false);
+  });
+
+  test('every real classification the model can produce is judged consistently', () => {
+    const feedAt = ageMin => ({ metadata: { lastPipelineRun: new Date(NOWMS - ageMin * 60000).toISOString() }, items: [] });
+    const allowed = ageMin => RS.pipelineAllowsLive(RS.classifyFeed({ ok: true, feed: feedAt(ageMin), nowMs: NOWMS }), NOWMS);
+    assert.equal(allowed(10), true);
+    assert.equal(allowed(150), true);
+    assert.equal(allowed(181), false);
+    assert.equal(allowed(60 * 24 * 20), false);
+    assert.equal(RS.pipelineAllowsLive(RS.classifyFeed({ ok: true, feed: { items: [] }, nowMs: NOWMS }), NOWMS), false);
+    assert.equal(RS.pipelineAllowsLive(RS.classifyFeed({ ok: false, error: 'timeout', nowMs: NOWMS }), NOWMS), false);
+  });
+});
