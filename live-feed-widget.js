@@ -239,6 +239,12 @@
     var cutoff = now - CFG.LOOKBACK_DAYS * 86400000;
     var dated = rawItems.map(function(raw, index) {
       if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+      // Shared window policy (runtime-state.js, loaded after this script but before the
+      // feed arrives): a record must be recently INGESTED and recently PUBLISHED, so an
+      // old advisory that was only re-ingested today is not shown as live. When the
+      // shared model is unavailable the 24 h _addedAt/pubDate rule below still applies.
+      var shared = typeof window !== 'undefined' ? window.SentinelRuntimeState : null;
+      if (shared && typeof shared.isLiveRecord === 'function' && !shared.isLiveRecord(raw, now)) return null;
       var value = raw._addedAt || raw.pubDate || raw.published || raw.dateAdded;
       var ts = typeof value === 'string' && value.trim() ? Date.parse(value) : NaN;
       // No unknown or impossible report time should claim a 'recent' slot.

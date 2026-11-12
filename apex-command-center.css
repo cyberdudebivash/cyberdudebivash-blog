@@ -517,3 +517,10 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid rgba(
 @media(prefers-reduced-motion:reduce){
   .cdb-orbit-node{box-shadow:none}
 }
+/* Live-list empty / unavailable states carry the customer-facing explanation: they must wrap, never truncate. */
+/* responsive-platform.css gives every feed row a 600px pan-lane minimum; an explanation must fit the viewport instead. */
+.cdb-feed-row.cdb-feed-empty{display:block;padding:14px 13px;min-width:0!important;box-sizing:border-box}
+.cdb-feed-row.cdb-feed-empty:hover{background:none}
+.cdb-feed-empty .cdb-feed-title,.cdb-feed-empty .cdb-feed-sub{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
+.cdb-feed-empty .cdb-feed-sub{color:#9db5c4}
+.cdb-feed-empty a{color:#21e6ff;text-decoration:underline;text-underline-offset:2px}

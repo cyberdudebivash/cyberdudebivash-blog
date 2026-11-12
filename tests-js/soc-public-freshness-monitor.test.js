@@ -240,35 +240,47 @@ test('SOC genuine 150-row fixture is recency-ranked and DOM bounded',()=>{
 });
 
 
+// CONTRACT CHANGE (P0 live-window): this test previously asserted that the live triage
+// list falls back to archival records ("ARCHIVAL · NO RECENT REPORTS") when nothing is
+// recent. That contradicts the product requirement that live widgets never repopulate
+// themselves with historical reports, so the assertions are inverted rather than removed:
+// the list must be EMPTY when nothing qualifies. The window policy itself is tested in
+// tests-js/runtime-state.test.js ("live record freshness").
 test('SOC command center triage uses latest reports, not oldest high-priority ones',()=>{
  const vm=require('node:vm');
  const js=fs.readFileSync(path.join(__dirname,'..','apex-command-center.js'),'utf8');
  const start=js.indexOf('function selectTriageFeed(');
- const end=js.indexOf('function renderFeed(',start);
+ const end=js.indexOf('function emptyFeedRow(',start);
  assert(start>=0&&end>start,'extract exact production triage selection function');
  const choose=vm.runInNewContext('(function(){'+js.slice(start,end)+'return selectTriageFeed;})()',{
-   Date,Number,Array,
+   Date,Number,Array,RS:require('../runtime-state.js'),
  },{timeout:1000});
  const now=Date.parse('2026-10-30T14:00:00Z');
  const rows=[
-  {id:'ARCHIVE-HIGH',priority:100,_addedAt:'2026-07-31T22:07:00Z'},
-  {id:'RECENT-LOW',priority:1,_addedAt:'2026-10-30T13:23:00Z'},
-  {id:'YESTERDAY',priority:90,_addedAt:'2026-10-29T13:23:00Z'},
-  {id:'FUTURE',priority:999,_addedAt:'2026-11-02T13:23:00Z'},
+  {id:'ARCHIVE-HIGH',priority:100,_addedAt:'2026-07-31T22:07:00Z',pubDate:'2026-07-05'},
+  {id:'RECENT-LOW',priority:1,_addedAt:'2026-10-30T13:23:00Z',pubDate:'2026-10-30'},
+  {id:'EARLIER-TODAY',priority:90,_addedAt:'2026-10-30T01:00:00Z',pubDate:'2026-10-29'},
+  {id:'FUTURE',priority:999,_addedAt:'2026-11-02T13:23:00Z',pubDate:'2026-11-02'},
   {id:'NO-DATE',priority:999},
  ];
  const selected=choose(rows,now);
  assert.equal(selected.archived,false);
- assert.deepEqual(Array.from(selected.items,x=>x.id),['RECENT-LOW','YESTERDAY']);
+ assert.deepEqual(Array.from(selected.items,x=>x.id),['RECENT-LOW','EARLIER-TODAY']);
  const allOld=choose(Array.from({length:30},(_,i)=>({
   id:'ARCHIVE-'+i,priority:100-i,
   _addedAt:new Date(now-(70+i)*86400000).toISOString(),
+  pubDate:new Date(now-(70+i)*86400000).toISOString().slice(0,10),
  })),now);
- assert.equal(allOld.archived,true);
- assert.equal(allOld.items.length,7,'triage DOM cap is seven cards');
- assert.equal(allOld.items[0].id,'ARCHIVE-0');
- assert.equal(choose([{id:'FUTURE',_addedAt:'2099-01-01'}],now).items.length,0);
- assert.match(js,/ARCHIVAL · NO RECENT REPORTS/);
+ assert.equal(allOld.archived,false,'no archival fallback: archived is deprecated and always false');
+ assert.equal(allOld.items.length,0,'historical records must never populate the live list');
+ assert.equal(choose([{id:'FUTURE',_addedAt:'2099-01-01',pubDate:'2099-01-01'}],now).items.length,0);
+ assert.equal(choose(rows,now).unavailable,false);
+ const noModel=vm.runInNewContext('(function(){var RS=null;'+js.slice(start,end)+'return selectTriageFeed;})()',{
+   Date,Number,Array,
+ },{timeout:1000});
+ assert.equal(noModel(rows,now).items.length,0,'if the shared model did not load, nothing is shown as live');
+ assert.equal(noModel(rows,now).unavailable,true);
+ assert.doesNotMatch(js,/ARCHIVAL/,'no archival label or fallback may remain in the live command center');
  assert.match(js,/selectTriageFeed\(feed\.items\)/);
  assert.doesNotMatch(js,/items\.sort\(function\(a,b\)\{return \(Number\(b\.priority\)/);
 });
@@ -284,9 +296,9 @@ test('SOC command center and live widget agree on the latest source report',()=>
  vm.runInNewContext(widget,sandbox,{timeout:1000});
  const src=fs.readFileSync(path.join(__dirname,'..','apex-command-center.js'),'utf8');
  const start=src.indexOf('function selectTriageFeed(');
- const end=src.indexOf('function renderFeed(',start);
+ const end=src.indexOf('function emptyFeedRow(',start);
  const triage=vm.runInNewContext('(function(){'+src.slice(start,end)+'return selectTriageFeed;})()',{
-  Date,Number,Array,
+  Date,Number,Array,RS:require('../runtime-state.js'),
  },{timeout:1000});
  const feed=JSON.parse(fs.readFileSync(path.join(__dirname,'..','live-intel.json'),'utf8'));
  const now=Date.parse(feed.generatedAt)+1000;
