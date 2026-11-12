@@ -10,10 +10,13 @@
  * or raw Cloudflare API bodies.
  */
 const HOSTNAME='blog.cyberdudebivash.in';
+const SOC_HOSTNAME='soc.cyberdudebivash.in';
+const HOSTNAMES=Object.freeze([HOSTNAME,SOC_HOSTNAME]);
 const WORKER='cyberdudebivash-blog';
 const accountIdPattern=/^[a-f0-9]{32}$/i;
 
-function classifyDomainBinding(body){
+function classifyDomainBinding(body,hostname=HOSTNAME){
+  if(!HOSTNAMES.includes(hostname))return {ok:false,code:'DOMAIN_HOST_NOT_APPROVED'};
   if(!body||typeof body!=='object'||body.success!==true||!Array.isArray(body.result)){
     return {ok:false,code:'DOMAIN_API_RESPONSE_INVALID'};
   }
@@ -34,7 +37,7 @@ function classifyDomainBinding(body){
   // A hostname-filtered API reply must contain only the requested hostname.
   // Unexpected extra records cannot be treated as proof of binding.
   const exact=body.result.filter(item=>item &&
-    typeof item==='object' && item.hostname===HOSTNAME);
+    typeof item==='object' && item.hostname===hostname);
   if(exact.length!==1){
     return {ok:false,code:exact.length>1?'DOMAIN_DUPLICATE':'DOMAIN_NOT_ESTABLISHED'};
   }
@@ -70,37 +73,42 @@ async function readBounded(response,maxBytes=262144){
   }finally{reader.releaseLock();}
   return JSON.parse(Buffer.concat(chunks).toString('utf8'));
 }
-async function verify({token,accountId}){
+async function verify({token,accountId,fetchImpl=globalThis.fetch}={}){
   if(typeof token!=='string'||token.length<16 ||
-    typeof accountId!=='string'||!accountIdPattern.test(accountId)){
+    typeof accountId!=='string'||!accountIdPattern.test(accountId)||
+    typeof fetchImpl!=='function'){
     throw new Error('CLOUDFLARE_READ_CONTEXT_MISSING');
   }
-  // Cloudflare Workers Domains List — exact, documented read-only endpoint.
-  // Hostname filter narrows the reply; independent strict client-side match.
-  const endpoint=new URL('https://api.cloudflare.com/client/v4/accounts/'+accountId+'/workers/domains');
-  endpoint.searchParams.set('hostname',HOSTNAME);
-  const response=await fetch(endpoint,{
-    method:'GET',redirect:'error',signal:AbortSignal.timeout(15000),
-    headers:{Authorization:'Bearer '+token,Accept:'application/json'},
-  });
-  if(!response.ok)throw new Error('CLOUDFLARE_DOMAIN_API_HTTP_FAILURE');
-  const body=await readBounded(response);
-  const classification=classifyDomainBinding(body);
-  if(!classification.ok)throw new Error(classification.code);
-  return classification;
+  // Wrangler deploys BOTH existing Custom Domains. Probe each separately;
+  // a valid legacy blog binding does NOT authorize creation of the SOC domain.
+  // Missing/incorrect/disabled mapping for either hostname blocks before any
+  // Wrangler mutation. Never discover or create domains in this routine gate.
+  for(const hostname of HOSTNAMES){
+    const endpoint=new URL('https://api.cloudflare.com/client/v4/accounts/'+accountId+'/workers/domains');
+    endpoint.searchParams.set('hostname',hostname);
+    const response=await fetchImpl(endpoint,{
+      method:'GET',redirect:'error',signal:AbortSignal.timeout(15000),
+      headers:{Authorization:'Bearer '+token,Accept:'application/json'},
+    });
+    if(!response.ok)throw new Error('CLOUDFLARE_DOMAIN_API_HTTP_FAILURE');
+    const body=await readBounded(response);
+    const classification=classifyDomainBinding(body,hostname);
+    if(!classification.ok)throw new Error(classification.code);
+  }
+  return {ok:true,code:'ALL_DEPLOY_DOMAINS_ESTABLISHED'};
 }
 if(require.main===module){
   verify({token:process.env.CLOUDFLARE_API_TOKEN,
     accountId:process.env.CLOUDFLARE_ACCOUNT_ID}).then(()=>{
-    console.log('PASS: EXISTING_CLOUDFLARE_WORKER_DOMAIN_VERIFIED — routine release may proceed without DNS migration');
+    console.log('PASS: BOTH_EXISTING_CLOUDFLARE_WORKER_DOMAINS_VERIFIED — no DNS migration permitted');
   }).catch(err=>{
     const safe=new Set(['CLOUDFLARE_READ_CONTEXT_MISSING','CLOUDFLARE_DOMAIN_API_HTTP_FAILURE',
       'DOMAIN_API_EMPTY_BODY','DOMAIN_API_RESPONSE_TOO_LARGE','DOMAIN_API_RESPONSE_INVALID',
       'DOMAIN_LIST_NOT_COMPLETE','DOMAIN_UNFILTERED_LIST','DOMAIN_DUPLICATE','DOMAIN_NOT_ESTABLISHED','DOMAIN_WRONG_WORKER',
-      'DOMAIN_WRONG_ZONE','DOMAIN_NOT_ENABLED','DOMAIN_ID_MISSING']);
+      'DOMAIN_WRONG_ZONE','DOMAIN_NOT_ENABLED','DOMAIN_ID_MISSING','DOMAIN_HOST_NOT_APPROVED']);
     const code=safe.has(err.message)?err.message:'CLOUDFLARE_DOMAIN_VERIFICATION_FAILED';
     console.error('HOLD: '+code+' — preserve current DNS; separate approved cutover required');
     process.exitCode=1;
   });
 }
-module.exports={classifyDomainBinding,verify,HOSTNAME,WORKER};
+module.exports={classifyDomainBinding,verify,HOSTNAME,SOC_HOSTNAME,HOSTNAMES,WORKER};

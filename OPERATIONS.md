@@ -8,6 +8,7 @@ inventories describe historical states and are not deployment instructions.
 | Surface | Source/runtime |
 |---|---|
 | blog.cyberdudebivash.in | This repository; Cloudflare Worker entry workers/entry.js and allowlisted static assets |
+| soc.cyberdudebivash.in | Same Worker manifest; separate existing Cloudflare Custom Domain mapping must be independently proven before any routine deployment |
 | cti.cyberdudebivash.in | Blogger; Python pipeline and blogger-syndication workflow in this repository |
 | intel.cyberdudebivash.com | Separate CYBERDUDEBIVASH-THREAT-INTEL-PLATFORM repository and Cloudflare gateway |
 
@@ -63,8 +64,8 @@ checked-in route declaration does **not** prove that the live Cloudflare
 account already has an enabled matching Worker domain. Do not invent D1
 database IDs, create replacement storage, or use a routine content release to
 migrate DNS. Require the read-only
-`node scripts/verify-existing-cloudflare-domain.cjs` check and the separate
-legacy DNS conflict check **before** any Wrangler mutation. Preserve existing
+`node scripts/verify-existing-cloudflare-domain.cjs` check for **both blog and SOC** existing Worker Custom Domains and the separate
+legacy DNS conflict check **before** any Wrangler mutation. If either mapping is absent, disabled, belongs to a different Worker, or cannot be proven, **HOLD**; a routine content deploy does not authorize a DNS or SOC cutover. Preserve existing
 production bindings and record rollback identity.
 
 Set runtime secrets through the Worker secret store; keep Blogger/pipeline
@@ -74,7 +75,7 @@ schema changes, a new scheduler, a resource upgrade or a quota increase.
 
 After those preconditions and the release gate pass, deploy with the existing
 production Wrangler configuration. Record the resulting Worker version ID and
-commit, then verify public pages, feed freshness, static and API response
+commit, then verify public pages and feed freshness on **both SOC and blog hostnames**, static and API response
 headers, route aliases, protected endpoints and authenticated payment callback
 canaries. A smoke test of existing live pages is not commit-specific deployment
 proof. A GitHub merge is not proof of deployment.

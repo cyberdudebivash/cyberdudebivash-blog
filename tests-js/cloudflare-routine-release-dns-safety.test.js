@@ -3,7 +3,7 @@ const test=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
-const {classifyDomainBinding,HOSTNAME,WORKER}=require('../scripts/verify-existing-cloudflare-domain.cjs');
+const {classifyDomainBinding,verify,HOSTNAME,SOC_HOSTNAME,HOSTNAMES,WORKER}=require('../scripts/verify-existing-cloudflare-domain.cjs');
 
 const entry=overrides=>({
   id:'synthetic-domain-id',hostname:HOSTNAME,service:WORKER,enabled:true,...overrides
@@ -80,4 +80,63 @@ test('domain precondition is read-only and token values are never printed',()=>{
   assert.match(code,/\/workers\/domains/);
   assert.doesNotMatch(code,/method:'(?:DELETE|PUT|POST|PATCH)'/);
   assert.doesNotMatch(code,/console\.(?:log|error)\([^)]*(?:token|accountId|body)/);
+});
+
+
+test('SOC hostname has the same strict existing Worker binding requirement',()=>{
+  const soc={...entry(),hostname:SOC_HOSTNAME};
+  assert.deepEqual(classifyDomainBinding(sample([soc]),SOC_HOSTNAME),
+    {ok:true,code:'DOMAIN_MAPPING_ESTABLISHED'});
+  assert.deepEqual(classifyDomainBinding(sample([soc]),HOSTNAME),
+    {ok:false,code:'DOMAIN_NOT_ESTABLISHED'});
+  assert.deepEqual(classifyDomainBinding(sample([entry({hostname:'unknown.invalid'})]),SOC_HOSTNAME),
+    {ok:false,code:'DOMAIN_NOT_ESTABLISHED'});
+  assert.deepEqual(classifyDomainBinding(sample([soc]),'unapproved.example'),
+    {ok:false,code:'DOMAIN_HOST_NOT_APPROVED'});
+});
+
+test('read-only routine release verifier checks BOTH configured Worker custom domains',async()=>{
+  const requested=[];
+  const fakeFetch=async (url,opts)=>{
+    assert.equal(opts.method,'GET');
+    assert.equal(opts.redirect,'error');
+    const host=url.searchParams.get('hostname');
+    requested.push(host);
+    assert.ok(HOSTNAMES.includes(host));
+    return new Response(JSON.stringify(sample([entry({hostname:host})])),{
+      status:200,headers:{'content-type':'application/json'}
+    });
+  };
+  const result=await verify({
+    token:'test-only-non-secret-token',accountId:'a'.repeat(32),fetchImpl:fakeFetch
+  });
+  assert.deepEqual(result,{ok:true,code:'ALL_DEPLOY_DOMAINS_ESTABLISHED'});
+  assert.deepEqual(requested,HOSTNAMES,
+    'success on blog must never skip the independent SOC mapping proof');
+});
+
+test('SOC binding absent or assigned to another Worker blocks BEFORE Wrangler',async()=>{
+  for(const bad of [[],[entry({hostname:SOC_HOSTNAME,service:'other-worker'})],
+                   [entry({hostname:SOC_HOSTNAME,enabled:false})]]){
+    const requested=[];
+    const fakeFetch=async url=>{
+      const host=url.searchParams.get('hostname');
+      requested.push(host);
+      return new Response(JSON.stringify(sample(
+        host===HOSTNAME?[entry()]:bad)),{status:200});
+    };
+    await assert.rejects(verify({
+      token:'test-only-non-secret-token',accountId:'a'.repeat(32),
+      fetchImpl:fakeFetch
+    }),/DOMAIN_NOT_ESTABLISHED|DOMAIN_WRONG_WORKER|DOMAIN_NOT_ENABLED/);
+    assert.deepEqual(requested,HOSTNAMES);
+  }
+});
+
+test('verified Worker domain set must match exact Custom Domain routes in Wrangler config',()=>{
+  const jsonc=fs.readFileSync(path.resolve(__dirname,'../wrangler.jsonc'),'utf8');
+  const matches=[...jsonc.matchAll(/"pattern":\s*"([^"]+)"\s*,\s*"custom_domain":\s*true/g)]
+    .map(m=>m[1]).sort();
+  assert.deepEqual(matches,[...HOSTNAMES].sort(),
+    'changing a Wrangler Custom Domain requires a matching predeploy proof update');
 });
