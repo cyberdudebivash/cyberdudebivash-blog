@@ -542,6 +542,36 @@ async function fetchNVD(state) {
 }
 
 // ── SOURCE 2: CISA KEV ─────────────────────────────────────────────────
+// KEV membership is a property of the AUTHORITATIVE CISA catalog, never of article text.
+// fetchCISAKev() records the CVE ids of the FULL catalog it just parsed (not only the
+// incremental additions it returns), so the live feed can be reconciled against it.
+// null = the catalog was not successfully parsed in this process: do not touch any flag.
+let lastKevCatalogIds = null;
+function getKevCatalogIds() { return lastKevCatalogIds; }
+
+// Pure. Returns {items, confirmed, cleared:[ids]}; never mutates its input.
+//   id in catalog                  -> cisaKev = true  (authoritative)
+//   cisaKev claimed, id NOT in it  -> cisaKev = false (unsupported: a news/social record
+//                                     or an id that is not a CVE cannot be a KEV member)
+// `exploited` is deliberately left alone: it has its own evidence rules.
+// An absent/empty catalog is treated as "unknown": nothing is changed.
+function reconcileKevFlags(items, kevIds) {
+  const list = Array.isArray(items) ? items : [];
+  if (!kevIds || typeof kevIds.has !== 'function' || kevIds.size === 0) {
+    return { items: list.slice(), confirmed: 0, cleared: [] };
+  }
+  const cleared = [];
+  let confirmed = 0;
+  const out = list.map(item => {
+    if (!item || typeof item !== 'object') return item;
+    const inCatalog = kevIds.has(String(item.id || '').toUpperCase());
+    if (inCatalog) { if (!item.cisaKev) confirmed++; return item.cisaKev ? item : { ...item, cisaKev: true }; }
+    if (item.cisaKev) { cleared.push(item.id); return { ...item, cisaKev: false }; }
+    return item;
+  });
+  return { items: out, confirmed, cleared };
+}
+
 async function fetchCISAKev(state) {
   const lastFetch = getSourceLastFetch(state, 'cisa_kev');
   const cutoff    = watermarkStart(lastFetch, CFG.rssMinLookbackHours, CFG.kevLookbackDays * 86400000);
@@ -549,6 +579,8 @@ async function fetchCISAKev(state) {
   try {
     const raw = await fetchWithRetry(CFG.cisaKevUrl);
     const data = JSON.parse(raw);
+    const catalogIds = new Set((data.vulnerabilities||[]).map(v => String((v && v.cveID) || '').toUpperCase()).filter(Boolean));
+    if (catalogIds.size > 0) lastKevCatalogIds = catalogIds;
     // KEV `dateAdded` is a calendar date (YYYY-MM-DD), which Date parses as 00:00 UTC.
     // `cutoff` is an instant (min(lastFetch, now-4h)), so comparing the two raw dropped
     // every entry added earlier in the cutoff's UTC day -- i.e. all of them, since CISA
@@ -3045,7 +3077,12 @@ function writeLiveIntel(allItems, state) {
       const ps = (b.priority||0) - (a.priority||0);
       if (ps !== 0) return ps;
       return new Date(b.pubDate||0) - new Date(a.pubDate||0);
-    });    const liveItems = merged.slice(0, CFG.liveRollingWindow || 150);
+    });    let liveItems = merged.slice(0, CFG.liveRollingWindow || 150);
+    try {
+      const kev = reconcileKevFlags(liveItems, lastKevCatalogIds);
+      if (kev.cleared.length) warn(`KEV: cleared ${kev.cleared.length} unsupported KEV claim(s) not in the CISA catalog: ${kev.cleared.slice(0, 10).join(', ')}`);
+      liveItems = kev.items;
+    } catch (e) { warn(`KEV reconciliation skipped: ${e.message}`); }
     const _liveGenTs = new Date().toISOString();
     // PRODUCTION DIAGNOSTIC: track truly new items (not in existingItems)
     const trulyNewCount = newItems.filter(i => !existingIds.has(i.id)).length;
@@ -3473,6 +3510,6 @@ if (require.main === module) {
     sapexCanonicalId, sapexNativeMitre, fetchSentinelApex,
     watermarkStart, acknowledgeExistingPost,
     recordSourceSuccess, recordSourceFailure, getSourceHealthReport,
-    fetchCISAKev,
+    fetchCISAKev, reconcileKevFlags, getKevCatalogIds,
   };
 }
