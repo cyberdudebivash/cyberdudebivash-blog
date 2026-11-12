@@ -51,6 +51,10 @@ class PublicationManager {
     });
 
     const publicationReadiness = await this.publicationPolicy.validatePublicationReadiness(report, qualityScore.overallScore);
+    // A valid editorial score cannot certify an IOC as live if its source
+    // observation time is missing, invalid or future-dated. Qualitative
+    // reports without IOC records retain their existing policy path.
+    const undatedIocHold = Number(freshnessResults.unverifiedCount || 0) > 0;
 
     const review = {
       id: reviewId,
@@ -68,14 +72,20 @@ class PublicationManager {
       freshness: freshnessResults,
       qualityScore,
       publicationReadiness,
-      overallRecommendation: this.getOverallRecommendation(
-        analyticalQuality,
-        editorialQuality,
-        complianceResults,
-        qualityScore,
-        publicationReadiness
-      ),
-      publishable: publicationReadiness.isReady && qualityScore.overallScore >= 0.70,
+      overallRecommendation: undatedIocHold
+        ? {
+            action: 'REJECT',
+            message: 'IOC observation timestamps are unverified. Do not publish this review as fresh intelligence.',
+            criticalIssues: ['IOC_TIMESTAMP_UNVERIFIED'],
+          }
+        : this.getOverallRecommendation(
+            analyticalQuality,
+            editorialQuality,
+            complianceResults,
+            qualityScore,
+            publicationReadiness
+          ),
+      publishable: !undatedIocHold && publicationReadiness.isReady && qualityScore.overallScore >= 0.70,
     };
 
     const key = `review:${reviewId}`;
