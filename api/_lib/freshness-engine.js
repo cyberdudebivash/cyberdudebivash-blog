@@ -15,7 +15,7 @@ class FreshnessEngine {
     // observed threat activity. The previous NaN comparisons could also
     // leave unknown intelligence types at the default "fresh" 1.0 score.
     const supportedTypes = new Set(['IOC', 'INDICATOR', 'MALWARE', 'CAMPAIGN', 'THREAT_ACTOR', 'INFRASTRUCTURE']);
-    const hasZone = /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$/i.test(lastSeen);
+    const hasZone = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/i.test(lastSeen);
     const timestamp = hasZone ? Date.parse(lastSeen) : NaN;
     const now = Date.now();
     if (!supportedTypes.has(type) || !Number.isFinite(timestamp) || timestamp > now + 5 * 60 * 1000) {
