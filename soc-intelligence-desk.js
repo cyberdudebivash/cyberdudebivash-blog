@@ -50,26 +50,31 @@
       };
     });
   }
-  // A fresh pipeline heartbeat does not make its historical CVEs or incident
-  // reports newly published. Select individual, dated report additions within
-  // the last 24h, regardless of priority-ranked JSON order.
-  var RECENT_WINDOW_MS = 24 * 60 * 60 * 1000;
+  // A fresh pipeline heartbeat does not make its historical CVEs or incident reports newly
+  // published. WHAT counts as a live record is decided by ONE shared authority,
+  // SentinelRuntimeState.isLiveRecord (runtime-state.js): first added by the pipeline within 24 h
+  // AND published by the source within 72 h. An old advisory that was only re-ingested today,
+  // or a record with a missing/invalid/future/zone-less timestamp, is therefore not live here
+  // either. This desk only adds its own presentation rules (non-empty title, de-duplication,
+  // cap). If the shared authority is unavailable nothing is shown as live (fail closed).
+  function liveAuthority() {
+    var shared = typeof window !== 'undefined' ? window.SentinelRuntimeState : null;
+    if ((!shared || typeof shared.isLiveRecord !== 'function') && typeof require === 'function') {
+      try { shared = require('./runtime-state.js'); } catch (e) { shared = null; }
+    }
+    return shared && typeof shared.isLiveRecord === 'function' ? shared : null;
+  }
   function selectRecentRecords(feed, nowMs) {
-    if (!feed || !Array.isArray(feed.items)) return [];
+    var RS = liveAuthority();
+    if (!RS || !feed || !Array.isArray(feed.items)) return [];
     var now = typeof nowMs === 'number' && isFinite(nowMs) ? nowMs : Date.now();
     var candidates = feed.items.slice(0, 20000).map(function (raw, index) {
       if (!raw || typeof raw !== 'object' || Array.isArray(raw) ||
           typeof raw.title !== 'string' || !raw.title.trim()) return null;
-      // _addedAt is the first-party report-addition timestamp, not the event
-      // date. Keep the original pubDate separate in the rendered record.
-      // A source disclosure date is NOT evidence this platform added a report.
-      // The current first-party feed supplies _addedAt for all 150 ranked items;
-      // fail closed if the provenance field is absent or malformed.
-      var value = raw._addedAt;
-      var timestamp = typeof value === 'string' &&
-        /(Z|[+-]\d{2}:\d{2})$/.test(value) ? Date.parse(value) : NaN;
-      if (!isFinite(timestamp) || timestamp < now - RECENT_WINDOW_MS || timestamp > now) return null;
-      return { raw: raw, timestamp: timestamp, index: index };
+      if (!RS.isLiveRecord(raw, now)) return null;
+      // _addedAt is the first-party report-addition timestamp (validated above); the original
+      // source date stays separate in the rendered record.
+      return { raw: raw, timestamp: Date.parse(raw._addedAt), index: index };
     }).filter(Boolean);
     candidates.sort(function (a, b) {
       return b.timestamp - a.timestamp || a.index - b.index;
@@ -92,16 +97,9 @@
   // stale, unavailable, or lacks verifiable freshness evidence.
   function availableRecords(feed, classification, nowMs) {
     var now = typeof nowMs === 'number' && isFinite(nowMs) ? nowMs : Date.now();
-    var state = classification && classification.state;
-    // A DEGRADED result can mean either a measured 90–180m delay OR an
-    // invalid/missing/future pipeline timestamp. Require actual clock evidence.
-    if (state !== 'HEALTHY' && state !== 'DEGRADED') return [];
-    var age = classification.ageMinutes;
-    var stamp = classification.timestamp;
-    var publishedAt = typeof stamp === 'string' ? Date.parse(stamp) : NaN;
-    if (typeof age !== 'number' || !isFinite(age) || age < 0 || age > 180 ||
-        !isFinite(publishedAt) || publishedAt > now + 5 * 60000 ||
-        now - publishedAt > 180 * 60000) return [];
+    // The same pipeline-evidence rule the homepage applies (see runtime-state.js).
+    var RS = liveAuthority();
+    if (!RS || typeof RS.pipelineAllowsLive !== 'function' || !RS.pipelineAllowsLive(classification, now)) return [];
     return selectRecentRecords(feed, now);
   }
 

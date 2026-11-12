@@ -129,16 +129,23 @@
   });
 
   var DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/;
+  // A date-time must name its offset. `Date.parse('2026-11-12T10:00:00')` is LOCAL time, so a
+  // zone-less timestamp means a different instant in every browser: unverifiable, fail closed.
+  var DATE_TIME_WITH_ZONE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d{1,9})?)?(?:Z|[+-]\d{2}:\d{2})$/;
 
-  // → {startMs, endMs} | null. A date-only value means "some time that UTC day", so the
-  // latest the record can have been published is the end of that day.
-  function parseWhen(value) {
+  // → {startMs, endMs} | null.
+  // allowDateOnly=true  (source publication dates): YYYY-MM-DD is accepted and means "some time
+  //   that UTC day", so the latest the record can have been published is the end of that day.
+  // allowDateOnly=false (machine timestamps such as _addedAt): only a zoned date-time is valid.
+  function parseWhen(value, allowDateOnly) {
     if (typeof value !== 'string') return null;
     var s = value.trim();
     if (!s) return null;
+    var dateOnly = DATE_ONLY.test(s);
+    if (dateOnly ? !allowDateOnly : !DATE_TIME_WITH_ZONE.test(s)) return null;
     var ms = Date.parse(s);
     if (!isFinite(ms) || ms < 0) return null;
-    return { startMs: ms, endMs: DATE_ONLY.test(s) ? ms + 86400000 - 1 : ms };
+    return { startMs: ms, endMs: dateOnly ? ms + 86400000 - 1 : ms };
   }
 
   function publicationValue(item) {
@@ -154,11 +161,11 @@
     };
     if (!item || typeof item !== 'object' || Array.isArray(item)) return out('INVALID_RECORD', null, null);
     if (item._addedAt === undefined || item._addedAt === null || item._addedAt === '') return out('NO_INGEST_TIME', null, null);
-    var added = parseWhen(item._addedAt);
+    var added = parseWhen(item._addedAt, false);
     if (!added) return out('INVALID_TIMESTAMP', null, null);
     var pubRaw = publicationValue(item);
     if (!pubRaw) return out('NO_PUBLICATION_DATE', added.startMs, null);
-    var pub = parseWhen(pubRaw);
+    var pub = parseWhen(pubRaw, true);
     if (!pub) return out('INVALID_TIMESTAMP', added.startMs, null);
     if (added.startMs - now > tol || pub.startMs - now > tol) return out('FUTURE_TIMESTAMP', added.startMs, pub.startMs);
     if (now - added.startMs > LIVE_WINDOWS.ingestMaxHours * 3600000) return out('NOT_RECENTLY_INGESTED', added.startMs, pub.startMs);
@@ -167,6 +174,23 @@
   }
 
   function isLiveRecord(item, nowMs) { return classifyRecord(item, nowMs).live; }
+
+  // May ANY record be shown as live under this pipeline classification? Only a HEALTHY pipeline, or a
+  // DEGRADED one whose delay is MEASURED (a numeric age within the stale limit backed by a valid,
+  // non-future timestamp). A DEGRADED result can also mean "timestamp missing / invalid / in the
+  // future", which is the absence of evidence and must withhold every record. Every list that
+  // shows records (homepage triage, SOC desk) applies this same rule to its classifyFeed() result.
+  function pipelineAllowsLive(classification, nowMs) {
+    var now = typeof nowMs === 'number' && isFinite(nowMs) ? nowMs : Date.now();
+    var c = classification;
+    if (!c || (c.state !== STATES.HEALTHY && c.state !== STATES.DEGRADED)) return false;
+    var age = c.ageMinutes;
+    if (typeof age !== 'number' || !isFinite(age) || age < 0 || age > THRESHOLDS.staleAfterMinutes) return false;
+    var ts = typeof c.timestamp === 'string' ? Date.parse(c.timestamp) : NaN;
+    if (!isFinite(ts) || ts - now > THRESHOLDS.futureToleranceMinutes * 60000 ||
+        now - ts > THRESHOLDS.staleAfterMinutes * 60000) return false;
+    return true;
+  }
 
   // → {items, windowHours, considered, excluded:{REASON:count}}. Newest ingestion first,
   // then priority, then source order. The caller applies its own display cap.
@@ -222,6 +246,6 @@
     feedTimestamp: feedTimestamp, formatAge: formatAge,
     classifyFeed: classifyFeed, toneFor: toneFor, badgeFor: badgeFor, fetchJson: fetchJson,
     LIVE_WINDOWS: LIVE_WINDOWS, classifyRecord: classifyRecord, isLiveRecord: isLiveRecord,
-    selectLiveRecords: selectLiveRecords,
+    pipelineAllowsLive: pipelineAllowsLive, selectLiveRecords: selectLiveRecords,
   };
 });

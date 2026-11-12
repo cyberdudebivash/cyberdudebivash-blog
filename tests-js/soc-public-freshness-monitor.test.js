@@ -281,7 +281,7 @@ test('SOC command center triage uses latest reports, not oldest high-priority on
  assert.equal(noModel(rows,now).items.length,0,'if the shared model did not load, nothing is shown as live');
  assert.equal(noModel(rows,now).unavailable,true);
  assert.doesNotMatch(js,/ARCHIVAL/,'no archival label or fallback may remain in the live command center');
- assert.match(js,/selectTriageFeed\(feed\.items\)/);
+ assert.match(js,/selectTriageFeed\(feed\.items,undefined,feedCls\)/,'selection must receive the pipeline classification');
  assert.doesNotMatch(js,/items\.sort\(function\(a,b\)\{return \(Number\(b\.priority\)/);
 });
 
