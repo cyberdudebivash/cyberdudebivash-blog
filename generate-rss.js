@@ -90,12 +90,11 @@ function extractDate(html, filename) {
     return `${y}-${mo}-${d}`;
   }
 
-  // Fallback: parse date from filename (e.g. "...april-2026...")
-  if (filename.includes('april-2026')) return '2026-04-22';
-  if (filename.includes('2026')) return '2026-04-22';
-
-  // Last resort: today
-  return new Date().toISOString().slice(0,10);
+  // No verifiable publication date. Never invent one: a fixed April date for any file name
+  // containing "2026" or today's date (which re-dates the item on EVERY regeneration, so an old
+  // post would look newly published and the feed would change with the clock) both mislead
+  // readers. The caller excludes undated posts from the feed.
+  return null;
 }
 
 /** Parse ISO date string to RFC 822 format for RSS */
@@ -143,24 +142,27 @@ function extractKeywords(html) {
 
 // ─── MAIN ──────────────────────────────────────────────────────────────────────
 
-function buildRSS() {
-  console.log('[RSS Generator] Scanning posts directory:', POSTS_DIR);
+function buildRSS(opts) {
+  const POSTS_DIR_ = (opts && opts.postsDir) || POSTS_DIR;
+  const OUTPUT_FILE_ = (opts && opts.outputFile) || OUTPUT_FILE;
+  console.log('[RSS Generator] Scanning posts directory:', POSTS_DIR_);
 
-  if (!fs.existsSync(POSTS_DIR)) {
+  if (!fs.existsSync(POSTS_DIR_)) {
     console.error('[RSS Generator] ERROR: posts/ directory not found!');
     process.exit(1);
   }
 
-  const postFiles = fs.readdirSync(POSTS_DIR)
+  const postFiles = fs.readdirSync(POSTS_DIR_)
     .filter(f => f.endsWith('.html'))
     .sort(); // deterministic order; will sort by date below
 
   console.log(`[RSS Generator] Found ${postFiles.length} post(s)`);
 
   const items = [];
+  const undated = [];
 
   for (const filename of postFiles) {
-    const filePath = path.join(POSTS_DIR, filename);
+    const filePath = path.join(POSTS_DIR_, filename);
     const html = fs.readFileSync(filePath, 'utf-8');
 
     // Extract metadata
@@ -173,6 +175,7 @@ function buildRSS() {
     const description = extractMeta(html, 'description') || extractOG(html, 'description') || extractSummary(html, 50);
     const link        = extractCanonical(html, filename);
     const dateStr     = extractDate(html, filename);
+    if (!dateStr) { undated.push(filename); continue; }
     const keywords    = extractKeywords(html);
     const summary     = extractSummary(html, 200);
 
@@ -186,6 +189,10 @@ function buildRSS() {
     categories.push('Cybersecurity');
 
     items.push({ title, link, description, summary, dateStr, keywords, categories, filename });
+  }
+
+  if (undated.length) {
+    console.warn(`[RSS Generator] WARN: ${undated.length} post(s) excluded: no verifiable publication date (${undated.slice(0, 5).join(', ')}${undated.length > 5 ? ', ...' : ''})`);
   }
 
   // Sort newest-first by date
@@ -257,12 +264,14 @@ ${itemsXML}
   </channel>
 </rss>`;
 
-  fs.writeFileSync(OUTPUT_FILE, rssXML, 'utf-8');
-  console.log(`[RSS Generator] ✅ SUCCESS: ${OUTPUT_FILE}`);
+  fs.writeFileSync(OUTPUT_FILE_, rssXML, 'utf-8');
+  console.log(`[RSS Generator] ✅ SUCCESS: ${OUTPUT_FILE_}`);
   console.log(`[RSS Generator] Feed URL: ${FEED_CONFIG.feedUrl}`);
   console.log(`[RSS Generator] Items: ${latestItems.length}`);
   console.log(`[RSS Generator] Last build: ${lastBuildDate}`);
 }
 
 // ─── ENTRY POINT ──────────────────────────────────────────────────────────────
-buildRSS();
+// `node generate-rss.js` behaves exactly as before; requiring the module (tests) no longer runs it.
+if (require.main === module) buildRSS();
+module.exports = { buildRSS, extractDate, toRFC822 };

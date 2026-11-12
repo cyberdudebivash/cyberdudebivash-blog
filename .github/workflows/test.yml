@@ -156,6 +156,8 @@ jobs:
         run: node --test tests-js/cisa-kev-date-granularity.test.js
       - name: P0 — KEV membership comes only from the authoritative CISA catalog (no inferred or legacy claims)
         run: node --test tests-js/kev-flag-catalog-authority.test.js
+      - name: P0 — RSS item dates are a post's own publication date; undated posts are excluded, never dated today
+        run: node --test tests-js/rss-date-integrity.test.js
       - name: P0 — A partial, truncated or malformed KEV catalog is never adopted; provenance is recorded
         run: node --test tests-js/kev-catalog-validation.test.js
       - name: P0 — Unscored CVSS must stay null through enrichment and never publish as CVSS 0 / LOW
