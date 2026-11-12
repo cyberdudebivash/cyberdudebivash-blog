@@ -109,6 +109,8 @@ jobs:
         run: node --test tests-js/soc-notification-outbox-native.test.js
       - name: P0 SOC — Reject ambiguous outbox stage receipts
         run: node --test tests-js/soc-outbox-stage-receipt.test.js
+      - name: P0 SOC — Content-addressed release manifest and approval verifier negative controls (no deploy, read-only)
+        run: node --test scripts/soc-release-manifest.test.cjs
       - name: P0 FinOps — SQL-index and watcher-cost contract against offline native SQLite
         run: node --test tests-js/soc-watchlist-native-sqlite-cost-contract.test.js
 
