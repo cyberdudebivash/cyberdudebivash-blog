@@ -346,3 +346,38 @@ test('SOC command center report links deny foreign and insecure destinations',()
  assert.match(js,/safeHref\(it\.link,fallback\)/);
  assert.match(js,/Object\.prototype\.hasOwnProperty\.call\(REPORT_HOSTS/);
 });
+
+
+test('Blogger recovery may follow a verified source recovery, never an unverified/failed one',()=>{
+ const vm=require('node:vm');
+ const start=workflow.indexOf('      - name: "Dispatch Blogger publication recovery when customer feed is stale"');
+ const end=workflow.indexOf('      - name: "Verify public Blogger feed and homepage delivery"',start);
+ assert(start>=0&&end>start,'find existing bounded Blogger recovery step');
+ const step=workflow.slice(start,end);
+ assert.match(step,/id: blogger_recovery/);
+ assert.match(step,/if: >-/);
+ const match=step.match(/\\n\\s*if: >-\\n([\\s\\S]*?)\\n\\s*uses: actions\\/github-script@v7/);
+ assert(match,'extract exact GitHub expression from folded YAML condition');
+ const expr=match[1].split('\\n').map(line=>line.trim()).join(' ');
+ // The expression is a checked-in GitHub if clause, evaluated only against
+ // synthetic step outcomes. No token, API call, dispatch, or user data.
+ const allowed=(sourceNeeded,postOutcome,postStatus,bloggerNeeded)=>{
+   const steps={
+     freshness:{outputs:{recovery_required:sourceNeeded?'true':'false'}},
+     post_recovery:{outcome:postOutcome,outputs:{status:postStatus}},
+     blogger_freshness:{outputs:{recovery_required:bloggerNeeded?'true':'false'}},
+   };
+   return Boolean(vm.runInNewContext(expr,{steps},{timeout:1000}));
+ };
+ assert.equal(allowed(false,'skipped','',true),true,'normal independently stale Blogger recovers');
+ assert.equal(allowed(true,'success','HEALTHY',true),true,'verified source recovery unblocks Blogger repair');
+ assert.equal(allowed(true,'failure','PIPELINE_DOWN',true),false,'failed source recovery cannot publish');
+ assert.equal(allowed(true,'success','PIPELINE_DOWN',true),false,'nonhealthy postcheck cannot publish');
+ assert.equal(allowed(true,'skipped','',true),false,'unverified source cannot publish');
+ assert.equal(allowed(true,'success','HEALTHY',false),false,'never publish merely because source recovered');
+ assert.match(step,/const cooldownMs = 45 \\* 60 \\* 1000/);
+ assert.match(step,/max_posts: '4'/);
+ assert.doesNotMatch(step,/wrangler|cloudflare|force_reset_state|delete|reset --hard/);
+ assert.match(workflow,/steps\\.post_recovery\\.outputs\\.status \\|\\| steps\\.freshness\\.outputs\\.status/,
+   'SOC failure summary must report latest verified source status, not pre-recovery outage');
+});
