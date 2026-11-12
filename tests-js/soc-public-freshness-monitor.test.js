@@ -356,9 +356,9 @@ test('Blogger recovery may follow a verified source recovery, never an unverifie
  const step=workflow.slice(start,end);
  assert.match(step,/id: blogger_recovery/);
  assert.match(step,/if: >-/);
- const match=step.match(/\\n\\s*if: >-\\n([\\s\\S]*?)\\n\\s*uses: actions\\/github-script@v7/);
+ const match=step.match(/\n\s*if: >-\n([\s\S]*?)\n\s*uses: actions\/github-script@v7/);
  assert(match,'extract exact GitHub expression from folded YAML condition');
- const expr=match[1].split('\\n').map(line=>line.trim()).join(' ');
+ const expr=match[1].split('\n').map(line=>line.trim()).join(' ');
  // The expression is a checked-in GitHub if clause, evaluated only against
  // synthetic step outcomes. No token, API call, dispatch, or user data.
  const allowed=(sourceNeeded,postOutcome,postStatus,bloggerNeeded)=>{
@@ -375,9 +375,9 @@ test('Blogger recovery may follow a verified source recovery, never an unverifie
  assert.equal(allowed(true,'success','PIPELINE_DOWN',true),false,'nonhealthy postcheck cannot publish');
  assert.equal(allowed(true,'skipped','',true),false,'unverified source cannot publish');
  assert.equal(allowed(true,'success','HEALTHY',false),false,'never publish merely because source recovered');
- assert.match(step,/const cooldownMs = 45 \\* 60 \\* 1000/);
+ assert.match(step,/const cooldownMs = 45 \* 60 \* 1000/);
  assert.match(step,/max_posts: '4'/);
  assert.doesNotMatch(step,/wrangler|cloudflare|force_reset_state|delete|reset --hard/);
- assert.match(workflow,/steps\\.post_recovery\\.outputs\\.status \\|\\| steps\\.freshness\\.outputs\\.status/,
+ assert.match(workflow,/steps\.post_recovery\.outputs\.status \|\| steps\.freshness\.outputs\.status/,
    'SOC failure summary must report latest verified source status, not pre-recovery outage');
 });
