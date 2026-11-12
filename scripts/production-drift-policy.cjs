@@ -106,6 +106,14 @@ const REVIEWED_OPERATIONAL_FILES = new Set([
   // delivery review; never exempt via automation/** wildcard or mark benign.
   'automation/config.py',
   'automation/rss_aggregator.py',
+  // P0 #433: the production drift monitor (run 43230308160, main 0207cff1) reports exactly these
+  // two paths as UNKNOWN, which keeps the decision `blocked`. Inspected: a 96-line pure
+  // BeautifulSoup HTML post-processor (presentation CSS only; no network, subprocess, env,
+  // secret or file I/O) imported by automation/premium_main.py, i.e. it shapes public Blogger
+  // CTI dossiers. OPERATIONAL, not benign: any change still requires operator-reviewed
+  // release. NOT a claim of correctness, deployment or GO; classifies these two paths only.
+  'automation/cti_readability_v13.py',
+  'automation/tests/test_cti_readability_v13.py',
   'scripts/assess-pipeline-operational-health.cjs',
   'scripts/verify-existing-cloudflare-domain.cjs',
   // P0 #433: 25 exact paths reported UNKNOWN by verified full-tree run
