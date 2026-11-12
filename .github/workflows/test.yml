@@ -170,6 +170,8 @@ jobs:
         run: node --test tests-js/nvd-cve-query-contract.test.js
       - name: P0 — Verify Cloudflare release control is manual-only and drift comparisons fail closed
         run: node --test tests-js/production-drift-safety.test.js
+      - name: P0 — Unreviewed automation modules stay UNKNOWN and block release; #552 modules are reviewed operational
+        run: node --test tests-js/soc-drift-cti-readability-classification.test.js
       - name: P0 — Prevent DNS migration during routine Cloudflare content releases
         run: node --test tests-js/cloudflare-routine-release-dns-safety.test.js
       - name: P0 — SOC dual-host pricing canonical source guard
