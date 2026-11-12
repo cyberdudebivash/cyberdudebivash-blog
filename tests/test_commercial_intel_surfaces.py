@@ -909,8 +909,8 @@ def test_homepage_command_center_meets_enterprise_visibility_floor():
     html = Path("index.html").read_text(encoding="utf-8-sig")
     css = Path("apex-command-center.css").read_text(encoding="utf-8")
     assert "SENTINEL APEX SOC — Threat Intelligence & SOC Readiness" in html
-    assert "/apex-command-center.css?v=20260928-brandhero1" in html
-    assert "/apex-command-center.js?v=20260928-brandhero1" in html
+    assert "/apex-command-center.css?v=20261112-live1" in html
+    assert "/apex-command-center.js?v=20261112-live1" in html
     for required in [
         "#main-header nav a{",
         "font-size:13px!important",

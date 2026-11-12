@@ -76,33 +76,47 @@
     if(Number.isFinite(cv)){if(cv>=9)return'CRITICAL';if(cv>=7)return'HIGH';if(cv>=4)return'MEDIUM';return'LOW';}
     return 'LOW';
   }
+  // LIVE list selection. The window policy lives in runtime-state.js (single source of
+  // truth, shared with live-feed-widget.js). There is deliberately NO archival fallback:
+  // when nothing qualifies the list is empty and says so. `archived` is retained only so
+  // older callers keep working; it is always false (deprecated, removal with the next
+  // major release). If the shared model failed to load, nothing is shown as live.
   function selectTriageFeed(rawItems, nowMs){
     var now=Number.isFinite(nowMs)?nowMs:Date.now();
-    var cutoff=now-30*86400000;
-    var dated=(Array.isArray(rawItems)?rawItems:[]).map(function(it,index){
-      if(!it||typeof it!=='object'||Array.isArray(it))return null;
-      var value=it._addedAt||it.pubDate||it.published||it.dateAdded;
-      var ts=typeof value==='string'&&value.trim()?Date.parse(value):NaN;
-      if(!Number.isFinite(ts)||ts<0||ts>now+5*60000)return null;
-      return {item:it,time:ts,priority:Number(it.priority)||0,index:index};
-    }).filter(Boolean);
-    dated.sort(function(a,b){return b.time-a.time||b.priority-a.priority||a.index-b.index;});
-    var recent=dated.filter(function(x){return x.time>=cutoff;});
-    var archived=recent.length===0&&dated.length>0;
-    return {items:(archived?dated:recent).slice(0,7).map(function(x){return x.item;}),
-      archived:archived};
+    if(!RS||typeof RS.selectLiveRecords!=='function')return {items:[],archived:false,unavailable:true,excluded:null,windowHours:null};
+    var sel=RS.selectLiveRecords(rawItems,now);
+    return {items:sel.items.slice(0,7),archived:false,unavailable:false,excluded:sel.excluded,windowHours:sel.windowHours};
+  }
+  function emptyFeedRow(title,subHtml){
+    // cdb-feed-empty (apex-command-center.css) lets this explanation wrap; normal rows truncate to one line.
+    return '<div class="cdb-feed-row cdb-feed-empty" role="status"><div class="cdb-feed-title">'+escapeText(title)+'</div><div class="cdb-feed-sub">'+subHtml+'</div></div>';
+  }
+  // Feed could not be retrieved or parsed (network, non-2xx, timeout, invalid JSON): the
+  // list must say so instead of staying on its initial "Loading" markup.
+  function renderFeedUnavailable(why){
+    var box=$('cdb-triage-feed');
+    state.feedItems=[];
+    if(!box)return;
+    var w=String(why||''),detail=(/^http \d{3}$/.test(w)||w==='timeout')?w:'unreadable response';
+    box.innerHTML=emptyFeedRow('Live intelligence feed unavailable','The first-party feed could not be retrieved ('+escapeText(detail)+'). No records are shown until it can be verified. Refresh to retry.');
   }
   function renderFeed(feed){
     // The source corpus is priority-ranked for analysts, not chronologically
-    // ranked for customers. Show recent evidence, never ancient top-priority
-    // rows merely because they appear first in the JSON.
+    // ranked for customers. A live list shows only records proven new (see
+    // RS.classifyRecord); historical records live in the Intelligence Archive.
     var selection=selectTriageFeed(feed.items);
     var top=selection.items,box=$('cdb-triage-feed');
     if(box){
-      if(!top.length){box.innerHTML='<div class="cdb-feed-row"><div></div><div><div class="cdb-feed-title">No current records available</div><div class="cdb-feed-sub">No timestamp-verified intelligence rows were available.</div></div></div>';}
+      if(selection.unavailable){box.innerHTML=emptyFeedRow('Live intelligence list unavailable','The freshness model did not load, so records are withheld rather than shown unverified.');}
+      else if(!top.length){
+        var w=selection.windowHours,stamp=feedStamp(feed),cls=RS.classifyFeed({ok:true,feed:feed});
+        var sync=stamp&&cls.ageMinutes!=null?'Last feed synchronisation: '+escapeText(new Date(Date.parse(stamp)).toISOString())+' ('+escapeText(RS.formatAge(cls.ageMinutes))+' ago)':'Last feed synchronisation: not established';
+        box.innerHTML=emptyFeedRow('No newly verified intelligence available in the selected live window.',
+          escapeText('Live window: added in the last '+w.ingest+' h and published in the last '+w.publication+' h. Feed state: '+cls.state+'.')+' '+sync+'. Older records are not shown here: <a href="/archive.html">open the Intelligence Archive</a>.');
+      }
       else box.innerHTML=top.map(function(it){
         var sev=normalizeSeverity(it),cls=sev.toLowerCase(),fallback='/search.html?q='+encodeURIComponent(it.id||it.title||''),href=safeHref(it.link,fallback),when=it._addedAt||it.pubDate||'';
-        var a=age(when),flags=[];if(it.cisaKev)flags.push('CISA KEV');if(it.exploited)flags.push('EXPLOITED');if(it.ransomware)flags.push('RANSOMWARE');if(Number(it.iocCount)>0)flags.push(it.iocCount+' IOC');if(selection.archived)flags.push('ARCHIVAL · NO RECENT REPORTS');
+        var a=age(when),flags=[];if(it.cisaKev)flags.push('CISA KEV');if(it.exploited)flags.push('EXPLOITED');if(it.ransomware)flags.push('RANSOMWARE');if(Number(it.iocCount)>0)flags.push(it.iocCount+' IOC');
         return '<a class="cdb-feed-row" href="'+escapeText(href)+'"><span class="cdb-sev '+cls+'">'+sev+'</span><span><span class="cdb-feed-title">'+escapeText(it.title||it.id||'Intelligence record')+'</span><span class="cdb-feed-sub">'+escapeText([it.id,it.source].concat(flags).filter(Boolean).join(' · '))+'</span></span><span class="cdb-feed-time">'+escapeText(a.iso?a.label:String(when||''))+'</span></a>';
       }).join('');
     }
@@ -171,7 +185,7 @@
     fetchJson('/live-intel.json'),fetchJson('/api/intel/customer-assurance.json'),fetchJson('/api/intel/service-assurance.json'),fetchJson('/api/intel/cti-delivery-acceptance.json')
   ]).then(function(results){
     if(results[0].status==='fulfilled'){state.feed=results[0].value;renderMetrics(state.feed);renderFeed(state.feed);}
-    else{var why=results[0].reason&&results[0].reason.message;applyFeedState(RS?RS.classifyFeed({ok:false,error:why}):{state:'UNAVAILABLE',reachable:false,ageMinutes:null,reason:'First-party feed could not be retrieved.'});}
+    else{var why=results[0].reason&&results[0].reason.message;renderFeedUnavailable(why);applyFeedState(RS?RS.classifyFeed({ok:false,error:why}):{state:'UNAVAILABLE',reachable:false,ageMinutes:null,reason:'First-party feed could not be retrieved.'});}
     if(results[1].status==='fulfilled')state.assurance=results[1].value;
     if(results[2].status==='fulfilled')state.service=results[2].value;
     if(results[3].status==='fulfilled')state.acceptance=results[3].value;

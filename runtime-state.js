@@ -106,6 +106,89 @@
     }
   }
 
+  // ── Live-record window policy ────────────────────────────────────────────
+  // Four concepts that must never be conflated:
+  //   pipeline freshness   classifyFeed()      did the pipeline complete recently?
+  //   record freshness     classifyRecord()    is THIS record new enough to be shown as live?
+  //   incident activity    (not modelled)      the feed carries no confirmation/update timestamp
+  //   availability         fetchJson()         could the feed be retrieved at all?
+  // A fresh feed timestamp is NEVER evidence that the records inside it are new:
+  // a healthy pipeline can legitimately contain no new reports.
+  //
+  // A record is LIVE only when BOTH hold:
+  //   - the pipeline first added it within ingestMaxHours   (_addedAt; preserved on
+  //     re-ingestion by fetch-live-intel.js, so it is not reset by re-fetching), AND
+  //   - the SOURCE published it within publicationMaxHours  (pubDate; the larger window
+  //     tolerates date-only precision and ingestion lag). An old advisory that was only
+  //     ingested recently is therefore NOT live.
+  // Everything else belongs in the archive/historical view, never in a live list.
+  var LIVE_WINDOWS = Object.freeze({
+    ingestMaxHours: 24,
+    publicationMaxHours: 72,
+    futureToleranceMinutes: 5,
+  });
+
+  var DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/;
+
+  // → {startMs, endMs} | null. A date-only value means "some time that UTC day", so the
+  // latest the record can have been published is the end of that day.
+  function parseWhen(value) {
+    if (typeof value !== 'string') return null;
+    var s = value.trim();
+    if (!s) return null;
+    var ms = Date.parse(s);
+    if (!isFinite(ms) || ms < 0) return null;
+    return { startMs: ms, endMs: DATE_ONLY.test(s) ? ms + 86400000 - 1 : ms };
+  }
+
+  function publicationValue(item) {
+    return item.pubDate || item.published || item.dateAdded || null;
+  }
+
+  // Why a record is or is not live. `live` is true only for reason 'LIVE'.
+  function classifyRecord(item, nowMs) {
+    var now = typeof nowMs === 'number' && isFinite(nowMs) ? nowMs : Date.now();
+    var tol = LIVE_WINDOWS.futureToleranceMinutes * 60000;
+    var out = function (reason, ingestedMs, publishedMs) {
+      return { live: reason === 'LIVE', reason: reason, ingestedMs: ingestedMs, publishedMs: publishedMs };
+    };
+    if (!item || typeof item !== 'object' || Array.isArray(item)) return out('INVALID_RECORD', null, null);
+    if (item._addedAt === undefined || item._addedAt === null || item._addedAt === '') return out('NO_INGEST_TIME', null, null);
+    var added = parseWhen(item._addedAt);
+    if (!added) return out('INVALID_TIMESTAMP', null, null);
+    var pubRaw = publicationValue(item);
+    if (!pubRaw) return out('NO_PUBLICATION_DATE', added.startMs, null);
+    var pub = parseWhen(pubRaw);
+    if (!pub) return out('INVALID_TIMESTAMP', added.startMs, null);
+    if (added.startMs - now > tol || pub.startMs - now > tol) return out('FUTURE_TIMESTAMP', added.startMs, pub.startMs);
+    if (now - added.startMs > LIVE_WINDOWS.ingestMaxHours * 3600000) return out('NOT_RECENTLY_INGESTED', added.startMs, pub.startMs);
+    if (now - pub.endMs > LIVE_WINDOWS.publicationMaxHours * 3600000) return out('PUBLISHED_BEFORE_WINDOW', added.startMs, pub.startMs);
+    return out('LIVE', added.startMs, pub.startMs);
+  }
+
+  function isLiveRecord(item, nowMs) { return classifyRecord(item, nowMs).live; }
+
+  // → {items, windowHours, considered, excluded:{REASON:count}}. Newest ingestion first,
+  // then priority, then source order. The caller applies its own display cap.
+  function selectLiveRecords(rawItems, nowMs) {
+    var now = typeof nowMs === 'number' && isFinite(nowMs) ? nowMs : Date.now();
+    var list = Array.isArray(rawItems) ? rawItems : [];
+    var excluded = {};
+    var live = [];
+    list.forEach(function (item, index) {
+      var c = classifyRecord(item, now);
+      if (c.live) { live.push({ item: item, time: c.ingestedMs, priority: Number(item.priority) || 0, index: index }); }
+      else excluded[c.reason] = (excluded[c.reason] || 0) + 1;
+    });
+    live.sort(function (a, b) { return b.time - a.time || b.priority - a.priority || a.index - b.index; });
+    return {
+      items: live.map(function (x) { return x.item; }),
+      windowHours: { ingest: LIVE_WINDOWS.ingestMaxHours, publication: LIVE_WINDOWS.publicationMaxHours },
+      considered: list.length,
+      excluded: excluded,
+    };
+  }
+
   // fetch() with a hard deadline. Rejects with an Error whose message is
   // 'timeout', 'http <status>' or the underlying network/parse error.
   function fetchJson(url, options) {
@@ -138,5 +221,7 @@
     THRESHOLDS: THRESHOLDS, STATES: STATES,
     feedTimestamp: feedTimestamp, formatAge: formatAge,
     classifyFeed: classifyFeed, toneFor: toneFor, badgeFor: badgeFor, fetchJson: fetchJson,
+    LIVE_WINDOWS: LIVE_WINDOWS, classifyRecord: classifyRecord, isLiveRecord: isLiveRecord,
+    selectLiveRecords: selectLiveRecords,
   };
 });
