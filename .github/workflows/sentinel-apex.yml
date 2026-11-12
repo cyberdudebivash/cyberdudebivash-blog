@@ -145,14 +145,20 @@ jobs:
           DEBUG: ${{ github.event.inputs.debug }}
         run: |
           echo "🚀 Starting SENTINEL APEX v5.0 pipeline at $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
-          timeout 290 node fetch-live-intel.js
-          EXIT_CODE=$?
+          # GitHub's default Bash shell uses -e; capturing $? after a failed
+          # timeout would be unreachable. Handle expected exit codes inside
+          # an if-condition so real failures are still fatal.
+          if timeout 290 node fetch-live-intel.js; then
+            EXIT_CODE=0
+          else
+            EXIT_CODE=$?
+          fi
           rm -f pipeline.lock 2>/dev/null || true
           if [ $EXIT_CODE -eq 0 ]; then
             echo "✅ Pipeline completed successfully (exit 0)"
           elif [ $EXIT_CODE -eq 143 ] || [ $EXIT_CODE -eq 124 ]; then
-            echo "⚠️ Pipeline timed out after 290s — partial results written atomically (safeWriteSync active)"
-            echo "ℹ️ Timeout exit is non-fatal — continuing to detect changes and commit"
+            echo "::warning title=Intel Publisher Timed Out::Publisher reached its time bound; any partial outputs must pass the existing ledger, integrity, and source-yield checks before successful publication."
+            echo "ℹ️ Continuing to mandatory source integrity and yield gates; timeout alone never certifies a fresh publication"
           else
             echo "::error title=Pipeline Runtime Error::Pipeline exited with code ${EXIT_CODE}. Check Node.js output above for root cause."
             rm -f pipeline.lock 2>/dev/null || true
