@@ -2,6 +2,7 @@
 """P0 commercial intelligence surface integrity gate."""
 from pathlib import Path
 import json
+import re
 
 SURFACES = [
     Path("malware/index.html"),
@@ -910,7 +911,13 @@ def test_homepage_command_center_meets_enterprise_visibility_floor():
     css = Path("apex-command-center.css").read_text(encoding="utf-8")
     assert "SENTINEL APEX SOC — Threat Intelligence & SOC Readiness" in html
     assert "/apex-command-center.css?v=20260928-brandhero1" in html
-    assert "/apex-command-center.js?v=20260928-brandhero1" in html
+    # Keep the command-center asset contract strict, but do not pin the query
+    # version to a retired release: each real release updates the cache key.
+    command_center_scripts = re.findall(
+        r'<script\s+src="/apex-command-center\.js\?v=(20\d{6}-[a-z0-9-]+)"\s+defer></script>',
+        html,
+    )
+    assert len(command_center_scripts) == 1, "exactly one versioned, deferred command-center asset required"
     for required in [
         "#main-header nav a{",
         "font-size:13px!important",
