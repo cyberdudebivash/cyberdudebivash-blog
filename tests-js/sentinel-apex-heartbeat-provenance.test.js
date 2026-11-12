@@ -81,3 +81,21 @@ test('heartbeat does not fabricate report freshness from missing platform timest
   assert.doesNotMatch(program, /data\.lastUpdated\s*=/);
   assert.doesNotMatch(program, /data\.items\.forEach\s*\(/);
 });
+
+test('native generator timestamps true first additions, but never promotes known undated items', () => {
+  const { resolveFirstAddedAt } = require('../fetch-live-intel.js');
+  const now = '2026-11-12T17:24:00.000Z';
+  assert.equal(resolveFirstAddedAt(true, null, now), now);
+  assert.equal(resolveFirstAddedAt(false, { _addedAt: '2026-11-10T05:00:00Z' }, now), '2026-11-10T05:00:00Z');
+  assert.equal(resolveFirstAddedAt(false, { pubDate: '2026-11-12' }, now), undefined);
+  assert.equal(resolveFirstAddedAt(false, { published: '2026-11-12T16:00:00Z' }, now), undefined);
+  assert.equal(resolveFirstAddedAt(false, { _addedAt: '' }, now), undefined);
+  assert.equal(resolveFirstAddedAt(false, { _addedAt: null }, now), undefined);
+  assert.equal(resolveFirstAddedAt(false, null, now), undefined);
+});
+
+test('the native rolling-feed merge invokes the provenance guard instead of falling back to now', () => {
+  const engine = fs.readFileSync(path.join(root, 'fetch-live-intel.js'), 'utf8');
+  assert.match(engine, /const addedAt = resolveFirstAddedAt\(isNewToFeed, existingItem, nowTs\)/);
+  assert.doesNotMatch(engine, /const addedAt = isNewToFeed \? nowTs : \(existingItem\?\._addedAt \|\| nowTs\)/);
+});
