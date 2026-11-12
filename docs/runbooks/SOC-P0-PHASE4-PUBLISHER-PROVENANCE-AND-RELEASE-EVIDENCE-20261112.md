@@ -273,3 +273,54 @@ node scripts/certify-soc-s2n-api-release.cjs --predeploy
 ( cd dist-public && find . -type f -print0 | sort -z | xargs -0 sha256sum | sha256sum )   # manifest digest
 curl -fsS https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json   # catalog for section 2
 ```
+
+---
+
+## 9. Phase 5 update, 2026-11-13 (living update; sections 1 to 8 stay as the Phase 4 record)
+
+**Status: EVIDENCE ONLY. Nothing here deploys or certifies a release; SOC stays NO-GO.** Observations are read-only (2026-11-12 22:44Z to 23:00Z). The hub half is in the hub repository (`docs/transformation/PHASE_ZERO_BASELINE_20261108.md` §15).
+
+### 9.1 Newest genuine publisher output (Verified)
+
+| Item | Value |
+|---|---|
+| Run | [4465 / 43322566044](https://github.com/cyberdudebivash/cyberdudebivash-blog/actions/runs/43322566044): `workflow_dispatch` by `github-actions[bot]` (freshness-monitor recovery), success, 22:43:48Z to 22:44:36Z |
+| Commit | `edafce3f0` 22:44:28Z, `+15 reports ... total=7454, 15srcs` |
+| Feed | `generatedAt` 2026-11-12T22:44:08.146Z, `lastPipelineRun` 22:44:27Z, 150 items, `stats.cisaKev` 39 |
+| Cadence evidence | previous run 4464 was a **schedule** run at 18:43:59Z: a **240-minute gap** with no publisher run until the bot recovered it at 22:43Z. For about an hour in that gap the committed feed was past the 180-minute line |
+| Age at 22:52Z | 8 minutes. At the 180-minute line the report ages out at about 01:44Z on 2026-11-13 |
+
+### 9.2 CISA KEV re-verification (Verified; no regression)
+
+Catalog 2026.11.10 (1,779 entries, fetched 22:51Z). The newest feed carries `metadata.kevCatalog` = `{"status":"VERIFIED","catalogVersion":"2026.11.10","entries":1779,"invalidEntries":0,"duplicateEntries":0,"verifiedAt":"2026-11-12T22:44:03.295Z"}`. Record by record: **39 flagged, 0 flagged but absent from the catalog, 0 catalog members unflagged**, 150 unique ids. The count moved from 40 to 39 because one flagged item left the rolling 150-item window; the four originally disputed flags remain cleared. No further engineering on them is needed unless a fresh run regresses.
+
+### 9.3 Public edge (Verified, 22:52Z, all four endpoints HTTP 200, no redirects)
+
+Unchanged from 17:30Z and from 2026-10-23: `soc.` and `blog.` `/live-intel.json` SHA-256 `999a7b19d128982c…` (156,055 bytes, generated 2026-10-23T04:58:15.799Z, 6,466 reports), `/api/intel/live.json` `1869f2efaf0b75bf…` (130,250 bytes, 6,466 reports); ETags `"aeca3cf3…601ce771e"` and `"395b5711…0d189f3"`; `Cache-Control` `public, max-age=0, must-revalidate` and `public, max-age=600, stale-while-revalidate=3600`; Cloudflare `HIT`. `/soc-intelligence-desk.js` is still 404 (`/runtime-state.js` is 200). The newest `workflow_dispatch` deploy run in the repository is still #758 (2026-10-22). **Source 7,454 against edge 6,466: 988 reports of publication drift.** Unreadable (UNKNOWN, not PASS): the active Worker version, who deployed the 2026-10-23 bundle, and the rollback target; see section 6 for the two owner commands.
+
+### 9.4 Frozen candidate and suites (Verified, local)
+
+Candidate `edafce3f0b83269be6efc03ab2f25b33ce568c42` (tree identical to `main` at that commit). Content-addressed manifest built with the tool in PR #580:
+
+| Component | Digest (sha256) | Files |
+|---|---|---|
+| assets (`dist-public`) | `87cc3cfb2c46adf8c65d84310a501728713eed66b64678123977a9081537421c` | 22,540 |
+| Worker (`workers/`) | `4fb82192718eece4ffafe998f9909da4a4e45cd5f76b4d2a2270ae60798ea6d5` | 13 |
+| Wrangler config / bindings | `ac9a696f93db3dad94e1bb1274c8edfa28b269524bea7407605c3404ba84b739` | 1 |
+| D1 migrations | `c02b049182e0626fd4050364972d0b57b680ed0dd47e8d46e4f878a0487d5711` | 18 |
+| feeds (`live-intel.json`, `api/intel/live.json`) | `1227139f961fbbecedeef3abeaf959261b788a06edc12656c1b6699d009aa4df` | 2 |
+| **manifest digest** | `1312cca0383d0535bcc5df028d7d74fcba727b068eb8307ab46ee19999933c10` | |
+
+**Build determinism (Verified):** two sequential `npm run build:cloudflare` runs produced identical trees (0 differing manifest lines). Hosted-runner determinism: Not Verified. **Perishable:** `main` advances with every publisher commit; this candidate must be frozen and re-approved, never reused.
+
+Suites at 22:59Z: publisher integrity, KEV validation and authority, shared freshness authority and cross-widget, RSS date integrity, heartbeat provenance, source-yield truth and drift classification **129 / 129**; `npm run check:cloudflare` **43 / 43**; `tests/test_commercial_intel_surfaces.py` PASS; `certify-soc-public-feed-parity.cjs --predeploy` **PASS** `SOURCE_REPORT_AND_BUILT_ASSET_FRESH`; `certify-soc-s2n-api-release.cjs --predeploy` **PASS**. **Not run:** browser and accessibility suites, the full hosted Jest job.
+
+### 9.5 Release governance (Proposed; PR #580, draft, unwired)
+
+Why approvals go stale (Verified): `soc-cloudflare-release-sha-gate.cjs` requires run SHA, HEAD, live `main`, the input and the approved-SHA secret to be equal, and `main` moved at least four times while the Phase 4 package was built. Evaluated and rejected: comparing a "release-relevant tree" instead of the SHA (a silent broadening of exact-SHA approval). PR #580 adds a tested, read-only verifier so approval can bind to the exact SHA **plus** a digest per component, secret-name set, target environment, rollback version id and a fresh cost attestation; it covers the ten required rejection cases and relaxes nothing. Wiring it, and the rule relating an approved SHA to `main`, are owner decisions.
+
+Noted, not mine: #578 (merged 2026-11-13 04:10 IST) makes the release preflight check legacy DNS for **both** existing Worker domains; consistent with the "do not touch DNS" rule in the deploy workflow.
+
+### 9.6 Decision and next action
+
+**SOC: NO-GO.** Blockers unchanged: edge 988 reports stale; deployed version and rollback target unreadable; no cost attestation; approval cadence (section 9.5). **Exact next production action (none authorized):** the owner runs the two read-only commands in section 6, then freezes one candidate right after a publisher commit, supplies a ≤ 2 h account-wide attestation and a rollback version id, and separately authorizes the exact SHA and action. A publisher dispatch is not needed for this: the next scheduled or recovery run supplies a fresh genuine report.
