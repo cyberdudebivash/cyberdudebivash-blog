@@ -48,11 +48,21 @@
     var edgeKind=reachable===true?'live':reachable===false?'bad':'warn';
     var edge=$('cdb-edge-state');if(edge){edge.dataset.state=edgeKind;edge.innerHTML='<span class="cdb-dot"></span>'+escapeText(reachable===true?'PRODUCTION EDGE · VERIFIED':reachable===false?'PRODUCTION EDGE · UNAVAILABLE':'PRODUCTION EDGE · CHECKING');}
   }
+  // Sidebar Intelligence Hub status badge. "LIVE" is shown only when the shared
+  // model (RS.badgeFor) proves a healthy feed; otherwise it names the observed
+  // state. If an older cached runtime-state.js without badgeFor is paired with
+  // this script, the badge stays hidden rather than claiming anything.
+  function applyBadge(cls){
+    var el=$('cdb-live-badge');if(!el)return;
+    var b=(RS&&typeof RS.badgeFor==='function')?RS.badgeFor(cls):{text:'',tone:'warn',hidden:true};
+    el.textContent=b.text;el.dataset.state=b.tone;el.title=b.hidden?'':(cls.reason||'');el.hidden=!!b.hidden;
+  }
   function applyFeedState(cls){
     var label=cls.state+(cls.ageMinutes!=null&&RS?' · FEED AGE '+RS.formatAge(cls.ageMinutes):'');
     setRuntime(RS?RS.toneFor(cls.state):(cls.state==='UNAVAILABLE'?'bad':'warn'),label,cls.reason,cls.reachable);
     setText('homepage-feed-state',cls.state);
     setText('homepage-priority-runtime',cls.state);
+    applyBadge(cls);
   }
   function setKpi(id,value,note){
     var v=$(id),n=$(id+'-note');if(v)v.textContent=value;if(n)n.textContent=note||'';

@@ -84,6 +84,28 @@
     return Object.prototype.hasOwnProperty.call(TONE, state) ? TONE[state] : 'warn';
   }
 
+  // Text for a compact status badge (e.g. the homepage Intelligence Hub widget).
+  // "LIVE" is claimed ONLY for HEALTHY, i.e. a pipeline completion within
+  // THRESHOLDS.healthyMaxMinutes. Every other state names what was observed, and
+  // CHECKING / unknown input yields no badge at all (hidden), so a badge can never
+  // outlive the evidence for it. Takes a classifyFeed() result.
+  function badgeFor(classification) {
+    var c = classification || {};
+    var hasAge = typeof c.ageMinutes === 'number' && isFinite(c.ageMinutes);
+    switch (c.state) {
+      case STATES.HEALTHY:
+        return { text: 'LIVE', tone: toneFor(STATES.HEALTHY), hidden: false };
+      case STATES.DEGRADED:
+        return { text: hasAge ? 'DELAYED · ' + formatAge(c.ageMinutes) : 'UNVERIFIED', tone: toneFor(STATES.DEGRADED), hidden: false };
+      case STATES.STALE:
+        return { text: hasAge ? 'STALE · ' + formatAge(c.ageMinutes) : 'STALE', tone: toneFor(STATES.STALE), hidden: false };
+      case STATES.UNAVAILABLE:
+        return { text: 'UNAVAILABLE', tone: toneFor(STATES.UNAVAILABLE), hidden: false };
+      default:
+        return { text: '', tone: toneFor(STATES.CHECKING), hidden: true };
+    }
+  }
+
   // fetch() with a hard deadline. Rejects with an Error whose message is
   // 'timeout', 'http <status>' or the underlying network/parse error.
   function fetchJson(url, options) {
@@ -115,6 +137,6 @@
   return {
     THRESHOLDS: THRESHOLDS, STATES: STATES,
     feedTimestamp: feedTimestamp, formatAge: formatAge,
-    classifyFeed: classifyFeed, toneFor: toneFor, fetchJson: fetchJson,
+    classifyFeed: classifyFeed, toneFor: toneFor, badgeFor: badgeFor, fetchJson: fetchJson,
   };
 });

@@ -1414,6 +1414,11 @@
       margin-left: auto;
       animation: blink 0.8s infinite;
     }
+    /* Status badge (apex-command-center.js + runtime-state.js badgeFor): only the
+       verified-fresh "live" state blinks; stale/delayed/unavailable are static. */
+    .ihw-live[data-state="warn"] { color: #f59e0b; animation: none; }
+    .ihw-live[data-state="bad"]  { color: #94a3b8; animation: none; }
+    @media (prefers-reduced-motion: reduce) { .ihw-live { animation: none; } }
 
     /* THREAT LEVEL */
     .threat-level-display {
@@ -2432,7 +2437,7 @@ input:focus, textarea:focus {
       <a href="intelligence.html#live-breaking" class="intel-hub-widget-link">
         <div class="ihw-dot" style="background:#ff0040"></div>
         <div class="ihw-text">Live Breaking News</div>
-        <span class="ihw-live">LIVE</span>
+        <span class="ihw-live" id="cdb-live-badge" data-state="warn" hidden></span>
       </a>
       <a href="intelligence.html#today-vulns" class="intel-hub-widget-link">
         <div class="ihw-dot" style="background:#ff3b3b"></div>
@@ -3057,7 +3062,7 @@ document.addEventListener('keydown', function(e) {
 })();
 
 </script>
-<script src="/runtime-state.js?v=20260930-rs1" defer></script>
-<script src="/apex-command-center.js?v=20260928-brandhero1" defer></script>
+<script src="/runtime-state.js?v=20261112-badge1" defer></script>
+<script src="/apex-command-center.js?v=20261112-badge1" defer></script>
 </body>
 </html>

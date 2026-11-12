@@ -65,6 +65,43 @@ describe('classifier', () => {
   });
 });
 
+describe('status badge (badgeFor): LIVE only with evidence', () => {
+  const badge = m => RS.badgeFor(RS.classifyFeed({ ok: true, feed: feedAt(minutesAgo(m)), nowMs: NOW }));
+
+  test('LIVE is claimed only while the feed is HEALTHY', () => {
+    assert.deepEqual(badge(12), { text: 'LIVE', tone: 'live', hidden: false });
+    assert.deepEqual(badge(90), { text: 'LIVE', tone: 'live', hidden: false });
+    for (const m of [91, 120, 180, 181, 300, 20 * 1440]) {
+      assert.notEqual(badge(m).text, 'LIVE', m + ' minutes old must not read LIVE');
+      assert.notEqual(badge(m).tone, 'live', m + ' minutes old must not carry the live tone');
+    }
+  });
+
+  test('delayed and stale feeds name their observed age', () => {
+    assert.deepEqual(badge(120), { text: 'DELAYED · 2h 0m', tone: 'warn', hidden: false });
+    assert.deepEqual(badge(181), { text: 'STALE · 3h 1m', tone: 'warn', hidden: false });
+    assert.equal(badge(20 * 1440 + 3 * 60).text, 'STALE · 20d 3h');
+  });
+
+  test('unprovable freshness reads UNVERIFIED, never LIVE or DELAYED', () => {
+    const b = RS.badgeFor(RS.classifyFeed({ ok: true, feed: { items: [] }, nowMs: NOW }));
+    assert.deepEqual(b, { text: 'UNVERIFIED', tone: 'warn', hidden: false });
+    const future = RS.badgeFor(RS.classifyFeed({ ok: true, feed: feedAt(minutesAgo(-30)), nowMs: NOW }));
+    assert.equal(future.text, 'UNVERIFIED');
+  });
+
+  test('an unreachable feed reads UNAVAILABLE with the bad tone', () => {
+    const b = RS.badgeFor(RS.classifyFeed({ ok: false, error: 'timeout', nowMs: NOW }));
+    assert.deepEqual(b, { text: 'UNAVAILABLE', tone: 'bad', hidden: false });
+  });
+
+  test('CHECKING, unknown and missing input produce no badge at all', () => {
+    for (const input of [{ state: 'CHECKING' }, { state: 'SOMETHING_ELSE' }, {}, null, undefined]) {
+      assert.deepEqual(RS.badgeFor(input), { text: '', tone: 'warn', hidden: true }, JSON.stringify(input));
+    }
+  });
+});
+
 describe('fetchJson deadline', () => {
   test('resolves JSON on 2xx', async () => {
     const v = await RS.fetchJson('/x', { fetchImpl: async () => ({ ok: true, status: 200, json: async () => ({ a: 1 }) }) });
@@ -84,18 +121,20 @@ describe('fetchJson deadline', () => {
 });
 
 // Run the real apex-command-center.js against a minimal DOM.
-function runCommandCenter(fetchImpl) {
+function runCommandCenter(fetchImpl, mutateRs) {
   const els = new Map();
   const el = id => {
     if (!els.has(id)) els.set(id, { id, textContent: '', innerHTML: '', dataset: {}, addEventListener() {} });
     return els.get(id);
   };
   const rs = { ...RS, fetchJson: url => RS.fetchJson(url, { fetchImpl, timeoutMs: 25 }) };
+  if (mutateRs) mutateRs(rs);
   const window = { SentinelRuntimeState: rs, addEventListener() {}, location: { origin: 'https://blog.cyberdudebivash.in', reload() {} }, matchMedia: () => ({ matches: true }), devicePixelRatio: 1 };
   const document = { getElementById: id => (id === 'cdbSignalCanvas' ? null : el(id)) };
   const ctx = vm.createContext({ window, document, Intl, URL, Promise, setTimeout, clearTimeout, Date, Math, Number, String, Object, Array, JSON, isFinite, fetch: fetchImpl });
   vm.runInContext(fs.readFileSync(path.join(ROOT, 'apex-command-center.js'), 'utf8'), ctx);
-  return { text: id => el(id).textContent, html: id => el(id).innerHTML, state: id => el(id).dataset.state };
+  return { text: id => el(id).textContent, html: id => el(id).innerHTML, state: id => el(id).dataset.state,
+    hidden: id => el(id).hidden, title: id => el(id).title };
 }
 const settle = ms => new Promise(r => setTimeout(r, ms));
 
@@ -128,6 +167,55 @@ describe('homepage command center wiring', () => {
   });
 });
 
+describe('homepage Intelligence Hub badge wiring', () => {
+  const settleMs = 80;
+
+  test('a 20-day-old feed (the real production state) reads STALE with its age, never LIVE', async () => {
+    const stale = { ...feedAt(new Date(Date.now() - (20 * 1440 + 3 * 60) * 60000).toISOString()), totalPublished: 6466, stats: {} };
+    const page = runCommandCenter(async () => ({ ok: true, status: 200, json: async () => stale }));
+    await settle(settleMs);
+    assert.match(page.text('cdb-live-badge'), /^STALE · 20d 3h$/);
+    assert.equal(page.state('cdb-live-badge'), 'warn');
+    assert.equal(page.hidden('cdb-live-badge'), false);
+    assert.match(page.title('cdb-live-badge'), /out of date/);
+    assert.doesNotMatch(page.text('cdb-live-badge'), /LIVE/);
+  });
+
+  test('a fresh feed is the only case that reads LIVE', async () => {
+    const fresh = { ...feedAt(new Date(Date.now() - 12 * 60000).toISOString()), totalPublished: 5, stats: {} };
+    const page = runCommandCenter(async () => ({ ok: true, status: 200, json: async () => fresh }));
+    await settle(settleMs);
+    assert.equal(page.text('cdb-live-badge'), 'LIVE');
+    assert.equal(page.state('cdb-live-badge'), 'live');
+    assert.equal(page.hidden('cdb-live-badge'), false);
+  });
+
+  test('a feed behind cadence reads DELAYED, not LIVE', async () => {
+    const behind = { ...feedAt(new Date(Date.now() - 120 * 60000).toISOString()), totalPublished: 5, stats: {} };
+    const page = runCommandCenter(async () => ({ ok: true, status: 200, json: async () => behind }));
+    await settle(settleMs);
+    assert.match(page.text('cdb-live-badge'), /^DELAYED · 2h \d+m$/);
+    assert.equal(page.state('cdb-live-badge'), 'warn');
+  });
+
+  test('an unreachable feed reads UNAVAILABLE with the bad tone', async () => {
+    const page = runCommandCenter(() => new Promise(() => {}));
+    await settle(settleMs);
+    assert.equal(page.text('cdb-live-badge'), 'UNAVAILABLE');
+    assert.equal(page.state('cdb-live-badge'), 'bad');
+    assert.equal(page.hidden('cdb-live-badge'), false);
+  });
+
+  test('version skew: an older cached runtime-state.js without badgeFor leaves the badge hidden and empty', async () => {
+    const fresh = { ...feedAt(new Date(Date.now() - 12 * 60000).toISOString()), totalPublished: 5, stats: {} };
+    const page = runCommandCenter(async () => ({ ok: true, status: 200, json: async () => fresh }), rs => { delete rs.badgeFor; });
+    await settle(settleMs);
+    assert.equal(page.hidden('cdb-live-badge'), true);
+    assert.equal(page.text('cdb-live-badge'), '');
+    assert.equal(page.text('homepage-feed-state'), 'HEALTHY', 'the rest of the command center is unaffected');
+  });
+});
+
 describe('consumer pages', () => {
   const index = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
   const status = fs.readFileSync(path.join(ROOT, 'service-status.html'), 'utf8');
@@ -139,6 +227,24 @@ describe('consumer pages', () => {
     assert.ok(status.includes('<script src="/runtime-state.js'), 'status page must load the shared model');
     const { PUBLIC_ROOT_FILES } = require('../scripts/build-cloudflare-assets.js');
     assert.ok(PUBLIC_ROOT_FILES.includes('runtime-state.js'));
+  });
+
+  test('the sidebar badge ships hidden and empty: LIVE is never hard-coded in markup', () => {
+    assert.doesNotMatch(index, /<span class="ihw-live"[^>]*>\s*LIVE\s*<\/span>/, 'no static LIVE text in the badge');
+    const badge = index.match(/<span class="ihw-live"[^>]*>[\s\S]*?<\/span>/);
+    assert.ok(badge, 'the badge element must exist');
+    assert.match(badge[0], /id="cdb-live-badge"/);
+    assert.match(badge[0], /\bhidden\b/, 'hidden until the feed state is proven');
+    assert.match(badge[0], />\s*<\/span>$/, 'no text until the feed state is proven');
+    assert.match(index, /\.ihw-live\[data-state="warn"\]\s*\{[^}]*animation:\s*none/, 'only the live state may blink');
+    assert.match(index, /\.ihw-live\[data-state="bad"\]\s*\{[^}]*animation:\s*none/);
+  });
+
+  test('changed scripts are cache-busted together on the homepage', () => {
+    const rsV = index.match(/\/runtime-state\.js\?v=([^"']+)/);
+    const ccV = index.match(/\/apex-command-center\.js\?v=([^"']+)/);
+    assert.ok(rsV && ccV, 'both scripts carry a version query');
+    assert.equal(rsV[1], ccV[1], 'runtime-state.js and apex-command-center.js must be bumped together');
   });
 
   test('no customer page ships an unbounded VERIFYING state or a LIVE label for batch data', () => {
