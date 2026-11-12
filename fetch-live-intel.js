@@ -547,7 +547,48 @@ async function fetchNVD(state) {
 // incremental additions it returns), so the live feed can be reconciled against it.
 // null = the catalog was not successfully parsed in this process: do not touch any flag.
 let lastKevCatalogIds = null;
+let lastKevCatalogMeta = null;
 function getKevCatalogIds() { return lastKevCatalogIds; }
+// Provenance written to live-intel.json metadata.kevCatalog. UNVERIFIED means "no adopted catalog in
+// this process": every KEV flag in that file is then carried over from earlier runs and is NOT
+// re-certified by this run.
+function getKevCatalogMeta() {
+  return lastKevCatalogMeta || { status: 'UNVERIFIED', reason: 'CATALOG_NOT_FETCHED_THIS_RUN' };
+}
+function resetKevCatalogState() { lastKevCatalogIds = null; lastKevCatalogMeta = null; } // test hook
+
+const KEV_CVE_ID = /^CVE-\d{4}-\d{4,}$/;
+const KEV_MIN_CATALOG_ENTRIES = 1000; // the real catalog holds well over 1,500 entries
+
+// Pure. Decides whether a parsed CISA KEV document may become the authority for reconciliation.
+// A partial, truncated or malformed catalog must NEVER be adopted: reconciling against it would
+// "confirm absent" real KEV members and silently erase true flags.
+//   ok:false  -> reason is one of NO_VULNERABILITIES_ARRAY | COUNT_MISMATCH | CATALOG_TOO_SMALL
+//   ok:true   -> ids is the de-duplicated, upper-cased set of well-formed CVE ids
+function parseKevCatalog(data, minEntries) {
+  const floor = Number.isFinite(minEntries) ? minEntries : KEV_MIN_CATALOG_ENTRIES;
+  if (!data || typeof data !== 'object' || !Array.isArray(data.vulnerabilities)) {
+    return { ok: false, reason: 'NO_VULNERABILITIES_ARRAY' };
+  }
+  const declared = Number(data.count);
+  if (data.count !== undefined && data.count !== null &&
+      (!Number.isFinite(declared) || declared !== data.vulnerabilities.length)) {
+    return { ok: false, reason: 'COUNT_MISMATCH', declared: data.count, received: data.vulnerabilities.length };
+  }
+  const ids = new Set();
+  let invalid = 0;
+  for (const v of data.vulnerabilities) {
+    const id = String((v && v.cveID) || '').trim().toUpperCase();
+    if (KEV_CVE_ID.test(id)) ids.add(id); else invalid++;
+  }
+  if (ids.size < floor) return { ok: false, reason: 'CATALOG_TOO_SMALL', entries: ids.size, minimum: floor };
+  return {
+    ok: true, ids, entries: ids.size, invalid,
+    duplicates: data.vulnerabilities.length - invalid - ids.size,
+    catalogVersion: typeof data.catalogVersion === 'string' ? data.catalogVersion : null,
+    dateReleased: typeof data.dateReleased === 'string' ? data.dateReleased : null,
+  };
+}
 
 // Pure. Returns {items, confirmed, cleared:[ids]}; never mutates its input.
 //   id in catalog                  -> cisaKev = true  (authoritative)
@@ -579,8 +620,18 @@ async function fetchCISAKev(state) {
   try {
     const raw = await fetchWithRetry(CFG.cisaKevUrl);
     const data = JSON.parse(raw);
-    const catalogIds = new Set((data.vulnerabilities||[]).map(v => String((v && v.cveID) || '').toUpperCase()).filter(Boolean));
-    if (catalogIds.size > 0) lastKevCatalogIds = catalogIds;
+    const floor = Number(process.env.CDB_KEV_MIN_CATALOG_ENTRIES);
+    const catalog = parseKevCatalog(data, Number.isFinite(floor) && floor > 0 ? floor : undefined);
+    if (catalog.ok) {
+      lastKevCatalogIds = catalog.ids;
+      lastKevCatalogMeta = { status: 'VERIFIED', catalogVersion: catalog.catalogVersion, dateReleased: catalog.dateReleased,
+        entries: catalog.entries, invalidEntries: catalog.invalid, duplicateEntries: catalog.duplicates,
+        verifiedAt: new Date().toISOString() };
+    } else {
+      warn(`CISA KEV catalog NOT adopted as authority: ${catalog.reason}`);
+      // Never downgrade a snapshot already verified in this process; otherwise record why none exists.
+      if (!lastKevCatalogIds) lastKevCatalogMeta = { status: 'UNVERIFIED', reason: catalog.reason, checkedAt: new Date().toISOString() };
+    }
     // KEV `dateAdded` is a calendar date (YYYY-MM-DD), which Date parses as 00:00 UTC.
     // `cutoff` is an instant (min(lastFetch, now-4h)), so comparing the two raw dropped
     // every entry added earlier in the cutoff's UTC day -- i.e. all of them, since CISA
@@ -3088,7 +3139,7 @@ function writeLiveIntel(allItems, state) {
     const trulyNewCount = newItems.filter(i => !existingIds.has(i.id)).length;
     safeWriteSync(CFG.liveJsonPath, JSON.stringify({
       generatedAt: _liveGenTs, lastUpdated: _liveGenTs, totalPublished: state.totalPublished||0,
-      metadata: { generated: _liveGenTs, version: '5.0', pipeline: 'SENTINEL APEX v5.0', platform: 'blog.cyberdudebivash.in' },
+      metadata: { generated: _liveGenTs, version: '5.0', pipeline: 'SENTINEL APEX v5.0', platform: 'blog.cyberdudebivash.in', kevCatalog: getKevCatalogMeta() },
       source: 'CYBERDUDEBIVASH SENTINEL APEX v5.0', platform: 'blog.cyberdudebivash.in',
       version: '5.0',
       stats: {
@@ -3510,6 +3561,6 @@ if (require.main === module) {
     sapexCanonicalId, sapexNativeMitre, fetchSentinelApex,
     watermarkStart, acknowledgeExistingPost,
     recordSourceSuccess, recordSourceFailure, getSourceHealthReport,
-    fetchCISAKev, reconcileKevFlags, getKevCatalogIds,
+    fetchCISAKev, reconcileKevFlags, getKevCatalogIds, getKevCatalogMeta, parseKevCatalog, resetKevCatalogState,
   };
 }

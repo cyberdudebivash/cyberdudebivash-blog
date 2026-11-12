@@ -19,6 +19,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { EventEmitter } = require('node:events');
 
+// These fixtures are tiny synthetic catalogs. The production size floor (1000 entries) is exercised in
+// tests-js/kev-catalog-validation.test.js; here it is lowered so adapter retention can be tested.
+process.env.CDB_KEV_MIN_CATALOG_ENTRIES = '1';
+
 const mod = require(path.join(__dirname, '..', 'fetch-live-intel.js'));
 const { reconcileKevFlags, getKevCatalogIds, fetchCISAKev } = mod;
 
