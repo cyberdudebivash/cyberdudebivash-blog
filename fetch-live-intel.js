@@ -3082,6 +3082,16 @@ async function writeAPIFiles(allItems, state) {
 }
 
 // ── LIVE-INTEL.JSON (widget feed) ─────────────────────────────────────
+// First-party feed addition time must never be synthesized for an already-
+// known item. An old source publication date and a missing ingestion timestamp
+// are not evidence of new platform publication. Consumers fail closed on
+// missing/invalid _addedAt; true first additions receive the current time.
+function resolveFirstAddedAt(isNewToFeed, existingItem, nowIso) {
+  if (isNewToFeed) return nowIso;
+  const prior = existingItem && existingItem._addedAt;
+  return typeof prior === 'string' && prior.trim() ? prior : undefined;
+}
+
 function writeLiveIntel(allItems, state) {
   try {
     // Load existing items for rolling merge
@@ -3106,7 +3116,7 @@ function writeLiveIntel(allItems, state) {
       // For items already in the rolling window, preserve their original _addedAt.
       const isNewToFeed = !existingIds.has(item.id);
       const existingItem = isNewToFeed ? null : existingItems.find(e => e.id === item.id);
-      const addedAt = isNewToFeed ? nowTs : (existingItem?._addedAt || nowTs);
+      const addedAt = resolveFirstAddedAt(isNewToFeed, existingItem, nowTs);
       return {
       id: item.id, title: (item.title||'').slice(0,120), desc: (item.desc||'').slice(0,200),
       cvss: typeof item.cvss==='number'?item.cvss:null, type: item.type||'INTEL', source: item.source||'',
@@ -3559,7 +3569,7 @@ if (require.main === module) {
     genAttackChain, computePriorityScore, correlateAndMerge,
     extractSentinelApexRecords, normalizeSentinelApexRecord,
     sapexCanonicalId, sapexNativeMitre, fetchSentinelApex,
-    watermarkStart, acknowledgeExistingPost,
+    watermarkStart, acknowledgeExistingPost, resolveFirstAddedAt,
     recordSourceSuccess, recordSourceFailure, getSourceHealthReport,
     fetchCISAKev, reconcileKevFlags, getKevCatalogIds, getKevCatalogMeta, parseKevCatalog, resetKevCatalogState,
   };
