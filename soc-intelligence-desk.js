@@ -62,9 +62,12 @@
           typeof raw.title !== 'string' || !raw.title.trim()) return null;
       // _addedAt is the first-party report-addition timestamp, not the event
       // date. Keep the original pubDate separate in the rendered record.
-      var value = raw._addedAt || raw.pubDate || raw.published ||
-        raw.dateAdded || raw.first_seen;
-      var timestamp = typeof value === 'string' && value.trim() ? Date.parse(value) : NaN;
+      // A source disclosure date is NOT evidence this platform added a report.
+      // The current first-party feed supplies _addedAt for all 150 ranked items;
+      // fail closed if the provenance field is absent or malformed.
+      var value = raw._addedAt;
+      var timestamp = typeof value === 'string' &&
+        /(Z|[+-]\d{2}:\d{2})$/.test(value) ? Date.parse(value) : NaN;
       if (!isFinite(timestamp) || timestamp < now - RECENT_WINDOW_MS || timestamp > now) return null;
       return { raw: raw, timestamp: timestamp, index: index };
     }).filter(Boolean);
@@ -88,8 +91,18 @@
   // Never render/export old records when the publication pipeline itself is
   // stale, unavailable, or lacks verifiable freshness evidence.
   function availableRecords(feed, classification, nowMs) {
-    return classification && (classification.state === 'HEALTHY' ||
-      classification.state === 'DEGRADED') ? selectRecentRecords(feed, nowMs) : [];
+    var now = typeof nowMs === 'number' && isFinite(nowMs) ? nowMs : Date.now();
+    var state = classification && classification.state;
+    // A DEGRADED result can mean either a measured 90–180m delay OR an
+    // invalid/missing/future pipeline timestamp. Require actual clock evidence.
+    if (state !== 'HEALTHY' && state !== 'DEGRADED') return [];
+    var age = classification.ageMinutes;
+    var stamp = classification.timestamp;
+    var publishedAt = typeof stamp === 'string' ? Date.parse(stamp) : NaN;
+    if (typeof age !== 'number' || !isFinite(age) || age < 0 || age > 180 ||
+        !isFinite(publishedAt) || publishedAt > now + 5 * 60000 ||
+        now - publishedAt > 180 * 60000) return [];
+    return selectRecentRecords(feed, now);
   }
 
   function filterRecords(records, query, severity, exploitedOnly) {
