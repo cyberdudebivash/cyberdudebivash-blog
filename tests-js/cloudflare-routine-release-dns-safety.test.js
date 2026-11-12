@@ -68,10 +68,10 @@ test('production workflow neither deletes/restores nor creates DNS records',()=>
     'read-only Worker mapping and legacy DNS proofs MUST precede Wrangler mutation');
   // The separate read-only legacy DNS gate must cover BOTH Custom Domains
   // before and after the Worker mutation, not merely the old blog hostname.
-  assert.equal((yaml.match(/for hostname in blog\\.cyberdudebivash\\.in soc\\.cyberdudebivash\\.in; do/g)||[]).length,2);
-  assert.equal((yaml.match(/dns_records\\?name=\\$hostname&per_page=100/g)||[]).length,2);
-  assert.equal((yaml.match(/dns_valid=\\"\\$\\(jq -r --arg expected/g)||[]).length,2);
-  assert.equal((yaml.match(/test "\\$dns_valid" = true/g)||[]).length,2);
+  assert.equal((yaml.match(/for hostname in blog\.cyberdudebivash\.in soc\.cyberdudebivash\.in; do/g)||[]).length,2);
+  assert.equal((yaml.match(/dns_records\?name=\$hostname&per_page=100/g)||[]).length,2);
+  assert.equal((yaml.match(/dns_valid=\"\$\(jq -r --arg expected/g)||[]).length,2);
+  assert.equal((yaml.match(/test "\$dns_valid" = true/g)||[]).length,2);
   const dnsPrerequisite=yaml.slice(preDns,deploy);
   assert.match(dnsPrerequisite,/vercel_refs/);
   assert.match(dnsPrerequisite,/test "\$vercel_refs" -eq 0/);
