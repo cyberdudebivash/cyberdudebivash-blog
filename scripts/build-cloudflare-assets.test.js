@@ -246,7 +246,8 @@ describe('build-cloudflare-assets', () => {
     const home = fs.readFileSync(path.join(OUT, 'index.html'), 'utf8');
     assert.match(html, /href="\/soc-intelligence-desk\.css\?v=20261023-ux1"/);
     assert.match(html, /src="\/runtime-state\.js\?v=20261023-ux1"/);
-    assert.match(html, /src="\/soc-intelligence-desk\.js\?v=20261023-ux1"/);
+    const deskScriptTags = html.match(/<script\s+src="\/soc-intelligence-desk\.js\?v=20\d{6}-[a-z0-9-]+"\s+defer><\/script>/g) || [];
+    assert.equal(deskScriptTags.length, 1, 'one versioned/deferred SOC intelligence desk script required');
     assert.match(html, /id="soc-intelligence-desk"/);
     assert.match(html, /data-desk-export disabled/);
     assert.match(home, /href="\/soc\.html#soc-intelligence-desk"/,
