@@ -84,3 +84,53 @@ def test_live_public_incorporation_claim_is_blocked():
     assert "unsupported_incorporation" in codes
     safe_html = html.replace("CYBERDUDEBIVASH PRIVATE LIMITED", "CYBERDUDEBIVASH ECOSYSTEM")
     assert "unsupported_incorporation" not in {f.code for f in audit_html(safe_html, now=NOW)}
+
+
+
+def test_additional_unverified_cti_telemetry_and_accessibility_claims_are_blocked():
+    html = """
+    <html><head><link rel="canonical" href="https://cti.cyberdudebivash.in/"></head>
+    <body>
+      <p>SOAR Automation Rate 91.2% Auto-Remediated</p>
+      <p>Active IOC Matches 1,420 Blocked at Edge</p>
+      <p>Cloud Security Posture 96/100 AWS / GCP / Azure</p>
+      <p>Triage Queue 12 Pending</p>
+      <p>Accessibility Engine: WCAG 2.2 AA Verified</p>
+      <p>Ransomware Risk Level LOW Zero Active Leaks</p>
+      <time>21 September 2026</time>
+    </body></html>
+    """
+    codes = {f.code for f in audit_html(html, now=NOW)}
+    assert {
+        "soar_automation_claim",
+        "ioc_matches_claim",
+        "cloud_posture_claim",
+        "triage_queue_claim",
+        "accessibility_certification_claim",
+        "ransomware_zero_leaks_claim",
+    } <= codes
+
+
+def test_empty_file_hash_is_not_lazarus_ioc_and_is_blocked_when_attributed():
+    digest = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    start = '<html><head><link rel="canonical" href="https://cti.cyberdudebivash.in/"></head><body>'
+    end = "<time>21 September 2026</time></body></html>"
+    attributed = start + digest + " SHA256 Hash Lazarus Group 96/100 " + end
+    assert "empty_sha_lazarus_attribution" in {
+        f.code for f in audit_html(attributed, now=NOW)
+    }
+
+    # A factual mention of the well-known empty-file digest must not be blocked.
+    educational = start + "SHA-256 of an empty file: " + digest + " " + end
+    assert "empty_sha_lazarus_attribution" not in {
+        f.code for f in audit_html(educational, now=NOW)
+    }
+
+
+def test_generic_soc2_alignment_language_does_not_claim_attestation():
+    html = """
+    <html><head><link rel="canonical" href="https://cti.cyberdudebivash.in/"></head>
+    <body><p>SOC 2 Trust Services Criteria-informed control mapping. No attestation.</p>
+    <time>21 September 2026</time></body></html>
+    """
+    assert audit_html(html, now=NOW) == []
