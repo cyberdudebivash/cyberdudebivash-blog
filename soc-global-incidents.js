@@ -48,6 +48,23 @@
         item.claims.some(function (c) { return c.verification_state === 'confirmed'; });
     });
   }
+  // Expose only incident records with a genuine updated timestamp in the
+  // last 24h, and only when the incident-feed publication is <=2h old.
+  // Null means feed freshness cannot be certified; [] means no recent records.
+  function selectFreshIncidents(feed, nowMs) {
+    if (!validate(feed)) return null;
+    var now = typeof nowMs === 'number' && Number.isFinite(nowMs) ? nowMs : Date.now();
+    var generated = Date.parse(feed.generated_at_utc);
+    if (generated > now + 300000 || now - generated > 7200000) return null;
+    return feed.incidents.filter(function (item) {
+      var updated = Date.parse(item.updated_utc);
+      var firstSeen = Date.parse(item.first_seen_utc);
+      return updated <= now && updated >= now - 86400000 &&
+        firstSeen <= updated && firstSeen <= now;
+    }).sort(function (a, b) {
+      return Date.parse(b.updated_utc) - Date.parse(a.updated_utc);
+    }).slice(0, 20);
+  }
   function el(tag, text, className) {
     var node = document.createElement(tag);
     if (className) node.className = className;
@@ -63,13 +80,15 @@
       container.replaceChildren(fragment);
       return false;
     }
-    var age = Date.now() - Date.parse(feed.generated_at_utc);
-    if (age < -300000 || age > 7200000) {
-      fragment.appendChild(el('p', 'Incident feed is stale or has an invalid clock. Last-known data shown; freshness not verified.', 'soc-gcii-stale'));
+    var current = selectFreshIncidents(feed);
+    if (current === null) {
+      fragment.appendChild(el('p', 'Incident feed stale or clock unverified. Historical incident cards are withheld until a fresh published feed is verified.', 'soc-gcii-stale'));
+      container.replaceChildren(fragment);
+      return true; // A safe unavailable state was rendered; the loader need not overwrite it.
     }
-    fragment.appendChild(el('p', 'Feed generated: ' + feed.generated_at_utc + ' · ' + feed.incidents.length + ' records'));
-    if (!feed.incidents.length) fragment.appendChild(el('p', 'No verified incidents in this feed; this does not imply zero global incidents.'));
-    feed.incidents.forEach(function (item) {
+    fragment.appendChild(el('p', 'Feed generated: ' + feed.generated_at_utc + ' · ' + current.length + ' recently updated records (24h)'));
+    if (!current.length) fragment.appendChild(el('p', 'No verified incident updates in the last 24 hours; this does not imply zero global incidents.'));
+    current.forEach(function (item) {
       var card = el('article', '', 'soc-gcii-card');
       card.appendChild(el('h3', item.title));
       card.appendChild(el('p', item.severity.toUpperCase() + ' · ' + item.status + ' · confidence: ' + item.confidence));
@@ -88,5 +107,5 @@
     container.replaceChildren(fragment);
     return true;
   }
-  global.CDBGlobalIncidents = Object.freeze({validate:validate, render:render});
+  global.CDBGlobalIncidents = Object.freeze({validate:validate, selectFreshIncidents:selectFreshIncidents, render:render});
 })(window);

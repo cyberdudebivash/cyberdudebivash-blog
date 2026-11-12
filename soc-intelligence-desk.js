@@ -50,6 +50,61 @@
       };
     });
   }
+  // A fresh pipeline heartbeat does not make its historical CVEs or incident
+  // reports newly published. Select individual, dated report additions within
+  // the last 24h, regardless of priority-ranked JSON order.
+  var RECENT_WINDOW_MS = 24 * 60 * 60 * 1000;
+  function selectRecentRecords(feed, nowMs) {
+    if (!feed || !Array.isArray(feed.items)) return [];
+    var now = typeof nowMs === 'number' && isFinite(nowMs) ? nowMs : Date.now();
+    var candidates = feed.items.slice(0, 20000).map(function (raw, index) {
+      if (!raw || typeof raw !== 'object' || Array.isArray(raw) ||
+          typeof raw.title !== 'string' || !raw.title.trim()) return null;
+      // _addedAt is the first-party report-addition timestamp, not the event
+      // date. Keep the original pubDate separate in the rendered record.
+      // A source disclosure date is NOT evidence this platform added a report.
+      // The current first-party feed supplies _addedAt for all 150 ranked items;
+      // fail closed if the provenance field is absent or malformed.
+      var value = raw._addedAt;
+      var timestamp = typeof value === 'string' &&
+        /(Z|[+-]\d{2}:\d{2})$/.test(value) ? Date.parse(value) : NaN;
+      if (!isFinite(timestamp) || timestamp < now - RECENT_WINDOW_MS || timestamp > now) return null;
+      return { raw: raw, timestamp: timestamp, index: index };
+    }).filter(Boolean);
+    candidates.sort(function (a, b) {
+      return b.timestamp - a.timestamp || a.index - b.index;
+    });
+    var seen = new Set();
+    var selected = candidates.filter(function (entry) {
+      var raw = entry.raw;
+      var key = String(raw.id || raw.link || raw.slug || raw.title).trim().toLowerCase();
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    }).slice(0, 100);
+    var records = normalizeRecords({ items: selected.map(function (entry) { return entry.raw; }) });
+    return records.map(function (record, index) {
+      record.addedAt = new Date(selected[index].timestamp).toISOString();
+      return record;
+    });
+  }
+  // Never render/export old records when the publication pipeline itself is
+  // stale, unavailable, or lacks verifiable freshness evidence.
+  function availableRecords(feed, classification, nowMs) {
+    var now = typeof nowMs === 'number' && isFinite(nowMs) ? nowMs : Date.now();
+    var state = classification && classification.state;
+    // A DEGRADED result can mean either a measured 90–180m delay OR an
+    // invalid/missing/future pipeline timestamp. Require actual clock evidence.
+    if (state !== 'HEALTHY' && state !== 'DEGRADED') return [];
+    var age = classification.ageMinutes;
+    var stamp = classification.timestamp;
+    var publishedAt = typeof stamp === 'string' ? Date.parse(stamp) : NaN;
+    if (typeof age !== 'number' || !isFinite(age) || age < 0 || age > 180 ||
+        !isFinite(publishedAt) || publishedAt > now + 5 * 60000 ||
+        now - publishedAt > 180 * 60000) return [];
+    return selectRecentRecords(feed, now);
+  }
+
   function filterRecords(records, query, severity, exploitedOnly) {
     var q = String(query || '').trim().toLocaleLowerCase().slice(0, 120);
     return records.filter(function (item) {
@@ -103,7 +158,8 @@
     li.append(head, make(document, 'h3', 'soc-desk__record-title', item.title));
     var meta = make(document, 'p', 'soc-desk__record-meta');
     meta.append(make(document, 'span', '', 'Source: ' + item.source));
-    meta.append(make(document, 'span', '', 'Dated: ' + item.date));
+    meta.append(make(document, 'span', '', 'Original source date: ' + item.date));
+    if (item.addedAt) meta.append(make(document, 'span', '', 'Added to feed: ' + item.addedAt.slice(0, 16).replace('T', ' ') + ' UTC'));
     if (item.exploited) meta.append(make(document, 'span', 'soc-desk__exploited', 'Reported exploitation'));
     li.append(meta);
     if (item.href) {
@@ -138,7 +194,10 @@
       text(shell, '[data-desk-visible]', 'Showing ' + Math.min(LIMIT, subset.length) + ' of ' + subset.length + ' matching feed records.');
       if (exportButton) exportButton.disabled = subset.length === 0;
       var empty = shell.querySelector('[data-desk-empty]');
-      if (empty) empty.hidden = subset.length > 0;
+      if (empty) {
+        empty.hidden = subset.length > 0;
+        empty.textContent = 'No verified public CTI reports added in the last 24 hours match these filters, or feed freshness is not established. This does not imply zero worldwide incidents.';
+      }
     }
     function setStatus(state, detail) {
       var indicator = shell.querySelector('[data-desk-state]');
@@ -156,12 +215,15 @@
           var parsed = normalizeRecords(feed);
           if (!parsed) throw new Error('Invalid feed contract');
           var cls = RS.classifyFeed({ ok: true, feed: feed });
-          records = parsed;
+          records = availableRecords(feed, cls);
+          var withheld = cls.state !== 'HEALTHY' && cls.state !== 'DEGRADED';
           var summary = metrics(records);
           text(shell, '[data-desk-sample]', String(summary.records));
           text(shell, '[data-desk-exploited-count]', String(summary.exploited));
           text(shell, '[data-desk-sources]', String(summary.sources));
-          setStatus(cls.state, cls.reason);
+          setStatus(cls.state, cls.reason + (withheld
+            ? ' Historical records are withheld until feed freshness is verified.'
+            : ' Display limited to reports added to this feed within the last 24 hours.'));
           text(shell, '[data-desk-published]', cls.timestamp
             ? 'Feed timestamp: ' + cls.timestamp.replace('T', ' ').slice(0, 19) + ' UTC'
             : 'Feed timestamp not established');
@@ -201,6 +263,7 @@
     fetchFeed();
   }
   return { ENDPOINT: ENDPOINT, LIMIT: LIMIT, safeRecordHref: safeRecordHref,
-    normalizeRecords: normalizeRecords, filterRecords: filterRecords, metrics: metrics,
+    normalizeRecords: normalizeRecords, selectRecentRecords: selectRecentRecords,
+    availableRecords: availableRecords, filterRecords: filterRecords, metrics: metrics,
     csvCell: csvCell, buildCsv: buildCsv, boot: boot };
 });
