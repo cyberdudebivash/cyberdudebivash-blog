@@ -914,7 +914,7 @@ def test_homepage_command_center_meets_enterprise_visibility_floor():
     # Keep the command-center asset contract strict, but do not pin the query
     # version to a retired release: each real release updates the cache key.
     command_center_scripts = re.findall(
-        r'<script\\s+src="/apex-command-center\\.js\\?v=(20\\d{6}-[a-z0-9-]+)"\\s+defer></script>',
+        r'<script\s+src="/apex-command-center\.js\?v=(20\d{6}-[a-z0-9-]+)"\s+defer></script>',
         html,
     )
     assert len(command_center_scripts) == 1, "exactly one versioned, deferred command-center asset required"
