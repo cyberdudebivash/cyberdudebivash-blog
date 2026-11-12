@@ -128,8 +128,20 @@ test('customer SOC desk selects only report additions from the last 24h and dedu
   assert.deepEqual(recent.map(record => record.id), ['RECENT-B','RECENT-A']);
   assert.equal(recent[1].addedAt, '2026-11-12T11:00:00.000Z');
   assert.equal(recent[1].date, '2026-11-11', 'original source date must remain distinct from the platform publication date');
-  assert.deepEqual(desk.availableRecords(feed, {state:'HEALTHY'}, now).map(r=>r.id), ['RECENT-B','RECENT-A']);
-  assert.deepEqual(desk.availableRecords(feed, {state:'DEGRADED'}, now).map(r=>r.id), ['RECENT-B','RECENT-A']);
+  const healthy = {state:'HEALTHY', timestamp:'2026-11-12T11:00:00.000Z', ageMinutes:60};
+  const delayed = {state:'DEGRADED', timestamp:'2026-11-12T10:00:00.000Z', ageMinutes:120};
+  assert.deepEqual(desk.availableRecords(feed, healthy, now).map(r=>r.id), ['RECENT-B','RECENT-A']);
+  assert.deepEqual(desk.availableRecords(feed, delayed, now).map(r=>r.id), ['RECENT-B','RECENT-A']);
+  for (const unverifiable of [
+    {state:'DEGRADED', timestamp:null, ageMinutes:null},
+    {state:'DEGRADED', timestamp:'2026-11-12T13:00:00.000Z', ageMinutes:null},
+    {state:'DEGRADED', timestamp:'2026-11-12T08:00:00.000Z', ageMinutes:240},
+    {state:'HEALTHY'}, // a status flag alone cannot certify feed freshness
+    {state:'HEALTHY', timestamp:'2026-10-23T04:58:15.000Z', ageMinutes:30}
+  ]) {
+    assert.deepEqual(desk.availableRecords(feed, unverifiable, now), [],
+      'unverified or inconsistent pipeline timestamp must withhold the cards');
+  }
   for (const state of ['STALE', 'UNAVAILABLE', 'CHECKING', 'UNVERIFIED']) {
     assert.deepEqual(desk.availableRecords(feed, {state}, now), [], 'old or unverifiable feed never shows records: '+state);
   }
@@ -141,7 +153,9 @@ test('recent selection enforces the 24h boundary and uses individual timestamps,
     {id:'BOUNDARY', title:'Exactly 24h old', _addedAt:'2026-11-11T12:00:00Z'},
     {id:'TOO-OLD', title:'Older than 24h', _addedAt:'2026-11-11T11:59:59Z'},
     {id:'BAD-CLOCK', title:'Invalid record clock', _addedAt:'not-a-date'},
-    {id:'NO-TITLE', _addedAt:'2026-11-12T11:00:00Z'}
+    {id:'NO-TITLE', _addedAt:'2026-11-12T11:00:00Z'},
+    {id:'SOURCE-ONLY', title:'Source date alone is not report addition', pubDate:'2026-11-12'},
+    {id:'BAD-ADDED', title:'Malformed platform addition time', _addedAt:'2026-11-12'}
   ]};
   assert.deepEqual(desk.selectRecentRecords(feed, now).map(r=>r.id), ['BOUNDARY']);
   assert.deepEqual(desk.selectRecentRecords({items:[]}, now), []);
