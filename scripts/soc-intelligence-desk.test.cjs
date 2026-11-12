@@ -161,3 +161,21 @@ test('recent selection enforces the 24h boundary and uses individual timestamps,
   assert.deepEqual(desk.selectRecentRecords({items:[]}, now), []);
   assert.deepEqual(desk.selectRecentRecords(null, now), []);
 });
+
+
+test('manual CTI refresh clears prior cards, counts, timestamp and CSV before network retrieval', () => {
+  const code = fs.readFileSync(path.join(root, 'soc-intelligence-desk.js'), 'utf8');
+  const start = code.indexOf('function fetchFeed() {');
+  const nextNetwork = code.indexOf("return (RS && typeof RS.fetchJson === 'function'", start);
+  assert.ok(start !== -1 && nextNetwork > start, 'fetchFeed entry and next request found');
+  const preflight = code.slice(start, nextNetwork);
+  assert.match(preflight, /setStatus\('CHECKING'/);
+  assert.match(preflight, /records = \[\];/);
+  assert.match(preflight, /data-desk-sample/);
+  assert.match(preflight, /data-desk-exploited-count/);
+  assert.match(preflight, /data-desk-sources/);
+  assert.match(preflight, /data-desk-published/);
+  assert.match(preflight, /show\(\);/);
+  assert.ok(preflight.indexOf('records = [];') < preflight.indexOf('show();'),
+    'previous records must be removed before rendering the CHECKING state');
+});
