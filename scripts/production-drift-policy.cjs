@@ -150,6 +150,11 @@ const REVIEWED_OPERATIONAL_FILES = new Set([
   // NEVER documentation/benign. An exact-path change requires owner review.
   // Do not classify new manifest siblings or scripts/** with a wildcard.
   'scripts/soc-release-manifest.cjs',
+  // P0 #433: explicit owner-dispatched GET-only Worker/budget/public-evidence
+  // inspection. Both script and workflow read release-critical information.
+  // OPERATIONAL, not benign; unfamiliar sibling modules remain UNKNOWN.
+  'scripts/soc-cloudflare-owner-inventory.cjs',
+  '.github/workflows/soc-owner-release-evidence.yml',
   'scripts/soc-operator-release-preflight.cjs',
 ]);
 
