@@ -210,7 +210,17 @@ jobs:
 
       - name: "Dispatch Blogger publication recovery when customer feed is stale"
         id: blogger_recovery
-        if: steps.freshness.outputs.recovery_required != 'true' && steps.blogger_freshness.outputs.recovery_required == 'true'
+        # Source-recovery success is not proof of Blogger delivery. Permit the
+        # existing bounded Blogger repair when independently stale, but only
+        # after a successful post-recovery freshness check. The dispatch step's
+        # 45-minute cooldown and max_posts=4 remain unchanged.
+        if: >-
+          steps.blogger_freshness.outputs.recovery_required == 'true' &&
+          (
+            steps.freshness.outputs.recovery_required != 'true' ||
+            (steps.post_recovery.outcome == 'success' &&
+             steps.post_recovery.outputs.status == 'HEALTHY')
+          )
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -331,7 +341,8 @@ jobs:
         run: |
           if [ "${{ steps.soc_public_freshness.outcome }}" = "failure" ]; then
             echo "::error title=P0 SOC Live Intel Deployment Drift::Public SOC and legacy live-intel feeds cannot be certified against current source. Manual Cloudflare release review required, NO automatic deploy or fabricated timestamp."
-            echo "SOC source freshness: ${{ steps.freshness.outputs.status || 'unavailable' }}"
+            # Report the latest verified state, not the initial outage before recovery.
+            echo "SOC source freshness: ${{ steps.post_recovery.outputs.status || steps.freshness.outputs.status || 'unavailable' }}"
             echo "Release operation: MANUAL_OWNER_APPROVED_ONLY"
           elif [ "${{ steps.public_delivery.outcome }}" = "failure" ]; then
             echo "::error title=Blogger Public Delivery Verification Failed::Public feed/homepage verification failed. Inspect the probe JSON for endpoint, HTTP status, attempts and defect. Publication is not verified; do not dispatch more posts to repair a read failure."
