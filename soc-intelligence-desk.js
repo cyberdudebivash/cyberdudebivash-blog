@@ -208,6 +208,14 @@
     function fetchFeed() {
       refresh.disabled = true;
       setStatus('CHECKING', 'Checking the first-party public CTI snapshot. No customer telemetry is requested.');
+      // Previously rendered records must not remain actionable during a refresh.
+      // New rows and CSV export are restored only after freshness verification.
+      records = [];
+      text(shell, '[data-desk-sample]', '—');
+      text(shell, '[data-desk-exploited-count]', '—');
+      text(shell, '[data-desk-sources]', '—');
+      text(shell, '[data-desk-published]', 'No validated feed timestamp during refresh');
+      show();
       return (RS && typeof RS.fetchJson === 'function'
         ? RS.fetchJson(ENDPOINT, { timeoutMs: 8000 })
         : Promise.reject(new Error('Freshness verifier unavailable')))
