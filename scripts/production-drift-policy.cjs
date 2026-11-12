@@ -144,6 +144,12 @@ const REVIEWED_OPERATIONAL_FILES = new Set([
   'scripts/rss-source-health-policy.cjs',
   'scripts/soc-alert-delivery-health.cjs',
   'scripts/soc-cloudflare-release-sha-gate.cjs',
+  // P0 #433/#580: inspected content-addressed release manifest/verifier.
+  // Not wired into deployment; reads Worker/assets/config/migrations/feeds and
+  // can write an operator-requested manifest. This is release-control source,
+  // NEVER documentation/benign. An exact-path change requires owner review.
+  // Do not classify new manifest siblings or scripts/** with a wildcard.
+  'scripts/soc-release-manifest.cjs',
   'scripts/soc-operator-release-preflight.cjs',
 ]);
 

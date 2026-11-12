@@ -577,3 +577,34 @@ test('P0 smoke checkout and Node 22 precede content and customer revenue checks'
   assert.match(smoke, /node --test tests-js\/soc-public-commerce\.test\.js/);
   assert.match(smoke, /node scripts\/check-soc-public-commerce\.cjs/);
 });
+
+
+test('P0 #580 release-manifest verifier is exact-path OPERATIONAL, not a benign release bypass', () => {
+  const known = 'scripts/soc-release-manifest.cjs';
+  assert.equal(isReviewedOperationalPath(known), true);
+  const assessed = classify(compare([known]), BASE, HEAD, paths);
+  assert.equal(assessed.state, 'manual_release_required');
+  assert.deepEqual(assessed.operational, [known]);
+  assert.deepEqual(assessed.unknown, []);
+  assert.deepEqual(assessed.production, []);
+  assert.deepEqual(assessed.benign, []);
+  assert.match(renderDriftSummary(HEAD, BASE, assessed),
+    /Manual release and independent postdeploy certification required/);
+  // Only the inspected, exact path is classified; a new verifier or future
+  // release-time helper stays UNKNOWN until independently reviewed.
+  for (const future of [
+    'scripts/soc-release-manifest-v2.cjs',
+    'scripts/soc-release-approval-mutator.cjs',
+    'scripts/another-future-release-module.cjs',
+  ]) {
+    assert.equal(isReviewedOperationalPath(future), false);
+    const blocked = classify(compare([known, future]), BASE, HEAD, paths);
+    assert.equal(blocked.state, 'blocked');
+    assert.deepEqual(blocked.unknown, [future]);
+    assert.deepEqual(blocked.operational, [known]);
+  }
+  const manifest = fs.readFileSync(path.join(root, known), 'utf8');
+  assert.match(manifest, /PASS_NOT_DEPLOY_AUTHORIZATION/);
+  const workerWorkflow = fs.readFileSync(path.join(root, '.github/workflows/cloudflare-production-deploy.yml'), 'utf8');
+  assert.doesNotMatch(workerWorkflow, /node scripts\/soc-release-manifest\.cjs/);
+});
