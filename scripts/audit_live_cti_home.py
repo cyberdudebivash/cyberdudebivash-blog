@@ -72,6 +72,15 @@ BLOCKED_PUBLIC_PATTERNS: tuple[tuple[str, str, str], ...] = (
     ("board_sla_claim", r"Board\s+SLA\s+Compliance\s+99\.4%", "Unproven board SLA metric is public."),
     ("global_threat_level_claim", r"Global\s+Threat\s+Level\s+88\.4", "Unproven global threat-level metric is public."),
     ("cyber_insurance_score_claim", r"Cyber\s+Insurance\s+Score\s+94/100", "Unproven cyber-insurance score is public."),
+    # Exact unsupported public telemetry/certification fixtures from the CTI homepage.
+    # An evidence-backed metric requires reviewed provenance before changing this gate.
+    ("soar_automation_claim", r"\bSOAR\s+Automation\s+Rate\s+91\.2%", "Unproven SOAR automation percentage is public."),
+    ("ioc_matches_claim", r"\bActive\s+IOC\s+Matches\s+1,420\b", "Unproven active IOC-match count is public."),
+    ("cloud_posture_claim", r"\bCloud\s+Security\s+Posture\s+96/100\b", "Unproven cloud security posture score is public."),
+    ("triage_queue_claim", r"\bTriage\s+Queue\s+12\s+Pending\b", "Unproven customer triage queue volume is public."),
+    ("accessibility_certification_claim", r"\bWCAG\s*2\.2\s*AA\s+Verified\b", "Accessibility conformance claim requires test evidence."),
+    ("ransomware_zero_leaks_claim", r"\bRansomware\s+Risk\s+Level\s+LOW\s+Zero\s+Active\s+Leaks\b", "Unproven live ransomware and leak-absence claims are public."),
+    ("empty_sha_lazarus_attribution", r"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\s+SHA256\s+Hash\s+Lazarus\s+Group\b", "Empty-file SHA-256 is publicly attributed to Lazarus without traceable evidence."),
 )
 
 _CUSTOM_DOMAIN = "https://cti.cyberdudebivash.in/"
