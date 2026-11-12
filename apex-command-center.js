@@ -81,11 +81,17 @@
   // when nothing qualifies the list is empty and says so. `archived` is retained only so
   // older callers keep working; it is always false (deprecated, removal with the next
   // major release). If the shared model failed to load, nothing is shown as live.
-  function selectTriageFeed(rawItems, nowMs){
+  function selectTriageFeed(rawItems, nowMs, cls){
     var now=Number.isFinite(nowMs)?nowMs:Date.now();
-    if(!RS||typeof RS.selectLiveRecords!=='function')return {items:[],archived:false,unavailable:true,excluded:null,windowHours:null};
+    if(!RS||typeof RS.selectLiveRecords!=='function')return {items:[],archived:false,unavailable:true,withheld:false,excluded:null,windowHours:null};
+    // A STALE / UNAVAILABLE / unverifiable pipeline cannot expose records as current: only a pipeline
+    // that RS.pipelineAllowsLive() accepts may show live records (the SOC desk applies the same rule).
+    if(cls){
+      if(typeof RS.pipelineAllowsLive!=='function')return {items:[],archived:false,unavailable:true,withheld:false,excluded:null,windowHours:null};
+      if(!RS.pipelineAllowsLive(cls,now))return {items:[],archived:false,unavailable:false,withheld:true,excluded:null,windowHours:RS.selectLiveRecords([],now).windowHours};
+    }
     var sel=RS.selectLiveRecords(rawItems,now);
-    return {items:sel.items.slice(0,7),archived:false,unavailable:false,excluded:sel.excluded,windowHours:sel.windowHours};
+    return {items:sel.items.slice(0,7),archived:false,unavailable:false,withheld:false,excluded:sel.excluded,windowHours:sel.windowHours};
   }
   function emptyFeedRow(title,subHtml){
     // cdb-feed-empty (apex-command-center.css) lets this explanation wrap; normal rows truncate to one line.
@@ -104,7 +110,8 @@
     // The source corpus is priority-ranked for analysts, not chronologically
     // ranked for customers. A live list shows only records proven new (see
     // RS.classifyRecord); historical records live in the Intelligence Archive.
-    var selection=selectTriageFeed(feed.items);
+    var feedCls=RS?RS.classifyFeed({ok:true,feed:feed}):null;
+    var selection=selectTriageFeed(feed.items,undefined,feedCls);
     var top=selection.items,box=$('cdb-triage-feed');
     if(box){
       if(selection.unavailable){box.innerHTML=emptyFeedRow('Live intelligence list unavailable','The freshness model did not load, so records are withheld rather than shown unverified.');}
