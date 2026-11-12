@@ -112,3 +112,38 @@ test('all data loads are bounded, manual, same-origin and without customer crede
   assert.ok(!/setInterval\s*\(/.test(js), 'no runaway polling or Cloudflare usage');
   assert.ok(!/localStorage|Authorization:|Cookie:|\/api\/v1\/customer\//.test(js));
 });
+
+
+test('customer SOC desk selects only report additions from the last 24h and deduplicates', () => {
+  const now = Date.parse('2026-11-12T12:00:00Z');
+  const feed = { items: [
+    {id:'OLD', title:'Historical high priority item', _addedAt:'2026-10-23T04:58:15Z', threatLevel:'CRITICAL'},
+    {id:'RECENT-A', title:'Recent report A', _addedAt:'2026-11-12T11:00:00Z', pubDate:'2026-11-11', source:'CISA', link:'/posts/report-a.html'},
+    {id:'FUTURE', title:'Future-dated report', _addedAt:'2026-11-12T12:00:01Z'},
+    {id:'UNKNOWN', title:'Unverified report date'},
+    {id:'RECENT-B', title:'Recent report B', _addedAt:'2026-11-12T11:40:00Z', threatLevel:'HIGH'},
+    {id:'RECENT-A', title:'Older duplicate', _addedAt:'2026-11-12T09:00:00Z'}
+  ] };
+  const recent = desk.selectRecentRecords(feed, now);
+  assert.deepEqual(recent.map(record => record.id), ['RECENT-B','RECENT-A']);
+  assert.equal(recent[1].addedAt, '2026-11-12T11:00:00.000Z');
+  assert.equal(recent[1].date, '2026-11-11', 'original source date must remain distinct from the platform publication date');
+  assert.deepEqual(desk.availableRecords(feed, {state:'HEALTHY'}, now).map(r=>r.id), ['RECENT-B','RECENT-A']);
+  assert.deepEqual(desk.availableRecords(feed, {state:'DEGRADED'}, now).map(r=>r.id), ['RECENT-B','RECENT-A']);
+  for (const state of ['STALE', 'UNAVAILABLE', 'CHECKING', 'UNVERIFIED']) {
+    assert.deepEqual(desk.availableRecords(feed, {state}, now), [], 'old or unverifiable feed never shows records: '+state);
+  }
+});
+
+test('recent selection enforces the 24h boundary and uses individual timestamps, not the feed heartbeat', () => {
+  const now = Date.parse('2026-11-12T12:00:00Z');
+  const feed = {generatedAt: '2026-11-12T11:59:00Z', items: [
+    {id:'BOUNDARY', title:'Exactly 24h old', _addedAt:'2026-11-11T12:00:00Z'},
+    {id:'TOO-OLD', title:'Older than 24h', _addedAt:'2026-11-11T11:59:59Z'},
+    {id:'BAD-CLOCK', title:'Invalid record clock', _addedAt:'not-a-date'},
+    {id:'NO-TITLE', _addedAt:'2026-11-12T11:00:00Z'}
+  ]};
+  assert.deepEqual(desk.selectRecentRecords(feed, now).map(r=>r.id), ['BOUNDARY']);
+  assert.deepEqual(desk.selectRecentRecords({items:[]}, now), []);
+  assert.deepEqual(desk.selectRecentRecords(null, now), []);
+});
