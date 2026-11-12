@@ -8,9 +8,31 @@ class FreshnessEngine {
   }
 
   async scoreFreshness(intelligence) {
-    const type = intelligence.type;
-    const lastSeen = intelligence.lastSeen || intelligence.createdAt;
-    const daysSinceLastSeen = (Date.now() - new Date(lastSeen).getTime()) / (1000 * 60 * 60 * 24);
+    const type = intelligence?.type;
+    const raw = intelligence?.lastSeen || intelligence?.createdAt;
+    const lastSeen = typeof raw === 'string' ? raw.trim() : '';
+    // A source-free, invalid, zone-less or future observation is not newly
+    // observed threat activity. The previous NaN comparisons could also
+    // leave unknown intelligence types at the default "fresh" 1.0 score.
+    const supportedTypes = new Set(['IOC', 'INDICATOR', 'MALWARE', 'CAMPAIGN', 'THREAT_ACTOR', 'INFRASTRUCTURE']);
+    const hasZone = /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$/i.test(lastSeen);
+    const timestamp = hasZone ? Date.parse(lastSeen) : NaN;
+    const now = Date.now();
+    if (!supportedTypes.has(type) || !Number.isFinite(timestamp) || timestamp > now + 5 * 60 * 1000) {
+      return {
+        type,
+        daysSinceLastSeen: null,
+        freshnessScore: 0,
+        status: 'unverified',
+        recommendation: 'Observation timestamp or threat type is not verified. Withhold live or fresh classification.',
+        confidenceImpact: {
+          impact: 'negative',
+          adjustment: -0.3,
+          message: 'Observation provenance and time not established',
+        },
+      };
+    }
+    const daysSinceLastSeen = Math.max(0, (now - timestamp) / (1000 * 60 * 60 * 24));
 
     let freshnessScore = 1.0;
     let status = 'fresh';
@@ -191,15 +213,23 @@ class FreshnessEngine {
 
     const freshnessScores = [];
     for (const ioc of iocs) {
-      const score = await this.scoreFreshness({ type: 'IOC', lastSeen: ioc.lastSeen || new Date().toISOString() });
+      // Missing first-party timestamp is unverified, never "now". Evidence
+      // may come from lastSeen, last_seen or createdAt when explicitly dated.
+      const score = await this.scoreFreshness({
+        type: 'IOC',
+        lastSeen: ioc?.lastSeen || ioc?.last_seen || ioc?.createdAt || null,
+      });
       freshnessScores.push(score);
     }
 
     const avgFreshness = freshnessScores.length > 0
       ? freshnessScores.reduce((sum, s) => sum + s.freshnessScore, 0) / freshnessScores.length
-      : 0.5;
+      : 0; // No observations cannot justify neutral or fresh confidence.
 
-    const staleness = freshnessScores.filter(s => s.status === 'stale' || s.status === 'expired').length;
+    const unverifiedCount = freshnessScores.filter(s => s.status === 'unverified').length;
+    const staleness = freshnessScores.filter(s =>
+      s.status === 'stale' || s.status === 'expired' || s.status === 'unverified'
+    ).length;
 
     return {
       investigationId,
@@ -207,8 +237,13 @@ class FreshnessEngine {
       iocCount: iocs.length,
       averageFreshnessScore: Math.round(avgFreshness * 100) / 100,
       staleCount: staleness,
+      unverifiedCount,
       freshnessScores: freshnessScores.slice(0, 10),
-      overallRecommendation: this.getInvestigationFreshnessRecommendation(avgFreshness, staleness),
+      overallRecommendation: iocs.length === 0
+        ? 'No IOC observations were provided. Freshness is not attested.'
+        : unverifiedCount > 0
+          ? 'Undated, invalid or future IOC observations must not be published as fresh.'
+          : this.getInvestigationFreshnessRecommendation(avgFreshness, staleness),
     };
   }
 
