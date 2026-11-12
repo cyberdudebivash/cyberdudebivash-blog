@@ -910,7 +910,7 @@ def test_homepage_command_center_meets_enterprise_visibility_floor():
     html = Path("index.html").read_text(encoding="utf-8-sig")
     css = Path("apex-command-center.css").read_text(encoding="utf-8")
     assert "SENTINEL APEX SOC — Threat Intelligence & SOC Readiness" in html
-    assert "/apex-command-center.css?v=20260928-brandhero1" in html
+    assert "/apex-command-center.css?v=20261112-live1" in html
     # Keep the command-center asset contract strict, but do not pin the query
     # version to a retired release: each real release updates the cache key.
     command_center_scripts = re.findall(
