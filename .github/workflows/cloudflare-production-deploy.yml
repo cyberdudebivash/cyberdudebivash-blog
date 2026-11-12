@@ -290,9 +290,20 @@ jobs:
           zone_json="$(curl -fsS "${auth[@]}" "$api/zones?name=cyberdudebivash.in&status=active")"
           zone_id="$(jq -r 'if (.result|length)==1 then .result[0].id else empty end' <<<"$zone_json")"
           test -n "$zone_id"
-          dns_json="$(curl -fsS "${auth[@]}" "$api/zones/$zone_id/dns_records?name=blog.cyberdudebivash.in&per_page=100")"
-          vercel_refs="$(jq '[.result[] | select((.content // "" | ascii_downcase) | contains("vercel"))] | length' <<<"$dns_json")"
-          test "$vercel_refs" -eq 0 || { echo "::error::Legacy Vercel DNS target is still present"; exit 1; }
+          # Both Custom Domains must have no legacy Vercel DNS target.
+          # Read-only exact-hostname queries; never create, delete or repoint DNS.
+          for hostname in blog.cyberdudebivash.in soc.cyberdudebivash.in; do
+            dns_json="$(curl -fsS "${auth[@]}" "$api/zones/$zone_id/dns_records?name=$hostname&per_page=100")"
+            dns_valid="$(jq -r --arg expected "$hostname" '
+              if .success == true and (.result | type) == "array"
+                then ([.result[] | select(.name != $expected)] | length) == 0
+                else false
+              end
+            ' <<<"$dns_json")"
+            test "$dns_valid" = true || { echo "::error::Invalid filtered DNS evidence for an approved Worker hostname"; exit 1; }
+            vercel_refs="$(jq '[.result[] | select((.content // "" | ascii_downcase) | contains("vercel"))] | length' <<<"$dns_json")"
+            test "$vercel_refs" -eq 0 || { echo "::error::Legacy Vercel DNS target is still present on an approved Worker hostname"; exit 1; }
+          done
           echo "PASS: NO_LEGACY_VERCEL_DNS_BEFORE_WORKER_DEPLOY"
 
       # Recheck current main just before Wrangler: a scheduled publisher
@@ -366,9 +377,20 @@ jobs:
           zone_json="$(curl -fsS "${auth[@]}" "$api/zones?name=cyberdudebivash.in&status=active")"
           zone_id="$(jq -r 'if (.result|length)==1 then .result[0].id else empty end' <<<"$zone_json")"
           test -n "$zone_id"
-          dns_json="$(curl -fsS "${auth[@]}" "$api/zones/$zone_id/dns_records?name=blog.cyberdudebivash.in&per_page=100")"
-          vercel_refs="$(jq '[.result[] | select((.content // "" | ascii_downcase) | contains("vercel"))] | length' <<<"$dns_json")"
-          test "$vercel_refs" -eq 0 || { echo "::error::Legacy Vercel DNS target is still present"; exit 1; }
+          # Both Custom Domains must have no legacy Vercel DNS target.
+          # Read-only exact-hostname queries; never create, delete or repoint DNS.
+          for hostname in blog.cyberdudebivash.in soc.cyberdudebivash.in; do
+            dns_json="$(curl -fsS "${auth[@]}" "$api/zones/$zone_id/dns_records?name=$hostname&per_page=100")"
+            dns_valid="$(jq -r --arg expected "$hostname" '
+              if .success == true and (.result | type) == "array"
+                then ([.result[] | select(.name != $expected)] | length) == 0
+                else false
+              end
+            ' <<<"$dns_json")"
+            test "$dns_valid" = true || { echo "::error::Invalid filtered DNS evidence for an approved Worker hostname"; exit 1; }
+            vercel_refs="$(jq '[.result[] | select((.content // "" | ascii_downcase) | contains("vercel"))] | length' <<<"$dns_json")"
+            test "$vercel_refs" -eq 0 || { echo "::error::Legacy Vercel DNS target is still present on an approved Worker hostname"; exit 1; }
+          done
           echo "Vercel DNS retirement verified."
 
       - name: "Certify live Hybrid SOC + CTI production surfaces"
