@@ -107,7 +107,7 @@ test('scheduled publisher heartbeat never manufactures a new report timestamp or
   assert.equal(output.metadata.lastPipelineRun,now,'pipeline heartbeat remains separately visible');
   assert.equal(output._heartbeat,now,'diagnostic heartbeat remains separately visible');
   assert.equal(output.items[0]._addedAt,'2026-10-20');
-  assert.equal(output.items[1]._addedAt,'2026-10-21','valid source date may backfill');
+  assert.equal(Object.hasOwn(output.items[1],'_addedAt'),false,'a source article date never proves platform ingestion time');
   assert.equal(Object.hasOwn(output.items[2],'_addedAt'),false,'missing item date stays unknown');
   assert.equal(Object.hasOwn(output.items[3],'_addedAt'),false,'invalid item date stays unknown');
   assert.equal(Object.hasOwn(output.items[4],'_addedAt'),false,'future item date is not trusted');

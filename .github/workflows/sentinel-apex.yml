@@ -193,17 +193,11 @@ jobs:
               data.metadata.lastPipelineRun = now;
               data._heartbeat = now;
 
-              // Restore missing item dates only from authentic bounded source
-              // timestamps; never stamp unknown data with the scheduler time.
-              if (Array.isArray(data.items)) {
-                data.items.forEach((item) => {
-                  if (!item || typeof item !== 'object' || item._addedAt) return;
-                  const originalDate = [item.pubDate, item.published].find(value =>
-                    typeof value === 'string' && Number.isFinite(Date.parse(value)) &&
-                    Date.parse(value) <= Date.now() + 5 * 60 * 1000);
-                  if (originalDate) item._addedAt = originalDate;
-                });
-              }
+              // Keep the first-party ingestion time (_addedAt) immutable.
+              // Neither pubDate nor published proves when this platform first
+              // ingested an item. Missing _addedAt remains missing and must
+              // be handled fail-closed by current-only consumer views.
+              // This heartbeat is metadata-only; do not mutate feed.items.
 
               fs.writeFileSync('live-intel.json', JSON.stringify(data, null, 2));
               console.log('✅ Scheduler heartbeat recorded; source report timestamps unchanged');
