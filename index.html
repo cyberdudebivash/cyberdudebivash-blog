@@ -2500,71 +2500,25 @@ input:focus, textarea:focus {
       <p style="font-size:12px;color:var(--apex-muted);text-align:center;">Updated: 22 April 2026, 00:00 UTC</p>
     </div>
 
-    <!-- ACTIVE ZERO-DAYS FEED -->
-    <div class="sidebar-widget">
-      <div class="widget-title">&#9889; Active Zero-Days</div>
-
-      <a href="posts/cve-2026-33825-microsoft-defender-zero-day-bluehammer-redsun.html" class="quick-link">
-        <div class="ql-dot dot-r"></div>
-        <div>
-          <div class="ql-text">Microsoft Defender &mdash; TOCTOU Race (BlueHammer/RedSun)</div>
-          <span class="ql-cve">CVE-2026-33825/26/27 | CVSS 8.8 | 2 UNPATCHED</span>
-        </div>
+    <!-- P0 #433: only timestamp-certified feed records belong in the live widget.
+         Retired the hardcoded April 2026 "Active Zero-Days" and "Critical CVEs"
+         sidebar lists: these were frozen historical examples, NOT live intel.
+         The records remain discoverable in /archive.html and linked reports. -->
+    <div class="sidebar-widget" id="soc-source-freshness-navigation">
+      <div class="widget-title">Current Threat Intelligence</div>
+      <p style="font-size:12px;color:var(--apex-muted);line-height:1.6;margin:8px 0 14px;">
+        Live CVEs and exploited vulnerabilities appear only when the first-party
+        feed proves freshness and source publication dates. Expired or
+        unverifiable intelligence is withheld from the live dashboard.
+      </p>
+      <a href="#live-intel-feed" class="quick-link">
+        <span class="ql-dot" style="background:#21e6ff;"></span>
+        <span class="ql-text">View source-verified live feed and its current status</span>
       </a>
-
-      <a href="posts/cve-2026-35616-fortinet-forticlient-ems-zero-day.html" class="quick-link">
-        <div class="ql-dot dot-r"></div>
-        <div>
-          <div class="ql-text">Fortinet FortiClient EMS &mdash; Pre-Auth API Bypass</div>
-          <span class="ql-cve">CVE-2026-35616 | CVSS 9.8 | CISA KEV</span>
-        </div>
+      <a href="/archive.html" class="quick-link">
+        <span class="ql-dot" style="background:#94a3b8;"></span>
+        <span class="ql-text">Historical CVEs and incident research — archive only</span>
       </a>
-
-      <a href="posts/cve-2026-5281-chrome-zero-day-dawn-webgpu-use-after-free.html" class="quick-link">
-        <div class="ql-dot dot-r"></div>
-        <div>
-          <div class="ql-text">Chrome Dawn WebGPU &mdash; Use-After-Free RCE</div>
-          <span class="ql-cve">CVE-2026-5281 | CVSS HIGH | CISA KEV</span>
-        </div>
-      </a>
-
-      <a href="posts/cve-2026-32201-sharepoint-zero-day-patch-tuesday-april-2026.html" class="quick-link">
-        <div class="ql-dot dot-o"></div>
-        <div>
-          <div class="ql-text">Microsoft SharePoint &mdash; Spoofing Zero-Day</div>
-          <span class="ql-cve">CVE-2026-32201 | CVSS 6.5 | CISA KEV | Patched Apr 14</span>
-        </div>
-      </a>
-    </div>
-
-    <!-- APRIL CVE FEED -->
-    <div class="sidebar-widget">
-      <div class="widget-title">April 2026 Critical CVEs</div>
-
-      <div class="cve-feed-item">
-        <div><span class="cve-id-sm red">CVE-2026-35616</span><span class="cvss-pill cvss-crit">9.8 CRIT</span></div>
-        <div class="cve-desc-sm">Fortinet FortiClient EMS &mdash; Pre-Auth RCE</div>
-      </div>
-      <div class="cve-feed-item">
-        <div><span class="cve-id-sm red">CVE-2026-33824</span><span class="cvss-pill cvss-crit">9.8 CRIT</span></div>
-        <div class="cve-desc-sm">Windows IKE Service &mdash; Unauthenticated RCE</div>
-      </div>
-      <div class="cve-feed-item">
-        <div><span class="cve-id-sm red">CVE-2026-33825</span><span class="cvss-pill cvss-high">8.8 HIGH</span></div>
-        <div class="cve-desc-sm">Windows Defender &mdash; TOCTOU LPE (BlueHammer)</div>
-      </div>
-      <div class="cve-feed-item">
-        <div><span class="cve-id-sm orange">CVE-2026-5281</span><span class="cvss-pill cvss-high">HIGH</span></div>
-        <div class="cve-desc-sm">Chrome Dawn WebGPU &mdash; UAF Zero-Day (CISA KEV)</div>
-      </div>
-      <div class="cve-feed-item">
-        <div><span class="cve-id-sm orange">CVE-2026-32201</span><span class="cvss-pill cvss-med">6.5 MED</span></div>
-        <div class="cve-desc-sm">SharePoint Server &mdash; Spoofing (CISA KEV, Exploited)</div>
-      </div>
-      <div class="cve-feed-item">
-        <div><span class="cve-id-sm orange">CVE-2026-33826</span><span class="cvss-pill cvss-high">8.5 HIGH</span></div>
-        <div class="cve-desc-sm">Windows Defender &mdash; Quarantine DLL Injection</div>
-      </div>
     </div>
 
     <!-- PRICING TEASER -->
