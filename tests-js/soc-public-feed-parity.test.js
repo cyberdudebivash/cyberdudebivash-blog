@@ -154,3 +154,16 @@ test('P0 predeploy permits equivalent JSON content with different object-key ins
     metadata:{...feed.metadata},generatedAt:feed.generatedAt};
   assert.equal(predeployGate({source:feed,asset,state,nowMs:now}).status,'PASS');
 });
+
+test('P0 predeploy permits only approved NVD ledger correction performed by actual public build',()=>{
+  const feed=fixture({items:12});
+  feed.items[0]={id:'CVE-2009-0238',cvss:9.5};
+  const state={lastRun:feed.generatedAt,lastReportGeneratedAt:feed.generatedAt};
+  const {correctPublicIntelJson}=require('../scripts/build-cloudflare-assets');
+  const asset=JSON.parse(correctPublicIntelJson(JSON.stringify(feed)));
+  assert.equal(asset.items[0].cvss,9.3, 'published score must agree with pinned NVD ledger');
+  assert.equal(predeployGate({source:feed,asset,state,nowMs:now}).status,'PASS');
+  asset.items[0].cvss=9.4;
+  assert.deepEqual(predeployGate({source:feed,asset,state,nowMs:now}),
+    {status:'FAIL',reason:'PREDEPLOY_BUILD_CONTENT_DIVERGED'});
+});
