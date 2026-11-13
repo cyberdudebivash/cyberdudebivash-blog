@@ -251,7 +251,8 @@
     if (!shared || !Array.isArray(items) || !items.length) return false;
     var now = Number.isFinite(nowMs) ? nowMs : Date.now();
     var stamp = items[0]._feedGenerated;
-    if (typeof stamp !== 'string' || !stamp.trim()) return false;
+    if (typeof stamp !== 'string' || !stamp.trim() ||
+        classifyFeedTimestamp(stamp, now).state !== 'current') return false;
     var classification = shared.classifyFeed({
       ok:true, feed:{metadata:{lastPipelineRun:stamp}}, nowMs:now
     });
@@ -297,7 +298,9 @@
     // often double-encode HTML fragments).
     var out=String(s||'');
     for(var i=0;i<3;i++) out=out.replace(/&lt;/gi,'<').replace(/&gt;/gi,'>').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&nbsp;/gi,' ');
-    return out.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+    // Strip both well-formed tags and truncated tags such as an upstream
+    // '<img src="https://...' fragment. They must never leak as report prose.
+    return out.replace(/<[a-z][^>]*(?:>|$)/gi,' ').replace(/\s+/g,' ').trim();
   }
 
   function card(item) {
