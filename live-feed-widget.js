@@ -3,10 +3,9 @@
  * ═══════════════════════════════════════════════════════════
  * Multi-source, evidence-preserving feed renderer.
  *
- * Source chain (each tried in order until data found):
- *   1. /live-intel.json  — same-origin, GitHub Actions-generated
- *   2. CISA KEV (official HTTPS origin, when browser CORS permits)
- *   3. Explicit unavailable state — never trust anonymous proxy rewrites
+ * Live source: /live-intel.json — first-party source-verified feed.
+ * If the feed is stale or unavailable, withhold live cards and link out to
+ * the official CISA KEV catalog. Never substitute third-party content as live.
  *
  * © 2025 CYBERDUDEBIVASH. All rights reserved.
  * ═══════════════════════════════════════════════════════════
@@ -17,7 +16,6 @@
   /* ── CONFIG ─────────────────────────────────────────────── */
   var CFG = {
     LOCAL_JSON:  '/live-intel.json',
-    CISA_DIRECT: 'https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json',
     CONTAINER_ID:'live-intel-feed',
     CACHE_KEY:   'cbd_lfw_v5',
     CACHE_TTL:   55 * 1000,        // 55s — just under refresh interval
@@ -167,39 +165,6 @@
     });
   }
 
-  /* ── NORMALISE CISA KEV item → our shape ─────────────────── */
-  function normaliseCISA(v) {
-    var desc = v.shortDescription || v.vulnerabilityName || '';
-    var threat = classify(desc);
-    return {
-      id:       v.cveID,
-      desc:     desc,
-      score:    null,
-      published:v.dateAdded,
-      vendors:  [v.vendorProject||'Unknown'],
-      product:  v.product||'',
-      source:   'CISA-KEV',
-      exploited:true,
-      dueDate:  v.dueDate||null,
-      threat:   threat
-    };
-  }
-
-  /* ── PARSE CISA JSON — tolerates both shapes ─────────────── */
-  function parseCISA(data) {
-    if (!data) return null;
-    var vulns = null;
-    if (data.vulnerabilities) vulns = data.vulnerabilities;
-    else if (Array.isArray(data)) vulns = data;
-    else return null;
-    var cutoff = new Date(Date.now() - CFG.LOOKBACK_DAYS*86400000);
-    return vulns
-      .filter(function(v){ var t=Date.parse(v.dateAdded); return v.cveID && Number.isFinite(t) && t>=cutoff.getTime() && t<=Date.now(); })
-      .sort(function(a,b){ return new Date(b.dateAdded)-new Date(a.dateAdded); })
-      .slice(0, CFG.MAX_CARDS)
-      .map(normaliseCISA);
-  }
-
   /* ── NORMALISE local-json items → our shape ──────────────── */
   function normaliseLocal(item) {
     if (!item) return null;
@@ -233,72 +198,97 @@
   // created up to 150 DOM cards despite the 15-card customer UX ceiling.
   // A new pipeline heartbeat is NOT evidence that its individual reports
   // are newly published; rank by their own recorded creation/publication time.
+  // FAIL-CLOSED: the shared runtime is the only authority for the two
+  // independent record clocks: first-party ingestion <=24h and source
+  // publication <=72h. A timestamp-only fallback can surface an old advisory
+  // newly ingested or a zone-less timestamp as "live"; never use one.
+  function sharedLiveAuthority() {
+    var shared = typeof window !== 'undefined' ? window.SentinelRuntimeState : null;
+    return shared && typeof shared.isLiveRecord === 'function' &&
+      typeof shared.pipelineAllowsLive === 'function' &&
+      typeof shared.classifyFeed === 'function' ? shared : null;
+  }
   function selectLocalItems(rawItems, nowMs) {
-    if (!Array.isArray(rawItems)) return [];
+    var shared = sharedLiveAuthority();
+    if (!Array.isArray(rawItems) || !shared) return [];
     var now = Number.isFinite(nowMs) ? nowMs : Date.now();
     var cutoff = now - CFG.LOOKBACK_DAYS * 86400000;
     var dated = rawItems.map(function(raw, index) {
       if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
-      // Shared window policy (runtime-state.js, loaded after this script but before the
-      // feed arrives): a record must be recently INGESTED and recently PUBLISHED, so an
-      // old advisory that was only re-ingested today is not shown as live. When the
-      // shared model is unavailable the 24 h _addedAt/pubDate rule below still applies.
-      var shared = typeof window !== 'undefined' ? window.SentinelRuntimeState : null;
-      if (shared && typeof shared.isLiveRecord === 'function' && !shared.isLiveRecord(raw, now)) return null;
-      var value = raw._addedAt || raw.pubDate || raw.published || raw.dateAdded;
-      var ts = typeof value === 'string' && value.trim() ? Date.parse(value) : NaN;
-      // No unknown or impossible report time should claim a 'recent' slot.
-      if (!Number.isFinite(ts) || ts < 0 || ts > now) return null;
+      if (!shared.isLiveRecord(raw, now)) return null;
+      var ts = Date.parse(raw._addedAt);
+      if (!Number.isFinite(ts) || ts > now || ts < cutoff) return null;
       var item = normaliseLocal(raw);
       if (!item) return null;
-      return {item:item, time:ts, priority:Number(raw.priority)||0, index:index};
+      return {item:item, time:ts, index:index,
+        priority:Number(raw.priority)||0,
+        sourcePublished:raw.pubDate||raw.published||raw.dateAdded||null};
     }).filter(Boolean);
     dated.sort(function(a,b) {
       return b.time-a.time || b.priority-a.priority || a.index-b.index;
     });
-    var recent = dated.filter(function(record) { return record.time >= cutoff; });
-    // Never substitute historical records when the customer asks for live intel.
     var seen = Object.create(null);
-    return recent.filter(function(record) {
+    return dated.filter(function(record) {
       var key = String(record.item.id || record.item.link || record.item.slug || '').trim();
       if (!key || seen[key]) return false;
       seen[key] = true;
       return true;
     }).slice(0, CFG.MAX_CARDS).map(function(record) {
-      record.item.published = new Date(record.time).toISOString();
-      record.item._reportAddedAt = record.item.published;
+      // Do not rewrite the source's publication date as the ingestion time.
+      record.item.published = record.sourcePublished;
+      record.item._sourcePublishedAt = record.sourcePublished;
+      record.item._reportAddedAt = new Date(record.time).toISOString();
       record.item._contentArchived = false;
       return record.item;
     });
   }
 
+  // Re-evaluate when rendering, restoring browser session cache, and on the
+  // 5s UI ticker. A green fetch does not authorize stale DOM cards to survive
+  // the time window, and an absent runtime model withholds every "live" card.
+  function verifiedLiveItems(items, nowMs) {
+    var shared = sharedLiveAuthority();
+    if (!shared || !Array.isArray(items) || !items.length) return false;
+    var now = Number.isFinite(nowMs) ? nowMs : Date.now();
+    var stamp = items[0]._feedGenerated;
+    if (typeof stamp !== 'string' || !stamp.trim()) return false;
+    var classification = shared.classifyFeed({
+      ok:true, feed:{metadata:{lastPipelineRun:stamp}}, nowMs:now
+    });
+    if (!shared.pipelineAllowsLive(classification, now)) return false;
+    return items.every(function(item) {
+      return item && item._contentArchived !== true &&
+        typeof item._reportAddedAt === 'string' &&
+        typeof item._sourcePublishedAt === 'string' &&
+        item._feedGenerated === stamp &&
+        shared.isLiveRecord({_addedAt:item._reportAddedAt,
+          pubDate:item._sourcePublishedAt}, now);
+    });
+  }
+
   /* ── MAIN FETCH PIPELINE ─────────────────────────────────── */
   function pipeline() {
-    // 1. Same-origin JSON
+    // Same-origin first-party evidence only. Never silently replace a failed
+    // SOC/CTI source with an unverified external CISA feed and present it in
+    // the same LIVE card grid; the official CISA catalog remains a link in
+    // the withheld state, not a fabricated first-party release.
     return xhrFetch(CFG.LOCAL_JSON+'?_='+Math.floor(Date.now()/60000), 8000)
       .then(function(data) {
-        if (data && Array.isArray(data.items) && data.items.length) {
-          var selected = selectLocalItems(data.items);
-          var generated = (data.metadata&&data.metadata.generated)||data.generatedAt||data.lastUpdated||null;
-          if (classifyFeedTimestamp(generated).state !== 'current') return [];
-          if (selected.length) {
-            return selected.map(function(item){ item._feedGenerated=generated; return item; });
-          }
-          // A valid first-party feed with no new reports must not fall back
-          // to archival or unrelated third-party data presented as local.
-          return [];
-        }
-        // 2. CISA direct
-        return xhrFetch(CFG.CISA_DIRECT, 10000).then(function(d) {
-          var items = parseCISA(d);
-          if (items && items.length) return items.map(function(item){item._feedGenerated=null;return item;});
-          // No third-party CORS proxies: they can modify threat content,
-          // misrepresent CISA provenance, and expose visitor traffic.
-          // Official origin unavailable => visible unavailable state.
-          return [];
+        if (!data || !Array.isArray(data.items)) return [];
+        var shared = sharedLiveAuthority();
+        var stamp = shared && typeof shared.feedTimestamp === 'function' ?
+          shared.feedTimestamp(data) : null;
+        var parsed = typeof stamp === 'string' ? Date.parse(stamp) : NaN;
+        _lastFetchAt = Number.isFinite(parsed) ? parsed : null;
+        if (!shared || !shared.pipelineAllowsLive(
+          shared.classifyFeed({ok:true,feed:data}), Date.now())) return [];
+        var selected = selectLocalItems(data.items);
+        return selected.map(function(item) {
+          item._feedGenerated = stamp;
+          return item;
         });
       })
-      .catch(function() { return []; });
+      .catch(function(){return [];});
   }
 
   /* ── RENDER CARD ─────────────────────────────────────────── */
