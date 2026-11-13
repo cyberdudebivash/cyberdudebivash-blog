@@ -76,7 +76,7 @@ test('source publication date remains distinct from first-ingestion time',()=>{
   const got=select([{id:'recent',_addedAt:recordAdded,published:sourcePublished}],now);
   assert.equal(got[0].published,sourcePublished);
   assert.equal(got[0]._sourcePublishedAt,sourcePublished);
-  assert.equal(got[0]._reportAddedAt,recordAdded);
+  assert.equal(got[0]._reportAddedAt,new Date(recordAdded).toISOString());
 });
 test('render and cached card eligibility reject stale feed and expired reports',()=>{
   const added='2026-11-08T11:00:00Z';
