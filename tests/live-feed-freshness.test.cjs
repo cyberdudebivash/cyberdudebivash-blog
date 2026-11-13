@@ -14,6 +14,10 @@ const context = vm.createContext({ CFG: { LOOKBACK_DAYS: 1, MAX_CARDS: 15 },
   Date, Number, Object, window: {SentinelRuntimeState: RS},
   normaliseLocal: raw => ({ id: raw.id, published: raw.published, link: raw.link }) });
 vm.runInContext(source.slice(start, end), context);
+const timestampStart=source.indexOf('  function classifyFeedTimestamp(');
+const timestampEnd=source.indexOf('  function esc(',timestampStart);
+assert.ok(timestampStart > 0 && timestampEnd > timestampStart,'source timestamp classifier exists');
+vm.runInContext(source.slice(timestampStart,timestampEnd),context);
 const select = context.selectLocalItems;
 const now = Date.parse('2026-11-08T12:00:00Z');
 const record = (id, stamp) => ({ id, _addedAt: stamp, published: stamp });
@@ -83,6 +87,8 @@ test('render and cached card eligibility reject stale feed and expired reports',
   assert.equal(context.verifiedLiveItems([tampered],now),false);
   const stale=Object.assign({},rows[0],{_feedGenerated:'2026-11-08T08:59:00Z'});
   assert.equal(context.verifiedLiveItems([stale],now),false);
+  const future=Object.assign({},rows[0],{_feedGenerated:'2026-11-08T12:01:00Z'});
+  assert.equal(context.verifiedLiveItems([future],now),false);
   assert.equal(context.verifiedLiveItems(rows,now+25*3600000),false);
   assert.equal(context.verifiedLiveItems([Object.assign({},rows[0],{_contentArchived:true})],now),false);
 });
@@ -90,4 +96,16 @@ test('no third-party fallback enters the first-party live card grid',()=>{
   assert.doesNotMatch(source,/xhrFetch\(CFG\.CISA_DIRECT/);
   assert.match(source,/function render\(items, container, animate\) \{\s*if \(!verifiedLiveItems\(items\)\)/);
   assert.match(source,/if \(container && _displayedItems\.length && !verifiedLiveItems\(_displayedItems\)\)/);
+});
+
+test('truncated HTML image injection fragments are never displayed as report prose',()=>{
+  const begin=source.indexOf('  function stripEntities(');
+  const end=source.indexOf('  function card(',begin);
+  assert.ok(begin>0 && end>begin,'description sanitizer must exist');
+  const ctx=vm.createContext({});
+  vm.runInContext(source.slice(begin,end),ctx);
+  assert.equal(ctx.stripEntities('Report &lt;img src=&quot;https://external.invalid'),
+    'Report');
+  assert.equal(ctx.stripEntities('Valid <strong>source</strong> context'),
+    'Valid source context');
 });
