@@ -3,7 +3,8 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { deployPaths, classify, classifyVerifiedGitTrees, renderDriftSummary, isReviewedOperationalPath } = require('../scripts/production-drift-policy.cjs');
+const { deployPaths, classify, classifyVerifiedGitTrees, renderDriftSummary, isReviewedOperationalPath,
+  MANUAL_DEPLOY_RUNS_URL, latestCompletedManualRelease } = require('../scripts/production-drift-policy.cjs');
 
 const root = path.resolve(__dirname, '..');
 const deploy = fs.readFileSync(path.join(root,'.github/workflows/cloudflare-production-deploy.yml'),'utf8');
@@ -607,4 +608,55 @@ test('P0 #580 release-manifest verifier is exact-path OPERATIONAL, not a benign 
   assert.match(manifest, /PASS_NOT_DEPLOY_AUTHORIZATION/);
   const workerWorkflow = fs.readFileSync(path.join(root, '.github/workflows/cloudflare-production-deploy.yml'), 'utf8');
   assert.doesNotMatch(workerWorkflow, /node scripts\/soc-release-manifest\.cjs/);
+});
+
+test('P0 100 skipped Cloudflare push runs must not crowd a past certified owner dispatch out of discovery',()=>{
+  assert.match(MANUAL_DEPLOY_RUNS_URL,
+    /\/cloudflare-production-deploy\.yml\/runs\?branch=main&event=workflow_dispatch&per_page=100$/);
+  assert.doesNotMatch(MANUAL_DEPLOY_RUNS_URL,/status=success/);
+  const valid={event:'workflow_dispatch',head_branch:'main',status:'completed',
+    conclusion:'success',head_sha:'365c89f34692cd94a860fbf0f95a0523f5f6f6aa'};
+  const push=Array.from({length:100},()=>({
+    event:'push',head_branch:'main',status:'completed',conclusion:'skipped',head_sha:'a'.repeat(40)
+  }));
+  // In the GitHub API the query is already filtered, so this local selector
+  // is an additional safety check, not a fallback to scanning older pages.
+  const selected=latestCompletedManualRelease([...push,...[valid]]);
+  assert.deepEqual(selected,valid);
+});
+
+test('P0 never treat skipped push/PR/cron, wrong branch, or running dispatch as approved deploy',()=>{
+  const invalid=[
+    {event:'push',head_branch:'main',status:'completed',conclusion:'success'},
+    {event:'pull_request',head_branch:'main',status:'completed',conclusion:'success'},
+    {event:'schedule',head_branch:'main',status:'completed',conclusion:'success'},
+    {event:'workflow_dispatch',head_branch:'feature',status:'completed',conclusion:'success'},
+    {event:'workflow_dispatch',head_branch:'main',status:'in_progress',conclusion:null}
+  ];
+  assert.equal(latestCompletedManualRelease(invalid),null);
+  assert.equal(latestCompletedManualRelease(null),null);
+  assert.equal(latestCompletedManualRelease({}),null);
+});
+
+test('P0 failed latest manual release blocks; never launder older success as the baseline',()=>{
+  const fail={event:'workflow_dispatch',head_branch:'main',
+    status:'completed',conclusion:'failure',head_sha:'f'.repeat(40)};
+  const ok={event:'workflow_dispatch',head_branch:'main',
+    status:'completed',conclusion:'success',head_sha:'a'.repeat(40)};
+  assert.deepEqual(latestCompletedManualRelease([fail,ok]),fail,
+    'the newest completed manual dispatch is authoritative even when failed');
+  assert.deepEqual(latestCompletedManualRelease([ok,fail]),ok,
+    'return first completed manual dispatch in newest-first API order');
+  assert.equal(latestCompletedManualRelease([{
+    event:'workflow_dispatch',head_branch:'main',status:'queued'
+  },fail]),fail);
+});
+
+test('P0 baseline monitoring has no auto deploy and cannot mark production certified',()=>{
+  const source=fs.readFileSync(path.join(root,'scripts/production-drift-policy.cjs'),'utf8');
+  assert.match(source,/const runs = await apiRead\(MANUAL_DEPLOY_RUNS_URL, token, repository\)/);
+  assert.match(source,/const latest = latestCompletedManualRelease\(runs\.workflow_runs\)/);
+  assert.match(source,/no independently certified manual-deploy baseline/);
+  assert.match(source,/last manual production certification failed/);
+  assert.doesNotMatch(source,/createWorkflowDispatch|wrangler deploy|\/dispatches/);
 });
