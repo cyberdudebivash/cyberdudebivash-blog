@@ -29,7 +29,7 @@ const triage = vm.runInNewContext('(function(){' + ccSrc.slice(ccFrom, ccTo) + '
 
 // homepage widget: the real selector with the shared model present
 const wSrc = read('live-feed-widget.js');
-const wFrom = wSrc.indexOf('  function selectLocalItems(');
+const wFrom = wSrc.indexOf('  function sharedLiveAuthority(');
 const wTo = wSrc.indexOf('  /* ── MAIN FETCH PIPELINE', wFrom);
 function widgetSelector(win) {
   const ctx = vm.createContext({ ...(win ? { window: win } : {}), CFG: { LOOKBACK_DAYS: 1, MAX_CARDS: 15 }, Date, Number, Object, Array,
