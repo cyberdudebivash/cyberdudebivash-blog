@@ -24,10 +24,16 @@ function check({state,widget,api}={}){
   if(!Number.isFinite(run)||!Number.isFinite(wg)||!Number.isFinite(ag)||
     Math.abs(run-wg)>MAX_WINDOW_MS||Math.abs(run-ag)>MAX_WINDOW_MS)
     codes.push('SOURCE_FEED_RUN_DIVERGENCE');
-  if(state.lastReportGeneratedAt!=null){
-    const report=Date.parse(state.lastReportGeneratedAt);
-    if(!Number.isFinite(report)||!Number.isFinite(run)||report>run+5*60000)
-      codes.push('REPORT_TIME_INVALID');
+  // Source and S2N feeds must carry the SAME immutable real-report receipt
+  // as the committed ledger. Recent lastRun/generatedAt alone are never
+  // sufficient evidence that any report was actually produced.
+  const reportReceipt=state.lastReportGeneratedAt;
+  const report=Date.parse(reportReceipt||'');
+  if(!Number.isFinite(report)||!Number.isFinite(run)||report>run+5*60000) {
+    codes.push('REPORT_TIME_INVALID_OR_MISSING');
+  } else if(widget.metadata?.lastReportGeneratedAt!==reportReceipt ||
+            api.lastReportGeneratedAt!==reportReceipt) {
+    codes.push('PUBLIC_REPORT_RECEIPT_DIVERGENCE');
   }
   // Count is cumulative reports ever published; feed.items is a rolling
   // top-N window and MUST NOT be compared to count as if it were a ledger.
