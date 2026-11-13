@@ -2,9 +2,9 @@
  *
  * States are derived only from what the browser actually observed:
  *   CHECKING     a request is in flight (initial markup state)
- *   HEALTHY      feed reachable; pipeline timestamp within the monitor's warn window
- *   DEGRADED     feed reachable but freshness is behind cadence or not provable
- *   STALE        feed reachable; pipeline timestamp older than the monitor's stale window
+ *   HEALTHY      feed reachable; genuine-report receipt AND source generation within freshness window
+ *   DEGRADED     feed reachable but genuine report/source freshness is delayed or unprovable
+ *   STALE        feed reachable; oldest report receipt/source generation exceeds freshness window
  *   UNAVAILABLE  request failed, returned non-2xx/invalid JSON, or timed out
  *
  * Thresholds mirror scripts/check-intel-freshness.js (the CI freshness monitor);
@@ -35,11 +35,21 @@
     CHECKING: 'warn', HEALTHY: 'live', DEGRADED: 'warn', STALE: 'warn', UNAVAILABLE: 'bad',
   });
 
+  // Publication truth needs TWO clocks. A recent scheduled run or JSON
+  // serialization cannot make an old intelligence report newly current.
+  // The report receipt is written only after real articles are generated and
+  // the publication ledger is committed. No receipt => no live authority.
   function feedTimestamp(feed) {
-    if (!feed || typeof feed !== 'object') return null;
+    if (!feed || typeof feed !== 'object' || Array.isArray(feed)) return null;
     var meta = feed.metadata || {};
-    // Pipeline completion first: it is what the CI monitor measures.
-    return meta.lastPipelineRun || meta.generated || feed.generatedAt || feed.lastUpdated || meta.generatedAt || null;
+    var receipt = meta.lastReportGeneratedAt || feed.lastReportGeneratedAt;
+    var generated = feed.generatedAt || meta.generated || feed.generated || feed.lastUpdated;
+    if (typeof receipt !== 'string' || typeof generated !== 'string') return null;
+    var reportMs = Date.parse(receipt), sourceMs = Date.parse(generated);
+    if (!isFinite(reportMs) || !isFinite(sourceMs) || reportMs < 0 || sourceMs < 0 ||
+        !/(Z|[+-]\\d\\d:\\d\\d)$/.test(receipt) ||
+        !/(Z|[+-]\\d\\d:\\d\\d)$/.test(generated)) return null;
+    return new Date(Math.min(reportMs, sourceMs)).toISOString();
   }
 
   function formatAge(minutes) {
@@ -60,24 +70,24 @@
     var ms = stamp ? Date.parse(stamp) : NaN;
     if (!isFinite(ms)) {
       return { state: STATES.DEGRADED, reachable: true, ageMinutes: null, timestamp: null,
-        reason: 'Feed reachable; pipeline timestamp missing or invalid, so freshness is not established.' };
+        reason: 'Feed reachable; genuine report receipt or source-generation time missing/invalid. Heartbeat is not a report.' };
     }
     var iso = new Date(ms).toISOString();
     if (ms - nowMs > THRESHOLDS.futureToleranceMinutes * 60000) {
       return { state: STATES.DEGRADED, reachable: true, ageMinutes: null, timestamp: iso,
-        reason: 'Feed reachable; pipeline timestamp is in the future, so freshness is not established.' };
+        reason: 'Feed reachable; report/source timestamp is in the future, so freshness is not established.' };
     }
     var age = Math.max(0, Math.floor((nowMs - ms) / 60000));
     if (age <= THRESHOLDS.healthyMaxMinutes) {
       return { state: STATES.HEALTHY, reachable: true, ageMinutes: age, timestamp: iso,
-        reason: 'Pipeline completed ' + formatAge(age) + ' ago (' + iso + ').' };
+        reason: 'Genuine report/source freshness verified ' + formatAge(age) + ' ago (' + iso + ').' };
     }
     if (age <= THRESHOLDS.staleAfterMinutes) {
       return { state: STATES.DEGRADED, reachable: true, ageMinutes: age, timestamp: iso,
-        reason: 'Pipeline last completed ' + formatAge(age) + ' ago; behind its scheduled cadence.' };
+        reason: 'Latest genuine report or source generation is ' + formatAge(age) + ' old; behind freshness policy.' };
     }
     return { state: STATES.STALE, reachable: true, ageMinutes: age, timestamp: iso,
-      reason: 'Pipeline last completed ' + formatAge(age) + ' ago; intelligence may be out of date.' };
+      reason: 'Latest genuine report or source generation is ' + formatAge(age) + ' old; operational intelligence is withheld.' };
   }
 
   function toneFor(state) {
