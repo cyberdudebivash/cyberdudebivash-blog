@@ -130,6 +130,8 @@ jobs:
         run: node --test tests-js/soc-public-freshness-monitor.test.js
       - name: P0 — Live lists show only records proven new (24 h ingest / 72 h publication) and honest feed states
         run: node --test tests-js/runtime-state.test.js tests/live-feed-freshness.test.cjs
+      - name: "P0 stale SOC operational KPIs and overnight open tabs fail closed"
+        run: node --test tests-js/soc-stale-kpi-withholding.test.js
       - name: P0 — Dual-host S2N live API/report ledger source and release byte parity
         run: node --test tests-js/soc-s2n-api-release.test.js
       - name: P0 — Pinned source, safe-account billing and Windows operator offline release controls
