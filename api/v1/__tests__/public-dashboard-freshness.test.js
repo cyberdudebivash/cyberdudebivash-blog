@@ -25,6 +25,7 @@ jest.mock('../../_lib/intel',()=>({
 const handler=require('../intel');
 const feed=require('../../../live-intel.json');
 const RS=require('../../../runtime-state.js');
+const {assessPublicIntel}=require('../../_lib/public-intel-freshness');
 const {getPlatformStats,getIntel}=require('../../_lib/intel');
 
 const SOURCE=Date.parse(RS.feedTimestamp(feed));
@@ -104,6 +105,14 @@ test('Verified stats preserve historical volume truth with explicitly separate s
   expect(res.statusCode).toBe(200);
   expect(res.headers['cache-control']).toBe('no-store');
   expect(res.body.stats.total_published).toBe(7466);
+  expect(res.body.stats.metrics_scope).toBe('CURRENT_EVIDENCED_WINDOW');
+  const current=assessPublicIntel(feed,Date.now()).items;
+  expect(res.body.stats.live_intel_count).toBe(current.length);
+  expect(res.body.stats.live_intel_count).toBeLessThan(150);
+  expect(res.body.stats.critical_threats).toBe(current.filter(i=>
+    Number(i.cvss)>=9).length);
+  expect(res.body.stats.cisa_kev_count).toBe(current.filter(i=>
+    i.cisaKev===true||i.cisa_kev===true).length);
   expect(res.body.meta.source_timestamp).toBe(new Date(SOURCE).toISOString());
   expect(res.body.meta.timestamp).not.toBe(res.body.meta.source_timestamp);
 });
