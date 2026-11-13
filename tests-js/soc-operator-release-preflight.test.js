@@ -33,10 +33,10 @@ function sample(){
     },
     bundle:{
       state:{lastRun:t,lastReportGeneratedAt:t,totalPublished:6563,lastIngestion:{reportsGenerated:15}},
-      rootSource:{generatedAt:t,totalPublished:6563,metadata:{lastPipelineRun:t},items:ids},
-      apiSource:{generated:t,total_published:6563,items:ids},
-      rootAsset:{generatedAt:t,totalPublished:6563,metadata:{lastPipelineRun:t},items:structuredClone(ids)},
-      apiAsset:{generated:t,total_published:6563,items:structuredClone(ids)}
+      rootSource:{generatedAt:t,totalPublished:6563,metadata:{lastPipelineRun:t,lastReportGeneratedAt:t},items:ids},
+      apiSource:{generated:t,lastReportGeneratedAt:t,total_published:6563,items:ids},
+      rootAsset:{generatedAt:t,totalPublished:6563,metadata:{lastPipelineRun:t,lastReportGeneratedAt:t},items:structuredClone(ids)},
+      apiAsset:{generated:t,lastReportGeneratedAt:t,total_published:6563,items:structuredClone(ids)}
     }
   };
 }
