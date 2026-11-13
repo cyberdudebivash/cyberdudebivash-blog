@@ -170,6 +170,9 @@ test('P0 S2N API bundle accepts pinned NVD correction but rejects other score or
  const x=fixture(),id='CVE-2009-0238';
  x.rootSource.items[0].id=id;
  x.rootAsset.items[0].id=id;
+ // fixture() intentionally shares root/API source array references; isolate
+ // the API correction case so it cannot silently mutate the root fixture.
+ x.apiSource.items=structuredClone(x.apiSource.items);
  x.apiSource.items[0]={id,cvss:9.5};
  const {correctPublicIntelJson}=require('../scripts/build-cloudflare-assets');
  x.apiAsset=JSON.parse(correctPublicIntelJson(JSON.stringify(x.apiSource)));
