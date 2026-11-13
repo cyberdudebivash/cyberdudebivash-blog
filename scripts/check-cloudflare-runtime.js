@@ -38,7 +38,17 @@ let current;
 for (const line of HEADERS_FILE_CONTENT.split(/\r?\n/)) {
   if (!line.trim() || line.trimStart().startsWith('#')) continue;
   if (!/^\s/.test(line)) { current = new Map(); blocks.set(line.trim(), current); continue; }
-  const match = line.match(/^\s+([^:]+):\s*(.+)$/);
+  // Cloudflare _headers lets a narrower rule detach a header set by a
+  // broader match with an indented "! Header-Name" directive. This must
+  // be recognized explicitly, not parsed as an invalid "Header: value" or
+  // silently ignored. Bad syntax continues to block production certification.
+  const detach = line.match(/^\s+!\s+([A-Za-z0-9-]+)\s*$/);
+  if (detach) {
+    assert.ok(current, 'Malformed generated asset header policy');
+    current.delete(detach[1].toLowerCase());
+    continue;
+  }
+  const match = line.match(/^\s+([A-Za-z0-9-]+):\s*(.+)$/);
   assert.ok(match && current, 'Malformed generated asset header policy');
   current.set(match[1].toLowerCase(), match[2]);
 }
