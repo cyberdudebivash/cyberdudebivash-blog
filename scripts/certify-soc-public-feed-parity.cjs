@@ -7,6 +7,7 @@
  */
 const fs=require('node:fs');
 const crypto=require('node:crypto');
+const {isDeepStrictEqual}=require('node:util');
 const path=require('node:path');
 const TARGETS=Object.freeze({
   soc:'https://soc.cyberdudebivash.in/live-intel.json',
@@ -89,6 +90,12 @@ function predeployGate({source,asset,state,nowMs=Date.now()}={}) {
     return {status:'FAIL',reason:'PREDEPLOY_BUILD_CORPUS_DIVERGED'};
   if(source.items.length!==asset.items.length)
     return {status:'FAIL',reason:'PREDEPLOY_BUILD_ITEMS_DIVERGED'};
+  // Counts and timestamps do not prove intelligence content integrity: a
+  // changed IOC/CVE/attribution could otherwise pass the offline release gate.
+  // Compare the full parsed payload, including nested records and metadata,
+  // while permitting JSON object key-order differences (no data difference).
+  if(!isDeepStrictEqual(source,asset))
+    return {status:'FAIL',reason:'PREDEPLOY_BUILD_CONTENT_DIVERGED'};
   return {status:'PASS',reason:'SOURCE_REPORT_AND_BUILT_ASSET_FRESH'};
 }
 
