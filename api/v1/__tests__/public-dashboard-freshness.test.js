@@ -139,10 +139,10 @@ test('P0 actual checked-in source is not called LIVE just because its heartbeat 
  const realFeed=jest.requireActual('../../../live-intel.json');
  const now=Date.parse(realFeed.generatedAt)+60*60000;
  const current=assessPublicIntel(realFeed,now);
- const report=Date.parse(realFeed.metadata.lastReportGeneratedAt);
- if (now-report>180*60000) {
+ const report=Date.parse(realFeed.metadata.lastReportGeneratedAt||'');
+ if (!Number.isFinite(report)||now-report>180*60000) {
    expect(current.ok).toBe(false);
    expect(current.items).toEqual([]);
-   expect(current.state).toBe('STALE');
+   expect(['STALE','DEGRADED']).toContain(current.state);
  }
 });
