@@ -300,7 +300,7 @@
     for(var i=0;i<3;i++) out=out.replace(/&lt;/gi,'<').replace(/&gt;/gi,'>').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&nbsp;/gi,' ');
     // Strip both well-formed tags and truncated tags such as an upstream
     // '<img src="https://...' fragment. They must never leak as report prose.
-    return out.replace(/<[a-z][^>]*(?:>|$)/gi,' ').replace(/\s+/g,' ').trim();
+    return out.replace(/<\/?[a-z][^>]*(?:>|$)/gi,' ').replace(/\s+/g,' ').trim();
   }
 
   function card(item) {
