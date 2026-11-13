@@ -140,6 +140,8 @@
       {state:'DEGRADED',reachable:true,ageMinutes:null,reason:'Freshness authority unavailable.'};
     var current=RS&&typeof RS.pipelineAllowsLive==='function' &&
       RS.pipelineAllowsLive(classification,Date.now());
+    state.metricsCurrent=!!current;
+    state.lastRuntimeState=classification.state;
     if (!current) {
       var note='WITHHELD — '+String(classification.state||'UNVERIFIED')+
         ' intelligence source; open Intelligence Archive for historical corpus';
@@ -226,6 +228,32 @@
     var ok=results.filter(function(x){return x.status==='fulfilled';}).length;
     var e=$('cdb-evidence-count');if(e)e.textContent=ok+'/4 assurance feeds verified';
   });
+  // A dashboard left open overnight must not keep reporting yesterday's
+  // KPIs or expired incidents as current. Revalidate in memory every five
+  // seconds. No additional network requests or Cloudflare usage.
+  setInterval(function(){
+    if(!state.feed||!RS||typeof RS.classifyFeed!=='function'||
+       typeof RS.pipelineAllowsLive!=='function') return;
+    var now=Date.now();
+    var cls=RS.classifyFeed({ok:true,feed:state.feed,nowMs:now});
+    var allowed=RS.pipelineAllowsLive(cls,now);
+    if(state.metricsCurrent && !allowed) {
+      renderMetrics(state.feed);
+      renderFeed(state.feed);
+    } else if(allowed && Array.isArray(state.feedItems) &&
+              typeof RS.isLiveRecord==='function' &&
+              state.feedItems.some(function(item){return !RS.isLiveRecord(item,now);})) {
+      renderFeed(state.feed);
+    }
+    if(cls.state!==state.lastRuntimeState){
+      applyFeedState(cls);
+      state.lastRuntimeState=cls.state;
+    }
+    var refreshed=age(feedStamp(state.feed));
+    var freshness=$('cdb-freshness');
+    if(freshness)freshness.textContent=refreshed.label;
+    setText('cdb-hero-freshness',refreshed.label);
+  },5000);
   var refresh=$('cdb-refresh');
   if(refresh)refresh.addEventListener('click',function(){window.location.reload();});
   window.addEventListener('resize',function(){if(state.feedItems)drawFabric(state.feedItems);},{passive:true});
