@@ -89,3 +89,13 @@ test('Cloudflare _headers stays within documented rule-count and per-line limits
   // Cloudflare _headers do not affect Worker-produced protected API routes.
   assert.equal(effectiveHeaders('/api/v1/customer/dashboard').current.has('cache-control'),false);
 });
+
+test('P0 current home page references versioned UI and data-verification scripts',()=>{
+  const fs=require('node:fs');
+  const path=require('node:path');
+  const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
+  for(const asset of ['live-feed-widget.js','runtime-state.js','apex-command-center.js']){
+    assert(html.includes('/'+asset+'?v=20261113-soc-p0-1'),
+      asset+' must be cache-busted after the combined P0 rollout');
+  }
+});
