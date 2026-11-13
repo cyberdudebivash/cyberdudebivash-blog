@@ -182,7 +182,24 @@ module.exports = async (req, res) => {
       });
     }
     try {
-      const stats = getPlatformStats();
+      const historic = getPlatformStats();
+      // Historical total_published stays explicitly cumulative. Every
+      // operational "live"/critical/KEV/exploited/ransomware counter must
+      // describe ONLY verified current source-publication + ingest records.
+      const active = verified.items;
+      const stats = {
+        ...historic,
+        total_published: Number(canonicalPublicFeed.totalPublished) || 0,
+        live_intel_count: active.length,
+        critical_threats: active.filter(i =>
+          cvssSeverity(i.cvss, i.threatLevel || i.threat_level) === 'CRITICAL').length,
+        cisa_kev_count: active.filter(i => i.cisaKev === true || i.cisa_kev === true).length,
+        exploited_count: active.filter(i => i.exploited === true).length,
+        ransomware_count: active.filter(i => i.ransomware === true).length,
+        metrics_scope: 'CURRENT_EVIDENCED_WINDOW',
+        live_ingestion_max_hours: 24,
+        live_publication_max_hours: 72,
+      };
       return res.status(200).json({
         success: true,
         stats,
