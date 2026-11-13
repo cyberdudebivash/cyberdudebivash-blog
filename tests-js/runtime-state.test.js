@@ -19,7 +19,7 @@ const monitor = require('../scripts/check-intel-freshness.js');
 
 const NOW = Date.parse('2026-09-30T17:00:00Z');
 const minutesAgo = m => new Date(NOW - m * 60000).toISOString();
-const feedAt = iso => ({ metadata: { lastPipelineRun: iso }, generatedAt: iso, items: [], stats: {} });
+const feedAt = iso => ({ metadata: { lastPipelineRun: iso, lastReportGeneratedAt: iso }, generatedAt: iso, items: [], stats: {} });
 
 describe('classifier', () => {
   test('thresholds are the CI freshness monitor thresholds (single source of truth)', () => {
@@ -51,16 +51,32 @@ describe('classifier', () => {
     assert.match(r.reason, /timeout/);
   });
 
-  test('pipeline completion time is preferred over generation time', () => {
-    const feed = { generatedAt: minutesAgo(300), metadata: { lastPipelineRun: minutesAgo(10) } };
-    assert.equal(RS.classifyFeed({ ok: true, feed, nowMs: NOW }).state, 'HEALTHY');
+  test('a new heartbeat never makes an old genuine report LIVE', () => {
+    const feed = { generatedAt: minutesAgo(10), metadata: {
+      lastPipelineRun: minutesAgo(1), lastReportGeneratedAt: minutesAgo(300)
+    } };
+    const result = RS.classifyFeed({ ok: true, feed, nowMs: NOW });
+    assert.equal(result.state, 'STALE');
+    assert.equal(RS.pipelineAllowsLive(result, NOW), false);
+    assert.notEqual(RS.badgeFor(result).text, 'LIVE');
+    assert.equal(RS.feedTimestamp(feed), minutesAgo(300));
+  });
+
+  test('missing genuine report receipt and future generated clock cannot display LIVE', () => {
+    const absent={generatedAt:minutesAgo(1), metadata:{lastPipelineRun:minutesAgo(1)}};
+    assert.equal(RS.classifyFeed({ok:true,feed:absent,nowMs:NOW}).state,'DEGRADED');
+    const forged={generatedAt:minutesAgo(-30),metadata:{lastReportGeneratedAt:minutesAgo(1)}};
+    assert.equal(RS.classifyFeed({ok:true,feed:forged,nowMs:NOW}).state,'DEGRADED');
   });
 
   test('the committed production feed shape classifies from its own timestamps', () => {
     const feed = JSON.parse(fs.readFileSync(path.join(ROOT, 'live-intel.json'), 'utf8'));
     const stamp = Date.parse(RS.feedTimestamp(feed));
     assert.ok(Number.isFinite(stamp), 'live-intel.json must carry a parseable pipeline timestamp');
-    assert.equal(RS.classifyFeed({ ok: true, feed, nowMs: stamp + 10 * 60000 }).state, 'HEALTHY');
+    const observedAt=Date.parse(feed.generatedAt)+10*60000;
+    const reportAge=observedAt-Date.parse(feed.metadata.lastReportGeneratedAt);
+    const expected=reportAge>180*60000?'STALE':reportAge>90*60000?'DEGRADED':'HEALTHY';
+    assert.equal(RS.classifyFeed({ok:true,feed,nowMs:observedAt}).state,expected);
     assert.equal(RS.classifyFeed({ ok: true, feed, nowMs: stamp + 24 * 3600000 }).state, 'STALE');
   });
 });
