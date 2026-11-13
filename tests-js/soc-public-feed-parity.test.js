@@ -133,3 +133,24 @@ test('release workflow structurally preserves predeploy-before-mutation and publ
   assert.match(workflow,/if:\s*\$\{\{\s*github\.event_name == 'workflow_dispatch'\s*&&\s*github\.ref == 'refs\/heads\/main'/,
     'the Cloudflare deploy must remain explicitly approved and manual-only');
 });
+
+test('P0 predeploy rejects changed IOC contents even with matching timestamps, totals and item counts',()=>{
+  const feed=fixture();const state={lastRun:feed.generatedAt,lastReportGeneratedAt:feed.generatedAt};
+  const asset=structuredClone(feed);asset.items[0].id='tampered-IOC';
+  assert.deepEqual(predeployGate({source:feed,asset,state,nowMs:now}),
+    {status:'FAIL',reason:'PREDEPLOY_BUILD_CONTENT_DIVERGED'});
+});
+
+test('P0 predeploy rejects altered nested source metadata even with identical published counts',()=>{
+  const feed=fixture();const state={lastRun:feed.generatedAt,lastReportGeneratedAt:feed.generatedAt};
+  const asset=structuredClone(feed);asset.metadata.sourceClassification='UNVERIFIED';
+  assert.equal(predeployGate({source:feed,asset,state,nowMs:now}).reason,
+    'PREDEPLOY_BUILD_CONTENT_DIVERGED');
+});
+
+test('P0 predeploy permits equivalent JSON content with different object-key insertion order',()=>{
+  const feed=fixture();const state={lastRun:feed.generatedAt,lastReportGeneratedAt:feed.generatedAt};
+  const asset={items:structuredClone(feed.items),totalPublished:feed.totalPublished,
+    metadata:{...feed.metadata},generatedAt:feed.generatedAt};
+  assert.equal(predeployGate({source:feed,asset,state,nowMs:now}).status,'PASS');
+});
