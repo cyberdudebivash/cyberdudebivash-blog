@@ -168,6 +168,27 @@
       .catch(function(e) { callback(e, []); });
   }
 
+  // P0: refuse a public API response whose source/ingestion evidence does
+  // not satisfy the single canonical SOC runtime policy. Even a 200 JSON
+  // response can be an old Worker bundle or a cached, version-skewed payload.
+  function verifiedDashboardPayload(payload, nowMs) {
+    var RS=window.SentinelRuntimeState;
+    if (!RS || typeof RS.classifyFeed!=='function' ||
+        typeof RS.pipelineAllowsLive!=='function' ||
+        typeof RS.isLiveRecord!=='function' ||
+        !payload || !Array.isArray(payload.items) ||
+        typeof payload.generated_at!=='string' ||
+        payload.items.length>25) return false;
+    var now=Number.isFinite(nowMs)?nowMs:Date.now();
+    var cls=RS.classifyFeed({ok:true,
+      feed:{metadata:{lastPipelineRun:payload.generated_at}},nowMs:now});
+    if (!RS.pipelineAllowsLive(cls,now)) return false;
+    return payload.items.every(function(item){
+      return item && typeof item.id==='string' && !!item.id.trim() &&
+        RS.isLiveRecord({_addedAt:item.first_ingested,pubDate:item.published},now);
+    });
+  }
+
   function fetchDashboardFeed(section, callback) {
     var url = '/api/v1/intel?action=dashboard&section=' + encodeURIComponent(section || 'intel') + '&limit=25';
     fetch(url, {
@@ -182,6 +203,9 @@
       .then(function(d) {
         if (!d || d.success !== true || !d.data || !Array.isArray(d.data.items)) {
           throw new Error('dashboard_contract_invalid');
+        }
+        if (!verifiedDashboardPayload(d.data)) {
+          throw new Error('dashboard_freshness_not_verified');
         }
         callback(null, d.data);
       })
@@ -531,12 +555,20 @@
   }
 
   function updateRuntimeState(items, generatedAt) {
-    var generated = generatedAt ? new Date(generatedAt).getTime() : 0;
-    var newest = Number.isFinite(generated) && generated > 0 ? generated : newestTimestamp(items);
-    if (!newest) return setRuntimeState('DEGRADED', 'Freshness timestamp unavailable');
-    var ageMinutes = Math.max(0, Math.floor((Date.now() - newest) / 60000));
-    if (ageMinutes <= 240) return setRuntimeState('LIVE', 'First-party feed verified ' + ageMinutes + 'm ago');
-    setRuntimeState('STALE', 'First-party feed last generated ' + ageMinutes + 'm ago');
+    var RS=window.SentinelRuntimeState;
+    if (!RS || typeof RS.classifyFeed!=='function' ||
+        typeof RS.pipelineAllowsLive!=='function') {
+      return setRuntimeState('UNAVAILABLE','Shared freshness authority not loaded');
+    }
+    var now=Date.now();
+    var cls=RS.classifyFeed({ok:true,
+      feed:{metadata:{lastPipelineRun:generatedAt}},nowMs:now});
+    if (!RS.pipelineAllowsLive(cls,now)) {
+      return setRuntimeState('STALE','First-party source freshness cannot be verified');
+    }
+    if (cls.state==='HEALTHY')
+      return setRuntimeState('LIVE','First-party source verified '+cls.ageMinutes+'m ago');
+    return setRuntimeState('DEGRADED','First-party source delayed '+cls.ageMinutes+'m');
   }
 
   function updateLiveCounts(items) {
@@ -619,7 +651,11 @@
   ══════════════════════════════════════════════════════════════════ */
   function updateTicker(items) {
     var ticker = document.querySelector('.ticker-text') || document.querySelector('.breaking-ticker');
-    if (!ticker || !items.length) return;
+    if (!ticker) return;
+    if (!items.length) {
+      ticker.textContent='Current first-party intelligence unavailable — awaiting source verification';
+      return;
+    }
     var critical = items.filter(function(i){ return i.severity === 'critical' || i.isExploited; });
     var use = (critical.length ? critical : items).slice(0, 8);
     ticker.innerHTML = use.map(function(i) {
@@ -803,12 +839,38 @@
     return 'intel';
   }
 
+  var activePublicPayload=null;
+  var expiryMonitorStarted=false;
+  function expireDashboardIfNeeded() {
+    if (!activePublicPayload || verifiedDashboardPayload(activePublicPayload)) return;
+    activePublicPayload=null;
+    setRuntimeState('STALE','Previously verified public intelligence has expired');
+    updateLiveCounts([]);
+    updateTicker([]);
+    var container=document.getElementById('intel-feed');
+    if (container) container.innerHTML='<div class="intel-empty" role="status">'
+      +'<p>Source or publication freshness expired. Historical records are withheld '
+      +'from this live workspace. <a href="/archive.html">Open Intelligence Archive</a>.</p></div>';
+  }
+  function startExpiryMonitor() {
+    if (expiryMonitorStarted) return;
+    expiryMonitorStarted=true;
+    // In-memory only, no additional requests and no Cloudflare account cost.
+    setInterval(expireDashboardIfNeeded,5000);
+  }
+
   function loadSection(section) {
     var containerId = 'intel-feed';
+    // The engine is shared by many commerce/information pages without a
+    // feed. Do not poll the public API on every unrelated customer page.
+    if (!document.getElementById(containerId)) return;
+    startExpiryMonitor();
     injectStyles();
     setRuntimeState('VERIFYING', 'Checking first-party dashboard intelligence');
     fetchDashboardFeed(section, function(err, payload) {
       if (err || !payload) {
+        activePublicPayload=null;
+        updateTicker([]);
         setRuntimeState('UNAVAILABLE', 'First-party dashboard feed unavailable; no synthetic fallback substituted');
         updateLiveCounts([]);
         var container = document.getElementById(containerId);
@@ -817,6 +879,7 @@
         return;
       }
 
+      activePublicPayload=payload;
       var enriched = payload.items.map(normalizeDashboardItem);
       publishToSection(containerId, enriched, { section: section, limit: 25 });
       updateRuntimeState(enriched, payload.generated_at);
