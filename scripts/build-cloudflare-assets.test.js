@@ -561,6 +561,11 @@ describe('_headers cascade safety', () => {
       '/api/intel/products/example.json', '/favicon.ico', '/og-image.png',
       '/site.webmanifest', '/search-index.json', '/live-intel.json',
       '/.well-known/security.txt', '/detections/rules/example.yml',
+      '/soc.html','/intel/index.html','/breaking/index.html',
+      '/malware/index.html','/ai-security/index.html','/service-status.html',
+      '/runtime-state.js','/apex-command-center.js','/live-feed-widget.js',
+      '/auto-intel-engine.js','/soc-intelligence-desk.js',
+      '/api/intel/live.json','/api/intel/iocs.json',
     ];
 
     for (const requestPath of samplePaths) {
@@ -570,7 +575,13 @@ describe('_headers cascade safety', () => {
       const seen = new Map(); // header name -> pattern that first set it
       for (const { pattern, headerNames } of matchingBlocks) {
         for (const name of headerNames) {
-          const key = name.toLowerCase();
+          const detach = /^!\s+/.test(name);
+          const key = name.replace(/^!\s+/, '').toLowerCase();
+          if (detach) {
+            assert.ok(seen.has(key), `${requestPath}: cannot detach an absent ${key} before ${pattern}`);
+            seen.delete(key); // Cloudflare _headers: ! removes all earlier instances.
+            continue;
+          }
           assert.ok(
             !seen.has(key),
             `${requestPath}: header "${name}" is set by both "${seen.get(key)}" and "${pattern}" -- ` +
