@@ -10,7 +10,8 @@ const root = path.resolve(__dirname, '..');
 const now = Date.parse('2026-11-06T16:00:00.000Z');
 const feed = minutes => {
   const stamp = new Date(now - minutes * 60000).toISOString();
-  return {generatedAt: stamp, metadata: {generated: stamp, lastPipelineRun: new Date(now).toISOString()},
+  return {generatedAt: stamp, metadata: {generated: stamp,
+    lastReportGeneratedAt: stamp, lastPipelineRun: new Date(now).toISOString()},
     totalPublished: 7189, items: Array(150).fill(null)};
 };
 
@@ -60,4 +61,15 @@ test('pricing page removes invented KPI fallbacks and preserves canonical checko
   assert.match(build,/'pricing-trust\.js'/);
   assert.match(pricing,/https:\/\/intel\.cyberdudebivash\.com\/upgrade\.html\?plan=pro/);
   assert.doesNotMatch(pricing,/action=stats/);
+});
+
+test('pricing evidence refuses to present an active pipeline as real-time reports if receipt missing',()=>{
+ const missing=feed(10);delete missing.metadata.lastReportGeneratedAt;
+ const r=trust.assess(missing,runtime,now);
+ assert.equal(r.state,'DEGRADED');
+ assert.notEqual(r.state,'HEALTHY');
+ const delayed=feed(10);delayed.metadata.lastReportGeneratedAt=new Date(now-240*60000).toISOString();
+ const r2=trust.assess(delayed,runtime,now);
+ assert.equal(r2.state,'STALE','old genuine report cannot be refreshed by new JSON generation');
+ assert.match(r2.message,/historical published reports/);
 });
