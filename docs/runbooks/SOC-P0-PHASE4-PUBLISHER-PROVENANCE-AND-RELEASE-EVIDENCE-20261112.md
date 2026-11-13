@@ -324,3 +324,54 @@ Noted, not mine: #578 (merged 2026-11-13 04:10 IST) makes the release preflight 
 ### 9.6 Decision and next action
 
 **SOC: NO-GO.** Blockers unchanged: edge 988 reports stale; deployed version and rollback target unreadable; no cost attestation; approval cadence (section 9.5). **Exact next production action (none authorized):** the owner runs the two read-only commands in section 6, then freezes one candidate right after a publisher commit, supplies a ≤ 2 h account-wide attestation and a rollback version id, and separately authorizes the exact SHA and action. A publisher dispatch is not needed for this: the next scheduled or recovery run supplies a fresh genuine report.
+
+## 10. Phase 6 update, 2026-11-13 (living update; sections 1 to 9 stay as the earlier record)
+
+**Status: EVIDENCE + one merged hardening (blog #584). Nothing here deploys, dispatches a workflow, touches DNS, spends money or authorizes a release. SOC decision: NO-GO.** Observations are read-only `GET`s and local, secret-free runs. The hub counterpart is section 16 of `docs/transformation/PHASE_ZERO_BASELINE_20261108.md` in the hub repository.
+
+### 10.1 Public edge (Verified, 2026-11-13T00:16:10Z to 00:16:11Z; all four endpoints HTTP 200, no redirects)
+
+| Endpoint | Bytes | sha256 | `cache-control` | Reports | `generatedAt` | Age |
+|---|---|---|---|---|---|---|
+| `soc.cyberdudebivash.in/live-intel.json` | 156,055 | `999a7b19d128982c89518ee60627dad5a5851ca15efb0dfbf8ab8f7bc31c69a6` | `public, max-age=0, must-revalidate` | 6,466 | 2026-10-23T04:58:15.799Z | 29,958 min |
+| `soc.cyberdudebivash.in/api/intel/live.json` | 130,250 | `1869f2efaf0b75bf0bbc3ac00bf9115c268097e192b0730b0130e16f8e345a07` | `public, max-age=600, stale-while-revalidate=3600` | 6,466 | 2026-10-23T04:58:15.800Z | 29,958 min |
+| `blog.cyberdudebivash.in/live-intel.json` | 156,055 | identical to the `soc.` hash | same | 6,466 | same | same |
+| `blog.cyberdudebivash.in/api/intel/live.json` | 130,250 | identical to the `soc.` hash | same | 6,466 | same | same |
+
+Cross-host contract: **consistent** (byte-identical per path; `cf-cache-status: HIT`, `etag` equal). Freshness: **FAIL**. The repository's own `scripts/certify-soc-public-feed-parity.cjs` returns `FAIL PUBLIC_PIPELINE_STALE` for both hosts (public 6,466 reports vs source 7,466). `live-intel.json` is served with `max-age=0` and the API copy with a 10-minute cache, so a new deployment becomes visible to customers within minutes; no stale cache layer explains the gap. **Nothing was copied from an earlier observation.**
+
+### 10.2 Source (Verified)
+
+Newest genuine publisher output on `main`: `generatedAt 2026-11-12T23:59:33.185Z`, **7,466 reports**, 39 catalog-backed KEV flags, `kevCatalog` **VERIFIED** (CISA catalog `2026.11.10`, 1,779 entries, 0 invalid, 0 duplicate, verified 2026-11-12T23:59:28Z). The bot regeneration commit at 00:16Z does not change the report count. The 180-minute genuine-report gate is **met by the source and failed by the edge**: the blocker is publication of an approved candidate to the edge, which is an owner-run manual release. No heartbeat or artificial update was made, no backfill, no archival record was shown as live, and nothing was dispatched.
+
+### 10.3 What changed since section 9
+
+* **#583 (merged by the owner)** added `.github/workflows/soc-owner-release-evidence.yml`: a manual, read-only workflow (`workflow_dispatch`, `environment: production`, no push, schedule or deploy path) that collects the account-wide zero-overage attestation, both Worker Custom Domains, the live Worker deployment and version identity, and both public feed-parity checks, and ends `HOLD: SOC_READ_ONLY_EVIDENCE_INCOMPLETE` unless all five pass. **It is the owner's evidence path; it was not dispatched from this session** because it reads production secrets. It replaces the two commands in section 6 and checklist row 12 of the hub document.
+* **#584 (merged by the owner)** extended the unwired verifier `scripts/soc-release-manifest.cjs` to schema **v2**: the approval now also pins the **release-control files** (the deploy workflow, the SHA gate, the zero-overage gate, the two feed certifiers, the domain verifier, the drift policy, the asset builder and the verifier itself: nine files) and records the **approver and approval time** (`APPROVAL_IDENTITY_MISSING`, `APPROVAL_TIMESTAMP_INVALID`, `APPROVAL_STALE`). It still authorizes nothing and is not referenced by any workflow. Negative tests (33 in the file) cover source-SHA mismatch, changed frontend, Worker and feed bytes, changed migrations, changed bindings, wrong target, missing or stale cost attestation, missing rollback evidence, a modified release-control file and artifact substitution after approval.
+
+### 10.4 Fresh frozen candidate (Verified, local; **perishable**)
+
+Source `cefc1d6b89041f5640c2daf12df2594decd1eb33` (blog `main` after #584), built with `npm run build:cloudflare` twice from a clean `npm ci`; the two v2 manifests are **identical**.
+
+| Component | Digest (sha256) | Files |
+|---|---|---|
+| assets (`dist-public`) | `fb947244be1b2657f5c99ed85d69ba8fe11e99c0a4c3f2f93703b75bcf70456e` | 22,584 |
+| Worker (`workers/`) | `4fb82192718eece4ffafe998f9909da4a4e45cd5f76b4d2a2270ae60798ea6d5` | 13 |
+| Wrangler config / bindings | `ac9a696f93db3dad94e1bb1274c8edfa28b269524bea7407605c3404ba84b739` | 1 |
+| D1 migrations | `c02b049182e0626fd4050364972d0b57b680ed0dd47e8d46e4f878a0487d5711` | 18 |
+| feeds | `b17481c680c7f5f77272a190a6681031e25b397ade7494dbd275d726c6d8832c` (`generatedAt 2026-11-12T23:59:33Z`, 7,466 reports) | 2 |
+| release-control files | `b7fdae709990107d05e3a049aeb8db0b2bcd85f15560c2d3f2a741996098f5d9` | 9 |
+| **manifest digest** | `85c09b6052b811f92e3dee51200a094eb941debbe883f5ff1c836abf6a7ee5c7` | |
+
+Worker, config and migration digests are unchanged from the Phase 5 candidate (`edafce3f0`), so the only moving parts are the assets and the feeds. Local gates on this build: `certify-soc-public-feed-parity.cjs --predeploy` **PASS `SOURCE_REPORT_AND_BUILT_ASSET_FRESH`**, `certify-soc-s2n-api-release.cjs --predeploy` **PASS `SOURCE_LEDGER_AND_APPROVED_BUILD_CONCORDANT`**, `npm run check:cloudflare` **43 / 43**. Hosted-runner determinism: Not Verified. **Not run:** browser and accessibility suites, the full hosted Jest job. **This candidate is perishable:** `main` advances with every publisher commit and the feed must still be at most 180 minutes old at the moment the deploy job's last-mile check runs; a newer publisher commit means a new candidate and a new approval, never a reuse.
+
+### 10.5 Integration plan for the verifier (Proposed; not wired; needs owner approval and a non-weakening certification)
+
+1. After the existing five-way SHA gate and before any mutation, `cloudflare-production-deploy.yml` runs `soc-release-manifest.cjs build` on the checked-out tree and `verify` against an approval file supplied through the protected `production` environment. Every existing gate stays; the verifier only adds a refusal.
+2. The owner produces the approval from a read-only `build` of the exact candidate: `approved_by`, `approved_at`, `source_sha`, `manifest_digest`, the six component digests, `secret_names_digest` (names only, from `wrangler secret list`), `target_environment`, `rollback_version_id` (a real Worker version id) and the account-wide attestation receipt with its time (at most 2 h old).
+3. Authority is the protected environment's required reviewers; the verifier bounds the recorded identity and time but cannot authenticate a person.
+4. Certify before wiring: add the verifier negatives to the deploy workflow's own test, dry-run the workflow on a branch, and show no existing gate was relaxed.
+
+### 10.6 Blockers and decision
+
+Unchanged blockers: the edge is 20.8 days stale; the deployed Worker version and the rollback target are unread (owner workflow run, section 10.3); no current cost attestation; no authorized manual release; approval cadence (the candidate above expires with the next publisher commit). **SOC: NO-GO.** Exact next production action (none authorized): the owner dispatches the read-only evidence workflow on `main` and records its verdict; then freezes one candidate (section 10.4 shows the shape), approves it explicitly, and separately authorizes the manual release.
