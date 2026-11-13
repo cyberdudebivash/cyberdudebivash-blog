@@ -1,0 +1,98 @@
+name: "SENTINEL APEX SOC — Owner Read-Only Release Evidence"
+
+# Manual inspection ONLY. This workflow has no push, schedule or deploy path.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: soc-owner-read-only-release-evidence
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
+    name: "Inspect private Cloudflare prerequisites; NEVER deploy"
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 6
+    steps:
+      - name: "Checkout current main without persisted credentials"
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: "Node.js 22 for built-in read-only checkers"
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - name: "P0 private account-wide zero-overage attestation"
+        id: budget
+        continue-on-error: true
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CDB_CF_ACCOUNT_BUDGET_ATTESTATION: ${{ secrets.CDB_CF_ACCOUNT_BUDGET_ATTESTATION }}
+        run: node scripts/cloudflare-account-zero-overage-gate.cjs
+
+      - name: "P0 both existing Worker Custom Domains (read-only GET)"
+        id: domains
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/verify-existing-cloudflare-domain.cjs
+
+      - name: "P0 live Worker deployment and version identity (read-only GET)"
+        id: version
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/soc-cloudflare-owner-inventory.cjs
+
+      - name: "P0 root feed source versus two public hostnames (GET only)"
+        id: root
+        continue-on-error: true
+        run: node scripts/certify-soc-public-feed-parity.cjs
+
+      - name: "P0 S2N source versus two public hostnames (GET only)"
+        id: s2n
+        continue-on-error: true
+        run: node scripts/certify-soc-s2n-api-release.cjs --monitor-public
+
+      - name: "P0 release-evidence verdict — never deployment authorization"
+        id: gate
+        if: ${{ always() }}
+        shell: bash
+        env:
+          BUDGET_OUTCOME: ${{ steps.budget.outcome }}
+          DOMAINS_OUTCOME: ${{ steps.domains.outcome }}
+          VERSION_OUTCOME: ${{ steps.version.outcome }}
+          ROOT_OUTCOME: ${{ steps.root.outcome }}
+          S2N_OUTCOME: ${{ steps.s2n.outcome }}
+        run: |
+          set -euo pipefail
+          {
+            echo '### SOC OWNER READ-ONLY RELEASE EVIDENCE'
+            echo '| Required evidence | Observed result |'
+            echo '|---|---|'
+            echo "| Account-wide zero-overage attestation | ${BUDGET_OUTCOME:-unavailable} |"
+            echo "| Both existing Worker domains | ${DOMAINS_OUTCOME:-unavailable} |"
+            echo "| Active deployed Worker version (not rollback-tested) | ${VERSION_OUTCOME:-unavailable} |"
+            echo "| SOC/blog root feed parity | ${ROOT_OUTCOME:-unavailable} |"
+            echo "| SOC/blog S2N feed parity | ${S2N_OUTCOME:-unavailable} |"
+            echo
+            echo 'Evidence only: no DNS change, Worker deployment, publisher dispatch, charge or customer mutation.'
+            echo 'Still required: exact current release SHA, full drift disposition, rollback plan, separately approved manual deployment and customer canary acceptance.'
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ "$BUDGET_OUTCOME" != success ] || [ "$DOMAINS_OUTCOME" != success ] ||
+             [ "$VERSION_OUTCOME" != success ] || [ "$ROOT_OUTCOME" != success ] ||
+             [ "$S2N_OUTCOME" != success ]; then
+            echo 'HOLD: SOC_READ_ONLY_EVIDENCE_INCOMPLETE — production release NOT authorized'
+            exit 2
+          fi
+          echo 'PASS: SOC_READ_ONLY_EVIDENCE_COMPLETE_NOT_DEPLOY_AUTHORIZATION'
