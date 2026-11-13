@@ -74,3 +74,18 @@ test('missing HTML CSP blocks release', t => {
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /missing Content-Security-Policy/);
 });
+
+
+test('explicit Cloudflare ! Cache-Control detachment is valid, but malformed detachment fails closed', t => {
+  const dir = fixture(t);
+  assert.equal(run(dir).status, 0, 'valid detachment in critical asset rules must pass runtime validation');
+  const file = path.join(dir, 'scripts/build-cloudflare-assets.js');
+  let source = fs.readFileSync(file, 'utf8');
+  const valid = '  ! Cache-Control';
+  assert(source.includes(valid), 'expected critical cache detachment to be present');
+  source = source.replace(valid, '  ! Cache-Control: invalid');
+  fs.writeFileSync(file, source);
+  const invalid = run(dir);
+  assert.notEqual(invalid.status, 0, 'malformed Cloudflare detachment must stop release');
+  assert.match(invalid.stderr, /Malformed generated asset header policy/);
+});
