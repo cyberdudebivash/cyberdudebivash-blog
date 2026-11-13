@@ -104,7 +104,10 @@ test('Verified stats preserve historical volume truth with explicitly separate s
   await handler(req('stats'),res);
   expect(res.statusCode).toBe(200);
   expect(res.headers['cache-control']).toBe('no-store');
-  expect(res.body.stats.total_published).toBe(7466);
+  // Preserve historical-mock divergence as source publications advance;
+  // the public API must report the authoritative cumulative source count.
+  expect(feed.totalPublished).toBeGreaterThan(7466);
+  expect(res.body.stats.total_published).toBe(feed.totalPublished);
   expect(res.body.stats.metrics_scope).toBe('CURRENT_EVIDENCED_WINDOW');
   const current=assessPublicIntel(feed,Date.now()).items;
   expect(res.body.stats.live_intel_count).toBe(current.length);
