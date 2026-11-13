@@ -154,6 +154,9 @@ const REVIEWED_OPERATIONAL_FILES = new Set([
   // inspection. Both script and workflow read release-critical information.
   // OPERATIONAL, not benign; unfamiliar sibling modules remain UNKNOWN.
   'scripts/soc-cloudflare-owner-inventory.cjs',
+  // P0 #433: GET-only postdeploy exact UI byte parity on BOTH Worker domains.
+  // A changed customer release acceptance gate is OPERATIONAL, not benign.
+  'scripts/certify-soc-dual-host-ui-release.cjs',
   '.github/workflows/soc-owner-release-evidence.yml',
   'scripts/soc-operator-release-preflight.cjs',
 ]);

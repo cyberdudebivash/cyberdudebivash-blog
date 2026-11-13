@@ -56,6 +56,8 @@ const DEFAULT_CONTROL_PATHS = Object.freeze([
   '.github/workflows/soc-owner-release-evidence.yml',
   'scripts/soc-cloudflare-owner-inventory.cjs',
   'scripts/soc-operator-release-preflight.cjs',
+  // A source-substituted postdeploy customer gate invalidates approval.
+  'scripts/certify-soc-dual-host-ui-release.cjs',
 ]);
 
 const sha256 = (b) => crypto.createHash('sha256').update(b).digest('hex');
