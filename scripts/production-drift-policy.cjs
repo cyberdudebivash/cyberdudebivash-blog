@@ -417,6 +417,22 @@ function renderDriftSummary(head, base, result) {
   ].join('\n');
 }
 
+/**
+ * Last successful manual Cloudflare release can be older than the latest
+ * 100 SKIPPED push runs. Filter GitHub's workflow-run query at the source.
+ * Then defensively require matching event, branch, and completed state.
+ * The most recent COMPLETED manual run is authoritative even when failed;
+ * do not silently fall back to an older success after a failed attempt.
+ */
+const MANUAL_DEPLOY_RUNS_URL =
+  '/actions/workflows/cloudflare-production-deploy.yml/runs?branch=main&event=workflow_dispatch&per_page=100';
+
+function latestCompletedManualRelease(runs) {
+  if (!Array.isArray(runs)) return null;
+  return runs.find(run => run && run.event === 'workflow_dispatch' &&
+    run.head_branch === 'main' && run.status === 'completed') || null;
+}
+
 async function run() {
   const token = process.env.GH_TOKEN || '';
   const repository = process.env.GITHUB_REPOSITORY || '';
@@ -428,16 +444,11 @@ async function run() {
   const head = main.sha;
   if (!/^[a-f0-9]{40}$/.test(head || '')) throw new Error('Main SHA not trustworthy');
 
-  const runs = await apiRead(
-    '/actions/workflows/cloudflare-production-deploy.yml/runs?branch=main&per_page=100',
-    token, repository
-  );
+  // Server-side event filter prevents skipped push-run volume exhausting
+  // the first page and hiding historical manual deployment identity.
+  const runs = await apiRead(MANUAL_DEPLOY_RUNS_URL, token, repository);
   if (!Array.isArray(runs.workflow_runs)) throw new Error('Deploy runs unavailable');
-  // A successful skipped push workflow is not a certified deployment.
-  // Only operator-triggered completed runs may establish a new baseline.
-  const manual = runs.workflow_runs.filter(run => run.event === 'workflow_dispatch' &&
-    run.status === 'completed');
-  const latest = manual[0];
+  const latest = latestCompletedManualRelease(runs.workflow_runs);
   let result;
   let base = '';
   if (!latest) {
@@ -497,4 +508,5 @@ if (require.main === module) {
   });
 }
 module.exports = { deployPaths, pathMatches, isKnownBenignPath, isReviewedOperationalPath,
-  classify, classifyVerifiedGitTrees, renderDriftSummary };
+  classify, classifyVerifiedGitTrees, renderDriftSummary,
+  MANUAL_DEPLOY_RUNS_URL, latestCompletedManualRelease };
