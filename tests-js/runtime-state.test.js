@@ -490,7 +490,7 @@ describe('live record freshness: what the homepage command center renders', () =
 
 describe('live record freshness: shared policy, widget agreement and markup', () => {
   const widgetSrc = fs.readFileSync(path.join(ROOT, 'live-feed-widget.js'), 'utf8');
-  const start = widgetSrc.indexOf('  function selectLocalItems(');
+  const start = widgetSrc.indexOf('  function sharedLiveAuthority(');
   const end = widgetSrc.indexOf('  /* ── MAIN FETCH PIPELINE', start);
   const select = (win) => {
     const ctx = vm.createContext({ ...(win ? { window: win } : {}), CFG: { LOOKBACK_DAYS: 1, MAX_CARDS: 15 }, Date, Number, Object, Array,
@@ -509,10 +509,10 @@ describe('live record freshness: shared policy, widget agreement and markup', ()
     assert.deepEqual(Array.from(select({ SentinelRuntimeState: RS })(rows, NOWMS), x => x.id), ['NEW']);
   });
 
-  test('without the shared model the widget still enforces its own 24 h rule and never shows archives', () => {
+  test('missing shared freshness authority withholds ALL live cards, including otherwise recent reports', () => {
     const rows = [{ id: 'NEW', _addedAt: hrs(2), pubDate: hrs(2) }, { id: 'ARCHIVE', _addedAt: hrs(24 * 40), pubDate: hrs(24 * 40) }];
-    assert.deepEqual(Array.from(select(undefined)(rows, NOWMS), x => x.id), ['NEW']);
-    assert.deepEqual(Array.from(select({ SentinelRuntimeState: undefined })(rows, NOWMS), x => x.id), ['NEW']);
+    assert.deepEqual(Array.from(select(undefined)(rows, NOWMS), x => x.id), []);
+    assert.deepEqual(Array.from(select({ SentinelRuntimeState: undefined })(rows, NOWMS), x => x.id), []);
   });
 
   test('neither live surface contains an archival fallback or its label', () => {
