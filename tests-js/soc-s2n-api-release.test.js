@@ -11,11 +11,11 @@ function fixture(){
    state:{lastRun:moment,lastReportGeneratedAt:moment,totalPublished:6548,
      lastIngestion:{reportsGenerated:15}},
    rootSource:{generatedAt:moment,totalPublished:6548,
-     metadata:{lastPipelineRun:moment},items:ids},
-   apiSource:{generated:moment,total_published:6548,items:ids},
+     metadata:{lastPipelineRun:moment,lastReportGeneratedAt:moment},items:ids},
+   apiSource:{generated:moment,lastReportGeneratedAt:moment,total_published:6548,items:ids},
    rootAsset:{generatedAt:moment,totalPublished:6548,
-     metadata:{lastPipelineRun:moment},items:structuredClone(ids)},
-   apiAsset:{generated:moment,total_published:6548,items:structuredClone(ids)},
+     metadata:{lastPipelineRun:moment,lastReportGeneratedAt:moment},items:structuredClone(ids)},
+   apiAsset:{generated:moment,lastReportGeneratedAt:moment,total_published:6548,items:structuredClone(ids)},
    nowMs:time
   };
 }
