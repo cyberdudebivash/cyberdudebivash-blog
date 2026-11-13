@@ -14,6 +14,7 @@ const path   = require('path');
 const {VERIFIED_RSS_URLS,mayRetry,verifyRssPayload}=require('./scripts/rss-source-health-policy.cjs');
 const { buildNvdCveUrls, parseNvdBatchResults } = require('./scripts/nvd-cve-query-contract.cjs');
 const { finalizePublicationCounts } = require('./scripts/finalize-publication-counts.cjs');
+const SOC_RUNTIME = require('./runtime-state.js');
 const { renderSocCtiCover, CSS: SOC_CTI_COVER_CSS } = require('./scripts/cti-soc-cover');
 const { CSS: CTI_READER_CSS } = require('./scripts/cti-reading-style-v13');
 const { CSS: CTI_ENTERPRISE_READER_CSS, renderReaderGuide } = require('./scripts/cti-enterprise-reader-v14');
@@ -3092,6 +3093,41 @@ function resolveFirstAddedAt(isNewToFeed, existingItem, nowIso) {
   return typeof prior === 'string' && prior.trim() ? prior : undefined;
 }
 
+/**
+ * Customer live-feed rolling window: preserve genuinely recent, provenance-
+ * checked reports BEFORE older priority-ranked archive filler. The previous
+ * global priority-first slice(0,150) evicted new lower-severity reports while
+ * old high-CVSS items filled every slot. The frontend cannot recover records
+ * discarded before the JSON is published.
+ *
+ * This function does not invent source dates, modify report scores or relax
+ * the canonical 24h first-ingest / 72h source-publication freshness contract.
+ */
+function selectLiveWindow(records, limit, nowMs = Date.now()) {
+  if(!Array.isArray(records)||!Number.isSafeInteger(limit)||limit<1||limit>5000||
+     !Number.isFinite(nowMs)) throw new Error('LIVE_WINDOW_INPUT_INVALID');
+  const parseMs=value=>{
+    const ms=typeof value==='string'?Date.parse(value):NaN;
+    return Number.isFinite(ms)?ms:0;
+  };
+  return records.map((item,index)=>({
+    item,index,
+    live:SOC_RUNTIME.isLiveRecord(item,nowMs),
+    ingested:parseMs(item?._addedAt),
+    sourcePublished:parseMs(item?.pubDate||item?.published),
+    priority:Number.isFinite(Number(item?.priority))?Number(item.priority):0,
+  })).sort((a,b)=>{
+    // Never let a historical critical advisory evict a genuinely new report.
+    if(a.live!==b.live) return a.live?-1:1;
+    // For live content, newest original platform ingestion first.
+    if(a.live&&a.ingested!==b.ingested) return b.ingested-a.ingested;
+    // For historical fallback slots retain the previous threat ranking.
+    if(a.priority!==b.priority)return b.priority-a.priority;
+    if(a.sourcePublished!==b.sourcePublished)return b.sourcePublished-a.sourcePublished;
+    return a.index-b.index;
+  }).slice(0,limit).map(x=>x.item);
+}
+
 function writeLiveIntel(allItems, state) {
   try {
     // Load existing items for rolling merge
@@ -3120,7 +3156,9 @@ function writeLiveIntel(allItems, state) {
       return {
       id: item.id, title: (item.title||'').slice(0,120), desc: (item.desc||'').slice(0,200),
       cvss: typeof item.cvss==='number'?item.cvss:null, type: item.type||'INTEL', source: item.source||'',
-      pubDate: item.pubDate||isoNow(), exploited: !!item.exploited, cisaKev: !!item.cisaKev,
+      // Missing original publication time must remain unknown, not today's
+      // time. Otherwise older re-ingested advisories falsely appear current.
+      pubDate: item.pubDate||null, exploited: !!item.exploited, cisaKev: !!item.cisaKev,
       ransomware: !!item.ransomware, vendor: item.vendor||'', product: item.product||'',
       dueDate: item.dueDate||null, refs: (item.refs||[]).slice(0,2),
       priority: item.priority||0, threatLevel: item.threatLevel||'HIGH',
@@ -3134,11 +3172,10 @@ function writeLiveIntel(allItems, state) {
     const merged = [...newItems];
     const newIds = new Set(newItems.map(i => i.id));
     existingItems.forEach(e => { if (!newIds.has(e.id)) merged.push(e); });
-    merged.sort((a,b) => {
-      const ps = (b.priority||0) - (a.priority||0);
-      if (ps !== 0) return ps;
-      return new Date(b.pubDate||0) - new Date(a.pubDate||0);
-    });    let liveItems = merged.slice(0, CFG.liveRollingWindow || 150);
+    // Highest-scored historical items belong to archive fallback slots;
+    // they cannot evict newer *verified* source publications from the bounded
+    // customer feed. No extra ingest, provider calls or Cloudflare requests.
+    let liveItems=selectLiveWindow(merged,CFG.liveRollingWindow || 150,Date.now());
     try {
       const kev = reconcileKevFlags(liveItems, lastKevCatalogIds);
       if (kev.cleared.length) warn(`KEV: cleared ${kev.cleared.length} unsupported KEV claim(s) not in the CISA catalog: ${kev.cleared.slice(0, 10).join(', ')}`);
@@ -3569,7 +3606,7 @@ if (require.main === module) {
     genAttackChain, computePriorityScore, correlateAndMerge,
     extractSentinelApexRecords, normalizeSentinelApexRecord,
     sapexCanonicalId, sapexNativeMitre, fetchSentinelApex,
-    watermarkStart, acknowledgeExistingPost, resolveFirstAddedAt,
+    watermarkStart, acknowledgeExistingPost, resolveFirstAddedAt, selectLiveWindow,
     recordSourceSuccess, recordSourceFailure, getSourceHealthReport,
     fetchCISAKev, reconcileKevFlags, getKevCatalogIds, getKevCatalogMeta, parseKevCatalog, resetKevCatalogState,
   };
