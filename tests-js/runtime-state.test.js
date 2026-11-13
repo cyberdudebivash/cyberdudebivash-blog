@@ -406,7 +406,11 @@ describe('live record freshness: what the homepage command center renders', () =
   const iso = h => new Date(Date.now() - h * HOUR).toISOString();
   const day = h => iso(h).slice(0, 10);
   const item = (id, addedH, pubH, extra = {}) => ({ id, title: 'Title ' + id, source: 'nvd', priority: 1, threatLevel: 'HIGH', _addedAt: iso(addedH), pubDate: day(pubH), ...extra });
-  const feed = (pipelineAgeMin, items) => ({ metadata: { lastPipelineRun: new Date(Date.now() - pipelineAgeMin * 60000).toISOString() }, generatedAt: new Date(Date.now() - pipelineAgeMin * 60000).toISOString(), totalPublished: items.length, items, stats: {} });
+  const feed = (pipelineAgeMin, items) => ({ metadata: {
+    lastPipelineRun: new Date(Date.now() - pipelineAgeMin * 60000).toISOString(),
+    lastReportGeneratedAt: new Date(Date.now() - pipelineAgeMin * 60000).toISOString()
+  }, generatedAt: new Date(Date.now() - pipelineAgeMin * 60000).toISOString(),
+  totalPublished: items.length, items, stats: {} });
   const serve = body => async () => ({ ok: true, status: 200, json: async () => body });
   const EMPTY = 'No newly verified intelligence available in the selected live window.';
 
@@ -613,7 +617,10 @@ describe('shared live authority: timestamp strictness and pipeline evidence', ()
   });
 
   test('every real classification the model can produce is judged consistently', () => {
-    const feedAt = ageMin => ({ metadata: { lastPipelineRun: new Date(NOWMS - ageMin * 60000).toISOString() }, items: [] });
+    const feedAt = ageMin => {
+      const stamp=new Date(NOWMS - ageMin * 60000).toISOString();
+      return { generatedAt:stamp, metadata:{lastPipelineRun:stamp,lastReportGeneratedAt:stamp},items:[] };
+    };
     const allowed = ageMin => RS.pipelineAllowsLive(RS.classifyFeed({ ok: true, feed: feedAt(ageMin), nowMs: NOWMS }), NOWMS);
     assert.equal(allowed(10), true);
     assert.equal(allowed(150), true);
