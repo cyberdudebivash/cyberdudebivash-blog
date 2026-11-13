@@ -352,6 +352,11 @@
 
   /* ── RENDER WIDGET ───────────────────────────────────────── */
   function render(items, container, animate) {
+    if (!verifiedLiveItems(items)) {
+      renderUnavailable(container);
+      return;
+    }
+    _displayedItems = items;
     var exploited = items.filter(function(i){return i.exploited;}).length;
     var critical  = items.filter(function(i){return parseFloat(i.score)>=9;}).length;
     var verdict   = classifyFeedTimestamp(items[0] && items[0]._feedGenerated);
@@ -373,6 +378,10 @@
       if (g) {
         g.style.opacity='0';
         setTimeout(function(){
+          if (!verifiedLiveItems(items)) {
+            renderUnavailable(container);
+            return;
+          }
           g.innerHTML=grid; g.style.opacity='1';
           var ns=container.querySelectorAll('.lfw-sn');
           if(ns[0]) ns[0].textContent=exploited;
@@ -423,15 +432,30 @@
   }
 
   function renderUnavailable(container) {
-    container.innerHTML='<div class="lfw-wrap"><div class="lfw-hdr"><div class="lfw-brand"><span class="lfw-dot lfw-dot-load"></span><span class="lfw-bt">INTELLIGENCE FEED UNAVAILABLE</span><span class="lfw-bs">SENTINEL APEX</span></div></div><div style="padding:24px;color:#8899aa;font-size:13px;line-height:1.6">No verified feed could be loaded. Use the <a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" rel="noopener" target="_blank" style="color:#00b4d8">CISA KEV catalog</a> while service recovery is in progress.</div></div>';
+    _displayedItems = [];
+    var sourceAge = _lastFetchAt == null ? null : Date.now() - _lastFetchAt;
+    var stale = sourceAge != null && sourceAge > 180 * 60000;
+    var label = stale ? 'STALE SOURCE — LIVE CARDS WITHHELD' :
+      'NO CURRENT VERIFIED INTELLIGENCE';
+    var detail = stale ?
+      'This first-party feed is past its 180-minute freshness limit. No old records are displayed as live.' :
+      'The first-party feed is unavailable or has no source-verified reports in the live window.';
+    container.innerHTML='<div class="lfw-wrap"><div class="lfw-hdr"><div class="lfw-brand">'
+      +'<span class="lfw-dot lfw-dot-load"></span><span class="lfw-bt">'+label+'</span>'
+      +'<span class="lfw-bs">SENTINEL APEX</span></div></div>'
+      +'<div role="status" aria-live="polite" style="padding:24px;color:#8899aa;font-size:13px;line-height:1.6">'
+      +detail+' Historical reports are available only in the '
+      +'<a href="/archive.html" style="color:#00b4d8">Intelligence Archive</a>. '
+      +'For independent official advisories, consult the '
+      +'<a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" rel="noopener noreferrer" target="_blank" style="color:#00b4d8">CISA KEV catalog</a>.'
+      +'</div></div>';
   }
 
   /* ── DO FETCH ────────────────────────────────────────────── */
   function doFetch(container, refresh) {
     if (!refresh) {
       var cached = getCache();
-      if (cached && cached.length && classifyFeedTimestamp(cached[0]._feedGenerated).state === 'current' &&
-          cached.every(function(item){ var t=Date.parse(item._reportAddedAt || item.published); return Number.isFinite(t) && t <= Date.now() && t >= Date.now()-86400000; })) {
+      if (cached && verifiedLiveItems(cached)) {
         render(cached, container, false); return Promise.resolve();
       }
       skeleton(container);
@@ -521,6 +545,7 @@
 
   /* ── PHASE 10: LAST-UPDATED TICKER ──────────────────────── */
   var _lastFetchAt = null;
+  var _displayedItems = [];
   function lastVerifiedSourceLabel() {
     if (_lastFetchAt === null) return 'Source timestamp unavailable';
     var age = Date.now() - _lastFetchAt;
@@ -531,8 +556,12 @@
     var el = document.getElementById('lfw-label-ts');
     if (!el) return;
     setInterval(function() {
+      var container = document.getElementById(CFG.CONTAINER_ID);
+      if (container && _displayedItems.length && !verifiedLiveItems(_displayedItems)) {
+        renderUnavailable(container);
+      }
       el.textContent = lastVerifiedSourceLabel();
-    }, 5000); // tick every 5s
+    }, 5000); // revalidate live evidence every 5s, without network calls
   }
 
   /* ── BOOT ────────────────────────────────────────────────── */
