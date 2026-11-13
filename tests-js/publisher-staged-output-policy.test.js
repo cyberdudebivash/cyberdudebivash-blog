@@ -58,3 +58,9 @@ test('high-frequency publisher must enforce the staged output gate before commit
   assert.match(wf,/git reset HEAD pipeline\.lock/);
   assert.doesNotMatch(wf,/node scripts\/assert-publisher-staged-paths\.cjs\s*\|\|\s*true/);
 });
+
+test('publisher staging release-security gate remains operator-reviewed in the production drift policy',()=>{
+  const {isReviewedOperationalPath}=require('../scripts/production-drift-policy.cjs');
+  assert.equal(isReviewedOperationalPath('scripts/assert-publisher-staged-paths.cjs'),true);
+  assert.equal(isReviewedOperationalPath('scripts/assert-publisher-staged-paths-v2.cjs'),false);
+});
