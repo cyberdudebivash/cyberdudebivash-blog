@@ -132,6 +132,32 @@
   }
   function renderMetrics(feed){
     var stats=feed.stats||{},stamp=feedStamp(feed),fresh=age(stamp);
+    // Customer P0: an available but stale Worker feed is NOT current SOC
+    // intelligence. Historic corpus statistics may be preserved in archives,
+    // but must never appear as fresh operational dashboard KPIs.
+    var classification=RS&&typeof RS.classifyFeed==='function' ?
+      RS.classifyFeed({ok:true,feed:feed}):
+      {state:'DEGRADED',reachable:true,ageMinutes:null,reason:'Freshness authority unavailable.'};
+    var current=RS&&typeof RS.pipelineAllowsLive==='function' &&
+      RS.pipelineAllowsLive(classification,Date.now());
+    if (!current) {
+      var note='WITHHELD — '+String(classification.state||'UNVERIFIED')+
+        ' intelligence source; open Intelligence Archive for historical corpus';
+      ['cdb-total','cdb-critical','cdb-kev','cdb-exploited','cdb-ransomware','cdb-sources']
+        .forEach(function(id){setKpi(id,'—',note);});
+      ['cdb-hero-total','cdb-hero-kev','cdb-hero-sources']
+        .forEach(function(id){setText(id,'—');});
+      var freshness=$('cdb-freshness');
+      if(freshness) freshness.textContent=fresh.label;
+      setText('cdb-hero-freshness',fresh.label);
+      setText('cdb-hero-freshness-note','Feed '+String(classification.state||'UNVERIFIED')+
+        ' — operational metrics withheld');
+      var observed=$('cdb-feed-time');
+      if(observed) observed.textContent=fresh.iso||'timestamp unavailable';
+      applyFeedState(classification);
+      return;
+    }
+
     setKpi('cdb-total',fmt.format(Number(feed.totalPublished)||0),'Published first-party intelligence');
     setKpi('cdb-critical',fmt.format(Number(stats.critical)||0),'Feed records labelled critical');
     setKpi('cdb-kev',fmt.format(Number(stats.cisaKev)||0),'CISA KEV-confirmed records');
