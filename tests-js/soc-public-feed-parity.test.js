@@ -167,3 +167,22 @@ test('P0 predeploy permits only approved NVD ledger correction performed by actu
   assert.deepEqual(predeployGate({source:feed,asset,state,nowMs:now}),
     {status:'FAIL',reason:'PREDEPLOY_BUILD_CONTENT_DIVERGED'});
 });
+
+test('P0 approved manual Cloudflare release must fail closed for moderate-or-higher runtime advisories BEFORE mutation',()=>{
+  const fs=require('node:fs'),path=require('node:path');
+  const wf=fs.readFileSync(path.join(__dirname,'..','.github/workflows/cloudflare-production-deploy.yml'),'utf8');
+  const step=wf.indexOf('P0 runtime dependency security — fail closed before deploy');
+  const command=wf.indexOf('npm audit --omit=dev --audit-level=moderate');
+  const install=wf.indexOf('npm ci --legacy-peer-deps --ignore-scripts');
+  const build=wf.indexOf('npm run build:cloudflare');
+  const credentials=wf.indexOf('name: "Require deployment credentials"');
+  const mutate=wf.indexOf('npx wrangler deploy --config wrangler.jsonc');
+  assert(install>=0&&step>install&&command>step&&build>command&&credentials>command&&mutate>command,
+    'runtime security audit must precede build, credential use and Wrangler mutation');
+  const block=wf.slice(step,wf.indexOf('      - name:',step+1));
+  assert.match(block,/set -euo pipefail/,'network/audit errors must fail closed');
+  assert.doesNotMatch(block,/\|\|\s*true|continue-on-error:|--audit-level=(?:high|critical)|--omit=optional|npm audit fix|--force/,
+    'release gate must never suppress moderate/high advisories or mutate packages');
+  assert.match(wf,/github.event_name == 'workflow_dispatch'/,
+    'security gate does not authorize automatic production deployment');
+});
