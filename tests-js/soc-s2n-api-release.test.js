@@ -184,3 +184,12 @@ test('P0 S2N API bundle accepts pinned NVD correction but rejects other score or
  x.apiAsset.items[0].cisa_kev=true;
  assert(validateBundle(x).codes.includes('API_BUILD_CONTENT_DIVERGENCE'));
 });
+
+test('P0 root and S2N builds must attest the same real report receipt as the committed ledger',()=>{
+ const source=fixture();
+ source.apiSource.lastReportGeneratedAt='2026-10-25T04:40:00Z';
+ assert(validateBundle(source).codes.includes('REAL_REPORT_RECEIPT_DIVERGENCE'));
+ const source2=fixture();
+ source2.rootAsset.metadata.lastReportGeneratedAt='2026-10-25T04:40:00Z';
+ assert(validateBundle(source2).codes.includes('REAL_REPORT_RECEIPT_DIVERGENCE'));
+});
