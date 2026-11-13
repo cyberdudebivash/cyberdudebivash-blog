@@ -186,3 +186,10 @@ test('P0 approved manual Cloudflare release must fail closed for moderate-or-hig
   assert.match(wf,/github.event_name == 'workflow_dispatch'/,
     'security gate does not authorize automatic production deployment');
 });
+
+test('P0 a fresh heartbeat with no matching genuine report receipt cannot be predeployed',()=>{
+ const f=fixture(),state={lastRun:f.generatedAt,lastReportGeneratedAt:f.generatedAt};
+ f.metadata.lastReportGeneratedAt='2026-10-24T04:40:00Z';
+ assert.deepEqual(predeployGate({source:f,asset:structuredClone(f),state,nowMs:now}),
+   {status:'FAIL',reason:'PREDEPLOY_REAL_REPORT_RECEIPT_DIVERGED'});
+});
