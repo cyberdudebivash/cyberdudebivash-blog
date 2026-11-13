@@ -235,6 +235,11 @@ jobs:
           git add live-intel.json intel-state.json 2>/dev/null || true
           git add -A
           git reset HEAD pipeline.lock 2>/dev/null || true
+          # A broad Git stage cannot authorize extra code, workflows,
+          # secrets, customer state, deletions or symlinks to be published.
+          # Block all paths outside the reviewed intelligence-output set
+          # BEFORE creating a commit; never print unreviewed file names.
+          node scripts/assert-publisher-staged-paths.cjs
 
           # Check if there are changes (including heartbeat)
           # `git status` has no --cached option.  The former command failed,
