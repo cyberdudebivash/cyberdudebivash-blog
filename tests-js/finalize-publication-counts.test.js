@@ -107,7 +107,10 @@ test('P0 read-only assertion refuses real six-report ledger drift and does not r
  const s={...state(),lastRun:'2026-10-26T05:51:59.280Z',
    lastReportGeneratedAt:'2026-10-26T05:51:59.280Z'};
  assert(check({state:s,widget:widget(),api:api()}).codes.includes('UNFINALIZED_REPORT_COUNT'));
- assert.equal(check({state:s,widget:widget(6533),api:api(6533)}).status,'PASS');
+ const attestedWidget=widget(6533),attestedApi=api(6533);
+ attestedWidget.metadata.lastReportGeneratedAt=s.lastReportGeneratedAt;
+ attestedApi.lastReportGeneratedAt=s.lastReportGeneratedAt;
+ assert.equal(check({state:s,widget:attestedWidget,api:attestedApi}).status,'PASS');
  const bad={...widget(6533),generatedAt:'2026-10-23T04:58:15Z'};
  assert(check({state:s,widget:bad,api:api(6533)}).codes.includes('SOURCE_FEED_RUN_DIVERGENCE'));
 });
@@ -123,4 +126,39 @@ test('P0 publisher recovery executes before run mutations and CI prevents unfina
  assert(pre>0&&pre<stage);
  assert(workflow.includes('node scripts/assert-publication-ledger.cjs'));
  assert(workflow.indexOf('node scripts/assert-publication-ledger.cjs',stage)>stage);
+});
+
+test('P0 finalizer publishes genuine report receipt to both public feeds after state is persisted',()=>{
+ const f=files(widget(6533),api(6533));
+ const report='2026-10-26T05:51:55Z';
+ const ledger={...state(),lastRun:'2026-10-26T05:52:00Z',lastReportGeneratedAt:report};
+ try{
+   assert.deepEqual(finalizePublicationCounts(ledger,f.wp,f.ap),
+     {status:'REPORT_PROVENANCE_FINALIZED',total:6533});
+   const [w,a]=f.read();
+   assert.equal(w.metadata.lastReportGeneratedAt,report);
+   assert.equal(a.lastReportGeneratedAt,report);
+   assert.equal(w.generatedAt,widget().generatedAt);
+   assert.equal(a.generated,api().generated);
+   const before=[fs.readFileSync(f.wp,'utf8'),fs.readFileSync(f.ap,'utf8')];
+   // A heartbeat without a new report does not manufacture a new receipt.
+   ledger.lastRun='2026-10-26T06:12:00Z';
+   ledger.lastIngestion.reportsGenerated=0;
+   assert.equal(finalizePublicationCounts(ledger,f.wp,f.ap).status,'ALREADY_FINAL');
+   assert.deepEqual([fs.readFileSync(f.wp,'utf8'),fs.readFileSync(f.ap,'utf8')],before);
+   assert.equal(require('../scripts/assert-publication-ledger.cjs').check({state:ledger,widget:w,api:a}).status,'PASS');
+ }finally{f.clean();}
+});
+
+test('P0 invalid or impossible real report receipt cannot be stamped as current',()=>{
+ const f=files(widget(6533),api(6533));
+ try{
+   const make=v=>({...state(),lastRun:'2026-10-26T05:52:00Z',lastReportGeneratedAt:v});
+   for(const bad of ['not-an-iso','2026-10-27T05:52:00Z','2026-10-26T05:52:00']){
+     assert.throws(()=>finalizePublicationCounts(make(bad),f.wp,f.ap),/REAL_REPORT_RECEIPT_/);
+   }
+   assert.equal(require('../scripts/assert-publication-ledger.cjs').check({
+     state:make('2026-10-26T05:51:55Z'),widget:widget(6533),api:api(6533)
+   }).codes.includes('PUBLIC_REPORT_RECEIPT_DIVERGENCE'),true);
+ }finally{f.clean();}
 });
