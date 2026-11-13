@@ -8,7 +8,8 @@ const path = require('node:path');
 const cp = require('node:child_process');
 const crypto = require('node:crypto');
 const {
-  APPROVAL_SCHEMA, buildManifest, verifyRelease, digestPaths, digestSecretNames, MAX_ATTESTATION_AGE_MS,
+  APPROVAL_SCHEMA, MANIFEST_SCHEMA, buildManifest, verifyRelease, digestPaths, digestSecretNames, MAX_ATTESTATION_AGE_MS,
+  MAX_APPROVAL_AGE_MS, DEFAULT_CONTROL_PATHS,
 } = require('./soc-release-manifest.cjs');
 
 const SHA = 'a'.repeat(40);
@@ -35,6 +36,7 @@ function fixture(feedGeneratedAt = FEED_AT) {
   write(root, 'workers/lib/router.js', 'export const route = 1;');
   write(root, 'wrangler.jsonc', '{ "name": "cyberdudebivash-blog", "d1_databases": [{ "binding": "DB" }] }');
   write(root, 'migrations/0001_init.sql', 'CREATE TABLE t (id TEXT);');
+  for (const f of DEFAULT_CONTROL_PATHS) write(root, f, `// release-control file ${f}\n`);
   return root;
 }
 
@@ -47,6 +49,8 @@ function approvalFor(manifest, over = {}) {
     components: Object.fromEntries(Object.entries(c).map(([k, v]) => [k, v.digest])),
     secret_names_digest: digestSecretNames(SECRETS),
     target_environment: 'production',
+    approved_by: 'release-owner',
+    approved_at: new Date(NOW - 10 * 60 * 1000).toISOString(),
     rollback_version_id: ROLLBACK,
     financial_attestation: { sha256: 'c'.repeat(64), attested_at: new Date(NOW - 30 * 60 * 1000).toISOString() },
     ...over,
@@ -243,7 +247,7 @@ test('manifests are deterministic: same bytes give the same digest regardless of
   // Recreate the same tree in reverse order in another directory.
   const rels = ['migrations/0001_init.sql', 'wrangler.jsonc', 'workers/lib/router.js', 'workers/entry.js',
     'dist-public/api/intel/live.json', 'dist-public/live-intel.json', 'dist-public/runtime-state.js',
-    'dist-public/soc.html', 'dist-public/index.html'];
+    'dist-public/soc.html', 'dist-public/index.html', ...[...DEFAULT_CONTROL_PATHS].reverse()];
   for (const rel of rels) write(b, rel, fs.readFileSync(path.join(a, rel), 'utf8'));
   assert.deepEqual(buildManifest({ root: a, sourceSha: SHA }), buildManifest({ root: b, sourceSha: SHA }));
   assert.deepEqual(buildManifest({ root: a, sourceSha: SHA }), buildManifest({ root: a, sourceSha: SHA }));
@@ -308,4 +312,108 @@ test('CLI: build then verify passes; a changed file turns verify into HOLD with 
   assert.equal(bad.status, 2);
   assert.match(bad.stderr, /WORKER_CODE_MODIFIED/);
   assert.match(bad.stderr, /SUPPLIED_MANIFEST_DOES_NOT_MATCH_TREE/);
+});
+
+// ─── Phase 6: release-control files, approver / approval time, substitution ─────────────────────────────
+
+test('schema v2: a v1 approval or manifest is refused rather than silently accepted', () => {
+  assert.equal(MANIFEST_SCHEMA, 'cdb-soc-release-manifest/v2');
+  assert.equal(APPROVAL_SCHEMA, 'cdb-soc-release-approval/v2');
+  const root = fixture();
+  const approved = buildManifest({ root, sourceSha: SHA });
+  const v1 = approvalFor(approved, { schema: 'cdb-soc-release-approval/v1' });
+  const r = verifyRelease({ approval: v1, observed: observedFor(root), now: NOW });
+  assert.equal(r.status, 'HOLD');
+  assert.deepEqual(r.codes, ['APPROVAL_OR_EVIDENCE_INVALID']);
+});
+
+test('release-control files are digested: every default path is a real file in this repository', () => {
+  const repoRoot = path.resolve(__dirname, '..');
+  for (const f of DEFAULT_CONTROL_PATHS) {
+    assert.ok(fs.existsSync(path.join(repoRoot, f)), `${f} must exist, or the control digest silently covers nothing`);
+  }
+  assert.ok(DEFAULT_CONTROL_PATHS.includes('.github/workflows/cloudflare-production-deploy.yml'));
+  assert.ok(DEFAULT_CONTROL_PATHS.includes('scripts/soc-release-manifest.cjs'));
+});
+
+test('an unreviewed change to ANY release-control file after approval is rejected, by name', () => {
+  for (const f of DEFAULT_CONTROL_PATHS) {
+    const r = run(fixture(), (root) => write(root, f, `// patched after approval\nprocess.exit(0);\n`));
+    assert.equal(r.status, 'HOLD', f);
+    // the component is named, and (as for every component) the approved manifest digest no longer matches
+    assert.deepEqual(r.codes, ['MANIFEST_DIGEST_MISMATCH', 'RELEASE_CONTROL_MODIFIED'], f);
+  }
+});
+
+test('a missing release-control file makes the manifest unbuildable instead of being skipped', () => {
+  const root = fixture();
+  fs.rmSync(path.join(root, DEFAULT_CONTROL_PATHS[0]));
+  assert.throws(() => buildManifest({ root, sourceSha: SHA }));
+});
+
+test('approver and approval time are required, well-formed, not future-dated and not stale', () => {
+  const codesFor = (over) => run(fixture(), null, over).codes;
+  assert.deepEqual(codesFor({ approved_by: undefined }), ['APPROVAL_IDENTITY_MISSING']);
+  for (const bad of ['', ' ', 'a b', '../x', 'x'.repeat(101), '<script>', 42, null]) {
+    assert.deepEqual(codesFor({ approved_by: bad }), ['APPROVAL_IDENTITY_MISSING'], JSON.stringify(bad));
+  }
+  assert.deepEqual(codesFor({ approved_at: undefined }), ['APPROVAL_TIMESTAMP_INVALID']);
+  for (const bad of ['', 'yesterday', 12345, null, '2026-13-45T00:00:00Z']) {
+    assert.deepEqual(codesFor({ approved_at: bad }), ['APPROVAL_TIMESTAMP_INVALID'], JSON.stringify(bad));
+  }
+  assert.deepEqual(codesFor({ approved_at: new Date(NOW + 60 * 60 * 1000).toISOString() }), ['APPROVAL_TIMESTAMP_INVALID']);
+  assert.deepEqual(codesFor({ approved_at: new Date(NOW - MAX_APPROVAL_AGE_MS - 1000).toISOString() }), ['APPROVAL_STALE']);
+  assert.deepEqual(codesFor({ approved_at: new Date(NOW - MAX_APPROVAL_AGE_MS + 60000).toISOString() }), []);
+});
+
+test('a newer publisher commit cannot silently replace an approved artifact: regenerated feed bytes at the same SHA are rejected', () => {
+  const r = run(fixture(), (root) => {
+    write(root, 'dist-public/live-intel.json', JSON.stringify({ generatedAt: '2026-11-13T00:25:00.000Z', totalPublished: 7466, items: [] }));
+    write(root, 'dist-public/api/intel/live.json', JSON.stringify({ generated: '2026-11-13T00:25:00.000Z', total_published: 7466, items: [] }));
+  });
+  assert.equal(r.status, 'HOLD');
+  assert.ok(r.codes.includes('FEED_MODIFIED'));
+  assert.ok(r.codes.includes('ASSETS_MODIFIED'));   // the feeds are also inside the asset tree
+  assert.ok(r.codes.includes('MANIFEST_DIGEST_MISMATCH'));
+});
+
+test('artifact substitution after approval: rebuilding a consistent manifest over swapped bytes still fails against the approval', () => {
+  const root = fixture();
+  const approved = buildManifest({ root, sourceSha: SHA });
+  const approval = approvalFor(approved);
+  write(root, 'dist-public/soc.html', '<html>substituted</html>');
+  write(root, 'workers/entry.js', 'export default { fetch() { return new Response("evil"); } };');
+  const rebuilt = buildManifest({ root, sourceSha: SHA });           // internally consistent, but not the approved bytes
+  const r = verifyRelease({ approval, observed: { ...observedFor(root), manifest: rebuilt }, now: NOW });
+  assert.equal(r.status, 'HOLD');
+  assert.deepEqual(r.codes, ['ASSETS_MODIFIED', 'MANIFEST_DIGEST_MISMATCH', 'WORKER_CODE_MODIFIED']);
+});
+
+test('a manifest whose control digest was edited to hide a change is not recomputable', () => {
+  const root = fixture();
+  const approved = buildManifest({ root, sourceSha: SHA });
+  const approval = approvalFor(approved);
+  write(root, DEFAULT_CONTROL_PATHS[0], '# patched\n');
+  const forged = buildManifest({ root, sourceSha: SHA });
+  forged.components.control.digest = approved.components.control.digest;   // claim "unchanged"
+  const r = verifyRelease({ approval, observed: { ...observedFor(root), manifest: forged }, now: NOW });
+  assert.equal(r.status, 'HOLD');
+  assert.ok(r.codes.includes('MANIFEST_DIGEST_MISMATCH'));
+});
+
+test('CLI: build includes the control component; a changed control file turns verify into HOLD (exit 2)', { skip: process.platform === 'win32' }, () => {
+  const root = fixture();
+  const out = path.join(root, 'manifest.json');
+  const bin = path.resolve(__dirname, 'soc-release-manifest.cjs');
+  assert.equal(cp.spawnSync(process.execPath, [bin, 'build', '--sha', SHA, '--root', root, '--out', out]).status, 0);
+  const manifest = JSON.parse(fs.readFileSync(out, 'utf8'));
+  assert.ok(manifest.components.control.digest && manifest.components.control.files === DEFAULT_CONTROL_PATHS.length);
+  const approvalFile = path.join(root, 'approval.json');
+  fs.writeFileSync(approvalFile, JSON.stringify(approvalFor(manifest, { approved_at: new Date().toISOString() })));
+  fs.writeFileSync(path.join(root, 'secrets.json'), JSON.stringify(SECRETS));
+  write(root, DEFAULT_CONTROL_PATHS[1], '// changed\n');
+  const verify = cp.spawnSync(process.execPath, [bin, 'verify', '--manifest', out, '--approval', approvalFile, '--sha', SHA,
+    '--target', 'production', '--secrets', path.join(root, 'secrets.json'), '--root', root], { encoding: 'utf8' });
+  assert.equal(verify.status, 2);
+  assert.match(verify.stderr, /RELEASE_CONTROL_MODIFIED/);
 });
