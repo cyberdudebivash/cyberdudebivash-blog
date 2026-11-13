@@ -6,7 +6,7 @@ const path=require('node:path');
 const crypto=require('node:crypto');
 const {certify,classifyResponse,ASSETS,HOSTS}=require('../scripts/certify-soc-dual-host-ui-release.cjs');
 const sha='a'.repeat(40);
-const body=Buffer.from('console.log("verified approved release source asset "+'a'.repeat(80)+'");');
+const body=Buffer.from('console.log("verified approved release source asset '+ 'a'.repeat(80) +'");');
 const digest=crypto.createHash('sha256').update(body).digest('hex');
 const readFile=()=>body;
 function fetchFixture(onCall){
@@ -15,18 +15,21 @@ function fetchFixture(onCall){
     seen.push({url:String(url),method:opts.method,redirect:opts.redirect});
     const changed=onCall?.(new URL(url),seen.length)||{};
     const data=changed.body||body;
+    const asset=ASSETS.find(a=>a.url===new URL(url).pathname);
+    const mime=asset.type==='javascript'?'application/javascript':asset.type==='css'?'text/css':'text/html';
     return new Response(data,{status:changed.status||200,
-      headers:{'content-type':changed.contentType||'application/javascript'}});
+      headers:{'content-type':changed.contentType||mime}});
   }};
 }
 test('classification demands actual approved build bytes and HTTP 200',()=>{
- assert.deepEqual(classifyResponse({status:200,contentType:'application/javascript',body,digest}),
+ assert.deepEqual(classifyResponse({status:200,contentType:'application/javascript',body,digest,expectedType:'javascript'}),
    {ok:true,code:'PUBLIC_UI_BUILD_EXACT'});
  for(const x of [
-   {status:404,contentType:'application/javascript',body,digest},
-   {status:200,contentType:'application/json',body,digest},
-   {status:200,contentType:'application/javascript',body:Buffer.from('404:'+body),digest},
-   {status:200,contentType:'application/javascript',body,digest:'garbage'},
+   {status:404,contentType:'application/javascript',body,digest,expectedType:'javascript'},
+   {status:200,contentType:'application/json',body,digest,expectedType:'javascript'},
+   {status:200,contentType:'text/html',body,digest,expectedType:'javascript'},
+   {status:200,contentType:'application/javascript',body:Buffer.from('404:'+body),digest,expectedType:'javascript'},
+   {status:200,contentType:'application/javascript',body,digest:'garbage',expectedType:'javascript'},
  ]){
   assert.equal(classifyResponse(x).ok,false);
  }
