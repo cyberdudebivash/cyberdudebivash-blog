@@ -16,7 +16,9 @@ test('P0 Blogger publication limit is bounded and never interpolated directly in
 });
 
 test('P0 live Blogger publishing requires main, no untrusted ref text reaches Git shell',()=>{
-  assert.match(wf,/\[ "\$\{GITHUB_REF\}" != "refs\/heads\/main" \] && \[ "\$\{DRY_RUN_FLAG\}" != "--dry-run" \]/);
+  assert.match(wf,/if: \$\{\{ github\.ref == 'refs\/heads\/main' \}\}/);
+  assert.match(wf,/\[ "\$\{GITHUB_REF\}" != "refs\/heads\/main" \]/);
+  assert.doesNotMatch(wf,/DRY_RUN_FLAG\}" != "--dry-run"/);
   assert.match(wf,/Unauthorized Blogger branch::Live publication requires main/);
   assert.match(wf,/git pull --rebase origin main --quiet/);
   assert.match(wf,/git push origin main/);
