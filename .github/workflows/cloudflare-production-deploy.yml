@@ -196,6 +196,18 @@ jobs:
       - name: "Install locked dependencies"
         run: npm ci --legacy-peer-deps --ignore-scripts
 
+      # A passing critical-only CI audit still permits known HIGH/MODERATE
+      # runtime advisories (Zod, Satori and js-yaml at the current lock).
+      # The owner-approved *manual* production release must independently
+      # reject every unresolved moderate-or-higher production advisory.
+      # This is a read-only audit before build, credentials or Wrangler mutation.
+      # Registry/network/audit errors are fatal; never suppress the exit code.
+      - name: "P0 runtime dependency security — fail closed before deploy"
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm audit --omit=dev --audit-level=moderate
+
       - name: "Cloudflare runtime gate"
         run: |
           npm run check:cloudflare
