@@ -29,17 +29,24 @@ function expectedAssets(root=path.resolve(__dirname,'..','dist-public'),readFile
     return {...asset,digest:hash(content)};
   });
 }
-function classifyResponse({status,contentType,body,digest}={}){
+function classifyResponse({status,contentType,body,digest,expectedType}={}){
   if(status!==200)return {ok:false,code:'PUBLIC_UI_HTTP_NOT_200'};
   if(!Buffer.isBuffer(body)||body.length<40||body.length>MAX_BYTES)
     return {ok:false,code:'PUBLIC_UI_RESPONSE_INVALID'};
-  if(typeof contentType!=='string')return {ok:false,code:'PUBLIC_UI_TYPE_INVALID'};
-  if(!/^(?:text\/javascript|application\/javascript|application\/x-javascript|text\/css|text\/html)(?:\s*;|\s*$)/i.test(contentType))
+  const MIME={
+    javascript:/^(?:text\/javascript|application\/javascript|application\/x-javascript)(?:\s*;|\s*$)/i,
+    css:/^text\/css(?:\s*;|\s*$)/i,
+    html:/^text\/html(?:\s*;|\s*$)/i
+  };
+  if(typeof contentType!=='string'||
+     !Object.prototype.hasOwnProperty.call(MIME,expectedType)||
+     !MIME[expectedType].test(contentType))
     return {ok:false,code:'PUBLIC_UI_TYPE_INVALID'};
   if(!/^[a-f0-9]{64}$/.test(digest||''))return {ok:false,code:'SOURCE_BUILD_DIGEST_INVALID'};
   if(hash(body)!==digest)return {ok:false,code:'PUBLIC_UI_BUILD_BYTES_MISMATCH'};
   return {ok:true,code:'PUBLIC_UI_BUILD_EXACT'};
 }
+
 async function boundedBytes(response){
   const reader=response.body?.getReader();
   if(!reader)throw Error('PUBLIC_UI_BODY_MISSING');
@@ -74,7 +81,7 @@ async function certify({releaseSha,root,fetchImpl=globalThis.fetch,readFile=fs.r
             signal:AbortSignal.timeout(12000),headers:{'Cache-Control':'no-cache',Accept:'*/*'}});
           const body=await boundedBytes(response);
           const contentType=response.headers.get('content-type');
-          result=classifyResponse({status:response.status,contentType,body,digest:asset.digest});
+          result=classifyResponse({status:response.status,contentType,body,digest:asset.digest,expectedType:asset.type});
           if(result.ok)break;
         }catch(e){
           result={ok:false,code:e.message==='PUBLIC_UI_BODY_TOO_LARGE'?
