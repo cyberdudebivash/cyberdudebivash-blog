@@ -49,6 +49,8 @@ const { tierAtLeast } = require('../_lib/tier-entitlements');
 const { getFeed: getIocFeed, queryFeed: queryIocFeed, QueryError: IocQueryError, runtimeFeedStatus } = require('../_lib/ioc-engine/feed');
 const { buildStixBundle } = require('../_lib/ioc-engine/stix');
 const reportsIndex = require('../intel/reports-index.json');
+const canonicalPublicFeed = require('../../live-intel.json');
+const { assessPublicIntel } = require('../_lib/public-intel-freshness');
 
 function safeHttps(raw) {
   try {
@@ -69,7 +71,7 @@ function cvssSeverity(cvss, fallback) {
 }
 
 function dashboardReportFor(item) {
-  const cves = new Set([...(item.cves || []), item.id]
+  const cves = new Set([...(Array.isArray(item.cves) ? item.cves : []), item.id]
     .filter(v => /^CVE-\d{4}-\d{4,7}$/i.test(String(v || '')))
     .map(v => String(v).toUpperCase()));
   if (!cves.size) return null;
@@ -79,8 +81,13 @@ function dashboardReportFor(item) {
 }
 
 function publicDashboardItems(section, limit) {
-  const raw = getIntel('live', 'enterprise', { page: 1, limit: 100 });
-  let items = Array.isArray(raw.items) ? raw.items.slice() : [];
+  // Previous getIntel('live', 'enterprise') read a priority-ranked Worker-
+  // bundled snapshot and returned historical CVEs as live without any
+  // source/publication age verification. Use the same first-party authority
+  // as the command center and live widget, not a weaker API definition.
+  const assessed = assessPublicIntel(canonicalPublicFeed);
+  if (!assessed.ok) throw new Error('PUBLIC_DASHBOARD_SOURCE_NOT_CURRENT');
+  let items = assessed.items;
   if (section === 'malware') {
     items = items.filter(i => {
       const text = String(i.title || '') + ' ' + String(i.description || i.desc || '');
@@ -95,14 +102,15 @@ function publicDashboardItems(section, limit) {
         .test(String(i.title || '') + ' ' + String(i.description || i.desc || '')));
   } else if (section === 'breaking') {
     items = items.filter(i => {
-      const sev = cvssSeverity(i.cvss, i.threat_level);
+      const sev = cvssSeverity(i.cvss, i.threatLevel || i.threat_level);
       return i.exploited === true || i.cisa_kev === true || i.cisaKev === true || sev === 'CRITICAL';
     });
   }
   items = items.slice(0, limit);
   return {
-    generated_at: raw.intel_meta && raw.intel_meta.generated_at || null,
-    source_platform: raw.intel_meta && raw.intel_meta.source_platform || 'CYBERDUDEBIVASH SENTINEL APEX',
+    generated_at: assessed.timestamp,
+    freshness_state: assessed.state,
+    source_platform: canonicalPublicFeed.source || 'CYBERDUDEBIVASH SENTINEL APEX',
     items: items.map(i => {
       const report = dashboardReportFor(i);
       const refs = (Array.isArray(i.refs) ? i.refs : [])
@@ -116,9 +124,11 @@ function publicDashboardItems(section, limit) {
         id: String(i.id || ''),
         title: String(i.title || 'Untitled intelligence record'),
         description: String(i.description || i.desc || '').slice(0, 600),
-        published: i.published || i.pubDate || i.last_seen || i.first_seen || null,
-        severity: cvssSeverity(i.cvss, i.threat_level),
-        priority: String(i.threat_level || 'NOT_ASSESSED').toUpperCase(),
+        // Original source publication date, never the API request clock.
+        published: i.pubDate || i.published || null,
+        first_ingested: i._addedAt || null,
+        severity: cvssSeverity(i.cvss, i.threatLevel || i.threat_level),
+        priority: String(i.threatLevel || i.threat_level || 'NOT_ASSESSED').toUpperCase(),
         exploited: i.exploited === true,
         cisa_kev: i.cisa_kev === true || i.cisaKev === true,
         ransomware: i.ransomware === true,
@@ -153,15 +163,37 @@ module.exports = async (req, res) => {
 
   /* ── Public: stats — no API key required ───────────────────── */
   if (action === 'stats') {
+    if (req.method !== 'GET') {
+      return apiError(res, 405, 'METHOD_NOT_ALLOWED', 'GET required for public platform stats');
+    }
+    // A fresh request timestamp is not evidence that embedded source
+    // counters are current. Never publish stale statistics as operational.
+    sec.applySecurityHeaders(res);
+    res.setHeader('Cache-Control', 'no-store');
+    const verified = assessPublicIntel(canonicalPublicFeed);
+    if (!verified.ok) {
+      return res.status(503).json({
+        success: false,
+        error: { code: 'PUBLIC_INTELLIGENCE_STALE',
+          message: 'Current intelligence cannot be certified; no live statistics are published.' },
+        meta: { platform: 'CYBERDUDEBIVASH SENTINEL APEX v4.0',
+          freshness_state: verified.state, source_timestamp: verified.timestamp,
+          timestamp: new Date().toISOString() }
+      });
+    }
     try {
       const stats = getPlatformStats();
       return res.status(200).json({
         success: true,
         stats,
-        meta: { platform: 'CYBERDUDEBIVASH SENTINEL APEX v4.0', timestamp: new Date().toISOString() },
+        meta: { platform: 'CYBERDUDEBIVASH SENTINEL APEX v4.0',
+          freshness_state: verified.state, source_timestamp: verified.timestamp,
+          timestamp: new Date().toISOString() },
       });
-    } catch (e) {
-      return res.status(500).json({ success: false, error: 'Stats unavailable' });
+    } catch (_) {
+      return res.status(503).json({
+        success: false, error: { code: 'STATS_UNAVAILABLE', message: 'Current platform statistics unavailable.' }
+      });
     }
   }
   
@@ -176,14 +208,17 @@ module.exports = async (req, res) => {
     try {
       const data = publicDashboardItems(section, limit);
       sec.applySecurityHeaders(res);
-      res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=120');
+      // No shared/browser cache may replay stale public intelligence as live.
+      res.setHeader('Cache-Control', 'no-store');
       return res.status(200).json({
         success: true,
         data: { section, ...data },
         meta: {
           platform: 'CYBERDUDEBIVASH SENTINEL APEX v4.0',
           timestamp: new Date().toISOString(),
-          contract: 'cdb.dashboard-feed.v1'
+          contract: 'cdb.dashboard-feed.v1',
+          freshness_state: data.freshness_state,
+          source_timestamp: data.generated_at
         }
       });
     } catch (e) {
@@ -193,7 +228,7 @@ module.exports = async (req, res) => {
         success: false,
         error: {
           code: 'DASHBOARD_FEED_UNAVAILABLE',
-          message: 'First-party dashboard intelligence is temporarily unavailable.'
+          message: 'Current first-party dashboard intelligence cannot be verified. No historical records are substituted.'
         },
         meta: {
           platform: 'CYBERDUDEBIVASH SENTINEL APEX v4.0',
