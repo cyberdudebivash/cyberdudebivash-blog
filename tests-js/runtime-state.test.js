@@ -131,7 +131,7 @@ function runCommandCenter(fetchImpl, mutateRs, opts = {}) {
   if (mutateRs) mutateRs(rs);
   const window = { SentinelRuntimeState: opts.noModel ? undefined : rs, addEventListener() {}, location: { origin: 'https://blog.cyberdudebivash.in', reload() {} }, matchMedia: () => ({ matches: true }), devicePixelRatio: 1 };
   const document = { getElementById: id => (id === 'cdbSignalCanvas' ? null : el(id)) };
-  const ctx = vm.createContext({ window, document, Intl, URL, Promise, setTimeout, clearTimeout, Date, Math, Number, String, Object, Array, JSON, isFinite, fetch: fetchImpl });
+  const ctx = vm.createContext({ window, document, Intl, URL, Promise, setTimeout, clearTimeout, setInterval: () => 1, clearInterval: () => {}, Date, Math, Number, String, Object, Array, JSON, isFinite, fetch: fetchImpl });
   vm.runInContext(fs.readFileSync(path.join(ROOT, 'apex-command-center.js'), 'utf8'), ctx);
   return { text: id => el(id).textContent, html: id => el(id).innerHTML, state: id => el(id).dataset.state,
     hidden: id => el(id).hidden, title: id => el(id).title };
