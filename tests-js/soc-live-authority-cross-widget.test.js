@@ -175,5 +175,6 @@ test('an otherwise recent source heartbeat with an expired report receipt is den
   // Selection is a pure record-age helper; the customer-visible desk gate
   // additionally requires the verified publication/heartbeat classification.
   assert.deepEqual(desk.availableRecords(heartbeat,c,NOW),[]);
-  assert.deepEqual(triage(FIXTURE,NOW,c).items,[]);
+  assert.deepEqual(Array.from(triage(FIXTURE,NOW,c).items),[],
+    'VM-isolated customer renderer must withhold every historical record');
 });
