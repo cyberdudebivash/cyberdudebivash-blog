@@ -178,10 +178,12 @@
         typeof RS.isLiveRecord!=='function' ||
         !payload || !Array.isArray(payload.items) ||
         typeof payload.generated_at!=='string' ||
+        typeof payload.report_generated_at!=='string' ||
         payload.items.length>25) return false;
     var now=Number.isFinite(nowMs)?nowMs:Date.now();
     var cls=RS.classifyFeed({ok:true,
-      feed:{metadata:{lastPipelineRun:payload.generated_at}},nowMs:now});
+      feed:{generatedAt:payload.generated_at,
+        metadata:{lastReportGeneratedAt:payload.report_generated_at}},nowMs:now});
     if (!RS.pipelineAllowsLive(cls,now)) return false;
     return payload.items.every(function(item){
       return item && typeof item.id==='string' && !!item.id.trim() &&
@@ -554,7 +556,7 @@
     return times.length ? Math.max.apply(Math, times) : 0;
   }
 
-  function updateRuntimeState(items, generatedAt) {
+  function updateRuntimeState(items, generatedAt, reportGeneratedAt) {
     var RS=window.SentinelRuntimeState;
     if (!RS || typeof RS.classifyFeed!=='function' ||
         typeof RS.pipelineAllowsLive!=='function') {
@@ -562,7 +564,7 @@
     }
     var now=Date.now();
     var cls=RS.classifyFeed({ok:true,
-      feed:{metadata:{lastPipelineRun:generatedAt}},nowMs:now});
+      feed:{generatedAt:generatedAt,metadata:{lastReportGeneratedAt:reportGeneratedAt}},nowMs:now});
     if (!RS.pipelineAllowsLive(cls,now)) {
       return setRuntimeState('STALE','First-party source freshness cannot be verified');
     }
@@ -882,7 +884,7 @@
       activePublicPayload=payload;
       var enriched = payload.items.map(normalizeDashboardItem);
       publishToSection(containerId, enriched, { section: section, limit: 25 });
-      updateRuntimeState(enriched, payload.generated_at);
+      updateRuntimeState(enriched, payload.generated_at, payload.report_generated_at);
       updateTicker(enriched);
       renderCISAKEV('kev-live-list');
 
