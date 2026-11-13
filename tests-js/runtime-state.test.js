@@ -201,7 +201,7 @@ describe('homepage Intelligence Hub badge wiring', () => {
     assert.match(page.text('cdb-live-badge'), /^STALE · 20d 3h$/);
     assert.equal(page.state('cdb-live-badge'), 'warn');
     assert.equal(page.hidden('cdb-live-badge'), false);
-    assert.match(page.title('cdb-live-badge'), /out of date/);
+    assert.match(page.title('cdb-live-badge'), /operational intelligence is withheld/);
     assert.doesNotMatch(page.text('cdb-live-badge'), /LIVE/);
   });
 
