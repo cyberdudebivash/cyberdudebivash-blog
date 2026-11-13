@@ -10,7 +10,7 @@ const {assessPublicIntel} = require('./public-intel-freshness');
 const MAX_GENERATION_SKEW_MS = 2 * 60 * 1000;
 const FUTURE_TOLERANCE_MS = 5 * 60 * 1000;
 
-function verifyOperationalSource(root, routeGeneratedAt, nowMs = Date.now()) {
+function verifyOperationalSource(root, routeGeneratedAt, nowMs = Date.now(), routeReportGeneratedAt) {
   const checked = assessPublicIntel(root, nowMs);
   if (!checked.ok) return {
     ok:false, code:'OPERATIONAL_INTELLIGENCE_STALE',
@@ -28,6 +28,20 @@ function verifyOperationalSource(root, routeGeneratedAt, nowMs = Date.now()) {
     return {
       ok:false, code:'OPERATIONAL_ASSET_GENERATION_DIVERGED',
       reason:'S2N_OR_ROOT_BUILD_TIMESTAMP_DIVERGED',
+      state:'UNVERIFIED', ids:new Set(), items:[]
+    };
+  }
+  // Root publication and S2N asset must attest the SAME genuine report.
+  // Equal JSON-generation clocks can coexist with different report receipts.
+  // Such a pair cannot be sold or displayed as one verified live snapshot.
+  const receipt=root?.metadata?.lastReportGeneratedAt;
+  if(typeof routeReportGeneratedAt!=='string' ||
+     typeof receipt!=='string' ||
+     !Number.isFinite(Date.parse(routeReportGeneratedAt)) ||
+     routeReportGeneratedAt!==receipt) {
+    return {
+      ok:false, code:'OPERATIONAL_REPORT_RECEIPT_DIVERGED',
+      reason:'S2N_REPORT_RECEIPT_DOES_NOT_MATCH_AUTHORITATIVE_ROOT',
       state:'UNVERIFIED', ids:new Set(), items:[]
     };
   }
