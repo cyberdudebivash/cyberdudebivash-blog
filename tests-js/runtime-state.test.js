@@ -71,13 +71,21 @@ describe('classifier', () => {
 
   test('the committed production feed shape classifies from its own timestamps', () => {
     const feed = JSON.parse(fs.readFileSync(path.join(ROOT, 'live-intel.json'), 'utf8'));
-    const stamp = Date.parse(RS.feedTimestamp(feed));
-    assert.ok(Number.isFinite(stamp), 'live-intel.json must carry a parseable pipeline timestamp');
     const observedAt=Date.parse(feed.generatedAt)+10*60000;
-    const reportAge=observedAt-Date.parse(feed.metadata.lastReportGeneratedAt);
-    const expected=reportAge>180*60000?'STALE':reportAge>90*60000?'DEGRADED':'HEALTHY';
-    assert.equal(RS.classifyFeed({ok:true,feed,nowMs:observedAt}).state,expected);
-    assert.equal(RS.classifyFeed({ ok: true, feed, nowMs: stamp + 24 * 3600000 }).state, 'STALE');
+    const receipt=feed.metadata.lastReportGeneratedAt;
+    if (!receipt) {
+      // Main may not carry this new contract until the NEXT genuine source
+      // publisher run after integration. Old source cannot be called LIVE.
+      assert.equal(RS.feedTimestamp(feed),null);
+      assert.equal(RS.classifyFeed({ok:true,feed,nowMs:observedAt}).state,'DEGRADED');
+      assert.equal(RS.pipelineAllowsLive(RS.classifyFeed({ok:true,feed,nowMs:observedAt}),observedAt),false);
+    } else {
+      const stamp=Date.parse(RS.feedTimestamp(feed));
+      const reportAge=observedAt-Date.parse(receipt);
+      const expected=reportAge>180*60000?'STALE':reportAge>90*60000?'DEGRADED':'HEALTHY';
+      assert.equal(RS.classifyFeed({ok:true,feed,nowMs:observedAt}).state,expected);
+      assert.equal(RS.classifyFeed({ok:true,feed,nowMs:stamp+24*3600000}).state,'STALE');
+    }
   });
 });
 
