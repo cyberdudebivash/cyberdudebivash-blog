@@ -38,10 +38,14 @@ test('P0 source root and bundled root timestamp, item window or counter drift bl
 test('P0 root feed bundle also requires unchanged ordered report identities',()=>{
  assert(verdict(x=>x.rootAsset.items.reverse()).codes.includes('ROOT_BUILD_REPORT_IDENTITY_DIVERGENCE'));
  assert(verdict(x=>x.rootAsset.items[0].id='CVE-2026-FAKE').codes.includes('ROOT_BUILD_REPORT_IDENTITY_DIVERGENCE'));
- assert.equal(verdict(x=>x.rootAsset.items[0].cvss=9.2).status,'PASS');
+ const corrected=verdict(x=>x.rootAsset.items[0].cvss=9.2);
+ assert.equal(corrected.status,'HOLD', 'root release feed must remain source-content identical');
+ assert(corrected.codes.includes('ROOT_RELEASE_PREDEPLOY_BUILD_CONTENT_DIVERGED'));
 });
 test('P0 CVSS build corrections may edit values but not add, reorder or replace report identities',()=>{
- assert.equal(verdict(x=>x.apiAsset.items[0].cvss=9.1).status,'PASS');
+ assert.equal(verdict(x=>x.apiAsset.items[0].cvss=9.1).status,'HOLD',
+   'arbitrary unapproved CVSS change is not a valid API build correction');
+ assert(verdict(x=>x.apiAsset.items[0].cvss=9.1).codes.includes('API_BUILD_CONTENT_DIVERGENCE'));
  assert(verdict(x=>x.apiAsset.items.reverse()).codes.includes('API_BUILD_REPORT_IDENTITY_DIVERGENCE'));
  assert(verdict(x=>x.apiAsset.items[0].id='FAKE-REPORT').codes.includes('API_BUILD_REPORT_IDENTITY_DIVERGENCE'));
 });
@@ -160,4 +164,23 @@ test('P0 routine smoke always checks separate dual-host S2N API even after root-
  const section=w.slice(start,api);
  assert.match(section,/if: \$\{\{ !cancelled\(\) \}\}/);
  assert.doesNotMatch(section,/wrangler|dispatch|billing|POST|--release-asset/);
+});
+
+test('P0 S2N API bundle accepts pinned NVD correction but rejects other score or provenance drift',()=>{
+ const x=fixture(),id='CVE-2009-0238';
+ x.rootSource.items[0].id=id;
+ x.rootAsset.items[0].id=id;
+ // fixture() intentionally shares root/API source array references; isolate
+ // the API correction case so it cannot silently mutate the root fixture.
+ x.apiSource.items=structuredClone(x.apiSource.items);
+ x.apiSource.items[0]={id,cvss:9.5};
+ const {correctPublicIntelJson}=require('../scripts/build-cloudflare-assets');
+ x.apiAsset=JSON.parse(correctPublicIntelJson(JSON.stringify(x.apiSource)));
+ assert.equal(x.apiAsset.items[0].cvss,9.3);
+ assert.deepEqual(validateBundle(x),{status:'PASS',codes:[]});
+ x.apiAsset.items[0].cvss=9.1;
+ assert(validateBundle(x).codes.includes('API_BUILD_CONTENT_DIVERGENCE'));
+ x.apiAsset=JSON.parse(correctPublicIntelJson(JSON.stringify(x.apiSource)));
+ x.apiAsset.items[0].cisa_kev=true;
+ assert(validateBundle(x).codes.includes('API_BUILD_CONTENT_DIVERGENCE'));
 });

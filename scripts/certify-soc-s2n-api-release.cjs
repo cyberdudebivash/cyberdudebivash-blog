@@ -8,6 +8,7 @@
 const fs=require('node:fs');
 const path=require('node:path');
 const crypto=require('node:crypto');
+const {isDeepStrictEqual}=require('node:util');
 const {check:checkLedger}=require('./assert-publication-ledger.cjs');
 const {predeployGate,boundedJson}=require('./certify-soc-public-feed-parity.cjs');
 const TARGETS=Object.freeze({
@@ -50,6 +51,18 @@ function validateBundle({state,rootSource,apiSource,rootAsset,apiAsset,nowMs=Dat
     // The public build is permitted to apply approved CVSS corrections, but
     // NEVER silently add/remove/reorder real intelligence report identities.
     if(JSON.stringify(a)!==JSON.stringify(b))push('API_BUILD_REPORT_IDENTITY_DIVERGENCE');
+    // The static API build may apply only the explicit NVD CVSS and legacy
+    // provenance corrections already implemented by the canonical builder.
+    // IDs, timestamps and counts alone never attest the rest of the payload.
+    let expected;
+    try {
+      const {correctPublicIntelJson}=require('./build-cloudflare-assets');
+      expected=JSON.parse(correctPublicIntelJson(JSON.stringify(apiSource)));
+    } catch (_) {
+      push('API_APPROVED_TRANSFORM_UNAVAILABLE');
+    }
+    if(expected && !isDeepStrictEqual(expected,apiAsset))
+      push('API_BUILD_CONTENT_DIVERGENCE');
   }
   return {status:errors.size?'HOLD':'PASS',codes:[...errors].sort()};
 }

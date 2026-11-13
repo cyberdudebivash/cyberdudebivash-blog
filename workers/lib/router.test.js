@@ -128,10 +128,26 @@ describe('handleFetch — real end-to-end handler dispatch', () => {
     const { env } = fakeEnv();
     const request = new Request('https://blog.cyberdudebivash.in/api/v1/intel?action=stats');
     const response = await handleFetch(request, env);
-    assert.equal(response.status, 200);
+    // Worker-bundled source data can become stale after a successful build.
+    // The real public stats API must fail closed (503) rather than return
+    // old operational metrics with a freshly generated response timestamp.
+    const canonicalFeed = require('../../live-intel.json');
+    const { assessPublicIntel } = require('../../api/_lib/public-intel-freshness');
+    const verified = assessPublicIntel(canonicalFeed);
     const body = await response.json();
-    assert.equal(body.success, true);
-    assert.ok(body.stats);
+    if (!verified.ok) {
+      assert.equal(response.status, 503);
+      assert.equal(body.success, false);
+      assert.equal(body.error?.code, 'PUBLIC_INTELLIGENCE_STALE');
+      assert.equal(body.stats, undefined, 'unverified live counters must be withheld');
+      assert.equal(response.headers.get('cache-control'), 'no-store');
+      assert.equal(body.meta?.freshness_state, verified.state);
+    } else {
+      assert.equal(response.status, 200);
+      assert.equal(body.success, true);
+      assert.ok(body.stats);
+      assert.equal(body.stats.metrics_scope, 'CURRENT_EVIDENCED_WINDOW');
+    }
   });
 
   test('GET /api/v1/intel/live is rewritten to action=live and reaches the same real handler', async () => {
