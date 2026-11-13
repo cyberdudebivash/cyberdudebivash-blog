@@ -29,7 +29,7 @@ test('P0 fresh source: two clocks, de-duplication and chronological live-only or
   assert.deepEqual(r.items.map(x=>x.id),['LATEST','NEW']);
   assert.equal(r.timestamp,at(.5));
   assert.equal(r.considered,7);
-  assert(r.excluded.INGEST_TIME_MISSING!==0 || !!r.excluded.NO_INGEST_TIME);
+  assert.equal(r.excluded.NO_INGEST_TIME,1);
 });
 test('P0 20-day-old Worker JSON cannot pass an API request as live',()=>{
   const r=assessPublicIntel(feed('2026-10-23T04:58:15.799Z',[
