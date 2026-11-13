@@ -182,6 +182,8 @@ jobs:
         run: node --test tests-js/cloudflare-routine-release-dns-safety.test.js
       - name: "P0 read-only SOC Cloudflare owner evidence and live version API negative controls"
         run: node --test tests-js/soc-cloudflare-owner-evidence.test.js
+      - name: "P0 dual-host postdeploy UI exact asset byte-parity regression"
+        run: node --test tests-js/soc-dual-host-ui-release.test.js
       - name: P0 — SOC dual-host pricing canonical source guard
         run: node --test scripts/soc-domain-release-gate.test.cjs
       - name: P0 — Customer pricing evidence rejects stale and unverifiable intelligence
