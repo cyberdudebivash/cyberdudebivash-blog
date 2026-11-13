@@ -183,14 +183,15 @@ module.exports = async (req, res) => {
       });
     }
     try {
-      const historic = getPlatformStats();
-      // Historical total_published stays explicitly cumulative. Every
-      // operational "live"/critical/KEV/exploited/ransomware counter must
-      // describe ONLY verified current source-publication + ingest records.
+      // The legacy getPlatformStats() reads an independent Worker-bundled
+      // state snapshot. Never mix its fields into a newer verified response.
+      // Preserve familiar API keys from the ONE canonical source instead.
       const active = verified.items;
       const stats = {
-        ...historic,
         total_published: Number(canonicalPublicFeed.totalPublished) || 0,
+        last_run: canonicalPublicFeed.metadata?.lastPipelineRun || null,
+        last_report_generated_at: canonicalPublicFeed.metadata?.lastReportGeneratedAt || null,
+        version: canonicalPublicFeed.version || 'UNVERIFIED',
         live_intel_count: active.length,
         critical_threats: active.filter(i =>
           cvssSeverity(i.cvss, i.threatLevel || i.threat_level) === 'CRITICAL').length,
