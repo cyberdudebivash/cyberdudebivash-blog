@@ -254,7 +254,7 @@
     if (typeof stamp !== 'string' || !stamp.trim() ||
         classifyFeedTimestamp(stamp, now).state !== 'current') return false;
     var classification = shared.classifyFeed({
-      ok:true, feed:{metadata:{lastPipelineRun:stamp}}, nowMs:now
+      ok:true, feed:{generatedAt:stamp,metadata:{lastReportGeneratedAt:stamp}}, nowMs:now
     });
     if (!shared.pipelineAllowsLive(classification, now)) return false;
     return items.every(function(item) {
