@@ -477,8 +477,8 @@ def test_dashboard_severity_uses_cvss_semantics_separate_from_priority():
     assert "function cvssSeverity(cvss, fallback)" in api
     assert "if (n >= 9) return 'CRITICAL'" in api
     assert "if (n >= 7) return 'HIGH'" in api
-    assert "severity: cvssSeverity(i.cvss, i.threat_level)" in api
-    assert "priority: String(i.threat_level || 'NOT_ASSESSED').toUpperCase()" in api
+    assert "severity: cvssSeverity(i.cvss, i.threatLevel || i.threat_level)" in api
+    assert "priority: String(i.threatLevel || i.threat_level || 'NOT_ASSESSED').toUpperCase()" in api
 
 
 def test_priority_queue_is_first_party_and_worker_routable():
