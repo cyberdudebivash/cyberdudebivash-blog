@@ -60,7 +60,8 @@ const FIXTURE = [
   rec('RECENT-LATER',       { _addedAt: at(1),  pubDate: day(1) }),
 ];
 const EXPECTED = ['RECENT-LATER', 'RECENT-BOTH'];                                   // newest ingestion first, de-duplicated
-const feed = items => ({ generatedAt: at(0.2), metadata: { lastPipelineRun: at(0.2) }, items });
+const feed = items => ({ generatedAt: at(0.2),
+  metadata: { lastPipelineRun: at(0.2), lastReportGeneratedAt: at(0.2) }, items });
 const healthy = () => RS.classifyFeed({ ok: true, feed: feed([]), nowMs: NOW });
 
 const homepageIds = items => Array.from(triage(items, NOW, healthy()).items, i => i.id);
@@ -109,7 +110,8 @@ test('archive-only data and zero recent records yield empty lists everywhere', (
 });
 
 test('a stale, unavailable or unverifiable pipeline exposes no record on any surface', () => {
-  const stale = RS.classifyFeed({ ok: true, feed: { metadata: { lastPipelineRun: at(24 * 20) }, items: FIXTURE }, nowMs: NOW });
+  const stale = RS.classifyFeed({ ok: true, feed: { generatedAt: at(24 * 20),
+    metadata: { lastPipelineRun: at(24 * 20), lastReportGeneratedAt: at(24 * 20) }, items: FIXTURE }, nowMs: NOW });
   const down = RS.classifyFeed({ ok: false, error: 'timeout', nowMs: NOW });
   const noClock = RS.classifyFeed({ ok: true, feed: { items: FIXTURE }, nowMs: NOW });
   for (const cls of [stale, down, noClock, { state: 'CHECKING' }]) {
@@ -161,4 +163,18 @@ test('global incidents are a DIFFERENT category: ACTIVITY (updated_utc) not firs
   assert.deepEqual(homepageIds([rec('OLD-BUT-ACTIVE', { _addedAt: at(24 * 30), pubDate: day(24 * 30), updatedAt: at(1), lastUpdated: at(1) })]), []);
   // A stale incident publication withholds all incidents (null = freshness cannot be certified).
   assert.equal(incidents.selectFreshIncidents({ ...gcii, generated_at_utc: at(5) }, NOW), null);
+});
+
+test('an otherwise recent source heartbeat with an expired report receipt is denied by every surface',()=>{
+  const heartbeat={...feed(FIXTURE),metadata:{
+    lastPipelineRun:at(0.01),lastReportGeneratedAt:at(24)
+  }};
+  const c=RS.classifyFeed({ok:true,feed:heartbeat,nowMs:NOW});
+  assert.equal(c.state,'STALE');
+  assert.equal(RS.pipelineAllowsLive(c,NOW),false);
+  // Selection is a pure record-age helper; the customer-visible desk gate
+  // additionally requires the verified publication/heartbeat classification.
+  assert.deepEqual(desk.availableRecords(heartbeat,c,NOW),[]);
+  assert.deepEqual(Array.from(triage(FIXTURE,NOW,c).items),[],
+    'VM-isolated customer renderer must withhold every historical record');
 });

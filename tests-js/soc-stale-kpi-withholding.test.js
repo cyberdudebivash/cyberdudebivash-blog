@@ -12,7 +12,7 @@ assert(start>0&&end>start,'must test the actual customer dashboard metrics rende
 const NOW=Date.now();
 class FixedDate extends Date { static now(){return NOW;} }
 const feed=(ts,total=6466)=>({
-  metadata:ts?{lastPipelineRun:ts}:{},generatedAt:ts,
+  metadata:ts?{lastPipelineRun:ts,lastReportGeneratedAt:ts}:{},generatedAt:ts,
   totalPublished:total,
   stats:{critical:39,cisaKev:32,exploited:143,ransomware:31,sources:14},
   items:[]
@@ -23,7 +23,7 @@ function harness(runtime=RS) {
     RS:runtime,Date:FixedDate,Number,Object,
     fmt:new Intl.NumberFormat('en-US'),
     state:{feed:null,metricsCurrent:null,lastRuntimeState:null},
-    feedStamp: f=>f?.metadata?.lastPipelineRun||f?.generatedAt||null,
+    feedStamp: f=>RS.feedTimestamp(f),
     age:stamp=>({label:stamp?'OBSERVED AGE':'UNKNOWN',iso:stamp||null}),
     setKpi:(id,value,note)=>{kpis[id]={value,note};},
     setText:(id,value)=>{labels[id]=value;},
@@ -85,4 +85,14 @@ test('P0 open-tab ticker removes aged-out cards and KPIs without fetches or stat
   assert.match(ticker,/state\.feedItems\.some\(function\(item\)\{return !RS\.isLiveRecord\(item,now\)/);
   assert.doesNotMatch(ticker,/fetchJson|XMLHttpRequest|wrangler|sendBeacon|document\.location\.reload/);
   assert.match(ticker,/\},5000\);/);
+});
+
+test('P0 fresh scheduler heartbeat with expired genuine report withholds every operational KPI',()=>{
+ const x=harness();
+ const heartbeat={...feed(recent,7491),metadata:{lastPipelineRun:recent,lastReportGeneratedAt:stale}};
+ x.render(heartbeat);
+ assert.equal(x.state.metricsCurrent,false);
+ assert.equal(x.state.lastRuntimeState,'STALE');
+ for(const id of ['cdb-total','cdb-critical','cdb-kev','cdb-sources'])
+   assert.equal(x.kpis[id].value,'—',id);
 });

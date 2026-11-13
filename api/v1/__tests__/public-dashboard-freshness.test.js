@@ -22,6 +22,13 @@ jest.mock('../../_lib/intel',()=>({
   getIntel:jest.fn(()=>{throw new Error('Enterprise loader must not serve public dashboard');})
 }));
 
+// Positive API route tests use an explicit synthetic *test-only* recent
+// publication receipt. The real committed source may legitimately be stale
+// after a heartbeat with zero new reports and MUST NOT be rewritten for tests.
+jest.mock('../../../live-intel.json',()=>{
+  const actual=jest.requireActual('../../../live-intel.json');
+  return {...actual,metadata:{...actual.metadata,lastReportGeneratedAt:actual.generatedAt}};
+});
 const handler=require('../intel');
 const feed=require('../../../live-intel.json');
 const RS=require('../../../runtime-state.js');
@@ -126,4 +133,16 @@ test.each(['stats','dashboard'])('P0 public %s route refuses POST without proces
   expect(res.statusCode).toBe(405);
   expect(getPlatformStats).not.toHaveBeenCalled();
   expect(getIntel).not.toHaveBeenCalled();
+});
+
+test('P0 actual checked-in source is not called LIVE just because its heartbeat is recent',()=>{
+ const realFeed=jest.requireActual('../../../live-intel.json');
+ const now=Date.parse(realFeed.generatedAt)+60*60000;
+ const current=assessPublicIntel(realFeed,now);
+ const report=Date.parse(realFeed.metadata.lastReportGeneratedAt||'');
+ if (!Number.isFinite(report)||now-report>180*60000) {
+   expect(current.ok).toBe(false);
+   expect(current.items).toEqual([]);
+   expect(['STALE','DEGRADED']).toContain(current.state);
+ }
 });

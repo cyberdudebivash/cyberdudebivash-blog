@@ -11,11 +11,11 @@ function fixture(){
    state:{lastRun:moment,lastReportGeneratedAt:moment,totalPublished:6548,
      lastIngestion:{reportsGenerated:15}},
    rootSource:{generatedAt:moment,totalPublished:6548,
-     metadata:{lastPipelineRun:moment},items:ids},
-   apiSource:{generated:moment,total_published:6548,items:ids},
+     metadata:{lastPipelineRun:moment,lastReportGeneratedAt:moment},items:ids},
+   apiSource:{generated:moment,lastReportGeneratedAt:moment,total_published:6548,items:ids},
    rootAsset:{generatedAt:moment,totalPublished:6548,
-     metadata:{lastPipelineRun:moment},items:structuredClone(ids)},
-   apiAsset:{generated:moment,total_published:6548,items:structuredClone(ids)},
+     metadata:{lastPipelineRun:moment,lastReportGeneratedAt:moment},items:structuredClone(ids)},
+   apiAsset:{generated:moment,lastReportGeneratedAt:moment,total_published:6548,items:structuredClone(ids)},
    nowMs:time
   };
 }
@@ -183,4 +183,13 @@ test('P0 S2N API bundle accepts pinned NVD correction but rejects other score or
  x.apiAsset=JSON.parse(correctPublicIntelJson(JSON.stringify(x.apiSource)));
  x.apiAsset.items[0].cisa_kev=true;
  assert(validateBundle(x).codes.includes('API_BUILD_CONTENT_DIVERGENCE'));
+});
+
+test('P0 root and S2N builds must attest the same real report receipt as the committed ledger',()=>{
+ const source=fixture();
+ source.apiSource.lastReportGeneratedAt='2026-10-25T04:40:00Z';
+ assert(validateBundle(source).codes.includes('REAL_REPORT_RECEIPT_DIVERGENCE'));
+ const source2=fixture();
+ source2.rootAsset.metadata.lastReportGeneratedAt='2026-10-25T04:40:00Z';
+ assert(validateBundle(source2).codes.includes('REAL_REPORT_RECEIPT_DIVERGENCE'));
 });

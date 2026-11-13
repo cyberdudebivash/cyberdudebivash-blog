@@ -95,11 +95,17 @@ test('filtered public CTI CSV neutralizes spreadsheet formulas and quotes correc
 
 test('stale or missing public feed cannot be displayed as healthy runtime', () => {
   const stale = runtime.classifyFeed({ ok: true, feed: {
-    generatedAt: '2026-01-01T00:00:00.000Z'
+    generatedAt: '2026-01-01T00:00:00.000Z',
+    metadata: {lastReportGeneratedAt:'2026-01-01T00:00:00.000Z'}
   }, nowMs: Date.parse('2026-10-23T13:00:00.000Z') });
+  const missingReceipt = runtime.classifyFeed({ok:true,feed:{
+    generatedAt:'2026-01-01T00:00:00.000Z'
+  },nowMs:Date.parse('2026-10-23T13:00:00.000Z')});
   const unavailable = runtime.classifyFeed({ ok: false, error: 'timeout' });
   const invalid = runtime.classifyFeed({ ok: true, feed: { items: [] } });
   assert.equal(stale.state, 'STALE');
+  assert.equal(missingReceipt.state,'DEGRADED','missing real report proof is unverified, never live');
+  assert.equal(runtime.pipelineAllowsLive(missingReceipt,Date.parse('2026-10-23T13:00:00.000Z')),false);
   assert.equal(unavailable.state, 'UNAVAILABLE');
   assert.equal(invalid.state, 'DEGRADED');
 });

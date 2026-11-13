@@ -88,6 +88,12 @@ function predeployGate({source,asset,state,nowMs=Date.now()}={}) {
     return {status:'FAIL',reason:'PREDEPLOY_BUILD_TIMESTAMP_DIVERGED'};
   if(source.totalPublished!==asset.totalPublished)
     return {status:'FAIL',reason:'PREDEPLOY_BUILD_CORPUS_DIVERGED'};
+  // Root/asset provenance must match the actual report-generation ledger;
+  // a synthetic pipeline heartbeat is not a valid release receipt.
+  if(!state?.lastReportGeneratedAt ||
+     source.metadata?.lastReportGeneratedAt!==state.lastReportGeneratedAt ||
+     asset.metadata?.lastReportGeneratedAt!==state.lastReportGeneratedAt)
+    return {status:'FAIL',reason:'PREDEPLOY_REAL_REPORT_RECEIPT_DIVERGED'};
   if(source.items.length!==asset.items.length)
     return {status:'FAIL',reason:'PREDEPLOY_BUILD_ITEMS_DIVERGED'};
   // Counts and timestamps do not prove intelligence content integrity: a

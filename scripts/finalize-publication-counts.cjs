@@ -31,23 +31,52 @@ function atomicWrite(filePath, content) {
   }
 }
 
+// The scheduler's lastRun is not a report receipt. A receipt must originate
+// from the persisted real-report ledger and must never be advanced by a
+// heartbeat-only run. Missing receipts remain missing (consumers fail closed).
+function genuineReportReceipt(state) {
+  const value=state?.lastReportGeneratedAt;
+  if(value==null||value==='')return null;
+  if(typeof value!=='string'||!/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d+)?(?:Z|[+-]\d\d:\d\d)$/.test(value)||
+      !Number.isFinite(Date.parse(value))) throw new Error('REAL_REPORT_RECEIPT_INVALID');
+  const lastRun=Date.parse(state?.lastRun||'');
+  if(!Number.isFinite(lastRun)||Date.parse(value)>lastRun+5*60000)
+    throw new Error('REAL_REPORT_RECEIPT_AFTER_RUN');
+  return value;
+}
+
 // Called only after the real report ledger is persisted. Does not generate reports,
 // change rolling-window items, or advance any source/feed freshness timestamps.
 function finalizePublicationCounts(state, widgetPath, apiPath) {
   const widget = JSON.parse(fs.readFileSync(widgetPath, 'utf8'));
   const api = JSON.parse(fs.readFileSync(apiPath, 'utf8'));
   const verdict = assessPublicationCounts(state, widget, api);
-  if (verdict.status === 'ALREADY_FINAL') return verdict;
+  const receipt = genuineReportReceipt(state);
+  if(!widget.metadata || typeof widget.metadata!=='object' ||
+      Array.isArray(widget.metadata)) throw new Error('ROOT_FEED_METADATA_INVALID');
+  // Finalization also commits immutable last-genuine-report provenance into
+  // BOTH public feeds. An ALREADY_FINAL count can still need this provenance
+  // after a no-new-report heartbeat or a recovered interrupted publication.
+  const provenanceChanged = receipt!==null &&
+    (widget.metadata.lastReportGeneratedAt!==receipt||api.lastReportGeneratedAt!==receipt);
+  if(verdict.status==='ALREADY_FINAL'&&!provenanceChanged)return verdict;
   widget.totalPublished = verdict.total;
   api.total_published = verdict.total;
+  if(receipt!==null) {
+    widget.metadata.lastReportGeneratedAt=receipt;
+    api.lastReportGeneratedAt=receipt;
+  }
   atomicWrite(widgetPath, JSON.stringify(widget, null, 2));
   atomicWrite(apiPath, JSON.stringify(api, null, 2));
   const verifiedWidget = JSON.parse(fs.readFileSync(widgetPath, 'utf8'));
   const verifiedApi = JSON.parse(fs.readFileSync(apiPath, 'utf8'));
-  if (verifiedWidget.totalPublished !== verdict.total || verifiedApi.total_published !== verdict.total) {
+  if (verifiedWidget.totalPublished !== verdict.total ||
+      verifiedApi.total_published !== verdict.total ||
+      (receipt!==null && (verifiedWidget.metadata?.lastReportGeneratedAt!==receipt ||
+                          verifiedApi.lastReportGeneratedAt!==receipt))) {
     throw new Error('SOURCE_FEED_FINALIZATION_VERIFY_FAILED');
   }
-  return {status:'RECONCILED', total:verdict.total};
+  return {status:verdict.status==='ALREADY_FINAL'?'REPORT_PROVENANCE_FINALIZED':'RECONCILED',total:verdict.total};
 }
 
-module.exports = {assessPublicationCounts, finalizePublicationCounts};
+module.exports = {assessPublicationCounts, finalizePublicationCounts, genuineReportReceipt};

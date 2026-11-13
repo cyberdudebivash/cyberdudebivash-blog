@@ -25,6 +25,12 @@ function validateBundle({state,rootSource,apiSource,rootAsset,apiAsset,nowMs=Dat
   const push=x=>errors.add(x);
   const receipt=checkLedger({state,widget:rootSource,api:apiSource});
   if(receipt.status!=='PASS')push('AUTHORITATIVE_LEDGER_NOT_FINAL');
+  if(!state?.lastReportGeneratedAt ||
+     rootSource?.metadata?.lastReportGeneratedAt!==state.lastReportGeneratedAt ||
+     rootAsset?.metadata?.lastReportGeneratedAt!==state.lastReportGeneratedAt ||
+     apiSource?.lastReportGeneratedAt!==state.lastReportGeneratedAt ||
+     apiAsset?.lastReportGeneratedAt!==state.lastReportGeneratedAt)
+    push('REAL_REPORT_RECEIPT_DIVERGENCE');
   const sourceGate=predeployGate({source:rootSource,asset:rootAsset,state,nowMs});
   if(sourceGate.status!=='PASS')push('ROOT_RELEASE_'+sourceGate.reason);
   // Independent root-feed identities: equal counts/window sizes can still

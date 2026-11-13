@@ -19,7 +19,7 @@ const monitor = require('../scripts/check-intel-freshness.js');
 
 const NOW = Date.parse('2026-09-30T17:00:00Z');
 const minutesAgo = m => new Date(NOW - m * 60000).toISOString();
-const feedAt = iso => ({ metadata: { lastPipelineRun: iso }, generatedAt: iso, items: [], stats: {} });
+const feedAt = iso => ({ metadata: { lastPipelineRun: iso, lastReportGeneratedAt: iso }, generatedAt: iso, items: [], stats: {} });
 
 describe('classifier', () => {
   test('thresholds are the CI freshness monitor thresholds (single source of truth)', () => {
@@ -51,17 +51,41 @@ describe('classifier', () => {
     assert.match(r.reason, /timeout/);
   });
 
-  test('pipeline completion time is preferred over generation time', () => {
-    const feed = { generatedAt: minutesAgo(300), metadata: { lastPipelineRun: minutesAgo(10) } };
-    assert.equal(RS.classifyFeed({ ok: true, feed, nowMs: NOW }).state, 'HEALTHY');
+  test('a new heartbeat never makes an old genuine report LIVE', () => {
+    const feed = { generatedAt: minutesAgo(10), metadata: {
+      lastPipelineRun: minutesAgo(1), lastReportGeneratedAt: minutesAgo(300)
+    } };
+    const result = RS.classifyFeed({ ok: true, feed, nowMs: NOW });
+    assert.equal(result.state, 'STALE');
+    assert.equal(RS.pipelineAllowsLive(result, NOW), false);
+    assert.notEqual(RS.badgeFor(result).text, 'LIVE');
+    assert.equal(RS.feedTimestamp(feed), minutesAgo(300));
+  });
+
+  test('missing genuine report receipt and future generated clock cannot display LIVE', () => {
+    const absent={generatedAt:minutesAgo(1), metadata:{lastPipelineRun:minutesAgo(1)}};
+    assert.equal(RS.classifyFeed({ok:true,feed:absent,nowMs:NOW}).state,'DEGRADED');
+    const forged={generatedAt:minutesAgo(-30),metadata:{lastReportGeneratedAt:minutesAgo(1)}};
+    assert.equal(RS.classifyFeed({ok:true,feed:forged,nowMs:NOW}).state,'DEGRADED');
   });
 
   test('the committed production feed shape classifies from its own timestamps', () => {
     const feed = JSON.parse(fs.readFileSync(path.join(ROOT, 'live-intel.json'), 'utf8'));
-    const stamp = Date.parse(RS.feedTimestamp(feed));
-    assert.ok(Number.isFinite(stamp), 'live-intel.json must carry a parseable pipeline timestamp');
-    assert.equal(RS.classifyFeed({ ok: true, feed, nowMs: stamp + 10 * 60000 }).state, 'HEALTHY');
-    assert.equal(RS.classifyFeed({ ok: true, feed, nowMs: stamp + 24 * 3600000 }).state, 'STALE');
+    const observedAt=Date.parse(feed.generatedAt)+10*60000;
+    const receipt=feed.metadata.lastReportGeneratedAt;
+    if (!receipt) {
+      // Main may not carry this new contract until the NEXT genuine source
+      // publisher run after integration. Old source cannot be called LIVE.
+      assert.equal(RS.feedTimestamp(feed),null);
+      assert.equal(RS.classifyFeed({ok:true,feed,nowMs:observedAt}).state,'DEGRADED');
+      assert.equal(RS.pipelineAllowsLive(RS.classifyFeed({ok:true,feed,nowMs:observedAt}),observedAt),false);
+    } else {
+      const stamp=Date.parse(RS.feedTimestamp(feed));
+      const reportAge=observedAt-Date.parse(receipt);
+      const expected=reportAge>180*60000?'STALE':reportAge>90*60000?'DEGRADED':'HEALTHY';
+      assert.equal(RS.classifyFeed({ok:true,feed,nowMs:observedAt}).state,expected);
+      assert.equal(RS.classifyFeed({ok:true,feed,nowMs:stamp+24*3600000}).state,'STALE');
+    }
   });
 });
 
@@ -177,7 +201,7 @@ describe('homepage Intelligence Hub badge wiring', () => {
     assert.match(page.text('cdb-live-badge'), /^STALE · 20d 3h$/);
     assert.equal(page.state('cdb-live-badge'), 'warn');
     assert.equal(page.hidden('cdb-live-badge'), false);
-    assert.match(page.title('cdb-live-badge'), /out of date/);
+    assert.match(page.title('cdb-live-badge'), /operational intelligence is withheld/);
     assert.doesNotMatch(page.text('cdb-live-badge'), /LIVE/);
   });
 
@@ -390,7 +414,11 @@ describe('live record freshness: what the homepage command center renders', () =
   const iso = h => new Date(Date.now() - h * HOUR).toISOString();
   const day = h => iso(h).slice(0, 10);
   const item = (id, addedH, pubH, extra = {}) => ({ id, title: 'Title ' + id, source: 'nvd', priority: 1, threatLevel: 'HIGH', _addedAt: iso(addedH), pubDate: day(pubH), ...extra });
-  const feed = (pipelineAgeMin, items) => ({ metadata: { lastPipelineRun: new Date(Date.now() - pipelineAgeMin * 60000).toISOString() }, generatedAt: new Date(Date.now() - pipelineAgeMin * 60000).toISOString(), totalPublished: items.length, items, stats: {} });
+  const feed = (pipelineAgeMin, items) => ({ metadata: {
+    lastPipelineRun: new Date(Date.now() - pipelineAgeMin * 60000).toISOString(),
+    lastReportGeneratedAt: new Date(Date.now() - pipelineAgeMin * 60000).toISOString()
+  }, generatedAt: new Date(Date.now() - pipelineAgeMin * 60000).toISOString(),
+  totalPublished: items.length, items, stats: {} });
   const serve = body => async () => ({ ok: true, status: 200, json: async () => body });
   const EMPTY = 'No newly verified intelligence available in the selected live window.';
 
@@ -597,7 +625,10 @@ describe('shared live authority: timestamp strictness and pipeline evidence', ()
   });
 
   test('every real classification the model can produce is judged consistently', () => {
-    const feedAt = ageMin => ({ metadata: { lastPipelineRun: new Date(NOWMS - ageMin * 60000).toISOString() }, items: [] });
+    const feedAt = ageMin => {
+      const stamp=new Date(NOWMS - ageMin * 60000).toISOString();
+      return { generatedAt:stamp, metadata:{lastPipelineRun:stamp,lastReportGeneratedAt:stamp},items:[] };
+    };
     const allowed = ageMin => RS.pipelineAllowsLive(RS.classifyFeed({ ok: true, feed: feedAt(ageMin), nowMs: NOWMS }), NOWMS);
     assert.equal(allowed(10), true);
     assert.equal(allowed(150), true);

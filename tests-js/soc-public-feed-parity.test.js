@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
 const {inspect,assess,predeployGate,check,boundedJson,TARGETS}=require('../scripts/certify-soc-public-feed-parity.cjs');
 const now=Date.parse('2026-10-25T05:10:00.000Z');
 function fixture({stamp='2026-10-25T04:40:00.000Z',total=6518,items=150}={}){
-  return {generatedAt:stamp,metadata:{lastPipelineRun:stamp},totalPublished:total,items:Array.from({length:items},(_,id)=>({id}))};
+  return {generatedAt:stamp,metadata:{lastPipelineRun:stamp,lastReportGeneratedAt:stamp},totalPublished:total,items:Array.from({length:items},(_,id)=>({id}))};
 }
 function fakeResponse(d,{status=200,type='application/json'}={}){
   const response=new Response(JSON.stringify(d),{status,headers:{'content-type':type}});
@@ -185,4 +185,11 @@ test('P0 approved manual Cloudflare release must fail closed for moderate-or-hig
     'release gate must never suppress moderate/high advisories or mutate packages');
   assert.match(wf,/github.event_name == 'workflow_dispatch'/,
     'security gate does not authorize automatic production deployment');
+});
+
+test('P0 a fresh heartbeat with no matching genuine report receipt cannot be predeployed',()=>{
+ const f=fixture(),state={lastRun:f.generatedAt,lastReportGeneratedAt:f.generatedAt};
+ f.metadata.lastReportGeneratedAt='2026-10-24T04:40:00Z';
+ assert.deepEqual(predeployGate({source:f,asset:structuredClone(f),state,nowMs:now}),
+   {status:'FAIL',reason:'PREDEPLOY_REAL_REPORT_RECEIPT_DIVERGED'});
 });

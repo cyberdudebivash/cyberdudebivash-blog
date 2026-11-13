@@ -8,7 +8,7 @@ const NOW=Date.parse('2026-11-13T00:00:00Z');
 const at=h=>new Date(NOW-h*3600000).toISOString();
 const record=(id,ingested,published)=>({id,_addedAt:ingested,pubDate:published});
 const feed=(timestamp,items)=>({
-  metadata:{lastPipelineRun:timestamp},
+  metadata:{lastPipelineRun:timestamp,lastReportGeneratedAt:timestamp},
   generatedAt:timestamp,
   items
 });
