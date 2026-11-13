@@ -129,6 +129,9 @@ const REVIEWED_OPERATIONAL_FILES = new Set([
   'automation/tests/test_premium_yield_hardening.py',
   'fetch-live-intel.js',
   'scripts/assert-publication-ledger.cjs',
+  // Scheduled publisher's staged-file fail-closed allowlist is an operator-
+  // reviewed release-control input, not documentation or an exemption.
+  'scripts/assert-publisher-staged-paths.cjs',
   'scripts/audit_live_cti_home.py',
   'scripts/backup-customer-data.js',
   'scripts/backup-preflight-gate.cjs',
