@@ -309,7 +309,10 @@ def test_soc_dashboard_uses_first_party_runtime_data_plane():
     assert "updateRuntimeState(enriched, payload.generated_at)" in load
     assert "action === 'dashboard'" in api
     assert "contract: 'cdb.dashboard-feed.v1'" in api
-    assert "getIntel('live', 'enterprise'" in api
+    assert "assessPublicIntel(canonicalPublicFeed)" in api
+    assert "const raw = getIntel('live', 'enterprise'" not in api
+    assert "freshness_state: data.freshness_state" in api
+    assert "res.setHeader('Cache-Control', 'no-store')" in api
     for secret_field in ["iocs:", "explanation:", "scoring:", "actor_attribution:"]:
         dashboard_block = api.split("function publicDashboardItems", 1)[1].split("/* ─── Main Router", 1)[0]
         assert secret_field not in dashboard_block
@@ -474,8 +477,8 @@ def test_dashboard_severity_uses_cvss_semantics_separate_from_priority():
     assert "function cvssSeverity(cvss, fallback)" in api
     assert "if (n >= 9) return 'CRITICAL'" in api
     assert "if (n >= 7) return 'HIGH'" in api
-    assert "severity: cvssSeverity(i.cvss, i.threat_level)" in api
-    assert "priority: String(i.threat_level || 'NOT_ASSESSED').toUpperCase()" in api
+    assert "severity: cvssSeverity(i.cvss, i.threatLevel || i.threat_level)" in api
+    assert "priority: String(i.threatLevel || i.threat_level || 'NOT_ASSESSED').toUpperCase()" in api
 
 
 def test_priority_queue_is_first_party_and_worker_routable():
