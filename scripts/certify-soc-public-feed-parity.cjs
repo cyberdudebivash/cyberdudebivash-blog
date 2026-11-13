@@ -92,9 +92,20 @@ function predeployGate({source,asset,state,nowMs=Date.now()}={}) {
     return {status:'FAIL',reason:'PREDEPLOY_BUILD_ITEMS_DIVERGED'};
   // Counts and timestamps do not prove intelligence content integrity: a
   // changed IOC/CVE/attribution could otherwise pass the offline release gate.
-  // Compare the full parsed payload, including nested records and metadata,
-  // while permitting JSON object key-order differences (no data difference).
-  if(!isDeepStrictEqual(source,asset))
+  // The public build intentionally applies allowlisted, NVD-evidenced CVSS,
+  // IOC and legacy provenance corrections. Verify against that EXACT approved
+  // builder transformation, not an unsafe raw equality assertion. Never allow
+  // other source/build changes, even if counts and timestamps agree.
+  let approved;
+  try {
+    const {correctPublicIntelJson}=require('./build-cloudflare-assets');
+    approved=JSON.parse(correctPublicIntelJson(JSON.stringify(source)));
+  } catch (_) {
+    return {status:'FAIL',reason:'PREDEPLOY_APPROVED_TRANSFORM_UNAVAILABLE'};
+  }
+  // Structural equality ignores JSON key ordering, but rejects any changed
+  // IOC, score, attribution, supporting reference, item order or metadata.
+  if(!isDeepStrictEqual(approved,asset))
     return {status:'FAIL',reason:'PREDEPLOY_BUILD_CONTENT_DIVERGED'};
   return {status:'PASS',reason:'SOURCE_REPORT_AND_BUILT_ASSET_FRESH'};
 }
