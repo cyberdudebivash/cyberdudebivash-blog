@@ -142,7 +142,7 @@ test('P0 finalizer publishes genuine report receipt to both public feeds after s
    assert.equal(a.generated,api().generated);
    const before=[fs.readFileSync(f.wp,'utf8'),fs.readFileSync(f.ap,'utf8')];
    // A heartbeat without a new report does not manufacture a new receipt.
-   ledger.lastRun='2026-10-26T06:12:00Z';
+   ledger.lastRun='2026-10-26T06:00:00Z';
    ledger.lastIngestion.reportsGenerated=0;
    assert.equal(finalizePublicationCounts(ledger,f.wp,f.ap).status,'ALREADY_FINAL');
    assert.deepEqual([fs.readFileSync(f.wp,'utf8'),fs.readFileSync(f.ap,'utf8')],before);
