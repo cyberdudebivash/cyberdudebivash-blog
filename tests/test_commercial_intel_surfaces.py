@@ -913,7 +913,13 @@ def test_homepage_command_center_meets_enterprise_visibility_floor():
     html = Path("index.html").read_text(encoding="utf-8-sig")
     css = Path("apex-command-center.css").read_text(encoding="utf-8")
     assert "SENTINEL APEX SOC — Threat Intelligence & SOC Readiness" in html
-    assert "/apex-command-center.css?v=20261112-live2" in html
+    # Asset cache keys legitimately advance with each approved deployment.
+    # Require a dated, versioned stylesheet link, not yesterday's retired key.
+    command_center_stylesheets = re.findall(
+        r'<link\s+rel="stylesheet"\s+href="/apex-command-center\.css\?v=(20\d{6}-[a-z0-9-]+)"\s*>',
+        html,
+    )
+    assert len(command_center_stylesheets) == 1, "exactly one versioned command-center CSS asset required"
     # Keep the command-center asset contract strict, but do not pin the query
     # version to a retired release: each real release updates the cache key.
     command_center_scripts = re.findall(
