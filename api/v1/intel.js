@@ -66,7 +66,8 @@ function paidOperationalResult(type, tier, query, nowMs = Date.now()) {
     return {ok:false,code:'OPERATIONAL_FEED_UNAVAILABLE'};
   }
   const attested = verifyOperationalSource(
-    canonicalPublicFeed, result.intel_meta.generated_at, nowMs);
+    canonicalPublicFeed, result.intel_meta.generated_at, nowMs,
+    result.intel_meta.report_generated_at);
   if (!attested.ok) return {ok:false,code:attested.code};
   result.intel_meta = {...result.intel_meta,
     freshness_state:attested.state,
