@@ -16,7 +16,7 @@ function extracted(begin,end,vars={}){
   vm.runInContext(src.slice(start,finish),ctx,{timeout:1000});
   return ctx;
 }
-const fixture=(stamp,items)=>({generated_at:stamp,items});
+const fixture=(stamp,items)=>({generated_at:stamp,report_generated_at:stamp,items});
 const item=(id,ingested,published)=>({id,first_ingested:ingested,published});
 
 test('P0 client rejects a 200 response with a stale Worker timestamp, no live cards',()=>{
@@ -25,6 +25,10 @@ test('P0 client rejects a 200 response with a stale Worker timestamp, no live ca
   });
   const recent=item('CURRENT',at(10),at(10));
   assert.equal(c.verifiedDashboardPayload(fixture(at(40),[recent]),NOW),true);
+  assert.equal(c.verifiedDashboardPayload({...fixture(at(10),[recent]),report_generated_at:at(240)},NOW),false,
+    'a new API response timestamp cannot mask old real report provenance');
+  assert.equal(c.verifiedDashboardPayload({...fixture(at(10),[recent]),report_generated_at:null},NOW),false,
+    'missing report-generation proof blocks live cards');
   assert.equal(c.verifiedDashboardPayload(fixture(at(181),[recent]),NOW),false);
   assert.equal(c.verifiedDashboardPayload(fixture('2026-10-23T04:58:15.799Z',[recent]),NOW),false);
   assert.equal(c.verifiedDashboardPayload(fixture('bad-time',[recent]),NOW),false);
@@ -49,17 +53,17 @@ test('P0 client independently verifies immutable ingestion and original source d
 
 test('P0 page status uses canonical 90m/180m policy, never 240m or a report timestamp fallback',()=>{
   const outputs=[];
-  const c=extracted('  function updateRuntimeState(items, generatedAt) {','  function updateLiveCounts(items)',{
+  const c=extracted('  function updateRuntimeState(items, generatedAt, reportGeneratedAt) {','  function updateLiveCounts(items)',{
     window:{SentinelRuntimeState:RS},
     setRuntimeState:(state,reason)=>outputs.push({state,reason})
   });
   const oldNow=Date.now;
   Date.now=()=>NOW;
   try{
-    c.updateRuntimeState([],at(10));assert.equal(outputs.pop().state,'LIVE');
-    c.updateRuntimeState([],at(120));assert.equal(outputs.pop().state,'DEGRADED');
-    c.updateRuntimeState([],at(181));assert.equal(outputs.pop().state,'STALE');
-    c.updateRuntimeState([{}],null);assert.equal(outputs.pop().state,'STALE');
+    c.updateRuntimeState([],at(10),at(10));assert.equal(outputs.pop().state,'LIVE');
+    c.updateRuntimeState([],at(120),at(120));assert.equal(outputs.pop().state,'DEGRADED');
+    c.updateRuntimeState([],at(181),at(181));assert.equal(outputs.pop().state,'STALE');
+    c.updateRuntimeState([{}],null,null);assert.equal(outputs.pop().state,'STALE');
   }finally{Date.now=oldNow;}
   assert.doesNotMatch(src,/ageMinutes\s*<=\s*240/);
   assert.match(src,/RS\.classifyFeed\(/);
