@@ -186,10 +186,24 @@ jobs:
             echo "Running in DRY RUN mode — no posts will be published"
           fi
 
+          # This input is supplied by a manual workflow_dispatch, not a
+          # trusted shell literal. The env mapping above prevents expression
+          # injection; require the same bounded 1..4 production burst.
+          case "${MAX_POSTS_PER_RUN}" in
+            1|2|3|4) ;;
+            *) echo "::error title=Invalid Blogger limit::max_posts must be an integer from 1 to 4"; exit 2 ;;
+          esac
+          # Only the reviewed main branch may publish customer-visible content.
+          # Feature branches remain usable for explicitly opted-in dry runs.
+          if [ "${GITHUB_REF}" != "refs/heads/main" ] && [ "${DRY_RUN_FLAG}" != "--dry-run" ]; then
+            echo "::error title=Unauthorized Blogger branch::Live publication requires main"
+            exit 2
+          fi
+
           set +e
           python -m automation.premium_main \
             $DRY_RUN_FLAG \
-            --max-posts ${{ github.event.inputs.max_posts || '4' }} \
+            --max-posts "${MAX_POSTS_PER_RUN}" \
             2>&1 | tee logs/pipeline-output.txt
           PIPELINE_EXIT=${PIPESTATUS[0]}
 
@@ -214,6 +228,12 @@ jobs:
       - name: "💾 Commit Publication State"
         if: always()
         run: |
+          # An explicitly opted-in feature-branch dry run must not mutate any
+          # publication ledger or persist state; main is the sole writer.
+          if [ "${GITHUB_REF}" != "refs/heads/main" ]; then
+            echo "No publication-state commit outside main"
+            exit 0
+          fi
           git add data/published_posts.json || true
           # Durable provider/model cooldown metadata contains no credentials,
           # prompts or response bodies and must survive the next scheduled run.
@@ -240,8 +260,8 @@ jobs:
           git commit -m "syndication: premium-published [${PUBLISHED} total posts] — $(date -u '+%Y-%m-%d %H:%M UTC')"
 
           for attempt in 1 2 3; do
-            git pull --rebase origin ${{ github.ref_name }} --quiet 2>/dev/null || true
-            if git push origin ${{ github.ref_name }}; then
+            git pull --rebase origin main --quiet 2>/dev/null || true
+            if git push origin main; then
               echo "Push succeeded on attempt ${attempt}"
               break
             fi
