@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
 const {inspect,assess,predeployGate,check,boundedJson,TARGETS}=require('../scripts/certify-soc-public-feed-parity.cjs');
 const now=Date.parse('2026-10-25T05:10:00.000Z');
 function fixture({stamp='2026-10-25T04:40:00.000Z',total=6518,items=150}={}){
-  return {generatedAt:stamp,metadata:{lastPipelineRun:stamp},totalPublished:total,items:Array.from({length:items},(_,id)=>({id}))};
+  return {generatedAt:stamp,metadata:{lastPipelineRun:stamp,lastReportGeneratedAt:stamp},totalPublished:total,items:Array.from({length:items},(_,id)=>({id}))};
 }
 function fakeResponse(d,{status=200,type='application/json'}={}){
   const response=new Response(JSON.stringify(d),{status,headers:{'content-type':type}});
