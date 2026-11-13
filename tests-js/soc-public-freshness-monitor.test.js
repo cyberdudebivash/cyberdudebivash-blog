@@ -7,7 +7,7 @@ const workflow=fs.readFileSync(path.join(__dirname,'..','.github/workflows/fresh
 const t=Date.parse('2026-10-27T01:10:00.000Z');
 const stamp='2026-10-27T00:20:00.000Z';
 const feed=(generatedAt,totalPublished)=>({
-  generatedAt,metadata:{lastPipelineRun:generatedAt},totalPublished,
+  generatedAt,metadata:{lastPipelineRun:generatedAt,lastReportGeneratedAt:generatedAt},totalPublished,
   items:Array.from({length:15},(_,i)=>({id:'CVE-2026-'+(10000+i)}))
 });
 test('normal 30-minute scheduled freshness path now verifies BOTH customer SOC hostnames',()=>{
