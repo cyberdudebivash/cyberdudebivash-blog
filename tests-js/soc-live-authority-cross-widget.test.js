@@ -172,6 +172,8 @@ test('an otherwise recent source heartbeat with an expired report receipt is den
   const c=RS.classifyFeed({ok:true,feed:heartbeat,nowMs:NOW});
   assert.equal(c.state,'STALE');
   assert.equal(RS.pipelineAllowsLive(c,NOW),false);
-  assert.deepEqual(desk.selectRecentRecords(heartbeat,NOW),[]);
+  // Selection is a pure record-age helper; the customer-visible desk gate
+  // additionally requires the verified publication/heartbeat classification.
+  assert.deepEqual(desk.availableRecords(heartbeat,c,NOW),[]);
   assert.deepEqual(triage(FIXTURE,NOW,c).items,[]);
 });
