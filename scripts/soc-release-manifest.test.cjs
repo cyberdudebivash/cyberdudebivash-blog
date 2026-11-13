@@ -334,6 +334,11 @@ test('release-control files are digested: every default path is a real file in t
   }
   assert.ok(DEFAULT_CONTROL_PATHS.includes('.github/workflows/cloudflare-production-deploy.yml'));
   assert.ok(DEFAULT_CONTROL_PATHS.includes('scripts/soc-release-manifest.cjs'));
+  for(const file of [
+    '.github/workflows/soc-owner-release-evidence.yml',
+    'scripts/soc-cloudflare-owner-inventory.cjs',
+    'scripts/soc-operator-release-preflight.cjs',
+  ]) assert.ok(DEFAULT_CONTROL_PATHS.includes(file),file+' must be pinned into operator approval');
 });
 
 test('an unreviewed change to ANY release-control file after approval is rejected, by name', () => {

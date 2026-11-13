@@ -50,6 +50,12 @@ const DEFAULT_CONTROL_PATHS = Object.freeze([
   'scripts/production-drift-policy.cjs',
   'scripts/build-cloudflare-assets.js',
   'scripts/soc-release-manifest.cjs',
+  // P0 #433/#583: audit results participate in operator release review.
+  // Include their exact bytes (and the offline operator preflight) in the
+  // approval digest: a changed or substituted evidence checker is NOT benign.
+  '.github/workflows/soc-owner-release-evidence.yml',
+  'scripts/soc-cloudflare-owner-inventory.cjs',
+  'scripts/soc-operator-release-preflight.cjs',
 ]);
 
 const sha256 = (b) => crypto.createHash('sha256').update(b).digest('hex');
