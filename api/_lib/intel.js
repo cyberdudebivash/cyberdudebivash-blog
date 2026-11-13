@@ -225,13 +225,19 @@ function applyFilters(items, query) {
 }
 
 // Main intel loader — used by all endpoints
-function getIntel(type, tier, query = {}) {
+function getIntel(type, tier, query = {}, options = {}) {
   const file = PATHS[type] || PATHS.live;
   const data = loadJSON(file);
   if (!data) return { items: [], total: 0, cached: false, error: 'Intel source temporarily unavailable' };
 
-  const raw = data.items || [];
-  const filtered = applyFilters(raw, query);
+  const raw = Array.isArray(data.items) ? data.items : [];
+  // Source scope must be applied BEFORE tier filtering and pagination.
+  // Never let archived priority-sorted records consume a paid live page or
+  // allow a caller-supplied query to recover an otherwise disallowed item.
+  const eligible = options.allowedIds instanceof Set
+    ? raw.filter(item => options.allowedIds.has(String(item?.id || '')))
+    : raw;
+  const filtered = applyFilters(eligible, query);
   const { page, limit, offset } = parsePagination(query);
   const paged = filtered.slice(offset, offset + limit);
   const tiered = applyTierFilter(paged.map(applyRecordCorrections), tier);
@@ -248,6 +254,7 @@ function getIntel(type, tier, query = {}) {
     },
     intel_meta: {
       generated_at:    data.generated || data.generatedAt || null,
+      report_generated_at: data.lastReportGeneratedAt || null,
       total_published: data.total_published || data.totalPublished || 0,
       source_platform: data.source || 'CYBERDUDEBIVASH SENTINEL APEX v4.0',
     },

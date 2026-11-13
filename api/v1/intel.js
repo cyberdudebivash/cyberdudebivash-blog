@@ -51,6 +51,38 @@ const { buildStixBundle } = require('../_lib/ioc-engine/stix');
 const reportsIndex = require('../intel/reports-index.json');
 const canonicalPublicFeed = require('../../live-intel.json');
 const { assessPublicIntel } = require('../_lib/public-intel-freshness');
+const { verifyOperationalSource } = require('../_lib/operational-intel-freshness');
+
+// Authenticated operational feeds previously bypassed the public dashboard's
+// genuine-report freshness verification and returned cached Worker JSON as
+// "live". Intersect with verified current root IDs before query pagination;
+// also require the S2N asset to come from the SAME source-build window.
+function paidOperationalResult(type, tier, query, nowMs = Date.now()) {
+  const canonical = assessPublicIntel(canonicalPublicFeed, nowMs);
+  if (!canonical.ok) return {ok:false,code:'OPERATIONAL_INTELLIGENCE_STALE'};
+  const allowedIds = new Set(canonical.items.map(i=>String(i.id||'')).filter(Boolean));
+  const result = getIntel(type, tier, query, {allowedIds});
+  if (!result || result.error || !result.intel_meta) {
+    return {ok:false,code:'OPERATIONAL_FEED_UNAVAILABLE'};
+  }
+  const attested = verifyOperationalSource(
+    canonicalPublicFeed, result.intel_meta.generated_at, nowMs);
+  if (!attested.ok) return {ok:false,code:attested.code};
+  result.intel_meta = {...result.intel_meta,
+    freshness_state:attested.state,
+    source_generated_at:attested.generated_at,
+    report_generated_at:attested.report_generated_at,
+    records_scope:'VERIFIED_RECENT_ONLY',
+    live_ingestion_max_hours:24,
+    live_publication_max_hours:72
+  };
+  return {ok:true,result};
+}
+
+function operationalFailure(res, checked) {
+  return apiError(res,503,checked.code,
+    'Current verified operational intelligence is unavailable. No archived records are substituted.');
+}
 
 function safeHttps(raw) {
   try {
@@ -277,7 +309,11 @@ module.exports = async (req, res) => {
 
       /* ── GET ?action=live ──────────────────────────────────── */
       case 'live': {
-        const result = getIntel('live', user.tier, req.query);
+        sec.applySecurityHeaders(res);
+        res.setHeader('Cache-Control','no-store');
+        const checked = paidOperationalResult('live', user.tier, req.query);
+        if (!checked.ok) return operationalFailure(res,checked);
+        const result = checked.result;
         return successResponse(res, result, {
           endpoint:       '/api/v1/intel?action=live',
           tier:           user.tier,
@@ -288,7 +324,11 @@ module.exports = async (req, res) => {
 
       /* ── GET ?action=top ───────────────────────────────────── */
       case 'top': {
-        const result = getIntel('topThreats', user.tier, req.query);
+        sec.applySecurityHeaders(res);
+        res.setHeader('Cache-Control','no-store');
+        const checked = paidOperationalResult('topThreats', user.tier, req.query);
+        if (!checked.ok) return operationalFailure(res,checked);
+        const result = checked.result;
         return successResponse(res, result, {
           endpoint:       '/api/v1/intel?action=top',
           description:    'Top priority threats (priority score ≥ 65/100)',
@@ -386,7 +426,11 @@ module.exports = async (req, res) => {
 
       /* ── GET ?action=ransomware ────────────────────────────── */
       case 'ransomware': {
-        const result = getIntel('ransomware', user.tier, req.query);
+        sec.applySecurityHeaders(res);
+        res.setHeader('Cache-Control','no-store');
+        const checked = paidOperationalResult('ransomware', user.tier, req.query);
+        if (!checked.ok) return operationalFailure(res,checked);
+        const result = checked.result;
         return successResponse(res, result, {
           endpoint:       '/api/v1/intel?action=ransomware',
           description:    'Active ransomware campaigns, actor TTPs, and IOC feeds',
