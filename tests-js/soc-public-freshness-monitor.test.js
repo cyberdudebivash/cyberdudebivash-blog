@@ -66,7 +66,8 @@ test('SOC browser widget classifies genuine source age, not browser fetch time',
  const vm=require('node:vm');
  const widgetSource=fs.readFileSync(path.join(__dirname,'..','live-feed-widget.js'),'utf8');
  const sandbox={
-   window:{location:{origin:'https://soc.cyberdudebivash.in'}},
+   window:{location:{origin:'https://soc.cyberdudebivash.in'},
+     SentinelRuntimeState:require('../runtime-state.js')},
    document:{readyState:'loading',addEventListener(){}},
    encodeURIComponent, Date, Number, URL, console,
  };
@@ -92,25 +93,26 @@ test('SOC browser widget classifies genuine source age, not browser fetch time',
  }
 });
 
-test('SOC widget cannot pretend CISA fallback retrieval created fresh intel',()=>{
+test('SOC widget never presents a third-party fallback as first-party live intel',()=>{
  const source=fs.readFileSync(path.join(__dirname,'..','live-feed-widget.js'),'utf8');
  assert.doesNotMatch(source,/_feedGenerated\s*=\s*new Date\(\)\.toISOString\(\)/);
- assert.match(source,/item\._feedGenerated=null/);
- assert.match(source,/SOURCE TIMESTAMP UNVERIFIED/);
- assert.match(source,/STALE FEED — LAST VERIFIED INTEL/);
- assert.doesNotMatch(source,/Live Breaking Intel/);
+ assert.doesNotMatch(source,/xhrFetch\(CFG\.CISA_DIRECT/);
+ assert.match(source,/var stamp = items\[0\]\._feedGenerated/);
+ assert.match(source,/function verifiedLiveItems\(/);
+ assert.match(source,/STALE SOURCE — LIVE CARDS WITHHELD/);
+ assert.match(source,/NO CURRENT VERIFIED INTELLIGENCE/);
  assert.match(source,/Threat Intelligence Feed/);
  assert.match(source,/lastVerifiedSourceLabel\(\)/);
  assert.match(source,/lfw-bt/);
  assert.match(source,/classList\.toggle\('lfw-dot-load',stale\)/);
 });
 
-
 test('SOC feed renderer denies untrusted report links and CSS attribute injection',()=>{
  const vm=require('node:vm');
  const source=fs.readFileSync(path.join(__dirname,'..','live-feed-widget.js'),'utf8');
  const sandbox={
-   window:{location:{origin:'https://soc.cyberdudebivash.in'}},
+   window:{location:{origin:'https://soc.cyberdudebivash.in'},
+     SentinelRuntimeState:require('../runtime-state.js')},
    document:{readyState:'loading',addEventListener(){}},
    encodeURIComponent, Date, Number, URL, console,
  };
@@ -147,23 +149,25 @@ test('SOC feed renderer denies untrusted report links and CSS attribute injectio
 });
 
 
-test('SOC public browser feed never relays CISA intelligence through anonymous proxy services',()=>{
+test('SOC live cards never substitute CISA or anonymous-proxy data after a source failure',()=>{
  const source=fs.readFileSync(path.join(__dirname,'..','live-feed-widget.js'),'utf8');
- assert.match(source,/CISA_DIRECT:\s*'https:\/\/www\.cisa\.gov\//);
- assert.match(source,/xhrFetch\(CFG\.CISA_DIRECT/);
+ assert.doesNotMatch(source,/CISA_DIRECT:/);
+ assert.doesNotMatch(source,/xhrFetch\(CFG\.CISA_DIRECT/);
  assert.doesNotMatch(source,/corsproxy\.io|allorigins\.win|CISA_PROXY1|CISA_PROXY2/);
- // A blocked official CISA fetch must return an unavailable state; never
- // simulate a current publication or silently trust another domain.
- assert.match(source,/Official origin unavailable => visible unavailable state/);
- assert.doesNotMatch(source,/_feedGenerated\s*=\s*new Date\(\)\.toISOString\(\)/);
+ assert.match(source,/if \(!data \|\| !Array\.isArray\(data\.items\)\) return \[\]/);
+ assert.match(source,/if \(!shared \|\| !shared\.pipelineAllowsLive\(/);
+ // The official CISA catalog is a clearly labelled external resource, not
+ // an unsupported claim that a CISA pull produced fresh first-party evidence.
+ assert.match(source,/https:\/\/www\.cisa\.gov\/known-exploited-vulnerabilities-catalog/);
+ assert.match(source,/renderUnavailable\(container\)/);
 });
-
 
 test('SOC customer widget prioritizes report age, not high-priority archival file order',()=>{
  const vm=require('node:vm');
  const source=fs.readFileSync(path.join(__dirname,'..','live-feed-widget.js'),'utf8');
  const sandbox={
-   window:{location:{origin:'https://soc.cyberdudebivash.in'}},
+   window:{location:{origin:'https://soc.cyberdudebivash.in'},
+     SentinelRuntimeState:require('../runtime-state.js')},
    document:{readyState:'loading',addEventListener(){}},
    encodeURIComponent, Date, Number, URL, console,
  };
@@ -172,12 +176,12 @@ test('SOC customer widget prioritizes report age, not high-priority archival fil
  assert.equal(typeof select,'function');
  const now=Date.parse('2026-10-30T14:00:00Z');
  const rows=[
-   {id:'ARCHIVE-HIGH',priority:100,_addedAt:'2026-07-31T22:07:00Z'},
-   {id:'YESTERDAY',priority:5,_addedAt:'2026-10-29T16:00:00Z'},
-   {id:'TODAY',priority:1,_addedAt:'2026-10-30T13:23:00Z'},
-   {id:'FUTURE',priority:999,_addedAt:'2026-10-31T00:00:00Z'},
+   {id:'ARCHIVE-HIGH',priority:100,_addedAt:'2026-07-31T22:07:00Z',pubDate:'2026-07-31'},
+   {id:'YESTERDAY',priority:5,_addedAt:'2026-10-29T16:00:00Z',pubDate:'2026-10-29'},
+   {id:'TODAY',priority:1,_addedAt:'2026-10-30T13:23:00Z',pubDate:'2026-10-30'},
+   {id:'FUTURE',priority:999,_addedAt:'2026-10-31T00:00:00Z',pubDate:'2026-10-31'},
    {id:'UNDATED',priority:999},
-   {id:'TIE-HIGH',priority:11,_addedAt:'2026-10-29T16:00:00Z'},
+   {id:'TIE-HIGH',priority:11,_addedAt:'2026-10-29T16:00:00Z',pubDate:'2026-10-29'},
  ];
  const selected=select(rows,now);
  assert.deepEqual(Array.from(selected,r=>r.id),['TODAY','TIE-HIGH','YESTERDAY']);
@@ -191,7 +195,8 @@ test('SOC source selector excludes archival reports and caps recent feed at 15 c
  const vm=require('node:vm');
  const source=fs.readFileSync(path.join(__dirname,'..','live-feed-widget.js'),'utf8');
  const sandbox={
-   window:{location:{origin:'https://soc.cyberdudebivash.in'}},
+   window:{location:{origin:'https://soc.cyberdudebivash.in'},
+     SentinelRuntimeState:require('../runtime-state.js')},
    document:{readyState:'loading',addEventListener(){}},
    encodeURIComponent, Date, Number, URL, console,
  };
@@ -200,11 +205,13 @@ test('SOC source selector excludes archival reports and caps recent feed at 15 c
  const now=Date.parse('2026-10-30T14:00:00Z');
  const archives=Array.from({length:150},(_,i)=>({
    id:'OLD-'+i,priority:100-i,_addedAt:new Date(now-(60+i)*86400000).toISOString(),
+   pubDate:new Date(now-(60+i)*86400000).toISOString().slice(0,10),
  }));
  assert.equal(select(archives,now).length,0,
    'historical reports belong in the archive, not the live customer dashboard');
  const recent=Array.from({length:150},(_,i)=>({
    id:'CURRENT-'+i,priority:100-i,_addedAt:new Date(now-i*60000).toISOString(),
+   pubDate:new Date(now-i*60000).toISOString().slice(0,10),
  }));
  const result=select(recent,now);
  assert.equal(result.length,15,'cap a 150-report recent source at 15 cards');
@@ -219,7 +226,8 @@ test('SOC genuine 150-row fixture is recency-ranked and DOM bounded',()=>{
  const vm=require('node:vm');
  const source=fs.readFileSync(path.join(__dirname,'..','live-feed-widget.js'),'utf8');
  const sandbox={
-   window:{location:{origin:'https://soc.cyberdudebivash.in'}},
+   window:{location:{origin:'https://soc.cyberdudebivash.in'},
+     SentinelRuntimeState:require('../runtime-state.js')},
    document:{readyState:'loading',addEventListener(){}},
    encodeURIComponent, Date, Number, URL, console,
  };
@@ -289,7 +297,8 @@ test('SOC command center and live widget agree on the latest source report',()=>
  const vm=require('node:vm');
  const widget=fs.readFileSync(path.join(__dirname,'..','live-feed-widget.js'),'utf8');
  const sandbox={
-  window:{location:{origin:'https://soc.cyberdudebivash.in'}},
+  window:{location:{origin:'https://soc.cyberdudebivash.in'},
+     SentinelRuntimeState:require('../runtime-state.js')},
   document:{readyState:'loading',addEventListener(){}},
   encodeURIComponent,Date,Number,URL,console,
  };
