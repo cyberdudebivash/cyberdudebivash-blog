@@ -46,3 +46,25 @@ test('build and authorization gates must precede read-only domain validation and
   assert.match(deploy, /node scripts\/preflight-customer-route-markers\.cjs dist-public/);
   assert.doesNotMatch(deploy, /curl[^\n]+-X (?:DELETE|POST)[^\n]+dns_records/);
 });
+
+test('P0 drift reconciliation runs after failed or cancelled publisher completion, not only successful runs',()=>{
+  // Publisher legitimately commits newly generated reports BEFORE its final
+  // source-yield truth gate. If that gate fails, a success-only workflow_run
+  // condition used to silently skip the immediate drift assessment.
+  assert.match(drift,/workflow_run:\s*\n\s*workflows:/);
+  assert.match(drift,/types:\s*\[completed\]/);
+  assert.match(drift,/branches:\s*\[main\]/);
+  const job=drift.split('\n  reconcile:')[1]?.split('\n    steps:')[0];
+  assert(job,'bounded drift reconciliation job must exist');
+  assert.doesNotMatch(job,/github\.event\.workflow_run\.conclusion|\n\s*if:/,
+    'failed or cancelled producer runs must reach read-only drift inventory');
+  assert.match(drift,/permissions:\s*\n  contents: read\n  actions: read/);
+  assert.doesNotMatch(drift,/npx wrangler deploy|\/dispatches|actions: write/);
+});
+
+test('P1 drift schedule retains 30-minute cadence but avoids GitHub top-of-hour load',()=>{
+  assert.match(drift,/cron: ['"]11,41 \* \* \* \*['"]/);
+  assert.doesNotMatch(drift,/cron:\s*['"]?\*\/30 /);
+  assert.match(drift,/cancel-in-progress: true/,
+    'monitor concurrency remains bounded and read-only');
+});

@@ -12,7 +12,9 @@ on:
     types: [completed]
     branches: [main]
   schedule:
-    - cron: "*/30 * * * *"
+    # Keep existing 30-minute cadence, offset from :00/:30 GitHub load spikes.
+    # No additional schedules or Cloudflare usage.
+    - cron: "11,41 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -26,7 +28,10 @@ concurrency:
 jobs:
   reconcile:
     name: "Read-only drift assessment — operator-approved releases only"
-    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    # A producer may commit verified source data and then FAIL a post-push
+    # source-yield or publication-quality gate. Still perform drift inventory
+    # for completed success/failure/cancelled producer runs. Monitoring is
+    # read-only and MUST NOT retry a failed publisher or deploy a Worker.
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
