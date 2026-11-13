@@ -108,7 +108,8 @@ function publicDashboardItems(section, limit) {
   }
   items = items.slice(0, limit);
   return {
-    generated_at: assessed.timestamp,
+    generated_at: canonicalPublicFeed.generatedAt,
+    report_generated_at: canonicalPublicFeed.metadata?.lastReportGeneratedAt || null,
     freshness_state: assessed.state,
     source_platform: canonicalPublicFeed.source || 'CYBERDUDEBIVASH SENTINEL APEX',
     items: items.map(i => {
