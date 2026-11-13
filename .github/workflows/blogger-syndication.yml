@@ -52,6 +52,9 @@ permissions:
 jobs:
   syndicate:
     name: "📡 Syndicate Premium Reports to Blogger"
+    # Prevent feature-ref workflow_dispatch from executing unreviewed code
+    # with production Blogger, AI-provider or Puter secrets, even in dry-run.
+    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -193,9 +196,9 @@ jobs:
             1|2|3|4) ;;
             *) echo "::error title=Invalid Blogger limit::max_posts must be an integer from 1 to 4"; exit 2 ;;
           esac
-          # Only the reviewed main branch may publish customer-visible content.
-          # Feature branches remain usable for explicitly opted-in dry runs.
-          if [ "${GITHUB_REF}" != "refs/heads/main" ] && [ "${DRY_RUN_FLAG}" != "--dry-run" ]; then
+          # Defense in depth after the job-level main guard: never execute
+          # privileged publication code on an unreviewed feature ref.
+          if [ "${GITHUB_REF}" != "refs/heads/main" ]; then
             echo "::error title=Unauthorized Blogger branch::Live publication requires main"
             exit 2
           fi
