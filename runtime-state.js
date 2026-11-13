@@ -68,6 +68,17 @@
     }
     var stamp = feedTimestamp(obs.feed);
     var ms = stamp ? Date.parse(stamp) : NaN;
+    // Reject EITHER source-generation or real-report receipt from the future;
+    // using their minimum alone could hide a forged future timestamp.
+    var feed = obs.feed || {}, meta = feed.metadata || {};
+    var sourceMs = Date.parse(feed.generatedAt || meta.generated || feed.generated || feed.lastUpdated || '');
+    var reportMs = Date.parse(meta.lastReportGeneratedAt || feed.lastReportGeneratedAt || '');
+    if (isFinite(sourceMs) && isFinite(reportMs) &&
+        (sourceMs - nowMs > THRESHOLDS.futureToleranceMinutes * 60000 ||
+         reportMs - nowMs > THRESHOLDS.futureToleranceMinutes * 60000)) {
+      return { state: STATES.DEGRADED, reachable: true, ageMinutes: null, timestamp: null,
+        reason: 'Source or genuine report receipt is future-dated; live data withheld.' };
+    }
     if (!isFinite(ms)) {
       return { state: STATES.DEGRADED, reachable: true, ageMinutes: null, timestamp: null,
         reason: 'Feed reachable; genuine report receipt or source-generation time missing/invalid. Heartbeat is not a report.' };
