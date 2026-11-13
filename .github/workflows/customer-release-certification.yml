@@ -43,6 +43,12 @@ jobs:
           pip install -r requirements.txt pytest pytest-timeout
           npm ci --legacy-peer-deps
 
+      # Fail BEFORE costly integration tests on any known exploitable runtime
+      # dependency advisory, matching the separate manual Cloudflare gate.
+      # Registry/audit transport failures are fatal: never suppress the exit.
+      - name: "P0 production dependency security — moderate or higher"
+        run: npm audit --omit=dev --audit-level=moderate
+
       - name: "Block release while P0 customer incidents remain open"
         uses: actions/github-script@v7
         with:
@@ -112,9 +118,6 @@ jobs:
           npm run test:resilience
         env:
           NODE_ENV: test
-
-      - name: "Production dependency critical-vulnerability gate"
-        run: npm audit --omit=dev --audit-level=critical
 
       - name: "Live CTI proof-first audit"
         run: |
