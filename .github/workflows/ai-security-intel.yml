@@ -53,6 +53,12 @@ jobs:
       - name: "Pre-flight: verify engine"
         run: |
           echo "🧠 SENTINEL APEX — AI Security Intelligence — $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+          # Scheduled production publishing and secret-bearing analyst runs
+          # must never execute on an unreviewed workflow_dispatch feature ref.
+          if [ "${GITHUB_REF}" != "refs/heads/main" ]; then
+            echo "::error title=AI publisher branch blocked::Only the main ref may run customer-visible AI security publication"
+            exit 2
+          fi
           test -f ai-security-intel-engine.js || (echo "❌ FATAL: ai-security-intel-engine.js missing" && exit 1)
           if ! node --check ai-security-intel-engine.js 2>&1; then
             echo "::error title=Engine Syntax Error::ai-security-intel-engine.js failed node --check."
@@ -67,15 +73,24 @@ jobs:
           AISEC_ANALYST: ${{ github.event.inputs.run_analyst == 'true' && '1' || '' }}
         run: |
           echo "🚀 Starting pipeline at $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
-          timeout 340 node ai-security-intel-engine.js
-          EXIT=$?
-          rm -f ai-security-intel.lock 2>/dev/null || true
-          if [ $EXIT -eq 0 ]; then
-            echo "✅ Pipeline completed (exit 0)"
-          elif [ $EXIT -eq 124 ] || [ $EXIT -eq 143 ]; then
-            echo "⚠️ Pipeline timed out — partial results written atomically. Non-fatal."
+          # Actions executes Bash with -e; capture timeouts in a conditional
+          # or cleanup and truthful result accounting are bypassed entirely.
+          if timeout 340 node ai-security-intel-engine.js; then
+            EXIT=0
           else
-            echo "::error title=Pipeline Runtime Error::exit ${EXIT}"; exit $EXIT
+            EXIT=$?
+          fi
+          rm -f ai-security-intel.lock 2>/dev/null || true
+          if [ "$EXIT" -eq 0 ]; then
+            echo "✅ Pipeline completed (exit 0)"
+          elif [ "$EXIT" -eq 124 ] || [ "$EXIT" -eq 143 ]; then
+            # An interrupted publication is not evidence of an atomic,
+            # reconciled customer feed. Do not commit partial output.
+            echo "::error title=AI Security Publisher Timed Out::Incomplete source output withheld; operator reconciliation required"
+            exit "$EXIT"
+          else
+            echo "::error title=AI Security Pipeline Runtime Error::exit ${EXIT}"
+            exit "$EXIT"
           fi
 
       - name: "Detect changes"
@@ -91,9 +106,21 @@ jobs:
       - name: "Commit & push"
         if: steps.changes.outputs.changed != '0'
         run: |
-          git add api/intel/ai-security.json ai-security/ ai-security-intel-state.json ai-security-intel-memory.json 2>/dev/null || true
+          # Only these four reviewed AI-security output destinations can be
+          # committed. Missing paths or Git errors are NOT "nothing to commit".
+          git add -A -- api/intel/ai-security.json ai-security/ ai-security-intel-state.json ai-security-intel-memory.json
+          if git diff --cached --quiet --exit-code; then
+            echo "::error title=AI publication persistence not verified::Changes detected but no approved output staged"
+            exit 2
+          else
+            DIFF_EXIT=$?
+            if [ "$DIFF_EXIT" -ne 1 ]; then
+              echo "::error title=AI staged index unavailable::Git staged diff failed"
+              exit "$DIFF_EXIT"
+            fi
+          fi
           STATS=$(node -e "try{const s=require('./ai-security-intel-state.json').lastStats||{};console.log('pub='+(s.published||0)+' p1='+(s.p1||0)+' leads='+(s.leadsHeld||0))}catch(e){console.log('updated')}")
-          git commit -m "SENTINEL APEX AI-SEC: ${STATS} [$(date -u '+%Y-%m-%dT%H:%M:%SZ')] [skip ci]" || { echo "nothing to commit"; exit 0; }
+          git commit -m "SENTINEL APEX AI-SEC: ${STATS} [$(date -u '+%Y-%m-%dT%H:%M:%SZ')] [skip ci]"
           pushed=false
           for i in 1 2 3 4; do
             if git push origin HEAD; then echo "✅ pushed"; pushed=true; break; fi
