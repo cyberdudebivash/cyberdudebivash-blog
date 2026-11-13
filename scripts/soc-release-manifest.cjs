@@ -7,8 +7,8 @@
  * "the SHA that is main right now" is stale before the deploy job reaches its last-mile check.
  * Approval can instead bind to WHAT will be deployed: the exact source SHA plus the digest of each
  * component (static assets, Worker code, Wrangler config/bindings, D1 migrations, the two public
- * feeds), the secret-name set, the target environment, a rollback target and a fresh account-wide
- * cost attestation. A later publisher commit cannot change those bytes.
+ * feeds, the release-control files), the secret-name set, the target environment, a rollback target,
+ * a fresh account-wide cost attestation and the approver / approval time. A later publisher commit cannot change those bytes.
  *
  * This module does NOT replace or relax scripts/soc-cloudflare-release-sha-gate.cjs, does NOT touch
  * the deploy workflow, and authorizes nothing: a PASS is `PASS_NOT_DEPLOY_AUTHORIZATION`. Wiring it
@@ -22,17 +22,35 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 
-const MANIFEST_SCHEMA = 'cdb-soc-release-manifest/v1';
-const APPROVAL_SCHEMA = 'cdb-soc-release-approval/v1';
+// v2 (Phase 6): adds the release-control component and the approver / approval-time binding. Nothing in
+// production consumes this module yet, so v1 documents are simply refused (APPROVAL_OR_EVIDENCE_INVALID).
+const MANIFEST_SCHEMA = 'cdb-soc-release-manifest/v2';
+const APPROVAL_SCHEMA = 'cdb-soc-release-approval/v2';
 const SHA40 = /^[a-f0-9]{40}$/;
 const HEX64 = /^[a-f0-9]{64}$/;
 const VERSION_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const APPROVED_TARGETS = Object.freeze(['production']);
 const MAX_ATTESTATION_AGE_MS = 2 * 60 * 60 * 1000;   // same bound as cloudflare-account-zero-overage-gate.cjs
 const MAX_FEED_AGE_MS = 180 * 60 * 1000;             // same genuine-report bound as certify-soc-public-feed-parity.cjs
+const MAX_APPROVAL_AGE_MS = 24 * 60 * 60 * 1000;     // proposed sanity bound; the 180-min feed and 2 h cost gates are tighter and still bind
 const FUTURE_SKEW_MS = 5 * 60 * 1000;
+const APPROVER = /^[A-Za-z0-9][A-Za-z0-9._@-]{0,99}$/;
 const FEED_FILES = Object.freeze(['live-intel.json', 'api/intel/live.json']);
-const COMPONENTS = Object.freeze(['assets', 'worker', 'config', 'migrations', 'feed']);
+const COMPONENTS = Object.freeze(['assets', 'worker', 'config', 'migrations', 'feed', 'control']);
+// Release-control files: whatever decides, builds or checks a release. They live in the repository, so a SHA
+// pin covers them in a clean checkout; digesting them also catches a modified or substituted copy in the
+// working tree being deployed (a runner patched after approval). Paths are relative to the repository root.
+const DEFAULT_CONTROL_PATHS = Object.freeze([
+  '.github/workflows/cloudflare-production-deploy.yml',
+  'scripts/soc-cloudflare-release-sha-gate.cjs',
+  'scripts/cloudflare-account-zero-overage-gate.cjs',
+  'scripts/certify-soc-public-feed-parity.cjs',
+  'scripts/certify-soc-s2n-api-release.cjs',
+  'scripts/verify-existing-cloudflare-domain.cjs',
+  'scripts/production-drift-policy.cjs',
+  'scripts/build-cloudflare-assets.js',
+  'scripts/soc-release-manifest.cjs',
+]);
 
 const sha256 = (b) => crypto.createHash('sha256').update(b).digest('hex');
 const isObj = (x) => x !== null && typeof x === 'object' && !Array.isArray(x);
@@ -65,7 +83,7 @@ function digestFile(file) { return sha256(fs.readFileSync(file)); }
 
 /**
  * Build the manifest of the CURRENT tree. Deterministic: no timestamps, no host paths, byte-ordered.
- * @param {{root:string, sourceSha:string, assetsDir?:string, workerPaths?:string[], configPath?:string, migrationsDir?:string}} o
+ * @param {{root:string, sourceSha:string, assetsDir?:string, workerPaths?:string[], configPath?:string, migrationsDir?:string, controlPaths?:string[]}} o
  */
 function buildManifest(o) {
   const root = path.resolve(o.root || '.');
@@ -75,6 +93,7 @@ function buildManifest(o) {
   const workerPaths = o.workerPaths || ['workers'];
   const configPath = o.configPath || 'wrangler.jsonc';
   const migrationsDir = o.migrationsDir || 'migrations';
+  const controlPaths = o.controlPaths || DEFAULT_CONTROL_PATHS;
 
   // assets and migrations are digested relative to their own directory, exactly like
   // `cd dist-public && find . -type f | sort | xargs sha256sum | sha256sum`; the Worker spans several
@@ -95,7 +114,8 @@ function buildManifest(o) {
   } catch { /* an unreadable feed leaves generated_at null, which verify() reports as stale */ }
   const feed = { digest: sha256(feedLines.join('')), generated_at: generatedAt, total_published: totalPublished };
 
-  const components = { assets, worker, config, migrations, feed };
+  const control = digestPaths(root, controlPaths);   // a missing control file throws: never silently dropped
+  const components = { assets, worker, config, migrations, feed, control };
   const manifest = { schema: MANIFEST_SCHEMA, source_sha: sourceSha, components };
   manifest.manifest_digest = manifestDigest(manifest);
   return manifest;
@@ -162,6 +182,7 @@ function verifyRelease({ approval, observed, now = Date.now() } = {}) {
   component('config', 'CONFIG_OR_BINDINGS_CHANGED');
   component('migrations', 'MIGRATIONS_CHANGED');
   component('feed', 'FEED_MODIFIED');
+  component('control', 'RELEASE_CONTROL_MODIFIED');  // workflow / gates / verifier itself
 
   // 5. Secret-name set (names only) must be pinned and unchanged.
   const pinnedSecrets = a.secret_names_digest;
@@ -176,6 +197,13 @@ function verifyRelease({ approval, observed, now = Date.now() } = {}) {
   if (!APPROVED_TARGETS.includes(a.target_environment) || observed.targetEnvironment !== a.target_environment) {
     codes.add('TARGET_ENVIRONMENT_NOT_APPROVED');
   }
+
+  // 6b. Who approved, and when. The verifier records and bounds these; it cannot authenticate the person.
+  //     Authority comes from the protected GitHub environment / required reviewers, not from this JSON.
+  if (typeof a.approved_by !== 'string' || !APPROVER.test(a.approved_by)) codes.add('APPROVAL_IDENTITY_MISSING');
+  const approvedMs = typeof a.approved_at === 'string' ? Date.parse(a.approved_at) : NaN;
+  if (!Number.isFinite(approvedMs) || approvedMs - nowMs > FUTURE_SKEW_MS) codes.add('APPROVAL_TIMESTAMP_INVALID');
+  else if (nowMs - approvedMs > MAX_APPROVAL_AGE_MS) codes.add('APPROVAL_STALE');
 
   // 7. A rollback target must exist (a Worker version id) before anything is mutated.
   if (typeof a.rollback_version_id !== 'string' || !VERSION_ID.test(a.rollback_version_id)) {
@@ -249,6 +277,7 @@ function main(argv) {
 if (require.main === module) process.exitCode = main(process.argv.slice(2));
 
 module.exports = {
-  MANIFEST_SCHEMA, APPROVAL_SCHEMA, APPROVED_TARGETS, MAX_ATTESTATION_AGE_MS, MAX_FEED_AGE_MS,
+  MANIFEST_SCHEMA, APPROVAL_SCHEMA, APPROVED_TARGETS, MAX_ATTESTATION_AGE_MS, MAX_FEED_AGE_MS, MAX_APPROVAL_AGE_MS,
+  DEFAULT_CONTROL_PATHS,
   buildManifest, verifyRelease, digestPaths, digestSecretNames, manifestDigest,
 };
