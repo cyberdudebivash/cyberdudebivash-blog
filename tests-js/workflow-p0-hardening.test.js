@@ -70,3 +70,34 @@ test('negative: AI security persistence failure cannot be green', () => {
   assert.notEqual(unsafe, actual, 'negative fixture must change the real failure branch');
   assert.equal(aiSecurityPushFailsClosed(unsafe), false);
 });
+
+test('P0 AI security publisher rejects non-main live runs before secret-bearing execution',()=>{
+  const yaml=fs.readFileSync(aiSecurity,'utf8');
+  const branch=yaml.indexOf('if [ "'+'$'+'{GITHUB_REF}" != "refs/heads/main" ]');
+  const run=yaml.indexOf('if timeout 340 node ai-security-intel-engine.js');
+  assert(branch>0&&run>branch);
+  assert.match(yaml,/AI publisher branch blocked/);
+  assert.match(yaml,/exit 2/);
+});
+
+test('P0 AI security timeout cannot bypass cleanup or become a false-green partial publication',()=>{
+  const yaml=fs.readFileSync(aiSecurity,'utf8');
+  const start=yaml.indexOf('if timeout 340 node ai-security-intel-engine.js; then');
+  const capture=yaml.indexOf('EXIT=$?',start);
+  const cleanup=yaml.indexOf('rm -f ai-security-intel.lock',start);
+  const timeoutVerdict=yaml.indexOf('AI Security Publisher Timed Out',start);
+  const errorExit=yaml.indexOf('exit "$EXIT"',timeoutVerdict);
+  assert(start>0&&capture>start&&cleanup>capture&&timeoutVerdict>cleanup&&errorExit>timeoutVerdict);
+  assert.doesNotMatch(yaml,/Pipeline timed out[^\n]*Non-fatal/);
+});
+
+test('P0 AI security Git staging and commit errors are never disguised as no change',()=>{
+  const yaml=fs.readFileSync(aiSecurity,'utf8');
+  const stage=yaml.indexOf('git add -A -- api/intel/ai-security.json ai-security/');
+  const proof=yaml.indexOf('git diff --cached --quiet --exit-code',stage);
+  const commit=yaml.indexOf('git commit -m "SENTINEL APEX AI-SEC:',stage);
+  assert(stage>0&&proof>stage&&commit>proof);
+  assert.doesNotMatch(yaml,/git commit -m [^\n]+\|\|\s*\{\s*echo "nothing to commit"; exit 0;/);
+  assert.match(yaml,/AI publication persistence not verified/);
+  assert.match(yaml,/AI staged index unavailable/);
+});
