@@ -357,6 +357,13 @@ jobs:
           set -euo pipefail
           node scripts/certify-soc-s2n-api-release.cjs --release-asset
 
+      # The root and S2N feed proofs cover intelligence bytes. Separately
+      # certify actual SOC browser application assets on BOTH Worker domains.
+      # Public GETs only; no cache purge, deployment or customer write.
+      - name: "P0 SOC dual-host UI exact build-byte parity — postdeploy"
+        shell: bash
+        run: node scripts/certify-soc-dual-host-ui-release.cjs
+
       - name: "P0 postcondition — verify existing domain mapping unchanged"
         shell: bash
         env:
