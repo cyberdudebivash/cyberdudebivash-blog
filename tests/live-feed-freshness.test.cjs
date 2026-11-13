@@ -3,13 +3,15 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
+const RS = require('../runtime-state.js');
 
 // Exercise the actual browser selection function without triggering DOM boot.
 const source = fs.readFileSync(require('node:path').join(__dirname, '..', 'live-feed-widget.js'), 'utf8');
-const start = source.indexOf('  function selectLocalItems(');
+const start = source.indexOf('  function sharedLiveAuthority(');
 const end = source.indexOf('  /* ── MAIN FETCH PIPELINE', start);
 assert.ok(start > 0 && end > start, 'selector must exist');
-const context = vm.createContext({ CFG: { LOOKBACK_DAYS: 1, MAX_CARDS: 15 }, Date, Number, Object,
+const context = vm.createContext({ CFG: { LOOKBACK_DAYS: 1, MAX_CARDS: 15 },
+  Date, Number, Object, window: {SentinelRuntimeState: RS},
   normaliseLocal: raw => ({ id: raw.id, published: raw.published, link: raw.link }) });
 vm.runInContext(source.slice(start, end), context);
 const select = context.selectLocalItems;
@@ -47,7 +49,45 @@ test('enforces 15-card limit and 24h boundary', () => {
   assert.deepEqual(ids(select([rows[20]],now)),['boundary']);
 });
 
-test('requires fresh first-party source before displaying live items', () => {
-  assert.match(source, /classifyFeedTimestamp\(generated\)\.state !== 'current'/);
-  assert.match(source, /classifyFeedTimestamp\(cached\[0\]\._feedGenerated\)\.state === 'current'/);
+test('requires shared model for ingestion and publication clocks', () => {
+  assert.match(source, /if \(!shared\.isLiveRecord\(raw, now\)\) return null/);
+  assert.match(source, /if \(cached && verifiedLiveItems\(cached\)\)/);
+  const previous = context.window;
+  context.window = undefined;
+  assert.deepEqual(ids(select([record('no-model','2026-11-08T11:00:00Z')],now)),[]);
+  context.window = previous;
+});
+test('newly ingested OLD source and missing ingestion cannot appear live', () => {
+  const newAt='2026-11-08T11:00:00Z';
+  assert.deepEqual(ids(select([
+    {id:'old',_addedAt:newAt,published:'2026-04-22T10:00:00Z'},
+    {id:'zone-less',_addedAt:'2026-11-08T11:00:00',published:newAt},
+    {id:'no-ingest',published:newAt},
+    {id:'recent',_addedAt:newAt,published:newAt},
+  ],now)),['recent']);
+});
+test('source publication date remains distinct from first-ingestion time',()=>{
+  const recordAdded='2026-11-08T11:00:00Z';
+  const sourcePublished='2026-11-07T12:00:00Z';
+  const got=select([{id:'recent',_addedAt:recordAdded,published:sourcePublished}],now);
+  assert.equal(got[0].published,sourcePublished);
+  assert.equal(got[0]._sourcePublishedAt,sourcePublished);
+  assert.equal(got[0]._reportAddedAt,recordAdded);
+});
+test('render and cached card eligibility reject stale feed and expired reports',()=>{
+  const added='2026-11-08T11:00:00Z';
+  const rows=select([{id:'fresh',_addedAt:added,published:added}],now);
+  rows[0]._feedGenerated='2026-11-08T11:30:00Z';
+  assert.equal(context.verifiedLiveItems(rows,now),true);
+  const tampered=Object.assign({},rows[0],{_sourcePublishedAt:'2026-04-22T10:00:00Z'});
+  assert.equal(context.verifiedLiveItems([tampered],now),false);
+  const stale=Object.assign({},rows[0],{_feedGenerated:'2026-11-08T08:59:00Z'});
+  assert.equal(context.verifiedLiveItems([stale],now),false);
+  assert.equal(context.verifiedLiveItems(rows,now+25*3600000),false);
+  assert.equal(context.verifiedLiveItems([Object.assign({},rows[0],{_contentArchived:true})],now),false);
+});
+test('no third-party fallback enters the first-party live card grid',()=>{
+  assert.doesNotMatch(source,/xhrFetch\(CFG\.CISA_DIRECT/);
+  assert.match(source,/function render\(items, container, animate\) \{\s*if \(!verifiedLiveItems\(items\)\)/);
+  assert.match(source,/if \(container && _displayedItems\.length && !verifiedLiveItems\(_displayedItems\)\)/);
 });
