@@ -126,6 +126,8 @@ jobs:
         run: node --test tests-js/soc-native-d1-local-certify.test.js
       - name: P0 — Public SOC feed freshness and source-parity negative controls
         run: node --test tests-js/soc-public-feed-parity.test.js
+      - name: "P0 SOC homepage contains no hardcoded historical CVEs labelled active"
+        run: node --test tests-js/soc-no-static-active-cves.test.js
       - name: P0 — Scheduled SOC source freshness cannot hide stale public Worker delivery
         run: node --test tests-js/soc-public-freshness-monitor.test.js
       - name: P0 — Live lists show only records proven new (24 h ingest / 72 h publication) and honest feed states
