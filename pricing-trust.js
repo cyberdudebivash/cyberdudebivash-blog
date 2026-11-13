@@ -31,10 +31,11 @@
         !Number.isFinite(Date.parse(feed.generatedAt))) {
       return notVerified('DEGRADED', 'First-party feed responded, but its genuine report count or publication timestamp cannot be verified.');
     }
-    // Deliberately pass ONLY genuine generatedAt. lastPipelineRun is a
-    // heartbeat and must never be substituted for publication freshness.
+    // The scheduled JSON generation time is NOT a genuine report receipt.
+    // Pass full first-party evidence to the canonical runtime policy. A green
+    // lastPipelineRun without fresh lastReportGeneratedAt must not appear LIVE.
     var result = runtime.classifyFeed({
-      ok: true, feed: { generatedAt: feed.generatedAt },
+      ok: true, feed: feed,
       nowMs: typeof nowMs === 'number' ? nowMs : Date.now()
     });
     if (result.state === 'HEALTHY') {
