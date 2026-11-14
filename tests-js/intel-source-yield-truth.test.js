@@ -14,6 +14,21 @@ test('5 of 35 sources returning records passes even when no novel report exists'
   assert.equal(result.exitCode,0);
   assert.equal(result.reportsGenerated,0);
 });
+test('per-run receipt cannot report more nonempty sources than fetched records',()=>{
+  for(const [active,records] of [[5,0],[5,4],[2,1]]) {
+    const result=evaluate(fixture({active,records}),now);
+    assert.equal(result.status,'MONITOR_ERROR');
+    assert.equal(result.code,'INGESTION_RECEIPT_MISSING_OR_INVALID');
+  }
+});
+test('a reported new genuine report with zero fetched records cannot certify coverage',()=>{
+  const result=evaluate(fixture({active:0,records:0,reports:1}),now);
+  assert.equal(result.status,'MONITOR_ERROR');
+  assert.equal(result.exitCode,1);
+});
+test('zero new reports with source records may still pass the independent source-yield gate',()=>{
+  assert.equal(evaluate(fixture({active:5,records:5,reports:0}),now).status,'COVERAGE_VERIFIED');
+});
 test('reproduce production incident: 2 of 35 return items but previous 6518 cumulative is NOT healthy',()=>{
   const state={...fixture({active:2,total:35,reports:0}),totalPublished:6518};
   const result=evaluate(state,now);

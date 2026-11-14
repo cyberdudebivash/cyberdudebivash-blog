@@ -16,7 +16,11 @@ function evaluate(state,nowMs=Date.now()) {
      !Number.isSafeInteger(run.activeSources) || run.activeSources<0 ||
      run.activeSources>run.totalSources ||
      !Number.isSafeInteger(run.fetchedRecords) || run.fetchedRecords<0 ||
-     !Number.isSafeInteger(run.reportsGenerated) || run.reportsGenerated<0) {
+     !Number.isSafeInteger(run.reportsGenerated) || run.reportsGenerated<0 ||
+     // Every nonempty source must contribute at least one fetched record.
+     // Do not certify contradictory or fabricated per-run source receipts.
+     run.activeSources>run.fetchedRecords ||
+     (run.reportsGenerated>0 && run.fetchedRecords===0)) {
     return {status:'MONITOR_ERROR',exitCode:1,code:'INGESTION_RECEIPT_MISSING_OR_INVALID'};
   }
   const checkedAt=Date.parse(run.checkedAt||''),lastRun=Date.parse(state.lastRun||'');
