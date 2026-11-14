@@ -27,6 +27,12 @@ function assertHomepageIntegrity(html, source = 'index.html') {
     // operational dashboard. CSS class definitions do not count as cards.
     ['no static featured report cards', !/<(?:article|div)\b[^>]*\bclass=["'][^"']*\bpost-card\b/gi.test(text) &&
       !/<h[1-6]\b[^>]*>\s*Featured Reports\s*<\/h[1-6]\s*>/i.test(text)],
+    // Category links are static HTML. They must not claim runtime LIVE or
+    // real-time freshness before a first-party report receipt is verified.
+    // Keep the separate, initially hidden live badge controlled by JS.
+    ['no unauthenticated static LIVE assertion',
+      !/<div\b[^>]*\bclass=["'][^"']*\bfi-badge\b[^"']*\blive-badge\b[^"']*["'][^>]*>\s*(?:&#9679;|●)?\s*LIVE\s*<\/div>/i.test(text) &&
+      !/<div\b[^>]*\bclass=["'][^"']*\bfi-desc\b[^"']*["'][^>]*>[^<]*\b(?:updated live|real-time breaking)\b/i.test(text)],
     ['historical archive is linked separately', count(/\bclass=["'][^"']*\bsoc-archive-navigation\b/gi) === 1],
     ['no orphaned card tail', !/^\s*\)\s+in the ClassDefinition UID validation regex/im.test(text)],
     ['truthful SOC product title', /<title>[^<]*Threat Intelligence\s*&(?:amp;)?\s*SOC Readiness[^<]*<\/title>/i.test(text) &&
