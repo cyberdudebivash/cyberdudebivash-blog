@@ -613,6 +613,29 @@ function reconcileKevFlags(items, kevIds) {
   return { items: out, confirmed, cleared };
 }
 
+// API feed records (api/intel/{live,raw,top-threats,ransomware}.json and the per-CVE files) carry the
+// flag as snake_case `cisa_kev`. KEV membership is a property of the authoritative catalog only, so they
+// are reconciled by the SAME function and fail-safe as the root feed (reconcileKevFlags): id in the
+// catalog -> true; a claim whose id is not in it -> false; an absent/empty catalog changes nothing
+// ("unknown", never "zero"). Pure; never mutates its input; a record whose flag does not change is
+// returned as the same object, so no field is added to or removed from any record.
+// Returns {items, confirmedIds, cleared}.
+function reconcileApiKevFlags(items, kevIds) {
+  const list = Array.isArray(items) ? items : [];
+  const r = reconcileKevFlags(
+    list.map(i => (i && typeof i === 'object') ? { ...i, cisaKev: !!i.cisa_kev } : i), kevIds);
+  const confirmedIds = [];
+  const out = r.items.map((o, n) => {
+    const orig = list[n];
+    if (!orig || typeof orig !== 'object') return orig;
+    const flag = !!o.cisaKev;
+    if (flag === !!orig.cisa_kev) return orig;
+    if (flag) confirmedIds.push(orig.id);
+    return { ...orig, cisa_kev: flag };
+  });
+  return { items: out, confirmedIds, cleared: r.cleared };
+}
+
 async function fetchCISAKev(state) {
   const lastFetch = getSourceLastFetch(state, 'cisa_kev');
   const cutoff    = watermarkStart(lastFetch, CFG.rssMinLookbackHours, CFG.kevLookbackDays * 86400000);
@@ -2961,7 +2984,21 @@ async function writeAPIFiles(allItems, state) {
     // ── Run S2N Engine ──────────────────────────────────────────────────
     log('── S2N ENGINE ─────────────────────────────────────────────────────');
     const s2nResult = runS2N(allItems, windowItems);
-    const { live: liveItems, topThreats: topItems, raw: rawItems } = formatForFeed(s2nResult);
+    const { live: s2nLive, topThreats: s2nTop, raw: s2nRaw } = formatForFeed(s2nResult);
+    // CISA KEV membership is a property of the authoritative catalog only. The root feed already
+    // reconciles against it; the API feeds took cisa_kev from the S2N output as-is and carried a wrong
+    // `false` forward through the rolling window (live.json, raw.json, ransomware.json, per-CVE files).
+    // Same function, same fail-safe: an unverified/absent catalog changes nothing (unknown, never zero).
+    const apiKev = { confirmed: new Set(), cleared: new Set() };
+    const kevApi = (arr) => {
+      const r = reconcileApiKevFlags(arr, lastKevCatalogIds);
+      r.confirmedIds.forEach(id => apiKev.confirmed.add(id)); r.cleared.forEach(id => apiKev.cleared.add(id));
+      return r.items;
+    };
+    const liveItems = kevApi(s2nLive), topItems = kevApi(s2nTop), rawItems = kevApi(s2nRaw);
+    const passedItems = kevApi(s2nResult.passed), windowKevItems = kevApi(windowItems);
+    if (!lastKevCatalogIds || !lastKevCatalogIds.size) warn('KEV(api): authoritative catalog not verified this run; cisa_kev left as produced upstream (UNKNOWN, not zero).');
+    else log(`KEV(api): ${apiKev.confirmed.size} record flag(s) set and ${apiKev.cleared.size} unsupported claim(s) cleared from the authoritative catalog across the API feeds.`);
 
     log(`  S2N stats: input=${s2nResult.stats.input_items} candidates=${s2nResult.stats.candidates} passed=${s2nResult.stats.passed} suppressed=${s2nResult.stats.suppressed} merges=${s2nResult.stats.semantic_merges} elapsed=${s2nResult.stats.elapsed_ms}ms`);
     log(`  avg_qs=${s2nResult.stats.avg_qs} avg_ps=${s2nResult.stats.avg_final_ps} tier4_kept=${s2nResult.stats.tier4_kept}`);
@@ -2970,7 +3007,7 @@ async function writeAPIFiles(allItems, state) {
     // Rolling merge with existing (new overrides by id, trim to apiLiveWindow)
     const mergedLive = [...liveItems];
     const newLiveIds = new Set(liveItems.map(i => i.id));
-    windowItems.forEach(e => { if (!newLiveIds.has(e.id)) mergedLive.push(e); });
+    windowKevItems.forEach(e => { if (!newLiveIds.has(e.id)) mergedLive.push(e); });
     mergedLive.sort((a,b) => {
       const ps = (b.final_ps||b.priority_score||0) - (a.final_ps||a.priority_score||0);
       if (ps !== 0) return ps;
@@ -3013,7 +3050,7 @@ async function writeAPIFiles(allItems, state) {
     // earlier indicator and could not attach source provenance (ICF-P0-010).
 
     // ── /api/intel/ransomware.json — ransomware-specific ────────────────
-    const ransomItems = s2nResult.passed.filter(i => i.ransomware || i.type==='RANSOMWARE');
+    const ransomItems = passedItems.filter(i => i.ransomware || i.type==='RANSOMWARE');
     safeWriteSync(path.join(CFG.apiDir, 'ransomware.json'), JSON.stringify({
       ...apiMeta, endpoint: '/api/intel/ransomware.json',
       description: 'Ransomware-specific threat intelligence (S2N-filtered)',
@@ -3029,7 +3066,7 @@ async function writeAPIFiles(allItems, state) {
 
     // ── /api/intel/cve/{id}.json — per-CVE detail files ─────────────────
     let cveFileCount = 0;
-    const cveCandidates = s2nResult.passed
+    const cveCandidates = passedItems
       .filter(i => i.id && i.id.startsWith('CVE') && (i.final_ps||0)>=50)
       .slice(0, 20);
     // Real EPSS scores, batched once for every CVE file about to be written
@@ -3588,6 +3625,6 @@ if (require.main === module) {
     sapexCanonicalId, sapexNativeMitre, fetchSentinelApex,
     watermarkStart, acknowledgeExistingPost, resolveFirstAddedAt, selectLiveWindow,
     recordSourceSuccess, recordSourceFailure, getSourceHealthReport,
-    fetchCISAKev, reconcileKevFlags, getKevCatalogIds, getKevCatalogMeta, parseKevCatalog, resetKevCatalogState,
+    fetchCISAKev, reconcileKevFlags, reconcileApiKevFlags, getKevCatalogIds, getKevCatalogMeta, parseKevCatalog, resetKevCatalogState,
   };
 }
