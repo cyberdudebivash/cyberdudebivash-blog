@@ -110,7 +110,6 @@ const CFG = {
   ghAdvisoryUrl:      'https://api.github.com/advisories?type=reviewed&severity=high&per_page=30',
   msrcApi:            'https://api.msrc.microsoft.com/cvrf/v2.0/Updates',
   exploitDbRss:       'https://www.exploit-db.com/rss.xml',
-  packetstormRss:     'https://rss.packetstormsecurity.com/files/advisories/',
   fullDisclosureRss:  'https://seclists.org/rss/fulldisclosure.rss',
 
   // CYBERDUDEBIVASH SENTINEL APEX — native ecosystem CTI portal (product/
@@ -1322,33 +1321,14 @@ async function fetchExploitDB(state) {
   } catch(e) { warn(`ExploitDB failed: ${e.message}`); throw e; }
 }
 
+// Packet Storm explicitly requires its paid API for commercial automated
+// intelligence products; this repository currently has no owner-approved
+// commercial API contract, cost budget, credentials or licensed integration.
+// Do NOT fall back to the public RSS endpoint or disable TLS hostname checks.
+// A later separately reviewed API adapter may re-enable licensed access.
 async function fetchPacketStorm(state) {
-  const lastFetch = getSourceLastFetch(state, 'packetstorm');
-  const afterDate = watermarkStart(lastFetch, CFG.rssMinLookbackHours, 2*86400000);
-  log(`PacketStorm: fetching...`);
   try {
-    const raw = await fetchWithRetry(CFG.packetstormRss, {}, 2);
-    const parsed = parseRSS(raw);
-    const items = parsed
-      .filter(item => { try { return !item.pubDate || new Date(item.pubDate) >= afterDate; } catch(_){return true;} })
-      .slice(0, CFG.maxRssItems)
-      .map(item => {
-        const text = (item.title||'') + ' ' + (item.desc||'');
-        const cves  = extractCVEs(text);
-        const id    = cves[0] || ('PKTSTORM-' + md5(item.link || item.title));
-        return {
-          source:'packetstorm', type: /exploit|poc|proof.of.concept/i.test(text) ? 'ZERO_DAY' : 'CVE_REPORT',
-          id, title: item.title || 'PacketStorm Security Advisory', desc: (item.desc||'').slice(0,600),
-          cvss: parseCvssFromText(text), refs: extractHttpUrls(item.link),
-          pubDate: item.pubDate ? new Date(item.pubDate).toISOString().slice(0,10) : isoNow(),
-          vendor: 'PacketStorm', product: 'Multiple Targets',
-          exploited: hasConfirmedExploitation(text), cisaKev: false, ransomware: false,
-          cves, iocs: [], sourceCount: 1,
-          daysOld: item.pubDate ? Math.floor((Date.now()-new Date(item.pubDate).getTime())/86400000) : 0,
-        };
-      });
-    setSourceLastFetch(state, 'packetstorm', Date.now());
-    log(`PacketStorm: ${items.length} items.`); return items;
+    throw new Error('PACKETSTORM_COMMERCIAL_API_REQUIRED');
   } catch(e) { warn(`PacketStorm failed: ${e.message}`); throw e; }
 }
 
