@@ -21,6 +21,12 @@ function assertHomepageIntegrity(html, source = 'index.html') {
     ['no static generated homepage reports', count(/\bdata-intel-auto\s*=/gi) === 0 &&
       count(/<!--\s*AUTO-GENERATED:/gi) === 0 &&
       count(/<!--\s*POST 1 — FEATURED\s*-->/gi) === 0],
+    // An older publicly deployed homepage can contain hand-authored report
+    // cards with no data-intel-auto marker. Static report previews are not
+    // verified live intelligence and belong in /archive.html, never the SOC
+    // operational dashboard. CSS class definitions do not count as cards.
+    ['no static featured report cards', !/<(?:article|div)\b[^>]*\bclass=["'][^"']*\bpost-card\b/gi.test(text) &&
+      !/<h[1-6]\b[^>]*>\s*Featured Reports\s*<\/h[1-6]\s*>/i.test(text)],
     ['historical archive is linked separately', count(/\bclass=["'][^"']*\bsoc-archive-navigation\b/gi) === 1],
     ['no orphaned card tail', !/^\s*\)\s+in the ClassDefinition UID validation regex/im.test(text)],
     ['truthful SOC product title', /<title>[^<]*Threat Intelligence\s*&(?:amp;)?\s*SOC Readiness[^<]*<\/title>/i.test(text) &&
