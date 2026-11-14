@@ -13,6 +13,8 @@
  * Worker deployment SHA, CTI source freshness or global edge propagation.
  */
 const crypto=require('node:crypto');
+const fs=require('node:fs');
+const path=require('node:path');
 const {assertHomepageIntegrity}=require('./soc-homepage-integrity');
 
 const ENDPOINTS=Object.freeze({
@@ -22,7 +24,7 @@ const ENDPOINTS=Object.freeze({
 const MAX_BYTES=3*1024*1024;
 const TIMEOUT_MS=12000;
 
-function inspectResponseBody(html,{url=ENDPOINTS.blog,httpStatus=200,contentType='text/html'}={}) {
+function inspectResponseBody(html,{url=ENDPOINTS.blog,httpStatus=200,contentType='text/html',expectedHtml}={}) {
   const body=String(html);
   const digest=crypto.createHash('sha256').update(body,'utf8').digest('hex');
   const title=(body.match(/<title>([^<]*)<\/title>/i)||[])[1]||null;
@@ -39,6 +41,7 @@ function inspectResponseBody(html,{url=ENDPOINTS.blog,httpStatus=200,contentType
     },
     gates:['HTTP 200','HTML content type','single SOC/CTI homepage structure','accurate product title'],
     limitations:['not a deployment SHA attestation','not a CTI feed freshness check','not a multi-region edge probe'],
+    approvedAssetParity: false,
   };
   if(httpStatus===429)return {...result,status:'INCONCLUSIVE',reason:'EDGE_RATE_LIMITED'};
   if(httpStatus!==200)return {...result,status:'FAIL',reason:'HTTP_STATUS_UNEXPECTED'};
@@ -47,6 +50,19 @@ function inspectResponseBody(html,{url=ENDPOINTS.blog,httpStatus=200,contentType
   if(!body||result.htmlBytes>MAX_BYTES)return {...result,status:'FAIL',reason:'BODY_SIZE_INVALID'};
   try{assertHomepageIntegrity(body,'public edge HTML');}
   catch(_){return {...result,status:'FAIL',reason:'HOMEPAGE_INTEGRITY_FAILED'};}
+  if(expectedHtml!==undefined){
+    // A structurally valid edge could be an obsolete dashboard build. Only
+    // the exact approved dist-public/index.html bytes prove asset parity.
+    // SHA256 is an artifact hash, NOT a deployed Worker SHA attestation.
+    if(typeof expectedHtml!=='string'||!expectedHtml||Buffer.byteLength(expectedHtml,'utf8')>MAX_BYTES)
+      return {...result,status:'FAIL',reason:'APPROVED_HOMEPAGE_ASSET_INVALID'};
+    const expectedSha256=crypto.createHash('sha256').update(expectedHtml,'utf8').digest('hex');
+    if(result.contentSha256!==expectedSha256)
+      return {...result,status:'FAIL',reason:'PUBLIC_HOMEPAGE_ASSET_SHA256_MISMATCH',
+        expectedContentSha256:expectedSha256};
+    return {...result,status:'PASS',reason:'APPROVED_HOMEPAGE_ASSET_MATCH',
+      approvedAssetParity:true,expectedContentSha256:expectedSha256};
+  }
   return {...result,status:'PASS',reason:'STRUCTURE_AND_BRANDING_MATCH'};
 }
 
@@ -74,7 +90,7 @@ async function readBounded(response) {
 }
 
 async function certifyLiveHomepage({
-  target='blog',fetcher=globalThis.fetch,timeoutMs=TIMEOUT_MS,
+  target='blog',fetcher=globalThis.fetch,timeoutMs=TIMEOUT_MS,expectedHtml,
 }={}) {
   if(!Object.hasOwn(ENDPOINTS,target))throw new Error('APPROVED_ENDPOINT_REQUIRED');
   if(typeof fetcher!=='function')throw new Error('FETCH_REQUIRED');
@@ -101,7 +117,7 @@ async function certifyLiveHomepage({
     if(!/^text\/html(?:\s*;|$)/i.test(type))
       return {status:'FAIL',reason:'NOT_HTML',checkedUrl:url,httpStatus:200,checkedAt};
     const body=await readBounded(response);
-    return {...inspectResponseBody(body,{url,httpStatus:200,contentType:type}),checkedAt};
+    return {...inspectResponseBody(body,{url,httpStatus:200,contentType:type,expectedHtml}),checkedAt};
   }catch(_){
     return {status:'INCONCLUSIVE',reason:'EDGE_READ_FAILED',
       checkedUrl:url,checkedAt};
@@ -110,19 +126,33 @@ async function certifyLiveHomepage({
 
 if(require.main===module) {
   const args=process.argv.slice(2);
-  if(args.some(x=>!['--soc'].includes(x))||args.length>1){
-    process.stderr.write('Usage: node scripts/soc-live-homepage-certify.js [--soc]\n');
+  const allow=['--soc','--release-asset'];
+  if(args.some(x=>!allow.includes(x))||new Set(args).size!==args.length){
+    process.stderr.write('Usage: node scripts/soc-live-homepage-certify.js [--soc] [--release-asset]\n');
     process.exitCode=2;
   }else {
-    certifyLiveHomepage({target:args.includes('--soc')?'soc':'blog'})
-      .then(result=>{
-        process.stdout.write(JSON.stringify(result,null,2)+'\n');
-        process.exitCode=result.status==='PASS'?0:result.status==='FAIL'?2:3;
-      })
-      .catch(()=>{
-        process.stderr.write('Live certification could not initialize\n');
-        process.exitCode=3;
-      });
+    let expectedHtml;
+    if(args.includes('--release-asset')) {
+      try {
+        // Approved artifact is constructed by the existing build pipeline.
+        // This verifier NEVER builds or modifies it.
+        expectedHtml=fs.readFileSync(path.join(__dirname,'..','dist-public','index.html'),'utf8');
+      } catch(_) {
+        process.stderr.write('FAIL: APPROVED_HOMEPAGE_ASSET_UNAVAILABLE\n');
+        process.exitCode=2;
+      }
+    }
+    if(!args.includes('--release-asset')||expectedHtml!==undefined){
+      certifyLiveHomepage({target:args.includes('--soc')?'soc':'blog',expectedHtml})
+        .then(result=>{
+          process.stdout.write(JSON.stringify(result,null,2)+'\n');
+          process.exitCode=result.status==='PASS'?0:result.status==='FAIL'?2:3;
+        })
+        .catch(()=>{
+          process.stderr.write('Live certification could not initialize\n');
+          process.exitCode=3;
+        });
+    }
   }
 }
 
