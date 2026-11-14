@@ -47,7 +47,7 @@ function fakeElement(tagName = 'div') {
 function descendants(node) {
   return [node, ...(node.children || []).flatMap(descendants)];
 }
-async function setup({ ageMinutes = 30, corrupt = false } = {}) {
+async function setup({ ageMinutes = 30, corrupt = false, deferResponse = false } = {}) {
   let now = Date.parse('2026-11-14T12:00:00Z');
   const container = fakeElement('section');
   const documentListeners = {};
@@ -56,6 +56,7 @@ async function setup({ ageMinutes = 30, corrupt = false } = {}) {
   let timerId = 0;
   let requests = 0;
   let renders = 0;
+  let releaseResponse = null;
   const payload = fixture(now, {generatedAt: now - ageMinutes * MINUTE});
   if (corrupt) payload.schema = 'unexpected-schema';
   class Clock extends Date { static now() { return now; } }
@@ -76,19 +77,21 @@ async function setup({ ageMinutes = 30, corrupt = false } = {}) {
     addEventListener: (event, fn) => { windowListeners[event] = fn; },
     setTimeout, clearTimeout,
   };
-  const fetch = async (url, options) => {
+  const fetch = (url, options) => {
     requests++;
     assert.equal(url, '/api/v1/global-incidents/feed.json');
     assert.equal(options.method, 'GET');
     assert.equal(options.credentials, 'omit');
     assert.equal(options.cache, 'no-store');
-    return {
+    const response = {
       ok: true,
       headers: {get(name) {
         return name === 'content-type' ? 'application/json' : null;
       }},
       text: async () => JSON.stringify(payload),
     };
+    if (deferResponse) return new Promise(resolve => { releaseResponse = () => resolve(response); });
+    return Promise.resolve(response);
   };
   const context = vm.createContext({
     window, document, Date: Clock, URL, Set, Number, Object,
@@ -115,6 +118,7 @@ async function setup({ ageMinutes = 30, corrupt = false } = {}) {
     windowListeners, timers, get requests() { return requests; },
     get renders() { return renders; },
     advance(ms) { now += ms; },
+    releaseResponse() { if (releaseResponse) releaseResponse(); },
   };
 }
 
@@ -170,10 +174,24 @@ test('invalid and already-stale first responses fail closed without retained tim
   }
 });
 
-test('pagehide cancels local rechecks without modifying production state', async () => {
+test('pagehide clears cards and cancels local rechecks before bfcache restores the page', async () => {
   const h = await setup();
   assert.equal(h.cards().length, 1);
   h.windowListeners.pagehide();
+  assert.equal(h.cards().length, 0, 'bfcache must not restore live-looking incident cards');
+  assert.match(h.status(), /Verified coverage cannot be asserted/);
+  assert.equal(Array.from(h.timers.values()).filter(t => t.delay === 5000).length, 0);
+  assert.equal(h.requests, 1);
+});
+
+test('fetch resolving after pagehide cannot resurrect incident cards or schedule new timers', async () => {
+  const h = await setup({deferResponse:true});
+  assert.equal(h.requests, 1);
+  h.windowListeners.pagehide();
+  h.releaseResponse();
+  for (let i=0;i<12;i++) await Promise.resolve();
+  assert.equal(h.cards().length, 0);
+  assert.match(h.status(), /Verified coverage cannot be asserted/);
   assert.equal(Array.from(h.timers.values()).filter(t => t.delay === 5000).length, 0);
   assert.equal(h.requests, 1);
 });
