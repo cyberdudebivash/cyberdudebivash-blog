@@ -243,6 +243,9 @@
       var now = Date.now();
       var trusted = RS && typeof RS.pipelineAllowsLive === 'function' &&
         RS.pipelineAllowsLive(cls, now);
+      // Rechecking can straddle an exact expiry boundary by milliseconds.
+      // Do not leave a card/export visible when the second clock says stale.
+      if (!trusted) records = [];
       setStatus(cls.state, cls.reason + (trusted
         ? ' Display limited to newly verified reports within their source and ingestion windows.'
         : ' Previously shown records and CSV exports are withheld; refresh to check for new evidence.'));
