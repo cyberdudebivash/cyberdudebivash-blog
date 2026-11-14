@@ -103,6 +103,24 @@
     return selectRecentRecords(feed, now);
   }
 
+  // Do not freeze freshness at HTTP receipt. A browser tab can remain open
+  // after the source pipeline ages past 180 minutes or a report ages past its
+  // 24h ingestion window. Reassess BOTH clocks using the shared runtime model.
+  // This function performs no IO, remote fetch or credential access.
+  function reviewSnapshot(feed, nowMs) {
+    var RS = liveAuthority();
+    var now = typeof nowMs === 'number' && isFinite(nowMs) ? nowMs : Date.now();
+    if (!RS || typeof RS.classifyFeed !== 'function' || !feed ||
+        !Array.isArray(feed.items)) {
+      return { classification: {
+        state: 'UNAVAILABLE', timestamp: null, ageMinutes: null,
+        reason: 'Current feed freshness cannot be verified.'
+      }, records: [] };
+    }
+    var classification = RS.classifyFeed({ ok: true, feed: feed, nowMs: now });
+    return { classification: classification, records: availableRecords(feed, classification, now) };
+  }
+
   function filterRecords(records, query, severity, exploitedOnly) {
     var q = String(query || '').trim().toLocaleLowerCase().slice(0, 120);
     return records.filter(function (item) {
@@ -183,6 +201,16 @@
     var exportButton = shell.querySelector('[data-desk-export]');
     if (!list || !search || !severity || !exploited || !refresh) return;
     var records = [];
+    var snapshot = null;
+    var expiryTimer = null;
+    // Local re-evaluation only. No polling the Worker, no Cloudflare cost.
+    // Browser background throttling is handled by visibility/focus rechecks.
+    function stopExpiryTimer() {
+      if (expiryTimer !== null) {
+        root.clearTimeout(expiryTimer);
+        expiryTimer = null;
+      }
+    }
     function show() {
       var subset = filterRecords(records, search.value, severity.value, exploited.checked);
       var frag = document.createDocumentFragment();
@@ -203,7 +231,41 @@
       text(shell, '[data-desk-state-summary]', state);
       text(shell, '[data-desk-status-detail]', detail);
     }
+    function reviewAndRender() {
+      if (!snapshot) return;
+      var checked = reviewSnapshot(snapshot, Date.now());
+      var cls = checked.classification;
+      records = checked.records;
+      var now = Date.now();
+      var trusted = RS && typeof RS.pipelineAllowsLive === 'function' &&
+        RS.pipelineAllowsLive(cls, now);
+      // Rechecking can straddle an exact expiry boundary by milliseconds.
+      // Never leave cards, CSV exports OR derived counts visible as live.
+      if (!trusted) records = [];
+      var summary = metrics(records);
+      text(shell, '[data-desk-sample]', String(summary.records));
+      text(shell, '[data-desk-exploited-count]', String(summary.exploited));
+      text(shell, '[data-desk-sources]', String(summary.sources));
+      setStatus(cls.state, cls.reason + (trusted
+        ? ' Display limited to newly verified reports within their source and ingestion windows.'
+        : ' Previously shown records and CSV exports are withheld; refresh to check for new evidence.'));
+      text(shell, '[data-desk-published]', cls.timestamp
+        ? 'Feed timestamp: ' + cls.timestamp.replace('T', ' ').slice(0, 19) + ' UTC'
+        : 'Feed timestamp not established');
+      show();
+    }
+    function scheduleExpiryCheck() {
+      stopExpiryTimer();
+      if (!snapshot) return;
+      expiryTimer = root.setTimeout(function () {
+        expiryTimer = null;
+        reviewAndRender();
+        scheduleExpiryCheck();
+      }, 5000);
+    }
     function fetchFeed() {
+      stopExpiryTimer();
+      snapshot = null;
       refresh.disabled = true;
       setStatus('CHECKING', 'Checking the first-party public CTI snapshot. No customer telemetry is requested.');
       // Previously rendered records must not remain actionable during a refresh.
@@ -220,22 +282,13 @@
         .then(function (feed) {
           var parsed = normalizeRecords(feed);
           if (!parsed) throw new Error('Invalid feed contract');
-          var cls = RS.classifyFeed({ ok: true, feed: feed });
-          records = availableRecords(feed, cls);
-          var withheld = cls.state !== 'HEALTHY' && cls.state !== 'DEGRADED';
-          var summary = metrics(records);
-          text(shell, '[data-desk-sample]', String(summary.records));
-          text(shell, '[data-desk-exploited-count]', String(summary.exploited));
-          text(shell, '[data-desk-sources]', String(summary.sources));
-          setStatus(cls.state, cls.reason + (withheld
-            ? ' Historical records are withheld until feed freshness is verified.'
-            : ' Display limited to reports added to this feed within the last 24 hours.'));
-          text(shell, '[data-desk-published]', cls.timestamp
-            ? 'Feed timestamp: ' + cls.timestamp.replace('T', ' ').slice(0, 19) + ' UTC'
-            : 'Feed timestamp not established');
-          show();
+          snapshot = feed;
+          reviewAndRender();
+          scheduleExpiryCheck();
         })
         .catch(function (error) {
+          stopExpiryTimer();
+          snapshot = null;
           records = [];
           text(shell, '[data-desk-sample]', '—');
           text(shell, '[data-desk-exploited-count]', '—');
@@ -248,11 +301,20 @@
         })
         .finally(function () { refresh.disabled = false; });
     }
-    search.addEventListener('input', show);
-    severity.addEventListener('change', show);
-    exploited.addEventListener('change', show);
+    // User activity cannot make an already expired displayed record reappear.
+    // Recheck before filtering, export and when a backgrounded tab is opened.
+    search.addEventListener('input', reviewAndRender);
+    severity.addEventListener('change', reviewAndRender);
+    exploited.addEventListener('change', reviewAndRender);
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) reviewAndRender();
+    });
+    if (root.addEventListener) root.addEventListener('focus', reviewAndRender);
     refresh.addEventListener('click', fetchFeed);
     if (exportButton) exportButton.addEventListener('click', function () {
+      // A user can leave the CSV menu open past the freshness threshold:
+      // guard at the moment of export, not only at initial load.
+      reviewAndRender();
       var subset = filterRecords(records, search.value, severity.value, exploited.checked);
       if (!subset.length) return;
       var blob = new Blob([buildCsv(subset)], { type: 'text/csv;charset=utf-8' });
@@ -270,6 +332,7 @@
   }
   return { ENDPOINT: ENDPOINT, LIMIT: LIMIT, safeRecordHref: safeRecordHref,
     normalizeRecords: normalizeRecords, selectRecentRecords: selectRecentRecords,
-    availableRecords: availableRecords, filterRecords: filterRecords, metrics: metrics,
+    availableRecords: availableRecords, reviewSnapshot: reviewSnapshot,
+    filterRecords: filterRecords, metrics: metrics,
     csvCell: csvCell, buildCsv: buildCsv, boot: boot };
 });

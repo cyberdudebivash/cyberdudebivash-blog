@@ -8,7 +8,7 @@
 - Record counts apply **only to the current available feed sample**, capped at 100; no fabricated alert, analyst, SLA, customer, incident or telemetry statistics.
 - Record text uses `textContent`; report links require HTTPS to SOC/blog and a strict public `/posts/*.html` path. Unverified links are not rendered as clickable.
 - Analyst filters stay client-side. CSV export contains only filtered public feed records, maximum 100, with spreadsheet formula injection protection. No customer information or credentials are accessed, transmitted or stored.
-- No interval polling, timers for server activity, database writes, new storage, analytics beacons, vendors, Workers, D1 queries or Cloudflare cron settings. The only page data request is one same-origin public static feed fetch on load or a direct user-triggered refresh. Blob URL revocation timer is browser-local only.
+- No interval/network polling, timers for **server** activity, database writes, new storage, analytics beacons, vendors, Workers, D1 queries or Cloudflare cron settings. The only page data request is one same-origin public static feed fetch on load or a direct user-triggered refresh. A 5-second **browser-local** one-shot timeout re-evaluates the already fetched pipeline and individual report timestamps; visibility/focus/filter/export re-evaluate immediately. It must clear cards, counts and CSV availability as evidence expires, without fetching again. Blob URL revocation is also browser-local.
 - Global navigation presents the SOC Intelligence Desk while retaining existing services and historic pages.
 
 ## Required offline gates
@@ -39,6 +39,9 @@ Fail the release if any exit code is nonzero, or if the PR head moves after test
 | Reduced motion/high contrast | OS preferences | No required animation; borders and state legible |
 | Fresh feed fixture | Valid <90-minute timestamp | HEALTHY only when runtime classifier verifies it |
 | Old/missing timestamp | 4+ hours, invalid, future clock skew | STALE / DEGRADED (never HEALTHY) |
+| Long-open tab, report expiry | Keep valid pipeline open while a record crosses its 24h ingestion boundary | Card removed; sample, source and matched counters recalculated; CSV disabled without fetching |
+| Long-open tab, pipeline expiry | Keep browser tab open beyond 180min or background/restore after expiry | STALE; old records/export withheld, visible state and counters corrected |
+| CSV at expiry boundary | User clicks export as feed becomes stale, even before timer tick | Revalidate synchronously, refuse stale export; no extra Worker request |
 | Fetch failure | Offline / timeout / non-2xx / invalid JSON | UNAVAILABLE, no prior metrics or records remain |
 | Filtering | Search, severity, exploitation | Only feed-backed matches appear; no fake absent-threat claims |
 | CSV | Quoted titles, formulas, zero results | No executable spreadsheet formulas; export disabled when empty |
