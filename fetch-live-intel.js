@@ -504,7 +504,7 @@ async function fetchNVD(state) {
       const vector = met?.cvssData?.vectorString||'';
       const cweId  = cve.weaknesses?.[0]?.description?.[0]?.value||'';
       const refs   = (cve.references||[]).map(r=>r.url).slice(0,6);
-      const pubDate= cve.published?.slice(0,10)||isoNow();
+      const pubDate= verifiedNvdPublishedDate(cve.published);
       const cpe    = cve.configurations?.[0]?.nodes?.[0]?.cpeMatch?.[0]?.criteria||'';
       const vendor  = (cpe.match(/cpe:2\.3:[aoh]:([^:]+):/)||[])[1]?.replace(/_/g,' ')||'Unknown Vendor';
       const product = (cpe.match(/cpe:2\.3:[aoh]:[^:]+:([^:]+):/)||[])[1]?.replace(/_/g,' ')||desc.split(/\s+/).slice(0,3).join(' ')||'Unknown Product';
@@ -699,7 +699,7 @@ async function fetchCISAAlerts(state) {
         const iocs = [];
         return { source:'cisa_alerts', type:'ADVISORY', id:'CISA-'+md5(item.link),
           title:item.title, desc:(item.desc||'').slice(0,600), cvss:parseCvssFromText(text), refs:extractHttpUrls(item.link),
-          pubDate:item.pubDate?new Date(item.pubDate).toISOString().slice(0,10):isoNow(),
+          pubDate:verifiedSourceDate(item.pubDate),
           vendor:'CISA US-CERT', product:'Multiple Products',
           exploited:hasConfirmedExploitation(text), cisaKev:false,
           ransomware:/ransomware/i.test(text),
@@ -736,7 +736,7 @@ async function fetchGitHubAdvisories(state) {
         title:a.summary||`${primaryId} — GitHub Security Advisory`,
         desc, cvss, vector:a.cvss?.vector_string||'', cweId:(a.cwes||[])[0]?.cwe_id||'',
         refs:[a.html_url,...(a.references||[])].flatMap(extractHttpUrls).slice(0,5),
-        pubDate:(a.published_at||isoNow()).slice(0,10),
+        pubDate:verifiedSourceDate(a.published_at),
         vendor:(a.vulnerabilities||[])[0]?.package?.ecosystem||'Open Source',
         product:(a.vulnerabilities||[])[0]?.package?.name||'Unknown Package',
         exploited:false, cisaKev:false, ransomware:false, cves, iocs, sourceCount:1,
@@ -901,12 +901,37 @@ function normalizeToUniversalSchema(item) {
   };
 }
 
+// The source publication timestamp is upstream evidence, not the time our
+// scheduler fetched the record. Missing, malformed and future dates stay
+// unknown. The shared 24h-ingest / 72h-source-publication gate rejects them.
+function verifiedSourceDate(raw) {
+  if (typeof raw !== 'string' || !raw.trim()) return null;
+  const value = raw.trim();
+  const dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(value);
+  const zonedISO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d{1,9})?)?(?:Z|[+-]\d{2}:\d{2})$/i.test(value);
+  const rfcRSS = /^(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun),? \d{1,2} [A-Za-z]{3} \d{4} \d{2}:\d{2}:\d{2} (?:GMT|UTC|[+-]\d{4})$/i.test(value);
+  if (!dateOnly && !zonedISO && !rfcRSS) return null;
+  const ms=Date.parse(value);
+  if(!Number.isFinite(ms) || ms<0 || ms>Date.now()+5*60000) return null;
+  return new Date(ms).toISOString().slice(0,10);
+}
+
+// NVD API 2.0 publishes published/lastModified values as timezone-less UTC.
+// This normalization is valid ONLY for that well-defined upstream contract,
+// not for unrelated zone-less local timestamps in arbitrary provider feeds.
+function verifiedNvdPublishedDate(raw) {
+  if(typeof raw!=='string')return null;
+  const value=raw.trim();
+  return verifiedSourceDate(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?$/.test(value)
+    ? value+'Z' : value);
+}
+
 function rssToIntel(item, source) {
   const text = (item.title||'')+' '+(item.desc||'');
   const cves  = extractCVEs(text);
   const type  = classifyNews(text);
   const id    = cves[0]||(source.toUpperCase()+'-'+md5(item.link||item.title));
-  const pubDate = (() => { try { return item.pubDate ? new Date(item.pubDate).toISOString().slice(0,10) : isoNow(); } catch(e){ return isoNow(); } })();
+  const pubDate = verifiedSourceDate(item.pubDate);
   const srcLabels = { bleepingcomputer:'BleepingComputer', thehackernews:'The Hacker News', krebsonsecurity:'KrebsOnSecurity', securityweek:'SecurityWeek', sans_isc:'SANS ISC' };
   // Editorial/RSS links are references, not automatically malicious IOCs.
   const iocs = [];
@@ -973,7 +998,7 @@ async function fetchURLhaus() {
       title:`Abuse.ch Malware Alert: ${tag} — ${info.count} Payloads Tracked (URLhaus)`,
       desc:`URLhaus tracking ${info.count} active payloads for ${tag} malware family. Fresh IOCs confirmed. Deploy to SIEM/firewall immediately.`,
       cvss:null, refs:['https://urlhaus.abuse.ch/'],
-      pubDate:info.date?String(info.date).slice(0,10):isoNow(),
+      pubDate:verifiedSourceDate(info.date),
       vendor:'Abuse.ch', product:'URLhaus Intelligence',
       exploited:false, cisaKev:false,
       ransomware:/ransomware|ransom/i.test(tag),
@@ -1013,7 +1038,7 @@ async function fetchThreatFox() {
       title:`ThreatFox IOC Alert: ${family} — Fresh Indicators Published`,
       desc:`Abuse.ch ThreatFox published ${info.iocs.length} fresh IOCs for ${family}. Active threat infrastructure. Deploy to SIEM/firewall/EDR immediately.`,
       cvss:null, refs:['https://threatfox.abuse.ch/'],
-      pubDate:info.firstSeen?info.firstSeen.slice(0,10):isoNow(),
+      pubDate:verifiedSourceDate(info.firstSeen),
       vendor:'Abuse.ch', product:'ThreatFox Intelligence',
       exploited:false, cisaKev:false,
       ransomware:/ransomware|ransom|locker/i.test(family),
@@ -1036,7 +1061,7 @@ async function fetchMSRC() {
       title:`Microsoft Security Update: ${u.DocumentTitle?.Value||u.Alias||'Security Advisory'} — Analysis`,
       desc:`Microsoft released security updates: ${u.DocumentTitle?.Value||''}. Review and apply immediately.`,
       cvss:null, refs:[`https://msrc.microsoft.com/update-guide/`],
-      pubDate:(u.InitialReleaseDate||isoNow()).slice(0,10),
+      pubDate:verifiedSourceDate(u.InitialReleaseDate),
       vendor:'Microsoft', product:'Multiple Microsoft Products',
       exploited:false, cisaKev:false, ransomware:false, iocs:[], sourceCount:1, daysOld:0,
     }));
@@ -1210,7 +1235,7 @@ function normalizeSentinelApexRecord(raw, endpointKey) {
   const pubRaw    = sapexPick(raw, ['published', 'published_at', 'pubDate', 'created', 'timestamp', 'date', 'first_seen']);
   const pubDateObj = pubRaw ? new Date(pubRaw) : null;
   const validDate  = pubDateObj && !isNaN(pubDateObj);
-  const pubDate    = validDate ? pubDateObj.toISOString().slice(0, 10) : isoNow();
+  const pubDate    = validDate ? verifiedSourceDate(pubRaw) : null;
 
   const exploited  = !!sapexPick(raw, ['exploited', 'in_the_wild', 'active_exploitation']) || hasConfirmedExploitation(text);
   const cisaKev    = !!sapexPick(raw, ['cisa_kev', 'cisaKev', 'kev_listed']);
@@ -1309,7 +1334,7 @@ async function fetchExploitDB(state) {
           source:'exploitdb', type: cves.length ? 'CVE_REPORT' : 'ZERO_DAY',
           id, title: item.title || 'ExploitDB Public Exploit', desc: (item.desc||'').slice(0,600),
           cvss: parseCvssFromText(text), refs: extractHttpUrls(item.link),
-          pubDate: item.pubDate ? new Date(item.pubDate).toISOString().slice(0,10) : isoNow(),
+          pubDate:verifiedSourceDate(item.pubDate),
           vendor: 'ExploitDB', product: 'Multiple Targets',
           exploited: false, cisaKev: false, ransomware: false,
           cves, iocs: [], sourceCount: 1,
@@ -1350,7 +1375,7 @@ async function fetchFullDisclosure(state) {
           source:'fulldisclosure', type: 'ZERO_DAY',
           id, title: item.title || 'Full Disclosure Vulnerability Report', desc: (item.desc||'').slice(0,600),
           cvss: parseCvssFromText(text), refs: extractHttpUrls(item.link),
-          pubDate: item.pubDate ? new Date(item.pubDate).toISOString().slice(0,10) : isoNow(),
+          pubDate:verifiedSourceDate(item.pubDate),
           vendor: 'SecLists', product: 'Multiple Targets',
           exploited: hasConfirmedExploitation(text), cisaKev: false, ransomware: false,
           cves, iocs: [], sourceCount: 1,
@@ -1424,7 +1449,7 @@ async function fetchMalwareBazaar() {
       id:'MALWAREBAZAAR-'+s.sha256_hash.slice(0,16),
       title:'Malware Sample: '+(tags.join(' / ')||'Unknown Malware')+' ('+(s.file_type||'binary')+')',
       desc:description,cvss:null,refs:['https://bazaar.abuse.ch/sample/'+s.sha256_hash+'/'],
-      pubDate:typeof s.first_seen==='string'&&s.first_seen.length>=10?s.first_seen.slice(0,10):isoNow(),
+      pubDate:verifiedSourceDate(s.first_seen),
       vendor:'MalwareBazaar',product:'Malware Sample',exploited:false,
       ransomware:/ransomware|ransom/i.test(description),
       iocs:[{type:'sha256',value:s.sha256_hash,confidence_score:0.95,first_seen:s.first_seen||isoNow()}],
@@ -1463,7 +1488,7 @@ async function fetchCiscoPSIRT(state) {
             items.push({
               source:'cisco_psirt', type:'CVE_REPORT', id,
               title:titles[i]||'Cisco Security Advisory', desc:(descs[i]||'').replace(/&lt;[^>]*&gt;/g,'').slice(0,600),
-              cvss:parseCvssFromText(text), refs:extractHttpUrls(links[i]), pubDate:isoNow(),
+              cvss:parseCvssFromText(text), refs:extractHttpUrls(links[i]), pubDate:null,
               vendor:'Cisco', product:'Cisco Products', exploited:false, cisaKev:false,
               ransomware:false, cves, sourceCount:1,
             });
@@ -1499,7 +1524,7 @@ async function fetchOTX(state) {
               source:'otx', type:classifyNews(text), id,
               title:p.name||'OTX Threat Pulse', desc:(p.description||'').slice(0,600),
               cvss:parseCvssFromText(text), refs:[`https://otx.alienvault.com/pulse/${p.id}`].filter(Boolean),
-              pubDate:p.created?.slice(0,10)||isoNow(), vendor:'AlienVault OTX', product:'Threat Intelligence',
+              pubDate:verifiedSourceDate(p.created), vendor:'AlienVault OTX', product:'Threat Intelligence',
               exploited:hasConfirmedExploitation(text), ransomware:/ransomware/i.test(text),
               cves, iocs, sourceCount:1,
             };
@@ -1538,7 +1563,7 @@ async function fetchRansomWatch(state) {
               title:`Ransomware Victim Listed: ${title}`,
               desc:`RansomWatch dark web monitoring: ${group} ransomware group has listed a new victim. Data leak site activity detected. Organizations should verify exposure.`,
               cvss:null, refs:extractHttpUrls(links[i]),
-              pubDate:pubs[i]?new Date(pubs[i]).toISOString().slice(0,10):isoNow(),
+              pubDate:verifiedSourceDate(pubs[i]),
               vendor:group, product:'Ransomware Victim', exploited:false, ransomware:true,
               cisaKev:false, cves:[], sourceCount:1,
               darkweb_tags:['ransomware-leak','dark-web'],
@@ -1577,7 +1602,7 @@ async function fetchAIIncidentDB(state) {
               title:`AI Security Incident: ${title}`,
               desc:(descs[i]||title).slice(0,600),
               cvss:parseCvssFromText(`${title} ${descs[i]||''}`), refs:extractHttpUrls(links[i]),
-              pubDate:isoNow(), vendor:'AI Incident Database', product:'AI Systems',
+              pubDate:null, vendor:'AI Incident Database', product:'AI Systems',
               exploited:false, ransomware:false, cisaKev:false,
               cves:[], sourceCount:1, ai_security_tags:['ai-incident','llm'],
             });
@@ -3582,7 +3607,7 @@ if (require.main === module) {
     genStructuredReasoning, genIntelligenceProducts, buildProductApiJSON,
     genSigma, genYARA, getMitre, stripHtml, decodeEntities,
     extractHttpUrls, parseCvssFromText, hasConfirmedExploitation,
-    rssToIntel, qualityGate, validateRenderedPost, genExecutiveSummary, genBusinessImpact,
+    rssToIntel, verifiedSourceDate, verifiedNvdPublishedDate, qualityGate, validateRenderedPost, genExecutiveSummary, genBusinessImpact,
     genAttackChain, computePriorityScore, correlateAndMerge,
     extractSentinelApexRecords, normalizeSentinelApexRecord,
     sapexCanonicalId, sapexNativeMitre, fetchSentinelApex,
