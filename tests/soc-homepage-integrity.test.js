@@ -62,6 +62,15 @@ describe('P0 SOC homepage — source and publisher integrity',() => {
     expect(() => assertHomepageIntegrity(noArchive)).toThrow('historical archive is linked separately');
   });
 
+  test('unmarked static historical report cards never qualify as a live homepage',() => {
+    const legacy=index.replace('<!-- Historical static cards removed',
+      '<article class="post-card"><h3>Old advisory</h3></article><!-- Historical static cards removed');
+    expect(() => assertHomepageIntegrity(legacy)).toThrow('no static featured report cards');
+    const legacyHeading=index.replace('<!-- Historical static cards removed',
+      '<h2>Featured Reports</h2><!-- Historical static cards removed');
+    expect(() => assertHomepageIntegrity(legacyHeading)).toThrow('no static featured report cards');
+  });
+
   test('publisher cannot silently reinsert historical report cards',() => {
     expect(publisher).not.toContain("const MARKER = '<!-- POST 1 — FEATURED -->'");
     expect(publisher).not.toContain('html.replace(MARKER,');
@@ -81,5 +90,7 @@ describe('P0 SOC homepage — source and publisher integrity',() => {
     expect(publisher).toContain("require('./scripts/soc-homepage-integrity').assertHomepageIntegrity");
     expect(builder).toContain("require('./soc-homepage-integrity').assertHomepageIntegrity");
     expect(builder).toContain("=== 'index.html'");
+    expect(builder).toContain("assertHomepageIntegrity(builtHtml, 'built index.html')");
+    expect(builder).toContain('fs.writeFileSync(dest, builtHtml)');
   });
 });
