@@ -185,3 +185,75 @@ test('manual CTI refresh clears prior cards, counts, timestamp and CSV before ne
   assert.ok(preflight.indexOf('records = [];') < preflight.indexOf('show();'),
     'previous records must be removed before rendering the CHECKING state');
 });
+
+test('open SOC desk tab rechecks both clocks: a report expires without another network fetch', () => {
+  const now = Date.parse('2026-11-14T12:00:00Z');
+  const iso = ms => new Date(ms).toISOString();
+  const feed = {
+    generatedAt: iso(now - 60_000),
+    metadata: { lastReportGeneratedAt: iso(now - 60_000) },
+    items: [
+      {
+        id: 'EXPIRING', title: 'Confirmed source-linked report',
+        _addedAt: iso(now - 24 * 3600_000 + 60_000),
+        pubDate: iso(now - 20 * 3600_000), link: '/posts/confirmed.html',
+      },
+      {
+        id: 'ARCHIVE', title: 'Old research only',
+        _addedAt: iso(now - 4 * 3600_000),
+        pubDate: iso(now - 5 * 86400_000),
+      },
+    ],
+  };
+  const first = desk.reviewSnapshot(feed, now);
+  assert.equal(first.classification.state, 'HEALTHY');
+  assert.deepEqual(first.records.map(r => r.id), ['EXPIRING']);
+  const expired = desk.reviewSnapshot(feed, now + 2 * 60_000);
+  assert.equal(expired.classification.state, 'HEALTHY', 'pipeline is still fresh');
+  assert.deepEqual(expired.records, [], 'record expiry is independent of pipeline heartbeat');
+});
+
+test('open SOC desk tab withholds records after receipt/generation passes 180-minute expiry', () => {
+  const now = Date.parse('2026-11-14T12:00:00Z');
+  const feed = {
+    generatedAt: new Date(now - 60_000).toISOString(),
+    metadata: { lastReportGeneratedAt: new Date(now - 60_000).toISOString() },
+    items: [{
+      id:'CURRENT', title:'Recent threat report',
+      _addedAt: new Date(now - 60_000).toISOString(),
+      pubDate: new Date(now - 60_000).toISOString(),
+    }],
+  };
+  assert.deepEqual(desk.reviewSnapshot(feed, now).records.map(r => r.id), ['CURRENT']);
+  const stale = desk.reviewSnapshot(feed, now + 181 * 60_000);
+  assert.equal(stale.classification.state, 'STALE');
+  assert.deepEqual(stale.records, []);
+  const absent = desk.reviewSnapshot({ items: [] }, now);
+  assert.equal(absent.classification.state, 'DEGRADED');
+  assert.deepEqual(absent.records, []);
+  assert.deepEqual(desk.reviewSnapshot(null, now).records, []);
+});
+
+test('local expiry and user-driven filtering/export revalidate without increasing network traffic', () => {
+  const code = fs.readFileSync(path.join(root, 'soc-intelligence-desk.js'), 'utf8');
+  const initialFetch = code.slice(code.indexOf('function fetchFeed() {'), code.indexOf('    search.addEventListener(', code.indexOf('function fetchFeed() {')));
+  const localReview = code.slice(code.indexOf('function reviewAndRender() {'), code.indexOf('function fetchFeed() {'));
+  assert.match(localReview, /reviewSnapshot\(snapshot, Date\.now\(\)\)/);
+  assert.match(localReview, /records = checked\.records/);
+  assert.match(localReview, /if \(!trusted\) records = \[\]/);
+  assert.match(localReview, /show\(\)/);
+  assert.match(localReview, /root\.setTimeout\(function \(\) \{/);
+  assert.match(localReview, /\}, 5000\)/);
+  assert.doesNotMatch(localReview, /fetchJson|fetch\(/);
+  assert.doesNotMatch(code, /setInterval\s*\(/);
+  assert.match(initialFetch, /stopExpiryTimer\(\);\s*snapshot = null/);
+  assert.match(code, /document\.addEventListener\('visibilitychange'/);
+  assert.match(code, /root\.addEventListener\('focus', reviewAndRender\)/);
+  assert.match(code, /search\.addEventListener\('input', reviewAndRender\)/);
+  assert.match(code, /severity\.addEventListener\('change', reviewAndRender\)/);
+  assert.match(code, /exploited\.addEventListener\('change', reviewAndRender\)/);
+  const exportBody = code.slice(code.indexOf("exportButton.addEventListener('click'"));
+  assert.ok(exportBody.indexOf('reviewAndRender();') >= 0 &&
+    exportBody.indexOf('reviewAndRender();') < exportBody.indexOf('buildCsv(subset)'),
+    'CSV cannot be exported before current freshness is reverified');
+});
