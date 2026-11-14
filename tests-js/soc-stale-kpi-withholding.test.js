@@ -51,15 +51,43 @@ test('P0 stale public October bundle cannot expose 6,466 as live operational KPI
   assert.match(x.labels['cdb-hero-freshness-note'],/STALE — operational metrics withheld/);
   assert.deepEqual(x.observed,['STALE']);
 });
-test('P0 fresh certified feed still presents actual customer KPI totals',()=>{
+test('P0 a fresh publisher must not present historical aggregate stats as LIVE customer KPIs',()=>{
   const x=harness();
   x.render(feed(recent,7466));
-  assert.equal(x.kpis['cdb-total'].value,'7,466');
-  assert.equal(x.kpis['cdb-critical'].value,'39');
-  assert.equal(x.kpis['cdb-kev'].value,'32');
-  assert.equal(x.labels['cdb-hero-total'],'7,466');
+  // The source has 7,466 cumulative reports and historical global counters,
+  // but ZERO records evidenced as new inside the 24h/72h live window.
+  assert.equal(x.kpis['cdb-total'].value,'0');
+  assert.equal(x.kpis['cdb-critical'].value,'0');
+  assert.equal(x.kpis['cdb-kev'].value,'0');
+  assert.equal(x.kpis['cdb-exploited'].value,'0');
+  assert.equal(x.kpis['cdb-ransomware'].value,'0');
+  assert.equal(x.kpis['cdb-sources'].value,'0');
+  assert.equal(x.labels['cdb-hero-total'],'0');
   assert.equal(x.state.metricsCurrent,true);
   assert.equal(x.state.lastRuntimeState,'HEALTHY');
+});
+test('P0 live-only critical KEV exploitation ransomware and source KPIs exclude historical records',()=>{
+  const old='2026-10-23T04:58:15.799Z';
+  const make=(id,stamp,attributes)=>({id,_addedAt:stamp,pubDate:stamp,
+     source:'securityweek',cvss:9.8,cisaKev:true,exploited:true,
+     ransomware:true,...attributes});
+  const fresh={...feed(recent,7518),items:[
+    make('VERIFIED-CVE',recent,{source:'nvd'}),
+    make('VERIFIED-KEV',recent,{source:'cisa',ransomware:false}),
+    make('HISTORIC-CRITICAL',old,{source:'legacy'})
+  ]};
+  const x=harness();
+  x.render(fresh);
+  assert.equal(x.kpis['cdb-total'].value,'2');
+  assert.equal(x.kpis['cdb-critical'].value,'2');
+  assert.equal(x.kpis['cdb-kev'].value,'2');
+  assert.equal(x.kpis['cdb-exploited'].value,'2');
+  assert.equal(x.kpis['cdb-ransomware'].value,'1');
+  assert.equal(x.kpis['cdb-sources'].value,'2');
+  assert.equal(x.labels['cdb-hero-total'],'2');
+  assert.equal(x.labels['cdb-hero-kev'],'2');
+  assert.equal(x.labels['cdb-hero-sources'],'2');
+  assert.match(x.kpis['cdb-total'].note,/Source-verified current intelligence/);
 });
 test('P0 missing, unverifiable or future source does not reveal historical metrics',()=>{
   for(const stamp of [null,'not-a-date',new Date(NOW+10*60000).toISOString()]){
