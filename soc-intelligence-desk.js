@@ -236,16 +236,16 @@
       var checked = reviewSnapshot(snapshot, Date.now());
       var cls = checked.classification;
       records = checked.records;
-      var summary = metrics(records);
-      text(shell, '[data-desk-sample]', String(summary.records));
-      text(shell, '[data-desk-exploited-count]', String(summary.exploited));
-      text(shell, '[data-desk-sources]', String(summary.sources));
       var now = Date.now();
       var trusted = RS && typeof RS.pipelineAllowsLive === 'function' &&
         RS.pipelineAllowsLive(cls, now);
       // Rechecking can straddle an exact expiry boundary by milliseconds.
-      // Do not leave a card/export visible when the second clock says stale.
+      // Never leave cards, CSV exports OR derived counts visible as live.
       if (!trusted) records = [];
+      var summary = metrics(records);
+      text(shell, '[data-desk-sample]', String(summary.records));
+      text(shell, '[data-desk-exploited-count]', String(summary.exploited));
+      text(shell, '[data-desk-sources]', String(summary.sources));
       setStatus(cls.state, cls.reason + (trusted
         ? ' Display limited to newly verified reports within their source and ingestion windows.'
         : ' Previously shown records and CSV exports are withheld; refresh to check for new evidence.'));
