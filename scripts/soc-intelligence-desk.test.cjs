@@ -257,3 +257,102 @@ test('local expiry and user-driven filtering/export revalidate without increasin
     exportBody.indexOf('reviewAndRender();') < exportBody.indexOf('buildCsv(subset)'),
     'CSV cannot be exported before current freshness is reverified');
 });
+
+test('long-open SOC tab automatically clears expired cards, export and counters without network requests', async () => {
+  const vm = require('node:vm');
+  const source = fs.readFileSync(path.join(root, 'soc-intelligence-desk.js'), 'utf8');
+  let now = Date.parse('2026-11-14T12:00:00Z');
+  class Clock extends Date { static now() { return now; } }
+  const iso = n => new Date(n).toISOString();
+  const snapshot = {
+    generatedAt: iso(now - 60_000),
+    metadata: { lastReportGeneratedAt: iso(now - 60_000) },
+    items: [
+      { id:'EXPIRING', title:'Verified report', _addedAt:iso(now - 24 * 3600_000 + 60_000),
+        pubDate:iso(now - 12 * 3600_000), link:'/posts/verified.html' },
+    ],
+  };
+  let requests = 0;
+  const listeners = {};
+  const timers = new Map();
+  let nextTimer = 0;
+  const element = () => ({
+    dataset:{}, children:[], disabled:false, hidden:false, value:'', checked:false,
+    textContent:'', className:'',
+    handlers:{},
+    addEventListener(name, fn) { this.handlers[name] = fn; },
+    append(...children) { this.children.push(...children); },
+    appendChild(child) { this.children.push(child); },
+    replaceChildren(fragment) { this.children = fragment.children || []; },
+    remove() {},
+  });
+  const selectors = [
+    '[data-desk-records]','[data-desk-search]','[data-desk-severity]',
+    '[data-desk-exploited]','[data-desk-refresh]','[data-desk-export]',
+    '[data-desk-count]','[data-desk-visible]','[data-desk-empty]',
+    '[data-desk-state]','[data-desk-state-summary]','[data-desk-status-detail]',
+    '[data-desk-sample]','[data-desk-exploited-count]',
+    '[data-desk-sources]','[data-desk-published]',
+  ];
+  const nodes = Object.fromEntries(selectors.map(s => [s, element()]));
+  nodes['[data-desk-severity]'].value = 'all';
+  const shell = {
+    dataset:{}, querySelector(selector) { return nodes[selector] || null; },
+  };
+  const document = {
+    readyState:'complete', hidden:false,
+    getElementById(id) { return id === 'soc-intelligence-desk' ? shell : null; },
+    createElement:element,
+    createDocumentFragment:element,
+    addEventListener(name, fn) { listeners[name] = fn; },
+    body:{ appendChild() {} },
+  };
+  const runtimeState = {
+    ...runtime,
+    fetchJson() { requests++; return Promise.resolve(snapshot); },
+  };
+  const browser = {
+    document, SentinelRuntimeState:runtimeState, handlers:{},
+    addEventListener(name, fn) { this.handlers[name] = fn; },
+    setTimeout(fn, ms) {
+      assert.equal(ms, 5000, 'only local 5-second revalidation allowed');
+      const id = ++nextTimer;
+      timers.set(id, fn);
+      return id;
+    },
+    clearTimeout(id) { timers.delete(id); },
+  };
+  vm.runInNewContext(source, {window:browser, Date:Clock, URL, Set, Promise});
+  await Promise.resolve();
+  await Promise.resolve();
+  const list = nodes['[data-desk-records]'];
+  const csv = nodes['[data-desk-export]'];
+  assert.equal(requests, 1);
+  assert.equal(list.children.length, 1, 'initial verified report appears');
+  assert.equal(csv.disabled, false);
+  assert.equal(nodes['[data-desk-sample]'].textContent, '1');
+  assert.equal(timers.size, 1, 'one local expiry timeout is scheduled');
+
+  now += 2 * 60_000; // report crosses 24h; generator remains <90min old
+  const [timerId, tick] = timers.entries().next().value;
+  timers.delete(timerId);
+  tick();
+  assert.equal(requests, 1, 'timer must not request another API/feed payload');
+  assert.equal(list.children.length, 0, 'expired card is removed');
+  assert.equal(csv.disabled, true, 'expired CSV export is disabled');
+  assert.equal(nodes['[data-desk-sample]'].textContent, '0');
+  assert.equal(nodes['[data-desk-count]'].textContent, '0');
+  assert.equal(timers.size, 1, 'clock check is rescheduled without network');
+
+  now += 181 * 60_000; // pipeline becomes stale while tab is suspended
+  listeners.visibilitychange();
+  assert.equal(nodes['[data-desk-state]'].textContent, 'STALE');
+  assert.equal(list.children.length, 0);
+  assert.equal(nodes['[data-desk-exploited-count]'].textContent, '0');
+  assert.equal(requests, 1, 'tab visibility rechecks cached snapshot only');
+  browser.handlers.focus();
+  nodes['[data-desk-search]'].handlers.input();
+  csv.handlers.click();
+  assert.equal(requests, 1, 'focus, filter and export are local-only');
+  assert.equal(csv.disabled, true);
+});
