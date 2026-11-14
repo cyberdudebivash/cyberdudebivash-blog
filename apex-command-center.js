@@ -130,16 +130,45 @@
     state.feedItems=top;
     drawFabric(top);
   }
+  // P0: an unreachable, malformed or failed first-party feed must clear
+  // EVERY customer operational KPI, even when the initial request fails.
+  // Never leave loading placeholders or a previously visible count behind.
+  function withholdDashboardMetrics(reason) {
+    state.feed=null;
+    state.feedItems=[];
+    state.metricsCurrent=false;
+    var cls=(RS&&typeof RS.classifyFeed==='function')
+      ? RS.classifyFeed({ok:false,error:reason})
+      : {state:'UNAVAILABLE',reachable:false,ageMinutes:null,reason:'First-party freshness authority unavailable.'};
+    state.lastRuntimeState=cls.state;
+    var note='WITHHELD — '+String(cls.state)+'; first-party feed not verified';
+    ['cdb-total','cdb-critical','cdb-kev','cdb-exploited','cdb-ransomware','cdb-sources']
+      .forEach(function(id){setKpi(id,'—',note);});
+    ['cdb-hero-total','cdb-hero-kev','cdb-hero-sources']
+      .forEach(function(id){setText(id,'—');});
+    setText('cdb-freshness','UNAVAILABLE');
+    setText('cdb-hero-freshness','UNAVAILABLE');
+    setText('cdb-hero-freshness-note','Feed unavailable — operational metrics withheld');
+    setText('cdb-feed-time','timestamp unavailable');
+    applyFeedState(cls);
+    drawFabric([]);
+  }
   function renderMetrics(feed){
-    var stats=feed.stats||{},stamp=feedStamp(feed),fresh=age(stamp);
+    var stamp=feedStamp(feed),fresh=age(stamp);
+    // Do not reuse feed.stats: it aggregates the rolling 150-record archive
+    // window, including historical critical CVEs, KEVs and ransomware.
+    // Customer operational KPIs must be derived from the SAME verified
+    // per-record 24h first-ingest / 72h source-publication authority as triage.
+    var selected=RS&&typeof RS.selectLiveRecords==='function'&&
+      Array.isArray(feed.items) ? RS.selectLiveRecords(feed.items,Date.now()) : null;
     // Customer P0: an available but stale Worker feed is NOT current SOC
     // intelligence. Historic corpus statistics may be preserved in archives,
     // but must never appear as fresh operational dashboard KPIs.
     var classification=RS&&typeof RS.classifyFeed==='function' ?
       RS.classifyFeed({ok:true,feed:feed}):
       {state:'DEGRADED',reachable:true,ageMinutes:null,reason:'Freshness authority unavailable.'};
-    var current=RS&&typeof RS.pipelineAllowsLive==='function' &&
-      RS.pipelineAllowsLive(classification,Date.now());
+    var current=RS&&typeof RS.pipelineAllowsLive==='function' && selected &&
+      Array.isArray(selected.items) && RS.pipelineAllowsLive(classification,Date.now());
     state.metricsCurrent=!!current;
     state.lastRuntimeState=classification.state;
     if (!current) {
@@ -160,15 +189,27 @@
       return;
     }
 
-    setKpi('cdb-total',fmt.format(Number(feed.totalPublished)||0),'Published first-party intelligence');
-    setKpi('cdb-critical',fmt.format(Number(stats.critical)||0),'Feed records labelled critical');
-    setKpi('cdb-kev',fmt.format(Number(stats.cisaKev)||0),'CISA KEV-confirmed records');
-    setKpi('cdb-exploited',fmt.format(Number(stats.exploited)||0),'Records with exploitation evidence');
-    setKpi('cdb-ransomware',fmt.format(Number(stats.ransomware)||0),'Ransomware-associated records');
-    setKpi('cdb-sources',fmt.format(Number(stats.sources)||0),'Attributed pipeline sources');
-    setText('cdb-hero-total',fmt.format(Number(feed.totalPublished)||0));
-    setText('cdb-hero-kev',fmt.format(Number(stats.cisaKev)||0));
-    setText('cdb-hero-sources',fmt.format(Number(stats.sources)||0));
+    var stats={critical:0,cisaKev:0,exploited:0,ransomware:0,sources:0};
+    var sourceNames=Object.create(null);
+    selected.items.forEach(function(item){
+      if(normalizeSeverity(item)==='CRITICAL')stats.critical++;
+      if(item.cisaKev===true||item.cisa_kev===true)stats.cisaKev++;
+      if(item.exploited===true)stats.exploited++;
+      if(item.ransomware===true||String(item.type||'').toUpperCase()==='RANSOMWARE')stats.ransomware++;
+      var source=typeof item.source==='string'?item.source.trim():'';
+      if(source&&source.length<=128)sourceNames[source]=true;
+    });
+    stats.sources=Object.keys(sourceNames).length;
+    var liveCount=selected.items.length;
+    setKpi('cdb-total',fmt.format(liveCount),'Source-verified current intelligence (24h first ingest / 72h publication)');
+    setKpi('cdb-critical',fmt.format(stats.critical),'Critical records in the verified live window');
+    setKpi('cdb-kev',fmt.format(stats.cisaKev),'CISA KEV records in the verified live window');
+    setKpi('cdb-exploited',fmt.format(stats.exploited),'Exploitation-evidenced records in the verified live window');
+    setKpi('cdb-ransomware',fmt.format(stats.ransomware),'Ransomware-related records in the verified live window');
+    setKpi('cdb-sources',fmt.format(stats.sources),'Sources attributed to verified current reports');
+    setText('cdb-hero-total',fmt.format(liveCount));
+    setText('cdb-hero-kev',fmt.format(stats.cisaKev));
+    setText('cdb-hero-sources',fmt.format(stats.sources));
     var freshEl=$('cdb-freshness');if(freshEl)freshEl.textContent=fresh.label;
     setText('cdb-hero-freshness',fresh.label);
     setText('cdb-hero-freshness-note',fresh.iso?'Feed timestamp verified':'Timestamp unavailable');
@@ -216,11 +257,48 @@
       new Promise(function(_,reject){setTimeout(function(){reject(new Error('timeout'));},8000);})
     ]);
   }
+  // The existing live-feed widget already polls the exact same-origin feed
+  // every 15 minutes. Consume its observed response instead of adding another
+  // Cloudflare request for each connected customer tab.
+  function applyWidgetFeedObservation(event) {
+    var incoming=event&&event.detail;
+    if(!incoming||typeof incoming!=='object'||Array.isArray(incoming)||
+       !Array.isArray(incoming.items)||
+       typeof incoming.generatedAt!=='string'||
+       !Number.isFinite(Date.parse(incoming.generatedAt))) return;
+    var previous=state.feed&&Date.parse(state.feed.generatedAt||'');
+    var next=Date.parse(incoming.generatedAt);
+    // A delayed poll or stale CDN response cannot roll the dashboard back
+    // from a newer verified source, even if the older response arrived last.
+    if(Number.isFinite(previous)&&next<previous)return;
+    if(!RS||typeof RS.classifyFeed!=='function'||
+       typeof RS.feedTimestamp!=='function'){
+      renderFeedUnavailable('runtime authority unavailable');
+      withholdDashboardMetrics('runtime authority unavailable');
+      return;
+    }
+    state.feed=incoming;
+    renderMetrics(incoming);
+    renderFeed(incoming);
+  }
+  window.addEventListener('cdb:source-feed-observed',applyWidgetFeedObservation);
+
   Promise.allSettled([
     fetchJson('/live-intel.json'),fetchJson('/api/intel/customer-assurance.json'),fetchJson('/api/intel/service-assurance.json'),fetchJson('/api/intel/cti-delivery-acceptance.json')
   ]).then(function(results){
-    if(results[0].status==='fulfilled'){state.feed=results[0].value;renderMetrics(state.feed);renderFeed(state.feed);}
-    else{var why=results[0].reason&&results[0].reason.message;renderFeedUnavailable(why);applyFeedState(RS?RS.classifyFeed({ok:false,error:why}):{state:'UNAVAILABLE',reachable:false,ageMinutes:null,reason:'First-party feed could not be retrieved.'});}
+    var first=results[0];
+    if(first.status==='fulfilled'&&first.value&&typeof first.value==='object'&&
+       !Array.isArray(first.value)&&Array.isArray(first.value.items)){
+      // A newer widget observation may have arrived while initial fetch ran.
+      applyWidgetFeedObservation({detail:first.value});
+    }else{
+      var why=first.status==='rejected'&&first.reason&&first.reason.message||
+        'invalid first-party intelligence payload';
+      if(!state.feed) {
+        renderFeedUnavailable(why);
+        withholdDashboardMetrics(why);
+      }
+    }
     if(results[1].status==='fulfilled')state.assurance=results[1].value;
     if(results[2].status==='fulfilled')state.service=results[2].value;
     if(results[3].status==='fulfilled')state.acceptance=results[3].value;

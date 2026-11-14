@@ -831,8 +831,11 @@ def test_homepage_exposes_runtime_derived_cti_metrics_and_control_evidence():
         "SOC 2 Type I or Type II certification",
     ]:
         assert required in html
+    # A current feed may still contain 150 historical priority-ranked
+    # records. Operational counters must not inherit those archive totals.
     for required in [
-        "feed.totalPublished",
+        "RS.selectLiveRecords(feed.items,Date.now())",
+        "selected.items.forEach",
         "stats.critical",
         "stats.cisaKev",
         "stats.exploited",
@@ -841,6 +844,8 @@ def test_homepage_exposes_runtime_derived_cti_metrics_and_control_evidence():
         "feedStamp(feed)",
     ]:
         assert required in runtime
+    assert "fmt.format(Number(feed.totalPublished)" not in runtime
+    assert "Verified Live Intel" in html
 
 def test_homepage_release_certifies_major_customer_routes():
     workflow = Path(".github/workflows/cloudflare-production-deploy.yml").read_text(encoding="utf-8")

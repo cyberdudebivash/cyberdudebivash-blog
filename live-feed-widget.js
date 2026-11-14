@@ -267,6 +267,19 @@
     });
   }
 
+  // Share the ALREADY FETCHED same-origin source snapshot with the SOC
+  // command center. This adds zero HTTP requests, timers or Cloudflare costs.
+  // Consumers must independently check report receipts and record windows.
+  function announceObservedFeed(data) {
+    if(!data||typeof data!=='object'||Array.isArray(data)||
+       !Array.isArray(data.items))return;
+    try {
+      if(typeof window.CustomEvent==='function'&&
+         typeof window.dispatchEvent==='function')
+        window.dispatchEvent(new window.CustomEvent('cdb:source-feed-observed',{detail:data}));
+    } catch (_) { /* Event delivery cannot weaken widget freshness gates. */ }
+  }
+
   /* ── MAIN FETCH PIPELINE ─────────────────────────────────── */
   function pipeline() {
     // Same-origin first-party evidence only. Never silently replace a failed
@@ -276,6 +289,9 @@
     return xhrFetch(CFG.LOCAL_JSON+'?_='+Math.floor(Date.now()/60000), 8000)
       .then(function(data) {
         if (!data || !Array.isArray(data.items)) return [];
+        // Emit source observations including stale/empty snapshots: the
+        // dashboard reclassifies them and withholds metrics when necessary.
+        announceObservedFeed(data);
         var shared = sharedLiveAuthority();
         var stamp = shared && typeof shared.feedTimestamp === 'function' ?
           shared.feedTimestamp(data) : null;
