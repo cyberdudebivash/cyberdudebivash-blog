@@ -30,6 +30,12 @@ function harness(runtime=RS) {
     $:id=>(elements[id]??={textContent:null}),
     applyFeedState:cls=>{observed.push(cls.state);}
   });
+  // Exercise the real severity classifier as well as the real metrics
+  // renderer, rather than inventing a test-only classification policy.
+  const severityStart=src.indexOf('  function normalizeSeverity(item){');
+  const severityEnd=src.indexOf('  // LIVE list selection.',severityStart);
+  assert(severityStart>0&&severityEnd>severityStart);
+  vm.runInContext(src.slice(severityStart,severityEnd),ctx,{timeout:1000});
   vm.runInContext(src.slice(start,end),ctx,{timeout:1000});
   return {render:ctx.renderMetrics,state:ctx.state,kpis,labels,elements,observed};
 }
