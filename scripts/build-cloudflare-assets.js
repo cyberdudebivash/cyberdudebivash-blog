@@ -469,7 +469,13 @@ function copyFileForPublicBuild(src, dest) {
     // SEO metadata and historic publish date remain intact in source control.
     const { decorateLegacyPost } = require('./cti-archive-v14');
     const html = validatePublicHtmlStructure(decorateLegacyPost(repairedHtml,rel), rel);
-    fs.writeFileSync(dest, injectCustomerExperience(rewritePublicSeoMetadata(html)));
+    const builtHtml = injectCustomerExperience(rewritePublicSeoMetadata(html));
+    // The build must not change a source-verified homepage into a stale-card
+    // page. Check the exact HTML written to dist-public, not just the source.
+    if (rel === 'index.html') {
+      require('./soc-homepage-integrity').assertHomepageIntegrity(builtHtml, 'built index.html');
+    }
+    fs.writeFileSync(dest, builtHtml);
   } else if (path.basename(src).toLowerCase() === 'rss.xml') {
     fs.writeFileSync(dest, rewritePublicRssMetadata(fs.readFileSync(src, 'utf8')));
   } else if (src.toLowerCase().endsWith('.json')) {
