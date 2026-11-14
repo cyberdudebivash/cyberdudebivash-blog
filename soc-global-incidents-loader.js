@@ -11,6 +11,7 @@
   let snapshot = null;
   let signature = null;
   let expiryTimer = null;
+  let disposed = false;
 
   function unavailable() {
     container.replaceChildren();
@@ -39,7 +40,7 @@
     return JSON.stringify(selected.map(item => [item.id, item.updated_utc]));
   }
   function reviewSnapshot() {
-    if (!snapshot) return;
+    if (disposed || !snapshot) return;
     if (container.isConnected === false) { stopExpiryTimer(); snapshot = null; return; }
     try {
       const next = currentSignature(snapshot, Date.now());
@@ -66,7 +67,7 @@
   }
   function scheduleExpiryCheck() {
     stopExpiryTimer();
-    if (!snapshot) return;
+    if (disposed || !snapshot) return;
     expiryTimer = window.setTimeout(function () {
       expiryTimer = null;
       reviewSnapshot();
@@ -83,9 +84,14 @@
   document.addEventListener('visibilitychange', onResume);
   window.addEventListener('focus', reviewSnapshot);
   window.addEventListener('pagehide', function () {
+    disposed = true;
     stopExpiryTimer();
     snapshot = null;
     signature = null;
+    // The back-forward cache can restore prior DOM without rerunning scripts.
+    // Clear any once-valid cards before the page is frozen.
+    unavailable();
+    controller.abort();
   });
 
   const controller = new AbortController();
@@ -99,6 +105,7 @@
     if (length > 1048576) throw Error('too large');
     return response.text();
   }).then(body => {
+    if (disposed) return;
     if (body.length > 1048576) throw Error('too large');
     const feed = JSON.parse(body);
     const current = currentSignature(feed, Date.now());
@@ -108,5 +115,7 @@
     snapshot = feed;
     signature = current;
     scheduleExpiryCheck();
-  }).catch(invalidate).finally(() => window.clearTimeout(timeout));
+  }).catch(function () {
+    if (!disposed) invalidate();
+  }).finally(() => window.clearTimeout(timeout));
 })();
