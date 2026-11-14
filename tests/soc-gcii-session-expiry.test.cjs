@@ -195,3 +195,13 @@ test('fetch resolving after pagehide cannot resurrect incident cards or schedule
   assert.equal(Array.from(h.timers.values()).filter(t => t.delay === 5000).length, 0);
   assert.equal(h.requests, 1);
 });
+
+test('versioned GCII asset and all release gate scripts include the session-expiry regression suite', () => {
+  const html = fs.readFileSync(path.join(root, 'soc.html'), 'utf8');
+  assert.match(html, /src="\/soc-global-incidents\.js\?v=20261112-fresh-only1"/);
+  assert.match(html, /src="\/soc-global-incidents-loader\.js\?v=20261114-gcii-expiry1"/);
+  const scripts = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8')).scripts;
+  for (const key of ['test:ci', 'check:cloudflare', 'test:soc-frontend']) {
+    assert.match(scripts[key], /tests\/soc-gcii-session-expiry\.test\.cjs/, key);
+  }
+});
