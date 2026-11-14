@@ -31,6 +31,49 @@ describe('SOC public homepage canary — read-only fail-closed edge checks',()=>
     expect(r.contentSha256).toMatch(/^[a-f0-9]{64}$/);
     expect(r.limitations).toContain('not a deployment SHA attestation');
   });
+  test('approved release asset parity requires exact approved HTML bytes, not merely valid structure',()=>{
+    const approved=inspectResponseBody(html,{expectedHtml:html});
+    expect(approved).toMatchObject({
+      status:'PASS',reason:'APPROVED_HOMEPAGE_ASSET_MATCH',approvedAssetParity:true,
+    });
+    expect(approved.expectedContentSha256).toBe(approved.contentSha256);
+    const structurallyValidButOld=html.replace(
+      '<!-- Historical static cards removed',
+      '<!-- Previous homepage revision marker --><!-- Historical static cards removed',
+    );
+    expect(inspectResponseBody(structurallyValidButOld).status).toBe('PASS');
+    expect(inspectResponseBody(structurallyValidButOld,{expectedHtml:html}))
+      .toMatchObject({
+        status:'FAIL',reason:'PUBLIC_HOMEPAGE_ASSET_SHA256_MISMATCH',
+        approvedAssetParity:false,
+      });
+    expect(inspectResponseBody(html,{expectedHtml:''}))
+      .toMatchObject({status:'FAIL',reason:'APPROVED_HOMEPAGE_ASSET_INVALID'});
+  });
+
+  test('old static featured reports are rejected even without auto-generated markers',()=>{
+    const old=html.replace('<!-- Historical static cards removed',
+      '<article class="post-card"><h3>Historical report presented as current</h3></article><!-- Historical static cards removed');
+    expect(inspectResponseBody(old))
+      .toMatchObject({status:'FAIL',reason:'HOMEPAGE_INTEGRITY_FAILED'});
+    const heading=html.replace('<!-- Historical static cards removed',
+      '<h2>Featured Reports</h2><!-- Historical static cards removed');
+    expect(inspectResponseBody(heading).status).toBe('FAIL');
+  });
+
+  test('approved SOC edge canary fails on a structurally valid stale asset and does no writes',async()=>{
+    const modified=html.replace('<!-- Historical static cards removed',
+      '<!-- Older edge content --><!-- Historical static cards removed');
+    const fetcher=jest.fn(async()=>response(modified));
+    const out=await certifyLiveHomepage({target:'soc',expectedHtml:html,fetcher});
+    expect(out).toMatchObject({
+      status:'FAIL',reason:'PUBLIC_HOMEPAGE_ASSET_SHA256_MISMATCH',
+      approvedAssetParity:false,
+    });
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    expect(fetcher.mock.calls[0][1].method).toBe('GET');
+  });
+
   test('rejects duplicated main / reports ID and the old SOC2+CTI title',()=>{
     const broken=html.replace('<!-- MAIN -->','<!-- MAIN --><!-- MAIN -->');
     expect(inspectResponseBody(broken)).toMatchObject({status:'FAIL',reason:'HOMEPAGE_INTEGRITY_FAILED'});
