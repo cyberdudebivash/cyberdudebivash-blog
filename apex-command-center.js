@@ -154,15 +154,21 @@
     drawFabric([]);
   }
   function renderMetrics(feed){
-    var stats=feed.stats||{},stamp=feedStamp(feed),fresh=age(stamp);
+    var stamp=feedStamp(feed),fresh=age(stamp);
+    // Do not reuse feed.stats: it aggregates the rolling 150-record archive
+    // window, including historical critical CVEs, KEVs and ransomware.
+    // Customer operational KPIs must be derived from the SAME verified
+    // per-record 24h first-ingest / 72h source-publication authority as triage.
+    var selected=RS&&typeof RS.selectLiveRecords==='function'&&
+      Array.isArray(feed.items) ? RS.selectLiveRecords(feed.items,Date.now()) : null;
     // Customer P0: an available but stale Worker feed is NOT current SOC
     // intelligence. Historic corpus statistics may be preserved in archives,
     // but must never appear as fresh operational dashboard KPIs.
     var classification=RS&&typeof RS.classifyFeed==='function' ?
       RS.classifyFeed({ok:true,feed:feed}):
       {state:'DEGRADED',reachable:true,ageMinutes:null,reason:'Freshness authority unavailable.'};
-    var current=RS&&typeof RS.pipelineAllowsLive==='function' &&
-      RS.pipelineAllowsLive(classification,Date.now());
+    var current=RS&&typeof RS.pipelineAllowsLive==='function' && selected &&
+      Array.isArray(selected.items) && RS.pipelineAllowsLive(classification,Date.now());
     state.metricsCurrent=!!current;
     state.lastRuntimeState=classification.state;
     if (!current) {
@@ -183,15 +189,27 @@
       return;
     }
 
-    setKpi('cdb-total',fmt.format(Number(feed.totalPublished)||0),'Published first-party intelligence');
-    setKpi('cdb-critical',fmt.format(Number(stats.critical)||0),'Feed records labelled critical');
-    setKpi('cdb-kev',fmt.format(Number(stats.cisaKev)||0),'CISA KEV-confirmed records');
-    setKpi('cdb-exploited',fmt.format(Number(stats.exploited)||0),'Records with exploitation evidence');
-    setKpi('cdb-ransomware',fmt.format(Number(stats.ransomware)||0),'Ransomware-associated records');
-    setKpi('cdb-sources',fmt.format(Number(stats.sources)||0),'Attributed pipeline sources');
-    setText('cdb-hero-total',fmt.format(Number(feed.totalPublished)||0));
-    setText('cdb-hero-kev',fmt.format(Number(stats.cisaKev)||0));
-    setText('cdb-hero-sources',fmt.format(Number(stats.sources)||0));
+    var stats={critical:0,cisaKev:0,exploited:0,ransomware:0,sources:0};
+    var sourceNames=Object.create(null);
+    selected.items.forEach(function(item){
+      if(normalizeSeverity(item)==='CRITICAL')stats.critical++;
+      if(item.cisaKev===true||item.cisa_kev===true)stats.cisaKev++;
+      if(item.exploited===true)stats.exploited++;
+      if(item.ransomware===true||String(item.type||'').toUpperCase()==='RANSOMWARE')stats.ransomware++;
+      var source=typeof item.source==='string'?item.source.trim():'';
+      if(source&&source.length<=128)sourceNames[source]=true;
+    });
+    stats.sources=Object.keys(sourceNames).length;
+    var liveCount=selected.items.length;
+    setKpi('cdb-total',fmt.format(liveCount),'Source-verified current intelligence (24h first ingest / 72h publication)');
+    setKpi('cdb-critical',fmt.format(stats.critical),'Critical records in the verified live window');
+    setKpi('cdb-kev',fmt.format(stats.cisaKev),'CISA KEV records in the verified live window');
+    setKpi('cdb-exploited',fmt.format(stats.exploited),'Exploitation-evidenced records in the verified live window');
+    setKpi('cdb-ransomware',fmt.format(stats.ransomware),'Ransomware-related records in the verified live window');
+    setKpi('cdb-sources',fmt.format(stats.sources),'Sources attributed to verified current reports');
+    setText('cdb-hero-total',fmt.format(liveCount));
+    setText('cdb-hero-kev',fmt.format(stats.cisaKev));
+    setText('cdb-hero-sources',fmt.format(stats.sources));
     var freshEl=$('cdb-freshness');if(freshEl)freshEl.textContent=fresh.label;
     setText('cdb-hero-freshness',fresh.label);
     setText('cdb-hero-freshness-note',fresh.iso?'Feed timestamp verified':'Timestamp unavailable');
