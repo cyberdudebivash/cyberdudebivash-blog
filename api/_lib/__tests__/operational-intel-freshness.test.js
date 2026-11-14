@@ -15,14 +15,14 @@ function root(reportHours=1,generatedHours=.5) {
 
 test('paid operational authority keeps only immutable real report IDs, never historical priorities',()=>{
   const source=root();
-  const r=verifyOperationalSource(source,source.generatedAt,NOW);
+  const r=verifyOperationalSource(source,source.generatedAt,NOW,source.metadata.lastReportGeneratedAt);
   expect(r.ok).toBe(true);
   expect([...r.ids]).toEqual(['FRESH-RECORD']);
   expect(r.report_generated_at).toBe(at(1));
 });
 
 test('recent pipeline heartbeat cannot promote reports older than 180 minutes to LIVE',()=>{
-  const old=root(4,.5),r=verifyOperationalSource(old,old.generatedAt,NOW);
+  const old=root(4,.5),r=verifyOperationalSource(old,old.generatedAt,NOW,old.metadata.lastReportGeneratedAt);
   expect(r.ok).toBe(false);
   expect(r.code).toBe('OPERATIONAL_INTELLIGENCE_STALE');
   expect(r.items).toEqual([]);
@@ -32,17 +32,17 @@ test('recent pipeline heartbeat cannot promote reports older than 180 minutes to
 test('a route JSON from a different Worker build cannot inherit new source freshness',()=>{
   const source=root();
   for(const ts of [at(3),at(-.4),'garbage',null,'2026-11-13T18:30:00']) {
-    const r=verifyOperationalSource(source,ts,NOW);
+    const r=verifyOperationalSource(source,ts,NOW,source.metadata.lastReportGeneratedAt);
     expect(r.ok).toBe(false);
     expect(r.code).toBe('OPERATIONAL_ASSET_GENERATION_DIVERGED');
     expect(r.items).toEqual([]);
   }
-  expect(verifyOperationalSource(source,at(.51),NOW).ok).toBe(true);
+  expect(verifyOperationalSource(source,at(.51),NOW,source.metadata.lastReportGeneratedAt).ok).toBe(true);
 });
 
 test('source lacking genuine report receipt is always unavailable to paid LIVE routes',()=>{
   const source=root();delete source.metadata.lastReportGeneratedAt;
-  expect(verifyOperationalSource(source,source.generatedAt,NOW)).toMatchObject({
+  expect(verifyOperationalSource(source,source.generatedAt,NOW,source.metadata.lastReportGeneratedAt)).toMatchObject({
     ok:false,code:'OPERATIONAL_INTELLIGENCE_STALE'
   });
 });

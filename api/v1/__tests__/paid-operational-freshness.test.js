@@ -43,7 +43,7 @@ function response(){
   return res;
 }
 const routeResult=stamp=>({
-  intel_meta:{generated_at:stamp,total_published:7506},
+  intel_meta:{generated_at:stamp,report_generated_at:REPORT,total_published:7506},
   items:[{id:'FRESH-CVE'}],pagination:{page:1,limit:1,total:1,has_next:false},
   tier_info:{tier:'pro'}
 });
@@ -90,4 +90,17 @@ test.each(['live','top','ransomware'])('paid %s refuses old S2N asset even if ro
   expect(res.statusCode).toBe(503);
   expect(res.body.error.code).toBe('OPERATIONAL_ASSET_GENERATION_DIVERGED');
   expect(res.headers['cache-control']).toBe('no-store');
+});
+
+test.each(['live','top','ransomware'])('paid %s denies same-build S2N feed with mismatched real report receipt',async action=>{
+  getIntel.mockImplementation(()=>({
+    ...routeResult(SOURCE),
+    intel_meta:{generated_at:SOURCE,report_generated_at:'2026-11-13T18:24:00.000Z',total_published:7506}
+  }));
+  const res=response();
+  await handler(req(action),res);
+  expect(res.statusCode).toBe(503);
+  expect(res.body.error.code).toBe('OPERATIONAL_REPORT_RECEIPT_DIVERGED');
+  expect(res.headers['cache-control']).toBe('no-store');
+  expect(res.body.data).toBeUndefined();
 });
